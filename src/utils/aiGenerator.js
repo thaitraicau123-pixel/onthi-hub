@@ -5,22 +5,45 @@
 import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey';
 
 /**
+ * Calculate recommended card count based on text length and density
+ */
+export function calculateOptimalCardCount(rawText) {
+  const text = (rawText || '').trim();
+  if (!text) return 3;
+  const len = text.length;
+  if (len < 120) return 1;
+  if (len < 400) return 2;
+  if (len < 900) return 4;
+  if (len < 2000) return 6;
+  if (len < 4000) return 10;
+  return 15;
+}
+
+/**
  * Call real Google Gemini API with auto-failover across active models
  */
 async function callGeminiApi({ apiKey, topic, rawText, cardCount }) {
+  const effectiveCount = cardCount === 'auto' || !cardCount
+    ? calculateOptimalCardCount(rawText)
+    : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
   const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu hàng đầu theo phương pháp Lặp lại ngắt quãng (Spaced Repetition / Anki).
-Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn chính xác ${cardCount} thẻ flashcard ghi nhớ chất lượng cao, súc tích và đắt giá bằng tiếng Việt.
+Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn chính xác ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao, súc tích và đắt giá bằng tiếng Việt.
 
 CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
 TÀI LIỆU / GHI CHÚ ĐÍNH KÈM:
 ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm phổ biến và công thức/khái niệm cốt lõi của chủ đề này.'}
 
+TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (THEO CHUẨN ANKI FLASHCARD):
+- "front": Câu hỏi sắc bén, ngắn gọn, đi thẳng vào trọng tâm (khoảng 10-25 từ). Tuyệt đối không viết câu hỏi dài dòng, lan man.
+- "back": Câu trả lời chuẩn xác, súc tích (khoảng 20-60 từ). Sử dụng gạch đầu dòng rõ ràng, kèm mẹo nhớ hoặc ví dụ nếu có.
+- "tag": Nhãn ngắn gọn phân loại thẻ (tối đa 3-4 từ).
+- NGUYÊN TẮC BẤT DI BẤT DỊCH: Mỗi thẻ phải là MỘT đơn vị kiến thức riêng biệt, TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi ở các thẻ khác.
+- Nếu tài liệu ngắn hơn số lượng thẻ yêu cầu, hãy chia tách thành các khía cạnh logic: Thẻ 1 (Khái niệm/Mục tiêu), Thẻ 2 (Nguyên lý/Cơ chế hoạt động), Thẻ 3 (Lợi ích/Ứng dụng thực tế), thay vì lặp lại cùng một câu chữ.
+
 YÊU CẦU ĐỊNH DẠNG:
 - Trả về ĐÚNG 1 MẢNG JSON (JSON Array), KHÔNG bọc trong markdown và KHÔNG có lời giải thích ngoài mảng JSON.
-- Mỗi object trong mảng có 3 trường:
-  - "front": Câu hỏi sắc bén, rõ ràng hoặc thuật ngữ cần giải nghĩa.
-  - "back": Câu trả lời chuẩn xác, dễ hiểu, kèm mẹo nhớ / ví dụ / căn cứ nếu có.
-  - "tag": Nhãn ngắn gọn phân loại thẻ (tối đa 3-4 từ).
+- Mỗi object trong mảng có 3 trường: "front", "back", "tag".
 
 Ví dụ:
 [
@@ -102,10 +125,19 @@ Ví dụ:
  * Call OpenAI API (GPT-4o-mini) as fallback or primary if configured
  */
 async function callOpenAiApi({ apiKey, topic, rawText, cardCount }) {
+  const effectiveCount = cardCount === 'auto' || !cardCount
+    ? calculateOptimalCardCount(rawText)
+    : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
   const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu theo phương pháp Spaced Repetition (Anki).
-Biên soạn đúng ${cardCount} thẻ flashcard ghi nhớ chất lượng cao bằng tiếng Việt dựa trên:
+Biên soạn đúng ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao bằng tiếng Việt dựa trên:
 CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
 GHI CHÚ / TÀI LIỆU: ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm và khái niệm cốt lõi.'}
+
+TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (CHUẨN ANKI):
+- "front": Câu hỏi sắc bén, ngắn gọn (10-25 từ).
+- "back": Câu trả lời chuẩn xác, gạch đầu dòng rõ ràng (20-60 từ).
+- TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi giữa các thẻ.
 
 YÊU CẦU:
 Trả về ĐÚNG 1 MẢNG JSON dạng:
@@ -178,47 +210,98 @@ Không kèm theo văn bản giải thích nào ngoài mảng JSON.`;
  * Dynamically extracts definitions, bullet points, Q&A pairs from raw text,
  * or synthesizes pedagogical flashcards tailored to any topic.
  */
-function generateSmartSemanticCards({ topic, rawText = '', cardCount = 6 }) {
+function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5 }) {
+  const effectiveCount = cardCount === 'auto' || !cardCount
+    ? calculateOptimalCardCount(rawText)
+    : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
   const title = (topic || '').trim() || 'Kiến Thức Trọng Tâm';
   const lowerText = ((topic || '') + ' ' + (rawText || '')).toLowerCase();
 
   // If user pasted detailed study notes or paragraphs, parse them directly!
-  if (rawText && rawText.trim().length > 30) {
+  if (rawText && rawText.trim().length > 10) {
     const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     const extractedCards = [];
 
     // 1. Look for Definition Patterns (X: Y, X - Y, X là Y)
     for (const line of lines) {
-      if (line.includes(':') && line.indexOf(':') > 3 && line.indexOf(':') < 80) {
+      if (line.includes(':') && line.indexOf(':') > 2 && line.indexOf(':') < 80) {
         const parts = line.split(':');
-        const front = parts[0].replace(/^[-*•\d.)\s]+/, '').trim();
+        const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
         const back = parts.slice(1).join(':').trim();
-        if (front && back && front.length < 90 && back.length > 5) {
+        if (front && back && front.length < 90 && back.length > 3) {
           extractedCards.push({
             id: extractedCards.length + 1,
-            front: front.includes('?') ? front : `Khái niệm / Định nghĩa: "${front}"?`,
+            front: front.includes('?') ? front : `[${title}] ${front} là gì?`,
             back: back,
-            tag: title.slice(0, 16)
+            tag: front.slice(0, 16)
           });
         }
-      } else if (line.includes(' - ') && line.indexOf(' - ') > 3 && line.indexOf(' - ') < 80) {
+      } else if (line.includes(' - ') && line.indexOf(' - ') > 2 && line.indexOf(' - ') < 80) {
         const parts = line.split(' - ');
-        const front = parts[0].replace(/^[-*•\d.)\s]+/, '').trim();
+        const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
         const back = parts.slice(1).join(' - ').trim();
-        if (front && back && front.length < 90 && back.length > 5) {
+        if (front && back && front.length < 90 && back.length > 3) {
           extractedCards.push({
             id: extractedCards.length + 1,
-            front: front.includes('?') ? front : `Khái niệm / Ý nghĩa: "${front}"?`,
+            front: front.includes('?') ? front : `[${title}] Ý nghĩa / Khái niệm: "${front}"?`,
             back: back,
-            tag: title.slice(0, 16)
+            tag: front.slice(0, 16)
           });
         }
       }
     }
 
-    // 2. If we found at least 2 cards from text patterns, fill remaining up to cardCount
-    if (extractedCards.length >= 2) {
-      return extractedCards.slice(0, cardCount);
+    // 2. Look for Clauses with "vừa ... vừa ..." or multi-item sentences
+    for (const line of lines) {
+      if (line.includes('vừa') || line.includes('gồm') || line.includes('lợi thế') || line.includes('nguyên tắc')) {
+        const cleanLine = line.replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
+        if (cleanLine.length > 25) {
+          extractedCards.push({
+            id: extractedCards.length + 1,
+            front: `[${title}] Lợi thế then chốt & Các mục tiêu cốt lõi?`,
+            back: cleanLine.replace(/vừa /g, '\n• ').replace(/, \n•/g, '\n•'),
+            tag: 'Ý then chốt'
+          });
+          break;
+        }
+      }
+    }
+
+    // Special Case: If user wants only 1 card, create 1 master flashcard directly from text
+    if (effectiveCount === 1) {
+      if (extractedCards.length > 0) {
+        return [extractedCards[0]];
+      }
+      return [{
+        id: 1,
+        front: `[${title}] Trọng tâm kiến thức cần ghi nhớ là gì?`,
+        back: rawText.trim(),
+        tag: title.slice(0, 16)
+      }];
+    }
+
+    // If we extracted at least 1 card from user's text
+    if (extractedCards.length >= 1) {
+      if (extractedCards.length >= effectiveCount) {
+        return extractedCards.slice(0, effectiveCount);
+      }
+      // Expand with pedagogical dimensions if user requested more
+      const moreCards = [
+        {
+          id: extractedCards.length + 1,
+          front: `[${title}] Kỹ thuật liên tưởng & Mẹo ghi nhớ siêu tốc?`,
+          back: `💡 Kỹ thuật Spaced Repetition:\n• Từ khóa trọng tâm: ${rawText.slice(0, 80)}...\n• Vận dụng phương pháp liên tưởng thực tiễn để nhớ lâu.`,
+          tag: 'Mẹo nhớ'
+        },
+        {
+          id: extractedCards.length + 2,
+          front: `[${title}] Sai lầm hoặc bẫy đề thi hay gặp nhất?`,
+          back: `⚠️ Bẫy đề thi:\nThí sinh hay quên các điều kiện đi kèm hoặc nhầm lẫn giữa định nghĩa và ngoại lệ. Hãy đọc kỹ các từ khóa hạn định!`,
+          tag: 'Bẫy đề thi'
+        }
+      ];
+      return [...extractedCards, ...moreCards].slice(0, effectiveCount);
     }
   }
 

@@ -18,9 +18,10 @@ import {
   X,
   FileSpreadsheet,
   ClipboardPaste,
-  ArrowDownToLine
+  ArrowDownToLine,
+  Minus
 } from 'lucide-react';
-import { generateFlashcardsWithAI } from '../utils/aiGenerator';
+import { generateFlashcardsWithAI, calculateOptimalCardCount } from '../utils/aiGenerator';
 import { getUserQuota, consumeUserQuota, performDailyCheckIn } from '../utils/userTier';
 import { publishDeckToMarketplace } from '../data/marketplaceData';
 import { checkDeckDuplication } from '../utils/duplicateChecker';
@@ -41,7 +42,8 @@ export default function CreateStudioView({
   // AI inputs
   const [aiTopic, setAiTopic] = useState('');
   const [aiNotes, setAiNotes] = useState('');
-  const [aiCount, setAiCount] = useState(5);
+  const [aiCount, setAiCount] = useState('auto'); // 'auto' | number
+  const [isExpandedNotes, setIsExpandedNotes] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Cards state
@@ -138,6 +140,35 @@ export default function CreateStudioView({
     }
   };
 
+  const notesCharCount = aiNotes.length;
+  const notesWordCount = aiNotes.trim() ? aiNotes.trim().split(/\s+/).filter(Boolean).length : 0;
+
+  const getRecommendation = () => {
+    if (notesCharCount === 0) return { count: 3, text: '💡 Nhập chủ đề hoặc dán tài liệu để hệ thống trích xuất thẻ' };
+    if (notesCharCount < 120) return { count: 1, text: '💡 Đoạn văn ngắn (1 ý) • Đề xuất: 1 - 2 thẻ' };
+    if (notesCharCount < 450) return { count: 3, text: '💡 Độ dài lý tưởng • Đề xuất: 2 - 4 thẻ súc tích' };
+    if (notesCharCount < 1200) return { count: 5, text: '💡 Tài liệu chi tiết • Đề xuất: 4 - 6 thẻ toàn diện' };
+    if (notesCharCount < 2500) return { count: 8, text: '💡 Bài giảng dài • Đề xuất: 8 - 12 thẻ' };
+    return { count: 12, text: '💡 Giáo trình dài • Đề xuất: 12 - 20 thẻ' };
+  };
+
+  const handlePasteNotes = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text && text.trim()) {
+        setAiNotes(prev => prev ? `${prev}\n${text.trim()}` : text.trim());
+        playSound('click');
+      }
+    } catch (e) {
+      alert('Vui lòng cấp quyền truy cập Clipboard hoặc dùng phím Ctrl + V để dán.');
+    }
+  };
+
+  const handleClearNotes = () => {
+    setAiNotes('');
+    playSound('click');
+  };
+
   const handleGenerateAI = async () => {
     if (!aiTopic.trim()) {
       alert('Vui lòng nhập chủ đề hoặc từ khóa cần tạo thẻ!');
@@ -148,12 +179,14 @@ export default function CreateStudioView({
       return;
     }
 
+    const targetCount = aiCount === 'auto' ? getRecommendation().count : Number(aiCount) || 5;
+
     setIsGenerating(true);
     try {
       const generated = await generateFlashcardsWithAI({
         topic: aiTopic,
         rawText: aiNotes,
-        cardCount: aiCount
+        cardCount: targetCount
       });
 
       if (Array.isArray(generated) && generated.length > 0) {
@@ -425,42 +458,161 @@ export default function CreateStudioView({
             </div>
 
             <div>
-              <label className="font-black text-[#28071a] block mb-1">
-                Đoạn ghi chú / Nội dung bài học (tùy chọn):
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
+                <label className="font-black text-[#28071a] block text-xs">
+                  Đoạn ghi chú / Nội dung bài học (tùy chọn):
+                </label>
+
+                <div className="flex items-center space-x-1.5">
+                  {notesCharCount > 0 && (
+                    <span className="text-[10px] font-mono font-bold text-[#7a5a6b] bg-[#fcf7ec] px-2 py-0.5 rounded-md border border-[#eadfcb]">
+                      {notesCharCount} ký tự • {notesWordCount} từ
+                    </span>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handlePasteNotes}
+                    className="px-2 py-0.5 text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-md transition-colors shadow-2xs"
+                    title="Dán nhanh văn bản từ clipboard"
+                  >
+                    📋 Dán nhanh
+                  </button>
+
+                  {notesCharCount > 0 && (
+                    <button
+                      type="button"
+                      onClick={handleClearNotes}
+                      className="px-2 py-0.5 text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md transition-colors"
+                      title="Xóa đoạn ghi chú này"
+                    >
+                      🧹 Xóa
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setIsExpandedNotes(!isExpandedNotes)}
+                    className="px-2 py-0.5 text-[10px] font-bold text-[#7a5a6b] bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-md transition-colors"
+                    title={isExpandedNotes ? "Thu nhỏ ô nhập lại" : "Mở rộng ô nhập to hơn để dễ đọc"}
+                  >
+                    {isExpandedNotes ? "Thu nhỏ ↕" : "Mở rộng ↕"}
+                  </button>
+                </div>
+              </div>
+
               <textarea
-                rows="3"
-                placeholder="Dán bài giảng, văn bản pháp luật hoặc danh sách từ vựng vào đây nếu có..."
+                rows={isExpandedNotes ? 9 : 4}
+                placeholder="Dán câu hỏi, bài giảng hoặc ghi chú ôn tập vào đây. Hệ thống sẽ phân tích độ dài và trích xuất thành bộ thẻ câu hỏi - đáp án sắc bén..."
                 value={aiNotes}
                 onChange={(e) => setAiNotes(e.target.value)}
-                className="w-full px-3.5 py-2 text-xs border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-[#fcf7ec] font-medium text-[#28071a] resize-none"
+                className="w-full px-3.5 py-2.5 text-xs border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-[#fcf7ec] font-medium text-[#28071a] transition-all"
               ></textarea>
+
+              {/* Real-time Density & Quality Guidance */}
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[11px] text-[#7a5a6b]">
+                <span>{getRecommendation().text}</span>
+                {notesCharCount > 0 && (
+                  <span className="text-[10px] font-bold text-[#f02c85]">
+                    {notesCharCount < 120 ? '• 1 Ý ngắn gọn' : notesCharCount < 450 ? '• Độ dài chuẩn' : notesCharCount < 1200 ? '• Chi tiết' : '• Chuyên sâu'}
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
-              <div className="flex items-center space-x-2">
-                <span className="text-[#7a5a6b] font-bold">Số lượng thẻ:</span>
-                {[3, 5, 8].map((num) => (
+            {/* SỐ LƯỢNG THẺ - Flexible Selector & Stepper */}
+            <div className="p-3.5 rounded-2xl bg-[#fcf7ec]/70 border border-[#eadfcb] space-y-2.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center space-x-2">
+                  <span className="text-[#28071a] font-black text-xs">Số lượng thẻ cần tạo:</span>
+                  <span className="text-[10px] font-bold text-[#f02c85] px-2 py-0.5 bg-pink-50 border border-pink-200 rounded-full">
+                    {aiCount === 'auto' ? `Tự động đề xuất (${getRecommendation().count} thẻ)` : `Đã chọn: ${aiCount} thẻ`}
+                  </span>
+                </div>
+
+                {/* Stepper +/- for fine-tuning any number from 1 to 30 */}
+                <div className="flex items-center space-x-1.5 self-start sm:self-auto">
+                  <span className="text-[10px] font-bold text-[#7a5a6b] mr-1">Tùy biến:</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = aiCount === 'auto' ? getRecommendation().count : Number(aiCount) || 3;
+                      const next = Math.max(1, current - 1);
+                      setAiCount(next);
+                      playSound('click');
+                    }}
+                    className="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 border border-[#eadfcb] text-[#28071a] font-black text-xs flex items-center justify-center transition-colors shadow-2xs"
+                    title="Giảm 1 thẻ"
+                  >
+                    <Minus className="w-3 h-3" />
+                  </button>
+
+                  <span className="min-w-8 text-center font-mono font-black text-xs text-[#28071a]">
+                    {aiCount === 'auto' ? `${getRecommendation().count} (A)` : aiCount}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const current = aiCount === 'auto' ? getRecommendation().count : Number(aiCount) || 3;
+                      const next = Math.min(30, current + 1);
+                      setAiCount(next);
+                      playSound('click');
+                    }}
+                    className="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 border border-[#eadfcb] text-[#28071a] font-black text-xs flex items-center justify-center transition-colors shadow-2xs"
+                    title="Tăng 1 thẻ"
+                  >
+                    <Plus className="w-3 h-3" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Presets Row */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAiCount('auto');
+                    playSound('click');
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 ${
+                    aiCount === 'auto'
+                      ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white shadow-sm'
+                      : 'bg-white border border-[#eadfcb] text-[#28071a] hover:bg-slate-50'
+                  }`}
+                  title="Hệ thống tự động đo độ dài văn bản để tạo số thẻ tối ưu nhất"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-300" />
+                  <span>Tự Động ({getRecommendation().count} thẻ)</span>
+                </button>
+
+                {[1, 2, 3, 5, 8, 12, 15].map((num) => (
                   <button
                     key={num}
                     type="button"
-                    onClick={() => setAiCount(num)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-black ${
+                    onClick={() => {
+                      setAiCount(num);
+                      playSound('click');
+                    }}
+                    className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition-all ${
                       aiCount === num
                         ? 'bg-[#f02c85] text-white shadow-sm'
-                        : 'bg-[#fcf7ec] border border-[#eadfcb] text-[#28071a]'
+                        : 'bg-white border border-[#eadfcb] text-[#28071a] hover:bg-slate-50'
                     }`}
                   >
                     {num} thẻ
                   </button>
                 ))}
               </div>
+            </div>
 
+            {/* Generate Action Button */}
+            <div className="pt-1 flex items-center justify-end">
               <button
                 type="button"
                 onClick={handleGenerateAI}
                 disabled={isGenerating || !quota.canCreate}
-                className="px-6 py-3 btn-wayground-sunset text-white font-black rounded-2xl shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
+                className="w-full sm:w-auto px-7 py-3 btn-wayground-sunset text-white font-black rounded-2xl shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
               >
                 {isGenerating ? (
                   <>
@@ -470,7 +622,7 @@ export default function CreateStudioView({
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4 fill-white" />
-                    <span>Tạo Bản Thảo Thẻ</span>
+                    <span>Tạo Bản Thảo Thẻ ({aiCount === 'auto' ? `${getRecommendation().count} thẻ` : `${aiCount} thẻ`})</span>
                   </>
                 )}
               </button>
@@ -533,29 +685,51 @@ export default function CreateStudioView({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block mb-1">
-                    Mặt trước (Câu hỏi / Thuật ngữ):
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block">
+                      Mặt trước (Câu hỏi / Thuật ngữ):
+                    </label>
+                    <span className={`text-[10px] font-mono ${card.front.length > 120 ? 'text-amber-600 font-black' : 'text-[#7a5a6b]'}`}>
+                      {card.front.length} ký tự
+                    </span>
+                  </div>
                   <textarea
-                    rows="2"
+                    rows={card.front.length > 100 ? 3 : 2}
                     placeholder="Nhập câu hỏi hoặc từ vựng..."
                     value={card.front}
                     onChange={(e) => handleCardChange(idx, 'front', e.target.value)}
-                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-none font-bold text-[#28071a]"
+                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-y min-h-[52px] font-bold text-[#28071a]"
                   />
+                  {card.front.length > 120 && (
+                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1 font-semibold">
+                      <span>💡</span>
+                      <span>Mẹo Anki: Câu hỏi nên ngắn gọn (&lt;100 ký tự) để phản xạ tức thì.</span>
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block mb-1">
-                    Mặt sau (Giải thích / Định nghĩa):
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block">
+                      Mặt sau (Giải thích / Định nghĩa):
+                    </label>
+                    <span className={`text-[10px] font-mono ${card.back.length > 300 ? 'text-amber-600 font-black' : 'text-[#7a5a6b]'}`}>
+                      {card.back.length} ký tự
+                    </span>
+                  </div>
                   <textarea
-                    rows="2"
+                    rows={card.back.length > 150 ? 4 : 2}
                     placeholder="Nhập câu trả lời hoặc căn cứ pháp lý..."
                     value={card.back}
                     onChange={(e) => handleCardChange(idx, 'back', e.target.value)}
-                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-none font-medium text-[#28071a]"
+                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-y min-h-[52px] font-medium text-[#28071a]"
                   />
+                  {card.back.length > 300 && (
+                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1 font-semibold">
+                      <span>💡</span>
+                      <span>Mẹo Anki: Nội dung dài nên tách thành gạch đầu dòng hoặc chia thành nhiều thẻ nhỏ.</span>
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
