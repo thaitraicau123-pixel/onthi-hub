@@ -37,13 +37,15 @@ import { getUserTier, getTierLimits, setUserTier } from '../utils/userTier';
 import { getWalletBalance } from '../utils/wallet';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getStreakInfo } from '../utils/gamification';
+import { isUserAdmin } from '../utils/adminGuard';
 
 export default function AuthModal({
   user,
   onAuthChange,
   onClose,
   onOpenPricing,
-  onOpenWallet
+  onOpenWallet,
+  onOpenAdmin
 }) {
   // Tabs: 'profile' | 'tier' | 'security' | 'preferences'
   const [activeTab, setActiveTab] = useState('profile');
@@ -438,6 +440,11 @@ export default function AuthModal({
                         <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#4f46e5] text-white uppercase">
                           Gói: {currentTier.toUpperCase()}
                         </span>
+                        {isUserAdmin(user) && (
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500 text-slate-950 uppercase border border-amber-300 shadow-2xs">
+                            👑 SUPER ADMIN
+                          </span>
+                        )}
                         <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-700">
                           UID: {user.uid?.slice(0, 8)}...
                         </span>
@@ -473,6 +480,19 @@ export default function AuthModal({
                   </div>
 
                   {/* Actions */}
+                  {isUserAdmin(user) && onOpenAdmin && (
+                    <button
+                      onClick={() => {
+                        onClose();
+                        onOpenAdmin();
+                      }}
+                      className="w-full py-2.5 px-4 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 text-xs font-black rounded-xl shadow-md transition-all flex items-center justify-center space-x-1.5 hover:scale-[1.01] active:scale-[0.99]"
+                    >
+                      <ShieldCheck className="w-4 h-4 text-slate-950" />
+                      <span>👑 Mở Cửa Sổ Quản Trị (Admin Portal) →</span>
+                    </button>
+                  )}
+
                   <div className="pt-2 flex items-center justify-between">
                     <button
                       onClick={() => setActiveTab('tier')}

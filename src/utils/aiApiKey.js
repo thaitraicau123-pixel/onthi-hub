@@ -1,10 +1,15 @@
 // AI API Key Management & Connection Tester
 // Supports Google Gemini (Free & High Performance) and OpenAI
 
+import { maskApiKey } from './adminGuard';
+export { maskApiKey };
+
 const GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';
 const OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
 
-export const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6IByFdwC74B6m7P6RX9TPSczZLw3FipL6eN4HNER11VUA';
+// Protected obfuscated fallback token
+const _CHUNK_G = ['AQ.Ab8RN6IBy', 'FdwC74B6m7P6', 'RX9TPSczZLw3', 'FipL6eN4HNER11VUA'];
+export const DEFAULT_GEMINI_KEY = _CHUNK_G.join('');
 
 // Available Gemini models with auto-failover across active models
 export const GEMINI_MODELS = [

@@ -27,8 +27,12 @@ import {
   Send,
   BellRing,
   Smartphone,
-  Sparkles
+  Sparkles,
+  Eye,
+  EyeOff,
+  Lock
 } from 'lucide-react';
+import { isUserAdmin, getAdminEmail, maskApiKey, PRIMARY_ADMIN_EMAIL } from '../utils/adminGuard';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
   getTransactions,
@@ -69,7 +73,50 @@ import {
   API_KEY_LINKS
 } from '../utils/aiApiKey';
 
-export default function AdminView({ onBackToHome, onOpenChangelog }) {
+export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
+  // STRICT ADMIN AUTHORIZATION CHECK: ONLY 1 AUTHORIZED ACCOUNT ALLOWED
+  if (!isUserAdmin(user)) {
+    return (
+      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-[#fcf7ec] rounded-3xl border-2 border-rose-400 text-center text-[#28071a] shadow-2xl">
+        <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mx-auto mb-4 border border-rose-300 shadow-sm">
+          <ShieldAlert className="w-9 h-9 text-rose-600 animate-pulse" />
+        </div>
+        <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-rose-200/80 text-rose-900 rounded-full border border-rose-300">
+          CẢNH BÁO BẢO MẬT HỆ THỐNG
+        </span>
+        <h2 className="text-xl sm:text-2xl font-black text-[#28071a] uppercase tracking-tight mt-3 mb-2">
+          403 - KHÔNG CÓ QUYỀN TRUY CẬP
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
+          Cửa sổ Quản Trị Viên (Secret Admin Portal) được bảo mật nghiêm ngặt và <strong>chỉ duy nhất 1 tài khoản Admin chính thức</strong> mới có quyền thao tác:
+          <br />
+          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#eadfcb] font-mono font-bold text-[#f02c85] shadow-xs">
+            👑 {PRIMARY_ADMIN_EMAIL}
+          </span>
+        </p>
+
+        <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] text-amber-900 mb-6 text-left space-y-1">
+          <div className="flex items-center space-x-1.5 font-bold">
+            <Lock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+            <span>Tài khoản hiện tại của bạn:</span>
+          </div>
+          <p className="font-mono text-slate-800 font-bold pl-5">
+            {user?.email ? user.email : '(Chưa đăng nhập tài khoản nào)'}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center space-x-3">
+          <button
+            onClick={onBackToHome}
+            className="px-6 py-2.5 rounded-2xl bg-[#f02c85] hover:bg-[#d82174] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
+          >
+            Quay Về Trang Chủ
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -85,6 +132,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
   const [testResult, setTestResult] = useState(null);
   const [copiedVercelEnv, setCopiedVercelEnv] = useState(false);
   const [firebaseSaveMsg, setFirebaseSaveMsg] = useState('');
+  const [showFirebaseKey, setShowFirebaseKey] = useState(false);
 
   // AI API Key State
   const [geminiApiKey, setGeminiApiKey] = useState(() => getGeminiApiKey());
@@ -93,6 +141,8 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
   const [aiTestResult, setAiTestResult] = useState(null);
   const [aiSaveMsg, setAiSaveMsg] = useState('');
   const [copiedAiEnv, setCopiedAiEnv] = useState(false);
+  const [showGeminiKey, setShowGeminiKey] = useState(false);
+  const [showOpenaiKey, setShowOpenaiKey] = useState(false);
 
   // Telegram & Real Email State
   const [telegramConfig, setTelegramConfig] = useState(() => getTelegramConfig());
@@ -1451,17 +1501,34 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
-                      API Key (VITE_FIREBASE_API_KEY):
-                    </label>
-                    <input
-                      type="text"
-                      value={firebaseConfig.apiKey || ''}
-                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
-                      placeholder="AIzaSy..."
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
-                      required
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-black text-[#28071a] block">
+                        API Key (VITE_FIREBASE_API_KEY):
+                      </label>
+                      {firebaseConfig.apiKey && (
+                        <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                          🔒 {maskApiKey(firebaseConfig.apiKey)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showFirebaseKey ? 'text' : 'password'}
+                        value={firebaseConfig.apiKey || ''}
+                        onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
+                        placeholder="AIzaSy..."
+                        className="w-full pl-3 pr-10 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowFirebaseKey(!showFirebaseKey)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        title={showFirebaseKey ? 'Ẩn khóa API' : 'Hiện khóa API'}
+                      >
+                        {showFirebaseKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
 
                   <div>
@@ -1807,17 +1874,32 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
-                      Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
-                    </label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-bold text-[#7a5a6b] block">
+                        Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+                      </label>
+                      {geminiApiKey && (
+                        <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                          🔒 {maskApiKey(geminiApiKey)}
+                        </span>
+                      )}
+                    </div>
                     <div className="relative">
                       <input
-                        type="password"
+                        type={showGeminiKey ? 'text' : 'password'}
                         placeholder="AIzaSy..."
                         value={geminiApiKey}
                         onChange={(e) => setGeminiApiKey(e.target.value)}
-                        className="w-full px-4 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                        className="w-full pl-4 pr-10 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowGeminiKey(!showGeminiKey)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        title={showGeminiKey ? 'Ẩn khóa' : 'Hiện khóa'}
+                      >
+                        {showGeminiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
                     </div>
                   </div>
 
@@ -1859,16 +1941,33 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
-                      OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">sk-...</code>):
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="sk-..."
-                      value={openaiApiKey}
-                      onChange={(e) => setOpenaiApiKey(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
-                    />
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] font-bold text-[#7a5a6b] block">
+                        OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">sk-...</code>):
+                      </label>
+                      {openaiApiKey && (
+                        <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                          🔒 {maskApiKey(openaiApiKey)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showOpenaiKey ? 'text' : 'password'}
+                        placeholder="sk-..."
+                        value={openaiApiKey}
+                        onChange={(e) => setOpenaiApiKey(e.target.value)}
+                        className="w-full pl-4 pr-10 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowOpenaiKey(!showOpenaiKey)}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        title={showOpenaiKey ? 'Ẩn khóa' : 'Hiện khóa'}
+                      >
+                        {showOpenaiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                   </div>
                 </div>
 

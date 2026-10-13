@@ -34,6 +34,7 @@ import {
   checkAndApplyApprovedTransactions
 } from './utils/wallet';
 import { playSound } from './utils/storage';
+import { isUserAdmin, PRIMARY_ADMIN_EMAIL } from './utils/adminGuard';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -68,10 +69,16 @@ export default function App() {
     setWalletBalance(getWalletBalance());
     setMarketplaceDecks(getMarketplaceDecks());
 
-    // Secret Hotkey Ctrl + Shift + A switches to Admin Tab
+    // Secret Hotkey Ctrl + Shift + A switches to Admin Tab (Restricted to Authorized Admin Only)
     const handleKeyDown = (e) => {
       if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
+        const activeUser = getCurrentUser();
+        if (!isUserAdmin(activeUser)) {
+          playSound('flip');
+          showToast(`⛔ Từ chối truy cập: Cửa sổ quản trị chỉ dành riêng cho tài khoản Admin (${PRIMARY_ADMIN_EMAIL}).`);
+          return;
+        }
         setActiveTab((prev) => (prev === 'admin' ? 'home' : 'admin'));
       }
     };
@@ -241,9 +248,10 @@ export default function App() {
           />
         )}
 
-        {/* TAB 8: SECRET ADMIN PORTAL */}
+        {/* TAB 8: SECRET ADMIN PORTAL (PROTECTED) */}
         {activeTab === 'admin' && (
           <AdminView
+            user={user}
             onBackToHome={() => setActiveTab('home')}
             onOpenChangelog={() => setIsChangelogOpen(true)}
           />
@@ -327,6 +335,11 @@ export default function App() {
           onOpenWallet={() => {
             setIsAuthOpen(false);
             setActiveTab('wallet');
+          }}
+          onOpenAdmin={() => {
+            setIsAuthOpen(false);
+            setActiveTab('admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
       )}

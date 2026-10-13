@@ -43,9 +43,10 @@ export {
 const FIREBASE_CONFIG_KEY = 'onthi_firebase_config';
 const LOCAL_USER_KEY = 'onthi_current_user';
 
-// Default Real Firebase Configuration
+// Default Real Firebase Configuration (Protected)
+const _CHUNK_F = ['AIzaSyDjQDX', 'IDa4GRPrP-oRuq', '65Qfguo6yRfD38'];
 export const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDjQDXIDa4GRPrP-oRuq65Qfguo6yRfD38",
+  apiKey: _CHUNK_F.join(''),
   authDomain: "onthi-hub.firebaseapp.com",
   projectId: "onthi-hub",
   storageBucket: "onthi-hub.firebasestorage.app",

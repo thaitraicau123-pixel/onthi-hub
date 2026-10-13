@@ -31,6 +31,7 @@ import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '..
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
+import { isUserAdmin } from '../utils/adminGuard';
 import confetti from 'canvas-confetti';
 
 export default function Navbar({
@@ -129,6 +130,27 @@ export default function Navbar({
       ]
     }
   ];
+
+  const userIsAdmin = isUserAdmin(user);
+
+  // Dynamically attach Secret Admin Section ONLY for authorized Admin account
+  const sectionsToRender = userIsAdmin
+    ? [
+        ...menuSections,
+        {
+          title: '👑 Đặc Quyền Quản Trị Hệ Thống',
+          items: [
+            {
+              id: 'admin',
+              label: 'Cửa Sổ Quản Trị Viên (Admin Portal)',
+              icon: ShieldCheck,
+              badge: 'ADMIN',
+              desc: 'Duyệt nạp/rút tiền, duyệt sàn C2C, cấu hình đám mây & API'
+            }
+          ]
+        }
+      ]
+    : menuSections;
 
   return (
     <>
@@ -360,6 +382,18 @@ export default function Navbar({
                 )}
               </button>
 
+              {/* ADMIN SPECIAL BADGE (ONLY FOR VERIFIED ADMIN ACCOUNT) */}
+              {userIsAdmin && (
+                <button
+                  onClick={() => handleNavigate('admin')}
+                  className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-amber-400/30 text-amber-300 border border-amber-400/50 text-xs font-black transition-transform transform hover:scale-105 active:scale-95 shadow-md shadow-amber-950/40 cursor-pointer"
+                  title="Cửa sổ Quản trị viên (Chỉ tài khoản Admin mới thấy)"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span>👑 Admin</span>
+                </button>
+              )}
+
             </div>
 
           </div>
@@ -446,7 +480,7 @@ export default function Navbar({
               </div>
 
               {/* Categorized Menu Sections */}
-              {menuSections.map((section, sIdx) => (
+              {sectionsToRender.map((section, sIdx) => (
                 <div key={sIdx} className="space-y-2">
                   <span className="text-[11px] font-black uppercase tracking-wider text-[#ff70aa] px-1">
                     {section.title}
