@@ -128,7 +128,7 @@ export default function LibraryView({
                 Sổ Tay Câu Sai: Bạn có {unmasteredMistakesCount} câu cần khắc phục!
               </span>
               <span className="text-rose-200/80 font-medium text-[11px]">
-                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ Gemini AI.
+                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ AI OnThiHub.
               </span>
             </div>
           </div>

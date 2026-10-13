@@ -548,7 +548,7 @@ export default function FlashcardModal({
               className="px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-600 via-[#f02c85] to-pink-500 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-              <span>Hỏi Trợ Lý AI Gemini (Bản Chất & Mẹo Nhớ)</span>
+              <span>Hỏi Trợ Lý AI Chuyên Gia (Bản Chất & Mẹo Nhớ)</span>
             </button>
           </div>
 
@@ -614,9 +614,9 @@ export default function FlashcardModal({
                 </div>
                 <div>
                   <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
-                    <span>Trợ Lý Gia Sư AI Gemini</span>
+                    <span>Trợ Lý Gia Sư AI OnThiHub</span>
                     <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
-                      Flash 3.8
+                      Pro Turbo
                     </span>
                   </h4>
                   <p className="text-[11px] text-pink-200/80 font-medium">
@@ -665,7 +665,7 @@ export default function FlashcardModal({
                 <div className="py-12 flex flex-col items-center justify-center space-y-3">
                   <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
                   <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
-                    Đang kết nối Google Gemini phân tích bẫy thi & sáng tác mẹo nhớ...
+                    Đang kết nối hệ thống AI OnThiHub phân tích bẫy thi & sáng tác mẹo nhớ...
                   </p>
                 </div>
               )}

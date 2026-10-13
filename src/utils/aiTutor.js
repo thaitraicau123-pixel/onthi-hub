@@ -12,7 +12,7 @@ export async function explainFlashcardWithAi({ front, back, tag, title }) {
   if (!apiKey) {
     return {
       success: false,
-      message: 'Vui lòng cấu hình Gemini API Key trong Admin hoặc Studio để kích hoạt Trợ lý AI!'
+      message: 'Vui lòng kích hoạt AI Key trong Cài đặt để sử dụng Trợ lý AI!'
     };
   }
 
@@ -89,7 +89,7 @@ export async function explainQuizQuestionWithAi({ question, options = [], correc
   if (!apiKey) {
     return {
       success: false,
-      message: 'Vui lòng cấu hình Gemini API Key để kích hoạt Trợ lý AI!'
+      message: 'Vui lòng kích hoạt AI Key để sử dụng Trợ lý AI!'
     };
   }
 

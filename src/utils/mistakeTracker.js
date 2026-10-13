@@ -192,7 +192,7 @@ export async function diagnoseWeaknessesWithAi(unmasteredMistakes = []) {
   if (!apiKey) {
     return {
       success: false,
-      message: 'Vui lòng cấu hình Gemini API Key để nhận chẩn đoán lỗ hổng kiến thức từ AI!'
+      message: 'Vui lòng cấu hình AI Key để nhận chẩn đoán lỗ hổng kiến thức từ AI!'
     };
   }
 

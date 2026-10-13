@@ -373,7 +373,7 @@ export default function QuizModal({
                     className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-101 active:scale-98"
                   >
                     <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
-                    <span>✨ Bóc Mẽ Chiêu Trò Cài Bẫy & Mẹo 10s Bằng Gemini AI</span>
+                    <span>✨ Bóc Mẽ Chiêu Trò Cài Bẫy & Mẹo 10s Bằng Trí Tuệ Nhân Tạo AI</span>
                   </button>
                 </div>
               )}
@@ -428,9 +428,9 @@ export default function QuizModal({
                 </div>
                 <div>
                   <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
-                    <span>Trợ Lý Giảng Viên AI Gemini</span>
+                    <span>Trợ Lý Giảng Viên AI OnThiHub</span>
                     <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
-                      Flash 3.8
+                      Pro Turbo
                     </span>
                   </h4>
                   <p className="text-[11px] text-pink-200/80 font-medium">
@@ -498,7 +498,7 @@ export default function QuizModal({
                 <div className="py-12 flex flex-col items-center justify-center space-y-3">
                   <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
                   <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
-                    Gemini đang soi bẫy thi & tổng hợp quy tắc khoanh nhanh 10 giây...
+                    Hệ thống AI đang soi bẫy thi & tổng hợp quy tắc khoanh nhanh 10 giây...
                   </p>
                 </div>
               )}

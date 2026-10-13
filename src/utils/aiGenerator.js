@@ -82,7 +82,7 @@ Ví dụ:
     }
   }
 
-  throw lastErr || new Error('Không thể kết nối đến mô hình Gemini');
+  throw lastErr || new Error('Không thể kết nối đến máy chủ AI OnThiHub');
 }
 
 /**

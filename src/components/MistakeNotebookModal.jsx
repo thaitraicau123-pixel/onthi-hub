@@ -195,7 +195,7 @@ export default function MistakeNotebookModal({
               className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-700 to-[#f02c85] hover:brightness-110 text-white text-xs font-black shadow-sm flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95 disabled:opacity-50"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>{isAiLoading ? 'AI Đang Bắt Bệnh...' : '✨ Gemini Bắt Bệnh Lỗ Hổng'}</span>
+              <span>{isAiLoading ? 'AI Đang Bắt Bệnh...' : '✨ AI Bắt Bệnh Lỗ Hổng'}</span>
             </button>
 
             {unmastered.length > 0 && (
@@ -220,7 +220,7 @@ export default function MistakeNotebookModal({
                 <div className="flex items-center space-x-2">
                   <Bot className="w-5 h-5 text-pink-400" />
                   <h4 className="text-sm font-black text-pink-200 uppercase tracking-wider">
-                    Báo Cáo Bắt Bệnh Lỗ Hổng Kiến Thức & Phác Đồ (Gemini 3.8 Flash)
+                    Báo Cáo Bắt Bệnh Lỗ Hổng Kiến Thức & Phác Đồ (AI OnThiHub Pro)
                   </h4>
                 </div>
                 <div className="flex items-center space-x-1">

@@ -390,7 +390,7 @@ export default function CreateStudioView({
                 <Cpu className={`w-4 h-4 shrink-0 ${geminiKey ? 'text-emerald-600' : 'text-amber-600'}`} />
                 <span className="font-bold text-[11px]">
                   {geminiKey
-                    ? '🟢 Đã kết nối Google Gemini 1.5 Flash (AI Trực Tiếp)'
+                    ? '🟢 Đã kết nối Động Cơ AI OnThiHub Cloud (Trực Tiếp)'
                     : '🟡 Đang dùng Bộ Sinh Ngoại Tuyến (Offline Heuristics)'}
                 </span>
               </div>
@@ -672,7 +672,7 @@ export default function CreateStudioView({
                   <Key className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-black text-sm text-[#28071a]">Cấu Hình Google Gemini API Key</h4>
+                  <h4 className="font-black text-sm text-[#28071a]">Cấu Hình Khóa Động Cơ AI Cloud Key</h4>
                   <span className="text-[10px] text-blue-700 font-bold block">Miễn phí 100% • Không cần thẻ Visa</span>
                 </div>
               </div>
@@ -687,7 +687,7 @@ export default function CreateStudioView({
 
             <div>
               <label className="text-xs font-black text-[#28071a] block mb-1">
-                Dán Gemini API Key của bạn (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+                Dán Khóa API Engine của bạn (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
               </label>
               <input
                 type="password"
@@ -715,7 +715,7 @@ export default function CreateStudioView({
                   rel="noreferrer"
                   className="font-black text-blue-700 underline flex items-center space-x-0.5"
                 >
-                  <span>Google AI Studio</span>
+                  <span>Cổng Đăng Ký Khóa AI</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </div>
