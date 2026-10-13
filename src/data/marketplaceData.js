@@ -1,7 +1,7 @@
-import { getWalletBalance, deductWalletCoins, addWalletCoins } from '../utils/wallet';
-import { getUserTier, getTierLimits } from '../utils/userTier';
-import { savePurchasedCourse } from '../utils/storage';
-import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig';
+import { getWalletBalance, deductWalletCoins, addWalletCoins } from '../utils/wallet.js';
+import { getUserTier, getTierLimits } from '../utils/userTier.js';
+import { savePurchasedCourse } from '../utils/storage.js';
+import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig.js';
 
 const MARKETPLACE_KEY = 'onthi_marketplace_decks_v2'; // v2 for fresh high-quality decks
 const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v2';
@@ -573,16 +573,24 @@ function sanitizeDeckForFirestore(deck) {
   }
 }
 
+// Lightweight timeout helper
+function withTimeout(promise, ms = 2500) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms))
+  ]);
+}
+
 // Sync single deck to Firebase Firestore
 export async function syncDeckToFirestore(deck) {
   try {
     const db = getFirestoreDb();
     if (db && deck?.id) {
       const clean = sanitizeDeckForFirestore(deck);
-      await setDoc(doc(db, 'marketplace_decks', String(deck.id)), clean, { merge: true });
+      await withTimeout(setDoc(doc(db, 'marketplace_decks', String(deck.id)), clean, { merge: true }), 2500);
     }
   } catch (err) {
-    console.warn('Firestore deck sync note:', err.message);
+    // Firestore might be uninitialized in Firebase console, handled via Cloud Relay
   }
 }
 
@@ -591,10 +599,14 @@ export async function broadcastDeckToCloudRelay(deck) {
   if (typeof fetch === 'undefined') return;
   try {
     const clean = sanitizeDeckForFirestore(deck);
-    await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}`, {
+    await fetch('https://ntfy.sh', {
       method: 'POST',
-      body: JSON.stringify({ action: 'publish_deck', data: clean, timestamp: new Date().toISOString() }),
-      headers: { 'Title': 'Marketplace Deck', 'Tags': 'books,sparkles' }
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        topic: CLOUD_MARKETPLACE_TOPIC,
+        message: JSON.stringify({ action: 'publish_deck', data: clean, timestamp: new Date().toISOString() }),
+        title: `DECK_${clean.id}`
+      })
     });
   } catch (e) {}
 }
@@ -603,7 +615,7 @@ export async function broadcastDeckToCloudRelay(deck) {
 export async function fetchCloudRelayMarketplaceDecks() {
   if (typeof fetch === 'undefined') return [];
   try {
-    const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1&since=all`);
+    const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1`);
     if (!res.ok) return [];
     const text = await res.text();
     const lines = text.trim().split('\n');

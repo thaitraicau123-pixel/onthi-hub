@@ -14,66 +14,17 @@ import {
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
-
-const COMMUNITY_STORAGE_KEY = 'onthi_community_posts';
-
-const INITIAL_POSTS = [
-  {
-    id: 1,
-    author: 'Nguyễn Văn Hùng',
-    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    role: 'Đỗ Thủ Khoa Khối Sở 2025',
-    category: 'cong-chuc',
-    categoryLabel: '🏛️ Công Chức',
-    isPinned: true,
-    time: '2 giờ trước',
-    content: 'Kinh nghiệm thi đỗ Vòng 1 Công Chức 54/60 câu: Tuyệt đối không học thuộc lòng từng từ trong Luật! Hãy dùng bộ thẻ Anki để nhớ các "con số then chốt": thời hạn kỷ luật 2 năm / 5 năm, thời gian tập sự 12 tháng, cơ cấu đại biểu Quốc hội. Nhìn đáp án là khoanh được ngay trong 3 giây. Ai cần file tóm tắt cứ comment mình gửi nhé!',
-    likes: 128,
-    comments: [
-      { author: 'Trần Thảo', text: 'Cảm ơn anh nhiều ạ, em đang cày Luật Cán bộ công chức mà hay bị lú mấy con số thời hạn quá!' },
-      { author: 'Lê Minh', text: 'Cho em xin file tóm tắt qua email với ạ: leminh99@gmail.com' }
-    ]
-  },
-  {
-    id: 2,
-    author: 'Trần Minh Tuấn',
-    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
-    role: 'Senior Dev tại FPT Software',
-    category: 'it',
-    categoryLabel: '💻 IT & Tech',
-    isPinned: false,
-    time: '5 giờ trước',
-    content: 'Vừa hoàn thành vòng phỏng vấn Technical System Design chiều nay: Người ta hỏi rất sâu về Cache Stampede (Thundering herd) và Distributed Lock dùng Redis Redlock. May mà hôm trước vừa ôn trọn bộ thẻ Backend Master trên ÔnThiHub, trả lời mạch lạc nên được sếp khen ngay tại chỗ!',
-    likes: 94,
-    comments: [
-      { author: 'Hoàng Long', text: 'Phần Redis Redlock xử lý clock drift thế nào anh nhỉ?' }
-    ]
-  },
-  {
-    id: 3,
-    author: 'Lê Thuỳ Linh',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-    role: 'IELTS 8.0 Overall',
-    category: 'ngoai-ngu',
-    categoryLabel: '🌍 Ngoại Ngữ',
-    isPinned: false,
-    time: 'Hôm qua',
-    content: 'Mẹo học từ vựng IELTS C1/C2 không bao giờ quên: Đừng học từ đơn lẻ! Luôn học cả cụm Collocation (ví dụ: "exacerbate the environmental crisis" thay vì chỉ học mỗi "exacerbate"). Bộ thẻ 1200 từ vựng trên web có sẵn âm thanh phát âm bản xứ, mình vừa chạy bộ vừa nghe ngấm cực kỳ tiện.',
-    likes: 76,
-    comments: []
-  }
-];
+import {
+  getCommunityPosts,
+  addCommunityPost,
+  toggleLikeCommunityPost,
+  addCommentToCommunityPost,
+  subscribeToCommunityPosts
+} from '../data/communityData';
+import confetti from 'canvas-confetti';
 
 export default function CommunityView({ user }) {
-  const [posts, setPosts] = useState(() => {
-    try {
-      const raw = localStorage.getItem(COMMUNITY_STORAGE_KEY);
-      return raw ? JSON.parse(raw) : INITIAL_POSTS;
-    } catch (e) {
-      return INITIAL_POSTS;
-    }
-  });
-
+  const [posts, setPosts] = useState(() => getCommunityPosts());
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [newPostText, setNewPostText] = useState('');
@@ -82,13 +33,15 @@ export default function CommunityView({ user }) {
   const [commentInputs, setCommentInputs] = useState({});
   const [copiedPostId, setCopiedPostId] = useState(null);
 
-  // Sync to localStorage
-  const savePosts = (updatedPosts) => {
-    setPosts(updatedPosts);
-    try {
-      localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updatedPosts));
-    } catch (e) {}
-  };
+  // Real-time synchronization (Firebase Firestore + Cloud Relay)
+  useEffect(() => {
+    const unsubscribe = subscribeToCommunityPosts((updatedPosts) => {
+      setPosts(updatedPosts);
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, []);
 
   const handleSharePost = (post) => {
     playSound('success');
@@ -103,13 +56,8 @@ export default function CommunityView({ user }) {
     const updatedLiked = isLiked ? likedPosts.filter(id => id !== postId) : [...likedPosts, postId];
     setLikedPosts(updatedLiked);
 
-    const updated = posts.map(p => {
-      if (p.id === postId) {
-        return { ...p, likes: isLiked ? p.likes - 1 : p.likes + 1 };
-      }
-      return p;
-    });
-    savePosts(updated);
+    const updated = toggleLikeCommunityPost(postId, !isLiked);
+    setPosts(updated);
   };
 
   const handleAddPost = (e) => {
@@ -124,22 +72,24 @@ export default function CommunityView({ user }) {
     };
 
     const newPost = {
-      id: Date.now(),
+      id: 'post_' + Date.now(),
       author: user?.displayName || 'Người Học Ẩn Danh',
       avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-      role: 'Thành Viên Cộng Đồng',
+      role: user?.tier ? `Học Viên ${user.tier.toUpperCase()}` : 'Thành Viên Cộng Đồng',
       category: newPostCategory,
       categoryLabel: catMap[newPostCategory] || 'Hỏi Đáp',
       isPinned: false,
       time: 'Vừa xong',
+      createdAt: new Date().toISOString(),
       content: newPostText.trim(),
       likes: 1,
       comments: []
     };
 
-    savePosts([newPost, ...posts]);
+    addCommunityPost(newPost);
     setNewPostText('');
     playSound('success');
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.4 } });
     recordStudyAction(25);
   };
 
@@ -147,17 +97,14 @@ export default function CommunityView({ user }) {
     const text = (commentInputs[postId] || '').trim();
     if (!text) return;
 
-    const updated = posts.map(p => {
-      if (p.id === postId) {
-        return {
-          ...p,
-          comments: [...p.comments, { author: user?.displayName || 'Bạn', text }]
-        };
-      }
-      return p;
-    });
+    const newComment = {
+      author: user?.displayName || 'Bạn Học',
+      text,
+      createdAt: new Date().toISOString()
+    };
 
-    savePosts(updated);
+    const updated = addCommentToCommunityPost(postId, newComment);
+    setPosts(updated);
     setCommentInputs({ ...commentInputs, [postId]: '' });
     playSound('flip');
     recordStudyAction(15);
