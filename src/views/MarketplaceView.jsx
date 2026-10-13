@@ -17,9 +17,16 @@ import {
   Gift,
   Repeat,
   Flame,
-  BadgePercent
+  BadgePercent,
+  RefreshCw
 } from 'lucide-react';
-import { getMarketplaceDecks, purchaseMarketplaceDeck } from '../data/marketplaceData';
+import {
+  getMarketplaceDecks,
+  purchaseMarketplaceDeck,
+  subscribeToMarketplaceDecks,
+  fetchCloudRelayMarketplaceDecks,
+  mergeAndSaveMarketplaceDecks
+} from '../data/marketplaceData';
 import { isCoursePurchased } from '../utils/storage';
 import { playSound } from '../utils/storage';
 import { getLikedDeckIds, toggleLikeDeck } from '../utils/gamification';
@@ -40,10 +47,42 @@ export default function MarketplaceView({
   const [sortBy, setSortBy] = useState('newest'); // default to 'newest' so newly passed/created decks appear ON TOP!
   const [likedIds, setLikedIds] = useState(() => getLikedDeckIds());
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Real-time synchronization across all devices (Firebase Firestore + Cloud Relay v3)
   useEffect(() => {
-    const list = Array.isArray(marketplaceDecks) && marketplaceDecks.length > 0 ? marketplaceDecks : getMarketplaceDecks();
-    setDecks(list.filter(d => d.isApproved !== false));
+    const unsubscribe = subscribeToMarketplaceDecks((updatedDecks) => {
+      setDecks(updatedDecks.filter(d => d.isApproved !== false));
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, []);
+
+  // Update when prop changes
+  useEffect(() => {
+    if (Array.isArray(marketplaceDecks) && marketplaceDecks.length > 0) {
+      setDecks(marketplaceDecks.filter(d => d.isApproved !== false));
+    }
   }, [marketplaceDecks]);
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    playSound('flip');
+    try {
+      const cloudDecks = await fetchCloudRelayMarketplaceDecks();
+      if (cloudDecks.length > 0) {
+        const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
+        setDecks(merged.filter(d => d.isApproved !== false));
+        playSound('success');
+      } else {
+        setDecks(getMarketplaceDecks().filter(d => d.isApproved !== false));
+      }
+    } catch (e) {
+    } finally {
+      setIsSyncing(false);
+    }
+  };
   
   // Daily Flash Deals & Countdown
   const [dailyData, setDailyData] = useState(() => getDailyDeals());
@@ -442,6 +481,17 @@ export default function MarketplaceView({
               <option value="price_asc">📈 Giá Xu tăng dần</option>
               <option value="price_desc">📉 Giá Xu giảm dần</option>
             </select>
+
+            <button
+              onClick={handleManualSync}
+              disabled={isSyncing}
+              title="Đồng bộ danh sách bộ thẻ từ đám mây thời gian thực"
+              className={`p-2 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] hover:bg-[#f6ebd5] transition-all flex items-center justify-center shrink-0 ${
+                isSyncing ? 'opacity-60 cursor-not-allowed' : ''
+              }`}
+            >
+              <RefreshCw className={`w-4 h-4 text-[#f02c85] ${isSyncing ? 'animate-spin' : ''}`} />
+            </button>
           </div>
 
         </div>

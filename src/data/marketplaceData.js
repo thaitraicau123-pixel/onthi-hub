@@ -4,7 +4,7 @@ import { savePurchasedCourse } from '../utils/storage.js';
 import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig.js';
 
 const MARKETPLACE_KEY = 'onthi_marketplace_decks_v2'; // v2 for fresh high-quality decks
-const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v2';
+const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v4';
 
 export const INITIAL_MARKETPLACE_DECKS = [
   {
@@ -594,21 +594,104 @@ export async function syncDeckToFirestore(deck) {
   }
 }
 
+// Universal gzip compression (RFC 1952) for both browser and Node
+async function compressStringGzip(str) {
+  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
+    try {
+      const modName = 'zlib';
+      const zlib = await import(/* @vite-ignore */ modName);
+      const buf = zlib.gzipSync(Buffer.from(str, 'utf-8'));
+      return buf.toString('base64');
+    } catch (e) {}
+  }
+  try {
+    if (typeof CompressionStream !== 'undefined' && typeof Blob !== 'undefined' && typeof Response !== 'undefined') {
+      const stream = new Blob([new TextEncoder().encode(str)]).stream().pipeThrough(new CompressionStream('gzip'));
+      const res = new Response(stream);
+      const buf = await res.arrayBuffer();
+      let binary = '';
+      const bytes = new Uint8Array(buf);
+      for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary);
+    }
+  } catch (e) {}
+  return null;
+}
+
+// Universal gzip decompression for both browser and Node
+async function decompressStringGzip(base64) {
+  if (!base64 || typeof base64 !== 'string' || !base64.startsWith('H4sI')) {
+    return null;
+  }
+  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
+    try {
+      const modName = 'zlib';
+      const zlib = await import(/* @vite-ignore */ modName);
+      const buf = Buffer.from(base64, 'base64');
+      return zlib.gunzipSync(buf).toString('utf-8');
+    } catch (e) {}
+  }
+  try {
+    if (typeof DecompressionStream !== 'undefined' && typeof Blob !== 'undefined' && typeof Response !== 'undefined') {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      const res = new Response(stream);
+      return await res.text();
+    }
+  } catch (e) {}
+  return null;
+}
+
 // Broadcast deck to Cloud Relay (cross-browser / cross-device broadcast)
 export async function broadcastDeckToCloudRelay(deck) {
   if (typeof fetch === 'undefined') return;
   try {
     const clean = sanitizeDeckForFirestore(deck);
+    const cards = clean.previewCards || clean.cards || clean.sampleCards || [];
+    const deckPayload = {
+      ...clean,
+      cards: cards,
+      previewCards: cards,
+      sampleCards: cards.slice(0, 5)
+    };
+    const jsonStr = JSON.stringify(deckPayload);
+    const compressed = await compressStringGzip(jsonStr);
+
+    let messageBody = '';
+    if (compressed && compressed.length < 3500) {
+      messageBody = JSON.stringify({ action: 'publish_deck', c: 1, d: compressed, timestamp: new Date().toISOString() });
+    } else {
+      // Fallback: If compressed is unavailable or too large, send essential metadata + sample cards directly
+      const essentialCards = cards.slice(0, 8);
+      const compactPayload = {
+        ...clean,
+        cardCount: cards.length || clean.cardCount || 10,
+        cards: essentialCards,
+        previewCards: essentialCards,
+        sampleCards: essentialCards.slice(0, 3)
+      };
+      messageBody = JSON.stringify({ action: 'publish_deck', data: compactPayload, timestamp: new Date().toISOString() });
+    }
+
     await fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: CLOUD_MARKETPLACE_TOPIC,
-        message: JSON.stringify({ action: 'publish_deck', data: clean, timestamp: new Date().toISOString() }),
-        title: `DECK_${clean.id}`
+        title: `DECK_${clean.id}`,
+        message: messageBody,
+        priority: 3
       })
     });
-  } catch (e) {}
+  } catch (e) {
+    console.warn('Cloud relay broadcast error:', e);
+  }
 }
 
 // Fetch cross-device decks from Cloud Relay stream
@@ -620,16 +703,29 @@ export async function fetchCloudRelayMarketplaceDecks() {
     const text = await res.text();
     const lines = text.trim().split('\n');
     const incoming = [];
+
     for (const line of lines) {
       if (!line.trim()) continue;
       try {
         const json = JSON.parse(line);
         if (json.event === 'message' && json.message) {
-          let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
-          if (body?.data?.id) {
-            incoming.push(body.data);
-          } else if (body?.id && body?.title) {
-            incoming.push(body);
+          let body = null;
+          try {
+            body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
+          } catch (e) {}
+
+          if (body) {
+            if (body.c === 1 && body.d) {
+              const decomp = await decompressStringGzip(body.d);
+              if (decomp) {
+                const parsedDeck = JSON.parse(decomp);
+                if (parsedDeck?.id) incoming.push(parsedDeck);
+              }
+            } else if (body.data?.id) {
+              incoming.push(body.data);
+            } else if (body.id && body.title) {
+              incoming.push(body);
+            }
           }
         }
       } catch (e) {}
@@ -695,12 +791,10 @@ export function subscribeToMarketplaceDecks(callback) {
           }
         },
         (err) => {
-          console.warn('Firestore marketplace onSnapshot notice:', err.message);
+          // Graceful fallback to Cloud Relay
         }
       );
-    } catch (e) {
-      console.warn('Firestore marketplace subscription error:', e);
-    }
+    } catch (e) {}
   }
 
   // 2. Initial Cloud Relay fetch
@@ -711,14 +805,14 @@ export function subscribeToMarketplaceDecks(callback) {
     }
   });
 
-  // 3. Periodic cloud poller (every 10s)
+  // 3. Periodic cloud poller (every 6s for fast real-time responsiveness)
   const intervalId = setInterval(async () => {
     const cloudDecks = await fetchCloudRelayMarketplaceDecks();
     if (cloudDecks.length > 0) {
       const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
       callback(merged);
     }
-  }, 10000);
+  }, 6000);
 
   return () => {
     if (unsubscribeFirestore) unsubscribeFirestore();
