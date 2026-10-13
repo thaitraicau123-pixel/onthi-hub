@@ -353,7 +353,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
                 {isTickSoundEnabled ? (
                   <span className="text-emerald-700 flex items-center space-x-0.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>{ambientSound === 'tick' ? 'Tích tắc ⏱️' : ambientSound === 'rain' ? 'Mưa 🌧️' : ambientSound === 'waves' ? 'Sóng 🌊' : 'Cafe ☕'}</span>
+                    <span>{ambientSound === 'tick' ? 'Tích tắc ⏱️' : ambientSound === 'rain' ? 'Mưa 🌧️' : ambientSound === 'waves' ? 'Sóng 🌊' : ambientSound === 'cafe' ? 'Cafe ☕' : ambientSound === 'alpha' ? 'Alpha 🧠' : 'Âm thanh'}</span>
                   </span>
                 ) : (
                   <span className="text-slate-400">🔇 Tắt tiếng</span>
@@ -437,13 +437,14 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
             )}
 
             {/* Sound Preset Buttons */}
-            <div className="grid grid-cols-5 gap-1 pt-0.5">
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-0.5">
               {[
                 { id: 'tick', label: '⏱️ Tích tắc', title: 'Tiếng đồng hồ quả lắc đếm từng giây' },
-                { id: 'rain', label: '🌧️ Mưa', title: 'Tiếng mưa rơi trắng dịu êm' },
-                { id: 'waves', label: '🌊 Sóng', title: 'Tiếng sóng biển thư thái' },
-                { id: 'cafe', label: '☕ Cafe', title: 'Tiếng quán cafe Lofi' },
-                { id: 'none', label: '🔇 Tắt', title: 'Tắt âm thanh hoàn toàn' }
+                { id: 'rain', label: '🌧️ Mưa rào', title: 'Tiếng mưa rơi trắng dịu êm' },
+                { id: 'waves', label: '🌊 Sóng biển', title: 'Tiếng sóng biển thư thái' },
+                { id: 'cafe', label: '☕ Quán Cafe', title: 'Tiếng quán cafe Lofi & ly tách' },
+                { id: 'alpha', label: '🧠 Sóng Alpha', title: 'Tần số 432Hz & 10Hz tăng cường trí nhớ' },
+                { id: 'none', label: '🔇 Tắt âm', title: 'Tắt âm thanh hoàn toàn' }
               ].map((s) => (
                 <button
                   key={s.id}

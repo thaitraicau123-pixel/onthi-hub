@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   FolderHeart,
   Layers,
@@ -9,9 +9,14 @@ import {
   ArrowRight,
   BookOpen,
   Gamepad2,
-  Repeat
+  Repeat,
+  Brain,
+  Flame,
+  CheckCircle,
+  Clock
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide } from '../utils/storage';
+import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
 
 export default function LibraryView({
   purchasedCourses,
@@ -26,6 +31,8 @@ export default function LibraryView({
   const unlockedList = isComboUser
     ? allCourses
     : allCourses.filter((c) => purchasedCourses.includes(c.id));
+
+  const srsStats = getAllDecksDueStats(unlockedList);
 
   return (
     <div className="space-y-6 animate-fade-in pb-16">
@@ -51,6 +58,59 @@ export default function LibraryView({
           </div>
         )}
       </div>
+
+      {/* SPACED REPETITION (SM-2) HERO BANNER */}
+      {unlockedList.length > 0 && (
+        <div className="bg-gradient-to-r from-[#28071a] via-[#430c2c] to-[#1d0313] p-5 sm:p-6 rounded-3xl border-2 border-[#f02c85]/40 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="space-y-2 text-center md:text-left">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-pink-500/20 border border-pink-400/40 text-[11px] font-black text-pink-300">
+              <Brain className="w-3.5 h-3.5 text-pink-400" />
+              <span>SUPERMEMO SM-2 • CHỐNG QUÊN LÃNG EBBINGHAUS</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-black text-white">
+              {srsStats.totalDue > 0 ? (
+                <>🎯 Hôm Nay Có <span className="text-[#f02c85] text-2xl font-black">{srsStats.totalDue}</span> Thẻ Cần Ôn Tập!</>
+              ) : (
+                <>🎉 Tuyệt Vời! Bạn Đã Ôn Hết Tất Cả Thẻ Đến Hạn Hôm Nay!</>
+              )}
+            </h3>
+            <p className="text-xs text-pink-200/80 font-medium max-w-xl">
+              Hệ thống tự động tính toán chu kỳ lặp lại ngắt quãng (Spaced Repetition) giúp biến trí nhớ ngắn hạn thành trí nhớ vĩnh viễn trước ngày thi.
+            </p>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-xs">
+              <span className="px-2.5 py-1 rounded-lg bg-pink-900/50 border border-pink-700/50 text-pink-200 font-bold">
+                ⏰ Cần ôn: <strong className="text-white">{srsStats.totalDue}</strong>
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-emerald-950/50 border border-emerald-700/50 text-emerald-300 font-bold">
+                🧠 Đã nhớ sâu: <strong className="text-white">{srsStats.totalLearned}</strong>
+              </span>
+              <span className="px-2.5 py-1 rounded-lg bg-amber-950/50 border border-amber-700/50 text-amber-300 font-bold">
+                ✨ Thẻ mới: <strong className="text-white">{srsStats.totalNew}</strong>
+              </span>
+            </div>
+          </div>
+
+          <div className="shrink-0 w-full md:w-auto">
+            {srsStats.totalDue > 0 ? (
+              <button
+                onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
+                className="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#f02c85] to-pink-500 hover:brightness-110 text-white font-black text-xs sm:text-sm shadow-lg shadow-pink-900/50 flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+              >
+                <Flame className="w-5 h-5 text-amber-300 animate-pulse" />
+                <span>Ôn Tập Toàn Bộ {srsStats.totalDue} Thẻ Đến Hạn</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
+                className="w-full md:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-pink-200 font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
+              >
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <span>Ôn Tập Thêm Luyện Phản Xạ</span>
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* C2C PASS TIPS BANNER */}
       <div className="bg-gradient-to-r from-purple-950/70 to-pink-950/70 border border-[#f02c85]/40 rounded-2xl p-4 text-xs flex items-center justify-between gap-3 text-pink-100 shadow-md">
@@ -96,18 +156,31 @@ export default function LibraryView({
       ) : (
         /* Unlocked Cards Grid */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {unlockedList.map((course) => (
-            <div
-              key={course.id}
-              className="p-5 rounded-3xl border border-[#eadfcb] bg-[#fcf7ec] hover:border-[#f02c85] shadow-md hover:shadow-xl transition-all flex flex-col justify-between text-[#28071a]"
-            >
-              <div>
-                <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  BẢN QUYỀN ĐÃ MỞ KHÓA
-                </span>
-                <h4 className="text-base font-black text-[#28071a] mt-2 line-clamp-2 leading-snug">
-                  {course.title}
-                </h4>
+          {unlockedList.map((course) => {
+            const deckSrs = getDeckDueStats(course);
+            return (
+              <div
+                key={course.id}
+                className="p-5 rounded-3xl border border-[#eadfcb] bg-[#fcf7ec] hover:border-[#f02c85] shadow-md hover:shadow-xl transition-all flex flex-col justify-between text-[#28071a]"
+              >
+                <div>
+                  <div className="flex items-center justify-between flex-wrap gap-1">
+                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                      BẢN QUYỀN ĐÃ MỞ KHÓA
+                    </span>
+                    {deckSrs.due > 0 ? (
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200">
+                        ⏰ {deckSrs.due} thẻ cần ôn
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                        ✓ Đã ôn đủ
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="text-base font-black text-[#28071a] mt-2 line-clamp-2 leading-snug">
+                    {course.title}
+                  </h4>
                 <p className="text-xs text-[#7a5a6b] mt-1 line-clamp-2 font-medium">
                   {course.subtitle || course.description}
                 </p>
@@ -169,8 +242,9 @@ export default function LibraryView({
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       )}
 
     </div>

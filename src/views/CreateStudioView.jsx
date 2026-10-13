@@ -15,7 +15,10 @@ import {
   Key,
   ExternalLink,
   Cpu,
-  X
+  X,
+  FileSpreadsheet,
+  ClipboardPaste,
+  ArrowDownToLine
 } from 'lucide-react';
 import { generateFlashcardsWithAI } from '../utils/aiGenerator';
 import { getUserQuota, consumeUserQuota, performDailyCheckIn } from '../utils/userTier';
@@ -60,6 +63,71 @@ export default function CreateStudioView({
   const [inputKey, setInputKey] = useState(() => getGeminiApiKey());
   const [testingKey, setTestingKey] = useState(false);
   const [keyTestStatus, setKeyTestStatus] = useState(null);
+
+  // Bulk Flashcards Importer state
+  const [showImporterModal, setShowImporterModal] = useState(false);
+  const [importRawText, setImportRawText] = useState('');
+  const [importSeparator, setImportSeparator] = useState('auto'); // 'auto' | 'tab' | 'dash' | 'colon'
+  const [importAppendMode, setImportAppendMode] = useState(true);
+
+  // Parse raw text into flashcard objects
+  const parseImportedCards = (text, sepMode) => {
+    if (!text || !text.trim()) return [];
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const parsed = [];
+
+    for (const line of lines) {
+      let front = '';
+      let back = '';
+      let tag = '';
+
+      if (sepMode === 'tab' || (sepMode === 'auto' && line.includes('\t'))) {
+        const parts = line.split('\t');
+        front = parts[0]?.trim() || '';
+        back = parts[1]?.trim() || '';
+        tag = parts[2]?.trim() || '';
+      } else if (sepMode === 'dash' || (sepMode === 'auto' && (line.includes(' - ') || line.includes(' — ') || line.includes(' – ')))) {
+        const delimiter = line.includes(' - ') ? ' - ' : line.includes(' — ') ? ' — ' : ' – ';
+        const parts = line.split(delimiter);
+        front = parts[0]?.trim() || '';
+        back = parts.slice(1).join(' - ').trim();
+      } else if (sepMode === 'colon' || (sepMode === 'auto' && line.includes(':'))) {
+        const firstColon = line.indexOf(':');
+        front = line.substring(0, firstColon).trim();
+        back = line.substring(firstColon + 1).trim();
+      } else if (line.includes(';')) {
+        const parts = line.split(';');
+        front = parts[0]?.trim() || '';
+        back = parts.slice(1).join(';').trim();
+      }
+
+      if (front && back) {
+        parsed.push({ front, back, tag });
+      }
+    }
+
+    return parsed;
+  };
+
+  const handleApplyImport = () => {
+    const parsed = parseImportedCards(importRawText, importSeparator);
+    if (parsed.length === 0) {
+      alert('Không nhận diện được thẻ nào từ văn bản đã dán. Vui lòng kiểm tra lại định dạng hoặc chọn dấu phân cách phù hợp!');
+      return;
+    }
+
+    if (importAppendMode) {
+      const existing = cards.filter(c => c.front.trim() && c.back.trim());
+      setCards([...existing, ...parsed]);
+    } else {
+      setCards(parsed);
+    }
+
+    playSound('success');
+    setShowImporterModal(false);
+    setImportRawText('');
+    alert(`🎉 Đã nhập thành công ${parsed.length} thẻ flashcard vào danh sách!`);
+  };
 
   const refreshQuota = () => {
     setQuota(getUserQuota());
@@ -409,18 +477,28 @@ export default function CreateStudioView({
 
         {/* Cards Editor List */}
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span className="text-xs sm:text-sm font-black text-[#28071a]">
               Danh Sách Các Thẻ ({cards.length} thẻ):
             </span>
-            <button
-              type="button"
-              onClick={handleAddCard}
-              className="px-3.5 py-1.5 text-xs font-black text-[#f02c85] bg-pink-100/60 hover:bg-pink-100 rounded-xl flex items-center space-x-1"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Thêm thẻ</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowImporterModal(true)}
+                className="px-3.5 py-1.5 text-xs font-black text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl flex items-center space-x-1.5 border border-indigo-200 transition-colors shadow-2xs"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600" />
+                <span>📥 Dán Nhanh Excel / Quizlet</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleAddCard}
+                className="px-3.5 py-1.5 text-xs font-black text-[#f02c85] bg-pink-100/60 hover:bg-pink-100 rounded-xl flex items-center space-x-1 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Thêm thẻ</span>
+              </button>
+            </div>
           </div>
 
           {cards.map((card, idx) => (
@@ -668,6 +746,162 @@ export default function CreateStudioView({
                 Lưu & Dùng Ngay
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Nhập Nhanh Từ Excel / Quizlet / Văn Bản */}
+      {showImporterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-xl bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] space-y-4 max-h-[90vh] flex flex-col">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3 shrink-0">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                  <FileSpreadsheet className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-black text-sm text-[#28071a]">
+                    Nhập Thẻ Nhanh Từ Excel / Quizlet / Văn Bản
+                  </h4>
+                  <span className="text-[10px] text-indigo-700 font-bold block">
+                    Copy và dán trực tiếp từ bảng tính hoặc đề cương
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowImporterModal(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Separator Controls & Sample Insert */}
+            <div className="space-y-3 shrink-0 text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center space-x-1.5">
+                  <span className="font-bold text-[#7a5a6b]">Dấu phân cách:</span>
+                  <select
+                    value={importSeparator}
+                    onChange={(e) => setImportSeparator(e.target.value)}
+                    className="px-2.5 py-1 text-xs font-bold border border-[#eadfcb] rounded-lg bg-white text-[#28071a] outline-none"
+                  >
+                    <option value="auto">Tự động phát hiện (Auto)</option>
+                    <option value="tab">Dấu Tab (Excel / Quizlet / Google Sheets)</option>
+                    <option value="dash">Dấu gạch ngang ( - )</option>
+                    <option value="colon">Dấu hai chấm ( : )</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImportRawText(`comprehend\thiểu rõ, lĩnh hội sâu sắc\tTừ vựng C1
+resilience\tkhả năng phục hồi, kiên cường\tTừ vựng C1
+collaborate\thợp tác, cùng làm việc\tGiao tiếp
+meticulous\ttỉ mỉ, cẩn trọng từng chi tiết\tIELTS 7.0`);
+                      setImportSeparator('tab');
+                    }}
+                    className="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold text-[10px] border border-indigo-200 transition-colors"
+                  >
+                    Mẫu Tab (Excel)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImportRawText(`Thời hiệu xử lý kỷ luật khiển trách là bao lâu? - 02 năm kể từ thời điểm có hành vi vi phạm.
+Cơ quan có thẩm quyền ban hành Nghị định? - Chính phủ ban hành Nghị định theo Luật Ban hành VBQPPL.
+Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh bạch, khách quan, cạnh tranh lành mạnh.`);
+                      setImportSeparator('dash');
+                    }}
+                    className="px-2 py-1 rounded-lg bg-pink-50 hover:bg-pink-100 text-[#f02c85] font-bold text-[10px] border border-pink-200 transition-colors"
+                  >
+                    Mẫu Q&A ( - )
+                  </button>
+                </div>
+              </div>
+
+              {/* Append vs Replace Checkbox */}
+              <div className="flex items-center space-x-2 pt-1">
+                <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#28071a]">
+                  <input
+                    type="checkbox"
+                    checked={importAppendMode}
+                    onChange={(e) => setImportAppendMode(e.target.checked)}
+                    className="rounded text-[#f02c85] focus:ring-[#f02c85]"
+                  />
+                  <span>Thêm nối tiếp vào danh sách thẻ hiện có (Không xóa các thẻ cũ)</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Input Textarea */}
+            <div className="flex-1 flex flex-col min-h-[160px]">
+              <textarea
+                rows="8"
+                value={importRawText}
+                onChange={(e) => setImportRawText(e.target.value)}
+                placeholder={`Dán nội dung vào đây. Mỗi dòng là 1 thẻ. Ví dụ:\nMặt trước\tMặt sau\tTag\nHoặc:\nCâu hỏi khái niệm - Định nghĩa trả lời`}
+                className="w-full flex-1 p-3.5 text-xs font-mono border border-[#eadfcb] rounded-2xl outline-none focus:border-[#f02c85] bg-white text-[#28071a] resize-none"
+              ></textarea>
+            </div>
+
+            {/* Live Parsing Preview */}
+            {(() => {
+              const previewParsed = parseImportedCards(importRawText, importSeparator);
+              return (
+                <div className="shrink-0 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-bold">
+                    <span className={previewParsed.length > 0 ? 'text-emerald-700' : 'text-slate-500'}>
+                      {previewParsed.length > 0
+                        ? `✅ Đã nhận diện: ${previewParsed.length} thẻ hợp lệ`
+                        : 'ℹ️ Chưa nhận diện được thẻ nào (hãy dán văn bản ở trên)'}
+                    </span>
+                    {previewParsed.length > 0 && (
+                      <span className="text-[11px] text-[#7a5a6b]">
+                        Xem trước mẫu thẻ đầu tiên:
+                      </span>
+                    )}
+                  </div>
+
+                  {previewParsed.length > 0 && (
+                    <div className="p-2.5 bg-white rounded-xl border border-[#eadfcb] text-[11px] space-y-1">
+                      <p className="font-bold text-[#28071a] truncate">
+                        🏷️ Mặt trước: {previewParsed[0].front}
+                      </p>
+                      <p className="text-[#7a5a6b] truncate">
+                        💡 Mặt sau: {previewParsed[0].back}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#eadfcb]">
+                    <button
+                      type="button"
+                      onClick={() => setShowImporterModal(false)}
+                      className="px-4 py-2 rounded-xl border border-[#eadfcb] bg-white hover:bg-[#faebd0] text-[#28071a] text-xs font-bold"
+                    >
+                      Hủy bỏ
+                    </button>
+                    <button
+                      type="button"
+                      disabled={previewParsed.length === 0}
+                      onClick={handleApplyImport}
+                      className="px-5 py-2 rounded-xl btn-wayground-sunset text-white text-xs font-black shadow-md disabled:opacity-50 flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                    >
+                      <ArrowDownToLine className="w-4 h-4" />
+                      <span>Nạp {previewParsed.length} Thẻ Vào Bộ Đề</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })()}
+
           </div>
         </div>
       )}

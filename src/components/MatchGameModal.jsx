@@ -215,7 +215,7 @@ export default function MatchGameModal({ course, onClose }) {
 
         {/* Footer Hint */}
         <div className="px-6 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
-          <span>Tiến độ ghép: <strong>{matchedIds.length} / 6 cặp</strong></span>
+          <span>Tiến độ ghép: <strong>{matchedIds.length} / {Math.min(course.previewCards?.length || 6, 6)} cặp</strong></span>
           <button
             onClick={initGame}
             className="text-xs font-bold text-indigo-600 hover:underline flex items-center space-x-1"

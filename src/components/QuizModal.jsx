@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { X, Clock, CheckCircle2, AlertCircle, HelpCircle, Trophy, RotateCcw, ArrowRight } from 'lucide-react';
+import {
+  X,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  HelpCircle,
+  Trophy,
+  RotateCcw,
+  ArrowRight,
+  Sparkles,
+  Bot,
+  Copy,
+  Check,
+  Volume2
+} from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
 import { playClockTick, playCountdownWarningBeep } from '../utils/pomodoroAudio';
+import { explainQuizQuestionWithAi } from '../utils/aiTutor';
 
 export default function QuizModal({
   course,
@@ -15,6 +30,14 @@ export default function QuizModal({
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+
+  // AI Tutor State
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
+  const [aiExplanations, setAiExplanations] = useState({});
+  const [aiError, setAiError] = useState('');
+  const [copiedAiText, setCopiedAiText] = useState(false);
+  const [activeAiQuestionIdx, setActiveAiQuestionIdx] = useState(0);
 
   // Countdown timer with clock ticking sound
   useEffect(() => {
@@ -85,6 +108,59 @@ export default function QuizModal({
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleAskAiTutor = async (targetIdx = currentIndex) => {
+    setActiveAiQuestionIdx(targetIdx);
+    setAiDrawerOpen(true);
+    setAiError('');
+
+    if (aiExplanations[targetIdx]) {
+      return;
+    }
+
+    const q = questions[targetIdx];
+    if (!q) return;
+
+    setIsAiLoading(true);
+    try {
+      const res = await explainQuizQuestionWithAi({
+        question: q.question,
+        options: q.options,
+        correct: q.correct,
+        userAnswer: selectedAnswers[targetIdx],
+        explanation: q.explanation,
+        title: course.title
+      });
+
+      if (res.success) {
+        setAiExplanations((prev) => ({ ...prev, [targetIdx]: res.content }));
+        playSound('success');
+      } else {
+        setAiError(res.message);
+      }
+    } catch (e) {
+      setAiError(e.message || 'Lỗi kết nối Trợ lý AI');
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleCopyAiText = () => {
+    const text = aiExplanations[activeAiQuestionIdx] || '';
+    navigator.clipboard.writeText(text);
+    playSound('success');
+    setCopiedAiText(true);
+    setTimeout(() => setCopiedAiText(false), 2500);
+  };
+
+  const handleSpeak = (text) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'vi-VN';
+    utterance.rate = 0.95;
+    window.speechSynthesis.speak(utterance);
   };
 
   return (
@@ -190,6 +266,13 @@ export default function QuizModal({
                           <p className="text-[11px] text-slate-500 bg-white p-2 rounded mt-1 border border-slate-100">
                             💡 {q.explanation}
                           </p>
+                          <button
+                            onClick={() => handleAskAiTutor(idx)}
+                            className="mt-2 text-[11px] font-bold text-[#f02c85] hover:text-[#dc1f74] bg-pink-50 hover:bg-pink-100 border border-pink-200 px-2.5 py-1 rounded-lg inline-flex items-center space-x-1.5 transition-colors shadow-2xs"
+                          >
+                            <Sparkles className="w-3 h-3 text-amber-500" />
+                            <span>Bóc Mẽ Bẫy & Mẹo Khoanh 10s Bằng AI</span>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -252,16 +335,26 @@ export default function QuizModal({
                 })}
               </div>
 
-              {/* If answered, show instant hint/explanation */}
+              {/* If answered, show instant hint/explanation and AI Tutor trigger */}
               {isAnswered && (
-                <div className="mt-5 p-3.5 bg-blue-50/60 rounded-xl border border-blue-100 text-xs text-blue-900">
-                  <div className="flex items-center space-x-1.5 font-bold mb-1">
-                    <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Gợi ý & Căn cứ giải thích:</span>
+                <div className="mt-5 space-y-3">
+                  <div className="p-3.5 bg-blue-50/70 rounded-2xl border border-blue-200/80 text-xs text-blue-900">
+                    <div className="flex items-center space-x-1.5 font-bold mb-1">
+                      <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
+                      <span>Gợi ý & Căn cứ giải thích:</span>
+                    </div>
+                    <p className="leading-relaxed text-blue-800">
+                      {currentQ.explanation}
+                    </p>
                   </div>
-                  <p className="leading-relaxed text-blue-800">
-                    {currentQ.explanation}
-                  </p>
+
+                  <button
+                    onClick={() => handleAskAiTutor(currentIndex)}
+                    className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-101 active:scale-98"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+                    <span>✨ Bóc Mẽ Chiêu Trò Cài Bẫy & Mẹo 10s Bằng Gemini AI</span>
+                  </button>
                 </div>
               )}
             </div>
@@ -301,6 +394,127 @@ export default function QuizModal({
         )}
 
       </div>
+
+      {/* AI Tutor Slide-over Drawer / Modal */}
+      {aiDrawerOpen && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl overflow-hidden flex flex-col text-[#28071a]">
+            
+            {/* Drawer Header */}
+            <div className="px-5 py-4 bg-gradient-to-r from-[#240618] to-[#450a29] text-white flex items-center justify-between border-b border-[#f02c85]/30">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
+                  <Bot className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
+                    <span>Trợ Lý Giảng Viên AI Gemini</span>
+                    <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
+                      Flash 3.8
+                    </span>
+                  </h4>
+                  <p className="text-[11px] text-pink-200/80 font-medium">
+                    Câu {activeAiQuestionIdx + 1} • Bóc mẽ bẫy đề thi & mẹo khoanh 10s
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                {aiExplanations[activeAiQuestionIdx] && (
+                  <>
+                    <button
+                      onClick={() => handleSpeak(aiExplanations[activeAiQuestionIdx])}
+                      className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                      title="Nghe giảng qua giọng đọc AI"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={handleCopyAiText}
+                      className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                      title="Copy nội dung giải thích"
+                    >
+                      {copiedAiText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    </button>
+                  </>
+                )}
+                <button
+                  onClick={() => setAiDrawerOpen(false)}
+                  className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Drawer Content */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
+              
+              {/* Question Context Recap */}
+              {questions[activeAiQuestionIdx] && (
+                <div className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs space-y-2">
+                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-pink-100 text-[#f02c85]">
+                    CÂU HỎI {activeAiQuestionIdx + 1}
+                  </span>
+                  <p className="font-bold text-[#28071a]">
+                    {questions[activeAiQuestionIdx].question}
+                  </p>
+                  
+                  <div className="pt-2 border-t border-[#eadfcb]/60 flex flex-wrap gap-2 text-xs">
+                    <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                      ✅ Đáp án đúng: {questions[activeAiQuestionIdx].options?.[questions[activeAiQuestionIdx].correct]}
+                    </span>
+                    {selectedAnswers[activeAiQuestionIdx] !== undefined && selectedAnswers[activeAiQuestionIdx] !== questions[activeAiQuestionIdx].correct && (
+                      <span className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 font-bold">
+                        ❌ Bạn đã chọn: {questions[activeAiQuestionIdx].options?.[selectedAnswers[activeAiQuestionIdx]]}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* AI Content Loading State */}
+              {isAiLoading && (
+                <div className="py-12 flex flex-col items-center justify-center space-y-3">
+                  <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
+                    Gemini đang soi bẫy thi & tổng hợp quy tắc khoanh nhanh 10 giây...
+                  </p>
+                </div>
+              )}
+
+              {/* AI Error */}
+              {aiError && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
+                  {aiError}
+                </div>
+              )}
+
+              {/* AI Explanation Formatted Result */}
+              {aiExplanations[activeAiQuestionIdx] && (
+                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs text-xs sm:text-sm text-[#28071a] leading-relaxed whitespace-pre-line font-medium space-y-2">
+                  {aiExplanations[activeAiQuestionIdx]}
+                </div>
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="px-5 py-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#7a5a6b] font-bold">
+                🎯 Luyện phản xạ nhận diện bẫy đề thi thật cùng ÔnThiHub
+              </span>
+              <button
+                onClick={() => setAiDrawerOpen(false)}
+                className="px-4 py-2 rounded-xl bg-[#28071a] text-white text-xs font-bold hover:bg-[#3d0c27]"
+              >
+                Đóng lại
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

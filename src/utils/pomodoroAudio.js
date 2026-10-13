@@ -219,16 +219,17 @@ export function playPomodoroCompletionChime(volume = 0.5) {
 }
 
 /* =========================================================================
-   HIGH-FIDELITY AMBIENT FOCUS AUDIO ENGINE (RAIN / WAVES / CAFE)
+   HIGH-FIDELITY AMBIENT FOCUS AUDIO ENGINE (RAIN / WAVES / CAFE / ALPHA)
+   100% Client-side synthetic audio - Normalized amplitude & instant playback
    ========================================================================= */
 
 /**
  * 1. Tiếng Mưa Rào (Natural Rain Soundscape)
  */
-function createRainAmbient(ctx, initialVolume = 0.4) {
+function createRainAmbient(ctx, initialVolume = 0.5) {
   const masterGain = ctx.createGain();
-  masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(initialVolume, ctx.currentTime + 0.3);
+  masterGain.gain.setValueAtTime(0.01, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(initialVolume * 0.9, ctx.currentTime + 0.3);
   masterGain.connect(ctx.destination);
 
   // Generate 4-second pink noise stereo buffer
@@ -247,7 +248,7 @@ function createRainAmbient(ctx, initialVolume = 0.4) {
       b3 = 0.86650 * b3 + white * 0.3104856;
       b4 = 0.55000 * b4 + white * 0.5329522;
       b5 = -0.7616 * b5 - white * 0.0168980;
-      output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.16;
+      output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.65;
       b6 = white * 0.115926;
     }
   }
@@ -259,11 +260,11 @@ function createRainAmbient(ctx, initialVolume = 0.4) {
   // Dual filtering for warm soothing rain
   const lpFilter = ctx.createBiquadFilter();
   lpFilter.type = 'lowpass';
-  lpFilter.frequency.setValueAtTime(1400, ctx.currentTime);
+  lpFilter.frequency.setValueAtTime(1800, ctx.currentTime);
 
   const hpFilter = ctx.createBiquadFilter();
   hpFilter.type = 'highpass';
-  hpFilter.frequency.setValueAtTime(160, ctx.currentTime);
+  hpFilter.frequency.setValueAtTime(140, ctx.currentTime);
 
   noiseSource.connect(lpFilter);
   lpFilter.connect(hpFilter);
@@ -274,28 +275,29 @@ function createRainAmbient(ctx, initialVolume = 0.4) {
   const dropletInterval = setInterval(() => {
     if (!ctx || ctx.state === 'suspended') return;
     try {
+      const now = ctx.currentTime;
       const dropOsc = ctx.createOscillator();
       const dropGain = ctx.createGain();
-      const dropFreq = 2200 + Math.random() * 1400;
+      const dropFreq = 1800 + Math.random() * 1600;
       dropOsc.type = 'sine';
-      dropOsc.frequency.setValueAtTime(dropFreq, ctx.currentTime);
-      dropOsc.frequency.exponentialRampToValueAtTime(dropFreq * 0.6, ctx.currentTime + 0.03);
+      dropOsc.frequency.setValueAtTime(dropFreq, now);
+      dropOsc.frequency.exponentialRampToValueAtTime(dropFreq * 0.45, now + 0.04);
 
-      dropGain.gain.setValueAtTime(0.04 + Math.random() * 0.04, ctx.currentTime);
-      dropGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.035);
+      dropGain.gain.setValueAtTime(0.12 + Math.random() * 0.08, now);
+      dropGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
 
       dropOsc.connect(dropGain);
       dropGain.connect(masterGain);
-      dropOsc.start();
-      dropOsc.stop(ctx.currentTime + 0.04);
+      dropOsc.start(now);
+      dropOsc.stop(now + 0.05);
     } catch (e) {}
-  }, 190);
+  }, 140);
 
   return {
     setVolume: (v) => {
       try {
         masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v), ctx.currentTime + 0.1);
+        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v * 0.9), ctx.currentTime + 0.1);
       } catch (e) {}
     },
     stop: (fade = 0.25) => {
@@ -318,10 +320,10 @@ function createRainAmbient(ctx, initialVolume = 0.4) {
 /**
  * 2. Tiếng Sóng Biển (Ocean Waves Ebb & Flow)
  */
-function createWavesAmbient(ctx, initialVolume = 0.4) {
+function createWavesAmbient(ctx, initialVolume = 0.5) {
   const masterGain = ctx.createGain();
-  masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(initialVolume, ctx.currentTime + 0.3);
+  masterGain.gain.setValueAtTime(0.01, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(initialVolume * 0.9, ctx.currentTime + 0.3);
   masterGain.connect(ctx.destination);
 
   // 4-second looping noise buffer
@@ -334,7 +336,7 @@ function createWavesAmbient(ctx, initialVolume = 0.4) {
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
       last = (last + 0.04 * white) / 1.04;
-      data[i] = (last * 2.2 + white * 0.15) * 0.3;
+      data[i] = (last * 2.8 + white * 0.25) * 0.95;
     }
   }
 
@@ -342,31 +344,28 @@ function createWavesAmbient(ctx, initialVolume = 0.4) {
   noiseSource.buffer = noiseBuffer;
   noiseSource.loop = true;
 
-  // Bandpass / Lowpass filter whose frequency sweeps with the wave swell
+  // Sweep filter for wave swell
   const waveFilter = ctx.createBiquadFilter();
   waveFilter.type = 'lowpass';
-  waveFilter.frequency.setValueAtTime(340, ctx.currentTime);
-  waveFilter.Q.setValueAtTime(1.8, ctx.currentTime);
+  waveFilter.frequency.setValueAtTime(650, ctx.currentTime);
+  waveFilter.Q.setValueAtTime(1.5, ctx.currentTime);
 
-  // Swell Gain (volume peaks when wave crashes, drops when it recedes)
   const swellGain = ctx.createGain();
-  swellGain.gain.setValueAtTime(0.35, ctx.currentTime);
+  swellGain.gain.setValueAtTime(0.65, ctx.currentTime);
 
-  // LFO: 0.09Hz (~11-second wave surge cycle)
+  // LFO: 0.12Hz (~8-second rhythmic tide surge)
   const lfo = ctx.createOscillator();
-  lfo.frequency.setValueAtTime(0.09, ctx.currentTime);
+  lfo.frequency.setValueAtTime(0.12, ctx.currentTime);
 
-  // Modulate swellGain.gain (between ~0.15 and ~0.85)
-  const lfoToGain = ctx.createGain();
-  lfoToGain.gain.setValueAtTime(0.35, ctx.currentTime);
-  lfo.connect(lfoToGain);
-  lfoToGain.connect(swellGain.gain);
+  const lfoGain = ctx.createGain();
+  lfoGain.gain.setValueAtTime(0.35, ctx.currentTime);
+  lfo.connect(lfoGain);
+  lfoGain.connect(swellGain.gain);
 
-  // Modulate waveFilter.frequency (between 240Hz and 880Hz)
-  const lfoToFilter = ctx.createGain();
-  lfoToFilter.gain.setValueAtTime(360, ctx.currentTime);
-  lfo.connect(lfoToFilter);
-  lfoToFilter.connect(waveFilter.frequency);
+  const lfoFilter = ctx.createGain();
+  lfoFilter.gain.setValueAtTime(450, ctx.currentTime);
+  lfo.connect(lfoFilter);
+  lfoFilter.connect(waveFilter.frequency);
 
   noiseSource.connect(waveFilter);
   waveFilter.connect(swellGain);
@@ -379,7 +378,7 @@ function createWavesAmbient(ctx, initialVolume = 0.4) {
     setVolume: (v) => {
       try {
         masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v), ctx.currentTime + 0.1);
+        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v * 0.9), ctx.currentTime + 0.1);
       } catch (e) {}
     },
     stop: (fade = 0.25) => {
@@ -403,10 +402,10 @@ function createWavesAmbient(ctx, initialVolume = 0.4) {
 /**
  * 3. Quán Cafe Lofi (Cozy Cafe Ambience & Ceramic Cup Chimes)
  */
-function createCafeAmbient(ctx, initialVolume = 0.4) {
+function createCafeAmbient(ctx, initialVolume = 0.5) {
   const masterGain = ctx.createGain();
-  masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-  masterGain.gain.linearRampToValueAtTime(initialVolume, ctx.currentTime + 0.3);
+  masterGain.gain.setValueAtTime(0.01, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(initialVolume * 0.85, ctx.currentTime + 0.3);
   masterGain.connect(ctx.destination);
 
   // Base Room Murmur: warm brown noise + mid-frequency chatter texture
@@ -419,7 +418,7 @@ function createCafeAmbient(ctx, initialVolume = 0.4) {
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
       last = (last + 0.05 * white) / 1.05;
-      data[i] = (last * 2.0 + white * 0.08) * 0.38;
+      data[i] = (last * 2.5 + white * 0.12) * 0.95;
     }
   }
 
@@ -429,39 +428,37 @@ function createCafeAmbient(ctx, initialVolume = 0.4) {
 
   const murmurFilter = ctx.createBiquadFilter();
   murmurFilter.type = 'lowpass';
-  murmurFilter.frequency.setValueAtTime(540, ctx.currentTime);
+  murmurFilter.frequency.setValueAtTime(750, ctx.currentTime);
 
   murmurSource.connect(murmurFilter);
   murmurFilter.connect(masterGain);
   murmurSource.start();
 
-  // Subtle clinking porcelain coffee cups (every 2.5 - 4 seconds)
+  // Gentle clinking porcelain coffee cups
   const clinkInterval = setInterval(() => {
     if (!ctx || ctx.state === 'suspended') return;
-    if (Math.random() < 0.65) {
-      try {
-        const now = ctx.currentTime;
-        [2800, 3600].forEach((freq, idx) => {
-          const clinkOsc = ctx.createOscillator();
-          const clinkGain = ctx.createGain();
-          clinkOsc.type = 'sine';
-          clinkOsc.frequency.setValueAtTime(freq + (Math.random() * 200 - 100), now + idx * 0.06);
-          clinkGain.gain.setValueAtTime(0.04, now + idx * 0.06);
-          clinkGain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.06 + 0.06);
-          clinkOsc.connect(clinkGain);
-          clinkGain.connect(masterGain);
-          clinkOsc.start(now + idx * 0.06);
-          clinkOsc.stop(now + idx * 0.06 + 0.07);
-        });
-      } catch (e) {}
-    }
-  }, 2500);
+    try {
+      const now = ctx.currentTime;
+      [2700, 3500].forEach((freq, idx) => {
+        const clinkOsc = ctx.createOscillator();
+        const clinkGain = ctx.createGain();
+        clinkOsc.type = 'sine';
+        clinkOsc.frequency.setValueAtTime(freq + (Math.random() * 240 - 120), now + idx * 0.07);
+        clinkGain.gain.setValueAtTime(0.12, now + idx * 0.07);
+        clinkGain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.07 + 0.09);
+        clinkOsc.connect(clinkGain);
+        clinkGain.connect(masterGain);
+        clinkOsc.start(now + idx * 0.07);
+        clinkOsc.stop(now + idx * 0.07 + 0.1);
+      });
+    } catch (e) {}
+  }, 2200);
 
   return {
     setVolume: (v) => {
       try {
         masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
-        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v), ctx.currentTime + 0.1);
+        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v * 0.85), ctx.currentTime + 0.1);
       } catch (e) {}
     },
     stop: (fade = 0.25) => {
@@ -473,6 +470,65 @@ function createCafeAmbient(ctx, initialVolume = 0.4) {
           try {
             murmurSource.stop();
             murmurSource.disconnect();
+            masterGain.disconnect();
+          } catch (e) {}
+        }, fade * 1000 + 40);
+      } catch (e) {}
+    }
+  };
+}
+
+/**
+ * 4. Sóng Não Alpha 10Hz & 432Hz (Deep Memory & Cognitive Focus)
+ */
+function createAlphaBinauralAmbient(ctx, initialVolume = 0.5) {
+  const masterGain = ctx.createGain();
+  masterGain.gain.setValueAtTime(0.01, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(initialVolume * 0.75, ctx.currentTime + 0.4);
+  masterGain.connect(ctx.destination);
+
+  // Left ear: 432Hz, Right ear: 442Hz -> 10Hz Binaural Beat
+  const leftOsc = ctx.createOscillator();
+  const rightOsc = ctx.createOscillator();
+  const leftGain = ctx.createGain();
+  const rightGain = ctx.createGain();
+
+  leftOsc.type = 'sine';
+  leftOsc.frequency.setValueAtTime(432, ctx.currentTime);
+  rightOsc.type = 'sine';
+  rightOsc.frequency.setValueAtTime(442, ctx.currentTime);
+
+  leftGain.gain.setValueAtTime(0.4, ctx.currentTime);
+  rightGain.gain.setValueAtTime(0.4, ctx.currentTime);
+
+  const merger = ctx.createChannelMerger(2);
+  leftOsc.connect(leftGain);
+  rightOsc.connect(rightGain);
+  leftGain.connect(merger, 0, 0);
+  rightGain.connect(merger, 0, 1);
+  merger.connect(masterGain);
+
+  leftOsc.start();
+  rightOsc.start();
+
+  return {
+    setVolume: (v) => {
+      try {
+        masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+        masterGain.gain.linearRampToValueAtTime(Math.max(0.001, v * 0.75), ctx.currentTime + 0.1);
+      } catch (e) {}
+    },
+    stop: (fade = 0.25) => {
+      try {
+        masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+        masterGain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + fade);
+        setTimeout(() => {
+          try {
+            leftOsc.stop();
+            rightOsc.stop();
+            leftOsc.disconnect();
+            rightOsc.disconnect();
+            merger.disconnect();
             masterGain.disconnect();
           } catch (e) {}
         }, fade * 1000 + 40);
@@ -498,7 +554,11 @@ export function setAmbientSoundVolume(volume) {
   }
 }
 
-export function playAmbientSound(type = 'rain', volume = 0.4) {
+export function getCurrentAmbientType() {
+  return currentAmbientSoundType;
+}
+
+export function playAmbientSound(type = 'rain', volume = 0.5) {
   if (type === 'none' || type === 'tick') {
     stopAmbientSound();
     return;
@@ -528,6 +588,8 @@ export function playAmbientSound(type = 'rain', volume = 0.4) {
       currentAmbientController = createWavesAmbient(ctx, volume);
     } else if (type === 'cafe') {
       currentAmbientController = createCafeAmbient(ctx, volume);
+    } else if (type === 'alpha') {
+      currentAmbientController = createAlphaBinauralAmbient(ctx, volume);
     }
   } catch (err) {
     console.warn('Failed to start ambient sound:', err);

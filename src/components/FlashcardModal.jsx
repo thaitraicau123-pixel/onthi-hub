@@ -12,10 +12,15 @@ import {
   CheckCircle2,
   HelpCircle,
   Maximize2,
-  Scissors
+  Scissors,
+  Bot,
+  Copy,
+  Check
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
+import { explainFlashcardWithAi } from '../utils/aiTutor';
+import { recordCardReview, getNextIntervalPreview, getCardSrs } from '../utils/spacedRepetition';
 
 export default function FlashcardModal({
   course,
@@ -29,7 +34,22 @@ export default function FlashcardModal({
   const [autoSpeak, setAutoSpeak] = useState(false);
   const [reviewedStats, setReviewedStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
 
+  // AI Tutor State
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
+  const [aiExplanations, setAiExplanations] = useState({});
+  const [aiError, setAiError] = useState('');
+  const [copiedAiText, setCopiedAiText] = useState(false);
+
   const currentCard = cards[currentIndex] || {};
+  const targetDeckId = currentCard.originalDeckId || course.id;
+  const targetCardIndex = currentCard.originalCardIndex !== undefined ? currentCard.originalCardIndex : currentIndex;
+  const currentSrs = getCardSrs(targetDeckId, targetCardIndex);
+
+  const againInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'again');
+  const hardInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'hard');
+  const goodInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'good');
+  const easyInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'easy');
 
   // Reset flip when navigating
   const goToNext = () => {
@@ -49,6 +69,44 @@ export default function FlashcardModal({
     if (autoSpeak) {
       handleSpeak(nextFlipped ? currentCard.back : currentCard.front);
     }
+  };
+
+  const handleAskAiTutor = async () => {
+    setAiDrawerOpen(true);
+    setAiError('');
+
+    if (aiExplanations[currentIndex]) {
+      return;
+    }
+
+    setIsAiLoading(true);
+    try {
+      const res = await explainFlashcardWithAi({
+        front: currentCard.front,
+        back: currentCard.back,
+        tag: currentCard.tag,
+        title: course.title
+      });
+
+      if (res.success) {
+        setAiExplanations((prev) => ({ ...prev, [currentIndex]: res.content }));
+        playSound('success');
+      } else {
+        setAiError(res.message);
+      }
+    } catch (e) {
+      setAiError(e.message || 'Lỗi kết nối Trợ lý AI');
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
+
+  const handleCopyAiText = () => {
+    const text = aiExplanations[currentIndex] || '';
+    navigator.clipboard.writeText(text);
+    playSound('success');
+    setCopiedAiText(true);
+    setTimeout(() => setCopiedAiText(false), 2500);
   };
 
   // Keyboard navigation
@@ -81,6 +139,7 @@ export default function FlashcardModal({
   // Rate spaced repetition
   const handleRate = (type) => {
     setReviewedStats((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    recordCardReview(targetDeckId, targetCardIndex, type);
     recordStudyAction(5);
     completeDailyQuest('review_cards');
     goToNext();
@@ -119,9 +178,20 @@ export default function FlashcardModal({
               {currentIndex + 1}/{cards.length}
             </div>
             <div>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">
-                {course.title}
-              </h4>
+              <div className="flex items-center space-x-2">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">
+                  {course.title}
+                </h4>
+                {currentSrs.totalReviews > 0 ? (
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200 shrink-0">
+                    🧠 SM-2: Đã ôn {currentSrs.totalReviews} lần • Chu kỳ {currentSrs.intervalDays}d
+                  </span>
+                ) : (
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 shrink-0">
+                    ✨ Thẻ Mới
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-slate-500">
                 {currentCard.tag || 'Thẻ Flashcard Anki'} • Dùng phím Space để lật thẻ
               </p>
@@ -297,6 +367,17 @@ export default function FlashcardModal({
             </button>
           </div>
 
+          {/* Ask AI Tutor Button */}
+          <div className="mt-3 flex items-center space-x-2">
+            <button
+              onClick={handleAskAiTutor}
+              className="px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-600 via-[#f02c85] to-pink-500 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+              <span>Hỏi Trợ Lý AI Gemini (Bản Chất & Mẹo Nhớ)</span>
+            </button>
+          </div>
+
         </div>
 
         {/* Footer: Spaced Repetition Buttons */}
@@ -314,7 +395,7 @@ export default function FlashcardModal({
               className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 transition-colors"
             >
               <span className="text-xs sm:text-sm font-bold">Học Lại</span>
-              <span className="text-[10px] text-rose-400 hidden sm:inline">(Phím 1 • 1m)</span>
+              <span className="text-[10px] text-rose-500 font-bold hidden sm:inline">(Phím 1 • {againInterval})</span>
             </button>
 
             <button
@@ -322,7 +403,7 @@ export default function FlashcardModal({
               className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 transition-colors"
             >
               <span className="text-xs sm:text-sm font-bold">Khó</span>
-              <span className="text-[10px] text-amber-500 hidden sm:inline">(Phím 2 • 10m)</span>
+              <span className="text-[10px] text-amber-500 font-bold hidden sm:inline">(Phím 2 • {hardInterval})</span>
             </button>
 
             <button
@@ -330,7 +411,7 @@ export default function FlashcardModal({
               className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 transition-colors"
             >
               <span className="text-xs sm:text-sm font-bold">Tốt</span>
-              <span className="text-[10px] text-blue-400 hidden sm:inline">(Phím 3 • 1d)</span>
+              <span className="text-[10px] text-blue-500 font-bold hidden sm:inline">(Phím 3 • {goodInterval})</span>
             </button>
 
             <button
@@ -338,13 +419,115 @@ export default function FlashcardModal({
               className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 transition-colors"
             >
               <span className="text-xs sm:text-sm font-bold">Dễ Nhớ</span>
-              <span className="text-[10px] text-emerald-500 hidden sm:inline">(Phím 4 • 4d)</span>
+              <span className="text-[10px] text-emerald-600 font-bold hidden sm:inline">(Phím 4 • {easyInterval})</span>
             </button>
 
           </div>
         </div>
 
       </div>
+
+      {/* AI Tutor Slide-over Drawer / Modal */}
+      {aiDrawerOpen && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl overflow-hidden flex flex-col text-[#28071a]">
+            
+            {/* Drawer Header */}
+            <div className="px-5 py-4 bg-gradient-to-r from-[#240618] to-[#450a29] text-white flex items-center justify-between border-b border-[#f02c85]/30">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
+                  <Bot className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
+                    <span>Trợ Lý Gia Sư AI Gemini</span>
+                    <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
+                      Flash 3.8
+                    </span>
+                  </h4>
+                  <p className="text-[11px] text-pink-200/80 font-medium">
+                    Phân tích bản chất, mẹo nhớ siêu tốc & bẫy đề thi
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                {aiExplanations[currentIndex] && (
+                  <button
+                    onClick={handleCopyAiText}
+                    className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                    title="Copy nội dung giải thích"
+                  >
+                    {copiedAiText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                )}
+                <button
+                  onClick={() => setAiDrawerOpen(false)}
+                  className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Drawer Content */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
+              
+              {/* Card Context Recap */}
+              <div className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-pink-100 text-[#f02c85]">
+                  NỘI DUNG THẺ ĐANG HỌC
+                </span>
+                <p className="mt-1 font-black text-[#28071a]">
+                  {currentCard.front}
+                </p>
+                <div className="mt-1.5 text-xs text-[#7a5a6b] whitespace-pre-line border-t border-[#eadfcb]/60 pt-1.5">
+                  {currentCard.back}
+                </div>
+              </div>
+
+              {/* AI Content Loading State */}
+              {isAiLoading && (
+                <div className="py-12 flex flex-col items-center justify-center space-y-3">
+                  <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
+                    Đang kết nối Google Gemini phân tích bẫy thi & sáng tác mẹo nhớ...
+                  </p>
+                </div>
+              )}
+
+              {/* AI Error */}
+              {aiError && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
+                  {aiError}
+                </div>
+              )}
+
+              {/* AI Explanation Formatted Result */}
+              {aiExplanations[currentIndex] && (
+                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs text-xs sm:text-sm text-[#28071a] leading-relaxed whitespace-pre-line font-medium space-y-2">
+                  {aiExplanations[currentIndex]}
+                </div>
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="px-5 py-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#7a5a6b] font-bold">
+                💡 Nhớ nhanh theo phương pháp Spaced Repetition (Lặp lại ngắt quãng)
+              </span>
+              <button
+                onClick={() => setAiDrawerOpen(false)}
+                className="px-4 py-2 rounded-xl bg-[#28071a] text-white text-xs font-bold hover:bg-[#3d0c27]"
+              >
+                Đóng lại
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
