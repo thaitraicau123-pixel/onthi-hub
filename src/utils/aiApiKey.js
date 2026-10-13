@@ -3,7 +3,13 @@
 
 const GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';
 const OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
-const PROVIDER_STORAGE = 'onthi_ai_provider';
+
+// Available Gemini models with auto-failover in case of 503 (High demand)
+export const GEMINI_MODELS = [
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b'
+];
 
 /**
  * Get active Gemini API Key
@@ -81,7 +87,7 @@ export function hasValidAiKey() {
 }
 
 /**
- * Test Google Gemini API Key with a lightweight ping
+ * Test Google Gemini API Key with auto-failover across models
  */
 export async function testGeminiApiKey(keyToTest) {
   const apiKey = (keyToTest || getGeminiApiKey()).trim();
@@ -92,46 +98,56 @@ export async function testGeminiApiKey(keyToTest) {
     };
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  let lastError = '';
 
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { text: "Ping test: hãy phản hồi đúng 1 từ 'PONG' để xác thực kết nối." }
-            ]
-          }
-        ]
-      })
-    });
+  for (const model of GEMINI_MODELS) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    const data = await response.json();
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: "Ping test: hãy phản hồi đúng 1 từ 'PONG' để xác thực kết nối." }
+              ]
+            }
+          ]
+        })
+      });
 
-    if (!response.ok) {
-      const errMsg = data?.error?.message || `HTTP ${response.status}: Lỗi không xác định`;
-      return {
-        success: false,
-        message: `Kết nối thất bại: ${errMsg}`
-      };
+      const data = await response.json();
+
+      if (response.ok) {
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'OK';
+        return {
+          success: true,
+          model,
+          message: `✅ Kết nối thành công tới Google AI (${model})! (Phản hồi: "${reply.trim()}")`
+        };
+      }
+
+      // If 503 or model busy, record and try next model
+      lastError = data?.error?.message || `HTTP ${response.status}`;
+      if (response.status === 503 || response.status === 429) {
+        continue;
+      } else {
+        // Bad key or permission error, no need to try other models
+        break;
+      }
+    } catch (err) {
+      lastError = err.message;
     }
-
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    return {
-      success: true,
-      message: `✅ Kết nối thành công tới Google Gemini 1.5 Flash! (Phản hồi: "${reply.trim()}")`
-    };
-  } catch (err) {
-    return {
-      success: false,
-      message: `Lỗi kết nối mạng hoặc CORS: ${err.message}`
-    };
   }
+
+  return {
+    success: false,
+    message: `Kết nối thất bại: ${lastError || 'Không thể kết nối đến máy chủ Google'}`
+  };
 }
 
 /**

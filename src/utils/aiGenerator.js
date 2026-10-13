@@ -1,15 +1,13 @@
 // AI Flashcard Generator Engine
 // Converts topic / notes into Anki/Quizlet formatted flashcards
-// Supports Real Gemini 1.5 Flash API + Offline Smart Heuristics Fallback
+// Supports Real Gemini Multi-Model API (2.0-flash / 1.5-flash) + Offline Smart Heuristics Fallback
 
-import { getGeminiApiKey } from './aiApiKey';
+import { getGeminiApiKey, GEMINI_MODELS } from './aiApiKey';
 
 /**
- * Call real Google Gemini 1.5 Flash API
+ * Call real Google Gemini API with auto-failover across models
  */
 async function callGeminiApi({ apiKey, topic, rawText, cardCount }) {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-
   const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu hàng đầu theo phương pháp Lặp lại ngắt quãng (Spaced Repetition / Anki).
 Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn chính xác ${cardCount} thẻ flashcard ghi nhớ chất lượng cao, súc tích và đắt giá bằng tiếng Việt.
 
@@ -29,43 +27,61 @@ Ví dụ:
   { "front": "Cơ quan nào có thẩm quyền ban hành Nghị định?", "back": "Chính phủ.\\n\\n📌 Căn cứ: Luật Ban hành VBQPPL.\\n💡 Mẹo nhớ: Thủ tướng ban hành Quyết định, Bộ trưởng ban hành Thông tư.", "tag": "Văn bản QPPL" }
 ]`;
 
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3,
-        responseMimeType: 'application/json'
+  let lastErr = null;
+
+  for (const model of GEMINI_MODELS) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.3,
+            responseMimeType: 'application/json'
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        const errMsg = errData?.error?.message || `HTTP ${response.status}`;
+        lastErr = new Error(errMsg);
+        if (response.status === 503 || response.status === 429) {
+          // Model temporarily busy, try next model
+          continue;
+        }
+        throw lastErr;
       }
-    })
-  });
 
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    throw new Error(errData?.error?.message || `HTTP ${response.status}`);
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) continue;
+
+      let cleanText = text.trim();
+      if (cleanText.startsWith('```json')) {
+        cleanText = cleanText.replace(/^```json/, '').replace(/```$/, '').trim();
+      } else if (cleanText.startsWith('```')) {
+        cleanText = cleanText.replace(/^```/, '').replace(/```$/, '').trim();
+      }
+
+      const parsed = JSON.parse(cleanText);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((item, idx) => ({
+          id: idx + 1,
+          front: String(item.front || item.question || '').trim(),
+          back: String(item.back || item.answer || '').trim(),
+          tag: String(item.tag || item.category || 'AI Flashcard').trim()
+        })).filter(c => c.front && c.back);
+      }
+    } catch (err) {
+      lastErr = err;
+    }
   }
 
-  const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Không nhận được văn bản từ Gemini API');
-
-  let cleanText = text.trim();
-  if (cleanText.startsWith('```json')) {
-    cleanText = cleanText.replace(/^```json/, '').replace(/```$/, '').trim();
-  } else if (cleanText.startsWith('```')) {
-    cleanText = cleanText.replace(/^```/, '').replace(/```$/, '').trim();
-  }
-
-  const parsed = JSON.parse(cleanText);
-  if (!Array.isArray(parsed)) throw new Error('Kết quả trả về không phải mảng JSON');
-
-  return parsed.map((item, idx) => ({
-    id: idx + 1,
-    front: String(item.front || item.question || '').trim(),
-    back: String(item.back || item.answer || '').trim(),
-    tag: String(item.tag || item.category || 'AI Flashcard').trim()
-  })).filter(c => c.front && c.back);
+  throw lastErr || new Error('Không thể kết nối đến mô hình Gemini');
 }
 
 /**
