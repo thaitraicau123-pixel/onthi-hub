@@ -52,6 +52,8 @@ export default function PassDeckModal({
         passNote: passNote.trim() || 'Học viên đã hoàn thành khóa ôn tập và pass lại cho bạn hữu cùng chí hướng!',
         sellerUser: {
           name: user?.displayName || 'Học Bá Ôn Thi',
+          displayName: user?.displayName || 'Học Bá Ôn Thi',
+          photoURL: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
           avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
           tier: userTier
         }
@@ -63,8 +65,6 @@ export default function PassDeckModal({
         spread: 70,
         origin: { y: 0.6 }
       });
-
-      alert(`🎉 Đăng pass bộ thẻ thành công!\n\nBộ thẻ "${course.title}" đã được niêm yết tại mục "🔁 Góc Pass Lại Học Viên" với giá ${resellPriceXu} Xu.\nKhi có người mua, bạn sẽ nhận được ${netEarnings} Xu vào ví.`);
 
       onPassSuccess?.(res);
       onClose();

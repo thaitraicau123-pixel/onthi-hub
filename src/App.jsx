@@ -161,6 +161,7 @@ export default function App() {
         {/* TAB 2: SÀN MUA BÁN C2C */}
         {activeTab === 'marketplace' && (
           <MarketplaceView
+            marketplaceDecks={marketplaceDecks}
             onOpenCreateDeck={() => setActiveTab('create')}
             onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}
             onBalanceUpdated={refreshState}
@@ -336,9 +337,11 @@ export default function App() {
           course={activePassCourse}
           user={user}
           onClose={() => setActivePassCourse(null)}
-          onPassSuccess={() => {
+          onPassSuccess={(res) => {
             refreshState();
-            showToast('🎉 Đã niêm yết pass bộ thẻ thành công lên Sàn C2C!');
+            setActiveTab('marketplace');
+            showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
       )}

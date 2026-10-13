@@ -70,13 +70,13 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
       <div className="text-center max-w-3xl mx-auto">
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-pink-100/70 text-[#f02c85] text-xs font-black mb-3 border border-pink-200">
           <Sparkles className="w-3.5 h-3.5 fill-[#f02c85]" />
-          <span>GÓI NÂNG CẤP HỘI VIÊN 2026</span>
+          <span>NÂNG CẤP TRẠNG THÁI STATUS (HỘI VIÊN 2026)</span>
         </div>
         <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
           Chọn Gói Luyện Thi Phù Hợp Với Bạn
         </h2>
         <p className="mt-2 text-xs sm:text-base text-rose-200/80 font-medium">
-          Mở rộng hạn mức tạo Flashcard AI, mở khóa kho đề thi chính quy và đặc quyền Creator bán thẻ trên Sàn C2C.
+          Mở rộng hạn mức tạo Flashcard AI, mở khóa kho đề thi chính quy và đặc quyền Creator bán thẻ trên Sàn C2C. Thanh toán 100% bằng Tiền Xu.
         </p>
       </div>
 
@@ -104,19 +104,25 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                 <p className="text-xs text-[#7a5a6b] mt-1 line-clamp-1 font-medium">{plan.tagline}</p>
 
                 <div className="mt-5 mb-5">
-                  {plan.priceVnd === 0 ? (
-                    <span className="text-3xl font-black text-[#28071a]">Miễn Phí</span>
-                  ) : (
-                    <div className="flex items-baseline space-x-1">
-                      <span className="text-3xl font-black text-[#28071a]">
-                        {plan.priceVnd.toLocaleString()}đ
+                  {plan.priceXu === 0 ? (
+                    <div>
+                      <span className="text-3xl font-black text-[#28071a]">Miễn Phí</span>
+                      <span className="text-[11px] text-[#7a5a6b] block font-bold mt-1">
+                        Mặc định cho mọi tài khoản
                       </span>
-                      <span className="text-xs text-[#7a5a6b] font-bold">/{plan.period}</span>
                     </div>
-                  )}
-                  {plan.priceXu > 0 && (
-                    <div className="text-xs text-amber-600 font-black mt-1">
-                      hoặc <strong>{plan.priceXu} Xu</strong> trong ví
+                  ) : (
+                    <div>
+                      <div className="flex items-baseline space-x-1.5">
+                        <span className="text-3xl sm:text-4xl font-black text-[#28071a]">
+                          {plan.priceXu} Xu
+                        </span>
+                        <span className="text-xs text-[#7a5a6b] font-bold">/{plan.period}</span>
+                      </div>
+                      <span className="text-[11px] text-amber-700 font-bold mt-1 flex items-center space-x-1">
+                        <Coins className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" />
+                        <span>Thanh toán 100% bằng Ví Xu</span>
+                      </span>
                     </div>
                   )}
                 </div>
@@ -134,9 +140,9 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
               <div className="mt-8 pt-4 border-t border-[#eadfcb]">
                 {isCurrent ? (
                   <div className="w-full py-3 rounded-2xl bg-[#f5ecd8] text-[#28071a] text-xs font-black text-center border border-[#eadfcb]">
-                    Đang Kích Hoạt
+                    ✓ Trạng Thái Đang Kích Hoạt
                   </div>
-                ) : plan.priceVnd === 0 ? (
+                ) : plan.priceXu === 0 ? (
                   <button
                     onClick={() => {
                       setUserTier('free');
@@ -149,18 +155,26 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                 ) : (
                   <div className="space-y-2">
                     <button
-                      onClick={() => handleUpgradeWithVietQR(plan)}
-                      className="w-full py-3 rounded-2xl btn-wayground-sunset text-white text-xs font-black shadow-lg shadow-pink-900/30 transition-transform transform hover:scale-105 active:scale-95"
+                      onClick={() => handleUpgradeWithXu(plan)}
+                      className="w-full py-3 rounded-2xl btn-wayground-sunset text-white text-xs font-black shadow-lg shadow-pink-900/30 transition-transform transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-1.5"
                     >
-                      Thanh toán VietQR ({plan.priceVnd / 1000}K)
+                      <Coins className="w-4 h-4 fill-amber-300 text-amber-300" />
+                      <span>Kích Hoạt Gói ({plan.priceXu} Xu)</span>
                     </button>
 
-                    <button
-                      onClick={() => handleUpgradeWithXu(plan)}
-                      className="w-full py-2.5 rounded-2xl bg-white hover:bg-[#faebd0] text-[#28071a] border border-[#eadfcb] text-xs font-black transition-colors"
-                    >
-                      Dùng {plan.priceXu} Xu (Ví có {walletBalance})
-                    </button>
+                    {walletBalance < plan.priceXu ? (
+                      <button
+                        onClick={onOpenWallet}
+                        className="w-full py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold transition-colors flex items-center justify-center space-x-1"
+                      >
+                        <Wallet className="w-3.5 h-3.5 text-amber-700" />
+                        <span>Ví có {walletBalance} Xu • Nạp thêm {plan.priceXu - walletBalance} Xu</span>
+                      </button>
+                    ) : (
+                      <div className="text-[10px] text-center text-[#7a5a6b] font-bold">
+                        Số dư ví: <strong className="text-emerald-700">{walletBalance} Xu</strong> (Đủ điều kiện)
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -260,31 +274,26 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                 <span className="text-rose-600">Thiếu: {insufficientError.deficit} Xu</span>
               </div>
               <p className="text-[#7a5a6b] text-[11px]">
-                Bạn có thể nạp thêm Xu siêu tốc qua VietQR hoặc thanh toán trực tiếp qua VietQR để kích hoạt ngay.
+                Hệ thống chỉ chấp nhận thanh toán bằng Tiền Xu. Bạn hãy nạp thêm <strong>{insufficientError.deficit} Xu</strong> qua mã VietQR để kích hoạt gói ngay nhé!
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
+            <div className="flex items-center gap-2 pt-2">
               <button
-                onClick={() => {
-                  const plan = insufficientError.plan;
-                  setInsufficientError(null);
-                  handleUpgradeWithVietQR(plan);
-                }}
-                className="w-full sm:flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md flex items-center justify-center space-x-1"
+                onClick={() => setInsufficientError(null)}
+                className="py-2.5 px-4 rounded-xl border border-[#eadfcb] bg-white hover:bg-slate-50 text-[#28071a] font-bold text-xs"
               >
-                <span>Thanh Toán VietQR</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                Để Sau
               </button>
               <button
                 onClick={() => {
                   setInsufficientError(null);
                   onOpenWallet?.();
                 }}
-                className="w-full sm:flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md flex items-center justify-center space-x-1"
+                className="flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md flex items-center justify-center space-x-1.5"
               >
-                <Wallet className="w-3.5 h-3.5" />
-                <span>Nạp Thêm Xu</span>
+                <Wallet className="w-4 h-4 text-amber-200" />
+                <span>Mở Ví Nạp {insufficientError.deficit} Xu Ngay</span>
               </button>
             </div>
           </div>

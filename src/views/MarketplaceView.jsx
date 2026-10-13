@@ -27,6 +27,7 @@ import { getDailyDeals } from '../utils/dailyDeals';
 import confetti from 'canvas-confetti';
 
 export default function MarketplaceView({
+  marketplaceDecks,
   onOpenCreateDeck,
   onOpenFlashcardSample,
   onBalanceUpdated,
@@ -36,8 +37,12 @@ export default function MarketplaceView({
   const [decks, setDecks] = useState(() => getMarketplaceDecks().filter(d => d.isApproved !== false));
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('sales'); // 'sales' | 'rating' | 'price_asc' | 'price_desc'
+  const [sortBy, setSortBy] = useState('newest'); // default to 'newest' so newly passed/created decks appear ON TOP!
   const [likedIds, setLikedIds] = useState(() => getLikedDeckIds());
+
+  useEffect(() => {
+    setDecks(getMarketplaceDecks().filter(d => d.isApproved !== false));
+  }, [marketplaceDecks]);
   
   // Daily Flash Deals & Countdown
   const [dailyData, setDailyData] = useState(() => getDailyDeals());
@@ -74,6 +79,8 @@ export default function MarketplaceView({
     playSound('flip');
   };
 
+  const passDecks = decks.filter(d => d.isPassDeck === true);
+
   const filtered = decks
     .filter((d) => {
       let matchCat = true;
@@ -93,10 +100,15 @@ export default function MarketplaceView({
       return matchCat && matchSearch;
     })
     .sort((a, b) => {
+      if (sortBy === 'newest') {
+        const idA = String(a.id || '');
+        const idB = String(b.id || '');
+        return idB.localeCompare(idA);
+      }
       if (sortBy === 'price_asc') return a.priceXu - b.priceXu;
       if (sortBy === 'price_desc') return b.priceXu - a.priceXu;
       if (sortBy === 'rating') return (b.rating || 5) - (a.rating || 5);
-      return (b.salesCount || 0) - (a.salesCount || 0); // default most sales
+      return (b.salesCount || 0) - (a.salesCount || 0);
     });
 
   const handleBuy = (deck) => {
@@ -281,14 +293,113 @@ export default function MarketplaceView({
         </div>
       </section>
 
+      {/* C2C PASS DECKS SHOWCASE SECTION */}
+      {passDecks.length > 0 && (
+        <section className="bg-gradient-to-r from-[#3b0b26] via-[#240618] to-[#450a29] rounded-3xl p-5 sm:p-6 border-2 border-[#f02c85]/50 shadow-xl text-white space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
+                <Repeat className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-base sm:text-lg font-black text-white uppercase tracking-tight">
+                    🔁 Sàn Pass Lại Thẻ Học Viên ({passDecks.length})
+                  </h3>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-white animate-pulse">
+                    LIVE C2C
+                  </span>
+                </div>
+                <p className="text-xs text-rose-200/80 font-medium">
+                  Bộ thẻ do học viên thi đỗ nhượng lại với giá siêu rẻ (từ 2 Xu). 100% bản quyền chính chủ.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setActiveCategory('pass');
+                const el = document.getElementById('marketplace-catalog');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="self-start sm:self-auto px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-bold text-white transition-colors"
+            >
+              Xem Tất Cả ({passDecks.length}) Thẻ Pass →
+            </button>
+          </div>
+
+          {/* Quick Mini Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {passDecks.slice(0, 3).map((pDeck) => {
+              const isOwned = isCoursePurchased(pDeck.id);
+              return (
+                <div
+                  key={pDeck.id}
+                  className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3.5 flex flex-col justify-between transition-all"
+                >
+                  <div>
+                    <div className="flex items-center space-x-2 mb-2">
+                      <img
+                        src={pDeck.passSellerAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
+                        alt={pDeck.passSellerName}
+                        className="w-6 h-6 rounded-full object-cover border border-white/30"
+                      />
+                      <span className="text-[11px] font-bold text-pink-200 truncate">
+                        Pass bởi: <strong className="text-white">{pDeck.passSellerName}</strong>
+                      </span>
+                    </div>
+
+                    <h4 className="text-xs sm:text-sm font-black text-white line-clamp-1">
+                      {pDeck.title}
+                    </h4>
+                    {pDeck.passNote && (
+                      <p className="text-[11px] text-rose-200/70 italic line-clamp-1 mt-0.5">
+                        "{pDeck.passNote}"
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between">
+                    <span className="text-sm font-black text-amber-300">
+                      {pDeck.priceXu} Xu <span className="text-[10px] text-rose-200/50 line-through">({pDeck.originalPriceXu || 25} Xu)</span>
+                    </span>
+
+                    <div className="flex items-center space-x-1.5">
+                      <button
+                        onClick={() => onOpenFlashcardSample(pDeck)}
+                        className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-bold text-white"
+                      >
+                        Học Thử
+                      </button>
+                      {isOwned ? (
+                        <span className="px-2 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">
+                          Đã Mua
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleBuy(pDeck)}
+                          className="px-2.5 py-1 rounded-lg btn-wayground-sunset text-[10px] font-black text-white shadow-xs"
+                        >
+                          Mua ({pDeck.priceXu} Xu)
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* 3. FILTER & SEARCH (Wayground Warm Cream Bar) */}
-      <section className="bg-[#fcf7ec] rounded-3xl p-4 sm:p-5 border border-[#eadfcb] shadow-md text-[#28071a]">
+      <section id="marketplace-catalog" className="bg-[#fcf7ec] rounded-3xl p-4 sm:p-5 border border-[#eadfcb] shadow-md text-[#28071a]">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           
           <div className="flex items-center space-x-2 overflow-x-auto pb-1 text-xs font-black scrollbar-none">
             {[
               { id: 'all', name: 'Tất cả chợ' },
-              { id: 'pass', name: '🔁 Góc Pass Lại Học Viên' },
+              { id: 'pass', name: `🔁 Góc Pass Lại Học Viên (${passDecks.length})` },
               { id: 'ngoai-ngu', name: 'Ngoại ngữ & SAT' },
               { id: 'it-tech', name: 'IT & Lập Trình' },
               { id: 'cong-chuc', name: 'Công Chức & Ngành Y' }
@@ -324,6 +435,7 @@ export default function MarketplaceView({
               onChange={(e) => setSortBy(e.target.value)}
               className="px-3 py-2 text-xs bg-white font-black text-[#28071a] rounded-xl border border-[#eadfcb] outline-none shrink-0 cursor-pointer hover:bg-[#f6ebd5]"
             >
+              <option value="newest">✨ Mới nhất (Vừa lên sàn)</option>
               <option value="sales">🔥 Bán chạy nhất</option>
               <option value="rating">⭐ Đánh giá cao</option>
               <option value="price_asc">📈 Giá Xu tăng dần</option>

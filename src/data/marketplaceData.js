@@ -565,22 +565,29 @@ export function getMarketplaceDecks() {
 // Pass deck from student buyer to peer C2C
 export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, sellerUser }) {
   const current = getMarketplaceDecks();
+  const sellerName = sellerUser?.displayName || sellerUser?.name || 'Học Viên Pass Thẻ';
+  const sellerAvatar = sellerUser?.photoURL || sellerUser?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
+  const sellerTier = sellerUser?.tier || 'free';
+
+  const cardsList = originalCourse.previewCards || originalCourse.cards || [];
+  const quizList = originalCourse.previewQuiz || originalCourse.quiz || [];
+
   const passDeck = {
     id: 'pass_' + Date.now(),
     title: `[PASS LẠI] ${originalCourse.title}`,
-    subtitle: `Bộ thẻ pass lại từ ${sellerUser?.displayName || 'Học viên'} với giá ưu đãi sinh viên`,
-    description: passNote || `Bộ thẻ do ${sellerUser?.displayName || 'Học viên'} đã hoàn thành khóa ôn tập và pass lại với giá ưu đãi.`,
+    subtitle: `Bộ thẻ pass lại từ ${sellerName} với giá ưu đãi sinh viên`,
+    description: passNote || `Bộ thẻ do ${sellerName} đã hoàn thành khóa ôn tập và pass lại với giá ưu đãi.`,
     category: originalCourse.category || 'cong-chuc',
     categoryName: originalCourse.categoryLabel || originalCourse.categoryName || 'Ôn Thi C2C',
     categoryLabel: originalCourse.categoryLabel || 'Pass Lại C2C',
-    priceXu: Math.max(2, parseInt(passPriceXu, 10) || 3), // Siết giá sàn cực rẻ
+    priceXu: Math.max(2, parseInt(passPriceXu, 10) || 3),
     originalPriceXu: originalCourse.priceXu || 25,
-    cardCount: originalCourse.previewCards?.length || originalCourse.cardCount || 20,
+    cardCount: cardsList.length || originalCourse.cardCount || 20,
     authorName: originalCourse.authorName || 'Giảng viên ÔnThiHub',
     authorAvatar: originalCourse.authorAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
-    passSellerName: sellerUser?.displayName || 'Học Viên Pass Thẻ',
-    passSellerAvatar: sellerUser?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    passSellerTier: sellerUser?.tier || 'free',
+    passSellerName: sellerName,
+    passSellerAvatar: sellerAvatar,
+    passSellerTier: sellerTier,
     passNote: passNote,
     isPassDeck: true,
     originalDeckId: originalCourse.id,
@@ -588,9 +595,9 @@ export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, s
     rating: 5.0,
     createdAt: new Date().toISOString().split('T')[0],
     isApproved: true,
-    previewCards: originalCourse.previewCards || [],
-    sampleCards: originalCourse.previewCards || [],
-    previewQuiz: originalCourse.previewQuiz || []
+    previewCards: cardsList,
+    sampleCards: cardsList,
+    previewQuiz: quizList
   };
 
   current.unshift(passDeck);
