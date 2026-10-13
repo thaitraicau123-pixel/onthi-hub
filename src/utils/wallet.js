@@ -7,7 +7,7 @@ export const ADMIN_PHONE = '0986019623';
 export const ADMIN_ZALO_PHONE = '0986019623';
 export const ADMIN_ZALO_LINK = 'https://zalo.me/0986019623';
 export const ADMIN_EMAIL = 'thaitraicau123@gmail.com';
-export const ADMIN_NTFY_TOPIC = 'https://ntfy.sh/onthihub_admin_0986019623';
+export const ADMIN_NTFY_TOPIC = 'https://ntfy.sh/Onthihubbbbb';
 export const COIN_RATE_VND = 1000; // 1 Xu = 1.000 VNĐ
 
 // Get current wallet balance (Default 20 Xu tặng tân thủ)

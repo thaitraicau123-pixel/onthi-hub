@@ -1037,7 +1037,7 @@ export default function AdminView({ onBackToHome }) {
                 </div>
 
                 <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
-                  💡 Anh có thể cài ứng dụng <strong>ntfy</strong> (trên App Store hoặc Google Play), sau đó bấm dấu cộng (+) và nhập chủ đề: <code className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">onthihub_admin_0986019623</code>. Điện thoại của anh sẽ reo chuông báo mỗi khi có đơn nạp/rút!
+                  💡 Anh có thể cài ứng dụng <strong>ntfy</strong> (trên App Store hoặc Google Play), sau đó bấm dấu cộng (+) và nhập chủ đề: <code className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">Onthihubbbbb</code>. Điện thoại của anh sẽ reo chuông báo mỗi khi có đơn nạp/rút!
                 </p>
               </div>
 
