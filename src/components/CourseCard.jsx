@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, CheckCircle, FileText, Layers, PlayCircle, ShoppingCart, Download, Check } from 'lucide-react';
+import { Star, CheckCircle, FileText, Layers, PlayCircle, ShoppingCart, Download, Check, Coins } from 'lucide-react';
 
 export default function CourseCard({
   course,
@@ -29,18 +29,19 @@ export default function CourseCard({
     ? course.format
     : ['Thẻ Flashcard 3D', 'File Anki (.apkg)', 'Trắc nghiệm tính giờ'];
 
-  const priceVnd = course.price !== undefined
-    ? Number(course.price)
-    : course.priceXu
-    ? Number(course.priceXu) * 1000
-    : 29000;
+  // Pure Platform Coin (Xu) Pricing
+  const priceXu = course.priceXu !== undefined
+    ? Number(course.priceXu)
+    : course.price
+    ? Math.max(5, Math.round(course.price / 3000))
+    : 25;
 
-  const originalPriceVnd = course.originalPrice !== undefined
-    ? Number(course.originalPrice)
-    : Math.round(priceVnd * 2.5);
+  const originalPriceXu = course.originalPriceXu !== undefined
+    ? Number(course.originalPriceXu)
+    : Math.round(priceXu * 2.5);
 
-  const discountPercent = originalPriceVnd > priceVnd
-    ? Math.round((1 - priceVnd / originalPriceVnd) * 100)
+  const discountPercent = originalPriceXu > priceXu
+    ? Math.round((1 - priceXu / originalPriceXu) * 100)
     : 0;
 
   return (
@@ -111,21 +112,22 @@ export default function CourseCard({
       {/* Pricing & Footer Actions */}
       <div className="p-5 sm:p-6 pt-3 bg-white/70 border-t border-[#eadfcb] mt-auto">
         
-        {/* Price Row */}
+        {/* Price Row (Pure Coins) */}
         <div className="flex items-baseline justify-between mb-4">
           <div>
-            <div className="flex items-baseline space-x-2">
+            <div className="flex items-baseline space-x-1.5">
+              <Coins className="w-5 h-5 text-amber-500 fill-amber-400 self-center shrink-0" />
               <span className="text-xl sm:text-2xl font-black text-[#28071a]">
-                {priceVnd.toLocaleString()}đ
+                {priceXu} Xu
               </span>
-              {originalPriceVnd > priceVnd && (
-                <span className="text-xs sm:text-sm text-[#99798b] line-through">
-                  {originalPriceVnd.toLocaleString()}đ
+              {originalPriceXu > priceXu && (
+                <span className="text-xs sm:text-sm text-[#99798b] line-through font-bold">
+                  {originalPriceXu} Xu
                 </span>
               )}
             </div>
             {discountPercent > 0 && (
-              <span className="text-[10px] text-[#f02c85] font-black uppercase">
+              <span className="text-[10px] text-[#f02c85] font-black uppercase block mt-0.5">
                 Tiết kiệm {discountPercent}%
               </span>
             )}
@@ -172,8 +174,8 @@ export default function CourseCard({
             onClick={() => onBuy(course)}
             className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 text-xs sm:text-sm font-black text-white btn-wayground-sunset hover:opacity-95 rounded-xl shadow-lg shadow-pink-900/30 transition-all transform hover:scale-[1.02] active:scale-95"
           >
-            <ShoppingCart className="w-4 h-4" />
-            <span>Mua Ngay ({course.priceXu ? `${course.priceXu} Xu` : `${Math.round(priceVnd / 1000)}K`})</span>
+            <Coins className="w-4 h-4 fill-white text-white" />
+            <span>Mở Khóa ({priceXu} Xu)</span>
           </button>
         )}
 

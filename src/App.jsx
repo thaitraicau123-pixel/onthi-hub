@@ -266,13 +266,23 @@ export default function App() {
         />
       )}
 
-      {/* 5. VietQR Automated Payment */}
+      {/* 5. Coin Purchase Modal */}
       {activePaymentItem && (
         <PaymentModal
           item={activePaymentItem}
           isCombo={activePaymentItem.id === COMBO_PACKAGE.id}
           onClose={() => setActivePaymentItem(null)}
           onPaymentSuccess={handlePaymentSuccess}
+          onOpenWallet={() => {
+            setActivePaymentItem(null);
+            setActiveTab('wallet');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onGoToLibrary={() => {
+            setActivePaymentItem(null);
+            setActiveTab('library');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         />
       )}
 

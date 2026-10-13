@@ -13,8 +13,8 @@ export const COURSES_DATA = [
     category: 'cong-chuc',
     categoryLabel: 'Thi Công Chức 2026',
     badge: 'Bán chạy nhất #1',
-    price: 69000,
-    originalPrice: 199000,
+    priceXu: 25,
+    originalPriceXu: 65,
     rating: 4.9,
     reviewsCount: 1420,
     studentsCount: 3840,
@@ -112,8 +112,8 @@ export const COURSES_DATA = [
     category: 'it-tech',
     categoryLabel: 'Luyện Phỏng Vấn IT',
     badge: 'Hot Developer 🔥',
-    price: 79000,
-    originalPrice: 220000,
+    priceXu: 29,
+    originalPriceXu: 75,
     rating: 5.0,
     reviewsCount: 980,
     studentsCount: 2450,
@@ -192,8 +192,8 @@ export const COURSES_DATA = [
     category: 'it-tech',
     categoryLabel: 'Luyện Phỏng Vấn IT',
     badge: 'Chuyên sâu 🚀',
-    price: 89000,
-    originalPrice: 250000,
+    priceXu: 29,
+    originalPriceXu: 75,
     rating: 4.9,
     reviewsCount: 710,
     studentsCount: 1820,
@@ -254,8 +254,8 @@ export const COURSES_DATA = [
     category: 'ngoai-ngu',
     categoryLabel: 'Chứng Chỉ Ngoại Ngữ',
     badge: 'Được yêu thích ⭐',
-    price: 59000,
-    originalPrice: 180000,
+    priceXu: 22,
+    originalPriceXu: 58,
     rating: 4.95,
     reviewsCount: 1650,
     studentsCount: 4210,
@@ -316,8 +316,8 @@ export const COURSES_DATA = [
     category: 'ngoai-ngu',
     categoryLabel: 'Chứng Chỉ Ngoại Ngữ',
     badge: 'Cam kết tăng 150đ',
-    price: 49000,
-    originalPrice: 150000,
+    priceXu: 19,
+    originalPriceXu: 49,
     rating: 4.88,
     reviewsCount: 1120,
     studentsCount: 3100,
@@ -372,8 +372,8 @@ export const COURSES_DATA = [
     category: 'ngoai-ngu',
     categoryLabel: 'Chứng Chỉ Ngoại Ngữ',
     badge: 'Độc quyền 🇯🇵',
-    price: 69000,
-    originalPrice: 199000,
+    priceXu: 25,
+    originalPriceXu: 65,
     rating: 4.92,
     reviewsCount: 890,
     studentsCount: 2200,
@@ -421,10 +421,10 @@ export const COMBO_PACKAGE = {
   id: 'combo-all-access',
   title: 'COMBO VIP: Mở Khóa Trọn Đời Tất Cả Tài Liệu & Flashcard',
   subtitle: 'Sở hữu toàn bộ 6+ kho tài liệu Công Chức, IT và Ngoại Ngữ + Cập nhật miễn phí trọn đời',
-  originalPrice: 1047000,
-  price: 189000,
-  discountPercent: 82,
-  badge: 'Tiết kiệm 82% 🔥',
+  originalPriceXu: 350,
+  priceXu: 69,
+  discountPercent: 80,
+  badge: 'Tiết kiệm 80% 🔥',
   features: [
     'Toàn bộ 6 bộ tài liệu Flashcard Anki (.apkg) đầy đủ quyền truy cập',
     'Toàn bộ 1500+ câu trắc nghiệm và đề thi thử có lời giải chi tiết',
@@ -461,8 +461,8 @@ export const TESTIMONIALS = [
 
 export const FAQS = [
   {
-    q: 'Sau khi thanh toán tôi sẽ nhận tài liệu như thế nào?',
-    a: 'Hệ thống tự động kích hoạt 100% qua VietQR. Ngay khi chuyển khoản thành công (trong vòng 3-10 giây), trang web sẽ lập tức mở khóa nút tải file (.apkg cho Anki, file PDF) và mở khóa toàn bộ quyền học thẻ trực tiếp trên web. Đồng thời link tải cũng được lưu vào mục "Tài liệu của tôi" trên trình duyệt của bạn vĩnh viễn.'
+    q: 'Làm thế nào để mở khóa và học các bộ thẻ Flashcard?',
+    a: 'Nền tảng sử dụng Tiền Xu (Xu) tiện lợi. Bạn chỉ cần nạp Xu vào ví (hoặc nhận Xu miễn phí qua điểm danh hàng ngày, mở túi mù tri thức, làm nhiệm vụ học tập), sau đó 1 chạm mở khóa vĩnh viễn bộ thẻ bạn cần. Tài liệu được lưu vĩnh viễn trong Tủ Tài Liệu của bạn.'
   },
   {
     q: 'File .apkg là gì và làm sao để nhập vào điện thoại hoặc máy tính?',
@@ -473,7 +473,7 @@ export const FAQS = [
     a: 'Được 100%! ÔnThiHub tích hợp sẵn trình giả lập Flashcard 3D và phòng thi trắc nghiệm bấm giờ ngay trên web. Bạn có thể mở bằng điện thoại hoặc máy tính để học mọi lúc mọi nơi.'
   },
   {
-    q: 'Thanh toán có an toàn không? Có hỗ trợ nếu gặp lỗi không?',
-    a: 'Hệ thống sử dụng cổng thanh toán chuẩn VietQR (chuyển khoản ngân hàng chính chủ, kiểm tra tự động qua mã đơn hàng duy nhất). Nếu có bất kỳ thắc mắc nào, đội ngũ hỗ trợ qua Zalo 0988.xxx.xxx sẵn sàng giải đáp 24/7 trong vòng 2 phút.'
+    q: 'Ví Xu có an toàn không? Có hỗ trợ nếu gặp lỗi không?',
+    a: 'Hệ thống lưu trữ số dư ví minh bạch trên thiết bị và đồng bộ tài khoản. Khi cần thêm Xu, bạn có thể nạp nhanh qua cổng VietQR tự động. Mọi thắc mắc đều được hỗ trợ qua Zalo 24/7 trong vòng 2 phút.'
   }
 ];

@@ -66,9 +66,9 @@ export const LEADERBOARD_USERS = [
 
 // 3. SHOPEE STYLE VOUCHERS HUB
 export const AVAILABLE_VOUCHERS = [
-  { id: 'VOUCHER_20K', code: 'CHAO2026', discountText: 'Giảm 20.000đ', minOrder: 50000, desc: 'Dành cho đơn mua đầu tiên', expires: 'Còn 3 ngày' },
-  { id: 'VOUCHER_XU15', code: 'HOIXU15', discountText: 'Hoàn 15% Xu', minOrder: 0, desc: 'Hoàn Xu trực tiếp vào ví sau khi mua', expires: 'Còn 5 ngày' },
-  { id: 'VOUCHER_VIP', code: 'VIPMEM', discountText: 'Giảm 30.000đ', minOrder: 100000, desc: 'Áp dụng cho gói Combo VIP & Hội Viên Pro', expires: 'Hôm nay' }
+  { id: 'VOUCHER_5XU', code: 'CHAO2026', discountText: 'Giảm 5 Xu', minOrder: 20, desc: 'Dành cho đơn mở khóa bộ thẻ từ 20 Xu', expires: 'Còn 3 ngày' },
+  { id: 'VOUCHER_XU15', code: 'HOIXU15', discountText: 'Hoàn 15% Xu', minOrder: 0, desc: 'Hoàn Xu trực tiếp vào ví sau khi mở khóa', expires: 'Còn 5 ngày' },
+  { id: 'VOUCHER_VIP', code: 'VIPMEM', discountText: 'Giảm 15 Xu', minOrder: 50, desc: 'Áp dụng cho gói Combo VIP trọn đời', expires: 'Hôm nay' }
 ];
 
 export function getClaimedVouchers() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, CheckCircle2, ShieldCheck, ArrowRight, Zap } from 'lucide-react';
+import { Sparkles, CheckCircle2, ShieldCheck, ArrowRight, Zap, Coins } from 'lucide-react';
 import { COMBO_PACKAGE } from '../data/coursesData';
 
 export default function ComboBanner({ isPurchased, onBuyCombo }) {
@@ -25,7 +25,7 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
             </h2>
 
             <p className="mt-3 text-sm sm:text-base text-rose-100/80 max-w-xl leading-relaxed font-medium">
-              Không cần mua lẻ từng bộ. Mở khóa toàn bộ kho tài liệu Công chức, IT và Ngoại ngữ với 1 lần thanh toán duy nhất. Nhận toàn bộ bản cập nhật đề thi mới suốt năm 2026.
+              Không cần mua lẻ từng bộ. Mở khóa toàn bộ kho tài liệu Công chức, IT và Ngoại ngữ với 1 lần thanh toán duy nhất bằng Xu trong ví. Nhận toàn bộ bản cập nhật đề thi mới suốt năm 2026.
             </p>
 
             {/* Checkmark List */}
@@ -47,17 +47,18 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
                 ƯU ĐÃI ĐỘC QUYỀN HÔM NAY
               </span>
 
-              <div className="mt-4 flex items-baseline justify-center space-x-3">
+              <div className="mt-4 flex items-baseline justify-center space-x-2">
+                <Coins className="w-8 h-8 text-amber-400 fill-amber-400 self-center shrink-0" />
                 <span className="text-3xl sm:text-5xl font-black text-white">
-                  {COMBO_PACKAGE.price.toLocaleString()}đ
+                  {COMBO_PACKAGE.priceXu} Xu
                 </span>
-                <span className="text-sm sm:text-base text-rose-300/60 line-through">
-                  {COMBO_PACKAGE.originalPrice.toLocaleString()}đ
+                <span className="text-sm sm:text-base text-rose-300/60 line-through font-bold">
+                  {COMBO_PACKAGE.originalPriceXu} Xu
                 </span>
               </div>
 
               <p className="text-xs text-emerald-400 font-bold mt-1">
-                Tiết kiệm ngay 858.000đ (Giảm {COMBO_PACKAGE.discountPercent}%)
+                Tiết kiệm ngay {COMBO_PACKAGE.originalPriceXu - COMBO_PACKAGE.priceXu} Xu (Giảm {COMBO_PACKAGE.discountPercent}%)
               </p>
 
               {isPurchased ? (
@@ -70,8 +71,8 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
                   onClick={() => onBuyCombo(COMBO_PACKAGE)}
                   className="mt-6 w-full py-4 px-6 rounded-2xl font-black text-sm sm:text-base text-white btn-wayground-sunset shadow-xl shadow-pink-900/40 hover:opacity-95 transform hover:-translate-y-0.5 transition-all flex items-center justify-center space-x-2"
                 >
-                  <Zap className="w-5 h-5 fill-white" />
-                  <span>MỞ KHÓA COMBO VIP (189K)</span>
+                  <Coins className="w-5 h-5 fill-white text-white" />
+                  <span>MỞ KHÓA COMBO VIP ({COMBO_PACKAGE.priceXu} XU)</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
               )}

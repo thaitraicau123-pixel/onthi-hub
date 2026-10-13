@@ -440,7 +440,7 @@ export default function FlashcardModal({
               }}
               className="px-3 py-1 font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shrink-0 shadow-xs"
             >
-              Mở Khóa Toàn Bộ ({course.price ? `${Math.round(course.price / 1000)}K` : `${course.priceXu || 25} Xu`})
+              Mở Khóa Toàn Bộ ({course.priceXu || 25} Xu)
             </button>
           </div>
         )}
