@@ -1,5 +1,5 @@
 // Changelog & What's New Data for OnThiHub
-export const APP_VERSION = 'v2.7';
+export const APP_VERSION = 'v2.8';
 export const LAST_SEEN_VERSION_KEY = 'onthi_last_seen_changelog_version';
 
 export function isChangelogUnread() {
@@ -18,6 +18,34 @@ export function markChangelogAsRead() {
 }
 
 export const CHANGELOG_DATA = [
+  {
+    version: 'v2.8',
+    date: 'Tháng 10/2026 (Bản Mới Nhất)',
+    badge: 'MỚI NHẤT 🔥',
+    badgeColor: 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85]',
+    title: 'Đồng Bộ Duyệt Tiền Firebase Đa Thiết Bị ⚡ & Khóa Giao Diện Quizizz Rực Rỡ 🎨',
+    summary: 'Đưa tính năng duyệt tiền lên Firebase Firestore đa nền tảng, giúp Admin thấy và duyệt ngay lệnh nạp từ điện thoại khác, đồng thời cố định 100% phong cách Quizizz sống động.',
+    highlights: [
+      {
+        category: '⚡ Duyệt Tiền Firebase Firestore Đa Thiết Bị',
+        color: 'emerald',
+        items: [
+          '🔥 Đưa toàn bộ lệnh Nạp Xu / Rút Tiền lên Firebase Firestore: Học viên tạo lệnh nạp từ điện thoại hay bất kỳ máy nào, Admin trên máy tính đều thấy ngay lập tức.',
+          '✅ Duyệt Chay Thời Gian Thực: Khi Admin bấm "Duyệt", hệ thống Firebase tự động cộng Xu vào ví của học viên ngay tức khắc kèm chuông báo và pháo hoa.',
+          '📱 Ô nhập Email/Số điện thoại nhận Xu tiện lợi: Đảm bảo cộng Xu chính xác cho tài khoản người nạp ngay cả khi chưa đăng nhập.',
+          '🔄 Cloud Relay Dự Phòng 24/7: Đảm bảo thông báo rung điện thoại và lệnh nạp không bao giờ bị thất lạc.'
+        ]
+      },
+      {
+        category: '🎨 Khóa Cố Định Phong Cách Quizizz Rực Rỡ',
+        color: 'rose',
+        items: [
+          '✨ Chuẩn hóa 100% phong cách Quizizz/Wayground: Tông màu hoàng hôn tím đậm - hồng neon - kem ấm áp được áp dụng nhất quán trên toàn bộ website.',
+          '🧹 Loại bỏ hoàn toàn theme tối / theme sepia: Giúp trải nghiệm học tập và ôn thi luôn trực quan, tươi sáng và đồng bộ trên mọi màn hình.'
+        ]
+      }
+    ]
+  },
   {
     version: 'v2.7',
     date: 'Tháng 10/2026 (Bản Mới Nhất)',

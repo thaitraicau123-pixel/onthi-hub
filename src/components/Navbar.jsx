@@ -16,9 +16,6 @@ import {
   Bell,
   Users,
   Check,
-  Sun,
-  Moon,
-  Coffee,
   Volume2,
   VolumeX,
   Coins,
@@ -47,9 +44,7 @@ export default function Navbar({
   onOpenLeaderboard,
   onOpenBlindBox,
   onOpenMistakes,
-  onOpenChangelog,
-  theme = 'light',
-  onCycleTheme
+  onOpenChangelog
 }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const quota = getUserQuota();
@@ -519,29 +514,10 @@ export default function Navbar({
             <div className="p-4 bg-[#1d0413] border-t border-[#f02c85]/20 space-y-3">
               <div className="flex items-center justify-between text-xs font-bold text-rose-200">
                 
-                {/* Theme Toggle */}
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={onCycleTheme}
-                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#340b22] hover:bg-[#481132] border border-[#f02c85]/30 text-rose-100 transition-colors"
-                  >
-                    {theme === 'dark' ? (
-                      <>
-                        <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>Chế Độ Tối</span>
-                      </>
-                    ) : theme === 'sepia' ? (
-                      <>
-                        <Coffee className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Màu Cà Phê</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sun className="w-3.5 h-3.5 text-amber-300" />
-                        <span>Quizizz Style</span>
-                      </>
-                    )}
-                  </button>
+                {/* Quizizz Style Indicator */}
+                <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#340b22] border border-[#f02c85]/30 text-rose-100">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Quizizz Style</span>
                 </div>
 
                 {/* Sound Mute Toggle */}

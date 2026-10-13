@@ -27,14 +27,18 @@ import { getMarketplaceDecks } from './data/marketplaceData';
 import { isChangelogUnread } from './data/changelogData';
 import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
-import { getWalletBalance } from './utils/wallet';
-import { getAppTheme, setAppTheme } from './utils/gamification';
+import {
+  getWalletBalance,
+  subscribeToTransactions,
+  checkAndApplyApprovedTransactions
+} from './utils/wallet';
+import { playSound } from './utils/storage';
+import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function App() {
   // Current Active Tab: 'home' | 'marketplace' | 'community' | 'create' | 'library' | 'wallet' | 'plans' | 'admin'
   const [activeTab, setActiveTab] = useState('home');
-  const [theme, setTheme] = useState(() => getAppTheme());
 
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [user, setUser] = useState(null);
@@ -70,18 +74,24 @@ export default function App() {
       }
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // Global listener for cross-device transaction approvals
+    const unsubTxs = subscribeToTransactions(() => {
+      const activeUser = getCurrentUser();
+      const res = checkAndApplyApprovedTransactions(activeUser?.email);
+      if (res.newlyCreditedCoins > 0) {
+        setWalletBalance(getWalletBalance());
+        playSound('success');
+        confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
+        showToast(`🎉 Lệnh nạp tiền đã được Admin duyệt! Bạn được cộng +${res.newlyCreditedCoins} Xu vào ví.`);
+      }
+    });
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      if (typeof unsubTxs === 'function') unsubTxs();
+    };
   }, []);
-
-  // Sync theme
-  useEffect(() => {
-    document.body.className = theme === 'dark' ? 'theme-dark' : theme === 'sepia' ? 'theme-sepia' : '';
-    setAppTheme(theme);
-  }, [theme]);
-
-  const handleCycleTheme = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : prev === 'dark' ? 'sepia' : 'light'));
-  };
 
   const refreshState = () => {
     setWalletBalance(getWalletBalance());
@@ -108,9 +118,7 @@ export default function App() {
   const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
 
   return (
-    <div className={`min-h-screen bg-[#240618] bg-[radial-gradient(circle_at_50%_0%,_#5c163f_0%,_#380b23_45%,_#1e0413_100%)] flex flex-col text-slate-100 font-sans selection:bg-[#f02c85] selection:text-white ${
-      theme === 'dark' ? 'theme-dark' : theme === 'sepia' ? 'theme-sepia' : ''
-    }`}>
+    <div className="min-h-screen bg-[#240618] bg-[radial-gradient(circle_at_50%_0%,_#5c163f_0%,_#380b23_45%,_#1e0413_100%)] flex flex-col text-slate-100 font-sans selection:bg-[#f02c85] selection:text-white">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -136,8 +144,6 @@ export default function App() {
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
         onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
         onOpenChangelog={() => setIsChangelogOpen(true)}
-        theme={theme}
-        onCycleTheme={handleCycleTheme}
       />
 
       {/* MAIN TAB CONTENT AREA */}

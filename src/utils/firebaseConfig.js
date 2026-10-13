@@ -14,8 +14,31 @@ import {
   getFirestore,
   doc,
   setDoc,
-  getDoc
+  getDoc,
+  getDocs,
+  collection,
+  onSnapshot,
+  updateDoc,
+  query,
+  orderBy,
+  where,
+  deleteDoc
 } from 'firebase/firestore';
+
+export {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  collection,
+  onSnapshot,
+  updateDoc,
+  query,
+  orderBy,
+  where,
+  deleteDoc
+};
 
 const FIREBASE_CONFIG_KEY = 'onthi_firebase_config';
 const LOCAL_USER_KEY = 'onthi_current_user';
@@ -123,6 +146,11 @@ export function initFirebase() {
     console.warn('Firebase init running in smart local fallback mode:', err.message);
     return { auth: null, db: null, app: null };
   }
+}
+
+export function getFirestoreDb() {
+  const { db } = initFirebase();
+  return db;
 }
 
 /**

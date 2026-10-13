@@ -178,20 +178,13 @@ export function completeDailyQuest(questId) {
   }
 }
 
-// 7. THEME MANAGER (Light, Dark, Sepia)
-const THEME_KEY = 'onthi_app_theme';
-
+// 7. THEME MANAGER (Locked to pure Quizizz/Wayground aesthetic)
 export function getAppTheme() {
-  try {
-    return localStorage.getItem(THEME_KEY) || 'light';
-  } catch (e) {
-    return 'light';
-  }
+  return 'quizizz';
 }
 
-export function setAppTheme(theme) {
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch (e) {}
+export function setAppTheme() {
+  // Pure Quizizz style locked universally
 }
+
 

@@ -32,6 +32,8 @@ import {
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
   getTransactions,
+  fetchFirestoreTransactions,
+  subscribeToTransactions,
   adminApproveTransaction,
   adminRejectTransaction,
   getAdminNotifications,
@@ -100,8 +102,10 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
   const [ntfyTestMsg, setNtfyTestMsg] = useState('');
   const [isSendingNtfyTest, setIsSendingNtfyTest] = useState(false);
   const [copiedNtfyTopic, setCopiedNtfyTopic] = useState(false);
+  const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
+  const [approvingTxId, setApprovingTxId] = useState(null);
 
-  const reloadData = () => {
+  const reloadData = async () => {
     setTransactions(getTransactions());
     setNotifications(getAdminNotifications());
     setTierLimits(getTierLimits());
@@ -109,24 +113,60 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
     setFirebaseConfig(getFirebaseConfig());
     setGeminiApiKey(getGeminiApiKey());
     setOpenaiApiKey(getOpenAIApiKey());
+    try {
+      const freshTxs = await fetchFirestoreTransactions();
+      if (freshTxs && freshTxs.length > 0) {
+        setTransactions(freshTxs);
+      }
+    } catch (e) {}
   };
 
   useEffect(() => {
     reloadData();
+    // Real-time listener for Firestore & cross-device transactions
+    const unsubscribe = subscribeToTransactions((latestTxs) => {
+      setTransactions(latestTxs);
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
   }, []);
 
-  const handleApprove = (txId) => {
-    if (adminApproveTransaction(txId)) {
-      playSound('success');
-      reloadData();
+  const handleManualSyncFirebase = async () => {
+    setIsSyncingFirebase(true);
+    try {
+      const freshTxs = await fetchFirestoreTransactions();
+      setTransactions(freshTxs);
+      playSound('flip');
+    } finally {
+      setIsSyncingFirebase(false);
     }
   };
 
-  const handleReject = (txId) => {
+  const handleApprove = async (txId) => {
+    setApprovingTxId(txId);
+    try {
+      const ok = await adminApproveTransaction(txId);
+      if (ok) {
+        playSound('success');
+        await reloadData();
+      }
+    } finally {
+      setApprovingTxId(null);
+    }
+  };
+
+  const handleReject = async (txId) => {
     const reason = prompt('Nhập lý do từ chối giao dịch:', 'Thông tin chuyển khoản không trùng khớp');
     if (reason !== null) {
-      if (adminRejectTransaction(txId, reason)) {
-        reloadData();
+      setApprovingTxId(txId);
+      try {
+        const ok = await adminRejectTransaction(txId, reason);
+        if (ok) {
+          await reloadData();
+        }
+      } finally {
+        setApprovingTxId(null);
       }
     }
   };
@@ -524,18 +564,51 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
           {/* TAB 1: DUYỆT NẠP & RÚT */}
           {activeTab === 'transactions' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-black text-[#28071a]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
+                  <div className="flex items-center space-x-2">
+                    <h4 className="text-sm font-black text-[#28071a]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
+                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black border border-emerald-200">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-0.5"></span>
+                      <span>Firebase Realtime Sync</span>
+                    </span>
+                  </div>
                   <p className="text-xs text-[#7a5a6b] font-medium">
-                    Khi khách nạp hoặc rút tiền, thông báo sẽ gửi về Web Push ntfy.sh và <strong className="text-[#f02c85]">{ADMIN_EMAIL}</strong>.
+                    Tất cả tài khoản/điện thoại nạp rút đều được đưa lên Firebase Firestore và đồng bộ thời gian thực tại đây.
                   </p>
                 </div>
                 <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleManualSyncFirebase}
+                    disabled={isSyncingFirebase}
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#fcf7ec] border border-[#eadfcb] text-xs font-black text-[#28071a] shadow-xs transition-colors"
+                    title="Đồng bộ lại dữ liệu mới nhất từ Firebase Firestore"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 text-[#f02c85] ${isSyncingFirebase ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingFirebase ? 'Đang Tải...' : 'Làm Mới Firebase'}</span>
+                  </button>
                   <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#28071a] border border-[#eadfcb]">
                     Tổng {transactions.length} lệnh
                   </span>
                 </div>
+              </div>
+
+              <div className="p-3 bg-gradient-to-r from-pink-50 to-amber-50 rounded-2xl border border-[#eadfcb] text-xs text-[#28071a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
+                <div className="flex items-center space-x-2">
+                  <Database className="w-4 h-4 text-[#f02c85] shrink-0" />
+                  <span>
+                    Tính năng duyệt tiền đã kết nối <strong>Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của học viên trên mọi thiết bị sẽ được cộng Xu tức thì!
+                  </span>
+                </div>
+                <a
+                  href="https://console.firebase.google.com/project/onthi-hub/firestore"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-[#f02c85] hover:text-[#b81860] font-black underline flex items-center space-x-1 shrink-0 text-[11px]"
+                >
+                  <span>Mở Firestore Console</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
               </div>
 
               {transactions.length === 0 ? (
@@ -611,14 +684,20 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                               <div className="flex items-center justify-end space-x-1.5">
                                 <button
                                   onClick={() => handleApprove(tx.id)}
-                                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black shadow-xs flex items-center space-x-1"
+                                  disabled={approvingTxId === tx.id}
+                                  className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg text-[11px] font-black shadow-xs flex items-center space-x-1 transition-all"
                                 >
-                                  <CheckCircle2 className="w-3 h-3" />
-                                  <span>Duyệt</span>
+                                  {approvingTxId === tx.id ? (
+                                    <RefreshCw className="w-3 h-3 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 className="w-3 h-3" />
+                                  )}
+                                  <span>{approvingTxId === tx.id ? 'Đang duyệt...' : 'Duyệt'}</span>
                                 </button>
                                 <button
                                   onClick={() => handleReject(tx.id)}
-                                  className="px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-[11px] font-black border border-rose-300 flex items-center space-x-1"
+                                  disabled={approvingTxId === tx.id}
+                                  className="px-3 py-1 bg-rose-100 hover:bg-rose-200 disabled:opacity-50 text-rose-700 rounded-lg text-[11px] font-black border border-rose-300 flex items-center space-x-1 transition-all"
                                 >
                                   <XCircle className="w-3 h-3" />
                                   <span>Từ chối</span>

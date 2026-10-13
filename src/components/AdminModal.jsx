@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import {
   getTransactions,
+  fetchFirestoreTransactions,
+  subscribeToTransactions,
   adminApproveTransaction,
   adminRejectTransaction,
   getAdminNotifications,
@@ -37,30 +39,38 @@ export default function AdminModal({ onClose }) {
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
   // Reload data
-  const reloadData = () => {
+  const reloadData = async () => {
     setTransactions(getTransactions());
     setNotifications(getAdminNotifications());
     setTierLimits(getTierLimits());
     setMarketDecks(getMarketplaceDecks());
+    try {
+      const fresh = await fetchFirestoreTransactions();
+      if (fresh) setTransactions(fresh);
+    } catch (e) {}
   };
 
   useEffect(() => {
     reloadData();
+    const unsub = subscribeToTransactions((latest) => {
+      setTransactions(latest);
+    });
+    return () => unsub();
   }, []);
 
   // Handle Approve
-  const handleApprove = (txId) => {
-    if (adminApproveTransaction(txId)) {
+  const handleApprove = async (txId) => {
+    if (await adminApproveTransaction(txId)) {
       playSound('success');
       reloadData();
     }
   };
 
   // Handle Reject
-  const handleReject = (txId) => {
+  const handleReject = async (txId) => {
     const reason = prompt('Nhập lý do từ chối giao dịch:', 'Thông tin chuyển khoản không trùng khớp');
     if (reason !== null) {
-      if (adminRejectTransaction(txId, reason)) {
+      if (await adminRejectTransaction(txId, reason)) {
         reloadData();
       }
     }

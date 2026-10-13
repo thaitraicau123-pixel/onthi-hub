@@ -101,10 +101,10 @@ export default function PaymentModal({
     }
   };
 
-  const handleSimulateTopup = () => {
+  const handleSimulateTopup = async () => {
     setIsSimulatingTopup(true);
     // Create official deposit request so Admin receives phone push and email notification
-    createDepositRequest({
+    await createDepositRequest({
       xuAmount: topupAmount,
       userEmail: 'user_nap_the@onthihub.vn'
     });

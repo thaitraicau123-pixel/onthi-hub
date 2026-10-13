@@ -41,17 +41,18 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
   const transactions = getTransactions();
 
   // Create Deposit Request
-  const handleCreateDeposit = () => {
-    const { tx, emailData } = createDepositRequest({
+  const handleCreateDeposit = async () => {
+    const { tx, emailData } = await createDepositRequest({
       xuAmount: depositXu,
-      userEmail: user?.email || 'khach_nap@onthihub.vn'
+      userEmail: user?.email || 'khach_nap@onthihub.vn',
+      userId: user?.uid || null
     });
     setDepositResult({ tx, emailData });
     playSound('flip');
   };
 
   // Create Withdrawal Request
-  const handleCreateWithdrawal = (e) => {
+  const handleCreateWithdrawal = async (e) => {
     e.preventDefault();
     if (!accountNo.trim() || !accountName.trim()) {
       setWithdrawMsg({ text: 'Vui lòng điền đầy đủ số tài khoản và tên chủ thẻ!', isError: true });
@@ -62,12 +63,13 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
       return;
     }
 
-    const res = createWithdrawalRequest({
+    const res = await createWithdrawalRequest({
       xuAmount: parseInt(withdrawXu, 10),
       bankName,
       accountNo: accountNo.trim(),
       accountName: accountName.trim().toUpperCase(),
-      userEmail: user?.email || 'creator@onthihub.vn'
+      userEmail: user?.email || 'creator@onthihub.vn',
+      userId: user?.uid || null
     });
 
     if (res.success) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Wallet,
   ArrowDownLeft,
@@ -11,26 +11,34 @@ import {
   Coins,
   Copy,
   Check,
-  ExternalLink
+  ExternalLink,
+  RefreshCw,
+  Sparkles
 } from 'lucide-react';
 import {
   getWalletBalance,
   createDepositRequest,
   createWithdrawalRequest,
   getTransactions,
+  subscribeToTransactions,
+  checkAndApplyApprovedTransactions,
   ADMIN_EMAIL,
   ADMIN_PHONE,
   COIN_RATE_VND
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
+import confetti from 'canvas-confetti';
 
 export default function WalletView({ user, onBalanceUpdated }) {
   const [activeTab, setActiveTab] = useState('deposit'); // 'deposit' | 'withdraw' | 'history'
   const [balance, setBalance] = useState(getWalletBalance());
+  const [transactions, setTransactions] = useState(() => getTransactions());
 
   // Deposit state
   const [depositXu, setDepositXu] = useState(50);
+  const [depositEmail, setDepositEmail] = useState(() => user?.email || '');
   const [depositResult, setDepositResult] = useState(null);
+  const [isDepositing, setIsDepositing] = useState(false);
 
   // Withdraw state
   const [withdrawXu, setWithdrawXu] = useState(20);
@@ -39,20 +47,45 @@ export default function WalletView({ user, onBalanceUpdated }) {
   const [accountName, setAccountName] = useState('');
   const [withdrawMsg, setWithdrawMsg] = useState({ text: '', isError: false });
   const [lastWithdrawTx, setLastWithdrawTx] = useState(null);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const bankConfig = getBankConfig();
-  const transactions = getTransactions();
 
-  const handleCreateDeposit = () => {
-    const res = createDepositRequest({
-      xuAmount: depositXu,
-      userEmail: user?.email || 'khach_nap@onthihub.vn'
+  // Listen to Firestore & Cloud Relay transactions in real-time
+  useEffect(() => {
+    const unsub = subscribeToTransactions((latestTxs) => {
+      setTransactions(latestTxs);
+      const res = checkAndApplyApprovedTransactions(depositEmail || user?.email);
+      if (res.newlyCreditedCoins > 0) {
+        const nextBal = getWalletBalance();
+        setBalance(nextBal);
+        if (onBalanceUpdated) onBalanceUpdated();
+        playSound('success');
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
+      }
     });
-    setDepositResult(res);
-    playSound('flip');
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [user, depositEmail, onBalanceUpdated]);
+
+  const handleCreateDeposit = async () => {
+    setIsDepositing(true);
+    const targetEmail = depositEmail.trim() || user?.email || 'khach_nap@onthihub.vn';
+    try {
+      const res = await createDepositRequest({
+        xuAmount: depositXu,
+        userEmail: targetEmail,
+        userId: user?.uid || null
+      });
+      setDepositResult(res);
+      playSound('flip');
+    } finally {
+      setIsDepositing(false);
+    }
   };
 
-  const handleCreateWithdrawal = (e) => {
+  const handleCreateWithdrawal = async (e) => {
     e.preventDefault();
     if (!accountNo.trim() || !accountName.trim()) {
       setWithdrawMsg({ text: 'Vui lòng điền đầy đủ số tài khoản và tên chủ thẻ!', isError: true });
@@ -63,27 +96,33 @@ export default function WalletView({ user, onBalanceUpdated }) {
       return;
     }
 
-    const res = createWithdrawalRequest({
-      xuAmount: parseInt(withdrawXu, 10),
-      bankName,
-      accountNo: accountNo.trim(),
-      accountName: accountName.trim().toUpperCase(),
-      userEmail: user?.email || 'creator@onthihub.vn'
-    });
-
-    if (res.success) {
-      playSound('success');
-      setBalance(getWalletBalance());
-      onBalanceUpdated();
-      setLastWithdrawTx(res);
-      setWithdrawMsg({
-        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
-        isError: false
+    setIsWithdrawing(true);
+    try {
+      const res = await createWithdrawalRequest({
+        xuAmount: parseInt(withdrawXu, 10),
+        bankName,
+        accountNo: accountNo.trim(),
+        accountName: accountName.trim().toUpperCase(),
+        userEmail: user?.email || depositEmail || 'creator@onthihub.vn',
+        userId: user?.uid || null
       });
-      setAccountNo('');
-      setAccountName('');
-    } else {
-      setWithdrawMsg({ text: res.message, isError: true });
+
+      if (res.success) {
+        playSound('success');
+        setBalance(getWalletBalance());
+        if (onBalanceUpdated) onBalanceUpdated();
+        setLastWithdrawTx(res);
+        setWithdrawMsg({
+          text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
+          isError: false
+        });
+        setAccountNo('');
+        setAccountName('');
+      } else {
+        setWithdrawMsg({ text: res.message, isError: true });
+      }
+    } finally {
+      setIsWithdrawing(false);
     }
   };
 
@@ -219,75 +258,115 @@ export default function WalletView({ user, onBalanceUpdated }) {
                     </div>
                   </div>
 
-                  <button
-                    onClick={handleCreateDeposit}
-                    className="w-full py-3.5 btn-wayground-sunset text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
-                  >
-                    <QrCode className="w-4 h-4" />
-                    <span>Tạo Lệnh Nạp & Quét Mã VietQR</span>
-                  </button>
-
-                  <p className="text-xs text-[#7a5a6b] text-center font-medium">
-                    Sau khi quét mã, lệnh sẽ tự động gửi thông báo tới <strong>{ADMIN_EMAIL}</strong> để duyệt chay.
-                  </p>
-                </div>
-              ) : (
-                <div className="text-center space-y-4">
-                  <span className="text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    Lệnh Nạp Đang Chờ: {depositResult.tx.id}
-                  </span>
-
-                  <div className="p-3 bg-white rounded-2xl border border-[#eadfcb] inline-block shadow-md">
-                    <img
-                      src={generateVietQRUrl({
-                        bank: bankConfig.bank,
-                        accountNo: bankConfig.accountNo,
-                        accountName: bankConfig.accountName,
-                        amount: depositResult.tx.amountVnd,
-                        memo: depositResult.tx.id
-                      })}
-                      alt="VietQR Deposit"
-                      className="w-52 h-52 mx-auto object-contain bg-white p-2 rounded-xl"
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1.5">
+                      Email / Số điện thoại nhận Xu (để hệ thống đồng bộ chính xác):
+                    </label>
+                    <input
+                      type="text"
+                      value={depositEmail}
+                      onChange={(e) => setDepositEmail(e.target.value)}
+                      placeholder="VD: hocsinh@gmail.com hoặc 098xxxxxxx"
+                      className="w-full px-3.5 py-2.5 rounded-2xl border border-[#eadfcb] bg-white text-xs font-bold text-[#28071a] outline-none focus:border-[#f02c85] shadow-xs"
                     />
                   </div>
 
-                  <div className="text-xs sm:text-sm text-[#28071a] space-y-1 font-bold">
-                    <p>Số tiền cần chuyển: <strong className="text-emerald-700 font-black">{depositResult.tx.amountVnd.toLocaleString()}đ</strong></p>
-                    <p>Nội dung chuyển khoản: <strong className="text-[#f02c85] font-mono font-black bg-pink-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong></p>
-                  </div>
+                  <button
+                    onClick={handleCreateDeposit}
+                    disabled={isDepositing}
+                    className="w-full py-3.5 btn-wayground-sunset text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                  >
+                    {isDepositing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
+                    <span>{isDepositing ? 'Đang Tạo Lệnh...' : 'Tạo Lệnh Nạp & Quét Mã VietQR'}</span>
+                  </button>
 
-                  <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 text-left max-w-lg mx-auto shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                          ✓
-                        </span>
-                        <div>
-                          <strong className="text-[#28071a] font-black text-xs block">
-                            Đã Gửi Thông Báo Tự Động Tới Admin
-                          </strong>
-                          <span className="text-[#7a5a6b] text-[11px] font-medium">
-                            Admin nhận thông báo tức thì qua Web Push & Email
+                  <p className="text-xs text-[#7a5a6b] text-center font-medium">
+                    Sau khi quét mã, lệnh sẽ tự động đưa lên Firebase và gửi thông báo tới <strong>{ADMIN_EMAIL}</strong> để duyệt.
+                  </p>
+                </div>
+              ) : (
+                (() => {
+                  const liveTx = transactions.find((t) => t.id === depositResult.tx.id) || depositResult.tx;
+                  const isApproved = liveTx.status === 'approved';
+                  return (
+                    <div className="text-center space-y-4">
+                      {isApproved ? (
+                        <div className="p-4 bg-emerald-100 border-2 border-emerald-500 rounded-3xl text-emerald-950 text-center space-y-1.5 animate-bounce shadow-md">
+                          <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                          <h4 className="font-black text-sm">GIAO DỊCH ĐÃ ĐƯỢC ADMIN PHÊ DUYỆT!</h4>
+                          <p className="text-xs font-bold text-emerald-800">
+                            Đã cộng +{liveTx.xuAmount} Xu vào ví của bạn. Số dư hiện tại: {balance} Xu.
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                          <span className="text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            Lệnh Nạp: {depositResult.tx.id}
+                          </span>
+                          <span className="text-xs font-black px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 flex items-center space-x-1.5 animate-pulse">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+                            <span>Đang Chờ Admin Duyệt Trên Firebase</span>
                           </span>
                         </div>
+                      )}
+
+                      <div className="p-3 bg-white rounded-2xl border border-[#eadfcb] inline-block shadow-md">
+                        <img
+                          src={generateVietQRUrl({
+                            bank: bankConfig.bank,
+                            accountNo: bankConfig.accountNo,
+                            accountName: bankConfig.accountName,
+                            amount: depositResult.tx.amountVnd,
+                            memo: depositResult.tx.id
+                          })}
+                          alt="VietQR Deposit"
+                          className="w-52 h-52 mx-auto object-contain bg-white p-2 rounded-xl"
+                        />
                       </div>
-                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        Tự động 24/7
-                      </span>
+
+                      <div className="text-xs sm:text-sm text-[#28071a] space-y-1 font-bold">
+                        <p>
+                          Số tiền cần chuyển: <strong className="text-emerald-700 font-black">{depositResult.tx.amountVnd.toLocaleString()}đ</strong>
+                        </p>
+                        <p>
+                          Nội dung chuyển khoản: <strong className="text-[#f02c85] font-mono font-black bg-pink-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong>
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 text-left max-w-lg mx-auto shadow-sm">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                              ✓
+                            </span>
+                            <div>
+                              <strong className="text-[#28071a] font-black text-xs block">
+                                Đã Đồng Bộ Lên Firebase & Báo Admin
+                              </strong>
+                              <span className="text-[#7a5a6b] text-[11px] font-medium">
+                                Lệnh đã lưu trên Firebase Firestore & push chuông điện thoại Admin
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                            Firebase Realtime
+                          </span>
+                        </div>
+
+                        <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
+                          Bạn chỉ cần chuyển khoản đúng số tiền và nội dung <strong>{depositResult.tx.id}</strong> ở trên. Hệ thống sẽ tự động duyệt và cộng Xu vào ví của bạn ngay khi giao dịch được xác nhận!
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => setDepositResult(null)}
+                        className="text-xs text-[#f02c85] hover:underline font-black"
+                      >
+                        Quay lại chọn gói nạp khác
+                      </button>
                     </div>
-
-                    <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
-                      Bạn chỉ cần chuyển khoản đúng số tiền và nội dung <strong>{depositResult.tx.id}</strong> ở trên. Hệ thống sẽ tự động duyệt và cộng Xu vào ví của bạn ngay khi giao dịch được xác nhận!
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setDepositResult(null)}
-                    className="text-xs text-[#f02c85] hover:underline font-black"
-                  >
-                    Quay lại chọn gói nạp khác
-                  </button>
-                </div>
+                  );
+                })()
               )}
             </div>
           )}
