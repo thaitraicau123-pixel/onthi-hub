@@ -21,8 +21,10 @@ import {
   Check,
   Flame,
   Info,
-  Code
+  Code,
+  Gift
 } from 'lucide-react';
+import { BLIND_BOXES } from '../utils/blindBox';
 import {
   getTransactions,
   adminApproveTransaction,
@@ -315,6 +317,21 @@ export default function AdminView({ onBackToHome }) {
               isRealFirebaseConfigured() ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
             }`}>
               {isRealFirebaseConfigured() ? '🟢 Cloud Thật' : '🟡 Thử Nghiệm'}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('blindbox')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
+              activeTab === 'blindbox'
+                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
+                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+            }`}
+          >
+            <Gift className="w-4 h-4 text-purple-600" />
+            <span>Tỷ Lệ Túi Mù (Gacha)</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800">
+              Jackpot 8%
             </span>
           </button>
         </div>
@@ -1010,6 +1027,124 @@ export default function AdminView({ onBackToHome }) {
                     <strong>Lấy Khóa & Đưa lên Vercel:</strong> Vào <em>Project settings ➔ General ➔ Your apps (Web)</em>, sao chép cấu hình rồi bấm nút <strong>"Sao Chép .env Cho Vercel"</strong> ở trên dán vào mục <em>Environment Variables</em> trên Vercel.
                   </li>
                 </ol>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 6: QUẢN LÝ TỶ LỆ TÚI MÙ (BLIND BOX GACHA) */}
+          {activeTab === 'blindbox' && (
+            <div className="space-y-6">
+              
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#eadfcb]">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <Gift className="w-5 h-5 text-purple-600" />
+                    <h4 className="text-base font-black text-[#28071a]">
+                      Quản Lý & Kiểm Soát Tỷ Lệ Rơi Thưởng Túi Mù (Gacha System)
+                    </h4>
+                  </div>
+                  <p className="text-xs text-[#7a5a6b] font-medium mt-1 max-w-2xl">
+                    Tỷ lệ rơi đã được cân bằng toán học (100% tròn trịa), đảm bảo người chơi có trải nghiệm mở thưởng kích thích, minh bạch, đồng thời giữ vững kinh tế ví Xu của nền tảng.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2 shrink-0">
+                  <span className="text-xs font-black px-3 py-1.5 rounded-xl bg-purple-50 text-purple-800 border border-purple-200">
+                    Thuật Toán: Web Audio 3D & PRNG
+                  </span>
+                </div>
+              </div>
+
+              {/* 3 Box Rate Breakdown Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {BLIND_BOXES.map((box) => (
+                  <div key={box.id} className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-4">
+                    
+                    {/* Box Title */}
+                    <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+                      <div className="flex items-center space-x-2.5">
+                        <span className="text-3xl">{box.icon}</span>
+                        <div>
+                          <h5 className="text-sm font-black text-[#28071a]">{box.name}</h5>
+                          <span className="text-[11px] font-bold text-amber-700">{box.subname}</span>
+                        </div>
+                      </div>
+                      <div className="px-2.5 py-1 rounded-xl bg-amber-400 text-[#28071a] font-black text-xs">
+                        {box.costXu} Xu
+                      </div>
+                    </div>
+
+                    {/* Rates Table */}
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-black text-[#7a5a6b] uppercase tracking-wider block">
+                        Tỷ Lệ Rơi Thưởng (Tổng 100%):
+                      </span>
+
+                      <div className="space-y-1.5">
+                        {box.dropRates.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2 rounded-xl bg-[#fcf7ec] border border-[#eadfcb] flex items-center justify-between text-xs"
+                          >
+                            <div className="flex items-center space-x-1.5 min-w-0 pr-2">
+                              <span className={`text-[8px] font-black uppercase px-1.5 py-0.2 rounded shrink-0 ${
+                                item.rarity === 'secret' ? 'bg-amber-400 text-slate-950 animate-pulse' :
+                                item.rarity === 'legendary' ? 'bg-purple-600 text-white' :
+                                item.rarity === 'epic' ? 'bg-rose-500 text-white' :
+                                item.rarity === 'rare' ? 'bg-indigo-600 text-white' :
+                                'bg-slate-500 text-white'
+                              }`}>
+                                {item.rarity}
+                              </span>
+                              <span className="font-bold text-[#28071a] text-[11px] truncate">
+                                {item.name}
+                              </span>
+                            </div>
+
+                            <span className="font-mono font-black text-amber-700 shrink-0 text-xs">
+                              {item.rate}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Summary Tag */}
+                    <div className="p-2.5 rounded-xl bg-[#f5ecd8]/60 text-[11px] text-[#7a5a6b] font-medium leading-relaxed">
+                      💡 {box.description}
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+
+              {/* Economic Balance & Highlights */}
+              <div className="p-5 bg-gradient-to-r from-purple-900/10 via-pink-900/10 to-amber-900/10 rounded-2xl border border-purple-200 space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-600" />
+                  <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                    Các Điểm Sáng Trong Cơ Chế Rơi Thưởng Mới:
+                  </h5>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#28071a]">
+                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
+                    <strong className="text-purple-700 font-bold block">1. Cam Kết 100% Trúng Thưởng</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Không bao giờ có rương rỗng; học viên luôn nhận lại Xu hoàn vốn, voucher giảm giá hoặc bộ thẻ xịn.</p>
+                  </div>
+
+                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
+                    <strong className="text-amber-700 font-bold block">2. Tỷ Lệ Nổ Hũ Vàng 8%</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Tỷ lệ 8% ở rương ULTRA 30 Xu tạo sự hồi hộp đỉnh cao mà không làm lạm phát số dư ví Xu của hệ thống.</p>
+                  </div>
+
+                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
+                    <strong className="text-emerald-700 font-bold block">3. Hiệu Ứng Âm Thanh Synth 3D</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Tích hợp 4 giai điệu âm thanh Web Audio API: Xé băng dính, Lắc rương, Chuông tiên vỡ òa, và Kèn Trumpet mừng Jackpot.</p>
+                  </div>
+                </div>
               </div>
 
             </div>

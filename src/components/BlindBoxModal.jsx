@@ -267,11 +267,22 @@ export default function BlindBoxModal({
                 Đóng ✕
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {selectedBox.dropRates?.map((dr, idx) => (
                 <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                  <span className="text-[11px] text-rose-100 font-bold">{dr.name}</span>
-                  <span className="font-mono font-black text-amber-400 text-xs">{dr.rate}</span>
+                  <span className="text-[11px] text-rose-100 font-bold truncate mr-2">{dr.name}</span>
+                  <div className="flex items-center space-x-1.5 shrink-0">
+                    <span className={`text-[8px] font-black uppercase px-1.5 py-0.2 rounded-md ${
+                      dr.rarity === 'secret' ? 'bg-amber-400 text-slate-950 animate-pulse' :
+                      dr.rarity === 'legendary' ? 'bg-purple-500 text-white' :
+                      dr.rarity === 'epic' ? 'bg-rose-500 text-white' :
+                      dr.rarity === 'rare' ? 'bg-indigo-500 text-white' :
+                      'bg-slate-700 text-slate-200'
+                    }`}>
+                      {dr.rarity}
+                    </span>
+                    <span className="font-mono font-black text-amber-400 text-xs">{dr.rate}</span>
+                  </div>
                 </div>
               ))}
             </div>
