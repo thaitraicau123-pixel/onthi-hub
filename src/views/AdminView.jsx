@@ -23,7 +23,8 @@ import {
   Info,
   Code,
   Gift,
-  Cpu
+  Cpu,
+  MessageCircle
 } from 'lucide-react';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
@@ -32,7 +33,12 @@ import {
   adminRejectTransaction,
   getAdminNotifications,
   ADMIN_EMAIL,
-  COIN_RATE_VND
+  ADMIN_PHONE,
+  ADMIN_ZALO_LINK,
+  ADMIN_NTFY_TOPIC,
+  COIN_RATE_VND,
+  openAdminZaloChat,
+  formatAdminZaloMessage
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck } from '../data/marketplaceData';
@@ -280,13 +286,26 @@ export default function AdminView({ onBackToHome }) {
                 Duyệt Chay 24/7
               </span>
             </div>
-            <p className="text-xs text-rose-200/70 mt-0.5 font-medium">
-              Email nhận thông báo hệ thống: <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong>
+            <p className="text-xs text-rose-200/80 mt-1 font-medium flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span>Hotline / Zalo: <a href={ADMIN_ZALO_LINK} target="_blank" rel="noreferrer" className="text-amber-300 font-mono font-black underline hover:text-white">💬 {ADMIN_PHONE}</a></span>
+              <span>•</span>
+              <span>Email: <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong></span>
+              <span>•</span>
+              <span>Web Push: <a href={ADMIN_NTFY_TOPIC} target="_blank" rel="noreferrer" className="text-cyan-300 font-mono underline hover:text-white">ntfy.sh Topic</a></span>
             </p>
           </div>
         </div>
 
         <div className="flex items-center space-x-2">
+          <a
+            href={ADMIN_ZALO_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className="px-3.5 py-2 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md transition-all"
+          >
+            <MessageCircle className="w-3.5 h-3.5 fill-white" />
+            <span>Mở Zalo ({ADMIN_PHONE})</span>
+          </a>
           <button
             onClick={reloadData}
             className="p-2.5 text-rose-200/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
@@ -356,8 +375,8 @@ export default function AdminView({ onBackToHome }) {
                 : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
             }`}
           >
-            <Mail className="w-4 h-4 text-[#f02c85]" />
-            <span>Nhật Ký Gmail ({notifications.length})</span>
+            <MessageCircle className="w-4 h-4 text-[#0068ff]" />
+            <span>Nhật Ký Zalo & Mail ({notifications.length})</span>
           </button>
 
           <button
@@ -420,12 +439,23 @@ export default function AdminView({ onBackToHome }) {
                 <div>
                   <h4 className="text-sm font-black text-[#28071a]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
                   <p className="text-xs text-[#7a5a6b] font-medium">
-                    Khi khách nạp hoặc rút tiền, thông báo sẽ gửi về <strong className="text-[#f02c85]">{ADMIN_EMAIL}</strong>.
+                    Khi khách nạp hoặc rút tiền, thông báo sẽ gửi về Zalo <a href={ADMIN_ZALO_LINK} target="_blank" rel="noreferrer" className="text-[#0068ff] font-mono font-bold hover:underline">{ADMIN_PHONE}</a>, Web Push và <strong className="text-[#f02c85]">{ADMIN_EMAIL}</strong>.
                   </p>
                 </div>
-                <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#28071a] border border-[#eadfcb]">
-                  Tổng {transactions.length} lệnh
-                </span>
+                <div className="flex items-center space-x-2">
+                  <a
+                    href={ADMIN_ZALO_LINK}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3 py-1 bg-[#0068ff] hover:bg-[#0052cc] text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                    <span>Chat Zalo Admin ({ADMIN_PHONE})</span>
+                  </a>
+                  <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#28071a] border border-[#eadfcb]">
+                    Tổng {transactions.length} lệnh
+                  </span>
+                </div>
               </div>
 
               {transactions.length === 0 ? (
@@ -499,6 +529,26 @@ export default function AdminView({ onBackToHome }) {
                           <td className="p-3 text-right">
                             {tx.status === 'pending' ? (
                               <div className="flex items-center justify-end space-x-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const msg = formatAdminZaloMessage({
+                                      type: tx.type,
+                                      code: tx.id,
+                                      amountXu: tx.xuAmount,
+                                      amountVnd: tx.amountVnd,
+                                      userEmail: tx.userEmail,
+                                      details: tx.details,
+                                      timestamp: tx.createdAt
+                                    });
+                                    openAdminZaloChat(msg);
+                                  }}
+                                  className="px-2.5 py-1 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded-lg text-[11px] font-black shadow-xs flex items-center space-x-1"
+                                  title="Mở Zalo và sao chép nội dung giao dịch"
+                                >
+                                  <MessageCircle className="w-3 h-3 fill-white" />
+                                  <span>Zalo</span>
+                                </button>
                                 <button
                                   onClick={() => handleApprove(tx.id)}
                                   className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-black shadow-xs flex items-center space-x-1"
@@ -821,47 +871,71 @@ export default function AdminView({ onBackToHome }) {
             );
           })()}
 
-          {/* TAB 4: HÒM THƯ GMAIL ADMIN */}
+          {/* TAB 4: HÒM THƯ ZALO & GMAIL ADMIN */}
           {activeTab === 'notifications' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">
-                    Lịch Sử Thông Báo Đã Gửi Về Gmail: <span className="text-rose-600 font-mono">{ADMIN_EMAIL}</span>
+                  <h4 className="text-sm font-black text-[#28071a]">
+                    Nhật Ký Thông Báo Giao Dịch (Zalo: <a href={ADMIN_ZALO_LINK} target="_blank" rel="noreferrer" className="text-[#0068ff] font-mono font-bold hover:underline">{ADMIN_PHONE}</a> & Gmail)
                   </h4>
-                  <p className="text-xs text-slate-500">
-                    Mỗi khi có khách nạp/rút tiền, hệ thống tự động ghi nhật ký và gửi email thông báo chi tiết.
+                  <p className="text-xs text-[#7a5a6b] font-medium">
+                    Mỗi khi có khách nạp/rút tiền, hệ thống tự động đẩy thông báo qua Zalo {ADMIN_PHONE}, Web Push ntfy.sh và lưu lại nhật ký.
                   </p>
                 </div>
+                <a
+                  href={ADMIN_ZALO_LINK}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-1.5 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-xs"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                  <span>Mở Zalo Admin</span>
+                </a>
               </div>
 
               {notifications.length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-slate-200">
-                  <Mail className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-slate-500">Chưa có thông báo email nào được ghi nhận.</p>
+                <div className="text-center py-12 bg-white rounded-2xl border border-[#eadfcb]">
+                  <MessageCircle className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                  <p className="text-xs text-[#7a5a6b] font-bold">Chưa có thông báo nạp/rút nào được ghi nhận.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {notifications.map((n) => (
-                    <div key={n.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <div key={n.id} className="p-4 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 uppercase">
-                            Gửi tới: {n.targetEmail}
-                          </span>
-                          <h5 className="text-xs font-bold text-slate-900 mt-1">{n.subject}</h5>
-                          <span className="text-[10px] text-slate-400 block mt-0.5">{n.timestamp}</span>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-[#0068ff]/10 text-[#0068ff] uppercase border border-[#0068ff]/20">
+                              Zalo: {n.targetPhone || ADMIN_PHONE}
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-pink-100 text-[#f02c85]">
+                              {n.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'} ({n.code})
+                            </span>
+                          </div>
+                          <h5 className="text-xs font-black text-[#28071a] mt-1.5">{n.subject}</h5>
+                          <span className="text-[10px] text-[#7a5a6b] block mt-0.5 font-medium">{n.timestamp}</span>
                         </div>
-                        <a
-                          href={`mailto:${n.targetEmail}?subject=${encodeURIComponent(n.subject)}&body=${encodeURIComponent(n.body)}`}
-                          className="px-2.5 py-1 text-[11px] font-bold text-indigo-600 bg-white hover:bg-indigo-50 rounded-md shrink-0 flex items-center space-x-1 border border-indigo-200"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          <span>Mở Mail</span>
-                        </a>
+                        <div className="flex items-center space-x-1.5 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => openAdminZaloChat(n.zaloMessage || n.body)}
+                            className="px-2.5 py-1 text-[11px] font-black text-white bg-[#0068ff] hover:bg-[#0052cc] rounded-lg flex items-center space-x-1 shadow-xs"
+                          >
+                            <MessageCircle className="w-3 h-3 fill-white" />
+                            <span>Mở Zalo</span>
+                          </button>
+                          <a
+                            href={`mailto:${n.targetEmail}?subject=${encodeURIComponent(n.subject)}&body=${encodeURIComponent(n.body)}`}
+                            className="px-2.5 py-1 text-[11px] font-bold text-[#7a5a6b] bg-white hover:bg-slate-50 rounded-lg flex items-center space-x-1 border border-[#eadfcb]"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            <span>Mail</span>
+                          </a>
+                        </div>
                       </div>
-                      <pre className="mt-3 p-3 bg-white rounded-xl text-[11px] text-slate-700 font-mono whitespace-pre-wrap border border-slate-200">
-                        {n.body}
+                      <pre className="mt-3 p-3 bg-[#fcf7ec] rounded-xl text-[11px] text-[#28071a] font-mono whitespace-pre-wrap border border-[#eadfcb]">
+                        {n.zaloMessage || n.body}
                       </pre>
                     </div>
                   ))}

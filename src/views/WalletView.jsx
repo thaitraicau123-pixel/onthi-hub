@@ -8,7 +8,11 @@ import {
   CheckCircle2,
   Mail,
   ShieldCheck,
-  Coins
+  Coins,
+  MessageCircle,
+  Copy,
+  Check,
+  ExternalLink
 } from 'lucide-react';
 import {
   getWalletBalance,
@@ -16,7 +20,11 @@ import {
   createWithdrawalRequest,
   getTransactions,
   ADMIN_EMAIL,
-  COIN_RATE_VND
+  ADMIN_PHONE,
+  ADMIN_ZALO_LINK,
+  COIN_RATE_VND,
+  openAdminZaloChat,
+  formatAdminZaloMessage
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 
@@ -34,16 +42,18 @@ export default function WalletView({ user, onBalanceUpdated }) {
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
   const [withdrawMsg, setWithdrawMsg] = useState({ text: '', isError: false });
+  const [lastWithdrawTx, setLastWithdrawTx] = useState(null);
+  const [copiedZalo, setCopiedZalo] = useState(false);
 
   const bankConfig = getBankConfig();
   const transactions = getTransactions();
 
   const handleCreateDeposit = () => {
-    const { tx, emailData } = createDepositRequest({
+    const res = createDepositRequest({
       xuAmount: depositXu,
       userEmail: user?.email || 'khach_nap@onthihub.vn'
     });
-    setDepositResult({ tx, emailData });
+    setDepositResult(res);
     playSound('flip');
   };
 
@@ -70,8 +80,9 @@ export default function WalletView({ user, onBalanceUpdated }) {
       playSound('success');
       setBalance(getWalletBalance());
       onBalanceUpdated();
+      setLastWithdrawTx(res);
       setWithdrawMsg({
-        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Thông báo đã gửi về ${ADMIN_EMAIL} để Admin duyệt chay.`,
+        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hãy bấm nút nhắn tin Zalo bên dưới để báo Admin duyệt chuyển tiền ngay.`,
         isError: false
       });
       setAccountNo('');
@@ -250,11 +261,57 @@ export default function WalletView({ user, onBalanceUpdated }) {
                     <p>Nội dung chuyển khoản: <strong className="text-[#f02c85] font-mono font-black bg-pink-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong></p>
                   </div>
 
-                  <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-2xl text-xs text-blue-900 flex items-start space-x-2 text-left max-w-md mx-auto font-medium">
-                    <Mail className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                    <span>
-                      Hệ thống đã gửi thông báo đến <strong>{ADMIN_EMAIL}</strong>. Bạn hãy chuyển khoản theo đúng nội dung trên, Xu sẽ được cộng ngay sau khi Admin duyệt.
-                    </span>
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-pink-50 border-2 border-[#f02c85]/30 rounded-2xl text-xs space-y-3 text-left max-w-lg mx-auto shadow-md">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <span className="w-8 h-8 rounded-xl bg-[#0068ff] text-white flex items-center justify-center font-black text-sm shadow-xs">
+                          Z
+                        </span>
+                        <div>
+                          <strong className="text-[#28071a] font-black text-xs block">
+                            Báo Admin Duyệt Xu Qua Zalo (0986.019.623)
+                          </strong>
+                          <span className="text-[#7a5a6b] text-[11px] font-medium">
+                            Hotline / Zalo: <strong className="text-[#0068ff] font-mono">{ADMIN_PHONE}</strong>
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        Online Duyệt 24/7
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
+                      Chuyển khoản xong, bạn chỉ cần bấm nút bên dưới: hệ thống sẽ <strong>tự động sao chép mã {depositResult.tx.id}</strong> và <strong>mở Zalo chat với Admin ({ADMIN_PHONE})</strong> để được duyệt cộng Xu ngay lập tức!
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          openAdminZaloChat(depositResult.zaloMessage);
+                          setCopiedZalo(true);
+                          setTimeout(() => setCopiedZalo(false), 3000);
+                        }}
+                        className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+                      >
+                        <MessageCircle className="w-4 h-4 fill-white" />
+                        <span>{copiedZalo ? '✅ Đã Copy & Mở Zalo Admin!' : '💬 Mở Zalo Nhắn Admin (0986.019.623)'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(depositResult.zaloMessage);
+                          setCopiedZalo(true);
+                          setTimeout(() => setCopiedZalo(false), 2000);
+                        }}
+                        className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] font-bold text-xs hover:bg-[#f5ecd8] flex items-center justify-center space-x-1"
+                      >
+                        <Copy className="w-3.5 h-3.5 text-[#7a5a6b]" />
+                        <span>Sao Chép</span>
+                      </button>
+                    </div>
                   </div>
 
                   <button
@@ -270,94 +327,151 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           {/* TAB 2: RÚT TIỀN */}
           {activeTab === 'withdraw' && (
-            <form onSubmit={handleCreateWithdrawal} className="space-y-4 text-xs sm:text-sm text-[#28071a]">
-              {withdrawMsg.text && (
-                <div className={`p-3.5 rounded-2xl border font-bold ${
-                  withdrawMsg.isError
-                    ? 'bg-rose-100 border-rose-300 text-rose-800'
-                    : 'bg-emerald-100 border-emerald-300 text-emerald-800'
-                }`}>
-                  {withdrawMsg.text}
+            <div className="space-y-4">
+              {lastWithdrawTx && (
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-pink-50 border-2 border-[#f02c85]/40 rounded-2xl text-xs space-y-3 shadow-md animate-fade-in text-left">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="w-8 h-8 rounded-xl bg-[#0068ff] text-white flex items-center justify-center font-black text-sm shadow-xs">
+                        Z
+                      </span>
+                      <div>
+                        <strong className="text-[#28071a] font-black text-xs block">
+                          Gửi Tin Nhắn Zalo Báo Admin Chuyển Khoản
+                        </strong>
+                        <span className="text-[#7a5a6b] text-[11px] font-medium">
+                          Zalo Admin: <strong className="text-[#0068ff] font-mono">{ADMIN_PHONE}</strong>
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                      Mã: {lastWithdrawTx.tx.id}
+                    </span>
+                  </div>
+
+                  <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
+                    Bấm nút bên dưới để gửi thông tin số tài khoản và mã rút <strong>{lastWithdrawTx.tx.id}</strong> qua Zalo Admin để được chuyển tiền nhanh nhất:
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openAdminZaloChat(lastWithdrawTx.zaloMessage);
+                        setCopiedZalo(true);
+                        setTimeout(() => setCopiedZalo(false), 3000);
+                      }}
+                      className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+                    >
+                      <MessageCircle className="w-4 h-4 fill-white" />
+                      <span>{copiedZalo ? '✅ Đã Copy & Mở Zalo Admin!' : '💬 Mở Zalo Báo Admin (0986.019.623) Chuyển Tiền'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        navigator.clipboard.writeText(lastWithdrawTx.zaloMessage);
+                        setCopiedZalo(true);
+                        setTimeout(() => setCopiedZalo(false), 2000);
+                      }}
+                      className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] font-bold text-xs hover:bg-[#f5ecd8] flex items-center justify-center space-x-1"
+                    >
+                      <Copy className="w-3.5 h-3.5 text-[#7a5a6b]" />
+                      <span>Sao Chép</span>
+                    </button>
+                  </div>
                 </div>
               )}
 
-              <div>
-                <label className="font-black text-[#28071a] block mb-1">
-                  Số lượng Xu muốn rút (Khả dụng: {balance} Xu):
-                </label>
-                <div className="flex items-center space-x-2">
+              <form onSubmit={handleCreateWithdrawal} className="space-y-4 text-xs sm:text-sm text-[#28071a]">
+                {withdrawMsg.text && (
+                  <div className={`p-3.5 rounded-2xl border font-bold ${
+                    withdrawMsg.isError
+                      ? 'bg-rose-100 border-rose-300 text-rose-800'
+                      : 'bg-emerald-100 border-emerald-300 text-emerald-800'
+                  }`}>
+                    {withdrawMsg.text}
+                  </div>
+                )}
+
+                <div>
+                  <label className="font-black text-[#28071a] block mb-1">
+                    Số lượng Xu muốn rút (Khả dụng: {balance} Xu):
+                  </label>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      min="10"
+                      max={balance}
+                      value={withdrawXu}
+                      onChange={(e) => setWithdrawXu(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-black bg-white text-[#28071a]"
+                      required
+                    />
+                    <span className="font-black text-[#7a5a6b] shrink-0 text-xs sm:text-sm">
+                      = {(withdrawXu * COIN_RATE_VND).toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="font-black text-[#28071a] block mb-1">Ngân hàng nhận tiền:</label>
+                  <select
+                    value={bankName}
+                    onChange={(e) => setBankName(e.target.value)}
+                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] text-xs sm:text-sm bg-white font-bold text-[#28071a]"
+                  >
+                    <option value="MB Bank">MB Bank (Ngân Hàng Quân Đội)</option>
+                    <option value="Vietcombank">Vietcombank</option>
+                    <option value="Techcombank">Techcombank</option>
+                    <option value="VPBank">VPBank</option>
+                    <option value="ACB">ACB (Á Châu)</option>
+                    <option value="BIDV">BIDV</option>
+                    <option value="VietinBank">VietinBank</option>
+                    <option value="TPBank">TPBank</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="font-black text-[#28071a] block mb-1">Số tài khoản ngân hàng:</label>
                   <input
-                    type="number"
-                    min="10"
-                    max={balance}
-                    value={withdrawXu}
-                    onChange={(e) => setWithdrawXu(e.target.value)}
-                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-black bg-white text-[#28071a]"
+                    type="text"
+                    placeholder="Nhập số tài khoản..."
+                    value={accountNo}
+                    onChange={(e) => setAccountNo(e.target.value)}
+                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono font-bold bg-white text-[#28071a]"
                     required
                   />
-                  <span className="font-black text-[#7a5a6b] shrink-0 text-xs sm:text-sm">
-                    = {(withdrawXu * COIN_RATE_VND).toLocaleString()} VNĐ
-                  </span>
                 </div>
-              </div>
 
-              <div>
-                <label className="font-black text-[#28071a] block mb-1">Ngân hàng nhận tiền:</label>
-                <select
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] text-xs sm:text-sm bg-white font-bold text-[#28071a]"
-                >
-                  <option value="MB Bank">MB Bank (Ngân Hàng Quân Đội)</option>
-                  <option value="Vietcombank">Vietcombank</option>
-                  <option value="Techcombank">Techcombank</option>
-                  <option value="VPBank">VPBank</option>
-                  <option value="ACB">ACB (Á Châu)</option>
-                  <option value="BIDV">BIDV</option>
-                  <option value="VietinBank">VietinBank</option>
-                  <option value="TPBank">TPBank</option>
-                </select>
-              </div>
+                <div>
+                  <label className="font-black text-[#28071a] block mb-1">Tên chủ tài khoản (in hoa):</label>
+                  <input
+                    type="text"
+                    placeholder="VD: NGUYEN VAN A"
+                    value={accountName}
+                    onChange={(e) => setAccountName(e.target.value.toUpperCase())}
+                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono uppercase font-bold bg-white text-[#28071a]"
+                    required
+                  />
+                </div>
 
-              <div>
-                <label className="font-black text-[#28071a] block mb-1">Số tài khoản ngân hàng:</label>
-                <input
-                  type="text"
-                  placeholder="Nhập số tài khoản..."
-                  value={accountNo}
-                  onChange={(e) => setAccountNo(e.target.value)}
-                  className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono font-bold bg-white text-[#28071a]"
-                  required
-                />
-              </div>
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={balance < 10}
+                    className="w-full py-3.5 bg-[#f02c85] hover:bg-[#dc1f74] text-white rounded-2xl font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
+                  >
+                    <ArrowUpRight className="w-4 h-4" />
+                    <span>Xác Nhận Rút Tiền Về Tài Khoản</span>
+                  </button>
+                </div>
 
-              <div>
-                <label className="font-black text-[#28071a] block mb-1">Tên chủ tài khoản (in hoa):</label>
-                <input
-                  type="text"
-                  placeholder="VD: NGUYEN VAN A"
-                  value={accountName}
-                  onChange={(e) => setAccountName(e.target.value.toUpperCase())}
-                  className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono uppercase font-bold bg-white text-[#28071a]"
-                  required
-                />
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={balance < 10}
-                  className="w-full py-3.5 bg-[#f02c85] hover:bg-[#dc1f74] text-white rounded-2xl font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
-                >
-                  <ArrowUpRight className="w-4 h-4" />
-                  <span>Xác Nhận Rút Tiền Về Tài Khoản</span>
-                </button>
-              </div>
-
-              <p className="text-xs text-[#7a5a6b] text-center font-medium">
-                Lệnh rút sẽ gửi thông báo đến <strong>{ADMIN_EMAIL}</strong> để Admin duyệt chay và chuyển khoản.
-              </p>
-            </form>
+                <p className="text-xs text-[#7a5a6b] text-center font-medium">
+                  Hotline / Zalo hỗ trợ rút tiền nhanh: <strong className="text-[#0068ff]">{ADMIN_PHONE}</strong> (Duyệt chuyển khoản 24/7).
+                </p>
+              </form>
+            </div>
           )}
 
           {/* TAB 3: LỊCH SỬ GIAO DỊCH */}
@@ -386,11 +500,36 @@ export default function WalletView({ user, onBalanceUpdated }) {
                       <span className="font-black text-[#28071a] block">
                         {tx.type === 'deposit' ? '+' : '-'}{tx.xuAmount} Xu
                       </span>
-                      <span className={`text-[11px] font-black ${
-                        tx.status === 'approved' ? 'text-emerald-700' : tx.status === 'rejected' ? 'text-rose-600' : 'text-amber-600'
-                      }`}>
-                        {tx.status === 'approved' ? 'Đã duyệt ✅' : tx.status === 'rejected' ? 'Bị từ chối ❌' : 'Chờ duyệt chay ⏳'}
-                      </span>
+                      <div className="flex items-center justify-end space-x-1.5 mt-0.5">
+                        <span className={`text-[11px] font-black ${
+                          tx.status === 'approved' ? 'text-emerald-700' : tx.status === 'rejected' ? 'text-rose-600' : 'text-amber-600'
+                        }`}>
+                          {tx.status === 'approved' ? 'Đã duyệt ✅' : tx.status === 'rejected' ? 'Bị từ chối ❌' : 'Chờ duyệt chay ⏳'}
+                        </span>
+
+                        {tx.status === 'pending' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const msg = formatAdminZaloMessage({
+                                type: tx.type,
+                                code: tx.id,
+                                amountXu: tx.xuAmount,
+                                amountVnd: tx.amountVnd,
+                                userEmail: tx.userEmail,
+                                details: tx.details,
+                                timestamp: tx.createdAt
+                              });
+                              openAdminZaloChat(msg);
+                            }}
+                            className="px-2 py-0.5 bg-[#0068ff]/10 hover:bg-[#0068ff]/20 text-[#0068ff] font-bold text-[10px] rounded-lg border border-[#0068ff]/30 flex items-center space-x-1 transition-colors"
+                            title={`Nhắn Zalo ${ADMIN_PHONE} để duyệt ngay`}
+                          >
+                            <MessageCircle className="w-3 h-3 text-[#0068ff]" />
+                            <span>Báo Zalo</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))

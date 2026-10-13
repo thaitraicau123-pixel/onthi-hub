@@ -3,7 +3,11 @@ const WALLET_BALANCE_KEY = 'onthi_wallet_balance';
 const TRANSACTIONS_KEY = 'onthi_wallet_transactions';
 const ADMIN_NOTIFICATIONS_KEY = 'onthi_admin_notifications';
 
+export const ADMIN_PHONE = '0986019623';
+export const ADMIN_ZALO_PHONE = '0986019623';
+export const ADMIN_ZALO_LINK = 'https://zalo.me/0986019623';
 export const ADMIN_EMAIL = 'thaitraicau123@gmail.com';
+export const ADMIN_NTFY_TOPIC = 'https://ntfy.sh/onthihub_admin_0986019623';
 export const COIN_RATE_VND = 1000; // 1 Xu = 1.000 VNĐ
 
 // Get current wallet balance (Default 20 Xu tặng tân thủ)
@@ -52,12 +56,51 @@ export function getTransactions() {
   }
 }
 
-// Send Notification to Gmail thaitraicau123@gmail.com
-export function notifyAdminByEmail({ type, code, amountXu, amountVnd, userEmail, details }) {
+// Format standard notification message for Admin via Zalo (0986019623)
+export function formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEmail, details, timestamp }) {
+  const time = timestamp || new Date().toLocaleString('vi-VN');
+  const typeText = type === 'deposit' ? 'NẠP XU (VietQR)' : 'RÚT TIỀN VỀ NGÂN HÀNG';
+  const vndText = (amountVnd || amountXu * COIN_RATE_VND).toLocaleString('vi-VN');
+
+  let extra = '';
+  if (type === 'withdraw' && details) {
+    extra = `\n🏦 Ngân hàng: ${details.bankName || ''}\n💳 STK: ${details.accountNo || ''}\n👤 Chủ TK: ${details.accountName || ''}`;
+  } else if (type === 'deposit') {
+    extra = `\n💳 Cú pháp quét mã: ${code}\n💰 Số tiền chuyển khoản: ${vndText}đ`;
+  }
+
+  return `🔔 [ÔNTHIHUB] THÔNG BÁO ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} MỚI!
+----------------------------------
+• Mã GD: ${code}
+• Loại lệnh: ${typeText}
+• Số lượng: ${amountXu} Xu (~${vndText}đ)
+• Khách hàng: ${userEmail || 'Chưa cung cấp'}${extra}
+• Thời gian: ${time}
+----------------------------------
+👉 Admin kiểm tra và duyệt lệnh giúp em trên hệ thống nhé!`;
+}
+
+// Quick helper to copy message & open Zalo chat
+export function openAdminZaloChat(customMessage) {
+  if (customMessage && typeof navigator !== 'undefined' && navigator.clipboard) {
+    try {
+      navigator.clipboard.writeText(customMessage);
+    } catch (e) {
+      console.warn('Clipboard write failed', e);
+    }
+  }
+  if (typeof window !== 'undefined') {
+    window.open(ADMIN_ZALO_LINK, '_blank');
+  }
+}
+
+// Send Notification via Zalo / ntfy.sh / Email
+export function notifyAdmin({ type, code, amountXu, amountVnd, userEmail, details }) {
   const timestamp = new Date().toLocaleString('vi-VN');
+  const zaloMessage = formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
   const subject = `[ÔnThiHub] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} Mới - Mã: ${code}`;
   const body = `
-Xin chào Admin (${ADMIN_EMAIL}),
+Xin chào Admin (${ADMIN_PHONE} - ${ADMIN_EMAIL}),
 
 Hệ thống ghi nhận một yêu cầu ${type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN VỀ NGÂN HÀNG'} mới cần DUYỆT CHAY:
 
@@ -66,20 +109,40 @@ Hệ thống ghi nhận một yêu cầu ${type === 'deposit' ? 'NẠP XU' : 'R�
 • Số lượng Xu: ${amountXu} Xu (~${amountVnd.toLocaleString()} VNĐ)
 • Email người dùng: ${userEmail || 'Chưa cung cấp'}
 • Thời gian tạo: ${timestamp}
+• Zalo Admin: ${ADMIN_PHONE} (${ADMIN_ZALO_LINK})
 • Chi tiết: ${JSON.stringify(details, null, 2)}
 
-Vui lòng đăng nhập vào Cửa Sổ Secret Admin trên web để bấm "Duyệt" hoặc "Từ chối" giao dịch này.
+Vui lòng kiểm tra và duyệt giao dịch này.
 Trân trọng,
 Hệ thống ÔnThiHub Automation
   `.trim();
 
-  // Save to Admin Notifications store
+  // 1. Send silent background push to ntfy.sh
+  try {
+    if (typeof fetch !== 'undefined') {
+      fetch(ADMIN_NTFY_TOPIC, {
+        method: 'POST',
+        headers: {
+          'Title': `[OnThiHub] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
+          'Priority': 'urgent',
+          'Tags': type === 'deposit' ? 'moneybag,inbox' : 'warning,bank',
+          'Click': ADMIN_ZALO_LINK
+        },
+        body: zaloMessage
+      }).catch(() => {});
+    }
+  } catch (e) {}
+
+  // 2. Save to Admin Notifications store
   try {
     const raw = localStorage.getItem(ADMIN_NOTIFICATIONS_KEY);
     const notifs = raw ? JSON.parse(raw) : [];
     notifs.unshift({
       id: 'notif_' + Date.now(),
       targetEmail: ADMIN_EMAIL,
+      targetPhone: ADMIN_PHONE,
+      zaloLink: ADMIN_ZALO_LINK,
+      zaloMessage,
       subject,
       body,
       type,
@@ -98,8 +161,11 @@ Hệ thống ÔnThiHub Automation
 
   // Create mailto fallback url
   const mailtoUrl = `mailto:${ADMIN_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  return { subject, body, mailtoUrl };
+  return { subject, body, mailtoUrl, zaloMessage, zaloLink: ADMIN_ZALO_LINK };
 }
+
+// Backward compatibility alias
+export const notifyAdminByEmail = notifyAdmin;
 
 // Get all Admin Notifications
 export function getAdminNotifications() {
@@ -142,8 +208,8 @@ export function createDepositRequest({ xuAmount, userEmail }) {
   list.unshift(tx);
   localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(list));
 
-  // Gửi thông báo đến Gmail thaitraicau123@gmail.com
-  const emailData = notifyAdminByEmail({
+  // Gửi thông báo đến Admin (Zalo 0986019623 & ntfy.sh & Gmail)
+  const notifData = notifyAdmin({
     type: 'deposit',
     code,
     amountXu: xuAmount,
@@ -152,7 +218,7 @@ export function createDepositRequest({ xuAmount, userEmail }) {
     details: tx.details
   });
 
-  return { tx, emailData };
+  return { tx, emailData: notifData, notifData, zaloMessage: notifData.zaloMessage, zaloLink: ADMIN_ZALO_LINK };
 }
 
 // Create Withdrawal Request (Rút Tiền)
@@ -179,7 +245,7 @@ export function createWithdrawalRequest({ xuAmount, bankName, accountNo, account
       bankName,
       accountNo,
       accountName,
-      note: 'Duyệt chuyển khoản ngân hàng thủ công qua thaitraicau123@gmail.com'
+      note: `Duyệt chuyển khoản ngân hàng qua Zalo ${ADMIN_PHONE}`
     }
   };
 
@@ -187,8 +253,8 @@ export function createWithdrawalRequest({ xuAmount, bankName, accountNo, account
   list.unshift(tx);
   localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(list));
 
-  // Gửi thông báo đến Gmail thaitraicau123@gmail.com
-  const emailData = notifyAdminByEmail({
+  // Gửi thông báo đến Admin (Zalo 0986019623 & ntfy.sh & Gmail)
+  const notifData = notifyAdmin({
     type: 'withdraw',
     code,
     amountXu: xuAmount,
@@ -197,7 +263,7 @@ export function createWithdrawalRequest({ xuAmount, bankName, accountNo, account
     details: tx.details
   });
 
-  return { success: true, tx, emailData };
+  return { success: true, tx, emailData: notifData, notifData, zaloMessage: notifData.zaloMessage, zaloLink: ADMIN_ZALO_LINK };
 }
 
 // Admin approves transaction (Duyệt Chay)
