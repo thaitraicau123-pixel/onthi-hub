@@ -224,52 +224,76 @@ export default function HomeView({
       {/* =========================================================
           CATEGORY FILTER & SEARCH BAR (Warm Cream Card)
           ========================================================= */}
-      <section id="catalog-section" className="bg-[#fcf7ec] rounded-2xl p-3.5 sm:p-4 border border-[#eadfcb] shadow-sm text-[#28071a]">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <section id="catalog-section" className="bg-[#fcf7ec] rounded-3xl p-3.5 sm:p-4 border border-[#eadfcb] shadow-sm text-[#28071a]">
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
           
           {/* Category Tabs */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 scrollbar-none no-scrollbar">
             {CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.id;
+              const count = cat.id === 'all'
+                ? allCourses.length
+                : allCourses.filter(c => c.category === cat.id).length;
               return (
                 <button
                   key={cat.id}
+                  type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black whitespace-nowrap transition-all ${
+                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all duration-150 ${
                     active
-                      ? 'bg-[#f02c85] text-white shadow-xs'
-                      : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#f6ebd5]'
+                      ? 'bg-[#f02c85] text-white shadow-sm'
+                      : 'bg-white text-[#28071a] border border-[#eadfcb] hover:border-[#f02c85]/40 hover:bg-[#faf4e6]'
                   }`}
                 >
                   {getCategoryIcon(cat.icon, active)}
                   <span>{cat.name}</span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    active
+                      ? 'bg-white/20 text-white'
+                      : 'bg-[#f4ebd7] text-[#7a5a6b]'
+                  }`}>
+                    {count}
+                  </span>
                 </button>
               );
             })}
           </div>
 
           {/* Search & Sort Controls */}
-          <div className="flex items-center gap-2 max-w-md w-full sm:w-auto">
-            <div className="relative flex-1 sm:w-56">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="flex items-center gap-2 w-full lg:w-auto shrink-0">
+            <div className="relative flex-1 sm:w-60">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Tìm đề thi, bộ thẻ..."
                 value={searchHome}
                 onChange={(e) => setSearchHome(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                className="w-full pl-8 pr-7 py-2 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-2xl outline-none focus:border-[#f02c85] shadow-2xs transition-all"
               />
+              {searchHome && (
+                <button
+                  type="button"
+                  onClick={() => setSearchHome('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                >
+                  ×
+                </button>
+              )}
             </div>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-2.5 py-1.5 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] cursor-pointer"
-            >
-              <option value="popular">🔥 Bán chạy</option>
-              <option value="rating">⭐ Đánh giá cao</option>
-              <option value="price_asc">🪙 Giá: Thấp → Cao</option>
-              <option value="price_desc">💎 Giá: Cao → Thấp</option>
-            </select>
+
+            <div className="relative shrink-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="appearance-none pl-3 pr-7 py-2 text-xs bg-white text-[#28071a] font-black border border-[#eadfcb] rounded-2xl outline-none focus:border-[#f02c85] hover:bg-[#faf4e6] cursor-pointer shadow-2xs transition-colors"
+              >
+                <option value="popular">🔥 Bán chạy</option>
+                <option value="rating">⭐ Đánh giá cao</option>
+                <option value="price_asc">🪙 Giá: Thấp → Cao</option>
+                <option value="price_desc">💎 Giá: Cao → Thấp</option>
+              </select>
+              <ChevronDown className="w-3.5 h-3.5 text-[#7a5a6b] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            </div>
           </div>
 
         </div>
