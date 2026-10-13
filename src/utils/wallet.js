@@ -132,7 +132,7 @@ export async function sendRealEmailToAdmin({ type, code, amountXu, amountVnd, us
     'Khách Hàng': userEmail || 'Chưa cung cấp',
     'Thời Gian Tạo': time,
     'Chi Tiết Giao Dịch': typeof details === 'object' ? JSON.stringify(details, null, 2) : String(details),
-    'Hotline Zalo Admin': `${ADMIN_PHONE} (${ADMIN_ZALO_LINK})`
+    'Số Điện Thoại Admin': ADMIN_PHONE
   };
 
   try {
@@ -176,7 +176,7 @@ export async function sendTelegramNotification({ type, code, amountXu, amountVnd
 • <b>Khách hàng:</b> ${userEmail || 'Chưa cung cấp'}${extra}
 • <b>Thời gian:</b> ${time}
 ━━━━━━━━━━━━━━━━━
-👉 Đăng nhập Secret Admin trên web để duyệt hoặc liên hệ Zalo: <b>${ADMIN_PHONE}</b>`;
+👉 Đăng nhập Secret Admin trên web để duyệt lệnh.`;
 
   try {
     const res = await fetch(`https://api.telegram.org/bot${cfg.botToken.trim()}/sendMessage`, {
@@ -195,7 +195,7 @@ export async function sendTelegramNotification({ type, code, amountXu, amountVnd
   }
 }
 
-// Send Notification via Zalo / ntfy.sh / FormSubmit Real Email / Telegram
+// Send Notification via ntfy.sh / FormSubmit Real Email / Telegram
 export function notifyAdmin({ type, code, amountXu, amountVnd, userEmail, details }) {
   const timestamp = new Date().toLocaleString('vi-VN');
   const zaloMessage = formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
@@ -210,7 +210,7 @@ Hệ thống ghi nhận một yêu cầu ${type === 'deposit' ? 'NẠP XU' : 'R�
 • Số lượng Xu: ${amountXu} Xu (~${amountVnd.toLocaleString()} VNĐ)
 • Email người dùng: ${userEmail || 'Chưa cung cấp'}
 • Thời gian tạo: ${timestamp}
-• Zalo Admin: ${ADMIN_PHONE} (${ADMIN_ZALO_LINK})
+• Điện thoại Admin: ${ADMIN_PHONE}
 • Chi tiết: ${JSON.stringify(details, null, 2)}
 
 Vui lòng kiểm tra và duyệt giao dịch này.
@@ -230,7 +230,7 @@ Hệ thống ÔnThiHub Automation
           'Title': `[OnThiHub] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
           'Priority': 'urgent',
           'Tags': type === 'deposit' ? 'moneybag,inbox' : 'warning,bank',
-          'Click': ADMIN_ZALO_LINK
+          'Click': typeof window !== 'undefined' ? window.location.origin : 'https://thaitraicau123-pixel.github.io/onthi-hub/'
         },
         body: zaloMessage
       }).catch(() => {});
@@ -352,7 +352,7 @@ export function createWithdrawalRequest({ xuAmount, bankName, accountNo, account
       bankName,
       accountNo,
       accountName,
-      note: `Duyệt chuyển khoản ngân hàng qua Zalo ${ADMIN_PHONE}`
+      note: `Chờ duyệt chuyển khoản ngân hàng`
     }
   };
 

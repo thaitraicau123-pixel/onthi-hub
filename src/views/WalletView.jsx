@@ -9,7 +9,6 @@ import {
   Mail,
   ShieldCheck,
   Coins,
-  MessageCircle,
   Copy,
   Check,
   ExternalLink
@@ -21,10 +20,7 @@ import {
   getTransactions,
   ADMIN_EMAIL,
   ADMIN_PHONE,
-  ADMIN_ZALO_LINK,
-  COIN_RATE_VND,
-  openAdminZaloChat,
-  formatAdminZaloMessage
+  COIN_RATE_VND
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 
@@ -43,7 +39,6 @@ export default function WalletView({ user, onBalanceUpdated }) {
   const [accountName, setAccountName] = useState('');
   const [withdrawMsg, setWithdrawMsg] = useState({ text: '', isError: false });
   const [lastWithdrawTx, setLastWithdrawTx] = useState(null);
-  const [copiedZalo, setCopiedZalo] = useState(false);
 
   const bankConfig = getBankConfig();
   const transactions = getTransactions();
@@ -82,7 +77,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
       onBalanceUpdated();
       setLastWithdrawTx(res);
       setWithdrawMsg({
-        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hãy bấm nút nhắn tin Zalo bên dưới để báo Admin duyệt chuyển tiền ngay.`,
+        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
         isError: false
       });
       setAccountNo('');
@@ -261,57 +256,29 @@ export default function WalletView({ user, onBalanceUpdated }) {
                     <p>Nội dung chuyển khoản: <strong className="text-[#f02c85] font-mono font-black bg-pink-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong></p>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-r from-blue-50 to-pink-50 border-2 border-[#f02c85]/30 rounded-2xl text-xs space-y-3 text-left max-w-lg mx-auto shadow-md">
+                  <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 text-left max-w-lg mx-auto shadow-sm">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className="w-8 h-8 rounded-xl bg-[#0068ff] text-white flex items-center justify-center font-black text-sm shadow-xs">
-                          Z
+                        <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                          ✓
                         </span>
                         <div>
                           <strong className="text-[#28071a] font-black text-xs block">
-                            Báo Admin Duyệt Xu Qua Zalo (0986.019.623)
+                            Đã Gửi Thông Báo Tự Động Tới Admin
                           </strong>
                           <span className="text-[#7a5a6b] text-[11px] font-medium">
-                            Hotline / Zalo: <strong className="text-[#0068ff] font-mono">{ADMIN_PHONE}</strong>
+                            Admin nhận thông báo tức thì qua Web Push & Email
                           </span>
                         </div>
                       </div>
                       <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        Online Duyệt 24/7
+                        Tự động 24/7
                       </span>
                     </div>
 
                     <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
-                      Chuyển khoản xong, bạn chỉ cần bấm nút bên dưới: hệ thống sẽ <strong>tự động sao chép mã {depositResult.tx.id}</strong> và <strong>mở Zalo chat với Admin ({ADMIN_PHONE})</strong> để được duyệt cộng Xu ngay lập tức!
+                      Bạn chỉ cần chuyển khoản đúng số tiền và nội dung <strong>{depositResult.tx.id}</strong> ở trên. Hệ thống sẽ tự động duyệt và cộng Xu vào ví của bạn ngay khi giao dịch được xác nhận!
                     </p>
-
-                    <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          openAdminZaloChat(depositResult.zaloMessage);
-                          setCopiedZalo(true);
-                          setTimeout(() => setCopiedZalo(false), 3000);
-                        }}
-                        className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
-                      >
-                        <MessageCircle className="w-4 h-4 fill-white" />
-                        <span>{copiedZalo ? '✅ Đã Copy & Mở Zalo Admin!' : '💬 Mở Zalo Nhắn Admin (0986.019.623)'}</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(depositResult.zaloMessage);
-                          setCopiedZalo(true);
-                          setTimeout(() => setCopiedZalo(false), 2000);
-                        }}
-                        className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] font-bold text-xs hover:bg-[#f5ecd8] flex items-center justify-center space-x-1"
-                      >
-                        <Copy className="w-3.5 h-3.5 text-[#7a5a6b]" />
-                        <span>Sao Chép</span>
-                      </button>
-                    </div>
                   </div>
 
                   <button
@@ -329,57 +296,29 @@ export default function WalletView({ user, onBalanceUpdated }) {
           {activeTab === 'withdraw' && (
             <div className="space-y-4">
               {lastWithdrawTx && (
-                <div className="p-4 bg-gradient-to-r from-blue-50 to-pink-50 border-2 border-[#f02c85]/40 rounded-2xl text-xs space-y-3 shadow-md animate-fade-in text-left">
+                <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 shadow-sm animate-fade-in text-left">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="w-8 h-8 rounded-xl bg-[#0068ff] text-white flex items-center justify-center font-black text-sm shadow-xs">
-                        Z
+                      <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                        ✓
                       </span>
                       <div>
                         <strong className="text-[#28071a] font-black text-xs block">
-                          Gửi Tin Nhắn Zalo Báo Admin Chuyển Khoản
+                          Đã Tạo Lệnh Rút Tiền Thành Công
                         </strong>
                         <span className="text-[#7a5a6b] text-[11px] font-medium">
-                          Zalo Admin: <strong className="text-[#0068ff] font-mono">{ADMIN_PHONE}</strong>
+                          Mã giao dịch: <strong className="font-mono text-[#f02c85]">{lastWithdrawTx.tx.id}</strong>
                         </span>
                       </div>
                     </div>
                     <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                      Mã: {lastWithdrawTx.tx.id}
+                      Đang xử lý
                     </span>
                   </div>
 
                   <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
-                    Bấm nút bên dưới để gửi thông tin số tài khoản và mã rút <strong>{lastWithdrawTx.tx.id}</strong> qua Zalo Admin để được chuyển tiền nhanh nhất:
+                    Hệ thống đã tự động gửi thông báo đến Admin. Tiền sẽ được chuyển khoản về tài khoản ngân hàng của bạn trong vòng ít phút!
                   </p>
-
-                  <div className="flex flex-col sm:flex-row items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        openAdminZaloChat(lastWithdrawTx.zaloMessage);
-                        setCopiedZalo(true);
-                        setTimeout(() => setCopiedZalo(false), 3000);
-                      }}
-                      className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
-                    >
-                      <MessageCircle className="w-4 h-4 fill-white" />
-                      <span>{copiedZalo ? '✅ Đã Copy & Mở Zalo Admin!' : '💬 Mở Zalo Báo Admin (0986.019.623) Chuyển Tiền'}</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        navigator.clipboard.writeText(lastWithdrawTx.zaloMessage);
-                        setCopiedZalo(true);
-                        setTimeout(() => setCopiedZalo(false), 2000);
-                      }}
-                      className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] font-bold text-xs hover:bg-[#f5ecd8] flex items-center justify-center space-x-1"
-                    >
-                      <Copy className="w-3.5 h-3.5 text-[#7a5a6b]" />
-                      <span>Sao Chép</span>
-                    </button>
-                  </div>
                 </div>
               )}
 
@@ -468,7 +407,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 </div>
 
                 <p className="text-xs text-[#7a5a6b] text-center font-medium">
-                  Hotline / Zalo hỗ trợ rút tiền nhanh: <strong className="text-[#0068ff]">{ADMIN_PHONE}</strong> (Duyệt chuyển khoản 24/7).
+                  Hệ thống xử lý duyệt và chuyển khoản tự động 24/7.
                 </p>
               </form>
             </div>
@@ -506,29 +445,6 @@ export default function WalletView({ user, onBalanceUpdated }) {
                         }`}>
                           {tx.status === 'approved' ? 'Đã duyệt ✅' : tx.status === 'rejected' ? 'Bị từ chối ❌' : 'Chờ duyệt chay ⏳'}
                         </span>
-
-                        {tx.status === 'pending' && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const msg = formatAdminZaloMessage({
-                                type: tx.type,
-                                code: tx.id,
-                                amountXu: tx.xuAmount,
-                                amountVnd: tx.amountVnd,
-                                userEmail: tx.userEmail,
-                                details: tx.details,
-                                timestamp: tx.createdAt
-                              });
-                              openAdminZaloChat(msg);
-                            }}
-                            className="px-2 py-0.5 bg-[#0068ff]/10 hover:bg-[#0068ff]/20 text-[#0068ff] font-bold text-[10px] rounded-lg border border-[#0068ff]/30 flex items-center space-x-1 transition-colors"
-                            title={`Nhắn Zalo ${ADMIN_PHONE} để duyệt ngay`}
-                          >
-                            <MessageCircle className="w-3 h-3 text-[#0068ff]" />
-                            <span>Báo Zalo</span>
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>

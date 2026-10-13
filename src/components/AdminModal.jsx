@@ -13,8 +13,7 @@ import {
   RefreshCw,
   ExternalLink,
   Save,
-  Trash2,
-  MessageCircle
+  Trash2
 } from 'lucide-react';
 import {
   getTransactions,
@@ -23,10 +22,7 @@ import {
   getAdminNotifications,
   ADMIN_EMAIL,
   ADMIN_PHONE,
-  ADMIN_ZALO_LINK,
-  COIN_RATE_VND,
-  openAdminZaloChat,
-  formatAdminZaloMessage
+  COIN_RATE_VND
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck } from '../data/marketplaceData';
@@ -106,7 +102,7 @@ export default function AdminModal({ onClose }) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 font-medium flex items-center space-x-2">
-                <span>Zalo Admin: <a href={ADMIN_ZALO_LINK} target="_blank" rel="noreferrer" className="text-amber-300 font-mono font-bold hover:underline">{ADMIN_PHONE}</a></span>
+                <span>Admin Phone: <strong className="text-amber-300 font-mono font-bold">{ADMIN_PHONE}</strong></span>
                 <span>•</span>
                 <span>Email: <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong></span>
               </p>
@@ -114,15 +110,6 @@ export default function AdminModal({ onClose }) {
           </div>
 
           <div className="flex items-center space-x-2">
-            <a
-              href={ADMIN_ZALO_LINK}
-              target="_blank"
-              rel="noreferrer"
-              className="px-3 py-1.5 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded-lg text-xs font-bold flex items-center space-x-1 shadow-xs"
-            >
-              <MessageCircle className="w-3.5 h-3.5 fill-white" />
-              <span>Mở Zalo</span>
-            </a>
             <button
               onClick={reloadData}
               className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
@@ -284,26 +271,6 @@ export default function AdminModal({ onClose }) {
                           <td className="p-3 text-right">
                             {tx.status === 'pending' ? (
                               <div className="flex items-center justify-end space-x-1.5">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    const msg = formatAdminZaloMessage({
-                                      type: tx.type,
-                                      code: tx.id,
-                                      amountXu: tx.xuAmount,
-                                      amountVnd: tx.amountVnd,
-                                      userEmail: tx.userEmail,
-                                      details: tx.details,
-                                      timestamp: tx.createdAt
-                                    });
-                                    openAdminZaloChat(msg);
-                                  }}
-                                  className="px-2 py-1 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded text-[11px] font-bold flex items-center space-x-1"
-                                  title="Chat Zalo"
-                                >
-                                  <MessageCircle className="w-3 h-3 fill-white" />
-                                  <span>Zalo</span>
-                                </button>
                                 <button
                                   onClick={() => handleApprove(tx.id)}
                                   className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-bold shadow-xs flex items-center space-x-1"
@@ -489,32 +456,23 @@ export default function AdminModal({ onClose }) {
             </div>
           )}
 
-          {/* TAB 4: HÒM THƯ ZALO & GMAIL ADMIN */}
+          {/* TAB 4: HÒM THƯ THÔNG BÁO & GMAIL ADMIN */}
           {activeTab === 'notifications' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="text-sm font-bold text-slate-900">
-                    Nhật Ký Thông Báo (Zalo: <a href={ADMIN_ZALO_LINK} target="_blank" rel="noreferrer" className="text-[#0068ff] font-mono hover:underline">{ADMIN_PHONE}</a> & Gmail: <span className="text-rose-600 font-mono">{ADMIN_EMAIL}</span>)
+                    Nhật Ký Thông Báo (ntfy.sh & Gmail: <span className="text-rose-600 font-mono">{ADMIN_EMAIL}</span>)
                   </h4>
                   <p className="text-xs text-slate-500">
-                    Mỗi khi có khách nạp/rút tiền, hệ thống tự động đẩy thông báo qua Zalo {ADMIN_PHONE}, Web Push và lưu lại nhật ký.
+                    Mỗi khi có khách nạp/rút tiền, hệ thống tự động đẩy thông báo qua Web Push, Email và lưu lại nhật ký tại đây.
                   </p>
                 </div>
-                <a
-                  href={ADMIN_ZALO_LINK}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1 bg-[#0068ff] hover:bg-[#0052cc] text-white rounded text-xs font-bold flex items-center space-x-1"
-                >
-                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                  <span>Mở Zalo Admin</span>
-                </a>
               </div>
 
               {notifications.length === 0 ? (
                 <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-                  <MessageCircle className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                  <Mail className="w-10 h-10 text-slate-300 mx-auto mb-2" />
                   <p className="text-xs text-slate-500">Chưa có thông báo nào được ghi nhận.</p>
                 </div>
               ) : (
@@ -524,8 +482,8 @@ export default function AdminModal({ onClose }) {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-[#0068ff]">
-                              Zalo: {n.targetPhone || ADMIN_PHONE}
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-700">
+                              Mã: {n.code}
                             </span>
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-pink-50 text-[#f02c85]">
                               {n.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
@@ -535,14 +493,6 @@ export default function AdminModal({ onClose }) {
                           <span className="text-[10px] text-slate-400 block mt-0.5">{n.timestamp}</span>
                         </div>
                         <div className="flex items-center space-x-1.5 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => openAdminZaloChat(n.zaloMessage || n.body)}
-                            className="px-2 py-1 text-[11px] font-bold text-white bg-[#0068ff] hover:bg-[#0052cc] rounded flex items-center space-x-1"
-                          >
-                            <MessageCircle className="w-3 h-3 fill-white" />
-                            <span>Zalo</span>
-                          </button>
                           <a
                             href={`mailto:${n.targetEmail}?subject=${encodeURIComponent(n.subject)}&body=${encodeURIComponent(n.body)}`}
                             className="px-2 py-1 text-[11px] font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded flex items-center space-x-1"
@@ -553,7 +503,7 @@ export default function AdminModal({ onClose }) {
                         </div>
                       </div>
                       <pre className="mt-3 p-3 bg-slate-50 rounded-lg text-[11px] text-slate-700 font-mono whitespace-pre-wrap border border-slate-100">
-                        {n.zaloMessage || n.body}
+                        {n.body || n.zaloMessage}
                       </pre>
                     </div>
                   ))}

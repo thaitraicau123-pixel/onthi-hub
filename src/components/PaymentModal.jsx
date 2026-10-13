@@ -12,8 +12,7 @@ import {
   Check,
   Layers,
   Zap,
-  BookOpen,
-  MessageCircle
+  BookOpen
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
@@ -25,10 +24,7 @@ import {
 import {
   getWalletBalance,
   deductWalletCoins,
-  addWalletCoins,
-  ADMIN_PHONE,
-  ADMIN_ZALO_LINK,
-  openAdminZaloChat
+  addWalletCoins
 } from '../utils/wallet';
 
 export default function PaymentModal({
@@ -398,19 +394,6 @@ export default function PaymentModal({
                             <span>Tôi Đã Chuyển Khoản Xong</span>
                           </>
                         )}
-                      </button>
-
-                      {/* Zalo Admin Quick Chat Button */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const msg = `🔔 [ÔNTHIHUB] HỖ TRỢ NẠP XU MỞ KHÓA BỘ THẺ:\n- Mã nạp: ${topupOrderCode}\n- Gói nạp: ${topupAmount} Xu (~${(topupAmount * 1000).toLocaleString()}đ)\n- Bộ thẻ: ${item.title}\n👉 Em đã chuyển khoản, Admin duyệt cộng Xu giúp em với ạ!`;
-                          openAdminZaloChat(msg);
-                        }}
-                        className="w-full py-2.5 rounded-xl bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs shadow-xs transition-colors flex items-center justify-center space-x-1.5"
-                      >
-                        <MessageCircle className="w-4 h-4 fill-white" />
-                        <span>💬 Chat Zalo Admin Duyệt Nhanh ({ADMIN_PHONE})</span>
                       </button>
                     </div>
                   )}

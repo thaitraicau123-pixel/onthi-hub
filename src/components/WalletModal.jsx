@@ -10,8 +10,7 @@ import {
   Copy,
   Check,
   Mail,
-  QrCode,
-  MessageCircle
+  QrCode
 } from 'lucide-react';
 import {
   getWalletBalance,
@@ -19,11 +18,7 @@ import {
   createWithdrawalRequest,
   getTransactions,
   ADMIN_EMAIL,
-  ADMIN_PHONE,
-  ADMIN_ZALO_LINK,
-  COIN_RATE_VND,
-  openAdminZaloChat,
-  formatAdminZaloMessage
+  COIN_RATE_VND
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 
@@ -80,7 +75,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
       setBalance(getWalletBalance());
       onBalanceUpdated();
       setWithdrawMsg({
-        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Mã: ${res.tx.id}. Thông báo đã gửi đến Zalo ${ADMIN_PHONE} để Admin chuyển tiền ngay.`,
+        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Mã: ${res.tx.id}. Thông báo đã được gửi tự động đến Admin để xử lý chuyển tiền.`,
         isError: false
       });
       setAccountNo('');
@@ -256,22 +251,13 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
                     <p>Nội dung CK: <strong className="text-amber-900 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong></p>
                   </div>
 
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-[11px] text-blue-900 space-y-2 text-left">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-[11px] text-emerald-900 space-y-2 text-left">
                     <div className="flex items-start space-x-2">
-                      <Mail className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span>
-                        Hệ thống đã gửi thông báo đến Zalo <strong>{ADMIN_PHONE}</strong> và Gmail <strong>{ADMIN_EMAIL}</strong>. Bạn hãy chuyển khoản đúng nội dung trên, Xu sẽ được cộng ngay sau khi Admin duyệt.
+                        Hệ thống đã gửi thông báo tự động tới Admin qua Web Push & Email. Bạn hãy chuyển khoản đúng nội dung trên, Xu sẽ được cộng ngay sau khi Admin duyệt.
                       </span>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() => openAdminZaloChat(depositResult.zaloMessage)}
-                      className="w-full py-2 bg-[#0068ff] hover:bg-[#0052cc] text-white font-bold text-xs rounded-lg flex items-center justify-center space-x-1.5 shadow-xs"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                      <span>💬 Nhắn Zalo Báo Admin ({ADMIN_PHONE}) Duyệt Ngay</span>
-                    </button>
                   </div>
 
                   <button
