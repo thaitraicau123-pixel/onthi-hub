@@ -19,7 +19,16 @@ import {
   FileSpreadsheet,
   ClipboardPaste,
   ArrowDownToLine,
-  Minus
+  Minus,
+  ArrowUpDown,
+  Copy,
+  ChevronUp,
+  ChevronDown,
+  Eye,
+  Download,
+  RotateCw,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 import { generateFlashcardsWithAI, calculateOptimalCardCount } from '../utils/aiGenerator';
 import { getUserQuota, consumeUserQuota, performDailyCheckIn } from '../utils/userTier';
@@ -67,6 +76,11 @@ export default function CreateStudioView({
   const [importRawText, setImportRawText] = useState('');
   const [importSeparator, setImportSeparator] = useState('auto'); // 'auto' | 'tab' | 'dash' | 'colon'
   const [importAppendMode, setImportAppendMode] = useState(true);
+
+  // Live 3D Card Preview state
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [previewCardIndex, setPreviewCardIndex] = useState(0);
+  const [isPreviewFlipped, setIsPreviewFlipped] = useState(false);
 
   // Parse raw text into flashcard objects
   const parseImportedCards = (text, sepMode) => {
@@ -226,6 +240,81 @@ export default function CreateStudioView({
     const updated = [...cards];
     updated[index][field] = value;
     setCards(updated);
+  };
+
+  const handleSwapCard = (index) => {
+    const updated = [...cards];
+    const temp = updated[index].front;
+    updated[index].front = updated[index].back;
+    updated[index].back = temp;
+    setCards(updated);
+    playSound('flip');
+  };
+
+  const handleSwapAllCards = () => {
+    if (!cards.some(c => c.front.trim() || c.back.trim())) return;
+    const updated = cards.map(c => ({
+      ...c,
+      front: c.back,
+      back: c.front
+    }));
+    setCards(updated);
+    playSound('flip');
+  };
+
+  const handleDuplicateCard = (index) => {
+    const cardToDup = { ...cards[index] };
+    const updated = [...cards];
+    updated.splice(index + 1, 0, cardToDup);
+    setCards(updated);
+    playSound('click');
+  };
+
+  const handleMoveCard = (index, direction) => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === cards.length - 1) return;
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    const updated = [...cards];
+    const [moved] = updated.splice(index, 1);
+    updated.splice(targetIdx, 0, moved);
+    setCards(updated);
+    playSound('click');
+  };
+
+  const handleClearEmptyCards = () => {
+    const filtered = cards.filter(c => c.front.trim() || c.back.trim());
+    if (filtered.length > 0) {
+      setCards(filtered);
+      playSound('click');
+    }
+  };
+
+  const handleExportCards = async () => {
+    const valid = cards.filter(c => c.front.trim() || c.back.trim());
+    if (valid.length === 0) {
+      alert('Chưa có thẻ nào để xuất!');
+      return;
+    }
+    const tsv = valid.map(c => `${c.front}\t${c.back}\t${c.tag || ''}`).join('\n');
+    try {
+      await navigator.clipboard.writeText(tsv);
+      playSound('success');
+      alert(`📋 Đã copy ${valid.length} thẻ định dạng TSV (chuẩn Anki/Quizlet) vào Clipboard!`);
+    } catch (e) {
+      alert('Không thể copy vào clipboard: ' + e.message);
+    }
+  };
+
+  const handleOpenPreview = () => {
+    const valid = cards.filter(c => c.front.trim() || c.back.trim());
+    if (valid.length === 0) {
+      alert('Vui lòng nhập ít nhất 1 thẻ để xem trước trải nghiệm học!');
+      return;
+    }
+    setPreviewCardIndex(0);
+    setIsPreviewFlipped(false);
+    setShowPreviewModal(true);
+    playSound('flip');
   };
 
   const handleSaveDeck = (e) => {
@@ -460,6 +549,31 @@ export default function CreateStudioView({
                 onChange={(e) => setAiTopic(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-xs border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-[#fcf7ec] font-bold text-[#28071a]"
               />
+
+              {/* Quick Topic Starter Chips */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+                <span className="text-[10px] text-[#7a5a6b] font-bold">Gợi ý chủ đề hot:</span>
+                {[
+                  { label: '🏛️ Nghị định 138/2020', topic: 'Nghị định 138/2020/NĐ-CP về tuyển dụng công chức', cat: 'cong-chuc' },
+                  { label: '⚖️ Luật CBCC 2026', topic: 'Trọng tâm Luật Cán bộ, công chức 2008 (sđbs 2019)', cat: 'cong-chuc' },
+                  { label: '💻 System Design & IT', topic: '50 Câu hỏi phỏng vấn System Design & React Virtual DOM', cat: 'it-tech' },
+                  { label: '🌍 IELTS 7.5 Academic', topic: 'Từ vựng học thuật IELTS band 7.5 chủ đề Công nghệ & Môi trường', cat: 'ngoai-ngu' }
+                ].map((chip) => (
+                  <button
+                    key={chip.label}
+                    type="button"
+                    onClick={() => {
+                      setAiTopic(chip.topic);
+                      setCategory(chip.cat);
+                      if (!title) setTitle(`Bộ Thẻ: ${chip.topic}`);
+                      playSound('click');
+                    }}
+                    className="px-2 py-0.5 text-[10px] font-bold bg-[#fcf7ec] hover:bg-pink-50 border border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a] rounded-lg transition-colors shadow-2xs"
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div>
@@ -753,19 +867,50 @@ export default function CreateStudioView({
             <span className="text-xs sm:text-sm font-black text-[#28071a]">
               Danh Sách Các Thẻ ({cards.length} thẻ):
             </span>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handleOpenPreview}
+                className="px-3 py-1.5 text-xs font-black text-[#f02c85] bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                title="Xem trước trải nghiệm học 3D trước khi lưu"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>👁️ Xem Trước 3D</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSwapAllCards}
+                className="px-3 py-1.5 text-xs font-black text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                title="Đảo toàn bộ Mặt trước thành Mặt sau và ngược lại"
+              >
+                <ArrowUpDown className="w-3.5 h-3.5 text-amber-700" />
+                <span>⇄ Đảo Toàn Bộ</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExportCards}
+                className="px-3 py-1.5 text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                title="Copy dạng TSV để dán vào Excel hoặc Anki"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <span>📋 Xuất TSV</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setShowImporterModal(true)}
-                className="px-3.5 py-1.5 text-xs font-black text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl flex items-center space-x-1.5 border border-indigo-200 transition-colors shadow-2xs"
+                className="px-3 py-1.5 text-xs font-black text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl flex items-center space-x-1.5 border border-indigo-200 transition-colors shadow-2xs"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600" />
-                <span>📥 Dán Nhanh Excel / Quizlet</span>
+                <span>📥 Dán Excel/Quizlet</span>
               </button>
+
               <button
                 type="button"
                 onClick={handleAddCard}
-                className="px-3.5 py-1.5 text-xs font-black text-[#f02c85] bg-pink-100/60 hover:bg-pink-100 rounded-xl flex items-center space-x-1 transition-colors"
+                className="px-3.5 py-1.5 text-xs font-black text-white bg-[#f02c85] hover:bg-[#dc1f74] rounded-xl flex items-center space-x-1 transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Thêm thẻ</span>
@@ -779,8 +924,8 @@ export default function CreateStudioView({
               className="p-4 bg-white rounded-2xl border border-[#eadfcb] hover:border-[#f02c85] transition-colors space-y-3 text-xs shadow-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="font-black text-[#f02c85] text-xs">Thẻ #{idx + 1}</span>
                 <div className="flex items-center space-x-2">
+                  <span className="font-black text-[#f02c85] text-xs">Thẻ #{idx + 1}</span>
                   <input
                     type="text"
                     placeholder="Tag (VD: Điều 80)"
@@ -788,11 +933,53 @@ export default function CreateStudioView({
                     onChange={(e) => handleCardChange(idx, 'tag', e.target.value)}
                     className="px-2.5 py-1 border border-[#eadfcb] rounded-lg text-[10px] bg-[#fcf7ec] font-bold text-[#28071a]"
                   />
+                </div>
+
+                <div className="flex items-center space-x-1">
+                  <button
+                    type="button"
+                    onClick={() => handleSwapCard(idx)}
+                    className="p-1.5 text-[#7a5a6b] hover:text-[#f02c85] hover:bg-pink-50 rounded-lg transition-colors"
+                    title="Đảo mặt trước & mặt sau của thẻ này"
+                  >
+                    <ArrowUpDown className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDuplicateCard(idx)}
+                    className="p-1.5 text-[#7a5a6b] hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    title="Nhân bản thẻ này"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleMoveCard(idx, 'up')}
+                    disabled={idx === 0}
+                    className="p-1.5 text-[#7a5a6b] hover:text-[#28071a] hover:bg-slate-100 disabled:opacity-30 rounded-lg transition-colors"
+                    title="Di chuyển lên trên"
+                  >
+                    <ChevronUp className="w-3.5 h-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleMoveCard(idx, 'down')}
+                    disabled={idx === cards.length - 1}
+                    className="p-1.5 text-[#7a5a6b] hover:text-[#28071a] hover:bg-slate-100 disabled:opacity-30 rounded-lg transition-colors"
+                    title="Di chuyển xuống dưới"
+                  >
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+
                   {cards.length > 1 && (
                     <button
                       type="button"
                       onClick={() => handleRemoveCard(idx)}
-                      className="p-1 text-[#7a5a6b] hover:text-rose-600 rounded"
+                      className="p-1.5 text-[#7a5a6b] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors ml-1"
+                      title="Xóa thẻ này"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -1100,6 +1287,142 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
           </div>
         </div>
       )}
+
+      {/* Interactive 3D Study Preview Modal */}
+      {showPreviewModal && (() => {
+        const validCards = cards.filter(c => c.front.trim() || c.back.trim());
+        const currentCard = validCards[previewCardIndex] || validCards[0];
+        if (!currentCard) return null;
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in text-[#28071a]">
+            <div className="relative w-full max-w-lg bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 space-y-4">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#ff5f38] to-[#f02c85] text-white flex items-center justify-center font-bold shadow-md shadow-pink-900/30">
+                    <Eye className="w-5 h-5 fill-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-black text-sm text-[#28071a]">Xem Trước Thẻ Học Thực Tế 3D</h4>
+                    <span className="text-[11px] text-[#f02c85] font-black">
+                      Thẻ số {previewCardIndex + 1} / {validCards.length}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowPreviewModal(false)}
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* 3D Interactive Flip Card */}
+              <div
+                onClick={() => {
+                  setIsPreviewFlipped(!isPreviewFlipped);
+                  playSound('flip');
+                }}
+                className="w-full h-64 sm:h-72 cursor-pointer perspective-1000 select-none"
+              >
+                <div
+                  className={`relative w-full h-full rounded-3xl p-6 shadow-xl border-2 transition-transform duration-500 transform-style-3d flex flex-col justify-between ${
+                    isPreviewFlipped
+                      ? 'bg-gradient-to-br from-[#28071a] to-[#430c2c] border-[#f02c85] text-white rotate-y-180'
+                      : 'bg-white border-[#eadfcb] text-[#28071a]'
+                  }`}
+                >
+                  {/* Top card info */}
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                      isPreviewFlipped
+                        ? 'bg-pink-500/20 text-pink-300 border border-pink-400/30'
+                        : 'bg-[#fcf7ec] text-[#f02c85] border border-[#eadfcb]'
+                    }`}>
+                      {isPreviewFlipped ? 'Mặt Sau (Đáp Án)' : 'Mặt Trước (Câu Hỏi)'}
+                    </span>
+
+                    {currentCard.tag && (
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg ${
+                        isPreviewFlipped ? 'text-pink-200/80 bg-white/10' : 'text-[#7a5a6b] bg-[#fcf7ec]'
+                      }`}>
+                        #{currentCard.tag}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Main content */}
+                  <div className="my-auto text-center px-2 sm:px-4">
+                    <p className={`font-black text-sm sm:text-base leading-relaxed ${
+                      isPreviewFlipped ? 'text-pink-100 whitespace-pre-line text-left' : 'text-[#28071a]'
+                    }`}>
+                      {isPreviewFlipped ? currentCard.back : currentCard.front}
+                    </p>
+                  </div>
+
+                  {/* Bottom hint */}
+                  <div className="text-center">
+                    <span className={`text-[10px] font-medium ${
+                      isPreviewFlipped ? 'text-pink-300/70' : 'text-[#7a5a6b]'
+                    }`}>
+                      👆 Chạm để lật mặt thẻ
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Navigation Controls */}
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewCardIndex(prev => Math.max(0, prev - 1));
+                    setIsPreviewFlipped(false);
+                    playSound('click');
+                  }}
+                  disabled={previewCardIndex === 0}
+                  className="px-4 py-2 bg-white hover:bg-slate-100 border border-[#eadfcb] disabled:opacity-40 text-[#28071a] font-black text-xs rounded-xl flex items-center space-x-1 shadow-2xs transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Thẻ Trước</span>
+                </button>
+
+                {/* Flip button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsPreviewFlipped(!isPreviewFlipped);
+                    playSound('flip');
+                  }}
+                  className="px-4 py-2 bg-[#f02c85] hover:bg-[#dc1f74] text-white font-black text-xs rounded-xl flex items-center space-x-1 shadow-xs transition-colors"
+                >
+                  <RotateCw className="w-3.5 h-3.5" />
+                  <span>{isPreviewFlipped ? 'Lật Mặt Trước' : 'Lật Mặt Sau'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewCardIndex(prev => Math.min(validCards.length - 1, prev + 1));
+                    setIsPreviewFlipped(false);
+                    playSound('click');
+                  }}
+                  disabled={previewCardIndex === validCards.length - 1}
+                  className="px-4 py-2 bg-white hover:bg-slate-100 border border-[#eadfcb] disabled:opacity-40 text-[#28071a] font-black text-xs rounded-xl flex items-center space-x-1 shadow-2xs transition-colors"
+                >
+                  <span>Thẻ Tiếp</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+            </div>
+          </div>
+        );
+      })()}
 
     </div>
   );
