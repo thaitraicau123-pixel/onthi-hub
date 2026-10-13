@@ -6,13 +6,14 @@ const OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
 
 export const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6IByFdwC74B6m7P6RX9TPSczZLw3FipL6eN4HNER11VUA';
 
-// Available Gemini models with auto-failover in case of 503 (High demand)
+// Available Gemini models with auto-failover across active models
 export const GEMINI_MODELS = [
+  'gemini-3.5-flash',
+  'gemini-3.6-flash',
+  'gemini-3-flash-preview',
   'gemini-3.8-flash',
   'gemini-3.7-flash',
-  'gemini-3.6-flash',
-  'gemini-2.5-flash',
-  'gemini-1.5-flash'
+  'gemini-flash-latest'
 ];
 
 /**
@@ -98,7 +99,7 @@ export async function testGeminiApiKey(keyToTest) {
   if (!apiKey) {
     return {
       success: false,
-      message: 'Chưa nhập API Key!'
+      message: 'Chưa nhập API Key Gemini!'
     };
   }
 
@@ -106,6 +107,8 @@ export async function testGeminiApiKey(keyToTest) {
 
   for (const model of GEMINI_MODELS) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
 
     try {
       const response = await fetch(endpoint, {
@@ -121,37 +124,98 @@ export async function testGeminiApiKey(keyToTest) {
               ]
             }
           ]
-        })
+        }),
+        signal: controller.signal
       });
 
-      const data = await response.json();
+      clearTimeout(timeoutId);
+      const data = await response.json().catch(() => ({}));
 
       if (response.ok) {
         const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'OK';
         return {
           success: true,
           model,
-          message: `✅ Kết nối thành công tới Động Cơ AI ÔnThiHub Cloud! (Phản hồi: "${reply.trim()}")`
+          message: `✅ Kết nối thành công tới Google Gemini (${model})! (Phản hồi: "${reply.trim()}")`
         };
       }
 
-      // If 503 or model busy, record and try next model
       lastError = data?.error?.message || `HTTP ${response.status}`;
-      if (response.status === 503 || response.status === 429) {
-        continue;
-      } else {
-        // Bad key or permission error, no need to try other models
-        break;
+
+      // Only break early if key itself is explicitly invalid
+      const isInvalidKey = response.status === 400 && (
+        lastError.includes('API_KEY_INVALID') ||
+        lastError.toLowerCase().includes('api key not valid') ||
+        lastError.toLowerCase().includes('invalid api key')
+      );
+
+      if (isInvalidKey) {
+        return {
+          success: false,
+          message: `API Key Gemini không hợp lệ: ${lastError}`
+        };
       }
+
+      // If 404, 429, 503, 500 or temporary quota/busy, try next model in pool
+      continue;
     } catch (err) {
-      lastError = err.message;
+      clearTimeout(timeoutId);
+      lastError = err.name === 'AbortError' ? `Timeout khi kết nối model ${model}` : err.message;
+      // Network or timeout: continue to try other models
+      continue;
     }
   }
 
   return {
     success: false,
-    message: `Kết nối thất bại: ${lastError || 'Không thể kết nối đến máy chủ AI Cloud'}`
+    message: `Kết nối Gemini thất bại: ${lastError || 'Không thể kết nối đến máy chủ AI'}`
   };
+}
+
+/**
+ * Test OpenAI API Key
+ */
+export async function testOpenAiApiKey(keyToTest) {
+  const apiKey = (keyToTest || getOpenAIApiKey()).trim();
+  if (!apiKey) {
+    return {
+      success: false,
+      message: 'Chưa nhập API Key OpenAI (bắt đầu bằng sk-)!'
+    };
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 7000);
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/models', {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      },
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok) {
+      return {
+        success: true,
+        message: '✅ Kết nối thành công tới OpenAI API (GPT-4o / GPT-4o-mini sẵn sàng)!'
+      };
+    }
+
+    return {
+      success: false,
+      message: `OpenAI trả về lỗi: ${data?.error?.message || `HTTP ${response.status}`}`
+    };
+  } catch (err) {
+    clearTimeout(timeoutId);
+    return {
+      success: false,
+      message: `Lỗi kết nối OpenAI: ${err.name === 'AbortError' ? 'Quá thời gian kết nối (Timeout)' : err.message}`
+    };
+  }
 }
 
 /**

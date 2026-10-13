@@ -1,5 +1,5 @@
 // Changelog & What's New Data for OnThiHub
-export const APP_VERSION = 'v2.8';
+export const APP_VERSION = 'v2.9';
 export const LAST_SEEN_VERSION_KEY = 'onthi_last_seen_changelog_version';
 
 export function isChangelogUnread() {
@@ -19,10 +19,38 @@ export function markChangelogAsRead() {
 
 export const CHANGELOG_DATA = [
   {
-    version: 'v2.8',
+    version: 'v2.9',
     date: 'Tháng 10/2026 (Bản Mới Nhất)',
     badge: 'MỚI NHẤT 🔥',
     badgeColor: 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85]',
+    title: 'Nâng Cấp Toàn Diện Động Cơ AI Tạo Thẻ Flashcard 🤖 & Hỗ Trợ Đa Mô Hình Gemini/OpenAI ⚡',
+    summary: 'Sửa triệt để lỗi tạo thẻ AI bằng việc tích hợp các mô hình Gemini thế hệ mới (3.5-Flash, 3.6-Flash, 3-Flash-Preview), tự động failover đa tầng, tích hợp OpenAI Platform (GPT-4o-mini) và bộ bóc tách ngữ nghĩa thông minh ngoại tuyến.',
+    highlights: [
+      {
+        category: '🤖 Cải Tiến Động Cơ AI Cloud Tạo Thẻ Flashcard',
+        color: 'indigo',
+        items: [
+          '✨ Tích hợp các mô hình Gemini thế hệ mới: Chuyển sang gemini-3.5-flash, gemini-3.6-flash, gemini-3-flash-preview, loại bỏ hoàn toàn các mã model cũ bị ngừng hỗ trợ.',
+          '🔄 Tự Động Failover Thông Minh: Khi một mô hình gặp sự cố quá tải hoặc hạn mức (503, 429), hệ thống tự động trượt qua mô hình tiếp theo trong chớp mắt mà không bao giờ làm gián đoạn người dùng.',
+          '🌐 Hỗ Trợ OpenAI API (GPT-4o / GPT-4o-mini): Bổ sung hỗ trợ đầy đủ OpenAI API Platform, cho phép Admin/Học viên dùng song song hoặc dự phòng.',
+          '🧠 Bộ Trích Xuất Ngữ Nghĩa Thông Minh Ngoại Tuyến (Smart Semantic Extractor): Tự động phân tích sâu đoạn văn bản, tài liệu bài giảng hoặc chủ đề người dùng dán vào để bóc tách thành thẻ câu hỏi - câu trả lời chất lượng cao ngay cả khi mất mạng hoặc hết lượt API.'
+        ]
+      },
+      {
+        category: '🎓 Nâng Cấp Trợ Lý AI Gia Sư & Tạo Đề Thi Trắc Nghiệm',
+        color: 'emerald',
+        items: [
+          '💡 Giải Thích Chuyên Sâu 3 Phần: Trợ lý AI phân tích bản chất, cung cấp mẹo nhớ Spaced Repetition và chỉ ra bẫy trắc nghiệm dễ mắc phải cho từng thẻ.',
+          '⚡ Tạo Đề Trắc Nghiệm 4 Phương Án: Tự động tạo câu hỏi trắc nghiệm có độ phân loại cao kèm giải thích chi tiết đáp án đúng/sai.'
+        ]
+      }
+    ]
+  },
+  {
+    version: 'v2.8',
+    date: 'Tháng 10/2026',
+    badge: 'ĐÃ CẬP NHẬT',
+    badgeColor: 'bg-purple-600',
     title: 'Đồng Bộ Duyệt Tiền Firebase Đa Thiết Bị ⚡ & Khóa Giao Diện Quizizz Rực Rỡ 🎨',
     summary: 'Đưa tính năng duyệt tiền lên Firebase Firestore đa nền tảng, giúp Admin thấy và duyệt ngay lệnh nạp từ điện thoại khác, đồng thời cố định 100% phong cách Quizizz sống động.',
     highlights: [

@@ -65,6 +65,7 @@ import {
   saveOpenAIApiKey,
   hasValidAiKey,
   testGeminiApiKey,
+  testOpenAiApiKey,
   API_KEY_LINKS
 } from '../utils/aiApiKey';
 
@@ -300,9 +301,31 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
     setTestingAiKey(true);
     setAiTestResult(null);
     try {
-      const res = await testGeminiApiKey(geminiApiKey);
-      setAiTestResult(res);
-      if (res.success) {
+      const messages = [];
+      let overallSuccess = false;
+
+      if (geminiApiKey && geminiApiKey.trim()) {
+        const geminiRes = await testGeminiApiKey(geminiApiKey);
+        messages.push(`Google Gemini: ${geminiRes.message}`);
+        if (geminiRes.success) overallSuccess = true;
+      }
+
+      if (openaiApiKey && openaiApiKey.trim()) {
+        const openaiRes = await testOpenAiApiKey(openaiApiKey);
+        messages.push(`OpenAI: ${openaiRes.message}`);
+        if (openaiRes.success) overallSuccess = true;
+      }
+
+      if (messages.length === 0) {
+        messages.push('Chưa nhập API Key Gemini hoặc OpenAI để kiểm tra!');
+      }
+
+      setAiTestResult({
+        success: overallSuccess,
+        message: messages.join('\n\n')
+      });
+
+      if (overallSuccess) {
         playSound('success');
       }
     } catch (e) {
@@ -1736,7 +1759,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
 
                 <button
                   onClick={handleTestAiKey}
-                  disabled={testingAiKey || !geminiApiKey}
+                  disabled={testingAiKey || (!geminiApiKey && !openaiApiKey)}
                   className="px-4 py-2 rounded-xl bg-white border border-current text-xs font-black hover:bg-black/5 disabled:opacity-50 shrink-0"
                 >
                   {testingAiKey ? 'Đang Test...' : '⚡ Kiểm Tra Kết Nối'}
@@ -1745,7 +1768,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
 
               {/* Test Result Message */}
               {aiTestResult && (
-                <div className={`p-3.5 rounded-2xl border text-xs font-bold ${
+                <div className={`p-3.5 rounded-2xl border text-xs font-bold whitespace-pre-line ${
                   aiTestResult.success
                     ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
                     : 'bg-rose-100 border-rose-300 text-rose-800'

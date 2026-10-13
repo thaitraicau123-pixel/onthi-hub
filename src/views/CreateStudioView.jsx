@@ -156,15 +156,20 @@ export default function CreateStudioView({
         cardCount: aiCount
       });
 
-      if (!title) {
-        setTitle(`Bộ Thẻ: ${aiTopic}`);
+      if (Array.isArray(generated) && generated.length > 0) {
+        if (!title) {
+          setTitle(`Bộ Thẻ: ${aiTopic}`);
+        }
+        setCards(generated);
+        consumeUserQuota(1);
+        refreshQuota();
+        playSound('success');
+        confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
+      } else {
+        alert('Không nhận được dữ liệu thẻ từ AI. Vui lòng thử lại với chủ đề khác!');
       }
-      setCards(generated);
-      consumeUserQuota(1);
-      refreshQuota();
-      playSound('success');
     } catch (e) {
-      alert('Có lỗi xảy ra khi tạo thẻ bằng AI.');
+      alert('Có lỗi xảy ra khi tạo thẻ bằng AI: ' + (e.message || 'Lỗi mạng'));
     } finally {
       setIsGenerating(false);
     }
