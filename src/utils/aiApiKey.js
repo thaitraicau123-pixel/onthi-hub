@@ -131,7 +131,7 @@ export async function testGeminiApiKey(keyToTest) {
         return {
           success: true,
           model,
-          message: `✅ Kết nối thành công tới Google AI (${model})! (Phản hồi: "${reply.trim()}")`
+          message: `✅ Kết nối thành công tới Động Cơ AI ÔnThiHub Cloud! (Phản hồi: "${reply.trim()}")`
         };
       }
 
@@ -150,7 +150,7 @@ export async function testGeminiApiKey(keyToTest) {
 
   return {
     success: false,
-    message: `Kết nối thất bại: ${lastError || 'Không thể kết nối đến máy chủ Google'}`
+    message: `Kết nối thất bại: ${lastError || 'Không thể kết nối đến máy chủ AI Cloud'}`
   };
 }
 

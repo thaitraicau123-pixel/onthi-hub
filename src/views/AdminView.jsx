@@ -99,6 +99,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
   const [isSendingTelegramTest, setIsSendingTelegramTest] = useState(false);
   const [ntfyTestMsg, setNtfyTestMsg] = useState('');
   const [isSendingNtfyTest, setIsSendingNtfyTest] = useState(false);
+  const [copiedNtfyTopic, setCopiedNtfyTopic] = useState(false);
 
   const reloadData = () => {
     setTransactions(getTransactions());
@@ -508,7 +509,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
             }`}
           >
             <Cpu className="w-4 h-4 text-cyan-600" />
-            <span>Thẻ API Key AI (Gemini / OpenAI)</span>
+            <span>Thẻ API Key AI (ÔnThiHub Cloud)</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
               hasValidAiKey() ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
             }`}>
@@ -991,19 +992,19 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                 </div>
               </div>
 
-              {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
-              <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-3 text-xs">
+                {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
+              <div className="p-5 sm:p-6 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-4 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-xs">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-purple-900/20">
                       <BellRing className="w-5 h-5" />
                     </div>
                     <div>
-                      <h5 className="text-sm font-black text-[#28071a]">
-                        Rung Chuông & Báo Màn Hình Khóa Điện Thoại (Miễn phí 100% qua ntfy.sh)
+                      <h5 className="text-sm sm:text-base font-black text-[#28071a]">
+                        Chuông Báo & Màn Hình Khóa Điện Thoại (ntfy.sh)
                       </h5>
                       <span className="text-[11px] text-[#7a5a6b] font-medium">
-                        Không cần đăng ký tài khoản • Rung chuông điện thoại ngay tức thì khi có khách đặt lệnh
+                        Không cần tài khoản hay mật khẩu • Reo chuông màn hình khóa tức thì khi có khách Nạp / Rút
                       </span>
                     </div>
                   </div>
@@ -1022,23 +1023,97 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                       href={ADMIN_NTFY_TOPIC}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
+                      className="px-3.5 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
                     >
-                      <Smartphone className="w-3.5 h-3.5" />
-                      <span>Xem Kênh ntfy.sh</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Mở Trang ntfy.sh</span>
                     </a>
                   </div>
                 </div>
 
                 {ntfyTestMsg && (
-                  <div className="p-3 bg-purple-50 border border-purple-200 text-purple-950 font-bold rounded-xl text-xs animate-fade-in">
-                    {ntfyTestMsg}
+                  <div className="p-3.5 bg-purple-50 border border-purple-200 text-purple-950 font-bold rounded-xl text-xs animate-fade-in flex items-center space-x-2">
+                    <CheckCircle2 className="w-4 h-4 text-purple-600 shrink-0" />
+                    <span>{ntfyTestMsg}</span>
                   </div>
                 )}
 
-                <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
-                  💡 Anh có thể cài ứng dụng <strong>ntfy</strong> (trên App Store hoặc Google Play), sau đó bấm dấu cộng (+) và nhập chủ đề: <code className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">Onthihubbbbb</code>. Điện thoại của anh sẽ reo chuông báo mỗi khi có đơn nạp/rút!
-                </p>
+                {/* Giới thiệu cơ chế không cần đăng nhập */}
+                <div className="p-4 bg-purple-50/70 border border-purple-200 rounded-2xl space-y-3">
+                  <div className="flex items-start gap-3">
+                    <Smartphone className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                      <strong className="text-purple-950 font-black text-xs block">
+                        ❓ Vì sao trên ứng dụng ntfy không có chỗ đăng nhập tài khoản?
+                      </strong>
+                      <p className="text-[11px] text-purple-900/90 leading-relaxed font-medium">
+                        <strong>ntfy</strong> được thiết kế theo cơ chế ẩn danh (Zero-login). 
+                        Anh không cần tạo tài khoản hay ghi nhớ mật khẩu! Thay vào đó, 
+                        chủ đề (Topic) <code className="bg-purple-200/80 text-purple-950 px-1.5 py-0.5 rounded font-mono font-black">Onthihubbbbb</code> chính là kênh thông báo riêng biệt của website ÔnThiHub.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* 2 Cột: Quét Mã QR & Các Bước Thao Tác */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-purple-200/80 items-center">
+                    
+                    {/* Cột 1: Mã QR để quét nhanh trên điện thoại */}
+                    <div className="p-3 bg-white rounded-xl border border-purple-200 shadow-2xs flex flex-col items-center text-center">
+                      <img
+                        src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://ntfy.sh/Onthihubbbbb"
+                        alt="QR Code ntfy Onthihubbbbb"
+                        className="w-32 h-32 rounded-lg border border-purple-100 mb-2"
+                      />
+                      <span className="text-[10px] text-purple-900 font-black">
+                        Quét mã QR bằng Camera điện thoại
+                      </span>
+                    </div>
+
+                    {/* Cột 2 & 3: Hướng dẫn 2 bước cực dễ */}
+                    <div className="md:col-span-2 space-y-2.5 text-[11px] text-purple-950 font-medium">
+                      <div className="flex items-start space-x-2">
+                        <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-black text-[10px] shrink-0 mt-0.5">1</span>
+                        <div>
+                          <strong>Bước 1: Tải ứng dụng ntfy về điện thoại</strong> (tìm từ khóa <code className="font-mono bg-purple-100 px-1 py-0.2 rounded font-bold">ntfy</code> trên App Store hoặc Google Play, tải hoàn toàn miễn phí).
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-2">
+                        <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-black text-[10px] shrink-0 mt-0.5">2</span>
+                        <div>
+                          <strong>Bước 2: Đăng ký nhận thông báo</strong>: Mở app ntfy &gt; Bấm dấu cộng (<strong>+</strong>) ở góc màn hình &gt; Nhập đúng tên chủ đề:
+                          <div className="mt-1.5 flex items-center space-x-2">
+                            <span className="px-2.5 py-1 bg-white border border-purple-300 font-mono font-black text-purple-700 rounded-lg text-xs">
+                              Onthihubbbbb
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard.writeText('Onthihubbbbb');
+                                setCopiedNtfyTopic(true);
+                                playSound('success');
+                                setTimeout(() => setCopiedNtfyTopic(false), 2500);
+                              }}
+                              className="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-black text-[10px] flex items-center space-x-1"
+                            >
+                              {copiedNtfyTopic ? <Check className="w-3 h-3 text-emerald-300" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedNtfyTopic ? 'Đã Copy!' : 'Copy Tên Chủ Đề'}</span>
+                            </button>
+                          </div>
+                          <span className="block mt-1 text-[10px] text-purple-800">
+                            Sau đó bấm <strong>Subscribe</strong> là xong 100%!
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-900 text-[10px] font-bold flex items-center space-x-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                        <span>Từ giờ, mỗi khi có khách Nạp hoặc Rút tiền, màn hình khóa điện thoại của anh sẽ reo chuông ting ting ngay lập tức.</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
               </div>
 
               {/* CARD 3: TÙY CHỌN TELEGRAM BOT TỰ ĐỘNG */}
@@ -1512,7 +1587,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
             </div>
           )}
 
-          {/* TAB 7: THẺ CẤU HÌNH API KEY AI (Google Gemini & OpenAI) */}
+          {/* TAB 7: THẺ CẤU HÌNH API KEY AI CLOUD */}
           {activeTab === 'ai_api' && (
             <div className="space-y-6">
               
@@ -1521,10 +1596,10 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                 <div>
                   <h4 className="text-base font-black text-[#28071a] flex items-center space-x-2">
                     <Cpu className="w-5 h-5 text-cyan-600" />
-                    <span>Cấu Hình Thẻ API Key AI (Google Gemini & OpenAI)</span>
+                    <span>Cấu Hình Khóa Động Cơ AI ÔnThiHub Cloud (High Performance)</span>
                   </h4>
                   <p className="text-xs text-[#7a5a6b] font-medium mt-0.5">
-                    Tích hợp trí tuệ nhân tạo để tự động trích xuất tài liệu, sách giáo trình thành bộ thẻ Anki thật 100%.
+                    Tích hợp trí tuệ nhân tạo chuyên biệt để tự động trích xuất tài liệu, sách giáo trình thành bộ thẻ Anki thật 100%.
                   </p>
                 </div>
 
@@ -1535,7 +1610,7 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                     rel="noreferrer"
                     className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs font-black flex items-center space-x-1.5 shadow-md hover:brightness-110"
                   >
-                    <span>Lấy Key Google Miễn Phí</span>
+                    <span>Cổng Kích Hoạt Khóa AI</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   
@@ -1570,12 +1645,12 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                   </div>
                   <div>
                     <h5 className="font-black text-xs sm:text-sm">
-                      {hasValidAiKey() ? '🟢 Đã Kích Hoạt AI Trực Tiếp' : '🟡 Đang Dùng Bộ Sinh Thẻ Ngoại Tuyến (Offline)'}
+                      {hasValidAiKey() ? '🟢 Đã Kích Hoạt Động Cơ AI Trực Tiếp' : '🟡 Đang Dùng Bộ Sinh Thẻ Ngoại Tuyến (Offline)'}
                     </h5>
                     <p className="text-[11px] opacity-80 font-medium">
                       {hasValidAiKey()
-                        ? 'Hệ thống đã nhận diện API Key hợp lệ. Học viên khi bấm "Tạo thẻ AI" sẽ nhận kết quả phân tích trực tiếp từ mô hình ngôn ngữ lớn.'
-                        : 'Chưa có API Key. Hệ thống hiện chạy thuật toán mô phỏng thông minh. Hãy nhập Gemini API Key dưới đây để kích hoạt AI thật.'}
+                        ? 'Hệ thống đã nhận diện Khóa AI hợp lệ. Học viên khi bấm "Tạo thẻ AI" sẽ nhận kết quả phân tích trực tiếp từ mô hình trí tuệ nhân tạo điện toán đám mây.'
+                        : 'Chưa có Khóa AI. Hệ thống hiện chạy thuật toán mô phỏng thông minh. Hãy nhập Khóa AI Cloud dưới đây để kích hoạt máy chủ thật.'}
                     </p>
                   </div>
                 </div>
@@ -1603,17 +1678,17 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
               {/* API Key Form */}
               <form onSubmit={handleSaveAiKey} className="space-y-4">
                 
-                {/* 1. Google Gemini Key Card */}
+                {/* 1. Cloud AI Key Card */}
                 <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <span className="text-base">✨</span>
                       <div>
                         <strong className="text-sm font-black text-[#28071a] block">
-                          Google Gemini API Key (Khuyên Dùng - Miễn Phí 100%)
+                          Khóa Động Cơ AI ÔnThiHub Cloud (Khuyên Dùng - Tốc Độ Cao)
                         </strong>
                         <span className="text-[11px] text-[#7a5a6b] font-medium">
-                          Mô hình Gemini 1.5 Flash: siêu tốc, miễn phí 15 requests/phút, hỗ trợ tiếng Việt cực chuẩn.
+                          Mô hình AI Flash siêu tốc: phân tích và trích xuất cấu trúc đề thi, hỗ trợ tiếng Việt cực chuẩn.
                         </span>
                       </div>
                     </div>
@@ -1624,14 +1699,14 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
                       rel="noreferrer"
                       className="text-xs font-black text-blue-600 hover:underline flex items-center space-x-1"
                     >
-                      <span>Lấy Key (Google AI Studio)</span>
+                      <span>Cổng Đăng Ký Khóa AI</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   </div>
 
                   <div>
                     <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
-                      Khóa bí mật Gemini API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+                      Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
                     </label>
                     <div className="relative">
                       <input
@@ -1646,9 +1721,9 @@ export default function AdminView({ onBackToHome, onOpenChangelog }) {
 
                   {/* 3 Steps Guide to get free key */}
                   <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1.5">
-                    <strong className="font-black block text-blue-950">📋 Hướng dẫn lấy key miễn phí trong 30 giây:</strong>
+                    <strong className="font-black block text-blue-950">📋 Hướng dẫn kích hoạt khóa trong 30 giây:</strong>
                     <ol className="list-decimal pl-4 space-y-1 text-[11px] font-medium">
-                      <li>Truy cập <a href={API_KEY_LINKS.gemini} target="_blank" rel="noreferrer" className="font-bold underline text-blue-700">Google AI Studio (aistudio.google.com)</a> và đăng nhập Gmail.</li>
+                      <li>Truy cập <a href={API_KEY_LINKS.gemini} target="_blank" rel="noreferrer" className="font-bold underline text-blue-700">Cổng đăng ký khóa AI Cloud</a> và đăng nhập Gmail.</li>
                       <li>Bấm vào nút <strong>"Get API key"</strong> &gt; chọn <strong>"Create API key in new project"</strong>.</li>
                       <li>Copy chuỗi ký tự dạng <code className="font-mono bg-blue-100 px-1 rounded">AIzaSy...</code> và dán vào ô trên rồi bấm <strong>Lưu Cấu Hình</strong>!</li>
                     </ol>
