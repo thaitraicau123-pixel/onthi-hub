@@ -22,10 +22,41 @@ export function calculateOptimalCardCount(rawText) {
 /**
  * Call real Google Gemini API with auto-failover across active models
  */
-async function callGeminiApi({ apiKey, topic, rawText, cardCount }) {
+async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
+  const modeGuidance = (() => {
+    switch (extractionMode) {
+      case 'qa':
+        return `CHẾ ĐỘ BẮT BUỘC: PHÂN BIỆT RÕ CÂU HỎI VÀ CÂU TRẢ LỜI CÓ SẴN (Q&A).
+- Tài liệu đính kèm đã có sẵn các cặp Hỏi & Đáp (hoặc dạng Câu 1:... Trả lời:..., Q:... A:..., hoặc số thứ tự kèm gạch đầu dòng).
+- Nhiệm vụ của bạn: Tách chính xác phần CÂU HỎI đặt vào trường "front", phần CÂU TRẢ LỜI/GIẢI THÍCH đặt vào trường "back".
+- TUYỆT ĐỐI KHÔNG đảo lộn vị trí (không lấy câu trả lời làm câu hỏi và ngược lại).
+- Giữ trọn vẹn đáp án gốc của người dùng, có thể gọt giũa lại cho sáng rõ theo chuẩn Anki.`;
+      case 'questions_only':
+        return `CHẾ ĐỘ: TÀI LIỆU CHỈ LÀ DANH SÁCH CÂU HỎI (CHƯA CÓ TRẢ LỜI).
+- Lấy từng câu hỏi đưa vào trường "front".
+- Bạn hãy tự đóng vai trò chuyên gia để giải đáp chuẩn xác, đắt giá, có căn cứ và mẹo nhớ vào trường "back".`;
+      case 'summary':
+        return `CHẾ ĐỘ: TÀI LIỆU LÀ BÀI GIẢNG / GHI CHÚ LÝ THUYẾT THUẦN TÚY.
+- Phân tích nội dung và tự đặt câu hỏi gợi nhớ sắc bén, phản xạ tức thì cho trường "front".
+- Viết câu trả lời súc tích, gạch đầu dòng rõ ràng cho trường "back".`;
+      default:
+        return `NGUYÊN TẮC NHẬN DIỆN THÔNG MINH (TỰ ĐỘNG PHÂN BIỆT CÂU HỎI VÀ TRẢ LỜI):
+1. NẾU TÀI LIỆU ĐÃ CÓ CẢ CÂU HỎI VÀ TRẢ LỜI (như "Câu 1: ... Trả lời: ...", "Hỏi: ... Đáp: ...", "Q: ... A: ...", hoặc câu có dấu hỏi ? kèm câu giải thích):
+   -> Lấy CÂU HỎI làm "front", CÂU TRẢ LỜI làm "back". Tuyệt đối không hoán đổi!
+2. NẾU TÀI LIỆU CHỈ CÓ CÂU HỎI (chưa có câu trả lời):
+   -> Đưa CÂU HỎI vào "front", AI tự giải đáp chi tiết vào "back".
+3. NẾU TÀI LIỆU LÀ VĂN BẢN GHI CHÚ LÝ THUYẾT:
+   -> AI tự trích xuất khái niệm cốt lõi, tự sinh câu hỏi gợi nhớ cho "front" và câu trả lời súc tích cho "back".`;
+    }
+  })();
+
+  const customPromptSection = (customPrompt || '').trim()
+    ? `\n🎯 LỜI NHẮC TÙY CHỈNH TỪ NGƯỜI DÙNG (CUSTOM PROMPT - ƯU TIÊN TUÂN THỦ CAO NHẤT):\n"${customPrompt.trim()}"\n`
+    : '';
 
   const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu hàng đầu theo phương pháp Lặp lại ngắt quãng (Spaced Repetition / Anki).
 Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn chính xác ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao, súc tích và đắt giá bằng tiếng Việt.
@@ -33,6 +64,9 @@ Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn
 CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
 TÀI LIỆU / GHI CHÚ ĐÍNH KÈM:
 ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm phổ biến và công thức/khái niệm cốt lõi của chủ đề này.'}
+
+${modeGuidance}
+${customPromptSection}
 
 TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (THEO CHUẨN ANKI FLASHCARD):
 - "front": Câu hỏi sắc bén, ngắn gọn, đi thẳng vào trọng tâm (khoảng 10-25 từ). Tuyệt đối không viết câu hỏi dài dòng, lan man.
@@ -55,7 +89,7 @@ Ví dụ:
   for (const model of GEMINI_MODELS) {
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 9000);
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
 
     try {
       const response = await fetch(endpoint, {
@@ -124,15 +158,21 @@ Ví dụ:
 /**
  * Call OpenAI API (GPT-4o-mini) as fallback or primary if configured
  */
-async function callOpenAiApi({ apiKey, topic, rawText, cardCount }) {
+async function callOpenAiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
+  const customPromptSection = (customPrompt || '').trim()
+    ? `\n🎯 LỜI NHẮC TÙY CHỈNH TỪ NGƯỜI DÙNG: "${customPrompt.trim()}"\n`
+    : '';
 
   const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu theo phương pháp Spaced Repetition (Anki).
 Biên soạn đúng ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao bằng tiếng Việt dựa trên:
 CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
 GHI CHÚ / TÀI LIỆU: ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm và khái niệm cốt lõi.'}
+CHẾ ĐỘ TRÍCH XUẤT: ${extractionMode === 'qa' ? 'Phân biệt rõ Câu hỏi đưa vào front, Câu trả lời đưa vào back.' : extractionMode === 'questions_only' ? 'Tài liệu là câu hỏi, AI giải chi tiết vào back.' : 'Tự động phân biệt câu hỏi vs trả lời.'}
+${customPromptSection}
 
 TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (CHUẨN ANKI):
 - "front": Câu hỏi sắc bén, ngắn gọn (10-25 từ).
@@ -210,7 +250,7 @@ Không kèm theo văn bản giải thích nào ngoài mảng JSON.`;
  * Dynamically extracts definitions, bullet points, Q&A pairs from raw text,
  * or synthesizes pedagogical flashcards tailored to any topic.
  */
-function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5 }) {
+function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, customPrompt = '', extractionMode = 'auto' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
@@ -220,50 +260,95 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5 }) {
 
   // If user pasted detailed study notes or paragraphs, parse them directly!
   if (rawText && rawText.trim().length > 10) {
-    const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const text = rawText.trim();
     const extractedCards = [];
 
-    // 1. Look for Definition Patterns (X: Y, X - Y, X là Y)
-    for (const line of lines) {
-      if (line.includes(':') && line.indexOf(':') > 2 && line.indexOf(':') < 80) {
-        const parts = line.split(':');
-        const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
-        const back = parts.slice(1).join(':').trim();
-        if (front && back && front.length < 90 && back.length > 3) {
-          extractedCards.push({
-            id: extractedCards.length + 1,
-            front: front.includes('?') ? front : `[${title}] ${front} là gì?`,
-            back: back,
-            tag: front.slice(0, 16)
-          });
-        }
-      } else if (line.includes(' - ') && line.indexOf(' - ') > 2 && line.indexOf(' - ') < 80) {
-        const parts = line.split(' - ');
-        const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
-        const back = parts.slice(1).join(' - ').trim();
-        if (front && back && front.length < 90 && back.length > 3) {
-          extractedCards.push({
-            id: extractedCards.length + 1,
-            front: front.includes('?') ? front : `[${title}] Ý nghĩa / Khái niệm: "${front}"?`,
-            back: back,
-            tag: front.slice(0, 16)
-          });
+    // 1. Check for explicit Q&A blocks (Câu 1: ... Trả lời: ... or Hỏi: ... Đáp: ...)
+    const qaRegex = /(?:^|\n)\s*(?:câu\s*\d+|bài\s*\d+|q\s*\d+|hỏi|c\d+)?\s*[:.-]?\s*([^\n?]+(?:\?|[^\n]*))\s*(?:\n|\s)+(?:trả lời|đáp án|đáp|tl|ans|a)\s*[:.-]\s*([\s\S]*?)(?=(?:\n\s*(?:câu\s*\d+|bài\s*\d+|q\s*\d+|hỏi|c\d+)\s*[:.-])|$)/gi;
+    let match;
+    while ((match = qaRegex.exec(text)) !== null) {
+      const q = (match[1] || '').trim();
+      const a = (match[2] || '').trim();
+      if (q && a && q.length > 3) {
+        extractedCards.push({
+          id: extractedCards.length + 1,
+          front: q.includes('?') ? q : `${q}?`,
+          back: a,
+          tag: title.slice(0, 16)
+        });
+      }
+    }
+
+    // 2. Question lines with question marks '?'
+    if (extractedCards.length === 0) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.endsWith('?') || (line.includes('?') && line.length < 140)) {
+          const qText = line.replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
+          let ansText = '';
+          if (i + 1 < lines.length && !lines[i + 1].endsWith('?')) {
+            ansText = lines[i + 1].replace(/^[-*•🎯📌💡\s]+/, '').trim();
+          }
+          if (qText) {
+            extractedCards.push({
+              id: extractedCards.length + 1,
+              front: qText,
+              back: ansText || `📌 Trọng tâm: ${rawText.slice(0, 120)}...`,
+              tag: title.slice(0, 16)
+            });
+          }
         }
       }
     }
 
-    // 2. Look for Clauses with "vừa ... vừa ..." or multi-item sentences
-    for (const line of lines) {
-      if (line.includes('vừa') || line.includes('gồm') || line.includes('lợi thế') || line.includes('nguyên tắc')) {
-        const cleanLine = line.replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
-        if (cleanLine.length > 25) {
-          extractedCards.push({
-            id: extractedCards.length + 1,
-            front: `[${title}] Lợi thế then chốt & Các mục tiêu cốt lõi?`,
-            back: cleanLine.replace(/vừa /g, '\n• ').replace(/, \n•/g, '\n•'),
-            tag: 'Ý then chốt'
-          });
-          break;
+    // 3. Look for Definition Patterns (X: Y, X - Y, X là Y)
+    if (extractedCards.length === 0) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      for (const line of lines) {
+        if (line.includes(':') && line.indexOf(':') > 2 && line.indexOf(':') < 80) {
+          const parts = line.split(':');
+          const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
+          const back = parts.slice(1).join(':').trim();
+          if (front && back && front.length < 90 && back.length > 3) {
+            extractedCards.push({
+              id: extractedCards.length + 1,
+              front: front.includes('?') ? front : `[${title}] ${front} là gì?`,
+              back: back,
+              tag: front.slice(0, 16)
+            });
+          }
+        } else if (line.includes(' - ') && line.indexOf(' - ') > 2 && line.indexOf(' - ') < 80) {
+          const parts = line.split(' - ');
+          const front = parts[0].replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
+          const back = parts.slice(1).join(' - ').trim();
+          if (front && back && front.length < 90 && back.length > 3) {
+            extractedCards.push({
+              id: extractedCards.length + 1,
+              front: front.includes('?') ? front : `[${title}] Ý nghĩa / Khái niệm: "${front}"?`,
+              back: back,
+              tag: front.slice(0, 16)
+            });
+          }
+        }
+      }
+    }
+
+    // 4. Look for Clauses with "vừa ... vừa ..." or multi-item sentences
+    if (extractedCards.length === 0) {
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      for (const line of lines) {
+        if (line.includes('vừa') || line.includes('gồm') || line.includes('lợi thế') || line.includes('nguyên tắc')) {
+          const cleanLine = line.replace(/^[-*•🎯📌💡\d.)\s]+/, '').trim();
+          if (cleanLine.length > 25) {
+            extractedCards.push({
+              id: extractedCards.length + 1,
+              front: `[${title}] Lợi thế then chốt & Các mục tiêu cốt lõi?`,
+              back: cleanLine.replace(/vừa /g, '\n• ').replace(/, \n•/g, '\n•'),
+              tag: 'Ý then chốt'
+            });
+            break;
+          }
         }
       }
     }
@@ -445,7 +530,7 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5 }) {
  * 2. Tries OpenAI (gpt-4o-mini)
  * 3. Falls back to Smart Semantic Extractor
  */
-export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount = 6 }) {
+export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount = 6, customPrompt = '', extractionMode = 'auto' }) {
   const geminiKey = getGeminiApiKey();
   const openaiKey = getOpenAIApiKey();
 
@@ -456,7 +541,9 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
         apiKey: geminiKey,
         topic,
         rawText,
-        cardCount
+        cardCount,
+        customPrompt,
+        extractionMode
       });
       if (Array.isArray(realCards) && realCards.length > 0) {
         return realCards;
@@ -473,7 +560,9 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
         apiKey: openaiKey,
         topic,
         rawText,
-        cardCount
+        cardCount,
+        customPrompt,
+        extractionMode
       });
       if (Array.isArray(openAiCards) && openAiCards.length > 0) {
         return openAiCards;
@@ -484,8 +573,8 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
   }
 
   // 3. Fallback to Smart Semantic Engine with natural delay
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  return generateSmartSemanticCards({ topic, rawText, cardCount });
+  await new Promise((resolve) => setTimeout(resolve, 600));
+  return generateSmartSemanticCards({ topic, rawText, cardCount, customPrompt, extractionMode });
 }
 
 /**

@@ -44,6 +44,9 @@ export default function CreateStudioView({
   const [aiNotes, setAiNotes] = useState('');
   const [aiCount, setAiCount] = useState('auto'); // 'auto' | number
   const [isExpandedNotes, setIsExpandedNotes] = useState(false);
+  const [extractionMode, setExtractionMode] = useState('auto'); // 'auto' | 'qa' | 'questions_only' | 'summary'
+  const [customPrompt, setCustomPrompt] = useState('');
+  const [showCustomPrompt, setShowCustomPrompt] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Cards state
@@ -186,7 +189,9 @@ export default function CreateStudioView({
       const generated = await generateFlashcardsWithAI({
         topic: aiTopic,
         rawText: aiNotes,
-        cardCount: targetCount
+        cardCount: targetCount,
+        customPrompt,
+        extractionMode
       });
 
       if (Array.isArray(generated) && generated.length > 0) {
@@ -518,6 +523,118 @@ export default function CreateStudioView({
                   </span>
                 )}
               </div>
+            </div>
+
+            {/* Extraction Mode Selector (Phân biệt Câu hỏi vs Trả lời vs Lý thuyết) */}
+            <div className="p-3 bg-[#fcf7ec]/80 rounded-2xl border border-[#eadfcb] space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-1">
+                <span className="text-xs font-black text-[#28071a] flex items-center gap-1.5">
+                  <span>🎯</span>
+                  <span>Quy Tắc Nhận Diện Kiến Thức:</span>
+                </span>
+                <span className="text-[10px] text-[#f02c85] font-black">
+                  {extractionMode === 'auto'
+                    ? '✨ AI tự nhận diện thông minh'
+                    : extractionMode === 'qa'
+                    ? '❓ Đã có sẵn Hỏi & Đáp (Tách Front - Back)'
+                    : extractionMode === 'questions_only'
+                    ? '💡 Danh sách câu hỏi (AI tự giải đáp)'
+                    : '📖 Bài giảng / Lý thuyết (AI tự sinh câu hỏi)'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {[
+                  { id: 'auto', label: 'Tự Động', desc: 'AI tự phân tích', icon: '✨' },
+                  { id: 'qa', label: 'Có Sẵn Hỏi-Đáp', desc: 'Tách rõ Front/Back', icon: '❓' },
+                  { id: 'questions_only', label: 'Chỉ Câu Hỏi', desc: 'AI tự tìm đáp án', icon: '💡' },
+                  { id: 'summary', label: 'Lý Thuyết Thuần', desc: 'AI tự sinh câu hỏi', icon: '📖' },
+                ].map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => {
+                      setExtractionMode(m.id);
+                      playSound('click');
+                    }}
+                    className={`p-2 rounded-xl text-left border transition-all ${
+                      extractionMode === m.id
+                        ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white border-[#f02c85] shadow-xs'
+                        : 'bg-white border-[#eadfcb] text-[#28071a] hover:bg-[#faf4e6]'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-1 font-black text-[11px]">
+                      <span>{m.icon}</span>
+                      <span className="truncate">{m.label}</span>
+                    </div>
+                    <div className={`text-[9px] mt-0.5 font-medium truncate ${extractionMode === m.id ? 'text-pink-100' : 'text-[#7a5a6b]'}`}>
+                      {m.desc}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Prompt Toggle & Input */}
+            <div className="p-3 bg-white rounded-2xl border border-[#eadfcb] space-y-2">
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setShowCustomPrompt(!showCustomPrompt)}
+                  className="text-xs font-black text-[#f02c85] hover:text-[#d11c6d] flex items-center space-x-1.5 transition-colors"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{showCustomPrompt ? 'Ẩn Lời Nhắc Tùy Chỉnh (Custom Prompt) ▲' : '✍️ Thêm Lời Nhắc Tùy Chỉnh Cho AI (Custom Prompt) ▼'}</span>
+                  {customPrompt.trim() && (
+                    <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black ml-1">Đã Bật</span>
+                  )}
+                </button>
+                <span className="text-[10px] text-[#7a5a6b] font-medium hidden sm:inline">Ép khuôn AI theo phong cách của bạn</span>
+              </div>
+
+              {showCustomPrompt && (
+                <div className="pt-2 border-t border-[#f4ecd8] space-y-2 animate-fade-in">
+                  <textarea
+                    rows={2}
+                    placeholder="Ví dụ: Giữ nguyên câu hỏi có sẵn, viết câu trả lời ngắn dưới 25 từ, bổ sung căn cứ pháp lý và mẹo nhớ vui..."
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                    className="w-full p-2.5 text-xs bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-medium text-[#28071a] resize-none"
+                  />
+
+                  {/* Quick suggestion chips */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] text-[#7a5a6b] font-bold">Gợi ý nhanh:</span>
+                    {[
+                      '📌 Giữ nguyên câu hỏi có sẵn',
+                      '⚡ Trả lời súc tích < 30 từ',
+                      '🎯 Thêm căn cứ & bẫy trắc nghiệm',
+                      '💡 Kèm mẹo nhớ phản xạ nhanh'
+                    ].map((chip) => (
+                      <button
+                        key={chip}
+                        type="button"
+                        onClick={() => {
+                          setCustomPrompt(prev => prev ? `${prev}, ${chip}` : chip);
+                          playSound('click');
+                        }}
+                        className="px-2 py-0.5 text-[10px] font-bold bg-[#fcf7ec] hover:bg-pink-50 border border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a] rounded-lg transition-colors"
+                      >
+                        {chip}
+                      </button>
+                    ))}
+                    {customPrompt && (
+                      <button
+                        type="button"
+                        onClick={() => setCustomPrompt('')}
+                        className="px-2 py-0.5 text-[10px] font-bold text-rose-600 hover:text-rose-700 underline ml-auto"
+                      >
+                        Xóa lời nhắc
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* SỐ LƯỢNG THẺ - Flexible Selector & Stepper */}
