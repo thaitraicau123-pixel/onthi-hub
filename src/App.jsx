@@ -182,6 +182,7 @@ export default function App() {
         {/* TAB 2: SÀN MUA BÁN C2C */}
         {activeTab === 'marketplace' && (
           <MarketplaceView
+            user={user}
             marketplaceDecks={marketplaceDecks}
             onOpenCreateDeck={() => setActiveTab('create')}
             onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}

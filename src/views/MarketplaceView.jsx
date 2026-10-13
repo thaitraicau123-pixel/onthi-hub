@@ -18,15 +18,18 @@ import {
   Repeat,
   Flame,
   BadgePercent,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from 'lucide-react';
 import {
   getMarketplaceDecks,
   purchaseMarketplaceDeck,
   subscribeToMarketplaceDecks,
   fetchCloudRelayMarketplaceDecks,
-  mergeAndSaveMarketplaceDecks
+  mergeAndSaveMarketplaceDecks,
+  deleteMarketplaceDeck
 } from '../data/marketplaceData';
+import { isUserAdmin } from '../utils/adminGuard';
 import { isCoursePurchased } from '../utils/storage';
 import { playSound } from '../utils/storage';
 import { getLikedDeckIds, toggleLikeDeck } from '../utils/gamification';
@@ -34,6 +37,7 @@ import { getDailyDeals } from '../utils/dailyDeals';
 import confetti from 'canvas-confetti';
 
 export default function MarketplaceView({
+  user,
   marketplaceDecks,
   onOpenCreateDeck,
   onOpenFlashcardSample,
@@ -46,6 +50,22 @@ export default function MarketplaceView({
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest'); // default to 'newest' so newly passed/created decks appear ON TOP!
   const [likedIds, setLikedIds] = useState(() => getLikedDeckIds());
+
+  const canDeleteDeck = (deck) => {
+    if (isUserAdmin(user)) return true;
+    if (user?.displayName && (deck.authorName === user.displayName || deck.passSellerName === user.displayName)) return true;
+    if (user?.email && (deck.authorEmail === user.email || deck.passSellerEmail === user.email)) return true;
+    return false;
+  };
+
+  const handleDeleteDeck = (e, deck) => {
+    e.stopPropagation();
+    if (window.confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN bộ thẻ "${deck.title}" khỏi Chợ Thẻ không?\nThao tác này sẽ gỡ bỏ thẻ trên toàn bộ hệ thống.`)) {
+      deleteMarketplaceDeck(deck.id);
+      playSound('flip');
+      setDecks((prev) => prev.filter((d) => d.id !== deck.id));
+    }
+  };
 
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -378,15 +398,26 @@ export default function MarketplaceView({
                   className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3.5 flex flex-col justify-between transition-all"
                 >
                   <div>
-                    <div className="flex items-center space-x-2 mb-2">
-                      <img
-                        src={pDeck.passSellerAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
-                        alt={pDeck.passSellerName}
-                        className="w-6 h-6 rounded-full object-cover border border-white/30"
-                      />
-                      <span className="text-[11px] font-bold text-pink-200 truncate">
-                        Pass bởi: <strong className="text-white">{pDeck.passSellerName}</strong>
-                      </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2 truncate">
+                        <img
+                          src={pDeck.passSellerAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
+                          alt={pDeck.passSellerName}
+                          className="w-6 h-6 rounded-full object-cover border border-white/30 shrink-0"
+                        />
+                        <span className="text-[11px] font-bold text-pink-200 truncate">
+                          Pass bởi: <strong className="text-white">{pDeck.passSellerName}</strong>
+                        </span>
+                      </div>
+                      {canDeleteDeck(pDeck) && (
+                        <button
+                          onClick={(e) => handleDeleteDeck(e, pDeck)}
+                          className="p-1 rounded-md bg-white/10 hover:bg-rose-500/80 text-rose-200 hover:text-white transition-colors ml-2 shrink-0"
+                          title="Xóa bộ thẻ pass này"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
 
                     <h4 className="text-xs sm:text-sm font-black text-white line-clamp-1">
@@ -549,13 +580,24 @@ export default function MarketplaceView({
                         </div>
                       </div>
 
-                      <button
-                        onClick={() => handleToggleLike(deck.id)}
-                        className="p-1.5 rounded-full hover:bg-rose-100 transition-colors"
-                        title="Thả tim"
-                      >
-                        <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#f02c85] text-[#f02c85]' : 'text-slate-300 hover:text-[#f02c85]'}`} />
-                      </button>
+                      <div className="flex items-center space-x-1">
+                        {canDeleteDeck(deck) && (
+                          <button
+                            onClick={(e) => handleDeleteDeck(e, deck)}
+                            className="p-1.5 rounded-full hover:bg-rose-100 text-rose-500 hover:text-rose-700 transition-colors"
+                            title="Xóa bộ thẻ này khỏi Chợ Thẻ"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleToggleLike(deck.id)}
+                          className="p-1.5 rounded-full hover:bg-rose-100 transition-colors"
+                          title="Thả tim"
+                        >
+                          <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#f02c85] text-[#f02c85]' : 'text-slate-300 hover:text-[#f02c85]'}`} />
+                        </button>
+                      </div>
                     </div>
 
                     {/* Pass Note quote if available */}

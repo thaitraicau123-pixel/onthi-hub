@@ -52,7 +52,7 @@ import {
   sendTelegramNotification
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
-import { getMarketplaceDecks, adminUpdateMarketplaceDeck } from '../data/marketplaceData';
+import { getMarketplaceDecks, adminUpdateMarketplaceDeck, deleteMarketplaceDeck } from '../data/marketplaceData';
 import { checkDeckDuplication } from '../utils/duplicateChecker';
 import { playSound } from '../utils/storage';
 import {
@@ -234,6 +234,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
   const handleToggleDeck = (deckId, currentStatus) => {
     adminUpdateMarketplaceDeck(deckId, { isApproved: !currentStatus });
     reloadData();
+  };
+
+  const handleDeleteDeck = (deckId, title) => {
+    if (window.confirm(`Bạn có chắc chắn muốn XÓA VĨNH VIỄN bộ thẻ "${title || deckId}" khỏi Sàn Chợ Thẻ không?\nThao tác này sẽ xóa đồng bộ trên tất cả thiết bị của học viên.`)) {
+      deleteMarketplaceDeck(deckId);
+      playSound('flip');
+      reloadData();
+    }
   };
 
   // Firebase Snippet Auto-Parser
@@ -1071,6 +1079,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                               }`}
                             >
                               {deck.isApproved !== false ? 'Tạm Ẩn' : 'Duyệt Lại'}
+                            </button>
+
+                            <button
+                              onClick={() => handleDeleteDeck(deck.id, deck.title)}
+                              className="px-3 py-1 text-xs font-black rounded-lg bg-rose-600 hover:bg-rose-700 text-white flex items-center space-x-1 transition-colors shadow-xs"
+                              title="Xóa vĩnh viễn bộ thẻ này"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              <span>Xóa</span>
                             </button>
                           </div>
                         </div>

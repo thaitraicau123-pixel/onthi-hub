@@ -1,10 +1,10 @@
 import { getWalletBalance, deductWalletCoins, addWalletCoins } from '../utils/wallet.js';
 import { getUserTier, getTierLimits } from '../utils/userTier.js';
 import { savePurchasedCourse } from '../utils/storage.js';
-import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig.js';
+import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs, deleteDoc } from '../utils/firebaseConfig.js';
 
 const MARKETPLACE_KEY = 'onthi_marketplace_decks_v2'; // v2 for fresh high-quality decks
-const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v4';
+const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v5';
 
 export const INITIAL_MARKETPLACE_DECKS = [
   {
@@ -175,369 +175,6 @@ export const INITIAL_MARKETPLACE_DECKS = [
       }
     ]
   },
-  {
-    id: 'mkt_sql_interview',
-    title: '45 Câu Hỏi SQL & Database Tuning Phỏng Vấn Data / Backend Engineer',
-    subtitle: 'Window Functions, Index B-Tree vs LSM, Execution Plan & Locking',
-    description: 'Từ Window Functions (ROW_NUMBER, DENSE_RANK, LEAD, LAG) đến CTE, Index Seek vs Scan, tối ưu câu lệnh truy vấn hàng triệu dòng và chống Deadlock trong PostgreSQL/MySQL.',
-    category: 'it-tech',
-    categoryName: 'Data & Lập Trình',
-    categoryLabel: 'SQL & Database',
-    priceXu: 5, // Siết giá cực rẻ: 5 Xu (~5.000đ)
-    cardCount: 22,
-    authorName: 'Lê Hoàng (Lead Data Engineer)',
-    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
-    authorTier: 'pro',
-    salesCount: 1120,
-    rating: 4.98,
-    createdAt: '2026-10-05',
-    isApproved: true,
-    previewCards: [
-      {
-        id: 1,
-        front: 'Sự khác biệt giữa RANK() và DENSE_RANK() trong SQL là gì?',
-        back: '• RANK(): Bỏ qua thứ hạng kế tiếp nếu có đồng hạng (ví dụ: 1, 2, 2, 4).\n• DENSE_RANK(): KHÔNG bỏ qua thứ hạng kế tiếp (ví dụ: 1, 2, 2, 3).\n\n💡 Dùng DENSE_RANK() khi cần lấy top N mức lương cao nhất không lo mất thứ tự.',
-        tag: 'SQL Window Functions'
-      },
-      {
-        id: 2,
-        front: 'Khi nào Database Engine thực hiện INDEX SCAN thay vì INDEX SEEK?',
-        back: '• INDEX SEEK: Nhảy trực tiếp tới node B-Tree mong muốn (khi WHERE có điều kiện sargable dạng column = value hoặc column BETWEEN a AND b).\n• INDEX SCAN: Quét tuần tự toàn bộ leaf nodes khi điều kiện không sargable (LIKE \'%text\', dùng function trên cột như WHERE YEAR(date) = 2026).',
-        tag: 'Performance Tuning'
-      },
-      {
-        id: 3,
-        front: 'Sự khác biệt cốt lõi giữa Clustered Index và Non-Clustered Index là gì?',
-        back: '• Clustered Index: Quyết định thứ tự vật lý lưu trữ dữ liệu thực tế trên đĩa cứng (mỗi bảng chỉ có duy nhất 1).\n• Non-Clustered Index: Cấu trúc phụ riêng biệt chứa các cột index + con trỏ trỏ về bản ghi thực (mỗi bảng có thể tạo nhiều).',
-        tag: 'Index Architecture'
-      },
-      {
-        id: 4,
-        front: 'Cơ chế ACID trong Transaction Database gồm những tính chất gì?',
-        back: '1. Atomicity (Nguyên tử): Mọi thao tác đều thành công hoặc rollback hoàn toàn.\n2. Consistency (Nhất quán): Dữ liệu chuyển từ trạng thái hợp lệ này sang trạng thái hợp lệ khác.\n3. Isolation (Cô lập): Các giao dịch song song không làm sai lệch nhau.\n4. Durability (Bền vững): Dữ liệu đã commit sẽ không mất dù sập nguồn.',
-        tag: 'Transaction ACID'
-      },
-      {
-        id: 5,
-        front: 'Các mức Isolation Level trong SQL và vấn đề tương ứng?',
-        back: '• Read Uncommitted -> Gặp Dirty Read.\n• Read Committed (Default phổ biến) -> Khắc phục Dirty Read, nhưng có thể gặp Non-repeatable Read.\n• Repeatable Read -> Khắc phục Non-repeatable Read, nhưng có thể gặp Phantom Read.\n• Serializable -> Khắt khe nhất, an toàn tuyệt đối nhưng lock nhiều gây nghẽn.',
-        tag: 'Concurrency'
-      },
-      {
-        id: 6,
-        front: 'Phân biệt UNION và UNION ALL trong SQL?',
-        back: '• UNION: Gộp kết quả và TỰ ĐỘNG LỌC BỎ TRÙNG LẶP (Duplicate) -> Tốn RAM và CPU để sort & distinct.\n• UNION ALL: Gộp kết quả thuần túy KHÔNG lọc trùng -> Nhanh hơn vượt trội, khuyên dùng khi chắc chắn dữ liệu không trùng.',
-        tag: 'Query Optimization'
-      },
-      {
-        id: 7,
-        front: 'CTE (Common Table Expression) khác gì so với Subquery / Temp Table?',
-        back: '• CTE (WITH ... AS): Dễ đọc, có thể gọi đệ quy (Recursive CTE duyệt cây phân cấp/org-chart).\n• Temp Table (#table): Tạo bảng vật lý trong tempdb, có thể đánh Index riêng nếu dữ liệu trung gian lớn.',
-        tag: 'Advanced SQL'
-      },
-      {
-        id: 8,
-        front: 'Deadlock trong cơ sở dữ liệu là gì và cách phòng chống?',
-        back: 'Định nghĩa: Tình trạng Transaction A giữ Lock 1 đợi Lock 2, trong khi Transaction B giữ Lock 2 đợi Lock 1 -> Dẫn đến bế tắc vĩnh viễn.\nCách trị: Truy cập tài nguyên theo cùng một thứ tự thống nhất, giữ transaction ngắn nhất có thể, sử dụng cơ chế timeout.',
-        tag: 'Database Locking'
-      },
-      {
-        id: 9,
-        front: 'Nguyên lý Composite Index (Left-Prefix Rule) hoạt động ra sao?',
-        back: 'Nếu tạo Index trên (A, B, C):\n• Index dùng được khi WHERE có: (A), (A, B), (A, B, C).\n• Index KHÔNG DÙNG ĐƯỢC nếu WHERE chỉ có: (B), (C), hoặc (B, C) vì vi phạm nguyên lý tiền tố bên trái.',
-        tag: 'Index Design'
-      },
-      {
-        id: 10,
-        front: 'Phân vùng bảng (Table Partitioning) đem lại lợi ích gì?',
-        back: 'Chia bảng hàng trăm triệu dòng thành các partition nhỏ (theo RANGE ngày tháng hoặc HASH).\nLợi ích: Partition Pruning (chỉ quét phân vùng cần thiết, bỏ qua 90% còn lại), drop dữ liệu cũ cực nhanh chỉ với lệnh ALTER TABLE DROP PARTITION.',
-        tag: 'Big Data Tuning'
-      }
-    ],
-    previewQuiz: [
-      {
-        id: 1,
-        question: 'Để lấy ra top 3 mức lương cao nhất trong công ty (cho phép nhân viên trùng mức lương cùng xếp hạng), bạn dùng hàm nào?',
-        options: ['A. ROW_NUMBER()', 'B. DENSE_RANK()', 'C. RANK()', 'D. NTILE(3)'],
-        correct: 1,
-        explanation: 'DENSE_RANK() không nhảy cóc thứ hạng khi có đồng hạng, giúp lọc ra top 3 mức lương chính xác nhất.'
-      },
-      {
-        id: 2,
-        question: 'Câu lệnh nào sau đây có nguy cơ khiến Database thực hiện Full Index/Table Scan thay vì Index Seek?',
-        options: [
-          'A. WHERE user_id = 100',
-          'B. WHERE created_at >= "2026-01-01"',
-          'C. WHERE LOWER(email) = "user@gmail.com"',
-          'D. WHERE status = "active"'
-        ],
-        correct: 2,
-        explanation: 'Áp dụng hàm LOWER(email) làm cột mất tính sargable, Database không thể tìm trực tiếp trên B-Tree index mà phải duyệt toàn bộ bảng.'
-      }
-    ]
-  },
-  {
-    id: 'mkt_luat_cbcc_2026',
-    title: '50 Câu Trọng Tâm Luật Cán Bộ, Công Chức 2026 & Nghị Định 138/2020',
-    subtitle: 'Nghĩa Vụ, Kỷ Luật, Phân Loại Ngạch, Bổ Nhiệm & Tuyển Dụng Vòng 1',
-    description: 'Chuẩn format đề thi trắc nghiệm công chức Vòng 1. Cập nhật chính xác số năm thời hiệu kỷ luật, 4 trường hợp không áp dụng thời hiệu, điều kiện miễn nhiệm, từ chức và quyền hạn các cơ quan.',
-    category: 'cong-chuc',
-    categoryName: 'Thi Công Chức',
-    categoryLabel: 'Luật CBCC 2026',
-    priceXu: 4, // Siết giá cực rẻ: 4 Xu (~4.000đ)
-    cardCount: 20,
-    authorName: 'Thầy Đức (Ban Soạn Thảo Đề Thi)',
-    authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
-    authorTier: 'ultra',
-    salesCount: 1530,
-    rating: 4.99,
-    createdAt: '2026-10-08',
-    isApproved: true,
-    previewCards: [
-      {
-        id: 1,
-        front: 'Thời hiệu xử lý kỷ luật đối với hành vi vi phạm của cán bộ, công chức ít nghiêm trọng đến mức phải khiển trách là bao lâu?',
-        back: '02 NĂM (kể từ thời điểm có hành vi vi phạm).\n\n📌 Căn cứ: Khoản 1 Điều 80 Luật Cán bộ, công chức 2008 (sửa đổi 2019).\n💡 Mẹo nhớ: Khiển trách = vi phạm nhẹ nhất = 2 năm. Các mức khác là 5 năm.',
-        tag: 'Kỷ Luật CBCC'
-      },
-      {
-        id: 2,
-        front: '4 trường hợp nào KHÔNG ÁP DỤNG thời hiệu xử lý kỷ luật cán bộ, công chức?',
-        back: '1. Là đảng viên bị kỷ luật đến mức khai trừ Đảng.\n2. Vi phạm quy định về công tác bảo vệ chính trị nội bộ.\n3. Xâm hại đến lợi ích quốc gia trong lĩnh vực quốc phòng, an ninh, đối ngoại.\n4. Sử dụng văn bằng, chứng chỉ, chứng nhận giả, không hợp pháp.',
-        tag: 'Điều 80 - Luật CBCC'
-      },
-      {
-        id: 3,
-        front: 'Có bao nhiêu ngạch công chức theo Luật hiện hành?',
-        back: '5 NGẠCH:\n1. Chuyên viên cao cấp và tương đương.\n2. Chuyên viên chính và tương đương.\n3. Chuyên viên và tương đương.\n4. Cán sự và tương đương.\n5. Nhân viên.\n(Và các ngạch khác theo quy định Chính phủ).',
-        tag: 'Ngạch Công Chức'
-      },
-      {
-        id: 4,
-        front: 'Hình thức kỷ luật "Hạ bậc lương" KHÔNG ÁP DỤNG cho đối tượng nào?',
-        back: 'KHÔNG ÁP DỤNG cho CÔNG CHỨC GIỮ CHỨC VỤ LÃNH ĐẠO, QUẢN LÝ.\n\n💡 Giải thích: Công chức lãnh đạo vi phạm mức này sẽ bị Giáng chức hoặc Cách chức.',
-        tag: 'Hình Thức Kỷ Luật'
-      },
-      {
-        id: 5,
-        front: 'Thời hạn bổ nhiệm công chức giữ chức vụ lãnh đạo, quản lý là bao nhiêu năm?',
-        back: '05 NĂM (trừ trường hợp pháp luật chuyên ngành có quy định thời hạn bổ nhiệm dưới 05 năm).',
-        tag: 'Bổ Nhiệm Cán Bộ'
-      },
-      {
-        id: 6,
-        front: 'Công chức 02 năm liên tiếp xếp loại chất lượng ở mức "Không hoàn thành nhiệm vụ" thì bị xử lý ra sao?',
-        back: 'Cơ quan, tổ chức, đơn vị có thẩm quyền giải quyết CHO THÔI VIỆC.\n\n📌 Căn cứ: Khoản 3 Điều 58 Luật Cán bộ, công chức.',
-        tag: 'Đánh Giá & Thôi Việc'
-      },
-      {
-        id: 7,
-        front: 'Thời gian tập sự đối với người trúng tuyển vào ngạch Chuyên viên (loại C) là bao lâu?',
-        back: '12 THÁNG.\n\n💡 Mẹo nhớ:\n• Ngạch Chuyên viên (đại học): 12 tháng.\n• Ngạch Cán sự (cao đẳng/trung cấp): 06 tháng.',
-        tag: 'Tập Sự Công Chức'
-      },
-      {
-        id: 8,
-        front: 'Ai có thẩm quyền quy định chi tiết về tuyển dụng, sử dụng và quản lý công chức?',
-        back: 'CHÍNH PHỦ (thông qua việc ban hành Nghị định 138/2020/NĐ-CP).',
-        tag: 'Thẩm Quyền Chính Phủ'
-      }
-    ],
-    previewQuiz: [
-      {
-        id: 1,
-        question: 'Thời hiệu xử lý kỷ luật đối với hành vi vi phạm đến mức phải kỷ luật Khiển trách là bao lâu?',
-        options: ['A. 12 tháng', 'B. 02 năm', 'C. 05 năm', 'D. Không áp dụng thời hiệu'],
-        correct: 1,
-        explanation: 'Căn cứ Khoản 1 Điều 80 Luật CBCC sửa đổi 2019: Thời hiệu xử lý kỷ luật khiển trách là 02 năm.'
-      },
-      {
-        id: 2,
-        question: 'Trường hợp nào sau đây công chức bị giải quyết cho thôi việc?',
-        options: [
-          'A. 01 năm không hoàn thành nhiệm vụ',
-          'B. 02 năm liên tiếp xếp loại không hoàn thành nhiệm vụ',
-          'C. Bị khiển trách 1 lần',
-          'D. Đi làm muộn 3 lần trong tháng'
-        ],
-        correct: 1,
-        explanation: 'Căn cứ Khoản 3 Điều 58 Luật CBCC: Công chức 02 năm liên tiếp không hoàn thành nhiệm vụ sẽ bị cơ quan có thẩm quyền cho thôi việc.'
-      }
-    ]
-  },
-  {
-    id: 'mkt_kaiwa_n2',
-    title: '40 Mẫu Ngữ Pháp & Tình Huống Kính Ngữ Tiếng Nhật Kaiwa Doanh Nghiệp',
-    subtitle: 'Keigo, Kenjougo, Đàm Phán & Xử Lý Sự Cố Thương Mại Chuẩn N2-N1',
-    description: 'Bộ thẻ phản xạ giao tiếp tiếng Nhật thương mại thực chiến: Phân biệt Tôn kính ngữ (Sonkeigo), Khiêm nhường ngữ (Kenjougo), từ chối lịch sự, xin phép cấp trên và thương lượng đối tác.',
-    category: 'ngoai-ngu',
-    categoryName: 'Tiếng Nhật Kaiwa',
-    categoryLabel: 'JLPT N2 & Business',
-    priceXu: 3, // Siết giá cực rẻ: 3 Xu (~3.000đ)
-    cardCount: 18,
-    authorName: 'Sensei Phương Mai (JLPT N1)',
-    authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
-    authorTier: 'plus',
-    salesCount: 620,
-    rating: 4.94,
-    createdAt: '2026-10-10',
-    isApproved: true,
-    previewCards: [
-      {
-        id: 1,
-        front: 'Chuyển câu sau sang Tôn kính ngữ chuẩn cho Giám đốc đối tác: 「社長、見ましたか？」 (Giám đốc đã xem chưa?)',
-        back: 'Đáp án: 「社長、ご覧になりましたか？」 (Shachou, goran ni narimashita ka?)\n\n💡 Tránh nhầm với 拝見しました (Haiken shimashita) - đây là Khiêm nhường ngữ dùng cho bản thân mình.',
-        tag: 'Tôn Kính Ngữ'
-      },
-      {
-        id: 2,
-        front: 'Chuyển câu sau sang Khiêm nhường ngữ khi nói về bản thân: 「明日、あなたの会社に行きます。」 (Ngày mai tôi sẽ đến công ty của anh)',
-        back: 'Đáp án: 「明日、貴社へ伺います。」 (Ashita, kisha e ukagaimasu.)\nHoặc: 「明日、参ります。」 (Ashita, mairimasu.)',
-        tag: 'Khiêm Nhường Ngữ'
-      },
-      {
-        id: 3,
-        front: 'Khi nghe điện thoại, khách hỏi Giám đốc Tanaka của công ty bạn, bạn trả lời ra sao?',
-        back: 'Đáp án chuẩn: 「田中はあいにく外出しております。」 (Tanaka wa ainiku gaishutsu shite orimasu.)\n\n💡 Lưu ý: Khi nói với khách ngoài, KHÔNG ĐƯỢC thêm chức danh "Shachou" hay "San" vào tên sếp mình.',
-        tag: 'Điện Thoại Doanh Nghiệp'
-      },
-      {
-        id: 4,
-        front: 'Mẫu câu đệm từ chối lịch sự trong kinh doanh (Kushizashi Kotoba)?',
-        back: '「大変申し上げにくいのですが...」 (Tôi rất khó nói điều này nhưng mà...)\n「あいにくではございますが...」 (Thật không may nhưng mà...)',
-        tag: 'Từ Chối Tế Nhị'
-      },
-      {
-        id: 5,
-        front: 'Khi nhờ đối tác kiểm tra tài liệu giúp mình, mẫu câu lịch sự nhất là gì?',
-        back: '「ご確認のほど、よろしくお願い申し上げます。」 (Gokakunin no hodo, yoroshiku onegai moushiagemasu.)',
-        tag: 'Email Thương Mại'
-      }
-    ],
-    previewQuiz: [
-      {
-        id: 1,
-        question: 'Khi nói về việc chính mình đọc tài liệu của khách hàng, bạn dùng từ nào?',
-        options: [
-          'A. ご覧になります (Goran ni narimasu)',
-          'B. 拝見します (Haiken shimasu)',
-          'C. お読みになります (Oyomi ni narimasu)',
-          'D. 見られます (Miraremasu)'
-        ],
-        correct: 1,
-        explanation: '拝見します (Haiken shimasu) là Khiêm nhường ngữ (Kenjougo) của 見る/読む, dùng để hạ mình khi đọc tài liệu của đối tác.'
-      }
-    ]
-  },
-  {
-    id: 'mkt_vien_chuc_y_te',
-    title: '40 Câu Trắc Nghiệm & Flashcard Luật Khám Chữa Bệnh & Y Đức 2026',
-    subtitle: 'Cập Nhật Luật Khám Bệnh Chữa Bệnh 2023, CME & Quy Tắc Ứng Xử Bệnh Viện',
-    description: 'Dành riêng cho bác sĩ, điều dưỡng thi tuyển viên chức y tế các bệnh viện công lập năm 2026. Phân cấp chuyên môn kỹ thuật, quy trình cấp giấy phép hành nghề, quyền và nghĩa vụ của người bệnh.',
-    category: 'cong-chuc',
-    categoryName: 'Viên Chức Y Tế',
-    categoryLabel: 'Y Tế & Bệnh Viện',
-    priceXu: 4, // Siết giá cực rẻ: 4 Xu (~4.000đ)
-    cardCount: 16,
-    authorName: 'Bác Sĩ Trọng Nghĩa (Bệnh Viện Bạch Mai)',
-    authorAvatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=150&q=80',
-    authorTier: 'pro',
-    salesCount: 430,
-    rating: 4.92,
-    createdAt: '2026-10-08',
-    isApproved: true,
-    previewCards: [
-      {
-        id: 1,
-        front: 'Luật Khám bệnh, chữa bệnh mới quy định hệ thống cơ sở khám bệnh, chữa bệnh gồm mấy cấp chuyên môn kỹ thuật?',
-        back: 'GỒM 03 CẤP:\n1. Cấp khám bệnh, chữa bệnh BAN ĐẦU.\n2. Cấp khám bệnh, chữa bệnh CƠ BẢN.\n3. Cấp khám bệnh, chữa bệnh CHUYÊN SÂU.\n\n📌 Thay thế cho mô hình 4 tuyến (xã, huyện, tỉnh, trung ương) trước đây.',
-        tag: 'Luật KBCB 2023'
-      },
-      {
-        id: 2,
-        front: 'Thời hạn của Giấy phép hành nghề khám bệnh, chữa bệnh là bao nhiêu năm?',
-        back: '05 NĂM (kể từ ngày cấp).\n\n📌 Quy định mới yêu cầu định kỳ 5 năm phải gia hạn và chứng minh hoàn thành cập nhật kiến thức y khoa liên tục (CME).',
-        tag: 'Giấy Phép Hành Nghề'
-      },
-      {
-        id: 3,
-        front: 'Người hành nghề có quyền từ chối khám bệnh, chữa bệnh trong trường hợp nào?',
-        back: '1. Tiên lượng bệnh vượt quá phạm vi hành nghề hoặc khả năng thực tế (nhưng phải giới thiệu đến cơ sở khác).\n2. Người bệnh, thân nhân có hành vi xâm phạm thân thể, sức khỏe, danh dự của nhân viên y tế.\n3. Người bệnh yêu cầu phương pháp trái quy định pháp luật hoặc đạo đức nghề nghiệp.',
-        tag: 'Quyền Của Y Bác Sĩ'
-      },
-      {
-        id: 4,
-        front: 'Hồ sơ bệnh án nội trú phải được lưu trữ tối thiểu bao nhiêu năm?',
-        back: 'Ít nhất 10 NĂM.\n(Trường hợp tai nạn lao động, bệnh nghề nghiệp lưu ít nhất 15 năm; trường hợp tử vong lưu ít nhất 20 năm).',
-        tag: 'Lưu Trữ Bệnh Án'
-      }
-    ],
-    previewQuiz: [
-      {
-        id: 1,
-        question: 'Hệ thống cơ sở khám bệnh, chữa bệnh theo Luật mới được phân thành mấy cấp chuyên môn kỹ thuật?',
-        options: ['A. 2 cấp', 'B. 3 cấp (Ban đầu, Cơ bản, Chuyên sâu)', 'C. 4 tuyến', 'D. 5 cấp'],
-        correct: 1,
-        explanation: 'Luật KBCB 2023 phân thành 3 cấp chuyên môn kỹ thuật: Cấp ban đầu, cấp cơ bản và cấp chuyên sâu.'
-      }
-    ]
-  },
-  {
-    id: 'pass_sat_reading_800',
-    title: '[PASS LẠI] Siêu Phẩm SAT Reading & Writing - Mình Vừa Thi Đạt 1510 Điểm!',
-    subtitle: 'Bộ thẻ từ vựng context khó + kinh nghiệm gạch chân keyword từ thí sinh 1510 SAT',
-    description: 'Mình mua học xong đợt tháng 9 vừa rồi, pass lại giá siêu sinh viên (2 Xu) cho bạn nào chuẩn bị thi Digital SAT đợt tới. Bộ thẻ giải thích cực chi tiết ngữ cảnh từ vựng khó và bẫy đề thi!',
-    category: 'ngoai-ngu',
-    categoryName: 'SAT & Ngoại Ngữ',
-    categoryLabel: 'Digital SAT Pass C2C',
-    priceXu: 2, // Siết giá cực rẻ: 2 Xu (~2.000đ)
-    originalPriceXu: 25,
-    cardCount: 25,
-    authorName: 'Minh Thư (IELTS 8.5 / SAT 1520)',
-    passSellerName: 'Hoàng Long (Sinh viên NEU - Đã thi 1510 SAT)',
-    passSellerAvatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80',
-    passSellerTier: 'plus',
-    passNote: 'Mình vừa thi đỗ SAT 1510 điểm (Verbal 730)! Pass lại thẻ siêu rẻ 2 Xu cho các bạn khóa sau ôn gấp lấy học bổng.',
-    isPassDeck: true,
-    salesCount: 142,
-    rating: 5.0,
-    createdAt: '2026-10-11',
-    isApproved: true,
-    previewCards: [
-      {
-        id: 1,
-        front: 'equivocal /ɪˈkwɪv.ə.kəl/ (adj) [Kèm Note Hoàng Long 1510 SAT]',
-        back: 'Nghĩa: Mập mờ, nước đôi, khó đoán định (ambiguous, uncertain).\nVí dụ: His equivocal response left the jury uncertain about his guilt.\n💡 Note cá nhân: Bẫy College Board rất hay cho từ này ở câu hỏi về Tone của tác giả khi có sự lưỡng lự!',
-        tag: 'SAT Reading Note'
-      },
-      {
-        id: 2,
-        front: 'aberrant /əˈber.ənt/ (adj) [Kèm Note Hoàng Long 1510 SAT]',
-        back: 'Nghĩa: Khác thường, dị biệt (departing from an accepted standard).\nVí dụ: The scientist noticed aberrant behavior in the lab mice after the test.\n💡 Note: Phân biệt với "aberration" (danh từ).',
-        tag: 'SAT Vocabulary'
-      },
-      {
-        id: 3,
-        front: 'pernicious /pəˈnɪʃ.əs/ (adj) [Kèm Note Hoàng Long 1510 SAT]',
-        back: 'Nghĩa: Độc hại ngấm ngầm, tác hại âm thầm nguy hiểm.\nVí dụ: Misinformation can have a pernicious effect on democratic debate.\n💡 Note: Hay gặp trong các bài đọc Lịch sử / Xã hội học.',
-        tag: 'SAT High-Freq'
-      }
-    ],
-    previewQuiz: [
-      {
-        id: 1,
-        question: 'Theo note của Hoàng Long, từ "equivocal" thường xuất hiện trong dạng câu hỏi nào?',
-        options: [
-          'A. Xác định Tone và thái độ của tác giả',
-          'B. Tìm lỗi chính tả dấu phẩy',
-          'C. Tính toán đồ thị hình học',
-          'D. Điền liên từ nối câu'
-        ],
-        correct: 0,
-        explanation: 'Equivocal nghĩa là mập mờ, lưỡng lự, là từ khóa kinh điển trong câu hỏi phân tích thái độ (Tone) của tác giả trong Digital SAT.'
-      }
-    ]
-  }
 ];
 
 // Ensure each deck has sampleCards alias for backward compatibility
@@ -545,23 +182,83 @@ INITIAL_MARKETPLACE_DECKS.forEach(d => {
   d.sampleCards = d.previewCards;
 });
 
-// Get all marketplace decks (with auto-migration to rich format and lower prices)
+export const REMOVED_MOCK_IDS = [
+  'mkt_sql_interview',
+  'mkt_civil_servant_law',
+  'mkt_japanese_business',
+  'mkt_medical_ethics',
+  'mkt_sat_reading_pass',
+  'pass_sat_reading_800'
+];
+
+const DELETED_DECKS_KEY = 'onthi_deleted_marketplace_deck_ids';
+
+export function getDeletedDeckIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_DECKS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export function addDeletedDeckId(id) {
+  if (!id) return;
+  try {
+    const list = getDeletedDeckIds();
+    if (!list.includes(id)) {
+      list.push(id);
+      localStorage.setItem(DELETED_DECKS_KEY, JSON.stringify(list));
+    }
+  } catch (e) {}
+}
+
+export function deleteMarketplaceDeck(deckId) {
+  if (!deckId) return false;
+  addDeletedDeckId(deckId);
+  const current = getMarketplaceDecks().filter(d => d.id !== deckId);
+  try {
+    localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(current));
+  } catch (e) {}
+
+  // Broadcast deletion across all connected devices
+  broadcastMarketplaceAction('delete_deck', { deckId });
+
+  // Delete from Firestore if db is active
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      deleteDoc(doc(db, 'marketplace_decks', String(deckId))).catch(() => {});
+    }
+  } catch (e) {}
+
+  return true;
+}
+
+// Get all marketplace decks (with automatic removal of mock/deleted decks)
 export function getMarketplaceDecks() {
+  const deletedIds = new Set([...getDeletedDeckIds(), ...REMOVED_MOCK_IDS]);
   try {
     const raw = localStorage.getItem(MARKETPLACE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].previewCards) {
-        return parsed;
+      if (Array.isArray(parsed)) {
+        const filtered = parsed.filter(d => d && d.id && !deletedIds.has(d.id));
+        if (filtered.length !== parsed.length) {
+          localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(filtered));
+        }
+        if (filtered.length > 0) {
+          return filtered;
+        }
       }
     }
   } catch (e) {}
 
-  // Cache fresh high-quality decks
+  const cleanInitial = INITIAL_MARKETPLACE_DECKS.filter(d => !deletedIds.has(d.id));
   try {
-    localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(INITIAL_MARKETPLACE_DECKS));
+    localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(cleanInitial));
   } catch (e) {}
-  return INITIAL_MARKETPLACE_DECKS;
+  return cleanInitial;
 }
 
 // Clean and prepare deck for Firestore (remove undefined fields)
@@ -590,175 +287,147 @@ export async function syncDeckToFirestore(deck) {
       await withTimeout(setDoc(doc(db, 'marketplace_decks', String(deck.id)), clean, { merge: true }), 2500);
     }
   } catch (err) {
-    // Firestore might be uninitialized in Firebase console, handled via Cloud Relay
+    // Handled gracefully via Cloud Relay
   }
 }
 
-// Universal gzip compression (RFC 1952) for both browser and Node
-async function compressStringGzip(str) {
-  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
-    try {
-      const modName = 'zlib';
-      const zlib = await import(/* @vite-ignore */ modName);
-      const buf = zlib.gzipSync(Buffer.from(str, 'utf-8'));
-      return buf.toString('base64');
-    } catch (e) {}
-  }
-  try {
-    if (typeof CompressionStream !== 'undefined' && typeof Blob !== 'undefined' && typeof Response !== 'undefined') {
-      const stream = new Blob([new TextEncoder().encode(str)]).stream().pipeThrough(new CompressionStream('gzip'));
-      const res = new Response(stream);
-      const buf = await res.arrayBuffer();
-      let binary = '';
-      const bytes = new Uint8Array(buf);
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return btoa(binary);
-    }
-  } catch (e) {}
-  return null;
+// Sanitize deck to compact payload (< 2KB) for 100% reliable cloud relay
+function toCompactDeckPayload(deck) {
+  const clean = sanitizeDeckForFirestore(deck);
+  const cards = clean.previewCards || clean.cards || clean.sampleCards || [];
+  const essentialCards = cards.slice(0, 5);
+  return {
+    id: String(clean.id),
+    title: clean.title,
+    subtitle: clean.subtitle || '',
+    description: clean.description || '',
+    category: clean.category || 'cong-chuc',
+    categoryName: clean.categoryName || 'Ôn Thi C2C',
+    categoryLabel: clean.categoryLabel || 'C2C Thẻ',
+    priceXu: Number(clean.priceXu) || 3,
+    originalPriceXu: clean.originalPriceXu,
+    cardCount: clean.cardCount || cards.length || 10,
+    authorName: clean.authorName || 'Học Viên',
+    authorAvatar: clean.authorAvatar,
+    authorTier: clean.authorTier || 'free',
+    passSellerName: clean.passSellerName,
+    passSellerAvatar: clean.passSellerAvatar,
+    passSellerTier: clean.passSellerTier,
+    passNote: clean.passNote,
+    isPassDeck: Boolean(clean.isPassDeck),
+    originalDeckId: clean.originalDeckId,
+    salesCount: clean.salesCount || 0,
+    rating: clean.rating || 5.0,
+    createdAt: clean.createdAt || new Date().toISOString().split('T')[0],
+    isApproved: clean.isApproved !== false,
+    previewCards: essentialCards,
+    sampleCards: essentialCards,
+    previewQuiz: (clean.previewQuiz || []).slice(0, 2)
+  };
 }
 
-// Universal gzip decompression for both browser and Node
-async function decompressStringGzip(base64) {
-  if (!base64 || typeof base64 !== 'string' || !base64.startsWith('H4sI')) {
-    return null;
-  }
-  if (typeof window === 'undefined' && typeof process !== 'undefined' && process.versions?.node) {
-    try {
-      const modName = 'zlib';
-      const zlib = await import(/* @vite-ignore */ modName);
-      const buf = Buffer.from(base64, 'base64');
-      return zlib.gunzipSync(buf).toString('utf-8');
-    } catch (e) {}
-  }
-  try {
-    if (typeof DecompressionStream !== 'undefined' && typeof Blob !== 'undefined' && typeof Response !== 'undefined') {
-      const binary = atob(base64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-      }
-      const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-      const res = new Response(stream);
-      return await res.text();
-    }
-  } catch (e) {}
-  return null;
-}
-
-// Broadcast deck to Cloud Relay (cross-browser / cross-device broadcast)
-export async function broadcastDeckToCloudRelay(deck) {
+// Broadcast action to Cloud Relay (cross-browser / cross-device broadcast)
+export async function broadcastMarketplaceAction(action, data) {
   if (typeof fetch === 'undefined') return;
   try {
-    const clean = sanitizeDeckForFirestore(deck);
-    const cards = clean.previewCards || clean.cards || clean.sampleCards || [];
-    const deckPayload = {
-      ...clean,
-      cards: cards,
-      previewCards: cards,
-      sampleCards: cards.slice(0, 5)
-    };
-    const jsonStr = JSON.stringify(deckPayload);
-    const compressed = await compressStringGzip(jsonStr);
-
-    let messageBody = '';
-    if (compressed && compressed.length < 3500) {
-      messageBody = JSON.stringify({ action: 'publish_deck', c: 1, d: compressed, timestamp: new Date().toISOString() });
-    } else {
-      // Fallback: If compressed is unavailable or too large, send essential metadata + sample cards directly
-      const essentialCards = cards.slice(0, 8);
-      const compactPayload = {
-        ...clean,
-        cardCount: cards.length || clean.cardCount || 10,
-        cards: essentialCards,
-        previewCards: essentialCards,
-        sampleCards: essentialCards.slice(0, 3)
-      };
-      messageBody = JSON.stringify({ action: 'publish_deck', data: compactPayload, timestamp: new Date().toISOString() });
+    let payloadData = data;
+    if (action === 'publish_deck') {
+      payloadData = toCompactDeckPayload(data);
     }
-
     await fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: CLOUD_MARKETPLACE_TOPIC,
-        title: `DECK_${clean.id}`,
-        message: messageBody,
-        priority: 3
+        message: JSON.stringify({ action, data: payloadData, timestamp: new Date().toISOString() }),
+        title: `MKT_${action}`
       })
     });
   } catch (e) {
-    console.warn('Cloud relay broadcast error:', e);
+    console.warn('Marketplace cloud relay notice:', e);
   }
 }
 
-// Fetch cross-device decks from Cloud Relay stream
-export async function fetchCloudRelayMarketplaceDecks() {
+// Alias for backward compatibility
+export async function broadcastDeckToCloudRelay(deck) {
+  return broadcastMarketplaceAction('publish_deck', deck);
+}
+
+// Fetch cross-device decks and events from Cloud Relay
+export async function fetchCloudRelayMarketplaceEvents() {
   if (typeof fetch === 'undefined') return [];
   try {
     const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1`);
     if (!res.ok) return [];
     const text = await res.text();
     const lines = text.trim().split('\n');
-    const incoming = [];
+    const events = [];
 
     for (const line of lines) {
       if (!line.trim()) continue;
       try {
         const json = JSON.parse(line);
         if (json.event === 'message' && json.message) {
-          let body = null;
-          try {
-            body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
-          } catch (e) {}
-
+          let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
           if (body) {
-            if (body.c === 1 && body.d) {
-              const decomp = await decompressStringGzip(body.d);
-              if (decomp) {
-                const parsedDeck = JSON.parse(decomp);
-                if (parsedDeck?.id) incoming.push(parsedDeck);
-              }
-            } else if (body.data?.id) {
-              incoming.push(body.data);
-            } else if (body.id && body.title) {
-              incoming.push(body);
-            }
+            events.push(body);
           }
         }
       } catch (e) {}
     }
-    return incoming;
+    return events;
   } catch (e) {
     return [];
   }
 }
 
-// Merge remote decks into local marketplace cache
-export function mergeAndSaveMarketplaceDecks(remoteDecks) {
-  if (!Array.isArray(remoteDecks) || remoteDecks.length === 0) {
-    return getMarketplaceDecks();
-  }
+// Alias for backward compatibility
+export async function fetchCloudRelayMarketplaceDecks() {
+  return fetchCloudRelayMarketplaceEvents();
+}
 
-  const currentLocal = getMarketplaceDecks();
+// Merge remote decks into local marketplace cache
+export function mergeAndSaveMarketplaceDecks(eventsOrDecks) {
+  let current = getMarketplaceDecks();
+  const deletedIds = new Set([...getDeletedDeckIds(), ...REMOVED_MOCK_IDS]);
   const deckMap = new Map();
 
   // 1. Initial baseline decks
-  INITIAL_MARKETPLACE_DECKS.forEach((d) => deckMap.set(d.id, d));
-
-  // 2. Local decks
-  currentLocal.forEach((d) => deckMap.set(d.id, d));
-
-  // 3. Incoming remote decks (from Firestore or Cloud Relay)
-  remoteDecks.forEach((d) => {
-    if (d && d.id) {
-      deckMap.set(d.id, { ...(deckMap.get(d.id) || {}), ...d });
+  INITIAL_MARKETPLACE_DECKS.forEach((d) => {
+    if (!deletedIds.has(d.id)) {
+      deckMap.set(d.id, d);
     }
   });
 
-  const merged = Array.from(deckMap.values());
+  // 2. Local decks
+  current.forEach((d) => {
+    if (!deletedIds.has(d.id)) {
+      deckMap.set(d.id, d);
+    }
+  });
+
+  // 3. Incoming remote decks / events
+  if (Array.isArray(eventsOrDecks)) {
+    eventsOrDecks.forEach((item) => {
+      if (!item) return;
+
+      // Case A: Delete event
+      if (item.action === 'delete_deck' && item.data?.deckId) {
+        deletedIds.add(item.data.deckId);
+        addDeletedDeckId(item.data.deckId);
+        deckMap.delete(item.data.deckId);
+        return;
+      }
+
+      // Case B: Publish event or raw deck object
+      const deck = item.action === 'publish_deck' ? item.data : (item.data?.id ? item.data : (item.id ? item : null));
+      if (deck && deck.id && !deletedIds.has(deck.id)) {
+        deckMap.set(deck.id, { ...(deckMap.get(deck.id) || {}), ...deck });
+      }
+    });
+  }
+
+  const merged = Array.from(deckMap.values()).filter(d => !deletedIds.has(d.id));
   try {
     localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(merged));
   } catch (e) {}
@@ -798,21 +467,21 @@ export function subscribeToMarketplaceDecks(callback) {
   }
 
   // 2. Initial Cloud Relay fetch
-  fetchCloudRelayMarketplaceDecks().then((cloudDecks) => {
-    if (cloudDecks.length > 0) {
-      const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
+  fetchCloudRelayMarketplaceEvents().then((events) => {
+    if (events.length > 0) {
+      const merged = mergeAndSaveMarketplaceDecks(events);
       callback(merged);
     }
   });
 
-  // 3. Periodic cloud poller (every 6s for fast real-time responsiveness)
+  // 3. Periodic cloud poller (every 5s for fast real-time responsiveness)
   const intervalId = setInterval(async () => {
-    const cloudDecks = await fetchCloudRelayMarketplaceDecks();
-    if (cloudDecks.length > 0) {
-      const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
+    const events = await fetchCloudRelayMarketplaceEvents();
+    if (events.length > 0) {
+      const merged = mergeAndSaveMarketplaceDecks(events);
       callback(merged);
     }
-  }, 6000);
+  }, 5000);
 
   return () => {
     if (unsubscribeFirestore) unsubscribeFirestore();
