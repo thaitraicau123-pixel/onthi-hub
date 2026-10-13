@@ -108,8 +108,8 @@ export default function Navbar({
         { id: 'home', label: 'Trang Chủ & Đề Thi Chuẩn', icon: Home, desc: 'Kho đề công chức 2026, IT, ngoại ngữ' },
         { id: 'marketplace', label: 'Chợ Thẻ C2C', icon: Store, badge: 'HOT', desc: 'Sàn thương mại điện tử mua bán thẻ' },
         { id: 'library', label: 'Tủ Thẻ Của Tôi', icon: FolderHeart, count: purchasedCount, desc: 'Thẻ đã mua & file xuất Anki' },
-        { id: 'mistakes', label: 'Sổ Tay Câu Sai & Điểm Yếu', icon: BookMarked, badge: unmasteredMistakesCount > 0 ? `${unmasteredMistakesCount}` : '', desc: 'Luyện lại câu trắc nghiệm sai & chẩn đoán AI', action: () => { setIsDrawerOpen(false); onOpenMistakes?.(); } },
-        { id: 'create', label: 'Studio Tạo Thẻ AI', icon: PlusSquare, desc: 'Biến tài liệu thành flashcard trong 3s' }
+        { id: 'mistakes', label: 'Sổ Tay Câu Sai & Điểm Yếu', icon: BookMarked, badge: unmasteredMistakesCount > 0 ? `${unmasteredMistakesCount}` : '', desc: 'Luyện lại câu sai & khắc phục lỗ hổng kiến thức', action: () => { setIsDrawerOpen(false); onOpenMistakes?.(); } },
+        { id: 'create', label: 'Studio Tạo Thẻ', icon: PlusSquare, desc: 'Biến ghi chú & tài liệu thành bộ thẻ học' }
       ]
     },
     {
@@ -117,7 +117,7 @@ export default function Navbar({
       items: [
         { id: 'blindbox', label: '🎁 Túi Mù Tri Thức (Blind Box)', icon: Gift, desc: '100% trúng hoàn Xu, quà khủng & nổ hũ Jackpot', action: () => { setIsDrawerOpen(false); onOpenBlindBox?.(); } },
         { id: 'community', label: 'Diễn Đàn Học Viên', icon: Users, desc: 'Hỏi đáp đề thi, mẹo nhớ lâu' },
-        { id: 'changelog', label: '✨ Bảng Tin Cập Nhật Web (v2.6)', icon: Sparkles, desc: 'Xem toàn bộ tính năng và bản sửa lỗi vừa phát hành', action: () => { setIsDrawerOpen(false); onOpenChangelog?.(); } },
+        { id: 'changelog', label: `✨ Bản Tin Cập Nhật Web (${APP_VERSION})`, icon: Sparkles, desc: 'Xem toàn bộ tính năng và bản sửa lỗi vừa phát hành', action: () => { setIsDrawerOpen(false); onOpenChangelog?.(); } },
         { id: 'leaderboard', label: 'Bảng Vàng & Nhiệm Vụ Ngày', icon: Trophy, desc: 'Cạnh tranh XP & giữ chuỗi streak', action: onOpenLeaderboard },
         { id: 'plans', label: 'Gói Hội Viên Plus / Pro / Ultra', icon: Sparkles, desc: 'Mở rộng hạn mức & quyền Creator' }
       ]
@@ -331,30 +331,34 @@ export default function Navbar({
                 )}
               </div>
 
-              {/* USER AUTH / SIGN IN - Elegant Profile Pill */}
-              {user ? (
-                <button
-                  onClick={onOpenAuth}
-                  className="flex items-center space-x-1.5 p-1 sm:pr-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold text-white transition-all transform hover:scale-105 active:scale-95"
-                  title="Hồ sơ tài khoản"
-                >
-                  <img
-                    src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
-                    alt="Avatar"
-                    className="w-6 h-6 rounded-full object-cover border border-[#f02c85]"
-                  />
-                  <span className="hidden sm:inline max-w-[80px] truncate text-[11px] font-bold">
-                    {user.displayName || user.email.split('@')[0]}
-                  </span>
-                </button>
-              ) : (
-                <button
-                  onClick={onOpenAuth}
-                  className="px-3.5 py-1.5 rounded-xl text-xs font-black text-white bg-[#f02c85] hover:bg-[#dc1f74] shadow-md shadow-pink-900/30 transition-transform transform hover:scale-105 active:scale-95 whitespace-nowrap"
-                >
-                  Đăng Nhập
-                </button>
-              )}
+              {/* USER PROFILE PILL - Matched with Image 2 (Khách / User) */}
+              <button
+                onClick={onOpenAuth}
+                className="flex items-center space-x-1.5 p-1 sm:pr-2.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold text-white transition-all transform hover:scale-105 active:scale-95"
+                title="Quản lý Tài khoản"
+              >
+                {user ? (
+                  <>
+                    <img
+                      src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
+                      alt="Avatar"
+                      className="w-6 h-6 rounded-full object-cover border border-[#f02c85]"
+                    />
+                    <span className="hidden sm:inline max-w-[85px] truncate text-[11px] font-bold">
+                      {user.displayName || user.email.split('@')[0]}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-6 h-6 rounded-full bg-[#4f46e5] text-white flex items-center justify-center text-[10px] font-black shadow-xs">
+                      K
+                    </div>
+                    <span className="hidden sm:inline text-[11px] font-bold text-rose-100">
+                      Khách
+                    </span>
+                  </>
+                )}
+              </button>
 
             </div>
 

@@ -379,7 +379,7 @@ export default function CreateStudioView({
             }`}
           >
             <Sparkles className="w-4 h-4 text-[#f02c85]" />
-            <span>Trợ Lý AI Soạn Bản Thảo</span>
+            <span>Soạn Thảo Tự Động</span>
           </button>
 
           <button
@@ -400,18 +400,17 @@ export default function CreateStudioView({
         {activeMode === 'ai' && (
           <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-4 text-xs shadow-xs">
             
-            {/* AI Engine Status Pill */}
-            <div className="p-3 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div className="flex items-center space-x-2">
-                <Cpu className="w-4 h-4 shrink-0 text-emerald-600" />
-                <span className="font-bold text-[11px]">
-                  🟢 Động Cơ AI Trí Tuệ Nhân Tạo ÔnThiHub Cloud: Sẵn Sàng Trích Xuất Thẻ Thần Tốc
-                </span>
+            {/* Streamlined Status Indicator */}
+            <div className="flex items-center justify-between pb-1 border-b border-slate-100">
+              <div className="flex items-center space-x-2 text-[#7a5a6b]">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span className="font-bold text-[11px] text-[#28071a]">Trích xuất thẻ thông minh từ chủ đề hoặc bài giảng</span>
               </div>
-              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-200/90 text-emerald-800 shrink-0 self-end sm:self-auto">
-                ⚡ Trực Tuyến 24/7
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                Sẵn sàng
               </span>
             </div>
+
             <div>
               <label className="font-black text-[#28071a] block mb-1">
                 Chủ đề / Từ khóa trọng tâm cần ôn tập:
@@ -466,12 +465,12 @@ export default function CreateStudioView({
                 {isGenerating ? (
                   <>
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Đang phân tích kiến thức...</span>
+                    <span>Đang trích xuất thẻ...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4 fill-white" />
-                    <span>Sinh Bản Thảo Thẻ Bằng AI</span>
+                    <span>Tạo Bản Thảo Thẻ</span>
                   </>
                 )}
               </button>

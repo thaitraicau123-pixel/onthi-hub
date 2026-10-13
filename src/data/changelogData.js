@@ -43,6 +43,15 @@ export const CHANGELOG_DATA = [
           '💡 Giải Thích Chuyên Sâu 3 Phần: Trợ lý AI phân tích bản chất, cung cấp mẹo nhớ Spaced Repetition và chỉ ra bẫy trắc nghiệm dễ mắc phải cho từng thẻ.',
           '⚡ Tạo Đề Trắc Nghiệm 4 Phương Án: Tự động tạo câu hỏi trắc nghiệm có độ phân loại cao kèm giải thích chi tiết đáp án đúng/sai.'
         ]
+      },
+      {
+        category: '💎 Đồng Bộ Icon Google & Giao Diện Quản Lý Tài Khoản Sang Trọng',
+        color: 'amber',
+        items: [
+          '🎨 Đồng bộ Icon Favicon với App: Thay đổi icon tab trình duyệt / Google thành logo sách mở trên nền gradient hồng rực rỡ, khớp 100% với logo trong app.',
+          '👑 Giao Diện Quản Lý Tài Khoản Đẳng Cấp: Thẻ VIP với góc kim loại cổ điển, hạn dùng, huy hiệu cao cấp cùng 4 tab trực quan (Hồ sơ, Gói & Hạn mức, Bảo mật, Tùy chọn học tập).',
+          '✨ Tinh Giản Giao Diện: Loại bỏ các câu chữ rườm rà, tối giản các nút hành động giúp trải nghiệm học tập tập trung và mượt mà hơn.'
+        ]
       }
     ]
   },
