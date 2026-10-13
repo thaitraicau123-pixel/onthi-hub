@@ -29,7 +29,6 @@ import {
   getAudioContext
 } from '../utils/pomodoroAudio';
 import { recordStudyAction } from '../utils/gamification';
-import { addWalletCoins } from '../utils/wallet';
 import confetti from 'canvas-confetti';
 
 const MODES = {
@@ -43,6 +42,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
   const [currentMode, setCurrentMode] = useState('focus');
   const [secondsLeft, setSecondsLeft] = useState(MODES.focus.duration);
   const [isActive, setIsActive] = useState(false);
+  const [completionToast, setCompletionToast] = useState('');
   
   // SOUND STATES - Default to TICK (Tiếng tích tắc đồng hồ BẬT sẵn)
   const [ambientSound, setAmbientSound] = useState('tick'); // 'tick' | 'rain' | 'waves' | 'cafe' | 'none'
@@ -125,17 +125,20 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
       const today = new Date().toISOString().split('T')[0];
       localStorage.setItem('onthi_pomodoro_stats', JSON.stringify({ date: today, count: newCount }));
 
-      // Reward +50 XP & +1 Xu
+      // Reward +50 XP rèn luyện (KHÔNG CỘNG XU THEO YÊU CẦU CỦA ADMIN)
       recordStudyAction(50);
-      addWalletCoins(1, 'Thưởng hoàn thành 25 phút Pomodoro tập trung');
       if (onBonusReward) onBonusReward();
 
-      alert('🎉 Chúc mừng bạn đã hoàn thành 25 phút tập trung! Bạn được thưởng +50 XP và +1 Xu vào ví.');
+      setCompletionToast('🎉 Chúc mừng bạn đã hoàn thành 25 phút tập trung (+50 XP)! Hãy nghỉ ngơi 5 phút nhé.');
+      setTimeout(() => setCompletionToast(''), 7000);
+
       // Auto switch to short break
       setCurrentMode('shortBreak');
       setSecondsLeft(MODES.shortBreak.duration);
     } else {
-      alert('☕ Hết giờ nghỉ ngơi rồi! Sẵn sàng cho phiên tập trung tiếp theo nào!');
+      setCompletionToast('☕ Hết giờ nghỉ ngơi rồi! Bắt đầu phiên tập trung mới nào!');
+      setTimeout(() => setCompletionToast(''), 7000);
+
       setCurrentMode('focus');
       setSecondsLeft(MODES.focus.duration);
     }
@@ -221,6 +224,14 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
   return (
     <>
+      {/* Toast Notification when minimized */}
+      {!isOpen && completionToast && (
+        <div className="fixed bottom-36 md:bottom-20 right-5 z-40 max-w-xs bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold animate-bounce flex items-center space-x-2 border border-emerald-400">
+          <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" />
+          <span>{completionToast}</span>
+        </div>
+      )}
+
       {/* FLOATING PILL BUTTON (Always accessible in bottom right) */}
       {!isOpen && (
         <div className="fixed bottom-20 md:bottom-6 right-5 z-40 animate-fade-in">
@@ -267,7 +278,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
               </div>
               <div>
                 <h4 className="text-xs sm:text-sm font-black tracking-tight uppercase">Đồng Hồ Pomodoro</h4>
-                <p className="text-[10px] text-rose-200/70 font-medium">Tập trung học • Thưởng +50 XP & +1 Xu</p>
+                <p className="text-[10px] text-rose-200/70 font-medium">Tập trung học sâu • Tích lũy +50 XP rèn luyện</p>
               </div>
             </div>
 
@@ -294,6 +305,22 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
               </button>
             </div>
           </div>
+
+          {/* Completion Toast in Dashboard */}
+          {completionToast && (
+            <div className="bg-emerald-600 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between animate-fade-in shadow-inner">
+              <div className="flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" />
+                <span>{completionToast}</span>
+              </div>
+              <button
+                onClick={() => setCompletionToast('')}
+                className="p-1 text-emerald-200 hover:text-white"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
 
           {/* Mode Switcher Tabs */}
           <div className="p-3 bg-[#f5ecd8] border-b border-[#eadfcb] flex items-center gap-1.5 text-xs font-black">

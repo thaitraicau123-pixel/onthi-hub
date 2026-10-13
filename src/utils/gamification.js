@@ -138,7 +138,7 @@ const DEFAULT_QUESTS = [
   { id: 'checkin', title: 'Điểm Danh Hàng Ngày', desc: 'Mở web và bấm nhận quà điểm danh', xp: 25, rewardXu: 5, icon: 'Gift' },
   { id: 'review_cards', title: 'Ôn Tập 5 Thẻ Flashcard', desc: 'Lật và đánh giá mức độ nhớ 5 thẻ', xp: 25, rewardXu: 0, icon: 'Layers' },
   { id: 'match_game', title: 'Hoàn Thành 1 Trận Ghép Thẻ', desc: 'Chơi chế độ Match Game siêu tốc dưới 45s', xp: 50, rewardXu: 2, icon: 'Gamepad2' },
-  { id: 'pomodoro', title: 'Tập Trung 1 Phiên Pomodoro', desc: 'Học tập 25 phút không ngắt quãng', xp: 50, rewardXu: 1, icon: 'Timer' }
+  { id: 'pomodoro', title: 'Tập Trung 1 Phiên Pomodoro', desc: 'Học tập 25 phút không ngắt quãng', xp: 50, rewardXu: 0, icon: 'Timer' }
 ];
 
 export function getDailyQuests() {
