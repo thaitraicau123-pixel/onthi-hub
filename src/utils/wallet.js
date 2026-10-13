@@ -195,6 +195,31 @@ export async function sendTelegramNotification({ type, code, amountXu, amountVnd
   }
 }
 
+// Send Real-time Push Notification to Admin's phone via ntfy.sh (100% UTF-8 JSON Body, no ByteString header error)
+export async function sendNtfyNotification({ title, message, priority = 5, tags = ['bell'], click }) {
+  if (typeof fetch === 'undefined') return { success: false, error: 'No fetch environment' };
+  try {
+    const res = await fetch('https://ntfy.sh', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        topic: 'Onthihubbbbb',
+        title: title || '[OnThiHub] Thông Báo Mới',
+        message: message || '',
+        priority: priority || 5,
+        tags: Array.isArray(tags) ? tags : [tags],
+        click: click || (typeof window !== 'undefined' ? window.location.origin : 'https://thaitraicau123-pixel.github.io/onthi-hub/')
+      })
+    });
+    return { success: res.ok };
+  } catch (err) {
+    console.warn('ntfy push error:', err);
+    return { success: false, error: err?.message };
+  }
+}
+
 // Send Notification via ntfy.sh / FormSubmit Real Email / Telegram
 export function notifyAdmin({ type, code, amountXu, amountVnd, userEmail, details }) {
   const timestamp = new Date().toLocaleString('vi-VN');
@@ -221,21 +246,13 @@ Hệ thống ÔnThiHub Automation
   // 1. Gửi EMAIL THẬT trực tiếp đến thaitraicau123@gmail.com qua FormSubmit API
   sendRealEmailToAdmin({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
 
-  // 2. Gửi PUSH RUNG ĐIỆN THOẠI tức thì qua ntfy.sh
-  try {
-    if (typeof fetch !== 'undefined') {
-      fetch(ADMIN_NTFY_TOPIC, {
-        method: 'POST',
-        headers: {
-          'Title': `[OnThiHub] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
-          'Priority': 'urgent',
-          'Tags': type === 'deposit' ? 'moneybag,inbox' : 'warning,bank',
-          'Click': typeof window !== 'undefined' ? window.location.origin : 'https://thaitraicau123-pixel.github.io/onthi-hub/'
-        },
-        body: zaloMessage
-      }).catch(() => {});
-    }
-  } catch (e) {}
+  // 2. Gửi PUSH RUNG ĐIỆN THOẠI tức thì qua ntfy.sh (JSON UTF-8 Payload)
+  sendNtfyNotification({
+    title: `[OnThiHub] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
+    message: zaloMessage,
+    priority: 5,
+    tags: type === 'deposit' ? ['moneybag', 'inbox'] : ['warning', 'bank']
+  });
 
   // 3. Gửi tin nhắn Telegram tự động (nếu Admin đã cấu hình Bot)
   sendTelegramNotification({ type, code, amountXu, amountVnd, userEmail, details, timestamp });

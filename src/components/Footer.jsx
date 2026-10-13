@@ -41,7 +41,7 @@ export default function Footer() {
             <ul className="space-y-2 font-medium">
               <li className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-[#f02c85]" />
-                <span>Zalo Hỗ Trợ: <strong className="text-white">0388.999.888</strong></span>
+                <span>Hotline Hỗ Trợ: <strong className="text-white">0388.999.888</strong></span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-[#f02c85]" />

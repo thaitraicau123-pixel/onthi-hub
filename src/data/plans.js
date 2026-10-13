@@ -34,7 +34,7 @@ export const SUBSCRIPTION_PLANS = [
       'Mở khóa trọn bộ 1 chuyên đề bất kỳ',
       'Xuất file Anki (.apkg) & PDF không giới hạn',
       'Giảm phí sàn C2C xuống 10%',
-      'Hỗ trợ qua Zalo trong 24h'
+      'Hỗ trợ kỹ thuật ưu tiên trong 24h'
     ],
     ctaText: 'Nâng Cấp Plus'
   },

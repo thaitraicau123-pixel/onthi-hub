@@ -39,6 +39,7 @@ import {
   ADMIN_NTFY_TOPIC,
   COIN_RATE_VND,
   sendRealEmailToAdmin,
+  sendNtfyNotification,
   getTelegramConfig,
   saveTelegramConfig,
   sendTelegramNotification
@@ -95,6 +96,8 @@ export default function AdminView({ onBackToHome }) {
   const [emailTestMsg, setEmailTestMsg] = useState('');
   const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
   const [isSendingTelegramTest, setIsSendingTelegramTest] = useState(false);
+  const [ntfyTestMsg, setNtfyTestMsg] = useState('');
+  const [isSendingNtfyTest, setIsSendingNtfyTest] = useState(false);
 
   const reloadData = () => {
     setTransactions(getTransactions());
@@ -300,6 +303,26 @@ export default function AdminView({ onBackToHome }) {
       const msg = res.data?.message || res.error || 'Vui lòng kiểm tra lại kết nối mạng';
       setEmailTestMsg(`ℹ️ Phản hồi từ máy chủ FormSubmit: "${msg}". Nếu đây là lần đầu tiên, FormSubmit đã gửi email có nút "Activate Form" đến thaitraicau123@gmail.com, bạn chỉ cần bấm kích hoạt 1 lần duy nhất.`);
     }
+  };
+
+  // Test Real-time Phone Notification via ntfy.sh
+  const handleSendTestNtfy = async () => {
+    setIsSendingNtfyTest(true);
+    setNtfyTestMsg('');
+    const res = await sendNtfyNotification({
+      title: '🔔 [ÔnThiHub] Chuông Báo Điện Thoại Thử Nghiệm!',
+      message: '✅ Kết nối thành công! Khi có khách nạp hoặc rút tiền, thông báo sẽ reo chuông màn hình khóa điện thoại của bạn như thế này.',
+      priority: 5,
+      tags: ['tada', 'bell']
+    });
+    setIsSendingNtfyTest(false);
+    if (res.success) {
+      playSound('success');
+      setNtfyTestMsg('🎉 ĐÃ BẮN CHUÔNG THÀNH CÔNG! Hãy kiểm tra màn hình khóa hoặc mở app ntfy trên điện thoại của bạn.');
+    } else {
+      setNtfyTestMsg('❌ Không thể gửi chuông báo: ' + (res.error || 'Vui lòng kiểm tra kết nối mạng'));
+    }
+    setTimeout(() => setNtfyTestMsg(''), 10000);
   };
 
   // Save & Test Telegram Config
@@ -974,16 +997,33 @@ export default function AdminView({ onBackToHome }) {
                     </div>
                   </div>
 
-                  <a
-                    href={ADMIN_NTFY_TOPIC}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
-                  >
-                    <Smartphone className="w-3.5 h-3.5" />
-                    <span>Mở Kênh Nhận Chuông Báo</span>
-                  </a>
+                  <div className="flex items-center space-x-2 shrink-0">
+                    <button
+                      type="button"
+                      disabled={isSendingNtfyTest}
+                      onClick={handleSendTestNtfy}
+                      className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-all disabled:opacity-50"
+                    >
+                      <BellRing className={`w-3.5 h-3.5 ${isSendingNtfyTest ? 'animate-bounce' : ''}`} />
+                      <span>{isSendingNtfyTest ? 'Đang Bắn Chuông...' : '🔔 Bấm Thử Rung Chuông Điện Thoại'}</span>
+                    </button>
+                    <a
+                      href={ADMIN_NTFY_TOPIC}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-800 border border-purple-300 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
+                    >
+                      <Smartphone className="w-3.5 h-3.5" />
+                      <span>Xem Kênh ntfy.sh</span>
+                    </a>
+                  </div>
                 </div>
+
+                {ntfyTestMsg && (
+                  <div className="p-3 bg-purple-50 border border-purple-200 text-purple-950 font-bold rounded-xl text-xs animate-fade-in">
+                    {ntfyTestMsg}
+                  </div>
+                )}
 
                 <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
                   💡 Anh có thể cài ứng dụng <strong>ntfy</strong> (trên App Store hoặc Google Play), sau đó bấm dấu cộng (+) và nhập chủ đề: <code className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">Onthihubbbbb</code>. Điện thoại của anh sẽ reo chuông báo mỗi khi có đơn nạp/rút!

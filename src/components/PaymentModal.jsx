@@ -24,7 +24,8 @@ import {
 import {
   getWalletBalance,
   deductWalletCoins,
-  addWalletCoins
+  addWalletCoins,
+  createDepositRequest
 } from '../utils/wallet';
 
 export default function PaymentModal({
@@ -102,6 +103,11 @@ export default function PaymentModal({
 
   const handleSimulateTopup = () => {
     setIsSimulatingTopup(true);
+    // Create official deposit request so Admin receives phone push and email notification
+    createDepositRequest({
+      xuAmount: topupAmount,
+      userEmail: 'user_nap_the@onthihub.vn'
+    });
     setTimeout(() => {
       addWalletCoins(topupAmount);
       const updated = getWalletBalance();
@@ -110,7 +116,7 @@ export default function PaymentModal({
       setIsTopupOpen(false);
       playSound('success');
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
-      alert(`🎉 Nạp thành công ${topupAmount} Xu vào ví! Hiện bạn có ${updated} Xu, có thể mở khóa bộ thẻ ngay.`);
+      alert(`🎉 Đã xác nhận chuyển khoản! Lệnh nạp ${topupAmount} Xu đã được tạo và gửi thông báo tới Admin. Ví của bạn đã được cộng ${topupAmount} Xu để mở khóa bộ thẻ ngay.`);
     }, 1200);
   };
 

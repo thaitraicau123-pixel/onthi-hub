@@ -431,7 +431,7 @@ export const COMBO_PACKAGE = {
     'Tải không giới hạn file PDF tóm tắt kiến thức và ebook',
     'Học online trực tiếp trên trình duyệt web không cần cài phần mềm',
     'Quyền truy cập vĩnh viễn và nhận cập nhật các kỳ thi năm 2026-2027 miễn phí',
-    'Hỗ trợ kỹ thuật 1-1 qua Zalo khi cài đặt Anki trên điện thoại / máy tính'
+    'Hỗ trợ kỹ thuật 1-1 trực tuyến khi cài đặt Anki trên điện thoại / máy tính'
   ]
 };
 
@@ -474,6 +474,6 @@ export const FAQS = [
   },
   {
     q: 'Ví Xu có an toàn không? Có hỗ trợ nếu gặp lỗi không?',
-    a: 'Hệ thống lưu trữ số dư ví minh bạch trên thiết bị và đồng bộ tài khoản. Khi cần thêm Xu, bạn có thể nạp nhanh qua cổng VietQR tự động. Mọi thắc mắc đều được hỗ trợ qua Zalo 24/7 trong vòng 2 phút.'
+    a: 'Hệ thống lưu trữ số dư ví minh bạch trên thiết bị và đồng bộ tài khoản. Khi cần thêm Xu, bạn có thể nạp nhanh qua cổng VietQR tự động. Mọi thắc mắc đều được hệ thống hỗ trợ 24/7 trong vòng ít phút.'
   }
 ];

@@ -39,6 +39,7 @@ export default function PlansView({ onTierUpgraded, onPayVietQR }) {
       id: `plan_${plan.id}`,
       title: `Nâng Cấp Hội Viên: ${plan.name}`,
       categoryLabel: 'Gói Hội Viên',
+      priceXu: plan.priceXu,
       price: plan.priceVnd,
       originalPrice: Math.round(plan.priceVnd * 1.5)
     });
