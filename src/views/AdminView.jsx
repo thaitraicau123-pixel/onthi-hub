@@ -24,7 +24,10 @@ import {
   Code,
   Gift,
   Cpu,
-  MessageCircle
+  MessageCircle,
+  Send,
+  BellRing,
+  Smartphone
 } from 'lucide-react';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
@@ -38,7 +41,11 @@ import {
   ADMIN_NTFY_TOPIC,
   COIN_RATE_VND,
   openAdminZaloChat,
-  formatAdminZaloMessage
+  formatAdminZaloMessage,
+  sendRealEmailToAdmin,
+  getTelegramConfig,
+  saveTelegramConfig,
+  sendTelegramNotification
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck } from '../data/marketplaceData';
@@ -85,6 +92,13 @@ export default function AdminView({ onBackToHome }) {
   const [aiTestResult, setAiTestResult] = useState(null);
   const [aiSaveMsg, setAiSaveMsg] = useState('');
   const [copiedAiEnv, setCopiedAiEnv] = useState(false);
+
+  // Telegram & Real Email State
+  const [telegramConfig, setTelegramConfig] = useState(() => getTelegramConfig());
+  const [telegramTestMsg, setTelegramTestMsg] = useState('');
+  const [emailTestMsg, setEmailTestMsg] = useState('');
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
+  const [isSendingTelegramTest, setIsSendingTelegramTest] = useState(false);
 
   const reloadData = () => {
     setTransactions(getTransactions());
@@ -266,6 +280,59 @@ export default function AdminView({ onBackToHome }) {
     playSound('success');
     setCopiedAiEnv(true);
     setTimeout(() => setCopiedAiEnv(false), 3000);
+  };
+
+  // Test Real Email Delivery to thaitraicau123@gmail.com
+  const handleSendTestEmail = async () => {
+    setIsSendingTestEmail(true);
+    setEmailTestMsg('');
+    const res = await sendRealEmailToAdmin({
+      type: 'deposit',
+      code: 'TEST' + Math.floor(100000 + Math.random() * 900000),
+      amountXu: 50,
+      amountVnd: 50000,
+      userEmail: 'hocvien_test@onthihub.vn',
+      details: {
+        note: 'Email kiểm tra hệ thống thông báo nạp/rút tự động gửi trực tiếp về thaitraicau123@gmail.com'
+      }
+    });
+    setIsSendingTestEmail(false);
+    if (res.success) {
+      playSound('success');
+      setEmailTestMsg('🎉 ĐÃ GỬI THÀNH CÔNG! Hãy mở Gmail thaitraicau123@gmail.com để kiểm tra hòm thư (kể cả mục Thư rác/Spam).');
+    } else {
+      const msg = res.data?.message || res.error || 'Vui lòng kiểm tra lại kết nối mạng';
+      setEmailTestMsg(`ℹ️ Phản hồi từ máy chủ FormSubmit: "${msg}". Nếu đây là lần đầu tiên, FormSubmit đã gửi email có nút "Activate Form" đến thaitraicau123@gmail.com, bạn chỉ cần bấm kích hoạt 1 lần duy nhất.`);
+    }
+  };
+
+  // Save & Test Telegram Config
+  const handleSaveTelegram = (e) => {
+    e.preventDefault();
+    saveTelegramConfig(telegramConfig);
+    playSound('success');
+    setTelegramTestMsg('✅ Đã lưu cấu hình Telegram Bot thành công!');
+    setTimeout(() => setTelegramTestMsg(''), 4000);
+  };
+
+  const handleTestTelegram = async () => {
+    setIsSendingTelegramTest(true);
+    setTelegramTestMsg('');
+    const res = await sendTelegramNotification({
+      type: 'deposit',
+      code: 'TELEGRAM' + Math.floor(1000 + Math.random() * 9000),
+      amountXu: 100,
+      amountVnd: 100000,
+      userEmail: 'creator@onthihub.vn',
+      details: { note: 'Thử nghiệm thông báo Telegram Bot OnThiHub' }
+    });
+    setIsSendingTelegramTest(false);
+    if (res.success) {
+      playSound('success');
+      setTelegramTestMsg('🚀 Đã gửi tin nhắn Telegram thành công tới điện thoại của bạn!');
+    } else {
+      setTelegramTestMsg('❌ Gửi thất bại: ' + (res.data?.description || res.error || 'Vui lòng kiểm tra lại Bot Token và Chat ID'));
+    }
   };
 
   return (
@@ -892,6 +959,161 @@ export default function AdminView({ onBackToHome }) {
                   <MessageCircle className="w-3.5 h-3.5 fill-white" />
                   <span>Mở Zalo Admin</span>
                 </a>
+              </div>
+
+              {/* CARD 1: CẤU HÌNH GMAIL GỬI TRỰC TIẾP QUA FORMSUBMIT */}
+              <div className="p-5 bg-gradient-to-r from-amber-50/80 to-orange-50/80 rounded-2xl border-2 border-amber-300 shadow-sm space-y-3.5 text-xs">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-black text-[#28071a]">
+                        Gửi Email Tự Động Trực Tiếp Về Gmail: <span className="text-[#f02c85] font-mono">{ADMIN_EMAIL}</span>
+                      </h5>
+                      <span className="text-[11px] text-[#7a5a6b] font-medium">
+                        Cơ chế tự động qua FormSubmit API • Không cần máy chủ backend • Nhận email trong 1-3 giây
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={isSendingTestEmail}
+                    onClick={handleSendTestEmail}
+                    className="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-black text-xs rounded-xl shadow-md flex items-center space-x-1.5 transition-all disabled:opacity-50"
+                  >
+                    <Send className={`w-3.5 h-3.5 ${isSendingTestEmail ? 'animate-pulse' : ''}`} />
+                    <span>{isSendingTestEmail ? 'Đang Gửi Email...' : 'Gửi Thử Email Đến Gmail Ngay'}</span>
+                  </button>
+                </div>
+
+                {emailTestMsg && (
+                  <div className="p-3 bg-white border border-amber-300 rounded-xl font-bold text-amber-950 text-xs">
+                    {emailTestMsg}
+                  </div>
+                )}
+
+                <div className="p-3 bg-white/90 rounded-xl border border-amber-200 text-[#4e2f41] space-y-1.5 text-[11px] leading-relaxed">
+                  <strong className="text-[#28071a] font-black block">
+                    ⚠️ Hướng dẫn kích hoạt nhận email lần đầu (Chỉ làm 1 lần duy nhất):
+                  </strong>
+                  <p>1. Mở hòm thư <strong>{ADMIN_EMAIL}</strong> (vui lòng kiểm tra cả thư mục <strong>Hộp thư đến</strong> và <strong>Thư rác / Spam</strong>).</p>
+                  <p>2. Tìm email do máy chủ <strong>FormSubmit</strong> gửi tới với tiêu đề <em>"FormSubmit - Confirm your email address"</em> hoặc <em>"Activate Form"</em>.</p>
+                  <p>3. Bấm vào nút <strong>"Activate Form"</strong> trong email đó.</p>
+                  <p className="text-emerald-700 font-bold">
+                    ✅ Sau khi bấm, máy chủ FormSubmit sẽ kích hoạt vĩnh viễn. Mọi lệnh Nạp tiền và Rút tiền từ học viên trên web sẽ tự động gửi thẳng email chi tiết về Gmail của anh!
+                  </p>
+                </div>
+              </div>
+
+              {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
+              <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-3 text-xs">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-purple-600 text-white flex items-center justify-center font-bold shadow-xs">
+                      <BellRing className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-black text-[#28071a]">
+                        Rung Chuông & Báo Màn Hình Khóa Điện Thoại (Miễn phí 100% qua ntfy.sh)
+                      </h5>
+                      <span className="text-[11px] text-[#7a5a6b] font-medium">
+                        Không cần đăng ký tài khoản • Rung chuông điện thoại ngay tức thì khi có khách đặt lệnh
+                      </span>
+                    </div>
+                  </div>
+
+                  <a
+                    href={ADMIN_NTFY_TOPIC}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>Mở Kênh Nhận Chuông Báo</span>
+                  </a>
+                </div>
+
+                <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
+                  💡 Anh có thể cài ứng dụng <strong>ntfy</strong> (trên App Store hoặc Google Play), sau đó bấm dấu cộng (+) và nhập chủ đề: <code className="bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-mono font-bold">onthihub_admin_0986019623</code>. Điện thoại của anh sẽ reo chuông báo mỗi khi có đơn nạp/rút!
+                </p>
+              </div>
+
+              {/* CARD 3: TÙY CHỌN TELEGRAM BOT TỰ ĐỘNG */}
+              <form onSubmit={handleSaveTelegram} className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#eadfcb] pb-2.5">
+                  <div className="flex items-center space-x-2">
+                    <Send className="w-4 h-4 text-[#0068ff]" />
+                    <h5 className="text-xs font-black uppercase text-[#28071a] tracking-wider">
+                      Tùy Chọn: Bắn Tin Nhắn Tức Thì Qua Telegram Bot (Tin Nhắn Riêng)
+                    </h5>
+                  </div>
+                  <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#28071a]">
+                    <input
+                      type="checkbox"
+                      checked={telegramConfig.enabled}
+                      onChange={(e) => setTelegramConfig(prev => ({ ...prev, enabled: e.target.checked }))}
+                      className="rounded accent-[#f02c85] w-4 h-4"
+                    />
+                    <span>Bật gửi qua Telegram</span>
+                  </label>
+                </div>
+
+                {telegramTestMsg && (
+                  <div className="p-3 bg-blue-50 border border-blue-200 text-blue-950 font-bold rounded-xl text-xs">
+                    {telegramTestMsg}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="font-bold text-[#7a5a6b] block mb-1">Telegram Bot Token (từ @BotFather):</label>
+                    <input
+                      type="text"
+                      placeholder="VD: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
+                      value={telegramConfig.botToken}
+                      onChange={(e) => setTelegramConfig(prev => ({ ...prev, botToken: e.target.value }))}
+                      className="w-full px-3 py-2 border border-[#eadfcb] rounded-xl font-mono text-xs bg-[#fcf7ec] text-[#28071a] outline-none focus:border-[#0068ff]"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-bold text-[#7a5a6b] block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
+                    <input
+                      type="text"
+                      placeholder="VD: 987654321"
+                      value={telegramConfig.chatId}
+                      onChange={(e) => setTelegramConfig(prev => ({ ...prev, chatId: e.target.value }))}
+                      className="w-full px-3 py-2 border border-[#eadfcb] rounded-xl font-mono text-xs bg-[#fcf7ec] text-[#28071a] outline-none focus:border-[#0068ff]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end space-x-2 pt-1">
+                  <button
+                    type="button"
+                    disabled={isSendingTelegramTest || !telegramConfig.botToken || !telegramConfig.chatId}
+                    onClick={handleTestTelegram}
+                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#28071a] font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
+                  >
+                    <span>{isSendingTelegramTest ? 'Đang gửi...' : 'Gửi Thử Telegram'}</span>
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1 transition-colors"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Lưu Cấu Hình Telegram</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* LỊCH SỬ THÔNG BÁO */}
+              <div className="pt-2">
+                <h5 className="text-xs font-black uppercase text-[#28071a] tracking-wider mb-2">
+                  Lịch Sử Các Thông Báo Đã Ghi Nhận ({notifications.length})
+                </h5>
               </div>
 
               {notifications.length === 0 ? (

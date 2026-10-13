@@ -94,7 +94,108 @@ export function openAdminZaloChat(customMessage) {
   }
 }
 
-// Send Notification via Zalo / ntfy.sh / Email
+// Telegram Notification Configuration Key
+export const TELEGRAM_CONFIG_KEY = 'onthi_telegram_config';
+
+export function getTelegramConfig() {
+  try {
+    const raw = localStorage.getItem(TELEGRAM_CONFIG_KEY);
+    return raw ? JSON.parse(raw) : { botToken: '', chatId: '', enabled: false };
+  } catch (e) {
+    return { botToken: '', chatId: '', enabled: false };
+  }
+}
+
+export function saveTelegramConfig(cfg) {
+  try {
+    localStorage.setItem(TELEGRAM_CONFIG_KEY, JSON.stringify(cfg));
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Send Real Email directly to Gmail thaitraicau123@gmail.com via FormSubmit API
+export async function sendRealEmailToAdmin({ type, code, amountXu, amountVnd, userEmail, details, timestamp }) {
+  const time = timestamp || new Date().toLocaleString('vi-VN');
+  const typeText = type === 'deposit' ? 'NẠP XU (VietQR)' : 'RÚT TIỀN VỀ NGÂN HÀNG';
+  const vndText = (amountVnd || amountXu * COIN_RATE_VND).toLocaleString('vi-VN') + ' VNĐ';
+
+  const payload = {
+    _subject: `[ÔnThiHub] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} - Mã: ${code} (${amountXu} Xu)`,
+    _template: 'table',
+    _captcha: 'false',
+    'Mã Giao Dịch': code,
+    'Loại Lệnh': typeText,
+    'Số Lượng Xu': `${amountXu} Xu`,
+    'Số Tiền VNĐ': vndText,
+    'Khách Hàng': userEmail || 'Chưa cung cấp',
+    'Thời Gian Tạo': time,
+    'Chi Tiết Giao Dịch': typeof details === 'object' ? JSON.stringify(details, null, 2) : String(details),
+    'Hotline Zalo Admin': `${ADMIN_PHONE} (${ADMIN_ZALO_LINK})`
+  };
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${ADMIN_EMAIL}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json().catch(() => ({}));
+    return { success: res.ok, data };
+  } catch (err) {
+    console.warn('FormSubmit email error:', err);
+    return { success: false, error: err?.message };
+  }
+}
+
+// Send Telegram notification directly to Admin's phone
+export async function sendTelegramNotification({ type, code, amountXu, amountVnd, userEmail, details, timestamp }) {
+  const cfg = getTelegramConfig();
+  if (!cfg.enabled || !cfg.botToken || !cfg.chatId) return { success: false, skipped: true };
+
+  const time = timestamp || new Date().toLocaleString('vi-VN');
+  const typeText = type === 'deposit' ? '🟢 NẠP XU (VietQR)' : '🔴 RÚT TIỀN VỀ NGÂN HÀNG';
+  const vndText = (amountVnd || amountXu * COIN_RATE_VND).toLocaleString('vi-VN') + ' VNĐ';
+
+  let extra = '';
+  if (type === 'withdraw' && details) {
+    extra = `\n🏦 <b>Ngân hàng:</b> ${details.bankName || ''}\n💳 <b>STK:</b> ${details.accountNo || ''}\n👤 <b>Chủ TK:</b> ${details.accountName || ''}`;
+  } else if (type === 'deposit') {
+    extra = `\n💳 <b>Cú pháp CK:</b> <code>${code}</code>`;
+  }
+
+  const text = `🔔 <b>[ÔNTHIHUB] CÓ LỆNH ${type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'} MỚI!</b>
+━━━━━━━━━━━━━━━━━
+• <b>Mã đơn:</b> <code>${code}</code>
+• <b>Loại:</b> ${typeText}
+• <b>Số lượng:</b> <b>${amountXu} Xu</b> (~${vndText})
+• <b>Khách hàng:</b> ${userEmail || 'Chưa cung cấp'}${extra}
+• <b>Thời gian:</b> ${time}
+━━━━━━━━━━━━━━━━━
+👉 Đăng nhập Secret Admin trên web để duyệt hoặc liên hệ Zalo: <b>${ADMIN_PHONE}</b>`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${cfg.botToken.trim()}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: cfg.chatId.trim(),
+        text,
+        parse_mode: 'HTML'
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    return { success: res.ok, data };
+  } catch (err) {
+    return { success: false, error: err?.message };
+  }
+}
+
+// Send Notification via Zalo / ntfy.sh / FormSubmit Real Email / Telegram
 export function notifyAdmin({ type, code, amountXu, amountVnd, userEmail, details }) {
   const timestamp = new Date().toLocaleString('vi-VN');
   const zaloMessage = formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
@@ -117,7 +218,10 @@ Trân trọng,
 Hệ thống ÔnThiHub Automation
   `.trim();
 
-  // 1. Send silent background push to ntfy.sh
+  // 1. Gửi EMAIL THẬT trực tiếp đến thaitraicau123@gmail.com qua FormSubmit API
+  sendRealEmailToAdmin({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
+
+  // 2. Gửi PUSH RUNG ĐIỆN THOẠI tức thì qua ntfy.sh
   try {
     if (typeof fetch !== 'undefined') {
       fetch(ADMIN_NTFY_TOPIC, {
@@ -133,7 +237,10 @@ Hệ thống ÔnThiHub Automation
     }
   } catch (e) {}
 
-  // 2. Save to Admin Notifications store
+  // 3. Gửi tin nhắn Telegram tự động (nếu Admin đã cấu hình Bot)
+  sendTelegramNotification({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
+
+  // 4. Save to Admin Notifications store
   try {
     const raw = localStorage.getItem(ADMIN_NOTIFICATIONS_KEY);
     const notifs = raw ? JSON.parse(raw) : [];
