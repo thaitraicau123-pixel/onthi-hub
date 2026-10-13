@@ -1131,18 +1131,18 @@ export default function AdminView({ onBackToHome }) {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#28071a]">
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-purple-700 font-bold block">1. Cam Kết 100% Trúng Thưởng</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Không bao giờ có rương rỗng; học viên luôn nhận lại Xu hoàn vốn, voucher giảm giá hoặc bộ thẻ xịn.</p>
+                    <strong className="text-emerald-700 font-bold block">1. Chủ Sàn Luôn Thắng (House Edge 80%)</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-amber-700 font-bold block">2. Tỷ Lệ Nổ Hũ Vàng 8%</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Tỷ lệ 8% ở rương ULTRA 30 Xu tạo sự hồi hộp đỉnh cao mà không làm lạm phát số dư ví Xu của hệ thống.</p>
+                    <strong className="text-amber-700 font-bold block">2. Tỷ Lệ Đồ Xịn Siêu Thấp (1% - 5%)</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Jackpot chỉ 1%, PRO/PLUS chỉ 2%, thẻ đắt tiền chỉ 5%. Hàng trăm người mở mới có 1 người trúng để tạo hiệu ứng viral.</p>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-emerald-700 font-bold block">3. Hiệu Ứng Âm Thanh Synth 3D</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Tích hợp 4 giai điệu âm thanh Web Audio API: Xé băng dính, Lắc rương, Chuông tiên vỡ òa, và Kèn Trumpet mừng Jackpot.</p>
+                    <strong className="text-purple-700 font-bold block">3. Ép Khách Nạp Thêm Tiền Thật</strong>
+                    <p className="text-[11px] text-[#7a5a6b]">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
                   </div>
                 </div>
               </div>

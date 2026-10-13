@@ -6,24 +6,24 @@ const USER_QUOTA_KEY = 'onthi_user_quota';
 export const DEFAULT_TIER_LIMITS = {
   free: {
     name: 'Gói Free (Học Sinh / Khởi Đầu)',
-    dailyLimit: 5,        // 5 lượt tạo AI/thủ công mỗi ngày
-    checkInBonus: 2,      // Mỗi ngày đăng nhập được tặng thêm 2 lượt
+    dailyLimit: 3,        // Chỉ 3 lượt tạo thẻ AI/thủ công mỗi ngày
+    checkInBonus: 1,      // Điểm danh mỗi ngày chỉ tặng duy nhất +1 lượt tạo thẻ miễn phí (ít thôi để tối ưu lợi nhuận)
     marketplaceFee: 15,   // Phí sàn 15% khi bán thẻ
     color: 'slate',
     badge: 'Miễn Phí'
   },
   plus: {
     name: 'Gói Plus (Cày Đề & Thi Thử)',
-    dailyLimit: 35,       // 35 lượt tạo mỗi ngày
-    checkInBonus: 5,      // Điểm danh tặng 5 lượt
+    dailyLimit: 20,       // 20 lượt tạo mỗi ngày
+    checkInBonus: 2,      // Điểm danh tặng 2 lượt
     marketplaceFee: 10,   // Phí sàn 10%
     color: 'blue',
     badge: 'Thành Viên Plus ⭐'
   },
   pro: {
     name: 'Gói Pro (Chuyên Sâu & Luyện Thi)',
-    dailyLimit: 100,      // 100 lượt tạo mỗi ngày
-    checkInBonus: 15,     // Điểm danh tặng 15 lượt
+    dailyLimit: 50,       // 50 lượt tạo mỗi ngày
+    checkInBonus: 3,      // Điểm danh tặng 3 lượt
     marketplaceFee: 7,    // Phí sàn 7%
     color: 'indigo',
     badge: 'Chuyên Gia Pro 🚀'
@@ -31,7 +31,7 @@ export const DEFAULT_TIER_LIMITS = {
   ultra: {
     name: 'Gói Ultra (Creator & Full Quyền VIP)',
     dailyLimit: 9999,     // Không giới hạn
-    checkInBonus: 30,     // Điểm danh tặng 30 lượt
+    checkInBonus: 5,      // Điểm danh tặng 5 lượt
     marketplaceFee: 3,    // Phí sàn chỉ 3%
     color: 'amber',
     badge: 'Creator Ultra 👑'

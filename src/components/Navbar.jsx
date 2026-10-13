@@ -387,7 +387,7 @@ export default function Navbar({
                     }`}
                   >
                     <Gift className="w-4 h-4 text-rose-600" />
-                    <span>{quota.isCheckedInToday ? '✓ Đã Điểm Danh Hôm Nay (+5 Xu)' : '🎁 Điểm Danh Nhận Quà (+5 Xu)'}</span>
+                    <span>{quota.isCheckedInToday ? '✓ Đã Điểm Danh Hôm Nay' : `🎁 Điểm Danh (+${quota.tierConfig?.checkInBonus || 1} Lượt Tạo Thẻ AI)`}</span>
                   </button>
                 </div>
               </div>
