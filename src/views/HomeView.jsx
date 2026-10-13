@@ -227,8 +227,8 @@ export default function HomeView({
       <section id="catalog-section" className="bg-[#fcf7ec] rounded-3xl p-3.5 sm:p-4 border border-[#eadfcb] shadow-sm text-[#28071a]">
         <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
           
-          {/* Category Tabs */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-0.5 scrollbar-none no-scrollbar">
+          {/* Category Tabs: flex-wrap so all 4 categories are 100% visible at a glance without scrolling */}
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {CATEGORIES.map((cat) => {
               const active = selectedCategory === cat.id;
               const count = cat.id === 'all'
@@ -239,7 +239,7 @@ export default function HomeView({
                   key={cat.id}
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
-                  className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl text-xs font-black whitespace-nowrap transition-all duration-150 ${
+                  className={`flex items-center space-x-1.5 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-2xl text-xs font-black transition-all duration-150 ${
                     active
                       ? 'bg-[#f02c85] text-white shadow-sm'
                       : 'bg-white text-[#28071a] border border-[#eadfcb] hover:border-[#f02c85]/40 hover:bg-[#faf4e6]'
@@ -261,7 +261,7 @@ export default function HomeView({
 
           {/* Search & Sort Controls */}
           <div className="flex items-center gap-2 w-full lg:w-auto shrink-0">
-            <div className="relative flex-1 sm:w-60">
+            <div className="relative flex-1 sm:w-56">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"

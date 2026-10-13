@@ -66,17 +66,17 @@ export const LEADERBOARD_USERS = [
 
 // 3. SHOPEE STYLE VOUCHERS HUB
 export const AVAILABLE_VOUCHERS = [
-  { id: 'VOUCHER_5XU', code: 'CHAO2026', discountText: 'Giảm 5 Xu', minOrder: 20, desc: 'Dành cho đơn mở khóa bộ thẻ từ 20 Xu', expires: 'Còn 3 ngày' },
-  { id: 'VOUCHER_XU15', code: 'HOIXU15', discountText: 'Hoàn 15% Xu', minOrder: 0, desc: 'Hoàn Xu trực tiếp vào ví sau khi mở khóa', expires: 'Còn 5 ngày' },
-  { id: 'VOUCHER_VIP', code: 'VIPMEM', discountText: 'Giảm 15 Xu', minOrder: 50, desc: 'Áp dụng cho gói Combo VIP trọn đời', expires: 'Hôm nay' }
+  { id: 'VOUCHER_5XU', code: 'CHAO2026', discountText: 'Giảm 5 Xu', minOrder: 20, desc: 'Dành cho đơn mở khóa bộ thẻ từ 20 Xu', shortDesc: 'Đơn từ 20 Xu', expires: 'Còn 3 ngày' },
+  { id: 'VOUCHER_XU15', code: 'HOIXU15', discountText: 'Hoàn 15% Xu', minOrder: 0, desc: 'Hoàn Xu trực tiếp vào ví sau khi mở khóa', shortDesc: 'Mọi bộ thẻ', expires: 'Còn 5 ngày' },
+  { id: 'VOUCHER_VIP', code: 'VIPMEM', discountText: 'Giảm 15 Xu', minOrder: 50, desc: 'Áp dụng cho gói Combo VIP trọn đời', shortDesc: 'Gói Combo VIP', expires: 'Hôm nay' }
 ];
 
 export function getClaimedVouchers() {
   try {
     const raw = localStorage.getItem(CLAIMED_VOUCHERS_KEY);
-    return raw ? JSON.parse(raw) : ['VOUCHER_20K'];
+    return raw ? JSON.parse(raw) : ['VOUCHER_5XU'];
   } catch (e) {
-    return ['VOUCHER_20K'];
+    return ['VOUCHER_5XU'];
   }
 }
 

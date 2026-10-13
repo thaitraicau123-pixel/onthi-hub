@@ -1,8 +1,8 @@
 export const CATEGORIES = [
-  { id: 'all', name: 'Tất cả tài liệu', icon: 'Sparkles' },
-  { id: 'cong-chuc', name: 'Thi Công Chức / Viên Chức', icon: 'Landmark' },
-  { id: 'it-tech', name: 'Phỏng Vấn IT & Lập Trình', icon: 'Code2' },
-  { id: 'ngoai-ngu', name: 'Ngoại Ngữ (IELTS, JLPT, HSK)', icon: 'Languages' },
+  { id: 'all', name: 'Tất cả', icon: 'Sparkles' },
+  { id: 'cong-chuc', name: 'Công Chức', icon: 'Landmark' },
+  { id: 'it-tech', name: 'IT & Lập Trình', icon: 'Code2' },
+  { id: 'ngoai-ngu', name: 'Ngoại Ngữ', icon: 'Languages' },
 ];
 
 export const COURSES_DATA = [
