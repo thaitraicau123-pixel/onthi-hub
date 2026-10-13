@@ -17,13 +17,14 @@ import PaymentModal from './components/PaymentModal';
 import AuthModal from './components/AuthModal';
 import BlindBoxModal from './components/BlindBoxModal';
 import PassDeckModal from './components/PassDeckModal';
+import SellDeckModal from './components/SellDeckModal';
 import MistakeNotebookModal from './components/MistakeNotebookModal';
 import ChangelogModal from './components/ChangelogModal';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
-import { getMarketplaceDecks } from './data/marketplaceData';
+import { getMarketplaceDecks, subscribeToMarketplaceDecks } from './data/marketplaceData';
 import { isChangelogUnread } from './data/changelogData';
 import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
@@ -55,6 +56,7 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBlindBoxOpen, setIsBlindBoxOpen] = useState(false);
   const [activePassCourse, setActivePassCourse] = useState(null);
+  const [activeSellCourse, setActiveSellCourse] = useState(null);
   const [isMistakesNotebookOpen, setIsMistakesNotebookOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(() => isChangelogUnread());
   const [toastMessage, setToastMessage] = useState('');
@@ -87,9 +89,15 @@ export default function App() {
       }
     });
 
+    // Global real-time listener for C2C marketplace decks (Firebase Firestore + Cloud Relay)
+    const unsubMarket = subscribeToMarketplaceDecks((decks) => {
+      setMarketplaceDecks(decks);
+    });
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       if (typeof unsubTxs === 'function') unsubTxs();
+      if (typeof unsubMarket === 'function') unsubMarket();
     };
   }, []);
 
@@ -202,6 +210,7 @@ export default function App() {
             onOpenQuiz={(c) => setActiveQuizCourse(c)}
             onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
             onOpenPassDeck={(course) => setActivePassCourse(course)}
+            onOpenSellDeck={(course) => setActiveSellCourse(course)}
             onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
             onSwitchTab={setActiveTab}
           />
@@ -344,6 +353,21 @@ export default function App() {
           user={user}
           onClose={() => setActivePassCourse(null)}
           onPassSuccess={(res) => {
+            refreshState();
+            setActiveTab('marketplace');
+            showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
+
+      {/* 10. Bán Thẻ Trực Tiếp Từ Tủ (C2C Direct Sell) */}
+      {activeSellCourse && (
+        <SellDeckModal
+          course={activeSellCourse}
+          user={user}
+          onClose={() => setActiveSellCourse(null)}
+          onSellSuccess={(res) => {
             refreshState();
             setActiveTab('marketplace');
             showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);

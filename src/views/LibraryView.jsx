@@ -15,7 +15,8 @@ import {
   CheckCircle,
   Clock,
   BookMarked,
-  Scissors
+  Scissors,
+  Tag
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet } from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
@@ -28,6 +29,7 @@ export default function LibraryView({
   onOpenQuiz,
   onOpenMatchGame,
   onOpenPassDeck,
+  onOpenSellDeck,
   onOpenMistakes,
   onSwitchTab
 }) {
@@ -247,13 +249,26 @@ export default function LibraryView({
                   <span>🎮 Chơi Nối Thẻ Siêu Tốc (Match Mode)</span>
                 </button>
 
-                <button
-                  onClick={() => onOpenPassDeck?.(course)}
-                  className="col-span-2 py-2 px-3 rounded-xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black flex items-center justify-center space-x-1.5 shadow-sm transition-transform transform hover:scale-102 active:scale-95"
-                >
-                  <Repeat className="w-3.5 h-3.5" />
-                  <span>🔁 Pass Lại Thẻ Cũ (Nhượng Thẻ Nhận Xu)</span>
-                </button>
+                {/* C2C Actions: Bán Thẻ Lên Sàn & Pass Thẻ Cũ */}
+                <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    onClick={() => onOpenSellDeck?.(course)}
+                    className="py-2 px-2 rounded-xl bg-gradient-to-r from-[#ff5f38] to-[#f02c85] hover:brightness-110 text-white text-xs font-black flex items-center justify-center space-x-1 shadow-sm transition-transform transform hover:scale-102 active:scale-95"
+                    title="Đăng bán bộ thẻ này lên Chợ Thẻ C2C kiếm Xu"
+                  >
+                    <Tag className="w-3.5 h-3.5" />
+                    <span>🏷️ Bán Thẻ Lên Sàn</span>
+                  </button>
+
+                  <button
+                    onClick={() => onOpenPassDeck?.(course)}
+                    className="py-2 px-2 rounded-xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black flex items-center justify-center space-x-1 shadow-sm transition-transform transform hover:scale-102 active:scale-95"
+                    title="Pass lại thẻ đã học cho bạn học khác với giá ưu đãi sinh viên"
+                  >
+                    <Repeat className="w-3.5 h-3.5" />
+                    <span>🔁 Pass Lại Thẻ</span>
+                  </button>
+                </div>
 
                 <button
                   onClick={() => exportAnkiDeckFile(course.title, course.previewCards)}

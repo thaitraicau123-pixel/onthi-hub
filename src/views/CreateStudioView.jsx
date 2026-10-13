@@ -54,6 +54,7 @@ export default function CreateStudioView({
   const [aiCount, setAiCount] = useState('auto'); // 'auto' | number
   const [isExpandedNotes, setIsExpandedNotes] = useState(false);
   const [extractionMode, setExtractionMode] = useState('auto'); // 'auto' | 'qa' | 'questions_only' | 'summary'
+  const [answerLength, setAnswerLength] = useState('balanced'); // 'detailed' | 'balanced' | 'concise'
   const [customPrompt, setCustomPrompt] = useState('');
   const [showCustomPrompt, setShowCustomPrompt] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -205,7 +206,8 @@ export default function CreateStudioView({
         rawText: aiNotes,
         cardCount: targetCount,
         customPrompt,
-        extractionMode
+        extractionMode,
+        answerLength
       });
 
       if (Array.isArray(generated) && generated.length > 0) {
@@ -683,6 +685,82 @@ export default function CreateStudioView({
                     </div>
                     <div className={`text-[9px] mt-0.5 font-medium truncate ${extractionMode === m.id ? 'text-pink-100' : 'text-[#7a5a6b]'}`}>
                       {m.desc}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Answer Length Selector: Chi tiết, Vừa đủ, Ngắn gọn */}
+            <div className="p-3 bg-[#fcf7ec]/80 rounded-2xl border border-[#eadfcb] space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-1">
+                <span className="text-xs font-black text-[#28071a] flex items-center gap-1.5">
+                  <span>📏</span>
+                  <span>Độ Dài Câu Trả Lời (Mặt Sau):</span>
+                </span>
+                <span className="text-[10px] text-[#f02c85] font-black">
+                  {answerLength === 'detailed'
+                    ? '📝 Chi tiết (50 - 100 từ • Đầy đủ căn cứ & ví dụ)'
+                    : answerLength === 'concise'
+                    ? '⚡ Ngắn gọn (10 - 25 từ • 1-2 dòng ôn phản xạ)'
+                    : '⚖️ Vừa đủ (25 - 50 từ • Chuẩn Anki SM-2)'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  {
+                    id: 'detailed',
+                    label: 'Chi Tiết',
+                    desc: 'Giải thích sâu & căn cứ',
+                    icon: '📝',
+                    badge: '50-100 từ'
+                  },
+                  {
+                    id: 'balanced',
+                    label: 'Vừa Đủ',
+                    desc: 'Chuẩn Anki SM-2',
+                    icon: '⚖️',
+                    badge: 'Khuyên dùng'
+                  },
+                  {
+                    id: 'concise',
+                    label: 'Ngắn Gọn',
+                    desc: 'Ôn phản xạ siêu tốc',
+                    icon: '⚡',
+                    badge: '10-25 từ'
+                  }
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => {
+                      setAnswerLength(item.id);
+                      playSound('click');
+                    }}
+                    className={`p-2.5 rounded-xl text-left border transition-all ${
+                      answerLength === item.id
+                        ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white border-[#f02c85] shadow-xs'
+                        : 'bg-white border-[#eadfcb] text-[#28071a] hover:bg-[#faf4e6]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-1 font-black text-xs">
+                        <span>{item.icon}</span>
+                        <span>{item.label}</span>
+                      </div>
+                      <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${
+                        answerLength === item.id
+                          ? 'bg-white/20 text-white'
+                          : 'bg-[#f4ebd7] text-[#7a5a6b]'
+                      }`}>
+                        {item.badge}
+                      </span>
+                    </div>
+                    <div className={`text-[10px] mt-1 font-medium truncate ${
+                      answerLength === item.id ? 'text-pink-100' : 'text-[#7a5a6b]'
+                    }`}>
+                      {item.desc}
                     </div>
                   </button>
                 ))}

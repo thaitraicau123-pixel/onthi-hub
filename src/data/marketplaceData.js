@@ -1,8 +1,10 @@
 import { getWalletBalance, deductWalletCoins, addWalletCoins } from '../utils/wallet';
 import { getUserTier, getTierLimits } from '../utils/userTier';
 import { savePurchasedCourse } from '../utils/storage';
+import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig';
 
 const MARKETPLACE_KEY = 'onthi_marketplace_decks_v2'; // v2 for fresh high-quality decks
+const CLOUD_MARKETPLACE_TOPIC = 'onthi_hub_marketplace_v2';
 
 export const INITIAL_MARKETPLACE_DECKS = [
   {
@@ -562,6 +564,156 @@ export function getMarketplaceDecks() {
   return INITIAL_MARKETPLACE_DECKS;
 }
 
+// Clean and prepare deck for Firestore (remove undefined fields)
+function sanitizeDeckForFirestore(deck) {
+  try {
+    return JSON.parse(JSON.stringify(deck));
+  } catch (e) {
+    return { ...deck };
+  }
+}
+
+// Sync single deck to Firebase Firestore
+export async function syncDeckToFirestore(deck) {
+  try {
+    const db = getFirestoreDb();
+    if (db && deck?.id) {
+      const clean = sanitizeDeckForFirestore(deck);
+      await setDoc(doc(db, 'marketplace_decks', String(deck.id)), clean, { merge: true });
+    }
+  } catch (err) {
+    console.warn('Firestore deck sync note:', err.message);
+  }
+}
+
+// Broadcast deck to Cloud Relay (cross-browser / cross-device broadcast)
+export async function broadcastDeckToCloudRelay(deck) {
+  if (typeof fetch === 'undefined') return;
+  try {
+    const clean = sanitizeDeckForFirestore(deck);
+    await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}`, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'publish_deck', data: clean, timestamp: new Date().toISOString() }),
+      headers: { 'Title': 'Marketplace Deck', 'Tags': 'books,sparkles' }
+    });
+  } catch (e) {}
+}
+
+// Fetch cross-device decks from Cloud Relay stream
+export async function fetchCloudRelayMarketplaceDecks() {
+  if (typeof fetch === 'undefined') return [];
+  try {
+    const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1&since=all`);
+    if (!res.ok) return [];
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    const incoming = [];
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      try {
+        const json = JSON.parse(line);
+        if (json.event === 'message' && json.message) {
+          let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
+          if (body?.data?.id) {
+            incoming.push(body.data);
+          } else if (body?.id && body?.title) {
+            incoming.push(body);
+          }
+        }
+      } catch (e) {}
+    }
+    return incoming;
+  } catch (e) {
+    return [];
+  }
+}
+
+// Merge remote decks into local marketplace cache
+export function mergeAndSaveMarketplaceDecks(remoteDecks) {
+  if (!Array.isArray(remoteDecks) || remoteDecks.length === 0) {
+    return getMarketplaceDecks();
+  }
+
+  const currentLocal = getMarketplaceDecks();
+  const deckMap = new Map();
+
+  // 1. Initial baseline decks
+  INITIAL_MARKETPLACE_DECKS.forEach((d) => deckMap.set(d.id, d));
+
+  // 2. Local decks
+  currentLocal.forEach((d) => deckMap.set(d.id, d));
+
+  // 3. Incoming remote decks (from Firestore or Cloud Relay)
+  remoteDecks.forEach((d) => {
+    if (d && d.id) {
+      deckMap.set(d.id, { ...(deckMap.get(d.id) || {}), ...d });
+    }
+  });
+
+  const merged = Array.from(deckMap.values());
+  try {
+    localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(merged));
+  } catch (e) {}
+  return merged;
+}
+
+// Real-time listener for cross-device marketplace decks
+export function subscribeToMarketplaceDecks(callback) {
+  // Emit local cache immediately
+  callback(getMarketplaceDecks());
+
+  let unsubscribeFirestore = null;
+  const db = getFirestoreDb();
+
+  // 1. Firebase Firestore onSnapshot listener
+  if (db) {
+    try {
+      const col = collection(db, 'marketplace_decks');
+      unsubscribeFirestore = onSnapshot(
+        col,
+        (snapshot) => {
+          const fbDecks = [];
+          snapshot.forEach((d) => {
+            const data = d.data();
+            if (data && data.id) fbDecks.push(data);
+          });
+          if (fbDecks.length > 0) {
+            const merged = mergeAndSaveMarketplaceDecks(fbDecks);
+            callback(merged);
+          }
+        },
+        (err) => {
+          console.warn('Firestore marketplace onSnapshot notice:', err.message);
+        }
+      );
+    } catch (e) {
+      console.warn('Firestore marketplace subscription error:', e);
+    }
+  }
+
+  // 2. Initial Cloud Relay fetch
+  fetchCloudRelayMarketplaceDecks().then((cloudDecks) => {
+    if (cloudDecks.length > 0) {
+      const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
+      callback(merged);
+    }
+  });
+
+  // 3. Periodic cloud poller (every 10s)
+  const intervalId = setInterval(async () => {
+    const cloudDecks = await fetchCloudRelayMarketplaceDecks();
+    if (cloudDecks.length > 0) {
+      const merged = mergeAndSaveMarketplaceDecks(cloudDecks);
+      callback(merged);
+    }
+  }, 10000);
+
+  return () => {
+    if (unsubscribeFirestore) unsubscribeFirestore();
+    clearInterval(intervalId);
+  };
+}
+
 // Pass deck from student buyer to peer C2C
 export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, sellerUser }) {
   const current = getMarketplaceDecks();
@@ -602,6 +754,11 @@ export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, s
 
   current.unshift(passDeck);
   localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(current));
+
+  // Sync to Firebase & Cloud Relay for real-time visibility across all devices
+  syncDeckToFirestore(passDeck);
+  broadcastDeckToCloudRelay(passDeck);
+
   return passDeck;
 }
 
@@ -610,7 +767,7 @@ export function publishDeckToMarketplace(deck) {
   const current = getMarketplaceDecks();
   const newDeck = {
     ...deck,
-    id: 'mkt_' + Date.now(),
+    id: deck.id && String(deck.id).startsWith('mkt_') ? deck.id : 'mkt_' + Date.now(),
     salesCount: 0,
     rating: 5.0,
     createdAt: new Date().toISOString().split('T')[0],
@@ -621,6 +778,11 @@ export function publishDeckToMarketplace(deck) {
   };
   current.unshift(newDeck);
   localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(current));
+
+  // Sync to Firebase & Cloud Relay for real-time visibility across all devices
+  syncDeckToFirestore(newDeck);
+  broadcastDeckToCloudRelay(newDeck);
+
   return newDeck;
 }
 
@@ -629,6 +791,13 @@ export function adminUpdateMarketplaceDeck(deckId, updates) {
   const current = getMarketplaceDecks();
   const updated = current.map(d => d.id === deckId ? { ...d, ...updates } : d);
   localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(updated));
+
+  const target = updated.find(d => d.id === deckId);
+  if (target) {
+    syncDeckToFirestore(target);
+    broadcastDeckToCloudRelay(target);
+  }
+
   return updated;
 }
 

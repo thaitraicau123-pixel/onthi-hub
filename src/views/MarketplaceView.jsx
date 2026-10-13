@@ -41,7 +41,8 @@ export default function MarketplaceView({
   const [likedIds, setLikedIds] = useState(() => getLikedDeckIds());
 
   useEffect(() => {
-    setDecks(getMarketplaceDecks().filter(d => d.isApproved !== false));
+    const list = Array.isArray(marketplaceDecks) && marketplaceDecks.length > 0 ? marketplaceDecks : getMarketplaceDecks();
+    setDecks(list.filter(d => d.isApproved !== false));
   }, [marketplaceDecks]);
   
   // Daily Flash Deals & Countdown

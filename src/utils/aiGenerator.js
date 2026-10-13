@@ -22,10 +22,25 @@ export function calculateOptimalCardCount(rawText) {
 /**
  * Call real Google Gemini API with auto-failover across active models
  */
-async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto' }) {
+async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto', answerLength = 'balanced' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
+  const answerLengthGuidance = (() => {
+    switch (answerLength) {
+      case 'detailed':
+        return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: CHI TIẾT (KHOẢNG 50 - 100 TỪ).
+- Trường "back" phải giải thích sâu, phân tích bản chất, viện dẫn chi tiết điều luật/căn cứ/nguyên lý và ví dụ minh họa cụ thể để người học nắm tường tận bản chất.`;
+      case 'concise':
+        return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: NGẮN GỌN (KHOẢNG 10 - 25 TỪ).
+- Trường "back" phải SIÊU CÔ ĐỌNG, đi thẳng vào đáp án/kết quả cốt lõi trong 1-2 dòng ngắn gọn. Không viết rườm rà lan man. Tối ưu cho ôn tập phản xạ siêu tốc.`;
+      case 'balanced':
+      default:
+        return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (KHOẢNG 25 - 50 TỪ).
+- Trường "back" súc tích, rõ ràng, gạch đầu dòng mạch lạc, kèm mẹo nhớ hoặc căn cứ ngắn gọn chuẩn phương pháp Anki SM-2.`;
+    }
+  })();
 
   const modeGuidance = (() => {
     switch (extractionMode) {
@@ -66,11 +81,12 @@ TÀI LIỆU / GHI CHÚ ĐÍNH KÈM:
 ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm phổ biến và công thức/khái niệm cốt lõi của chủ đề này.'}
 
 ${modeGuidance}
+${answerLengthGuidance}
 ${customPromptSection}
 
 TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (THEO CHUẨN ANKI FLASHCARD):
 - "front": Câu hỏi sắc bén, ngắn gọn, đi thẳng vào trọng tâm (khoảng 10-25 từ). Tuyệt đối không viết câu hỏi dài dòng, lan man.
-- "back": Câu trả lời chuẩn xác, súc tích (khoảng 20-60 từ). Sử dụng gạch đầu dòng rõ ràng, kèm mẹo nhớ hoặc ví dụ nếu có.
+- "back": Tuân thủ đúng tiêu chuẩn độ dài đã quy định ở trên. Sử dụng gạch đầu dòng rõ ràng, kèm mẹo nhớ hoặc ví dụ nếu có.
 - "tag": Nhãn ngắn gọn phân loại thẻ (tối đa 3-4 từ).
 - NGUYÊN TẮC BẤT DI BẤT DỊCH: Mỗi thẻ phải là MỘT đơn vị kiến thức riêng biệt, TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi ở các thẻ khác.
 - Nếu tài liệu ngắn hơn số lượng thẻ yêu cầu, hãy chia tách thành các khía cạnh logic: Thẻ 1 (Khái niệm/Mục tiêu), Thẻ 2 (Nguyên lý/Cơ chế hoạt động), Thẻ 3 (Lợi ích/Ứng dụng thực tế), thay vì lặp lại cùng một câu chữ.
@@ -158,10 +174,22 @@ Ví dụ:
 /**
  * Call OpenAI API (GPT-4o-mini) as fallback or primary if configured
  */
-async function callOpenAiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto' }) {
+async function callOpenAiApi({ apiKey, topic, rawText, cardCount, customPrompt = '', extractionMode = 'auto', answerLength = 'balanced' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
+
+  const answerLengthGuidance = (() => {
+    switch (answerLength) {
+      case 'detailed':
+        return `ĐỘ DÀI CÂU TRẢ LỜI: CHI TIẾT (Khoảng 50-100 từ). Trường "back" giải thích sâu, viện dẫn căn cứ/công thức và ví dụ minh họa rõ ràng.`;
+      case 'concise':
+        return `ĐỘ DÀI CÂU TRẢ LỜI: NGẮN GỌN (Khoảng 10-25 từ). Trường "back" siêu cô đọng, đi thẳng vào đáp án/định nghĩa cốt lõi trong 1-2 dòng ngắn gọn.`;
+      case 'balanced':
+      default:
+        return `ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (Khoảng 25-50 từ). Trường "back" súc tích, gạch đầu dòng rõ ràng, chuẩn phương pháp Anki SM-2.`;
+    }
+  })();
 
   const customPromptSection = (customPrompt || '').trim()
     ? `\n🎯 LỜI NHẮC TÙY CHỈNH TỪ NGƯỜI DÙNG: "${customPrompt.trim()}"\n`
@@ -172,11 +200,12 @@ Biên soạn đúng ${effectiveCount} thẻ flashcard ghi nhớ chất lượng 
 CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
 GHI CHÚ / TÀI LIỆU: ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm và khái niệm cốt lõi.'}
 CHẾ ĐỘ TRÍCH XUẤT: ${extractionMode === 'qa' ? 'Phân biệt rõ Câu hỏi đưa vào front, Câu trả lời đưa vào back.' : extractionMode === 'questions_only' ? 'Tài liệu là câu hỏi, AI giải chi tiết vào back.' : 'Tự động phân biệt câu hỏi vs trả lời.'}
+${answerLengthGuidance}
 ${customPromptSection}
 
 TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (CHUẨN ANKI):
 - "front": Câu hỏi sắc bén, ngắn gọn (10-25 từ).
-- "back": Câu trả lời chuẩn xác, gạch đầu dòng rõ ràng (20-60 từ).
+- "back": Tuân thủ đúng tiêu chuẩn độ dài đã quy định ở trên.
 - TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi giữa các thẻ.
 
 YÊU CẦU:
@@ -250,7 +279,7 @@ Không kèm theo văn bản giải thích nào ngoài mảng JSON.`;
  * Dynamically extracts definitions, bullet points, Q&A pairs from raw text,
  * or synthesizes pedagogical flashcards tailored to any topic.
  */
-function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, customPrompt = '', extractionMode = 'auto' }) {
+function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, customPrompt = '', extractionMode = 'auto', answerLength = 'balanced' }) {
   const effectiveCount = cardCount === 'auto' || !cardCount
     ? calculateOptimalCardCount(rawText)
     : Math.max(1, Math.min(30, Number(cardCount) || 5));
@@ -530,7 +559,7 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
  * 2. Tries OpenAI (gpt-4o-mini)
  * 3. Falls back to Smart Semantic Extractor
  */
-export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount = 6, customPrompt = '', extractionMode = 'auto' }) {
+export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount = 6, customPrompt = '', extractionMode = 'auto', answerLength = 'balanced' }) {
   const geminiKey = getGeminiApiKey();
   const openaiKey = getOpenAIApiKey();
 
@@ -543,7 +572,8 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
         rawText,
         cardCount,
         customPrompt,
-        extractionMode
+        extractionMode,
+        answerLength
       });
       if (Array.isArray(realCards) && realCards.length > 0) {
         return realCards;
@@ -562,7 +592,8 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
         rawText,
         cardCount,
         customPrompt,
-        extractionMode
+        extractionMode,
+        answerLength
       });
       if (Array.isArray(openAiCards) && openAiCards.length > 0) {
         return openAiCards;
@@ -574,7 +605,7 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
 
   // 3. Fallback to Smart Semantic Engine with natural delay
   await new Promise((resolve) => setTimeout(resolve, 600));
-  return generateSmartSemanticCards({ topic, rawText, cardCount, customPrompt, extractionMode });
+  return generateSmartSemanticCards({ topic, rawText, cardCount, customPrompt, extractionMode, answerLength });
 }
 
 /**
