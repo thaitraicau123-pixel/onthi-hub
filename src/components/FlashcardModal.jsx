@@ -20,7 +20,8 @@ import {
   Copy,
   Check,
   Play,
-  Pause
+  Pause,
+  Star
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
@@ -51,6 +52,32 @@ export default function FlashcardModal({
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [autoPlaySeconds, setAutoPlaySeconds] = useState(3);
 
+  // Starred / Favorite Cards State
+  const starredKey = `onthi_starred_cards_${course?.id || 'default'}`;
+  const [starredCardIds, setStarredCardIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem(starredKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const toggleStarCurrentCard = (e) => {
+    e?.stopPropagation?.();
+    const currentCard = cards[currentIndex] || {};
+    const cardId = currentCard.id !== undefined ? currentCard.id : currentIndex;
+    setStarredCardIds((prev) => {
+      const isStarred = prev.includes(cardId);
+      const next = isStarred ? prev.filter((id) => id !== cardId) : [...prev, cardId];
+      try {
+        localStorage.setItem(starredKey, JSON.stringify(next));
+      } catch (err) {}
+      playSound('click');
+      return next;
+    });
+  };
+
   // Topic Drawer, Search, and Fullscreen State
   const [topicDrawerOpen, setTopicDrawerOpen] = useState(false);
   const [topicSearchTerm, setTopicSearchTerm] = useState('');
@@ -73,7 +100,11 @@ export default function FlashcardModal({
   const filteredCardItems = React.useMemo(() => {
     return cards
       .map((card, idx) => ({ card, idx }))
-      .filter(({ card }) => {
+      .filter(({ card, idx }) => {
+        const cardId = card.id !== undefined ? card.id : idx;
+        if (selectedTagFilter === 'STARRED') {
+          return starredCardIds.includes(cardId);
+        }
         const tag = (card.tag || 'Khác').trim();
         if (selectedTagFilter !== 'ALL' && tag !== selectedTagFilter) {
           return false;
@@ -86,7 +117,7 @@ export default function FlashcardModal({
           tag.toLowerCase().includes(q)
         );
       });
-  }, [cards, selectedTagFilter, topicSearchTerm]);
+  }, [cards, selectedTagFilter, topicSearchTerm, starredCardIds]);
 
   const handleJumpToCard = (targetIdx) => {
     playSound('flip');
@@ -114,6 +145,8 @@ export default function FlashcardModal({
   }, []);
 
   const currentCard = cards[currentIndex] || {};
+  const currentCardId = currentCard.id !== undefined ? currentCard.id : currentIndex;
+  const isCurrentCardStarred = starredCardIds.includes(currentCardId);
   const targetDeckId = currentCard.originalDeckId || course.id;
   const targetCardIndex = currentCard.originalCardIndex !== undefined ? currentCard.originalCardIndex : currentIndex;
   const currentSrs = getCardSrs(targetDeckId, targetCardIndex);
@@ -373,6 +406,22 @@ export default function FlashcardModal({
             )}
 
             <button
+              onClick={() => {
+                setTopicDrawerOpen(true);
+                setSelectedTagFilter(selectedTagFilter === 'STARRED' ? 'ALL' : 'STARRED');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors ${
+                starredCardIds.length > 0
+                  ? 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100'
+                  : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+              }`}
+              title="Xem danh sách các thẻ đã đánh dấu sao quan trọng"
+            >
+              <Star className={`w-3.5 h-3.5 ${starredCardIds.length > 0 ? 'fill-amber-400 text-amber-500' : 'text-slate-400'}`} />
+              <span className="hidden sm:inline">Sao ({starredCardIds.length})</span>
+            </button>
+
+            <button
               onClick={() => setTopicDrawerOpen(true)}
               className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors"
               title="Mục lục các chủ đề và danh sách thẻ"
@@ -464,16 +513,25 @@ export default function FlashcardModal({
                   <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600">
                     Mặt trước (Câu hỏi / Từ khóa)
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSpeak(currentCard.front);
-                    }}
-                    className="p-1.5 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
-                    title="Phát âm thanh"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={toggleStarCurrentCard}
+                      className="p-1.5 hover:bg-amber-50 rounded-full transition-colors"
+                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
+                    >
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-slate-300 hover:text-amber-400'}`} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSpeak(currentCard.front);
+                      }}
+                      className="p-1.5 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
+                      title="Phát âm thanh"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="my-auto text-center px-2">
@@ -494,16 +552,25 @@ export default function FlashcardModal({
                   <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700">
                     Mặt sau (Giải thích / Đáp án)
                   </span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSpeak(currentCard.back);
-                    }}
-                    className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-full transition-colors"
-                    title="Phát âm"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={toggleStarCurrentCard}
+                      className="p-1.5 hover:bg-amber-50 rounded-full transition-colors"
+                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
+                    >
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-indigo-300 hover:text-amber-400'}`} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSpeak(currentCard.back);
+                      }}
+                      className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-full transition-colors"
+                      title="Phát âm"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="my-auto py-2">
@@ -762,6 +829,17 @@ export default function FlashcardModal({
                 >
                   Tất cả ({cards.length})
                 </button>
+                <button
+                  onClick={() => setSelectedTagFilter(selectedTagFilter === 'STARRED' ? 'ALL' : 'STARRED')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors flex items-center space-x-1 ${
+                    selectedTagFilter === 'STARRED'
+                      ? 'bg-amber-500 text-white shadow-2xs'
+                      : 'bg-white text-amber-800 border border-amber-300 hover:bg-amber-50'
+                  }`}
+                >
+                  <Star className="w-3 h-3 fill-current" />
+                  <span>Đã Đánh Dấu ({starredCardIds.length})</span>
+                </button>
                 {uniqueTags.map((t) => (
                   <button
                     key={t}
@@ -782,11 +860,14 @@ export default function FlashcardModal({
             <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#fdfcf9]">
               {filteredCardItems.length === 0 ? (
                 <div className="py-12 text-center text-slate-400 text-xs font-medium">
-                  Không tìm thấy thẻ nào phù hợp từ khóa.
+                  {selectedTagFilter === 'STARRED'
+                    ? 'Bạn chưa đánh dấu sao thẻ nào. Hãy bấm biểu tượng ngôi sao trên thẻ để lưu lại thẻ quan trọng!'
+                    : 'Không tìm thấy thẻ nào phù hợp từ khóa.'}
                 </div>
               ) : (
                 filteredCardItems.map(({ card, idx }) => {
                   const isCurrent = idx === currentIndex;
+                  const isStarred = starredCardIds.includes(card.id !== undefined ? card.id : idx);
                   const srs = getCardSrs(
                     card.originalDeckId || course.id,
                     card.originalCardIndex !== undefined ? card.originalCardIndex : idx
@@ -802,8 +883,11 @@ export default function FlashcardModal({
                       }`}
                     >
                       <div className="flex items-center justify-between text-[10px] mb-1">
-                        <span className="font-black text-slate-400">
-                          #{idx + 1} {card.tag ? `• ${card.tag}` : ''}
+                        <span className="font-black text-slate-400 flex items-center space-x-1">
+                          {isStarred && (
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
+                          )}
+                          <span>#{idx + 1} {card.tag ? `• ${card.tag}` : ''}</span>
                         </span>
                         {isCurrent ? (
                           <span className="font-bold text-[#f02c85] bg-pink-100 px-1.5 py-0.5 rounded">

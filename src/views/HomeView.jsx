@@ -39,6 +39,7 @@ export default function HomeView({
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchHome, setSearchHome] = useState('');
+  const [sortBy, setSortBy] = useState('popular'); // 'popular' | 'rating' | 'price_asc' | 'price_desc'
   const [quickPrompt, setQuickPrompt] = useState('60 câu hỏi trọng tâm Luật Cán bộ, công chức 2026 và Nghị định 138');
   const [quickSubject, setQuickSubject] = useState('cong-chuc');
 
@@ -51,6 +52,22 @@ export default function HomeView({
       (c.subtitle && c.subtitle.toLowerCase().includes(term)) ||
       (c.categoryLabel && c.categoryLabel.toLowerCase().includes(term));
     return matchCat && matchTerm;
+  });
+
+  const sortedAndFiltered = [...filtered].sort((a, b) => {
+    if (sortBy === 'popular') {
+      return (b.studentsCount || b.salesCount || 0) - (a.studentsCount || a.salesCount || 0);
+    }
+    if (sortBy === 'rating') {
+      return (b.rating || 0) - (a.rating || 0);
+    }
+    if (sortBy === 'price_asc') {
+      return (a.priceXu || 0) - (b.priceXu || 0);
+    }
+    if (sortBy === 'price_desc') {
+      return (b.priceXu || 0) - (a.priceXu || 0);
+    }
+    return 0;
   });
 
   const getCategoryIcon = (iconName, active) => {
@@ -231,16 +248,28 @@ export default function HomeView({
             })}
           </div>
 
-          {/* Search Input */}
-          <div className="relative max-w-xs w-full">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Tìm đề thi, bộ thẻ..."
-              value={searchHome}
-              onChange={(e) => setSearchHome(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
-            />
+          {/* Search & Sort Controls */}
+          <div className="flex items-center gap-2 max-w-md w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-56">
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Tìm đề thi, bộ thẻ..."
+                value={searchHome}
+                onChange={(e) => setSearchHome(e.target.value)}
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+              />
+            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-2.5 py-1.5 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] cursor-pointer"
+            >
+              <option value="popular">🔥 Bán chạy</option>
+              <option value="rating">⭐ Đánh giá cao</option>
+              <option value="price_asc">🪙 Giá: Thấp → Cao</option>
+              <option value="price_desc">💎 Giá: Cao → Thấp</option>
+            </select>
           </div>
 
         </div>
@@ -253,7 +282,7 @@ export default function HomeView({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">
-              Kho Bộ Đề & Flashcard Tiêu Chuẩn ({filtered.length})
+              Kho Bộ Đề & Flashcard Tiêu Chuẩn ({sortedAndFiltered.length})
             </h3>
             <p className="text-xs text-rose-200/70 mt-0.5">
               Học thử lật thẻ 3D và thi trắc nghiệm tính giờ miễn phí trước khi mở khóa toàn bộ.
@@ -261,7 +290,7 @@ export default function HomeView({
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {sortedAndFiltered.length === 0 ? (
           <div className="text-center py-10 bg-[#fcf7ec] rounded-2xl border border-[#eadfcb] p-6 text-[#7a5a6b] text-xs">
             Không tìm thấy tài liệu phù hợp với từ khóa "{searchHome}".
             <button
@@ -276,7 +305,7 @@ export default function HomeView({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((course) => (
+            {sortedAndFiltered.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}

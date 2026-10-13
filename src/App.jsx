@@ -370,6 +370,11 @@ export default function App() {
             setIsChangelogOpen(false);
             setActiveMatchGameCourse(c || allAvailableCourses[0]);
           }}
+          onOpenLibrary={() => {
+            setIsChangelogOpen(false);
+            setActiveTab('library');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         />
       )}
 

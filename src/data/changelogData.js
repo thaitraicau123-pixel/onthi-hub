@@ -1,5 +1,5 @@
 // Changelog & What's New Data for OnThiHub
-export const APP_VERSION = 'v2.6';
+export const APP_VERSION = 'v2.7';
 export const LAST_SEEN_VERSION_KEY = 'onthi_last_seen_changelog_version';
 
 export function isChangelogUnread() {
@@ -19,10 +19,46 @@ export function markChangelogAsRead() {
 
 export const CHANGELOG_DATA = [
   {
-    version: 'v2.6',
+    version: 'v2.7',
     date: 'Tháng 10/2026 (Bản Mới Nhất)',
     badge: 'MỚI NHẤT 🔥',
     badgeColor: 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85]',
+    title: 'Đánh Dấu Thẻ Sao ⭐, Game Nối Thẻ Kỷ Lục & Bản In Thẻ Cắt Giấy A4 ✂️',
+    summary: 'Nâng cấp toàn diện trải nghiệm tự học: gắn sao thẻ khó, thi đua phá kỷ lục thời gian nối thẻ, xuất bản in cắt giấy A4 học offline và bộ lọc tìm kiếm thông minh.',
+    highlights: [
+      {
+        category: '⭐ Tự Học Tùy Biến & Gắn Sao Thẻ',
+        color: 'amber',
+        items: [
+          '⭐ Đánh dấu thẻ sao khó nhớ: Bấm biểu tượng ngôi sao ở cả 2 mặt thẻ hoặc trong danh sách để lọc nhanh những thẻ cần ôn gấp.',
+          '📑 Bộ lọc Thẻ Sao trong Topic Drawer: Theo dõi số lượng thẻ quan trọng đã đánh dấu và chuyển chế độ chỉ ôn tập thẻ sao.',
+          '🔍 Bộ lọc sắp xếp danh mục trang chủ: Dễ dàng xếp tài liệu theo Bán chạy nhất, Đánh giá cao nhất, hoặc Giá Xu tăng/giảm.'
+        ]
+      },
+      {
+        category: '🎮 Game Nối Thẻ 2.0 (Match Mode)',
+        color: 'rose',
+        items: [
+          '⏱️ Bảng Kỷ lục Cá nhân (Personal Best): Tự động lưu thành tích bấm giờ tốt nhất cho từng bộ đề, kích thích tinh thần rèn luyện.',
+          '🎉 Pháo hoa chúc mừng kỷ lục mới: Hiệu ứng confetti rực rỡ và huy hiệu Phá Kỷ Lục khi vượt qua thời gian cũ.',
+          '🔊 Tích hợp phát âm giọng đọc chuẩn (Web Speech Synthesis): Nghe ngay thuật ngữ khi chạm vào thẻ nối.'
+        ]
+      },
+      {
+        category: '✂️ Bản In Thẻ Cắt Giấy Khổ A4 (Học Mọi Nơi)',
+        color: 'emerald',
+        items: [
+          '📄 Tính năng In Thẻ Cắt Giấy A4 tiện lợi: Tự động dàn trang 8 ô thẻ / trang với đường nét đứt hướng dẫn dùng kéo cắt.',
+          '✂️ Tiện lợi cho học viên muốn mang thẻ giấy học trên xe buýt, thư viện hoặc giờ giải lao không cần mở điện thoại.'
+        ]
+      }
+    ]
+  },
+  {
+    version: 'v2.6',
+    date: 'Tháng 10/2026',
+    badge: 'ĐÃ CẬP NHẬT',
+    badgeColor: 'bg-purple-600',
     title: 'Hệ Thống Rung Chuông Báo Điện Thoại 24/7 & Chuẩn Hóa Ví Xu 100%',
     summary: 'Bản cập nhật đột phá: Kết nối trực tiếp chuông báo đẩy điện thoại qua ntfy.sh, chuẩn hóa thanh toán bộ thẻ thuần Tiền Xu, và bảo mật thông tin tối đa.',
     highlights: [

@@ -14,9 +14,10 @@ import {
   Flame,
   CheckCircle,
   Clock,
-  BookMarked
+  BookMarked,
+  Scissors
 } from 'lucide-react';
-import { exportAnkiDeckFile, printSummaryGuide } from '../utils/storage';
+import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet } from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 
@@ -270,6 +271,15 @@ export default function LibraryView({
                 >
                   <Printer className="w-3.5 h-3.5 text-[#f02c85]" />
                   <span>In / PDF</span>
+                </button>
+
+                <button
+                  onClick={() => printFlashcardCutoutSheet(course)}
+                  className="col-span-2 py-2 px-2.5 rounded-xl bg-white hover:bg-[#faebd0] border border-[#eadfcb] text-[#28071a] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
+                  title="In bảng thẻ giấy A4 có viền nét đứt để cắt rời học offline"
+                >
+                  <Scissors className="w-3.5 h-3.5 text-[#f02c85]" />
+                  <span>In Bảng Thẻ Cắt Giấy A4 (Học Offline)</span>
                 </button>
               </div>
             </div>

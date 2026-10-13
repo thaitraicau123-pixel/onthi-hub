@@ -11,7 +11,8 @@ import {
   ArrowRight,
   ExternalLink,
   Smartphone,
-  Check
+  Check,
+  Scissors
 } from 'lucide-react';
 import {
   APP_VERSION,
@@ -25,7 +26,8 @@ export default function ChangelogModal({
   onOpenWallet,
   onOpenBlindBox,
   onOpenAdmin,
-  onOpenMatchGame
+  onOpenMatchGame,
+  onOpenLibrary
 }) {
   const [selectedVersion, setSelectedVersion] = useState(APP_VERSION);
   const [dontShowAgain, setDontShowAgain] = useState(true);
@@ -185,6 +187,17 @@ export default function ChangelogModal({
               >
                 <Gamepad2 className="w-3.5 h-3.5" />
                 <span>Game Nối Thẻ</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  handleClose();
+                  onOpenLibrary?.();
+                }}
+                className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center space-x-1.5 shadow-xs transition-transform hover:scale-105 active:scale-95"
+              >
+                <Scissors className="w-3.5 h-3.5" />
+                <span>In Thẻ Cắt Giấy A4</span>
               </button>
 
               <button

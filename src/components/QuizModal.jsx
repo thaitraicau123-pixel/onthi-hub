@@ -12,7 +12,8 @@ import {
   Bot,
   Copy,
   Check,
-  Volume2
+  Volume2,
+  Coins
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
@@ -315,9 +316,10 @@ export default function QuizModal({
                       onClose();
                       onBuy(course);
                     }}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-indigo-600 hover:bg-indigo-700 shadow-md flex items-center justify-center space-x-1.5"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-black text-xs text-white btn-wayground-sunset shadow-md flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
                   >
-                    <span>Mở Khóa Toàn Bộ 600+ Câu ({course.price / 1000}K)</span>
+                    <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
+                    <span>Mở Khóa Toàn Bộ Đề Thi ({course.priceXu || 25} Xu)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 )}
