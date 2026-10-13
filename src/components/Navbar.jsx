@@ -33,6 +33,7 @@ import { performDailyCheckIn, getUserQuota, getUserTier } from '../utils/userTie
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
+import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
 import confetti from 'canvas-confetti';
 
 export default function Navbar({
@@ -46,6 +47,7 @@ export default function Navbar({
   onOpenLeaderboard,
   onOpenBlindBox,
   onOpenMistakes,
+  onOpenChangelog,
   theme = 'light',
   onCycleTheme
 }) {
@@ -120,6 +122,7 @@ export default function Navbar({
       items: [
         { id: 'blindbox', label: '🎁 Túi Mù Tri Thức (Blind Box)', icon: Gift, desc: '100% trúng hoàn Xu, quà khủng & nổ hũ Jackpot', action: () => { setIsDrawerOpen(false); onOpenBlindBox?.(); } },
         { id: 'community', label: 'Diễn Đàn Học Viên', icon: Users, desc: 'Hỏi đáp đề thi, mẹo nhớ lâu' },
+        { id: 'changelog', label: '✨ Bảng Tin Cập Nhật Web (v2.6)', icon: Sparkles, desc: 'Xem toàn bộ tính năng và bản sửa lỗi vừa phát hành', action: () => { setIsDrawerOpen(false); onOpenChangelog?.(); } },
         { id: 'leaderboard', label: 'Bảng Vàng & Nhiệm Vụ Ngày', icon: Trophy, desc: 'Cạnh tranh XP & giữ chuỗi streak', action: onOpenLeaderboard },
         { id: 'plans', label: 'Gói Hội Viên Plus / Pro / Ultra', icon: Sparkles, desc: 'Mở rộng hạn mức & quyền Creator' }
       ]
@@ -171,9 +174,21 @@ export default function Navbar({
                   <span className="text-base sm:text-lg font-black text-white tracking-tight uppercase">
                     ÔnThi<span className="text-[#f02c85]">Hub</span>
                   </span>
-                  <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-[#f02c85]/20 text-[#ff85ba] border border-[#f02c85]/30 uppercase">
-                    v2.2
-                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      playSound('flip');
+                      onOpenChangelog?.();
+                    }}
+                    className="relative text-[9px] font-black px-2 py-0.5 rounded-full bg-[#f02c85]/20 hover:bg-[#f02c85] text-[#ff85ba] hover:text-white border border-[#f02c85]/40 uppercase transition-all flex items-center space-x-1 cursor-pointer"
+                    title="Bấm để xem Bảng Tin Tính Năng Mới (What's New)"
+                  >
+                    <span>{APP_VERSION}</span>
+                    {isChangelogUnread() && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
@@ -215,6 +230,22 @@ export default function Navbar({
             {/* RIGHT: COMPACT UTILITIES TOOLBAR */}
             <div className="flex items-center space-x-1.5 sm:space-x-2">
               
+              {/* BẢNG TIN CẬP NHẬT (WHAT'S NEW) */}
+              <button
+                onClick={() => {
+                  playSound('flip');
+                  onOpenChangelog?.();
+                }}
+                className="relative flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-pink-500/20 hover:from-amber-500/30 hover:to-pink-500/30 text-amber-200 border border-amber-400/30 text-xs font-black transition-transform transform hover:scale-105 active:scale-95 whitespace-nowrap shadow-xs"
+                title="Bấm để xem Bảng Tin Tính Năng Cập Nhật Mới"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                <span className="hidden lg:inline">Bản Mới</span>
+                {isChangelogUnread() && (
+                  <span className="w-2 h-2 rounded-full bg-[#f02c85] animate-ping ml-0.5"></span>
+                )}
+              </button>
+
               {/* SỔ TAY CÂU SAI - Compact Pill */}
               {unmasteredMistakesCount > 0 && (
                 <button

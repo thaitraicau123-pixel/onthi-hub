@@ -18,11 +18,13 @@ import AuthModal from './components/AuthModal';
 import BlindBoxModal from './components/BlindBoxModal';
 import PassDeckModal from './components/PassDeckModal';
 import MistakeNotebookModal from './components/MistakeNotebookModal';
+import ChangelogModal from './components/ChangelogModal';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
 import { getMarketplaceDecks } from './data/marketplaceData';
+import { isChangelogUnread } from './data/changelogData';
 import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
 import { getWalletBalance } from './utils/wallet';
@@ -50,6 +52,7 @@ export default function App() {
   const [isBlindBoxOpen, setIsBlindBoxOpen] = useState(false);
   const [activePassCourse, setActivePassCourse] = useState(null);
   const [isMistakesNotebookOpen, setIsMistakesNotebookOpen] = useState(false);
+  const [isChangelogOpen, setIsChangelogOpen] = useState(() => isChangelogUnread());
   const [toastMessage, setToastMessage] = useState('');
 
   // Sync initial state
@@ -132,6 +135,7 @@ export default function App() {
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
         onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+        onOpenChangelog={() => setIsChangelogOpen(true)}
         theme={theme}
         onCycleTheme={handleCycleTheme}
       />
@@ -221,6 +225,7 @@ export default function App() {
         {activeTab === 'admin' && (
           <AdminView
             onBackToHome={() => setActiveTab('home')}
+            onOpenChangelog={() => setIsChangelogOpen(true)}
           />
         )}
 
@@ -340,6 +345,31 @@ export default function App() {
           onClose={() => setIsMistakesNotebookOpen(false)}
           onStartFlashcardPractice={(deck) => setActiveFlashcardCourse(deck)}
           onStartQuizPractice={(deck) => setActiveQuizCourse(deck)}
+        />
+      )}
+
+      {/* 12. Bảng Tin Cập Nhật Tính Năng Mới (What's New / Changelog) */}
+      {isChangelogOpen && (
+        <ChangelogModal
+          onClose={() => setIsChangelogOpen(false)}
+          onOpenWallet={() => {
+            setIsChangelogOpen(false);
+            setActiveTab('wallet');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenBlindBox={() => {
+            setIsChangelogOpen(false);
+            setIsBlindBoxOpen(true);
+          }}
+          onOpenAdmin={() => {
+            setIsChangelogOpen(false);
+            setActiveTab('admin');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onOpenMatchGame={(c) => {
+            setIsChangelogOpen(false);
+            setActiveMatchGameCourse(c || allAvailableCourses[0]);
+          }}
         />
       )}
 

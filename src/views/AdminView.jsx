@@ -26,7 +26,8 @@ import {
   Cpu,
   Send,
   BellRing,
-  Smartphone
+  Smartphone,
+  Sparkles
 } from 'lucide-react';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
@@ -65,7 +66,7 @@ import {
   API_KEY_LINKS
 } from '../utils/aiApiKey';
 
-export default function AdminView({ onBackToHome }) {
+export default function AdminView({ onBackToHome, onOpenChangelog }) {
   const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -382,7 +383,17 @@ export default function AdminView({ onBackToHome }) {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {onOpenChangelog && (
+            <button
+              onClick={onOpenChangelog}
+              className="px-3.5 py-2 bg-gradient-to-r from-[#f02c85] to-[#ff5f38] hover:opacity-95 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md shadow-pink-900/40 transition-transform transform hover:scale-105 active:scale-95"
+              title="Xem bảng tin cập nhật tính năng mới nhất"
+            >
+              <Sparkles className="w-3.5 h-3.5 fill-white" />
+              <span>Bảng Tin Bản Mới (v2.6)</span>
+            </button>
+          )}
           <button
             onClick={reloadData}
             className="p-2.5 text-rose-200/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
