@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   signInWithEmailAndPassword,
@@ -6,14 +6,22 @@ import {
   signOut as fbSignOut,
   GoogleAuthProvider,
   signInWithPopup,
-  updateProfile
+  updateProfile,
+  sendPasswordResetEmail,
+  onAuthStateChanged
 } from 'firebase/auth';
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from 'firebase/firestore';
 
 const FIREBASE_CONFIG_KEY = 'onthi_firebase_config';
 const LOCAL_USER_KEY = 'onthi_current_user';
 
-// Default Demo Firebase Configuration (Can be customized via Admin)
-const DEFAULT_FIREBASE_CONFIG = {
+// Default Demo Firebase Configuration (Used when no custom keys provided)
+export const DEFAULT_FIREBASE_CONFIG = {
   apiKey: "AIzaSyDemo-OnThiHub-FirebaseKey12345",
   authDomain: "onthihub-pro.firebaseapp.com",
   projectId: "onthihub-pro",
@@ -22,35 +30,130 @@ const DEFAULT_FIREBASE_CONFIG = {
   appId: "1:10987654321:web:abcdef123456"
 };
 
-// Get stored config
+/**
+ * Get active Firebase Config with priority:
+ * 1. Vite Environment Variables (import.meta.env.VITE_FIREBASE_...)
+ * 2. Saved config in localStorage
+ * 3. Default demo configuration
+ */
 export function getFirebaseConfig() {
+  // 1. Check Vite Environment variables
+  const envKey = import.meta.env?.VITE_FIREBASE_API_KEY;
+  if (envKey && envKey.trim() !== '' && !envKey.includes('Demo')) {
+    return {
+      apiKey: envKey.trim(),
+      authDomain: (import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN || '').trim(),
+      projectId: (import.meta.env?.VITE_FIREBASE_PROJECT_ID || '').trim(),
+      storageBucket: (import.meta.env?.VITE_FIREBASE_STORAGE_BUCKET || '').trim(),
+      messagingSenderId: (import.meta.env?.VITE_FIREBASE_MESSAGING_SENDER_ID || '').trim(),
+      appId: (import.meta.env?.VITE_FIREBASE_APP_ID || '').trim()
+    };
+  }
+
+  // 2. Check localStorage
   try {
     const raw = localStorage.getItem(FIREBASE_CONFIG_KEY);
-    return raw ? JSON.parse(raw) : DEFAULT_FIREBASE_CONFIG;
-  } catch (e) {
-    return DEFAULT_FIREBASE_CONFIG;
-  }
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.apiKey) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+
+  // 3. Fallback to default
+  return DEFAULT_FIREBASE_CONFIG;
 }
 
-// Save custom config
+/**
+ * Save custom config to localStorage
+ */
 export function saveFirebaseConfig(cfg) {
   try {
     localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(cfg));
-  } catch (e) {}
+    // Reset cached instances
+    authInstance = null;
+    dbInstance = null;
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * Check if the active configuration is a real, production Firebase key
+ */
+export function isRealFirebaseConfigured() {
+  const cfg = getFirebaseConfig();
+  return Boolean(
+    cfg &&
+    cfg.apiKey &&
+    !cfg.apiKey.includes('Demo') &&
+    cfg.apiKey.startsWith('AIza') &&
+    cfg.projectId &&
+    !cfg.projectId.includes('Demo')
+  );
 }
 
 let authInstance = null;
+let dbInstance = null;
+let firebaseAppInstance = null;
 
 export function initFirebase() {
   try {
     const config = getFirebaseConfig();
     const apps = getApps();
-    const app = apps.length > 0 ? apps[0] : initializeApp(config);
-    authInstance = getAuth(app);
-    return authInstance;
+    
+    if (apps.length > 0) {
+      firebaseAppInstance = apps[0];
+    } else {
+      firebaseAppInstance = initializeApp(config);
+    }
+
+    authInstance = getAuth(firebaseAppInstance);
+    try {
+      dbInstance = getFirestore(firebaseAppInstance);
+    } catch (dbErr) {
+      // Firestore optional if offline
+    }
+
+    return { auth: authInstance, db: dbInstance, app: firebaseAppInstance };
   } catch (err) {
     console.warn('Firebase init running in smart local fallback mode:', err.message);
-    return null;
+    return { auth: null, db: null, app: null };
+  }
+}
+
+/**
+ * Test Firebase connection with provided or active credentials
+ */
+export async function testFirebaseConnection(configToTest = null) {
+  try {
+    const cfg = configToTest || getFirebaseConfig();
+    if (!cfg.apiKey || cfg.apiKey.includes('Demo')) {
+      return {
+        success: false,
+        isReal: false,
+        message: 'Đang dùng khóa cấu hình Mẫu (Demo Mode). Hãy nhập mã API Key thật từ Firebase Console để kích hoạt.'
+      };
+    }
+
+    // Try a temporary lightweight init
+    const testApp = initializeApp(cfg, 'testApp_' + Date.now());
+    const testAuth = getAuth(testApp);
+
+    return {
+      success: true,
+      isReal: true,
+      projectId: cfg.projectId,
+      message: `✅ Kết nối Firebase thành công tới Project "${cfg.projectId}"!`
+    };
+  } catch (err) {
+    return {
+      success: false,
+      isReal: false,
+      message: `Lỗi kết nối Firebase: ${err.message}`
+    };
   }
 }
 
@@ -72,43 +175,77 @@ export function setCurrentUser(user) {
   }
 }
 
+// Sync user data to Firestore
+export async function syncUserDataToFirestore(user, additionalData = {}) {
+  try {
+    const { db } = initFirebase();
+    if (db && user?.uid && isRealFirebaseConfigured()) {
+      const userRef = doc(db, 'users', user.uid);
+      await setDoc(userRef, {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        lastActive: new Date().toISOString(),
+        ...additionalData
+      }, { merge: true });
+    }
+  } catch (err) {
+    console.warn('Firestore sync note:', err.message);
+  }
+}
+
 // Sign in with Email & Password
 export async function loginWithEmail(email, password) {
   try {
-    const auth = initFirebase();
-    if (auth && !auth.config?.apiKey?.includes('Demo')) {
+    const { auth } = initFirebase();
+    if (auth && isRealFirebaseConfigured()) {
       const res = await signInWithEmailAndPassword(auth, email, password);
       const user = {
         uid: res.user.uid,
         email: res.user.email,
         displayName: res.user.displayName || email.split('@')[0],
         photoURL: res.user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        isFirebaseReal: true
+        isFirebaseReal: true,
+        provider: 'password'
       };
       setCurrentUser(user);
-      return { success: true, user };
+      syncUserDataToFirestore(user);
+      return { success: true, user, isReal: true };
     }
   } catch (e) {
-    console.warn('Firebase server fallback:', e.message);
+    // If it's a real Firebase error like wrong-password or user-not-found, return friendly message
+    if (isRealFirebaseConfigured()) {
+      let msg = e.message;
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        msg = 'Mật khẩu không chính xác. Vui lòng thử lại!';
+      } else if (e.code === 'auth/user-not-found') {
+        msg = 'Không tìm thấy tài khoản với email này. Vui lòng đăng ký mới!';
+      } else if (e.code === 'auth/invalid-email') {
+        msg = 'Định dạng email không hợp lệ!';
+      }
+      return { success: false, message: msg };
+    }
   }
 
-  // Seamless fallback for instant testing
+  // Seamless fallback for instant testing when no real Firebase key
   const user = {
     uid: 'usr_' + Date.now(),
     email,
     displayName: email.split('@')[0],
     photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-    provider: 'password'
+    provider: 'password',
+    isFirebaseReal: false
   };
   setCurrentUser(user);
-  return { success: true, user };
+  return { success: true, user, isReal: false };
 }
 
 // Register with Email & Password
 export async function registerWithEmail(email, password, displayName) {
   try {
-    const auth = initFirebase();
-    if (auth && !auth.config?.apiKey?.includes('Demo')) {
+    const { auth } = initFirebase();
+    if (auth && isRealFirebaseConfigured()) {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       if (displayName) {
         await updateProfile(res.user, { displayName });
@@ -118,13 +255,23 @@ export async function registerWithEmail(email, password, displayName) {
         email: res.user.email,
         displayName: displayName || email.split('@')[0],
         photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        isFirebaseReal: true
+        isFirebaseReal: true,
+        provider: 'password'
       };
       setCurrentUser(user);
-      return { success: true, user };
+      syncUserDataToFirestore(user);
+      return { success: true, user, isReal: true };
     }
   } catch (e) {
-    console.warn('Firebase register fallback:', e.message);
+    if (isRealFirebaseConfigured()) {
+      let msg = e.message;
+      if (e.code === 'auth/email-already-in-use') {
+        msg = 'Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác!';
+      } else if (e.code === 'auth/weak-password') {
+        msg = 'Mật khẩu quá yếu (tối thiểu 6 ký tự)!';
+      }
+      return { success: false, message: msg };
+    }
   }
 
   const user = {
@@ -132,17 +279,18 @@ export async function registerWithEmail(email, password, displayName) {
     email,
     displayName: displayName || email.split('@')[0],
     photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-    provider: 'password'
+    provider: 'password',
+    isFirebaseReal: false
   };
   setCurrentUser(user);
-  return { success: true, user };
+  return { success: true, user, isReal: false };
 }
 
-// Google Sign-In
+// Google Sign-In with Popup
 export async function loginWithGoogle() {
   try {
-    const auth = initFirebase();
-    if (auth && !auth.config?.apiKey?.includes('Demo')) {
+    const { auth } = initFirebase();
+    if (auth && isRealFirebaseConfigured()) {
       const provider = new GoogleAuthProvider();
       const res = await signInWithPopup(auth, provider);
       const user = {
@@ -150,13 +298,17 @@ export async function loginWithGoogle() {
         email: res.user.email,
         displayName: res.user.displayName,
         photoURL: res.user.photoURL,
-        isFirebaseReal: true
+        isFirebaseReal: true,
+        provider: 'google.com'
       };
       setCurrentUser(user);
-      return { success: true, user };
+      syncUserDataToFirestore(user);
+      return { success: true, user, isReal: true };
     }
   } catch (e) {
-    console.warn('Firebase Google fallback:', e.message);
+    if (isRealFirebaseConfigured()) {
+      return { success: false, message: e.message };
+    }
   }
 
   // Fallback Google User
@@ -166,19 +318,68 @@ export async function loginWithGoogle() {
     email: demoEmail,
     displayName: 'Nguyễn Văn Minh (Google Auth)',
     photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    provider: 'google.com'
+    provider: 'google.com',
+    isFirebaseReal: false
   };
   setCurrentUser(user);
-  return { success: true, user };
+  return { success: true, user, isReal: false };
+}
+
+// Password Reset Email
+export async function sendPasswordReset(email) {
+  try {
+    const { auth } = initFirebase();
+    if (auth && isRealFirebaseConfigured()) {
+      await sendPasswordResetEmail(auth, email);
+      return {
+        success: true,
+        message: `Đã gửi liên kết đặt lại mật khẩu về hòm thư ${email}. Vui lòng kiểm tra hộp thư đến hoặc mục Spam!`
+      };
+    }
+  } catch (e) {
+    if (isRealFirebaseConfigured()) {
+      return { success: false, message: e.message };
+    }
+  }
+
+  return {
+    success: true,
+    message: `[Mô phỏng] Đã gửi liên kết khôi phục mật khẩu về email ${email} thành công!`
+  };
 }
 
 // Sign Out
 export async function logoutUser() {
   try {
-    const auth = initFirebase();
+    const { auth } = initFirebase();
     if (auth) {
       await fbSignOut(auth);
     }
   } catch (e) {}
   setCurrentUser(null);
+}
+
+// Listen to auth changes
+export function listenToAuth(callback) {
+  try {
+    const { auth } = initFirebase();
+    if (auth && isRealFirebaseConfigured()) {
+      return onAuthStateChanged(auth, (fbUser) => {
+        if (fbUser) {
+          const user = {
+            uid: fbUser.uid,
+            email: fbUser.email,
+            displayName: fbUser.displayName || fbUser.email.split('@')[0],
+            photoURL: fbUser.photoURL,
+            isFirebaseReal: true
+          };
+          setCurrentUser(user);
+          callback(user);
+        } else {
+          callback(null);
+        }
+      });
+    }
+  } catch (e) {}
+  return () => {};
 }

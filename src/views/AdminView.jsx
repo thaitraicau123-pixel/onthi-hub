@@ -14,7 +14,14 @@ import {
   AlertTriangle,
   Repeat,
   Trash2,
-  FileSearch
+  FileSearch,
+  Database,
+  Key,
+  Copy,
+  Check,
+  Flame,
+  Info,
+  Code
 } from 'lucide-react';
 import {
   getTransactions,
@@ -28,9 +35,16 @@ import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck } from '../data/marketplaceData';
 import { checkDeckDuplication } from '../utils/duplicateChecker';
 import { playSound } from '../utils/storage';
+import {
+  getFirebaseConfig,
+  saveFirebaseConfig,
+  testFirebaseConnection,
+  isRealFirebaseConfigured,
+  DEFAULT_FIREBASE_CONFIG
+} from '../utils/firebaseConfig';
 
 export default function AdminView({ onBackToHome }) {
-  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications'
+  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase'
   const [transactions, setTransactions] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [tierLimits, setTierLimits] = useState({});
@@ -38,11 +52,20 @@ export default function AdminView({ onBackToHome }) {
   const [marketFilter, setMarketFilter] = useState('all'); // 'all' | 'duplicates' | 'pass' | 'clean'
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
+  // Firebase Config State
+  const [firebaseConfig, setFirebaseConfig] = useState(() => getFirebaseConfig());
+  const [rawSnippet, setRawSnippet] = useState('');
+  const [testingConnection, setTestingConnection] = useState(false);
+  const [testResult, setTestResult] = useState(null);
+  const [copiedVercelEnv, setCopiedVercelEnv] = useState(false);
+  const [firebaseSaveMsg, setFirebaseSaveMsg] = useState('');
+
   const reloadData = () => {
     setTransactions(getTransactions());
     setNotifications(getAdminNotifications());
     setTierLimits(getTierLimits());
     setMarketDecks(getMarketplaceDecks());
+    setFirebaseConfig(getFirebaseConfig());
   };
 
   useEffect(() => {
@@ -77,6 +100,107 @@ export default function AdminView({ onBackToHome }) {
   const handleToggleDeck = (deckId, currentStatus) => {
     adminUpdateMarketplaceDeck(deckId, { isApproved: !currentStatus });
     reloadData();
+  };
+
+  // Firebase Snippet Auto-Parser
+  const handleParseSnippet = (snippet) => {
+    setRawSnippet(snippet);
+    if (!snippet.trim()) return;
+
+    try {
+      const extracted = { ...firebaseConfig };
+      const apiKeyMatch = snippet.match(/apiKey\s*:\s*["']([^"']+)["']/i);
+      const authDomainMatch = snippet.match(/authDomain\s*:\s*["']([^"']+)["']/i);
+      const projectIdMatch = snippet.match(/projectId\s*:\s*["']([^"']+)["']/i);
+      const storageBucketMatch = snippet.match(/storageBucket\s*:\s*["']([^"']+)["']/i);
+      const messagingSenderIdMatch = snippet.match(/messagingSenderId\s*:\s*["']([^"']+)["']/i);
+      const appIdMatch = snippet.match(/appId\s*:\s*["']([^"']+)["']/i);
+
+      let foundAny = false;
+      if (apiKeyMatch) { extracted.apiKey = apiKeyMatch[1]; foundAny = true; }
+      if (authDomainMatch) { extracted.authDomain = authDomainMatch[1]; foundAny = true; }
+      if (projectIdMatch) { extracted.projectId = projectIdMatch[1]; foundAny = true; }
+      if (storageBucketMatch) { extracted.storageBucket = storageBucketMatch[1]; foundAny = true; }
+      if (messagingSenderIdMatch) { extracted.messagingSenderId = messagingSenderIdMatch[1]; foundAny = true; }
+      if (appIdMatch) { extracted.appId = appIdMatch[1]; foundAny = true; }
+
+      // Try raw JSON parse if snippet is valid JSON
+      try {
+        const jsonParsed = JSON.parse(snippet.trim());
+        if (jsonParsed.apiKey) {
+          Object.assign(extracted, jsonParsed);
+          foundAny = true;
+        }
+      } catch (je) {}
+
+      if (foundAny) {
+        setFirebaseConfig(extracted);
+        playSound('success');
+        setFirebaseSaveMsg('✨ Đã tự động bóc tách các trường từ mã Firebase Console thành công!');
+        setTimeout(() => setFirebaseSaveMsg(''), 4000);
+      }
+    } catch (e) {
+      console.warn('Snippet parse warning:', e);
+    }
+  };
+
+  // Live Ping Connection Test
+  const handleTestConnection = async () => {
+    setTestingConnection(true);
+    setTestResult(null);
+    try {
+      const res = await testFirebaseConnection(firebaseConfig);
+      setTestResult(res);
+      if (res.success) {
+        playSound('success');
+      }
+    } catch (err) {
+      setTestResult({
+        success: false,
+        isReal: false,
+        message: 'Lỗi kiểm tra kết nối: ' + err.message
+      });
+    } finally {
+      setTestingConnection(false);
+    }
+  };
+
+  // Save to LocalStorage
+  const handleSaveFirebaseConfig = (e) => {
+    e.preventDefault();
+    saveFirebaseConfig(firebaseConfig);
+    playSound('success');
+    setFirebaseSaveMsg('✅ Đã lưu cấu hình Firebase Cloud vào trình duyệt thành công!');
+    setTimeout(() => setFirebaseSaveMsg(''), 4000);
+  };
+
+  // Reset to Demo
+  const handleResetToDemo = () => {
+    if (confirm('Bạn có chắc muốn đặt lại cấu hình Firebase về chế độ Thử Nghiệm mặc định?')) {
+      saveFirebaseConfig(DEFAULT_FIREBASE_CONFIG);
+      setFirebaseConfig(DEFAULT_FIREBASE_CONFIG);
+      setRawSnippet('');
+      setTestResult(null);
+      setFirebaseSaveMsg('Đã đặt lại về chế độ Thử Nghiệm mặc định.');
+      setTimeout(() => setFirebaseSaveMsg(''), 3000);
+    }
+  };
+
+  // Copy for Vercel .env format
+  const handleCopyVercelEnv = () => {
+    const envString = [
+      `VITE_FIREBASE_API_KEY=${firebaseConfig.apiKey || ''}`,
+      `VITE_FIREBASE_AUTH_DOMAIN=${firebaseConfig.authDomain || ''}`,
+      `VITE_FIREBASE_PROJECT_ID=${firebaseConfig.projectId || ''}`,
+      `VITE_FIREBASE_STORAGE_BUCKET=${firebaseConfig.storageBucket || ''}`,
+      `VITE_FIREBASE_MESSAGING_SENDER_ID=${firebaseConfig.messagingSenderId || ''}`,
+      `VITE_FIREBASE_APP_ID=${firebaseConfig.appId || ''}`
+    ].join('\n');
+
+    navigator.clipboard.writeText(envString);
+    playSound('success');
+    setCopiedVercelEnv(true);
+    setTimeout(() => setCopiedVercelEnv(false), 3000);
   };
 
   return (
@@ -175,6 +299,23 @@ export default function AdminView({ onBackToHome }) {
           >
             <Mail className="w-4 h-4 text-[#f02c85]" />
             <span>Nhật Ký Gmail ({notifications.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('firebase')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
+              activeTab === 'firebase'
+                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
+                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+            }`}
+          >
+            <Database className="w-4 h-4 text-amber-500" />
+            <span>Cấu Hình Firebase Cloud</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+              isRealFirebaseConfigured() ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+            }`}>
+              {isRealFirebaseConfigured() ? '🟢 Cloud Thật' : '🟡 Thử Nghiệm'}
+            </span>
           </button>
         </div>
 
@@ -635,6 +776,242 @@ export default function AdminView({ onBackToHome }) {
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* TAB 5: CẤU HÌNH FIREBASE CLOUD */}
+          {activeTab === 'firebase' && (
+            <div className="space-y-6">
+              {/* Header and status banner */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#eadfcb]">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2">
+                    <Database className="w-5 h-5 text-amber-500" />
+                    <h4 className="text-base font-black text-[#28071a]">
+                      Quản Lý & Tích Hợp Firebase Cloud (Google Services)
+                    </h4>
+                  </div>
+                  <p className="text-xs text-[#7a5a6b] font-medium leading-relaxed max-w-2xl">
+                    Firebase hỗ trợ xác thực tài khoản Google 1-chạm, khôi phục mật khẩu qua Gmail, và đồng bộ dữ liệu ví Xu/tiến độ học lên Firestore Database thực tế.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleTestConnection}
+                    disabled={testingConnection}
+                    className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1.5 transition-all disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${testingConnection ? 'animate-spin' : ''}`} />
+                    <span>{testingConnection ? 'Đang Kiểm Tra...' : 'Kiểm Tra Kết Nối (Ping)'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleCopyVercelEnv}
+                    className="px-4 py-2 bg-[#28071a] hover:bg-[#3d0b28] text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1.5 transition-all"
+                  >
+                    {copiedVercelEnv ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-rose-300" />}
+                    <span>{copiedVercelEnv ? 'Đã Sao Chép Cho Vercel!' : 'Sao Chép .env Cho Vercel'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Status Message / Test Result Banner */}
+              {firebaseSaveMsg && (
+                <div className="p-3.5 text-xs font-bold bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>{firebaseSaveMsg}</span>
+                </div>
+              )}
+
+              {testResult && (
+                <div className={`p-4 rounded-xl text-xs font-bold border flex items-start space-x-2.5 ${
+                  testResult.success
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                    : 'bg-rose-50 border-rose-300 text-rose-900'
+                }`}>
+                  {testResult.success ? (
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  ) : (
+                    <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                  )}
+                  <div>
+                    <p>{testResult.message}</p>
+                    {testResult.isReal && (
+                      <span className="block mt-1 text-[11px] font-mono text-emerald-700 font-normal">
+                        Project ID: {testResult.projectId} • SDK: Firebase v13 Modular
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Quick Paste Snippet Section */}
+              <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <Code className="w-4 h-4 text-[#f02c85]" />
+                    <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                      Dán Nhanh Mã Cấu Hình từ Firebase Console (Auto-Detect Parser)
+                    </h5>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#7a5a6b] bg-[#f5ecd8] px-2 py-0.5 rounded-lg">
+                    Hỗ trợ cú pháp JS & JSON
+                  </span>
+                </div>
+
+                <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
+                  Vào <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#f02c85] font-black underline">console.firebase.google.com</a> ➔ Project Settings ➔ Your apps ➔ Chọn Web app ➔ Sao chép đoạn mã <code>const firebaseConfig = &#123; ... &#125;</code> rồi dán vào ô bên dưới:
+                </p>
+
+                <textarea
+                  rows="4"
+                  value={rawSnippet}
+                  onChange={(e) => handleParseSnippet(e.target.value)}
+                  placeholder={`// Dán đoạn mã này từ Firebase Console vào đây:\nconst firebaseConfig = {\n  apiKey: "AIzaSy...",\n  authDomain: "my-app.firebaseapp.com",\n  projectId: "my-app",\n  storageBucket: "my-app.appspot.com",\n  messagingSenderId: "123456789",\n  appId: "1:123456789:web:abcdef"\n};`}
+                  className="w-full p-3 font-mono text-xs bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] focus:ring-2 focus:ring-[#f02c85]/20 text-[#28071a] leading-relaxed"
+                />
+              </div>
+
+              {/* Individual Form Fields */}
+              <form onSubmit={handleSaveFirebaseConfig} className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-4">
+                <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+                  <div className="flex items-center space-x-2">
+                    <Key className="w-4 h-4 text-amber-500" />
+                    <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                      Chi Tiết Khóa API & Thông Số Firebase
+                    </h5>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleResetToDemo}
+                    className="text-[11px] font-bold text-rose-600 hover:text-rose-800 hover:underline"
+                  >
+                    Đặt lại về Demo mặc định
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      API Key (VITE_FIREBASE_API_KEY):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.apiKey || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
+                      placeholder="AIzaSy..."
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      Project ID (VITE_FIREBASE_PROJECT_ID):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.projectId || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, projectId: e.target.value })}
+                      placeholder="my-project-id"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      Auth Domain (VITE_FIREBASE_AUTH_DOMAIN):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.authDomain || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, authDomain: e.target.value })}
+                      placeholder="my-project.firebaseapp.com"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      Storage Bucket (VITE_FIREBASE_STORAGE_BUCKET):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.storageBucket || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, storageBucket: e.target.value })}
+                      placeholder="my-project.appspot.com"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      Messaging Sender ID (VITE_FIREBASE_MESSAGING_SENDER_ID):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.messagingSenderId || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, messagingSenderId: e.target.value })}
+                      placeholder="1234567890"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                      App ID (VITE_FIREBASE_APP_ID):
+                    </label>
+                    <input
+                      type="text"
+                      value={firebaseConfig.appId || ''}
+                      onChange={(e) => setFirebaseConfig({ ...firebaseConfig, appId: e.target.value })}
+                      placeholder="1:1234567890:web:abcdef..."
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#eadfcb]">
+                  <p className="text-[11px] text-[#7a5a6b]">
+                    Khóa lưu trên máy của bạn sẽ ghi đè cấu hình thử nghiệm và kích hoạt Cloud thật ngay lập tức.
+                  </p>
+
+                  <button
+                    type="submit"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#f02c85] to-[#c71767] hover:from-[#e02078] hover:to-[#b3105a] text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-all"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Lưu Cấu Hình Firebase</span>
+                  </button>
+                </div>
+              </form>
+
+              {/* 3-Step Firebase Setup Guide */}
+              <div className="p-5 bg-[#f5ecd8]/70 rounded-2xl border border-[#eadfcb] space-y-3">
+                <div className="flex items-center space-x-2">
+                  <Info className="w-4 h-4 text-[#f02c85]" />
+                  <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                    Hướng Dẫn 3 Bước Tạo Firebase Cho Dự Án:
+                  </h5>
+                </div>
+
+                <ol className="list-decimal list-inside space-y-2 text-xs text-[#28071a] font-medium leading-relaxed">
+                  <li>
+                    <strong>Tạo Project:</strong> Truy cập <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#f02c85] underline font-bold">console.firebase.google.com</a>, bấm <em>Add project</em> đặt tên là <code>onthihub</code>.
+                  </li>
+                  <li>
+                    <strong>Bật Authentication:</strong> Chọn menu <em>Build ➔ Authentication ➔ Sign-in method</em>, bật <strong>Email/Password</strong> và <strong>Google</strong>.
+                  </li>
+                  <li>
+                    <strong>Lấy Khóa & Đưa lên Vercel:</strong> Vào <em>Project settings ➔ General ➔ Your apps (Web)</em>, sao chép cấu hình rồi bấm nút <strong>"Sao Chép .env Cho Vercel"</strong> ở trên dán vào mục <em>Environment Variables</em> trên Vercel.
+                  </li>
+                </ol>
+              </div>
+
             </div>
           )}
 
