@@ -337,7 +337,17 @@ export async function loginWithGoogle() {
     }
   } catch (e) {
     if (isRealFirebaseConfigured()) {
-      return { success: false, message: e.message };
+      let msg = e.message;
+      if (e.code === 'auth/operation-not-allowed') {
+        msg = 'Chưa bật nhà cung cấp Google trong Firebase Console (Authentication > Sign-in method > Google). Vui lòng đăng nhập bằng Email Admin (thaitraicau123@gmail.com / admin123456) hoặc bật tính năng này trên Firebase Console.';
+      } else if (e.code === 'auth/popup-closed-by-user') {
+        msg = 'Cửa sổ đăng nhập Google đã bị đóng.';
+      } else if (e.code === 'auth/popup-blocked') {
+        msg = 'Trình duyệt đã chặn cửa sổ Popup. Vui lòng cấp quyền mở popup cho trang web.';
+      } else if (e.code === 'auth/unauthorized-domain') {
+        msg = 'Tên miền hiện tại chưa được cấp phép trong Firebase Console (Authentication > Settings > Authorized domains).';
+      }
+      return { success: false, message: msg };
     }
   }
 
