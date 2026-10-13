@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   CheckCircle2,
   Sparkles,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  Coins,
+  AlertCircle,
+  X,
+  ArrowRight,
+  Wallet
 } from 'lucide-react';
 import { SUBSCRIPTION_PLANS } from '../data/plans';
 import { getUserTier, setUserTier } from '../utils/userTier';
@@ -11,27 +16,40 @@ import { getWalletBalance, deductWalletCoins } from '../utils/wallet';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
 
-export default function PlansView({ onTierUpgraded, onPayVietQR }) {
+export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet }) {
   const currentTier = getUserTier();
   const walletBalance = getWalletBalance();
+  const [confirmPlan, setConfirmPlan] = useState(null);
+  const [insufficientError, setInsufficientError] = useState(null);
 
   const handleUpgradeWithXu = (plan) => {
     if (walletBalance < plan.priceXu) {
-      alert(`Số dư ví Xu (${walletBalance} Xu) không đủ để nâng cấp gói ${plan.name} (${plan.priceXu} Xu). Vui lòng nạp thêm Xu hoặc chọn thanh toán qua VietQR!`);
+      playSound('flip');
+      setInsufficientError({
+        plan,
+        needed: plan.priceXu,
+        current: walletBalance,
+        deficit: plan.priceXu - walletBalance
+      });
       return;
     }
 
-    if (confirm(`Xác nhận dùng ${plan.priceXu} Xu để kích hoạt ${plan.name}?`)) {
-      deductWalletCoins(plan.priceXu);
-      setUserTier(plan.id);
-      playSound('success');
-      confetti({
-        particleCount: 120,
-        spread: 90,
-        origin: { y: 0.5 }
-      });
-      onTierUpgraded(plan.id);
-    }
+    playSound('flip');
+    setConfirmPlan(plan);
+  };
+
+  const handleConfirmUpgrade = () => {
+    if (!confirmPlan) return;
+    deductWalletCoins(confirmPlan.priceXu);
+    setUserTier(confirmPlan.id);
+    playSound('success');
+    confetti({
+      particleCount: 120,
+      spread: 90,
+      origin: { y: 0.5 }
+    });
+    onTierUpgraded(confirmPlan.id);
+    setConfirmPlan(null);
   };
 
   const handleUpgradeWithVietQR = (plan) => {
@@ -156,6 +174,122 @@ export default function PlansView({ onTierUpgraded, onPayVietQR }) {
         <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
         <span>Kích hoạt tự động sau 3 giây • Bảo hành cập nhật trọn vẹn</span>
       </div>
+
+      {/* CONFIRM UPGRADE WITH XU MODAL */}
+      {confirmPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] animate-scale-up space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#eadfcb]">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-xl bg-pink-100 text-[#f02c85] flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 fill-[#f02c85]" />
+                </div>
+                <h3 className="text-base font-black text-[#28071a]">Xác Nhận Nâng Cấp Hội Viên</h3>
+              </div>
+              <button
+                onClick={() => setConfirmPlan(null)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-[#eadfcb] space-y-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-[#7a5a6b] font-medium">Gói hội viên:</span>
+                <span className="font-black text-[#28071a]">{confirmPlan.name}</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-[#7a5a6b] font-medium">Chi phí kích hoạt:</span>
+                <span className="font-black text-amber-600">{confirmPlan.priceXu} Xu</span>
+              </div>
+              <div className="flex justify-between text-xs pt-2 border-t border-slate-100">
+                <span className="text-[#7a5a6b] font-medium">Số dư ví hiện tại:</span>
+                <span className="font-black text-[#28071a]">{walletBalance} Xu</span>
+              </div>
+              <div className="flex justify-between text-xs">
+                <span className="text-[#7a5a6b] font-medium">Số dư sau khi trừ:</span>
+                <span className="font-black text-emerald-600">{walletBalance - confirmPlan.priceXu} Xu</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                onClick={() => setConfirmPlan(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[#eadfcb] bg-white hover:bg-slate-50 text-[#28071a] font-bold text-xs"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                onClick={handleConfirmUpgrade}
+                className="flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md shadow-pink-900/30 flex items-center justify-center space-x-1"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Xác Nhận Kích Hoạt</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* INSUFFICIENT COINS MODAL */}
+      {insufficientError && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-md bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] animate-scale-up space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#eadfcb]">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                  <Coins className="w-4 h-4 fill-amber-700" />
+                </div>
+                <h3 className="text-base font-black text-[#28071a]">Số Dư Xu Chưa Đủ</h3>
+              </div>
+              <button
+                onClick={() => setInsufficientError(null)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-white rounded-2xl border border-[#eadfcb] space-y-2 text-xs">
+              <p className="text-[#4e2f41]">
+                Để nâng cấp <strong>{insufficientError.plan.name}</strong>, bạn cần <strong>{insufficientError.needed} Xu</strong>.
+              </p>
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between font-bold">
+                <span className="text-amber-800">Hiện có trong ví: {insufficientError.current} Xu</span>
+                <span className="text-rose-600">Thiếu: {insufficientError.deficit} Xu</span>
+              </div>
+              <p className="text-[#7a5a6b] text-[11px]">
+                Bạn có thể nạp thêm Xu siêu tốc qua VietQR hoặc thanh toán trực tiếp qua VietQR để kích hoạt ngay.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-2 pt-2">
+              <button
+                onClick={() => {
+                  const plan = insufficientError.plan;
+                  setInsufficientError(null);
+                  handleUpgradeWithVietQR(plan);
+                }}
+                className="w-full sm:flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md flex items-center justify-center space-x-1"
+              >
+                <span>Thanh Toán VietQR</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => {
+                  setInsufficientError(null);
+                  onOpenWallet?.();
+                }}
+                className="w-full sm:flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-black text-xs shadow-md flex items-center justify-center space-x-1"
+              >
+                <Wallet className="w-3.5 h-3.5" />
+                <span>Nạp Thêm Xu</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

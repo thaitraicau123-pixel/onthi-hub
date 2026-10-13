@@ -80,6 +80,7 @@ export default function CommunityView({ user }) {
   const [newPostCategory, setNewPostCategory] = useState('cong-chuc');
   const [likedPosts, setLikedPosts] = useState([1]);
   const [commentInputs, setCommentInputs] = useState({});
+  const [copiedPostId, setCopiedPostId] = useState(null);
 
   // Sync to localStorage
   const savePosts = (updatedPosts) => {
@@ -87,6 +88,13 @@ export default function CommunityView({ user }) {
     try {
       localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updatedPosts));
     } catch (e) {}
+  };
+
+  const handleSharePost = (post) => {
+    playSound('success');
+    navigator.clipboard.writeText(`${window.location.origin}/#post-${post.id}`);
+    setCopiedPostId(post.id);
+    setTimeout(() => setCopiedPostId(null), 2500);
   };
 
   const handleLike = (postId) => {
@@ -329,11 +337,20 @@ export default function CommunityView({ user }) {
                   </div>
 
                   <button
-                    onClick={() => alert('Đã sao chép liên kết bài viết!')}
-                    className="hover:text-[#28071a] flex items-center space-x-1 text-[#7a5a6b] text-xs font-bold"
+                    onClick={() => handleSharePost(post)}
+                    className="hover:text-[#28071a] flex items-center space-x-1.5 text-[#7a5a6b] text-xs font-bold transition-all"
                   >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Chia sẻ</span>
+                    {copiedPostId === post.id ? (
+                      <>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600 font-black">Đã sao chép link!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>Chia sẻ</span>
+                      </>
+                    )}
                   </button>
                 </div>
 

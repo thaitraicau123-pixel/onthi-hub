@@ -243,8 +243,8 @@ export default function MarketplaceView({
                         {deal.originalPriceXu} Xu
                       </span>
                     </div>
-                    <span className="text-[10px] text-rose-200/60 block">
-                      ~{(deal.flashPrice).toLocaleString()}đ ({deal.discountPercent}% OFF)
+                    <span className="text-[10px] text-rose-200/80 block font-bold">
+                      Tiết kiệm {deal.originalPriceXu - deal.priceXu} Xu ({deal.discountPercent}% OFF)
                     </span>
                   </div>
 
@@ -438,7 +438,7 @@ export default function MarketplaceView({
                         )}
                       </div>
                       <span className="text-[10px] text-[#7a5a6b] block font-bold">
-                        ~{(deck.priceXu * 1000).toLocaleString()}đ
+                        🪙 Thanh toán qua Ví Xu
                       </span>
                     </div>
 

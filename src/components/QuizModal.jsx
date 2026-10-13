@@ -131,6 +131,43 @@ export default function QuizModal({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  // Keyboard navigation & option selection
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (!isSubmitted) {
+        if (e.key === '1' || e.key === 'a' || e.key === 'A') {
+          if (currentQ.options && currentQ.options.length > 0) handleSelectOption(0);
+        } else if (e.key === '2' || e.key === 'b' || e.key === 'B') {
+          if (currentQ.options && currentQ.options.length > 1) handleSelectOption(1);
+        } else if (e.key === '3' || e.key === 'c' || e.key === 'C') {
+          if (currentQ.options && currentQ.options.length > 2) handleSelectOption(2);
+        } else if (e.key === '4' || e.key === 'd' || e.key === 'D') {
+          if (currentQ.options && currentQ.options.length > 3) handleSelectOption(3);
+        }
+      }
+
+      if (e.key === 'ArrowRight') {
+        if (currentIndex < questions.length - 1) {
+          setCurrentIndex((prev) => prev + 1);
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (currentIndex > 0) {
+          setCurrentIndex((prev) => prev - 1);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, isSubmitted, questions.length, currentQ]);
+
   const handleAskAiTutor = async (targetIdx = currentIndex) => {
     setActiveAiQuestionIdx(targetIdx);
     setAiDrawerOpen(true);
@@ -341,20 +378,34 @@ export default function QuizModal({
               <div className="space-y-2.5 mt-5">
                 {currentQ.options?.map((opt, optIdx) => {
                   const isSelected = currentSelected === optIdx;
+                  const optionLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
                   return (
                     <button
                       key={optIdx}
                       onClick={() => handleSelectOption(optIdx)}
-                      className={`w-full p-3.5 text-left rounded-xl text-xs sm:text-sm transition-all border ${
+                      className={`w-full p-3.5 text-left rounded-2xl text-xs sm:text-sm transition-all border flex items-center space-x-3.5 ${
                         isSelected
-                          ? 'border-purple-600 bg-purple-50/70 text-purple-900 font-medium ring-1 ring-purple-500'
-                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'
+                          ? 'border-[#f02c85] bg-pink-50/80 text-[#28071a] font-bold ring-2 ring-pink-300 shadow-xs'
+                          : 'border-slate-200 hover:border-[#f02c85]/40 hover:bg-pink-50/20 text-slate-700'
                       }`}
                     >
-                      {opt}
+                      <span className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 transition-colors ${
+                        isSelected
+                          ? 'bg-[#f02c85] text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                      }`}>
+                        {optionLetters[optIdx] || optIdx + 1}
+                      </span>
+                      <span className="flex-1 leading-relaxed">{opt}</span>
                     </button>
                   );
                 })}
+              </div>
+
+              {/* Hotkey Hint Bar */}
+              <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-slate-400 font-medium">
+                <span>⌨️ Bấm phím <strong>1, 2, 3, 4</strong> (hoặc <strong>A, B, C, D</strong>) để chọn nhanh</span>
+                <span>Phím <strong>← / →</strong> để chuyển câu</span>
               </div>
 
               {/* If answered, show instant hint/explanation and AI Tutor trigger */}

@@ -218,6 +218,10 @@ export default function App() {
             onPayVietQR={(planItem) => {
               setActivePaymentItem(planItem);
             }}
+            onOpenWallet={() => {
+              setActiveTab('wallet');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           />
         )}
 

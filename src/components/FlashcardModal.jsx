@@ -217,6 +217,8 @@ export default function FlashcardModal({
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
       if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         toggleFlip();
@@ -232,6 +234,8 @@ export default function FlashcardModal({
         handleRate('good');
       } else if (e.key === '4') {
         handleRate('easy');
+      } else if (e.key === 's' || e.key === 'S') {
+        toggleStarCurrentCard();
       } else if (e.key === 'Escape') {
         onClose();
       }
@@ -239,7 +243,7 @@ export default function FlashcardModal({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, cards.length]);
+  }, [currentIndex, cards.length, isFlipped, currentCardId, starredCardIds]);
 
   // Rate spaced repetition
   const handleRate = (type) => {

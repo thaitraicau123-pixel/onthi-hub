@@ -55,6 +55,7 @@ export default function CreateStudioView({
   const [priceXu, setPriceXu] = useState(3);
 
   const [quota, setQuota] = useState(() => getUserQuota());
+  const [formError, setFormError] = useState('');
 
   // Bulk Flashcards Importer state
   const [showImporterModal, setShowImporterModal] = useState(false);
@@ -186,14 +187,20 @@ export default function CreateStudioView({
 
   const handleSaveDeck = (e) => {
     e.preventDefault();
+    setFormError('');
+
     if (!title.trim()) {
-      alert('Vui lòng nhập tiêu đề bộ thẻ!');
+      playSound('flip');
+      setFormError('Vui lòng nhập tiêu đề bộ thẻ!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     const validCards = cards.filter(c => c.front.trim() && c.back.trim());
     if (validCards.length === 0) {
-      alert('Bộ thẻ phải có ít nhất 1 thẻ có đầy đủ nội dung mặt trước và mặt sau!');
+      playSound('flip');
+      setFormError('Bộ thẻ phải có ít nhất 1 thẻ có đầy đủ nội dung mặt trước và mặt sau!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -268,7 +275,6 @@ export default function CreateStudioView({
     playSound('success');
     confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
     onDeckCreated(newDeck);
-    alert('🎉 Đã tạo bộ thẻ thành công! Bạn có thể học ngay trong Tủ Tài Liệu.');
     onSwitchTab('library');
   };
 
@@ -310,6 +316,23 @@ export default function CreateStudioView({
       {/* FORM WORKSPACE (Wayground Warm Ivory Card) */}
       <div className="bg-[#fcf7ec] rounded-3xl p-6 sm:p-8 border border-[#eadfcb] shadow-xl space-y-6 text-[#28071a]">
         
+        {/* Error Banner */}
+        {formError && (
+          <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between text-xs text-rose-800 font-bold animate-fade-in">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+              <span>{formError}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFormError('')}
+              className="p-1 text-rose-400 hover:text-rose-600 rounded-lg"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
         {/* Title & Category */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2">
