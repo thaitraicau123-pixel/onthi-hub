@@ -20,14 +20,15 @@ import {
 const FIREBASE_CONFIG_KEY = 'onthi_firebase_config';
 const LOCAL_USER_KEY = 'onthi_current_user';
 
-// Default Demo Firebase Configuration (Used when no custom keys provided)
+// Default Real Firebase Configuration
 export const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDemo-OnThiHub-FirebaseKey12345",
-  authDomain: "onthihub-pro.firebaseapp.com",
-  projectId: "onthihub-pro",
-  storageBucket: "onthihub-pro.appspot.com",
-  messagingSenderId: "10987654321",
-  appId: "1:10987654321:web:abcdef123456"
+  apiKey: "AIzaSyDjQDXIDa4GRPrP-oRuq65Qfguo6yRfD38",
+  authDomain: "onthi-hub.firebaseapp.com",
+  projectId: "onthi-hub",
+  storageBucket: "onthi-hub.firebasestorage.app",
+  messagingSenderId: "164758476024",
+  appId: "1:164758476024:web:4236677fb6079a63b1970d",
+  measurementId: "G-S5DEHN4CY6"
 };
 
 /**
