@@ -4,11 +4,15 @@
 const GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';
 const OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
 
+export const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6IByFdwC74B6m7P6RX9TPSczZLw3FipL6eN4HNER11VUA';
+
 // Available Gemini models with auto-failover in case of 503 (High demand)
 export const GEMINI_MODELS = [
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b'
+  'gemini-3.8-flash',
+  'gemini-3.7-flash',
+  'gemini-3.6-flash',
+  'gemini-2.5-flash',
+  'gemini-1.5-flash'
 ];
 
 /**
@@ -25,7 +29,7 @@ export function getGeminiApiKey() {
     return envKey.trim();
   }
 
-  return '';
+  return DEFAULT_GEMINI_KEY;
 }
 
 /**
