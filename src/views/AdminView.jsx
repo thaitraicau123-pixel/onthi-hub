@@ -22,7 +22,8 @@ import {
   Flame,
   Info,
   Code,
-  Gift
+  Gift,
+  Cpu
 } from 'lucide-react';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
@@ -44,9 +45,18 @@ import {
   isRealFirebaseConfigured,
   DEFAULT_FIREBASE_CONFIG
 } from '../utils/firebaseConfig';
+import {
+  getGeminiApiKey,
+  saveGeminiApiKey,
+  getOpenAIApiKey,
+  saveOpenAIApiKey,
+  hasValidAiKey,
+  testGeminiApiKey,
+  API_KEY_LINKS
+} from '../utils/aiApiKey';
 
 export default function AdminView({ onBackToHome }) {
-  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase'
+  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [tierLimits, setTierLimits] = useState({});
@@ -62,12 +72,22 @@ export default function AdminView({ onBackToHome }) {
   const [copiedVercelEnv, setCopiedVercelEnv] = useState(false);
   const [firebaseSaveMsg, setFirebaseSaveMsg] = useState('');
 
+  // AI API Key State
+  const [geminiApiKey, setGeminiApiKey] = useState(() => getGeminiApiKey());
+  const [openaiApiKey, setOpenaiApiKey] = useState(() => getOpenAIApiKey());
+  const [testingAiKey, setTestingAiKey] = useState(false);
+  const [aiTestResult, setAiTestResult] = useState(null);
+  const [aiSaveMsg, setAiSaveMsg] = useState('');
+  const [copiedAiEnv, setCopiedAiEnv] = useState(false);
+
   const reloadData = () => {
     setTransactions(getTransactions());
     setNotifications(getAdminNotifications());
     setTierLimits(getTierLimits());
     setMarketDecks(getMarketplaceDecks());
     setFirebaseConfig(getFirebaseConfig());
+    setGeminiApiKey(getGeminiApiKey());
+    setOpenaiApiKey(getOpenAIApiKey());
   };
 
   useEffect(() => {
@@ -205,6 +225,43 @@ export default function AdminView({ onBackToHome }) {
     setTimeout(() => setCopiedVercelEnv(false), 3000);
   };
 
+  // AI API Handlers
+  const handleSaveAiKey = (e) => {
+    e.preventDefault();
+    saveGeminiApiKey(geminiApiKey);
+    saveOpenAIApiKey(openaiApiKey);
+    playSound('success');
+    setAiSaveMsg('✅ Đã lưu cấu hình API Key AI thành công! Toàn bộ học viên sẽ dùng key này khi tạo thẻ.');
+    setTimeout(() => setAiSaveMsg(''), 4000);
+  };
+
+  const handleTestAiKey = async () => {
+    setTestingAiKey(true);
+    setAiTestResult(null);
+    try {
+      const res = await testGeminiApiKey(geminiApiKey);
+      setAiTestResult(res);
+      if (res.success) {
+        playSound('success');
+      }
+    } catch (e) {
+      setAiTestResult({ success: false, message: e.message });
+    } finally {
+      setTestingAiKey(false);
+    }
+  };
+
+  const handleCopyAiEnv = () => {
+    const envStr = [
+      `VITE_GEMINI_API_KEY=${geminiApiKey || ''}`,
+      `VITE_OPENAI_API_KEY=${openaiApiKey || ''}`
+    ].join('\n');
+    navigator.clipboard.writeText(envStr);
+    playSound('success');
+    setCopiedAiEnv(true);
+    setTimeout(() => setCopiedAiEnv(false), 3000);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in pb-16">
       
@@ -331,7 +388,24 @@ export default function AdminView({ onBackToHome }) {
             <Gift className="w-4 h-4 text-purple-600" />
             <span>Tỷ Lệ Túi Mù (Gacha)</span>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800">
-              Jackpot 8%
+              Nhà Cái 80%+
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('ai_api')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
+              activeTab === 'ai_api'
+                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
+                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+            }`}
+          >
+            <Cpu className="w-4 h-4 text-cyan-600" />
+            <span>Thẻ API Key AI (Gemini / OpenAI)</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+              hasValidAiKey() ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+            }`}>
+              {hasValidAiKey() ? '🟢 Đã Kích Hoạt' : '🔴 Chưa Có Key'}
             </span>
           </button>
         </div>
@@ -1146,6 +1220,205 @@ export default function AdminView({ onBackToHome }) {
                   </div>
                 </div>
               </div>
+
+            </div>
+          )}
+
+          {/* TAB 7: THẺ CẤU HÌNH API KEY AI (Google Gemini & OpenAI) */}
+          {activeTab === 'ai_api' && (
+            <div className="space-y-6">
+              
+              {/* Header */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-base font-black text-[#28071a] flex items-center space-x-2">
+                    <Cpu className="w-5 h-5 text-cyan-600" />
+                    <span>Cấu Hình Thẻ API Key AI (Google Gemini & OpenAI)</span>
+                  </h4>
+                  <p className="text-xs text-[#7a5a6b] font-medium mt-0.5">
+                    Tích hợp trí tuệ nhân tạo để tự động trích xuất tài liệu, sách giáo trình thành bộ thẻ Anki thật 100%.
+                  </p>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <a
+                    href={API_KEY_LINKS.gemini}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs font-black flex items-center space-x-1.5 shadow-md hover:brightness-110"
+                  >
+                    <span>Lấy Key Google Miễn Phí</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                  
+                  <button
+                    onClick={handleCopyAiEnv}
+                    className="px-3.5 py-2 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] hover:bg-[#faebd0] text-xs font-black flex items-center space-x-1.5"
+                  >
+                    {copiedAiEnv ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#f02c85]" />}
+                    <span>{copiedAiEnv ? 'Đã Copy .env' : 'Copy .env Vercel'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {aiSaveMsg && (
+                <div className="p-3.5 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-black rounded-2xl flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>{aiSaveMsg}</span>
+                </div>
+              )}
+
+              {/* Status Banner */}
+              <div className={`p-4 rounded-2xl border flex items-center justify-between ${
+                hasValidAiKey()
+                  ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                  : 'bg-amber-50 border-amber-300 text-amber-900'
+              }`}>
+                <div className="flex items-center space-x-3">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
+                    hasValidAiKey() ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'
+                  }`}>
+                    <Key className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h5 className="font-black text-xs sm:text-sm">
+                      {hasValidAiKey() ? '🟢 Đã Kích Hoạt AI Trực Tiếp' : '🟡 Đang Dùng Bộ Sinh Thẻ Ngoại Tuyến (Offline)'}
+                    </h5>
+                    <p className="text-[11px] opacity-80 font-medium">
+                      {hasValidAiKey()
+                        ? 'Hệ thống đã nhận diện API Key hợp lệ. Học viên khi bấm "Tạo thẻ AI" sẽ nhận kết quả phân tích trực tiếp từ mô hình ngôn ngữ lớn.'
+                        : 'Chưa có API Key. Hệ thống hiện chạy thuật toán mô phỏng thông minh. Hãy nhập Gemini API Key dưới đây để kích hoạt AI thật.'}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleTestAiKey}
+                  disabled={testingAiKey || !geminiApiKey}
+                  className="px-4 py-2 rounded-xl bg-white border border-current text-xs font-black hover:bg-black/5 disabled:opacity-50 shrink-0"
+                >
+                  {testingAiKey ? 'Đang Test...' : '⚡ Kiểm Tra Kết Nối'}
+                </button>
+              </div>
+
+              {/* Test Result Message */}
+              {aiTestResult && (
+                <div className={`p-3.5 rounded-2xl border text-xs font-bold ${
+                  aiTestResult.success
+                    ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
+                    : 'bg-rose-100 border-rose-300 text-rose-800'
+                }`}>
+                  {aiTestResult.message}
+                </div>
+              )}
+
+              {/* API Key Form */}
+              <form onSubmit={handleSaveAiKey} className="space-y-4">
+                
+                {/* 1. Google Gemini Key Card */}
+                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-base">✨</span>
+                      <div>
+                        <strong className="text-sm font-black text-[#28071a] block">
+                          Google Gemini API Key (Khuyên Dùng - Miễn Phí 100%)
+                        </strong>
+                        <span className="text-[11px] text-[#7a5a6b] font-medium">
+                          Mô hình Gemini 1.5 Flash: siêu tốc, miễn phí 15 requests/phút, hỗ trợ tiếng Việt cực chuẩn.
+                        </span>
+                      </div>
+                    </div>
+
+                    <a
+                      href={API_KEY_LINKS.gemini}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-black text-blue-600 hover:underline flex items-center space-x-1"
+                    >
+                      <span>Lấy Key (Google AI Studio)</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
+                      Khóa bí mật Gemini API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="password"
+                        placeholder="AIzaSy..."
+                        value={geminiApiKey}
+                        onChange={(e) => setGeminiApiKey(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 3 Steps Guide to get free key */}
+                  <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1.5">
+                    <strong className="font-black block text-blue-950">📋 Hướng dẫn lấy key miễn phí trong 30 giây:</strong>
+                    <ol className="list-decimal pl-4 space-y-1 text-[11px] font-medium">
+                      <li>Truy cập <a href={API_KEY_LINKS.gemini} target="_blank" rel="noreferrer" className="font-bold underline text-blue-700">Google AI Studio (aistudio.google.com)</a> và đăng nhập Gmail.</li>
+                      <li>Bấm vào nút <strong>"Get API key"</strong> &gt; chọn <strong>"Create API key in new project"</strong>.</li>
+                      <li>Copy chuỗi ký tự dạng <code className="font-mono bg-blue-100 px-1 rounded">AIzaSy...</code> và dán vào ô trên rồi bấm <strong>Lưu Cấu Hình</strong>!</li>
+                    </ol>
+                  </div>
+                </div>
+
+                {/* 2. OpenAI Key Card (Optional) */}
+                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-base">🤖</span>
+                      <div>
+                        <strong className="text-sm font-black text-[#28071a] block">
+                          OpenAI API Key (Tùy Chọn - GPT-4o / GPT-4o-mini)
+                        </strong>
+                        <span className="text-[11px] text-[#7a5a6b] font-medium">
+                          Dành cho trường hợp bạn muốn dùng tài khoản OpenAI Platform trả phí.
+                        </span>
+                      </div>
+                    </div>
+
+                    <a
+                      href={API_KEY_LINKS.openai}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs font-black text-emerald-600 hover:underline flex items-center space-x-1"
+                    >
+                      <span>Lấy OpenAI Key</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
+                      OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">sk-...</code>):
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="sk-..."
+                      value={openaiApiKey}
+                      onChange={(e) => setOpenaiApiKey(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit Action */}
+                <div className="flex items-center justify-end space-x-3 pt-2">
+                  <button
+                    type="submit"
+                    className="px-6 py-3 btn-wayground-sunset text-white text-xs font-black rounded-xl shadow-lg flex items-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>Lưu Cấu Hình Thẻ API</span>
+                  </button>
+                </div>
+
+              </form>
 
             </div>
           )}

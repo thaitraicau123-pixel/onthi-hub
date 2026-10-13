@@ -11,13 +11,18 @@ import {
   Gift,
   HelpCircle,
   CheckCircle2,
-  AlertTriangle
+  AlertTriangle,
+  Key,
+  ExternalLink,
+  Cpu,
+  X
 } from 'lucide-react';
 import { generateFlashcardsWithAI } from '../utils/aiGenerator';
 import { getUserQuota, consumeUserQuota, performDailyCheckIn } from '../utils/userTier';
 import { publishDeckToMarketplace } from '../data/marketplaceData';
 import { checkDeckDuplication } from '../utils/duplicateChecker';
 import { playSound } from '../utils/storage';
+import { getGeminiApiKey, saveGeminiApiKey, testGeminiApiKey, API_KEY_LINKS } from '../utils/aiApiKey';
 import confetti from 'canvas-confetti';
 
 export default function CreateStudioView({
@@ -48,6 +53,13 @@ export default function CreateStudioView({
   const [priceXu, setPriceXu] = useState(3);
 
   const [quota, setQuota] = useState(() => getUserQuota());
+
+  // API Key modal & state
+  const [geminiKey, setGeminiKey] = useState(() => getGeminiApiKey());
+  const [showKeyModal, setShowKeyModal] = useState(false);
+  const [inputKey, setInputKey] = useState(() => getGeminiApiKey());
+  const [testingKey, setTestingKey] = useState(false);
+  const [keyTestStatus, setKeyTestStatus] = useState(null);
 
   const refreshQuota = () => {
     setQuota(getUserQuota());
@@ -286,6 +298,48 @@ export default function CreateStudioView({
         {/* AI Generator Panel */}
         {activeMode === 'ai' && (
           <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-4 text-xs shadow-xs">
+            
+            {/* AI API Key Connection Status Pill */}
+            <div className={`p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+              geminiKey
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                : 'bg-amber-50 border-amber-300 text-amber-900'
+            }`}>
+              <div className="flex items-center space-x-2">
+                <Cpu className={`w-4 h-4 shrink-0 ${geminiKey ? 'text-emerald-600' : 'text-amber-600'}`} />
+                <span className="font-bold text-[11px]">
+                  {geminiKey
+                    ? '🟢 Đã kết nối Google Gemini 1.5 Flash (AI Trực Tiếp)'
+                    : '🟡 Đang dùng Bộ Sinh Ngoại Tuyến (Offline Heuristics)'}
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-1.5 shrink-0 self-end sm:self-auto">
+                {!geminiKey && (
+                  <a
+                    href={API_KEY_LINKS.gemini}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] flex items-center space-x-1"
+                  >
+                    <span>Lấy Key Free</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInputKey(geminiKey || '');
+                    setKeyTestStatus(null);
+                    setShowKeyModal(true);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-white border border-current font-black text-[10px] hover:bg-black/5 flex items-center space-x-1"
+                >
+                  <Key className="w-3 h-3" />
+                  <span>{geminiKey ? 'Đổi Key' : 'Nhập Key'}</span>
+                </button>
+              </div>
+            </div>
             <div>
               <label className="font-black text-[#28071a] block mb-1">
                 Chủ đề / Từ khóa trọng tâm cần ôn tập:
@@ -516,6 +570,107 @@ export default function CreateStudioView({
         </div>
 
       </div>
+
+      {/* Mini Modal Nhập API Key */}
+      {showKeyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md">
+                  <Key className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-black text-sm text-[#28071a]">Cấu Hình Google Gemini API Key</h4>
+                  <span className="text-[10px] text-blue-700 font-bold block">Miễn phí 100% • Không cần thẻ Visa</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowKeyModal(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div>
+              <label className="text-xs font-black text-[#28071a] block mb-1">
+                Dán Gemini API Key của bạn (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+              </label>
+              <input
+                type="password"
+                placeholder="AIzaSy..."
+                value={inputKey}
+                onChange={(e) => setInputKey(e.target.value)}
+                className="w-full px-3.5 py-2.5 text-xs font-mono font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-white text-[#28071a]"
+              />
+            </div>
+
+            {keyTestStatus && (
+              <div className={`p-2.5 rounded-xl border text-xs font-bold ${
+                keyTestStatus.success ? 'bg-emerald-100 border-emerald-300 text-emerald-800' : 'bg-rose-100 border-rose-300 text-rose-800'
+              }`}>
+                {keyTestStatus.message}
+              </div>
+            )}
+
+            <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-blue-900 space-y-1.5">
+              <div className="font-bold flex items-center justify-between">
+                <span>Chưa có key? Lấy miễn phí tại:</span>
+                <a
+                  href={API_KEY_LINKS.gemini}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-black text-blue-700 underline flex items-center space-x-0.5"
+                >
+                  <span>Google AI Studio</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+              <p className="text-[10px] text-blue-800 font-medium">
+                1. Đăng nhập Gmail &gt; 2. Bấm "Get API key" &gt; 3. Chọn "Create API key in new project" &gt; 4. Copy và dán vào ô trên.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#eadfcb]">
+              <button
+                type="button"
+                disabled={testingKey || !inputKey.trim()}
+                onClick={async () => {
+                  setTestingKey(true);
+                  setKeyTestStatus(null);
+                  try {
+                    const res = await testGeminiApiKey(inputKey);
+                    setKeyTestStatus(res);
+                    if (res.success) playSound('success');
+                  } catch (e) {
+                    setKeyTestStatus({ success: false, message: e.message });
+                  } finally {
+                    setTestingKey(false);
+                  }
+                }}
+                className="px-3.5 py-2 rounded-xl border border-[#eadfcb] bg-white hover:bg-[#faebd0] text-[#28071a] text-xs font-bold disabled:opacity-50"
+              >
+                {testingKey ? 'Đang Test...' : '⚡ Test Key'}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  saveGeminiApiKey(inputKey);
+                  setGeminiKey(inputKey.trim());
+                  setShowKeyModal(false);
+                  playSound('success');
+                }}
+                className="px-4 py-2 rounded-xl btn-wayground-sunset text-white text-xs font-black shadow-md"
+              >
+                Lưu & Dùng Ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
