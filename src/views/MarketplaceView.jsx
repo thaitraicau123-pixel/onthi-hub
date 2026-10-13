@@ -248,24 +248,31 @@ export default function MarketplaceView({
                     </span>
                   </div>
 
-                  {isOwned ? (
-                    <span className="px-4 py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-black flex items-center space-x-1">
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Đã Sở Hữu</span>
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => handleBuy({
-                        id: deal.id,
-                        title: deal.title,
-                        priceXu: deal.priceXu
-                      })}
-                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-[#f02c85] hover:brightness-110 text-white text-xs font-black shadow-lg shadow-pink-900/40 flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" />
-                      <span>Mua Flash Sale ({deal.priceXu} Xu)</span>
-                    </button>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {deal.previewCards && deal.previewCards.length > 0 && (
+                      <button
+                        onClick={() => onOpenFlashcardSample(deal)}
+                        className="px-3 py-2 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs font-bold"
+                      >
+                        Xem Thử
+                      </button>
+                    )}
+
+                    {isOwned ? (
+                      <span className="px-4 py-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-xl text-xs font-black flex items-center space-x-1">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Đã Sở Hữu</span>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleBuy(deal)}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-[#f02c85] hover:brightness-110 text-white text-xs font-black shadow-lg shadow-pink-900/40 flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                      >
+                        <ShoppingCart className="w-3.5 h-3.5" />
+                        <span>Mua Flash Sale ({deal.priceXu} Xu)</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
               </div>
@@ -436,12 +443,11 @@ export default function MarketplaceView({
                     </div>
 
                     <div className="flex items-center space-x-1.5">
-                      {deck.sampleCards && deck.sampleCards.length > 0 && (
+                      {((deck.previewCards && deck.previewCards.length > 0) || (deck.sampleCards && deck.sampleCards.length > 0)) && (
                         <button
                           onClick={() => onOpenFlashcardSample({
-                            title: deck.title,
-                            previewCards: deck.sampleCards,
-                            id: deck.id
+                            ...deck,
+                            previewCards: deck.previewCards || deck.sampleCards || []
                           })}
                           className="px-2.5 py-1.5 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] text-xs font-bold hover:bg-[#faebd0]"
                         >

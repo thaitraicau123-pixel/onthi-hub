@@ -41,14 +41,15 @@ export function getDailyDeals() {
       category: item1.category,
       categoryLabel: item1.categoryLabel,
       originalPrice: item1.price,
-      flashPrice: Math.round(item1.price * 0.4), // 60% OFF
+      flashPrice: 4000,
       discountPercent: 60,
-      priceXu: 15, // Flash Xu price
-      originalPriceXu: 40,
+      priceXu: 4, // Flash Xu price siêu rẻ
+      originalPriceXu: 10,
       soldPercent: 88,
       stockRemaining: 3,
       badge: '🔥 DEAL NGÀY HÔM NAY -60%',
-      previewCards: item1.previewCards
+      previewCards: item1.previewCards,
+      previewQuiz: item1.previewQuiz
     },
     {
       id: item2.id,
@@ -57,14 +58,15 @@ export function getDailyDeals() {
       category: item2.category,
       categoryLabel: item2.categoryLabel,
       originalPrice: item2.price,
-      flashPrice: Math.round(item2.price * 0.35), // 65% OFF
+      flashPrice: 3000,
       discountPercent: 65,
-      priceXu: 12,
-      originalPriceXu: 35,
+      priceXu: 3, // Flash Xu price siêu rẻ
+      originalPriceXu: 8,
       soldPercent: 92,
       stockRemaining: 2,
       badge: '⚡ GIỜ VÀNG GIẢM SỐC -65%',
-      previewCards: item2.previewCards
+      previewCards: item2.previewCards,
+      previewQuiz: item2.previewQuiz
     }
   ];
 

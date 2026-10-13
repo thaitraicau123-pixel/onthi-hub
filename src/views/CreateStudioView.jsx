@@ -45,7 +45,7 @@ export default function CreateStudioView({
 
   // Marketplace publish options
   const [publishToMarket, setPublishToMarket] = useState(false);
-  const [priceXu, setPriceXu] = useState(20);
+  const [priceXu, setPriceXu] = useState(3);
 
   const [quota, setQuota] = useState(() => getUserQuota());
 
@@ -167,13 +167,16 @@ export default function CreateStudioView({
         description: description || `Bộ thẻ do ${user?.displayName || 'Cộng đồng'} chia sẻ.`,
         category,
         categoryName: newDeck.categoryLabel,
-        priceXu: Math.max(5, parseInt(priceXu, 10) || 10),
+        priceXu: Math.max(2, parseInt(priceXu, 10) || 3),
         cardCount: validCards.length,
         authorName: user?.displayName || 'Người Học Ẩn Danh',
         authorAvatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
         authorTier: quota.tier,
         similarityScore: dupCheck.similarityScore,
-        sampleCards: validCards.slice(0, 3)
+        cards: validCards,
+        previewCards: validCards,
+        sampleCards: validCards,
+        previewQuiz: newDeck.previewQuiz
       });
     }
 
@@ -485,7 +488,7 @@ export default function CreateStudioView({
               <div className="flex items-center space-x-1.5">
                 <input
                   type="number"
-                  min="5"
+                  min="2"
                   max="500"
                   value={priceXu}
                   onChange={(e) => setPriceXu(e.target.value)}

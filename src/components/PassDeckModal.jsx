@@ -22,9 +22,9 @@ export default function PassDeckModal({
   onPassSuccess
 }) {
   const [resellPriceXu, setResellPriceXu] = useState(() => {
-    // Default suggested price is ~50-60% of original price
-    const originalXu = course.priceXu || Math.round((course.price || 149000) / 10000 * 2.5);
-    return Math.max(5, Math.round(originalXu * 0.6) || 15);
+    // Default suggested price is ~50-60% of original price (min 2 Xu)
+    const originalXu = course.priceXu || 4;
+    return Math.max(2, Math.round(originalXu * 0.6) || 2);
   });
   const [passNote, setPassNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,14 +32,14 @@ export default function PassDeckModal({
   const userTier = getUserTier();
   const tierConfig = getTierLimits()[userTier] || getTierLimits().free;
   const feePercent = tierConfig.marketplaceFee || 10;
-  const netEarnings = Math.round(resellPriceXu * (1 - feePercent / 100));
+  const netEarnings = Math.max(1, Math.round(resellPriceXu * (1 - feePercent / 100)));
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!course) return;
-    if (resellPriceXu < 3) {
-      alert('Giá pass tối thiểu là 3 Xu!');
+    if (resellPriceXu < 2) {
+      alert('Giá pass tối thiểu là 2 Xu (~2.000đ)!');
       return;
     }
 
@@ -133,7 +133,7 @@ export default function PassDeckModal({
             <div className="relative">
               <input
                 type="number"
-                min="3"
+                min="2"
                 max="200"
                 value={resellPriceXu}
                 onChange={(e) => setResellPriceXu(Math.max(1, parseInt(e.target.value, 10) || 0))}

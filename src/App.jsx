@@ -21,6 +21,7 @@ import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
+import { getMarketplaceDecks } from './data/marketplaceData';
 import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
 import { getWalletBalance } from './utils/wallet';
@@ -36,6 +37,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [walletBalance, setWalletBalance] = useState(20);
   const [customDecks, setCustomDecks] = useState([]);
+  const [marketplaceDecks, setMarketplaceDecks] = useState(() => getMarketplaceDecks());
 
   // Focused Overlay Modals
   const [activeFlashcardCourse, setActiveFlashcardCourse] = useState(null);
@@ -53,6 +55,7 @@ export default function App() {
     setPurchasedCourses(getPurchasedCourses());
     setUser(getCurrentUser());
     setWalletBalance(getWalletBalance());
+    setMarketplaceDecks(getMarketplaceDecks());
 
     // Secret Hotkey Ctrl + Shift + A switches to Admin Tab
     const handleKeyDown = (e) => {
@@ -78,6 +81,7 @@ export default function App() {
   const refreshState = () => {
     setWalletBalance(getWalletBalance());
     setPurchasedCourses(getPurchasedCourses());
+    setMarketplaceDecks(getMarketplaceDecks());
   };
 
   const showToast = (msg) => {
@@ -96,7 +100,7 @@ export default function App() {
     refreshState();
   };
 
-  const allAvailableCourses = [...customDecks, ...COURSES_DATA];
+  const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
 
   return (
     <div className={`min-h-screen bg-[#240618] bg-[radial-gradient(circle_at_50%_0%,_#5c163f_0%,_#380b23_45%,_#1e0413_100%)] flex flex-col text-slate-100 font-sans selection:bg-[#f02c85] selection:text-white ${
