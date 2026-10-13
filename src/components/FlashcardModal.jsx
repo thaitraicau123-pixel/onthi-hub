@@ -15,12 +15,15 @@ import {
   Scissors,
   Bot,
   Copy,
-  Check
+  Check,
+  Play,
+  Pause
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
 import { explainFlashcardWithAi } from '../utils/aiTutor';
 import { recordCardReview, getNextIntervalPreview, getCardSrs } from '../utils/spacedRepetition';
+import { recordMistake, markMistakeMastered } from '../utils/mistakeTracker';
 
 export default function FlashcardModal({
   course,
@@ -40,6 +43,10 @@ export default function FlashcardModal({
   const [aiExplanations, setAiExplanations] = useState({});
   const [aiError, setAiError] = useState('');
   const [copiedAiText, setCopiedAiText] = useState(false);
+
+  // Auto-Play Hands-Free Runner State
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [autoPlaySeconds, setAutoPlaySeconds] = useState(3);
 
   const currentCard = cards[currentIndex] || {};
   const targetDeckId = currentCard.originalDeckId || course.id;
@@ -140,6 +147,20 @@ export default function FlashcardModal({
   const handleRate = (type) => {
     setReviewedStats((prev) => ({ ...prev, [type]: prev[type] + 1 }));
     recordCardReview(targetDeckId, targetCardIndex, type);
+
+    if (type === 'again') {
+      recordMistake({
+        type: 'flashcard',
+        deckId: targetDeckId,
+        deckTitle: course.title,
+        question: currentCard.front,
+        answer: currentCard.back,
+        tag: currentCard.tag
+      });
+    } else if (currentCard.mistakeId && (type === 'good' || type === 'easy')) {
+      markMistakeMastered(currentCard.mistakeId);
+    }
+
     recordStudyAction(5);
     completeDailyQuest('review_cards');
     goToNext();
@@ -165,6 +186,26 @@ export default function FlashcardModal({
     utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
   };
+
+  // Auto-play hands-free runner effect
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    if (!isFlipped) {
+      handleSpeak(currentCard.front);
+      const flipTimer = setTimeout(() => {
+        setIsFlipped(true);
+      }, autoPlaySeconds * 1000);
+      return () => clearTimeout(flipTimer);
+    } else {
+      handleSpeak(currentCard.back);
+      const nextTimer = setTimeout(() => {
+        setIsFlipped(false);
+        setCurrentIndex((prev) => (prev + 1) % cards.length);
+      }, autoPlaySeconds * 1000);
+      return () => clearTimeout(nextTimer);
+    }
+  }, [isAutoPlaying, currentIndex, isFlipped, autoPlaySeconds]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
@@ -199,6 +240,23 @@ export default function FlashcardModal({
           </div>
 
           <div className="flex items-center space-x-2">
+            <button
+              onClick={() => {
+                const next = !isAutoPlaying;
+                setIsAutoPlaying(next);
+                if (next) playSound('flip');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-all ${
+                isAutoPlaying
+                  ? 'bg-rose-500 text-white border-rose-600 animate-pulse shadow-md'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+              title="Chế độ tự động lật & đọc thẻ rảnh tay"
+            >
+              {isAutoPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />}
+              <span className="hidden sm:inline">{isAutoPlaying ? 'Tạm Dừng' : '▶ Rảnh Tay'}</span>
+            </button>
+
             <button
               onClick={() => setAutoSpeak(!autoSpeak)}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors ${
@@ -249,6 +307,32 @@ export default function FlashcardModal({
             </button>
           </div>
         </div>
+
+        {/* Hands-Free Auto-Play Active Notification Bar */}
+        {isAutoPlaying && (
+          <div className="px-5 py-2 bg-gradient-to-r from-rose-500 via-[#f02c85] to-pink-600 text-white flex items-center justify-between text-xs font-bold animate-fade-in shadow-xs">
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+              <span>🎧 Đang chạy Chế độ Rảnh Tay (Tự động lật & đọc thẻ sau {autoPlaySeconds}s)</span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-[11px]">
+              <span>Tốc độ:</span>
+              {[2, 3, 5].map((sec) => (
+                <button
+                  key={sec}
+                  onClick={() => setAutoPlaySeconds(sec)}
+                  className={`px-2 py-0.5 rounded-md font-bold transition-colors ${
+                    autoPlaySeconds === sec
+                      ? 'bg-white text-rose-600 font-black shadow-xs'
+                      : 'text-rose-100 hover:bg-white/20'
+                  }`}
+                >
+                  {sec}s
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Preview Notice Bar for Non-purchased */}
         {!isPurchased && (

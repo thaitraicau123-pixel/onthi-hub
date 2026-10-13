@@ -18,6 +18,7 @@ import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
 import { playClockTick, playCountdownWarningBeep } from '../utils/pomodoroAudio';
 import { explainQuizQuestionWithAi } from '../utils/aiTutor';
+import { recordMistake } from '../utils/mistakeTracker';
 
 export default function QuizModal({
   course,
@@ -88,6 +89,25 @@ export default function QuizModal({
   const handleSubmit = () => {
     setIsSubmitted(true);
     playSound('success');
+
+    // Automatically record mistakes to notebook
+    questions.forEach((q, idx) => {
+      const userAns = selectedAnswers[idx];
+      if (userAns !== undefined && userAns !== q.correct) {
+        recordMistake({
+          type: 'quiz',
+          deckId: course.id,
+          deckTitle: course.title,
+          question: q.question,
+          answer: q.options[q.correct],
+          userChoice: q.options[userAns],
+          options: q.options,
+          correctIndex: q.correct,
+          explanation: q.explanation
+        });
+      }
+    });
+
     if (score / questions.length >= 0.7) {
       confetti({
         particleCount: 80,

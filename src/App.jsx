@@ -17,6 +17,7 @@ import PaymentModal from './components/PaymentModal';
 import AuthModal from './components/AuthModal';
 import BlindBoxModal from './components/BlindBoxModal';
 import PassDeckModal from './components/PassDeckModal';
+import MistakeNotebookModal from './components/MistakeNotebookModal';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
@@ -48,6 +49,7 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBlindBoxOpen, setIsBlindBoxOpen] = useState(false);
   const [activePassCourse, setActivePassCourse] = useState(null);
+  const [isMistakesNotebookOpen, setIsMistakesNotebookOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   // Sync initial state
@@ -129,6 +131,7 @@ export default function App() {
         onCheckInCompleted={refreshState}
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+        onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
         theme={theme}
         onCycleTheme={handleCycleTheme}
       />
@@ -188,6 +191,7 @@ export default function App() {
             onOpenQuiz={(c) => setActiveQuizCourse(c)}
             onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
             onOpenPassDeck={(course) => setActivePassCourse(course)}
+            onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
             onSwitchTab={setActiveTab}
           />
         )}
@@ -317,6 +321,15 @@ export default function App() {
             refreshState();
             showToast('🎉 Đã niêm yết pass bộ thẻ thành công lên Sàn C2C!');
           }}
+        />
+      )}
+
+      {/* 11. Sổ Tay Câu Sai & Điểm Yếu (Mistake Notebook) */}
+      {isMistakesNotebookOpen && (
+        <MistakeNotebookModal
+          onClose={() => setIsMistakesNotebookOpen(false)}
+          onStartFlashcardPractice={(deck) => setActiveFlashcardCourse(deck)}
+          onStartQuizPractice={(deck) => setActiveQuizCourse(deck)}
         />
       )}
 

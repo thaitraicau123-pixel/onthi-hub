@@ -13,10 +13,12 @@ import {
   Brain,
   Flame,
   CheckCircle,
-  Clock
+  Clock,
+  BookMarked
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide } from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
+import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 
 export default function LibraryView({
   purchasedCourses,
@@ -25,6 +27,7 @@ export default function LibraryView({
   onOpenQuiz,
   onOpenMatchGame,
   onOpenPassDeck,
+  onOpenMistakes,
   onSwitchTab
 }) {
   const isComboUser = purchasedCourses.includes('combo-all-access');
@@ -33,6 +36,7 @@ export default function LibraryView({
     : allCourses.filter((c) => purchasedCourses.includes(c.id));
 
   const srsStats = getAllDecksDueStats(unlockedList);
+  const unmasteredMistakesCount = getUnmasteredMistakesCount();
 
   return (
     <div className="space-y-6 animate-fade-in pb-16">
@@ -109,6 +113,33 @@ export default function LibraryView({
               </button>
             )}
           </div>
+        </div>
+      )}
+
+      {/* MISTAKES QUICK ACCESS CARD */}
+      {unmasteredMistakesCount > 0 && (
+        <div className="bg-gradient-to-r from-rose-950/70 to-purple-950/70 border border-rose-500/40 rounded-2xl p-4 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-rose-100 shadow-md">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+              <BookMarked className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="font-black text-white text-sm block">
+                Sổ Tay Câu Sai: Bạn có {unmasteredMistakesCount} câu cần khắc phục!
+              </span>
+              <span className="text-rose-200/80 font-medium text-[11px]">
+                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ Gemini AI.
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={onOpenMistakes}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95 shrink-0"
+          >
+            <span>Mở Sổ Tay Câu Sai ({unmasteredMistakesCount})</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
 

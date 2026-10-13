@@ -60,7 +60,8 @@ HÃY TRÌNH BÀY ĐÚNG 3 PHẦN SAU (súc tích, có biểu tượng cảm xúc
       }
 
       const data = await response.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const text = parts.map(p => p.text || '').filter(Boolean).join('\n');
       if (text && text.trim()) {
         return {
           success: true,
@@ -149,7 +150,8 @@ HÃY PHÂN TÍCH RÕ RÀNG THEO CẤU TRÚC SAU (bằng Markdown, phong cách s�
       }
 
       const data = await response.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const text = parts.map(p => p.text || '').filter(Boolean).join('\n');
       if (text && text.trim()) {
         return {
           success: true,

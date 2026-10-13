@@ -26,11 +26,13 @@ import {
   Trophy,
   Gamepad2,
   ShieldCheck,
-  ArrowRight
+  ArrowRight,
+  BookMarked
 } from 'lucide-react';
 import { performDailyCheckIn, getUserQuota, getUserTier } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
+import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import confetti from 'canvas-confetti';
 
 export default function Navbar({
@@ -43,6 +45,7 @@ export default function Navbar({
   onCheckInCompleted,
   onOpenLeaderboard,
   onOpenBlindBox,
+  onOpenMistakes,
   theme = 'light',
   onCycleTheme
 }) {
@@ -60,6 +63,7 @@ export default function Navbar({
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unmasteredMistakesCount = getUnmasteredMistakesCount();
 
   const handleCheckIn = () => {
     const res = performDailyCheckIn();
@@ -107,6 +111,7 @@ export default function Navbar({
         { id: 'home', label: 'Trang Chủ & Đề Thi Chuẩn', icon: Home, desc: 'Kho đề công chức 2026, IT, ngoại ngữ' },
         { id: 'marketplace', label: 'Chợ Thẻ C2C', icon: Store, badge: 'HOT', desc: 'Sàn thương mại điện tử mua bán thẻ' },
         { id: 'library', label: 'Tủ Thẻ Của Tôi', icon: FolderHeart, count: purchasedCount, desc: 'Thẻ đã mua & file xuất Anki' },
+        { id: 'mistakes', label: 'Sổ Tay Câu Sai & Điểm Yếu', icon: BookMarked, badge: unmasteredMistakesCount > 0 ? `${unmasteredMistakesCount}` : '', desc: 'Luyện lại câu trắc nghiệm sai & chẩn đoán AI', action: () => { setIsDrawerOpen(false); onOpenMistakes?.(); } },
         { id: 'create', label: 'Studio Tạo Thẻ AI', icon: PlusSquare, desc: 'Biến tài liệu thành flashcard trong 3s' }
       ]
     },
@@ -210,6 +215,24 @@ export default function Navbar({
             {/* RIGHT: COMPACT UTILITIES TOOLBAR */}
             <div className="flex items-center space-x-1.5 sm:space-x-2">
               
+              {/* SỔ TAY CÂU SAI - Compact Pill */}
+              {unmasteredMistakesCount > 0 && (
+                <button
+                  onClick={() => {
+                    playSound('flip');
+                    onOpenMistakes?.();
+                  }}
+                  className="flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold transition-transform transform hover:scale-105 active:scale-95 whitespace-nowrap"
+                  title="Mở Sổ Tay Câu Sai & Điểm Yếu"
+                >
+                  <BookMarked className="w-3.5 h-3.5 text-rose-400" />
+                  <span className="hidden md:inline">Câu Sai</span>
+                  <span className="w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center">
+                    {unmasteredMistakesCount}
+                  </span>
+                </button>
+              )}
+
               {/* TÚI MÙ (BLIND BOX) - Sleek Compact Button */}
               <button
                 onClick={() => {

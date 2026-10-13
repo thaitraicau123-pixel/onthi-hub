@@ -57,7 +57,8 @@ Ví dụ:
       }
 
       const data = await response.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const text = parts.map(p => p.text || '').filter(Boolean).join('\n');
       if (!text) continue;
 
       let cleanText = text.trim();
@@ -217,4 +218,117 @@ export async function generateFlashcardsWithAI({ topic, rawText = '', cardCount 
       tag: 'Ghi nhớ sâu'
     }
   ].slice(0, cardCount);
+}
+
+/**
+ * Generate 4-choice Multiple Choice Quiz Questions using Gemini Multi-Model API
+ */
+export async function generateQuizQuestionsWithAI({ topic, rawText = '', questionCount = 5, cards = [] }) {
+  const apiKey = getGeminiApiKey();
+
+  // If cards are provided, feed them into prompt context
+  const cardsContext = cards.length > 0
+    ? cards.map((c, i) => `${i + 1}. Câu hỏi/Khái niệm: ${c.front} | Đáp án: ${c.back}`).join('\n')
+    : '';
+
+  if (apiKey) {
+    const prompt = `Bạn là Trưởng ban Đề thi Quốc Gia và Chuyên gia Khảo thí hàng đầu.
+Nhiệm vụ: Hãy biên soạn chính xác ${questionCount} câu hỏi trắc nghiệm 4 lựa chọn (A, B, C, D) có tính phân loại cao, cài cắm bẫy tinh vi và kèm lời giải chi tiết.
+
+CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
+TÀI LIỆU / THẺ GHI NHỚ NGUỒN:
+${cardsContext || rawText || 'Biên soạn các câu hỏi thi thực chiến hay gặp nhất.'}
+
+YÊU CẦU ĐỊNH DẠNG:
+- Trả về ĐÚNG 1 MẢNG JSON (JSON Array), KHÔNG bọc trong markdown và KHÔNG có lời giải thích ngoài mảng JSON.
+- Mỗi object có 4 trường:
+  - "question": Câu hỏi rõ ràng, bám sát đề thi thật.
+  - "options": Mảng 4 chuỗi phương án [A, B, C, D]. Các phương án gây nhiễu phải rất logic, dễ bẫy thí sinh nếu không nắm chắc bài.
+  - "correct": Số nguyên từ 0 đến 3 (chỉ số index của đáp án đúng trong mảng options).
+  - "explanation": Lời giải thích ngắn gọn, nêu rõ căn cứ pháp luật/công thức hoặc vì sao các đáp án khác sai.
+
+Ví dụ:
+[
+  {
+    "question": "Thời hiệu xử lý kỷ luật đối với hành vi vi phạm ít nghiêm trọng của công chức là bao lâu?",
+    "options": ["02 năm", "05 năm", "01 năm", "Không áp dụng thời hiệu"],
+    "correct": 0,
+    "explanation": "Căn cứ Điều 80 Luật CBCC sửa đổi 2019: Mức khiển trách áp dụng thời hiệu 02 năm."
+  }
+]`;
+
+    for (const model of GEMINI_MODELS) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.35,
+              responseMimeType: 'application/json'
+            }
+          })
+        });
+
+        if (!response.ok) {
+          if (response.status === 503 || response.status === 429) continue;
+          break;
+        }
+
+        const data = await response.json();
+        const parts = data?.candidates?.[0]?.content?.parts || [];
+        const text = parts.map(p => p.text || '').filter(Boolean).join('\n');
+        if (!text) continue;
+
+        let cleanText = text.trim();
+        if (cleanText.startsWith('```json')) {
+          cleanText = cleanText.replace(/^```json/, '').replace(/```$/, '').trim();
+        } else if (cleanText.startsWith('```')) {
+          cleanText = cleanText.replace(/^```/, '').replace(/```$/, '').trim();
+        }
+
+        const parsed = JSON.parse(cleanText);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.map((item, idx) => ({
+            id: idx + 1,
+            question: String(item.question || '').trim(),
+            options: Array.isArray(item.options) ? item.options.map(String) : ['A', 'B', 'C', 'D'],
+            correct: typeof item.correct === 'number' && item.correct >= 0 && item.correct <= 3 ? item.correct : 0,
+            explanation: String(item.explanation || '').trim()
+          })).filter(q => q.question && q.options.length >= 2);
+        }
+      } catch (err) {
+        console.warn('Gemini quiz generation failover', err);
+      }
+    }
+  }
+
+  // Fallback smart heuristics if API key not available or network error
+  if (cards.length > 0) {
+    return cards.slice(0, questionCount).map((c, i) => {
+      const otherBacks = cards.filter((_, idx) => idx !== i).map(o => o.back.split('\n')[0]);
+      const distractors = otherBacks.slice(0, 3);
+      while (distractors.length < 3) {
+        distractors.push(`Phương án mở rộng ${String.fromCharCode(65 + distractors.length)}`);
+      }
+      const rawOptions = [c.back.split('\n')[0], ...distractors];
+      const shuffled = rawOptions
+        .map((opt, origIdx) => ({ opt, isCorrect: origIdx === 0 }))
+        .sort(() => Math.random() - 0.5);
+      const correctIndex = shuffled.findIndex(item => item.isCorrect);
+
+      return {
+        id: i + 1,
+        question: c.front,
+        options: shuffled.map(item => item.opt),
+        correct: correctIndex,
+        explanation: c.back
+      };
+    });
+  }
+
+  return [];
 }

@@ -220,13 +220,26 @@ export default function CreateStudioView({
       format: ['Anki Deck', 'Tự Tạo'],
       highlights: [`${validCards.length} Thẻ ôn tập do người học tự biên soạn`],
       previewCards: validCards,
-      previewQuiz: validCards.slice(0, 3).map((c, i) => ({
-        id: i + 1,
-        question: c.front,
-        options: [c.back, 'Phương án khác A', 'Phương án khác B', 'Phương án khác C'],
-        correct: 0,
-        explanation: 'Căn cứ theo nội dung bộ thẻ đã soạn.'
-      }))
+      previewQuiz: validCards.slice(0, 5).map((c, i) => {
+        const otherBacks = validCards.filter((_, idx) => idx !== i).map(o => o.back.split('\n')[0]);
+        const distractors = otherBacks.slice(0, 3);
+        while (distractors.length < 3) {
+          distractors.push(`Phương án mở rộng ${String.fromCharCode(65 + distractors.length)}`);
+        }
+        const rawOptions = [c.back.split('\n')[0], ...distractors];
+        const shuffled = rawOptions
+          .map((opt, origIdx) => ({ opt, isCorrect: origIdx === 0 }))
+          .sort(() => Math.random() - 0.5);
+        const correctIndex = shuffled.findIndex(item => item.isCorrect);
+
+        return {
+          id: i + 1,
+          question: c.front,
+          options: shuffled.map(item => item.opt),
+          correct: correctIndex,
+          explanation: c.back
+        };
+      })
     };
 
     const dupCheck = checkDeckDuplication({
