@@ -12,6 +12,9 @@ import {
   CheckCircle2,
   HelpCircle,
   Maximize2,
+  Minimize2,
+  Layers,
+  Search,
   Scissors,
   Bot,
   Copy,
@@ -47,6 +50,68 @@ export default function FlashcardModal({
   // Auto-Play Hands-Free Runner State
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [autoPlaySeconds, setAutoPlaySeconds] = useState(3);
+
+  // Topic Drawer, Search, and Fullscreen State
+  const [topicDrawerOpen, setTopicDrawerOpen] = useState(false);
+  const [topicSearchTerm, setTopicSearchTerm] = useState('');
+  const [selectedTagFilter, setSelectedTagFilter] = useState('ALL');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const modalContainerRef = React.useRef(null);
+
+  // Calculate unique tags & count
+  const tagCounts = React.useMemo(() => {
+    const counts = {};
+    cards.forEach((c) => {
+      const tag = (c.tag || 'Khác').trim();
+      counts[tag] = (counts[tag] || 0) + 1;
+    });
+    return counts;
+  }, [cards]);
+
+  const uniqueTags = React.useMemo(() => Object.keys(tagCounts), [tagCounts]);
+
+  const filteredCardItems = React.useMemo(() => {
+    return cards
+      .map((card, idx) => ({ card, idx }))
+      .filter(({ card }) => {
+        const tag = (card.tag || 'Khác').trim();
+        if (selectedTagFilter !== 'ALL' && tag !== selectedTagFilter) {
+          return false;
+        }
+        if (!topicSearchTerm.trim()) return true;
+        const q = topicSearchTerm.toLowerCase();
+        return (
+          (card.front || '').toLowerCase().includes(q) ||
+          (card.back || '').toLowerCase().includes(q) ||
+          tag.toLowerCase().includes(q)
+        );
+      });
+  }, [cards, selectedTagFilter, topicSearchTerm]);
+
+  const handleJumpToCard = (targetIdx) => {
+    playSound('flip');
+    setCurrentIndex(targetIdx);
+    setIsFlipped(false);
+    setTopicDrawerOpen(false);
+  };
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      modalContainerRef.current?.requestFullscreen?.().catch(() => {});
+      setIsFullscreen(true);
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+      setIsFullscreen(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFsChange);
+    return () => document.removeEventListener('fullscreenchange', handleFsChange);
+  }, []);
 
   const currentCard = cards[currentIndex] || {};
   const targetDeckId = currentCard.originalDeckId || course.id;
@@ -208,9 +273,17 @@ export default function FlashcardModal({
   }, [isAutoPlaying, currentIndex, isFlipped, autoPlaySeconds]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
-      
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-spring-3d">
+    <div
+      ref={modalContainerRef}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-sm overflow-y-auto ${
+        isFullscreen ? '!p-0' : ''
+      }`}
+    >
+      <div
+        className={`relative w-full ${
+          isFullscreen ? 'max-w-none h-full !rounded-none' : 'max-w-3xl rounded-3xl max-h-[92vh]'
+        } bg-white shadow-2xl flex flex-col overflow-hidden border border-slate-200 animate-spring-3d`}
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/70">
@@ -298,6 +371,23 @@ export default function FlashcardModal({
                 </button>
               </>
             )}
+
+            <button
+              onClick={() => setTopicDrawerOpen(true)}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors"
+              title="Mục lục các chủ đề và danh sách thẻ"
+            >
+              <Layers className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="hidden sm:inline">Chủ Đề ({uniqueTags.length})</span>
+            </button>
+
+            <button
+              onClick={toggleFullscreen}
+              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors hidden sm:inline-flex"
+              title={isFullscreen ? 'Thoát toàn màn hình' : 'Học toàn màn hình (Focus Mode)'}
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
 
             <button
               onClick={onClose}
@@ -605,6 +695,149 @@ export default function FlashcardModal({
                 className="px-4 py-2 rounded-xl bg-[#28071a] text-white text-xs font-bold hover:bg-[#3d0c27]"
               >
                 Đóng lại
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* Topic & Concept Explorer Drawer */}
+      {topicDrawerOpen && (
+        <div className="fixed inset-0 z-60 bg-black/40 backdrop-blur-xs flex justify-end animate-fade-in">
+          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-left">
+            
+            {/* Drawer Header */}
+            <div className="px-5 py-4 border-b border-slate-100 bg-[#28071a] text-white flex items-center justify-between">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
+                  <Layers className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-white">Mục Lục & Sơ Đồ Chủ Đề</h4>
+                  <p className="text-[11px] text-pink-200/80 font-medium">
+                    Tổng cộng {cards.length} thẻ ghi nhớ
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setTopicDrawerOpen(false)}
+                className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="p-4 bg-[#fcf7ec] border-b border-[#eadfcb] space-y-3">
+              {/* Search input */}
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={topicSearchTerm}
+                  onChange={(e) => setTopicSearchTerm(e.target.value)}
+                  placeholder="Tìm từ khóa câu hỏi, khái niệm..."
+                  className="w-full pl-9 pr-3 py-2 bg-white border border-[#eadfcb] rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#f02c85] shadow-2xs"
+                />
+                {topicSearchTerm && (
+                  <button
+                    onClick={() => setTopicSearchTerm('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              {/* Tag Badges Bar */}
+              <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+                <button
+                  onClick={() => setSelectedTagFilter('ALL')}
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors ${
+                    selectedTagFilter === 'ALL'
+                      ? 'bg-[#28071a] text-white shadow-2xs'
+                      : 'bg-white text-slate-600 border border-[#eadfcb] hover:bg-slate-100'
+                  }`}
+                >
+                  Tất cả ({cards.length})
+                </button>
+                {uniqueTags.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setSelectedTagFilter(t)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors ${
+                      selectedTagFilter === t
+                        ? 'bg-[#f02c85] text-white shadow-2xs'
+                        : 'bg-white text-slate-600 border border-[#eadfcb] hover:bg-slate-100'
+                    }`}
+                  >
+                    {t} ({tagCounts[t] || 0})
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Cards List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#fdfcf9]">
+              {filteredCardItems.length === 0 ? (
+                <div className="py-12 text-center text-slate-400 text-xs font-medium">
+                  Không tìm thấy thẻ nào phù hợp từ khóa.
+                </div>
+              ) : (
+                filteredCardItems.map(({ card, idx }) => {
+                  const isCurrent = idx === currentIndex;
+                  const srs = getCardSrs(
+                    card.originalDeckId || course.id,
+                    card.originalCardIndex !== undefined ? card.originalCardIndex : idx
+                  );
+                  return (
+                    <div
+                      key={idx}
+                      onClick={() => handleJumpToCard(idx)}
+                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                        isCurrent
+                          ? 'bg-pink-50/80 border-[#f02c85] shadow-xs ring-1 ring-[#f02c85]'
+                          : 'bg-white border-[#eadfcb] hover:border-[#d9c7ab] hover:bg-amber-50/30'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-[10px] mb-1">
+                        <span className="font-black text-slate-400">
+                          #{idx + 1} {card.tag ? `• ${card.tag}` : ''}
+                        </span>
+                        {isCurrent ? (
+                          <span className="font-bold text-[#f02c85] bg-pink-100 px-1.5 py-0.5 rounded">
+                            Đang xem
+                          </span>
+                        ) : srs.totalReviews > 0 ? (
+                          <span className="font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">
+                            Đã ôn {srs.totalReviews} lần
+                          </span>
+                        ) : (
+                          <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                            Thẻ mới
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed">
+                        {card.front}
+                      </p>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            {/* Drawer Footer */}
+            <div className="p-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#7a5a6b] font-bold">
+                Hiển thị {filteredCardItems.length}/{cards.length} thẻ
+              </span>
+              <button
+                onClick={() => setTopicDrawerOpen(false)}
+                className="px-4 py-1.5 rounded-xl bg-[#28071a] text-white font-bold text-xs hover:bg-[#3d0c27] transition-colors"
+              >
+                Đóng
               </button>
             </div>
 

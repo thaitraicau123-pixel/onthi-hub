@@ -3,6 +3,7 @@ import CourseCard from '../components/CourseCard';
 import ComboBanner from '../components/ComboBanner';
 import TestimonialsFaq from '../components/TestimonialsFaq';
 import VoucherBar from '../components/VoucherBar';
+import ExamCountdownBanner from '../components/ExamCountdownBanner';
 import { CATEGORIES, COURSES_DATA, COMBO_PACKAGE } from '../data/coursesData';
 import { isCoursePurchased } from '../utils/storage';
 import {
@@ -134,6 +135,9 @@ export default function HomeView({
 
         </div>
       </section>
+
+      {/* Countdown đếm ngược ngày thi thực chiến */}
+      <ExamCountdownBanner />
 
       {/* =========================================================
           4-CARD QUICK ACTION HUB (SẮP XẾP GỌN GÀNG, ĐẦY ĐỦ TIỆN ÍCH)
