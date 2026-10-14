@@ -1617,51 +1617,91 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                   setIsPreviewFlipped(!isPreviewFlipped);
                   playSound('flip');
                 }}
-                className="w-full h-64 sm:h-72 cursor-pointer perspective-1000 select-none"
+                className="w-full h-64 sm:h-72 cursor-pointer perspective-1000 select-none group focus:outline-none"
+                role="button"
+                tabIndex={0}
+                aria-label={isPreviewFlipped ? "Đang xem mặt sau, bấm để lật lại" : "Đang xem mặt trước, bấm để lật xem đáp án"}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    setIsPreviewFlipped(!isPreviewFlipped);
+                    playSound('flip');
+                  }
+                }}
               >
                 <div
-                  className={`relative w-full h-full rounded-3xl p-6 shadow-xl border-2 transition-transform duration-500 transform-style-3d flex flex-col justify-between ${
-                    isPreviewFlipped
-                      ? 'bg-gradient-to-br from-[#28071a] to-[#430c2c] border-[#f02c85] text-white rotate-y-180'
-                      : 'bg-white border-[#eadfcb] text-[#28071a]'
+                  className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${
+                    isPreviewFlipped ? 'rotate-y-180' : ''
                   }`}
                 >
-                  {/* Top card info */}
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
-                      isPreviewFlipped
-                        ? 'bg-pink-500/20 text-pink-300 border border-pink-400/30'
-                        : 'bg-[#fcf7ec] text-[#f02c85] border border-[#eadfcb]'
-                    }`}>
-                      {isPreviewFlipped ? 'Mặt Sau (Đáp Án)' : 'Mặt Trước (Câu Hỏi)'}
-                    </span>
-
-                    {currentCard.tag && (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg ${
-                        isPreviewFlipped ? 'text-pink-200/80 bg-white/10' : 'text-[#7a5a6b] bg-[#fcf7ec]'
-                      }`}>
-                        #{currentCard.tag}
+                  {/* Front Side */}
+                  <div
+                    className={`absolute inset-0 backface-hidden rounded-3xl p-6 shadow-xl border-2 border-[#eadfcb] bg-white text-[#28071a] flex flex-col justify-between transition-opacity duration-200 ${
+                      isPreviewFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+                    }`}
+                  >
+                    {/* Top card info */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-[#fcf7ec] text-[#f02c85] border border-[#eadfcb]">
+                        Mặt Trước (Câu Hỏi)
                       </span>
-                    )}
+
+                      {currentCard.tag && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-[#7a5a6b] bg-[#fcf7ec]">
+                          #{currentCard.tag}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Main content */}
+                    <div className="my-auto text-center px-2 sm:px-4 max-h-[140px] overflow-y-auto">
+                      <p className="font-black text-sm sm:text-base leading-relaxed text-[#28071a]">
+                        {currentCard.front || 'Chưa nhập câu hỏi'}
+                      </p>
+                    </div>
+
+                    {/* Bottom hint */}
+                    <div className="text-center">
+                      <span className="text-[10px] font-medium text-[#7a5a6b]">
+                        👆 Chạm hoặc bấm [Space] để lật đáp án
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Main content */}
-                  <div className="my-auto text-center px-2 sm:px-4">
-                    <p className={`font-black text-sm sm:text-base leading-relaxed ${
-                      isPreviewFlipped ? 'text-pink-100 whitespace-pre-line text-left' : 'text-[#28071a]'
-                    }`}>
-                      {isPreviewFlipped ? currentCard.back : currentCard.front}
-                    </p>
+                  {/* Back Side */}
+                  <div
+                    className={`absolute inset-0 backface-hidden rotate-y-180 rounded-3xl p-6 shadow-xl border-2 border-[#f02c85] bg-gradient-to-br from-[#28071a] to-[#430c2c] text-white flex flex-col justify-between transition-opacity duration-200 ${
+                      isPreviewFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                    }`}
+                  >
+                    {/* Top card info */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/30">
+                        Mặt Sau (Đáp Án)
+                      </span>
+
+                      {currentCard.tag && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-pink-200/80 bg-white/10">
+                          #{currentCard.tag}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Main content */}
+                    <div className="my-auto text-left px-2 sm:px-4 max-h-[140px] overflow-y-auto">
+                      <p className="font-semibold text-sm sm:text-base leading-relaxed text-pink-100 whitespace-pre-line">
+                        {currentCard.back || 'Chưa nhập đáp án'}
+                      </p>
+                    </div>
+
+                    {/* Bottom hint */}
+                    <div className="text-center">
+                      <span className="text-[10px] font-medium text-pink-300/70">
+                        👆 Chạm để lật lại mặt trước
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Bottom hint */}
-                  <div className="text-center">
-                    <span className={`text-[10px] font-medium ${
-                      isPreviewFlipped ? 'text-pink-300/70' : 'text-[#7a5a6b]'
-                    }`}>
-                      👆 Chạm để lật mặt thẻ
-                    </span>
-                  </div>
                 </div>
               </div>
 

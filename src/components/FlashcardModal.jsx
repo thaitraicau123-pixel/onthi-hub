@@ -35,7 +35,9 @@ export default function FlashcardModal({
   onClose,
   onBuy
 }) {
-  const cards = course.previewCards || [];
+  const cards = course?.previewCards?.length
+    ? course.previewCards
+    : (course?.cards?.length ? course.cards : (course?.sampleCards || []));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
@@ -158,11 +160,13 @@ export default function FlashcardModal({
 
   // Reset flip when navigating
   const goToNext = () => {
+    if (!cards || cards.length === 0) return;
     setIsFlipped(false);
     setCurrentIndex((prev) => (prev + 1) % cards.length);
   };
 
   const goToPrev = () => {
+    if (!cards || cards.length === 0) return;
     setIsFlipped(false);
     setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
   };
@@ -503,34 +507,52 @@ export default function FlashcardModal({
           
           <div
             onClick={toggleFlip}
-            className="w-full max-w-xl h-72 sm:h-80 cursor-pointer perspective-1000 select-none group"
+            className="w-full max-w-xl h-72 sm:h-80 cursor-pointer perspective-1000 select-none group focus:outline-none"
+            role="button"
+            tabIndex={0}
+            aria-label={isFlipped ? "Đang xem mặt sau, bấm để lật lại" : "Đang xem mặt trước, bấm để lật xem đáp án"}
+            onKeyDown={(e) => {
+              if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                toggleFlip();
+              }
+            }}
           >
             <div
-              className={`relative w-full h-full duration-500 transform-style-3d transition-transform rounded-2xl shadow-md border ${
-                isFlipped ? 'rotate-y-180 border-indigo-300 shadow-indigo-100' : 'border-slate-200 hover:border-slate-300'
-              } bg-white`}
+              className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${
+                isFlipped ? 'rotate-y-180' : ''
+              }`}
             >
               
               {/* Front Side */}
-              <div className="absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-white">
+              <div
+                className={`absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-white border-2 border-slate-200 shadow-xl transition-opacity duration-200 ${
+                  isFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+                }`}
+              >
                 <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase tracking-wider">
-                  <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600">
+                  <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200 text-[11px]">
                     Mặt trước (Câu hỏi / Từ khóa)
                   </span>
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1.5">
                     <button
-                      onClick={toggleStarCurrentCard}
-                      className="p-1.5 hover:bg-amber-50 rounded-full transition-colors"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleStarCurrentCard();
+                      }}
+                      className="p-2 hover:bg-amber-50 rounded-full transition-colors cursor-pointer"
                       title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
                     >
                       <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-slate-300 hover:text-amber-400'}`} />
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSpeak(currentCard.front);
                       }}
-                      className="p-1.5 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors"
+                      className="p-2 hover:text-[#f02c85] hover:bg-pink-50 rounded-full transition-colors cursor-pointer"
                       title="Phát âm thanh"
                     >
                       <Volume2 className="w-4 h-4" />
@@ -538,38 +560,47 @@ export default function FlashcardModal({
                   </div>
                 </div>
 
-                <div className="my-auto text-center px-2">
+                <div className="my-auto text-center px-3 py-2 max-h-[170px] overflow-y-auto">
                   <p className="text-lg sm:text-2xl font-bold text-slate-900 leading-snug whitespace-pre-line">
-                    {currentCard.front}
+                    {currentCard.front || (cards.length === 0 ? 'Bộ thẻ chưa có nội dung' : 'Thẻ trống')}
                   </p>
                 </div>
 
-                <div className="text-center text-xs text-slate-400 flex items-center justify-center space-x-1.5">
-                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Chạm hoặc bấm [Space] để lật đáp án</span>
+                <div className="text-center text-xs text-slate-400 flex items-center justify-center space-x-1.5 font-medium">
+                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-[#f02c85]" />
+                  <span>Chạm hoặc bấm [Phím Cách] để lật đáp án</span>
                 </div>
               </div>
 
               {/* Back Side */}
-              <div className="absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-indigo-50/40 border border-indigo-100 overflow-y-auto">
+              <div
+                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-white border-2 border-[#f02c85]/40 shadow-xl shadow-pink-100/50 transition-opacity duration-200 ${
+                  isFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                }`}
+              >
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider">
-                  <span className="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700">
+                  <span className="px-2.5 py-1 rounded-full bg-pink-50 text-[#f02c85] font-bold border border-pink-200 text-[11px]">
                     Mặt sau (Giải thích / Đáp án)
                   </span>
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1.5">
                     <button
-                      onClick={toggleStarCurrentCard}
-                      className="p-1.5 hover:bg-amber-50 rounded-full transition-colors"
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleStarCurrentCard();
+                      }}
+                      className="p-2 hover:bg-amber-50 rounded-full transition-colors cursor-pointer"
                       title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
                     >
-                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-indigo-300 hover:text-amber-400'}`} />
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-pink-300 hover:text-amber-400'}`} />
                     </button>
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSpeak(currentCard.back);
                       }}
-                      className="p-1.5 text-indigo-600 hover:bg-indigo-100 rounded-full transition-colors"
+                      className="p-2 text-[#f02c85] hover:bg-pink-50 rounded-full transition-colors cursor-pointer"
                       title="Phát âm"
                     >
                       <Volume2 className="w-4 h-4" />
@@ -577,14 +608,15 @@ export default function FlashcardModal({
                   </div>
                 </div>
 
-                <div className="my-auto py-2">
-                  <div className="text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line font-normal">
-                    {currentCard.back}
+                <div className="my-auto py-2 max-h-[170px] overflow-y-auto pr-1">
+                  <div className="text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line font-normal text-left sm:text-center">
+                    {currentCard.back || (cards.length === 0 ? 'Chưa có đáp án' : 'Trống')}
                   </div>
                 </div>
 
-                <div className="text-right text-[11px] text-indigo-500 font-medium">
-                  Chạm để lật lại mặt trước
+                <div className="text-center sm:text-right text-[11px] text-[#f02c85] font-semibold flex items-center justify-center sm:justify-end space-x-1">
+                  <RotateCw className="w-3 h-3 text-[#f02c85]" />
+                  <span>Chạm để lật lại mặt trước</span>
                 </div>
               </div>
 
@@ -601,7 +633,7 @@ export default function FlashcardModal({
               <ChevronLeft className="w-5 h-5" />
             </button>
             <span className="text-xs font-bold text-slate-500">
-              {currentIndex + 1} / {cards.length}
+              {cards.length > 0 ? `${currentIndex + 1} / ${cards.length}` : '0 / 0'}
             </span>
             <button
               onClick={goToNext}
