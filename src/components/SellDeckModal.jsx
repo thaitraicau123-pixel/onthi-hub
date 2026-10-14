@@ -75,6 +75,7 @@ export default function SellDeckModal({
         priceXu: Math.max(2, parseInt(sellPriceXu, 10) || 3),
         cardCount: cardsList.length || course.cardCount || 10,
         authorName: user?.displayName || course.authorName || 'Học Viên Chia Sẻ',
+        authorEmail: user?.email || '',
         authorAvatar:
           user?.photoURL ||
           'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',

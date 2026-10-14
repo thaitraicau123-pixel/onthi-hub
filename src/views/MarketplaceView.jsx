@@ -544,13 +544,64 @@ export default function MarketplaceView({
       {/* 4. PRODUCT GRID (Wayground Ivory Cards) */}
       <section>
         {filtered.length === 0 ? (
-          <div className="text-center py-12 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-8 text-[#28071a]">
-            <Store className="w-12 h-12 text-[#f02c85] mx-auto mb-2 opacity-60" />
-            <h4 className="text-base font-black">Không tìm thấy bộ thẻ nào phù hợp</h4>
-            <p className="text-xs text-[#7a5a6b] mt-1 font-medium">Hãy thử chuyển danh mục hoặc tìm từ khóa khác nhé!</p>
+          <div className="text-center py-16 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-8 text-[#28071a] shadow-xs space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-pink-100 flex items-center justify-center mx-auto text-[#f02c85] shadow-xs">
+              <Store className="w-8 h-8 opacity-80" />
+            </div>
+            <div>
+              <h4 className="text-base sm:text-lg font-black text-[#28071a]">
+                {searchQuery ? `Không tìm thấy bộ thẻ nào khớp với "${searchQuery}"` : 'Chưa có bộ thẻ nào trong danh mục này'}
+              </h4>
+              <p className="text-xs text-[#7a5a6b] mt-1 font-medium max-w-md mx-auto">
+                {searchQuery
+                  ? 'Hãy thử kiểm tra lại chính tả hoặc quay về xem toàn bộ danh mục đang có trên chợ.'
+                  : 'Hãy là người tiên phong đăng bán hoặc pass lại bộ thẻ đầu tiên để nhận Xu từ cộng đồng!'}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+              {(activeCategory !== 'all' || searchQuery) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveCategory('all');
+                    setSearchQuery('');
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-white border border-[#eadfcb] hover:bg-[#f6ebd5] text-xs font-black text-[#28071a] transition-all shadow-xs"
+                >
+                  ✨ Xem Tất Cả Bộ Thẻ ({decks.length})
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={onOpenCreateDeck}
+                className="px-5 py-2.5 rounded-xl btn-wayground-sunset text-xs font-black text-white transition-all shadow-md flex items-center space-x-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Tự Tạo Bộ Thẻ Này Bằng AI</span>
+              </button>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="space-y-3.5">
+            <div className="flex items-center justify-between text-xs text-[#7a5a6b] font-bold px-1">
+              <span>Đang hiển thị <strong>{filtered.length}</strong> bộ thẻ ôn tập</span>
+              {(activeCategory !== 'all' || searchQuery) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveCategory('all');
+                    setSearchQuery('');
+                  }}
+                  className="text-[#f02c85] hover:underline font-black text-[11px]"
+                >
+                  Xóa bộ lọc ✕
+                </button>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {filtered.map((deck) => {
               const isOwned = isCoursePurchased(deck.id);
               const isLiked = likedIds.includes(deck.id);
@@ -693,6 +744,7 @@ export default function MarketplaceView({
                 </div>
               );
             })}
+            </div>
           </div>
         )}
       </section>

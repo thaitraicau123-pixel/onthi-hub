@@ -310,9 +310,11 @@ function toCompactDeckPayload(deck) {
     authorName: clean.authorName || 'Học Viên',
     authorAvatar: clean.authorAvatar,
     authorTier: clean.authorTier || 'free',
+    authorEmail: clean.authorEmail || '',
     passSellerName: clean.passSellerName,
     passSellerAvatar: clean.passSellerAvatar,
     passSellerTier: clean.passSellerTier,
+    passSellerEmail: clean.passSellerEmail || '',
     passNote: clean.passNote,
     isPassDeck: Boolean(clean.isPassDeck),
     originalDeckId: clean.originalDeckId,
@@ -493,6 +495,7 @@ export function subscribeToMarketplaceDecks(callback) {
 export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, sellerUser }) {
   const current = getMarketplaceDecks();
   const sellerName = sellerUser?.displayName || sellerUser?.name || 'Học Viên Pass Thẻ';
+  const sellerEmail = sellerUser?.email || '';
   const sellerAvatar = sellerUser?.photoURL || sellerUser?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
   const sellerTier = sellerUser?.tier || 'free';
 
@@ -511,8 +514,10 @@ export function passDeckToMarketplace({ originalCourse, passPriceXu, passNote, s
     originalPriceXu: originalCourse.priceXu || 25,
     cardCount: cardsList.length || originalCourse.cardCount || 20,
     authorName: originalCourse.authorName || 'Giảng viên ÔnThiHub',
+    authorEmail: originalCourse.authorEmail || '',
     authorAvatar: originalCourse.authorAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
     passSellerName: sellerName,
+    passSellerEmail: sellerEmail,
     passSellerAvatar: sellerAvatar,
     passSellerTier: sellerTier,
     passNote: passNote,

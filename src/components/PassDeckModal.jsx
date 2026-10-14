@@ -53,6 +53,7 @@ export default function PassDeckModal({
         sellerUser: {
           name: user?.displayName || 'Học Bá Ôn Thi',
           displayName: user?.displayName || 'Học Bá Ôn Thi',
+          email: user?.email || '',
           photoURL: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
           avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
           tier: userTier

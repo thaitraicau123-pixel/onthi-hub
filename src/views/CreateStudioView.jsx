@@ -28,7 +28,9 @@ import {
   Download,
   RotateCw,
   ArrowLeft,
-  ArrowRight
+  ArrowRight,
+  Zap,
+  Check
 } from 'lucide-react';
 import { generateFlashcardsWithAI, calculateOptimalCardCount } from '../utils/aiGenerator';
 import { getUserQuota, consumeUserQuota, performDailyCheckIn } from '../utils/userTier';
@@ -36,6 +38,77 @@ import { publishDeckToMarketplace } from '../data/marketplaceData';
 import { checkDeckDuplication } from '../utils/duplicateChecker';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
+
+const INSTANT_STUDIO_PRESETS = [
+  {
+    id: 'cbcc-2026',
+    title: 'Bộ Thẻ Trọng Tâm Luật Cán Bộ, Công Chức 2026',
+    category: 'cong-chuc',
+    topic: 'Trọng tâm Luật Cán bộ, công chức 2008 & Luật sửa đổi 2019',
+    badge: '🏛️ Thi Công Chức Vòng 1',
+    highlight: 'Hỏi - Đáp Trực Diện',
+    notes: `1. Nghĩa vụ của cán bộ, công chức đối với Đảng, Nhà nước và nhân dân: Trung thành với Đảng, Nhà nước; tôn trọng và tận tụy phục vụ nhân dân; chấp hành nghiêm chỉnh đường lối, chủ trương chính sách.
+2. Thời gian tập sự: 12 tháng đối với ngạch chuyên viên hoặc tương đương; 06 tháng đối với ngạch cán sự hoặc nhân viên.
+3. Các hình thức kỷ luật đối với công chức không giữ chức vụ lãnh đạo: Khiển trách, Cảnh cáo, Hạ bậc lương, Buộc thôi việc (không còn hình thức giáng chức hoặc cách chức).
+4. Nguyên tắc quản lý cán bộ, công chức: Bảo đảm sự lãnh đạo của Đảng; kết hợp giữa tiêu chuẩn chức danh với vị trí việc làm; thực hiện nguyên tắc tập trung dân chủ.`,
+    extractionMode: 'qa',
+    answerLength: 'balanced',
+    cardCount: 4
+  },
+  {
+    id: 'ielts-75',
+    title: 'IELTS 7.5+ Master Collocations: Technology & Environment',
+    category: 'ngoai-ngu',
+    topic: 'High-Yield Collocations for IELTS Speaking & Writing Band 7.5+',
+    badge: '🌍 IELTS Band 7.5+',
+    highlight: 'Kèm Ngữ Cảnh & Ví Dụ',
+    notes: `1. Mitigate environmental degradation: Giảm thiểu sự suy thoái môi trường. Example: Governments must subsidize green energy to mitigate environmental degradation.
+2. Spur technological innovation: Thúc đẩy đổi mới công nghệ mang tính đột phá. Example: AI advancements have spurred technological innovation across healthcare.
+3. Exert a detrimental impact on: Gây ảnh hưởng tiêu cực sâu sắc lên điều gì đó. Example: Unchecked screen time exerts a detrimental impact on cognitive development.
+4. Paradigm shift: Một sự thay đổi mang tính cách mạng về tư duy / mô hình. Example: Remote work represents a fundamental paradigm shift in modern employment.`,
+    extractionMode: 'auto',
+    answerLength: 'detailed',
+    cardCount: 4
+  },
+  {
+    id: 'system-design',
+    title: 'System Design & Backend Architecture Flashcards',
+    category: 'it-tech',
+    topic: 'Phỏng vấn System Design: Caching, Concurrency & Database Scaling',
+    badge: '💻 IT & System Design',
+    highlight: 'Chuẩn Phỏng Vấn Tech',
+    notes: `1. Cache-Aside (Lazy Loading) Pattern là gì và hoạt động ra sao?
+Đáp án: Ứng dụng đọc dữ liệu trực tiếp từ Cache trước; nếu Cache Miss thì truy vấn Database rồi ghi ngược lại vào Cache. Ưu điểm: Chỉ cache dữ liệu thực sự cần; Nhược điểm: Cache Miss lần đầu tốn thời gian.
+2. Cache Stampede (Thundering Herd) là gì và cách phòng chống?
+Đáp án: Xảy ra khi một Key hot hết hạn (TTL) khiến hàng nghìn request đồng thời ập vào Database. Khắc phục: Sử dụng Mutex Lock / Promise Coalescing hoặc Probabilistic Early Expiration (XFetch).
+3. Database Sharding vs Partitioning khác nhau thế nào?
+Đáp án: Partitioning chia nhỏ bảng trong cùng một Database Engine (Horizontal/Vertical). Sharding chia dữ liệu ra nhiều server vật lý hoặc node Database độc lập để mở rộng theo chiều ngang.
+4. CAP Theorem phát biểu điều gì trong hệ thống phân tán?
+Đáp án: Một hệ thống phân tán chỉ có thể đồng thời thỏa mãn tối đa 2 trong 3 yếu tố: C (Consistency - Nhất quán), A (Availability - Sẵn sàng), P (Partition Tolerance - Chịu chia cắt mạng).`,
+    extractionMode: 'qa',
+    answerLength: 'balanced',
+    cardCount: 4
+  },
+  {
+    id: 'y-duoc-2023',
+    title: 'Trọng Tâm Điểm Mới Luật Khám Chữa Bệnh Số 15/2023/QH15',
+    category: 'cong-chuc',
+    topic: 'Luật Khám bệnh, chữa bệnh 2023 & Quy chế chuyên môn ngành Y',
+    badge: '🏥 Công Chức Ngành Y',
+    highlight: 'Quy Chế & Đánh Giá NL',
+    notes: `1. Giấy phép hành nghề khám bệnh, chữa bệnh có thời hạn bao lâu theo Luật 2023?
+Đáp án: Giấy phép hành nghề có thời hạn 05 năm (thay vì cấp một lần vô thời hạn như Luật 2009). Để gia hạn phải cập nhật kiến thức y khoa liên tục (CME).
+2. Điều kiện để được cấp mới giấy phép hành nghề khám chữa bệnh từ năm 2024?
+Đáp án: Người hành nghề phải trải qua kỳ kiểm tra đánh giá năng lực hành nghề do Hội đồng Y khoa Quốc gia tổ chức (ngoại trừ một số giai đoạn chuyển tiếp).
+3. Quyền được từ chối khám bệnh, chữa bệnh của người hành nghề trong trường hợp nào?
+Đáp án: Khi việc khám chữa bệnh trái quy định pháp luật hoặc đạo đức nghề nghiệp; khi người bệnh hoặc thân nhân có hành vi xâm hại thân thể, nhân phẩm của nhân viên y tế (trừ trường hợp cấp cứu).
+4. Phân cấp chuyên môn kỹ thuật trong khám chữa bệnh gồm mấy cấp?
+Đáp án: Gồm 3 cấp: Cấp khám bệnh chữa bệnh ban đầu, Cấp khám bệnh chữa bệnh cơ bản, và Cấp khám bệnh chữa bệnh chuyên sâu.`,
+    extractionMode: 'qa',
+    answerLength: 'detailed',
+    cardCount: 4
+  }
+];
 
 export default function CreateStudioView({
   user,
@@ -58,6 +131,8 @@ export default function CreateStudioView({
   const [customPrompt, setCustomPrompt] = useState('');
   const [showCustomPrompt, setShowCustomPrompt] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatingStep, setGeneratingStep] = useState(0);
+  const [activePresetId, setActivePresetId] = useState(null);
 
   // Cards state
   const [cards, setCards] = useState([
@@ -187,6 +262,26 @@ export default function CreateStudioView({
     playSound('click');
   };
 
+  const handleApplyPreset = (preset) => {
+    setActivePresetId(preset.id);
+    setTitle(preset.title);
+    setCategory(preset.category);
+    setAiTopic(preset.topic);
+    setAiNotes(preset.notes);
+    setExtractionMode(preset.extractionMode);
+    setAnswerLength(preset.answerLength);
+    setAiCount(preset.cardCount);
+    playSound('click');
+  };
+
+  const handleClearPreset = () => {
+    setActivePresetId(null);
+    setTitle('');
+    setAiTopic('');
+    setAiNotes('');
+    playSound('click');
+  };
+
   const handleGenerateAI = async () => {
     if (!aiTopic.trim()) {
       alert('Vui lòng nhập chủ đề hoặc từ khóa cần tạo thẻ!');
@@ -200,6 +295,11 @@ export default function CreateStudioView({
     const targetCount = aiCount === 'auto' ? getRecommendation().count : Number(aiCount) || 5;
 
     setIsGenerating(true);
+    setGeneratingStep(0);
+    const stepInterval = setInterval(() => {
+      setGeneratingStep((prev) => (prev < 2 ? prev + 1 : prev));
+    }, 1200);
+
     try {
       const generated = await generateFlashcardsWithAI({
         topic: aiTopic,
@@ -225,7 +325,9 @@ export default function CreateStudioView({
     } catch (e) {
       alert('Có lỗi xảy ra khi tạo thẻ bằng AI: ' + (e.message || 'Lỗi mạng'));
     } finally {
+      clearInterval(stepInterval);
       setIsGenerating(false);
+      setGeneratingStep(0);
     }
   };
 
@@ -396,6 +498,7 @@ export default function CreateStudioView({
         priceXu: Math.max(2, parseInt(priceXu, 10) || 3),
         cardCount: validCards.length,
         authorName: user?.displayName || 'Người Học Ẩn Danh',
+        authorEmail: user?.email || '',
         authorAvatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
         authorTier: quota.tier,
         similarityScore: dupCheck.similarityScore,
@@ -575,6 +678,62 @@ export default function CreateStudioView({
                     {chip.label}
                   </button>
                 ))}
+              </div>
+
+              {/* Instant Studio Starter Packs (1-Click Rich Presets) */}
+              <div className="pt-2 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black text-[#28071a] flex items-center space-x-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#f02c85] fill-[#f02c85]" />
+                    <span>Bộ Mẫu Trải Nghiệm 1-Click (Tự Động Nạp Đầy Đủ Dữ Liệu):</span>
+                  </span>
+                  {activePresetId && (
+                    <button
+                      type="button"
+                      onClick={handleClearPreset}
+                      className="text-[10px] text-rose-600 hover:text-rose-700 font-bold underline"
+                    >
+                      Xóa mẫu đã chọn ✕
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {INSTANT_STUDIO_PRESETS.map((preset) => {
+                    const isSelected = activePresetId === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        onClick={() => handleApplyPreset(preset)}
+                        className={`p-2.5 rounded-2xl text-left border transition-all relative overflow-hidden flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-gradient-to-br from-pink-50 to-white border-[#f02c85] shadow-sm ring-2 ring-[#f02c85]/20'
+                            : 'bg-[#fcf7ec] hover:bg-white border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-white border border-[#eadfcb] text-[#28071a] shadow-2xs">
+                            {preset.badge}
+                          </span>
+                          <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-md ${
+                            isSelected ? 'bg-[#f02c85] text-white' : 'bg-[#eadfcb]/60 text-[#7a5a6b]'
+                          }`}>
+                            {isSelected ? '✓ Đang Dùng' : '1-Click Nạp'}
+                          </span>
+                        </div>
+                        <div className="text-xs font-black text-[#28071a] line-clamp-1">
+                          {preset.title}
+                        </div>
+                        <div className="text-[10px] text-[#7a5a6b] font-medium mt-1 line-clamp-1 flex items-center space-x-1">
+                          <span>🎯 {preset.highlight}</span>
+                          <span>•</span>
+                          <span>{preset.cardCount} thẻ tối ưu</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -915,6 +1074,59 @@ export default function CreateStudioView({
               </div>
             </div>
 
+            {/* Dynamic AI Multi-Step Animated Progress Indicator */}
+            {isGenerating && (
+              <div className="p-4 bg-gradient-to-r from-pink-50 via-purple-50 to-pink-50 rounded-2xl border-2 border-[#f02c85]/40 space-y-3 animate-fade-in shadow-xs">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-2 text-[#28071a] font-black">
+                    <Sparkles className="w-4 h-4 text-[#f02c85] animate-spin" />
+                    <span>Trí Tuệ Nhân Tạo Đang Xử Lý & Trích Xuất Flashcard...</span>
+                  </div>
+                  <span className="text-[11px] font-black text-[#f02c85] bg-pink-100/80 px-2 py-0.5 rounded-full border border-pink-200">
+                    {generatingStep === 0 ? 'Bước 1/3 (35%)' : generatingStep === 1 ? 'Bước 2/3 (75%)' : 'Bước 3/3 (95%)'}
+                  </span>
+                </div>
+
+                {/* Animated Progress Bar */}
+                <div className="w-full h-2.5 bg-white rounded-full overflow-hidden border border-[#eadfcb]">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#ff5f38] via-[#f02c85] to-[#7d1a52] transition-all duration-700 rounded-full"
+                    style={{ width: generatingStep === 0 ? '35%' : generatingStep === 1 ? '75%' : '95%' }}
+                  ></div>
+                </div>
+
+                {/* Steps Visual List */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-0.5">
+                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 0 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  }`}>
+                    <span className={generatingStep === 0 ? 'animate-bounce text-[#f02c85]' : 'text-emerald-600 font-black'}>
+                      {generatingStep > 0 ? '✓' : '1.'}
+                    </span>
+                    <span className="truncate">Phân tích ngữ cảnh & tài liệu</span>
+                  </div>
+
+                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 1 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  }`}>
+                    <span className={generatingStep === 1 ? 'animate-bounce text-[#f02c85]' : generatingStep > 1 ? 'text-emerald-600 font-black' : 'text-slate-400'}>
+                      {generatingStep > 1 ? '✓' : '2.'}
+                    </span>
+                    <span className="truncate">Trích xuất cặp Hỏi-Đáp SM-2</span>
+                  </div>
+
+                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 2 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  }`}>
+                    <span className={generatingStep === 2 ? 'animate-bounce text-[#f02c85]' : 'text-slate-400'}>
+                      {generatingStep === 2 ? '⚡' : '3.'}
+                    </span>
+                    <span className="truncate">Đóng gói & định dạng Anki</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Generate Action Button */}
             <div className="pt-1 flex items-center justify-end">
               <button
@@ -926,7 +1138,7 @@ export default function CreateStudioView({
                 {isGenerating ? (
                   <>
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Đang trích xuất thẻ...</span>
+                    <span>Đang hoàn thiện thẻ ({generatingStep === 0 ? 'Phân tích' : generatingStep === 1 ? 'Trích xuất' : 'Đóng gói'})...</span>
                   </>
                 ) : (
                   <>
