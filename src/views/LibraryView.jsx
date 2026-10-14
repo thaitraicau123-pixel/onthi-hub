@@ -20,10 +20,17 @@ import {
   Search,
   RotateCw,
   Store,
-  ChevronDown,
-  MoreHorizontal
+  MoreHorizontal,
+  FileSpreadsheet,
+  FileText
 } from 'lucide-react';
-import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet } from '../utils/storage';
+import {
+  exportAnkiDeckFile,
+  exportCsvFile,
+  exportMarkdownFile,
+  printSummaryGuide,
+  printFlashcardCutoutSheet
+} from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
@@ -393,6 +400,28 @@ export default function LibraryView({
                                   >
                                     <Download className="w-3.5 h-3.5 text-[#2383e2]" />
                                     <span>📥 Xuất File Anki (.txt)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      exportCsvFile(course.title, course.previewCards);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <FileSpreadsheet className="w-3.5 h-3.5 text-[#0f7b6c]" />
+                                    <span>📊 Xuất File CSV (Quizlet / Excel)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      exportMarkdownFile(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <FileText className="w-3.5 h-3.5 text-[#9065b0]" />
+                                    <span>📝 Xuất Markdown Notion (.md)</span>
                                   </button>
                                   <button
                                     type="button"

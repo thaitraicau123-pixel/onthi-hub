@@ -45,7 +45,8 @@ export default function NotionSidebar({
   onOpenBlindBox,
   onOpenMistakes,
   onOpenChangelog,
-  onOpenSearch
+  onOpenSearch,
+  onOpenAnalytics
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const userIsAdmin = isUserAdmin(user);
@@ -66,6 +67,13 @@ export default function NotionSidebar({
   ];
 
   const toolsNavItems = [
+    {
+      id: 'analytics',
+      label: 'Tiến Độ & Phân Tích',
+      emoji: '📊',
+      action: onOpenAnalytics,
+      desc: 'Tỷ lệ nhớ sâu SM-2 & Biểu đồ học'
+    },
     {
       id: 'mistakes',
       label: 'Sổ Tay Câu Sai',

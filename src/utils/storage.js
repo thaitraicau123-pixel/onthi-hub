@@ -115,6 +115,73 @@ export function exportAnkiDeckFile(courseTitle, cards = []) {
   URL.revokeObjectURL(url);
 }
 
+// Export Flashcards as Quizlet & Excel compatible CSV file (with UTF-8 BOM)
+export function exportCsvFile(courseTitle, cards = []) {
+  let csvContent = '\uFEFF"Câu Hỏi / Thuật Ngữ","Câu Trả Lời / Giải Thích","Chủ Đề"\n';
+  cards.forEach((card) => {
+    const front = (card.front || '').replace(/"/g, '""');
+    const back = (card.back || '').replace(/"/g, '""');
+    const tag = (card.tag || 'OnThiHub').replace(/"/g, '""');
+    csvContent += `"${front}","${back}","${tag}"\n`;
+  });
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const safeName = courseTitle.replace(/[^a-zA-Z0-9_\u00C0-\u1EF9]/g, '_');
+  link.href = url;
+  link.download = `Quizlet_${safeName}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+// Export Deck as Notion-ready Markdown document (.md)
+export function exportMarkdownFile(course) {
+  const cards = course.previewCards || [];
+  const quizzes = course.previewQuiz || [];
+  
+  let md = `# ${course.title}\n\n`;
+  md += `> **Mô tả:** ${course.subtitle || course.description || 'Bộ tài liệu ôn thi chuẩn OnThiHub'}\n`;
+  md += `> **Danh mục:** ${course.categoryLabel || 'Kiến thức trọng tâm'} | **Tổng số:** ${cards.length} thẻ ghi nhớ\n\n`;
+  md += `---\n\n## 📚 Danh Sách Thẻ Ghi Nhớ (Flashcards)\n\n`;
+
+  cards.forEach((card, idx) => {
+    md += `### Thẻ ${idx + 1}: ${card.front}\n`;
+    md += `**Chủ đề:** \`${card.tag || 'Trọng tâm'}\`\n\n`;
+    md += `<details>\n<summary><b>👉 Xem đáp án & giải thích</b></summary>\n\n`;
+    md += `${card.back}\n\n`;
+    md += `</details>\n\n---\n\n`;
+  });
+
+  if (quizzes.length > 0) {
+    md += `## 🎯 Câu Hỏi Trắc Nghiệm Tự Luyện\n\n`;
+    quizzes.forEach((q, idx) => {
+      md += `**Câu ${idx + 1}:** ${q.question}\n\n`;
+      (q.options || []).forEach((opt, oIdx) => {
+        md += `- [ ] ${String.fromCharCode(65 + oIdx)}. ${opt}\n`;
+      });
+      md += `\n<details>\n<summary><b>👉 Đáp án</b></summary>\n\n`;
+      md += `**Đáp án chính xác:** ${q.answer}\n\n*Giải thích:* ${q.explanation || 'Không có giải thích chi tiết.'}\n\n`;
+      md += `</details>\n\n---\n\n`;
+    });
+  }
+
+  md += `\n\n*Tạo tự động từ [OnThiHub](https://onthihub.vn) - Nền tảng Flashcard & Ôn thi trắc nghiệm thông minh*\n`;
+
+  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const safeName = (course.title || 'TaiLieu').replace(/[^a-zA-Z0-9_\u00C0-\u1EF9]/g, '_');
+  link.href = url;
+  link.download = `Notion_${safeName}.md`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
 // Export Summary as Printable PDF/HTML view
 export function printSummaryGuide(course) {
   const printWindow = window.open('', '_blank');

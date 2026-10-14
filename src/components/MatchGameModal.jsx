@@ -13,6 +13,8 @@ export default function MatchGameModal({ course, onClose }) {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isNewRecord, setIsNewRecord] = useState(false);
   const [autoSpeech, setAutoSpeech] = useState(true);
+  const [combo, setCombo] = useState(0);
+  const [maxCombo, setMaxCombo] = useState(0);
 
   const bestTimeKey = `onthi_match_best_time_${course?.id || 'default'}`;
   const [bestTime, setBestTime] = useState(() => {
@@ -74,6 +76,8 @@ export default function MatchGameModal({ course, onClose }) {
     setTimer(0);
     setIsGameOver(false);
     setIsNewRecord(false);
+    setCombo(0);
+    setMaxCombo(0);
   };
 
   useEffect(() => {
@@ -112,6 +116,14 @@ export default function MatchGameModal({ course, onClose }) {
     if (selectedTile.pairId === tile.pairId && selectedTile.type !== tile.type) {
       // CORRECT MATCH!
       playSound('correct');
+      const newCombo = combo + 1;
+      setCombo(newCombo);
+      if (newCombo > maxCombo) setMaxCombo(newCombo);
+
+      if (newCombo >= 2) {
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+      }
+
       const newMatched = [...matchedIds, tile.pairId];
       setMatchedIds(newMatched);
       setSelectedTile(null);
@@ -121,8 +133,9 @@ export default function MatchGameModal({ course, onClose }) {
       if (newMatched.length === totalPairs) {
         setIsGameOver(true);
         playSound('success');
-        confetti({ particleCount: 120, spread: 85, origin: { y: 0.55 } });
-        recordStudyAction(60); // Award 60 XP
+        confetti({ particleCount: 140, spread: 90, origin: { y: 0.55 } });
+        const finalXp = 60 + Math.max(newCombo, maxCombo) * 15;
+        recordStudyAction(finalXp); // Award scaled XP
         completeDailyQuest('match_game');
 
         // Check if new record
@@ -136,7 +149,8 @@ export default function MatchGameModal({ course, onClose }) {
         }
       }
     } else {
-      // WRONG MATCH
+      // WRONG MATCH - Reset combo
+      setCombo(0);
       setWrongPair([selectedTile.tileId, tile.tileId]);
       playSound('flip');
       setTimeout(() => {
@@ -174,6 +188,14 @@ export default function MatchGameModal({ course, onClose }) {
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-2.5">
+            {/* Combo Streak Badge */}
+            {combo >= 2 && (
+              <div className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500 to-red-500 text-white text-xs font-black animate-pulse shadow-sm">
+                <Flame className="w-3.5 h-3.5 fill-white" />
+                <span>COMBO x{combo}!</span>
+              </div>
+            )}
+
             {/* Pronunciation toggle */}
             <button
               type="button"
@@ -239,8 +261,19 @@ export default function MatchGameModal({ course, onClose }) {
                   Thời Gian: <span className="text-[#2383e2] font-mono">{timer.toFixed(1)}s</span>
                 </h3>
 
-                <p className="text-xs text-[#787774] mt-1 font-normal">
-                  Bạn nhận được <strong className="text-emerald-700 font-semibold">+60 XP</strong> và duy trì chuỗi Streak học tập hôm nay!
+                <div className="flex items-center justify-center space-x-2 mt-2">
+                  {maxCombo >= 2 && (
+                    <span className="px-2 py-0.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold">
+                      🔥 Chuỗi Combo x{maxCombo}
+                    </span>
+                  )}
+                  <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+                    +{60 + maxCombo * 15} XP Thưởng
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#787774] mt-1.5 font-normal">
+                  Phản xạ nối thẻ thần tốc giúp ghi nhớ bản chất và duy trì chuỗi Streak!
                 </p>
               </div>
 

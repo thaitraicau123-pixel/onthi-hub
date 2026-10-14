@@ -12,7 +12,8 @@ import {
   ChevronRight,
   ShieldCheck,
   Search,
-  Sparkles
+  Sparkles,
+  BarChart2
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
@@ -29,7 +30,9 @@ export default function NotionTopbar({
   onOpenAuth,
   onCheckInCompleted,
   onOpenLeaderboard,
-  onOpenChangelog
+  onOpenChangelog,
+  onOpenSearch,
+  onOpenAnalytics
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
@@ -117,6 +120,37 @@ export default function NotionTopbar({
       {/* RIGHT: COMPACT NOTION UTILITY BADGES */}
       <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
         
+        {/* Quick Command Palette Search Button */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenSearch?.();
+          }}
+          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-[#f7f6f5] hover:bg-[#efefed] text-[#787774] hover:text-[#37352f] border border-[#e9e9e8] text-xs transition-all cursor-pointer shadow-2xs"
+          title="Mở thanh tìm kiếm & lệnh nhanh (Ctrl+K)"
+        >
+          <Search className="w-3.5 h-3.5 text-[#9b9a97]" />
+          <span>Tìm nhanh</span>
+          <kbd className="text-[9px] font-mono px-1 py-0.2 rounded bg-white text-[#9b9a97] border border-[#e3e2e0]">
+            Ctrl+K
+          </kbd>
+        </button>
+
+        {/* Analytics Dashboard Button */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenAnalytics?.();
+          }}
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#f4f0f7] hover:bg-[#eae3f1] text-[#9065b0] border border-[#e3d7ec] transition-all font-semibold shadow-2xs cursor-pointer"
+          title="Xem phân tích & tiến độ học tập SM-2"
+        >
+          <BarChart2 className="w-3.5 h-3.5 text-[#9065b0]" />
+          <span className="hidden sm:inline">Tiến Độ</span>
+        </button>
+
         {/* Wallet Balance Pill */}
         <button
           type="button"

@@ -21,6 +21,8 @@ import PassDeckModal from './components/PassDeckModal';
 import SellDeckModal from './components/SellDeckModal';
 import MistakeNotebookModal from './components/MistakeNotebookModal';
 import ChangelogModal from './components/ChangelogModal';
+import CommandPaletteModal from './components/CommandPaletteModal';
+import AnalyticsModal from './components/AnalyticsModal';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
@@ -62,6 +64,8 @@ export default function App() {
   const [activeSellCourse, setActiveSellCourse] = useState(null);
   const [isMistakesNotebookOpen, setIsMistakesNotebookOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(() => isChangelogUnread());
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   // Sync initial state
@@ -73,17 +77,15 @@ export default function App() {
 
     // Notion Hotkeys:
     // 1. Ctrl + \ toggles Notion Sidebar
-    // 2. Ctrl + Shift + A switches to Admin Tab
+    // 2. Ctrl + K / Cmd + K opens Spotlight Command Palette
+    // 3. Ctrl + Shift + A switches to Admin Tab
     const handleKeyDown = (e) => {
       if (e.ctrlKey && (e.key === '\\' || e.code === 'Backslash')) {
         e.preventDefault();
         setIsSidebarOpen((prev) => !prev);
-      } else if (e.ctrlKey && (e.key === 'k' || e.key === 'K')) {
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
-        setActiveTab('home');
-        setTimeout(() => {
-          document.querySelector('#catalog-section input')?.focus();
-        }, 120);
+        setIsCommandPaletteOpen((prev) => !prev);
       } else if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
         const activeUser = getCurrentUser();
@@ -184,12 +186,8 @@ export default function App() {
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
         onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
         onOpenChangelog={() => setIsChangelogOpen(true)}
-        onOpenSearch={() => {
-          setActiveTab('home');
-          setTimeout(() => {
-            document.querySelector('#catalog-section input')?.focus();
-          }, 120);
-        }}
+        onOpenSearch={() => setIsCommandPaletteOpen(true)}
+        onOpenAnalytics={() => setIsAnalyticsOpen(true)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer */}
@@ -210,6 +208,8 @@ export default function App() {
           onCheckInCompleted={refreshState}
           onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
           onOpenChangelog={() => setIsChangelogOpen(true)}
+          onOpenSearch={() => setIsCommandPaletteOpen(true)}
+          onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -481,7 +481,39 @@ export default function App() {
         />
       )}
 
-      {/* 10. Floating Pomodoro Focus Timer Widget */}
+      {/* 13. Notion Spotlight Command Palette (Ctrl+K) */}
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        allCourses={allAvailableCourses}
+        purchasedCourses={purchasedCourses}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+        onOpenQuiz={(c) => setActiveQuizCourse(c)}
+        onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
+        onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+        onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+        onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+        onOpenWallet={() => {
+          setActiveTab('wallet');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+      />
+
+      {/* 14. Learning Analytics & Mastery Dashboard */}
+      <AnalyticsModal
+        isOpen={isAnalyticsOpen}
+        onClose={() => setIsAnalyticsOpen(false)}
+        allCourses={allAvailableCourses}
+        purchasedCourses={purchasedCourses}
+        onOpenDueCards={(deck) => setActiveFlashcardCourse(deck)}
+      />
+
+      {/* 15. Floating Pomodoro Focus Timer Widget */}
       <PomodoroTimerWidget onBonusReward={refreshState} />
 
     </div>
