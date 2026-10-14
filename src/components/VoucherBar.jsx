@@ -31,56 +31,53 @@ export default function VoucherBar() {
   };
 
   return (
-    <div className="bg-[#fcf7ec] border border-[#eadfcb] rounded-3xl p-3 sm:p-4 shadow-sm text-[#28071a] relative overflow-hidden">
-      {/* Decorative subtle background aura */}
-      <div className="absolute -right-16 -top-16 w-48 h-48 bg-gradient-to-br from-amber-200/20 to-pink-200/20 rounded-full blur-2xl pointer-events-none" />
-
+    <div className="bg-[#fbfbfa] border border-[#e9e9e8] rounded-xl p-3 sm:p-4 text-[#37352f] shadow-2xs">
       {/* Top row: Title + Timer */}
-      <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#eadfcb]/70 relative z-10">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#ff5f38] to-[#f02c85] text-white flex items-center justify-center font-bold shadow-2xs shrink-0">
-            <Ticket className="w-4 h-4 fill-white/20 text-white" />
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#e9e9e8]">
+        <div className="flex items-center space-x-2">
+          <div className="w-6 h-6 rounded-md bg-white border border-[#e9e9e8] shadow-2xs text-[#37352f] flex items-center justify-center shrink-0">
+            <Ticket className="w-3.5 h-3.5 text-[#cc782f]" />
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-xs sm:text-sm font-black text-[#28071a] tracking-tight">
+            <span className="text-xs sm:text-sm font-bold text-[#37352f]">
               Ưu Đãi Trợ Giá Ôn Thi
             </span>
-            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-[#ff5f38] to-[#f02c85] text-white shadow-2xs">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#faece3] text-[#cc782f] border border-[#f3d6c1]">
               ⚡ Giờ Vàng
             </span>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1.5 text-[11px] text-[#7a5a6b] font-bold bg-white/70 px-2.5 py-1 rounded-xl border border-[#eadfcb]/80">
-          <Clock className="w-3.5 h-3.5 text-[#ff5f38]" />
-          <span>Hết hạn sau: <strong className="font-mono text-[#f02c85] font-black">{formatTimer(timeLeft)}</strong></span>
+        <div className="flex items-center space-x-1.5 text-[11px] text-[#787774] bg-white px-2 py-0.5 rounded-md border border-[#e9e9e8]">
+          <Clock className="w-3 h-3 text-[#cc782f]" />
+          <span>Hết hạn sau: <strong className="font-mono text-[#37352f] font-bold">{formatTimer(timeLeft)}</strong></span>
         </div>
       </div>
 
-      {/* 3 Voucher Cards Grid - 100% width, zero horizontal scrolling, zero cut-off */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 relative z-10">
+      {/* 3 Voucher Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {AVAILABLE_VOUCHERS.map((v) => {
           const isClaimed = claimedList.includes(v.id);
           return (
             <div
               key={v.id}
-              className={`rounded-2xl p-2.5 border transition-all flex items-center justify-between gap-2 relative ${
+              className={`rounded-lg p-2.5 border transition-all flex items-center justify-between gap-2 ${
                 isClaimed
-                  ? 'bg-white/80 border-[#eadfcb] opacity-90'
-                  : 'bg-white border-[#eadfcb] hover:border-[#f02c85]/40 hover:shadow-xs'
+                  ? 'bg-white border-[#e9e9e8] opacity-75'
+                  : 'bg-white border-[#e9e9e8] hover:border-[#c5c4c0] hover:shadow-2xs'
               }`}
             >
               {/* Ticket Left Badge & Info */}
-              <div className="flex items-center space-x-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#fcf5e5] to-[#fdecf4] text-[#f02c85] border border-[#eadfcb]/60 flex items-center justify-center font-black shrink-0">
+              <div className="flex items-center space-x-2 min-w-0">
+                <div className="w-7 h-7 rounded-md bg-[#f1f1ef] text-[#787774] border border-[#e3e2e0] flex items-center justify-center shrink-0">
                   <Tag className="w-3.5 h-3.5" />
                 </div>
 
                 <div className="min-w-0">
-                  <div className="text-xs font-black text-[#28071a] truncate">
+                  <div className="text-xs font-bold text-[#37352f] truncate">
                     {v.discountText}
                   </div>
-                  <div className="text-[10px] text-[#7a5a6b] truncate font-medium">
+                  <div className="text-[10px] text-[#787774] truncate">
                     {v.shortDesc || v.desc}
                   </div>
                 </div>
@@ -91,15 +88,15 @@ export default function VoucherBar() {
                 type="button"
                 onClick={() => handleClaim(v.id)}
                 disabled={isClaimed}
-                className={`px-3 py-1.5 rounded-xl text-[11px] font-black transition-all shrink-0 flex items-center space-x-1 ${
+                className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all shrink-0 flex items-center space-x-1 ${
                   isClaimed
-                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-700 cursor-default shadow-2xs'
-                    : 'bg-[#f02c85] hover:bg-[#dc1f74] text-white shadow-xs hover:scale-105 active:scale-95'
+                    ? 'bg-[#edf3ec] text-[#448361] border border-[#d3e5d7] cursor-default'
+                    : 'bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white shadow-2xs cursor-pointer'
                 }`}
               >
                 {isClaimed ? (
                   <>
-                    <Check className="w-3 h-3 stroke-[3]" />
+                    <Check className="w-3 h-3" />
                     <span>Đã Lưu</span>
                   </>
                 ) : (

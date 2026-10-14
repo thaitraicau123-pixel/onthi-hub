@@ -3,51 +3,54 @@ import { BookOpen, ShieldCheck, Mail, Phone, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1c0413] text-rose-200/70 py-12 border-t border-[#f02c85]/20 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer className="bg-[#f7f6f5] text-[#787774] py-10 border-t border-[#e9e9e8] text-xs">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           
           {/* Brand Info */}
           <div className="md:col-span-2">
-            <div className="flex items-center space-x-2.5 text-white mb-3">
-              <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md shadow-pink-900/40">
-                <BookOpen className="w-5 h-5 text-white" />
+            <div className="flex items-center space-x-2 text-[#37352f] mb-3">
+              <div className="w-7 h-7 rounded-md bg-white border border-[#e9e9e8] shadow-2xs flex items-center justify-center text-sm">
+                🎓
               </div>
-              <span className="text-xl font-black text-white uppercase tracking-tight">ÔnThiHub</span>
+              <span className="text-base font-bold text-[#37352f] tracking-tight">Ôn Thi Hub</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#f1f1ef] text-[#787774] border border-[#e3e2e0]">
+                Workspace
+              </span>
             </div>
-            <p className="text-rose-200/60 text-xs max-w-sm leading-relaxed mb-4 font-medium">
+            <p className="text-[#787774] text-xs max-w-sm leading-relaxed mb-4">
               Nền tảng cung cấp kho tài liệu số, bộ đề thi chuẩn hóa và Flashcard Anki ứng dụng thuật toán Spaced Repetition số 1 Việt Nam. Hỗ trợ hàng ngàn học viên thi đỗ công chức, nâng band ngoại ngữ và đỗ offer IT.
             </p>
-            <div className="flex items-center space-x-2 text-rose-100 font-bold">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <div className="flex items-center space-x-2 text-[#448361] font-semibold text-[11px]">
+              <ShieldCheck className="w-4 h-4 text-[#448361]" />
               <span>Thanh toán tự động 100% qua VietQR • Bảo hành cập nhật trọn đời</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-black text-sm mb-3 uppercase tracking-wider">Danh Mục Tài Liệu</h4>
-            <ul className="space-y-2 font-medium">
-              <li><a href="#cong-chuc" className="hover:text-[#f02c85] transition-colors">Đề Thi Công Chức 2026</a></li>
-              <li><a href="#it-tech" className="hover:text-[#f02c85] transition-colors">Phỏng Vấn IT & System Design</a></li>
-              <li><a href="#ngoai-ngu" className="hover:text-[#f02c85] transition-colors">Từ Vựng IELTS 7.5+ & TOEIC</a></li>
-              <li><a href="#ngoai-ngu" className="hover:text-[#f02c85] transition-colors">Kanji JLPT N3 - N2 Siêu Tốc</a></li>
+            <h4 className="text-[#37352f] font-bold text-xs mb-3 uppercase tracking-wider">Danh Mục Tài Liệu</h4>
+            <ul className="space-y-2">
+              <li><a href="#cong-chuc" className="hover:text-[#2383e2] transition-colors">Đề Thi Công Chức 2026</a></li>
+              <li><a href="#it-tech" className="hover:text-[#2383e2] transition-colors">Phỏng Vấn IT & System Design</a></li>
+              <li><a href="#ngoai-ngu" className="hover:text-[#2383e2] transition-colors">Từ Vựng IELTS 7.5+ & TOEIC</a></li>
+              <li><a href="#ngoai-ngu" className="hover:text-[#2383e2] transition-colors">Kanji JLPT N3 - N2 Siêu Tốc</a></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h4 className="text-white font-black text-sm mb-3 uppercase tracking-wider">Hỗ Trợ Kỹ Thuật 24/7</h4>
-            <ul className="space-y-2 font-medium">
+            <h4 className="text-[#37352f] font-bold text-xs mb-3 uppercase tracking-wider">Hỗ Trợ Kỹ Thuật 24/7</h4>
+            <ul className="space-y-2">
               <li className="flex items-center space-x-2">
-                <Phone className="w-4 h-4 text-[#f02c85]" />
-                <span>Hotline Hỗ Trợ: <a href="tel:0986019623" className="text-white hover:text-[#f02c85] transition-colors font-bold">0986019623</a></span>
+                <Phone className="w-3.5 h-3.5 text-[#2383e2]" />
+                <span>Hotline Hỗ Trợ: <a href="tel:0986019623" className="text-[#37352f] hover:text-[#2383e2] transition-colors font-bold">0986019623</a></span>
               </li>
               <li className="flex items-center space-x-2">
-                <Mail className="w-4 h-4 text-[#f02c85]" />
-                <span>Email: <a href="mailto:thaitraicau123@gmail.com" className="text-white hover:text-[#f02c85] transition-colors">thaitraicau123@gmail.com</a></span>
+                <Mail className="w-3.5 h-3.5 text-[#2383e2]" />
+                <span>Email: <a href="mailto:thaitraicau123@gmail.com" className="text-[#37352f] hover:text-[#2383e2] transition-colors">thaitraicau123@gmail.com</a></span>
               </li>
-              <li className="text-rose-300/50 pt-2 font-medium">
+              <li className="text-[#9b9a97] pt-1">
                 Thời gian hỗ trợ: 8:00 - 23:00 hàng ngày (kể cả Thứ 7, CN)
               </li>
             </ul>
@@ -56,15 +59,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#f02c85]/15 text-center flex flex-col sm:flex-row items-center justify-between text-rose-300/60 text-[11px] gap-2 font-medium">
-          <p>© 2026 ÔnThiHub. All rights reserved. Xây dựng cho sĩ tử Việt Nam.</p>
-          <p className="flex items-center justify-center space-x-1">
-            <span>Made with</span>
-            <Heart className="w-3.5 h-3.5 text-[#f02c85] fill-[#f02c85]" />
-            <span>for your career success</span>
+        <div className="pt-6 border-t border-[#e9e9e8] flex flex-col sm:flex-row items-center justify-between text-[#9b9a97] text-[11px] gap-2">
+          <p>© 2026 ÔnThiHub. Thiết kế theo tiêu chuẩn giao diện Notion tối giản & tập trung.</p>
+          <p className="flex items-center space-x-1">
+            <span>Xây dựng cho sĩ tử Việt Nam</span>
           </p>
         </div>
-
       </div>
     </footer>
   );

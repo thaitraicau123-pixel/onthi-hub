@@ -74,57 +74,57 @@ export default function LibraryView({
     });
 
   return (
-    <div className="space-y-6 animate-fade-in pb-16">
+    <div className="space-y-6 animate-fade-in pb-16 text-[#37352f]">
       
-      {/* HEADER (Wayground Warm Cream Container) */}
-      <div className="flex items-center justify-between bg-[#fcf7ec] p-6 rounded-3xl border border-[#eadfcb] shadow-md text-[#28071a]">
-        <div>
-          <span className="text-xs font-black uppercase tracking-wider text-[#f02c85] bg-pink-100/70 px-3 py-1 rounded-full border border-pink-200">
-            MY WORKSPACE
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-[#28071a] mt-2">
-            Tủ Thẻ & Tài Liệu Của Tôi ({unlockedList.length})
-          </h2>
-          <p className="text-xs text-[#7a5a6b] mt-0.5 font-medium">
-            Lưu trữ vĩnh viễn trên thiết bị của bạn. Bấm để bắt đầu học ngay hoặc tải file nạp vào Anki.
-          </p>
-        </div>
-
-        {isComboUser && (
-          <div className="hidden sm:flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-amber-100/80 border border-amber-300 text-amber-900 text-xs font-black">
-            <Sparkles className="w-4 h-4 text-amber-600 fill-amber-500" />
-            <span>VIP ALL-ACCESS TRỌN ĐỜI</span>
+      {/* NOTION PAGE HEADER */}
+      <div className="space-y-3 pb-2 border-b border-[#e9e9e8]">
+        <div className="text-4xl select-none">📚</div>
+        <div className="flex items-start justify-between flex-wrap gap-2">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] tracking-tight">
+              Tủ Thẻ & Tài Liệu Của Tôi
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-[#787774] leading-relaxed">
+              Lưu trữ vĩnh viễn trên thiết bị của bạn ({unlockedList.length} bộ tài liệu). Bắt đầu học ngay hoặc xuất file nạp vào Anki.
+            </p>
           </div>
-        )}
+
+          {isComboUser && (
+            <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-[#fbf3db] border border-[#f4e4b7] text-[#c29243] text-xs font-semibold">
+              <Sparkles className="w-3.5 h-3.5 text-[#c29243]" />
+              <span>Gói All-Access Trọn Đời</span>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* SPACED REPETITION (SM-2) HERO BANNER */}
+      {/* NOTION SPACED REPETITION (SM-2) CALLOUT WIDGET */}
       {unlockedList.length > 0 && (
-        <div className="bg-gradient-to-r from-[#28071a] via-[#430c2c] to-[#1d0313] p-5 sm:p-6 rounded-3xl border-2 border-[#f02c85]/40 shadow-xl text-white flex flex-col md:flex-row items-center justify-between gap-5">
+        <div className="bg-[#fbfbfa] p-4 sm:p-5 rounded-xl border border-[#e9e9e8] text-[#37352f] shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-pink-500/20 border border-pink-400/40 text-[11px] font-black text-pink-300">
-              <Brain className="w-3.5 h-3.5 text-pink-400" />
-              <span>SUPERMEMO SM-2 • CHỐNG QUÊN LÃNG EBBINGHAUS</span>
+            <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded bg-[#f4f0f7] border border-[#e3d7ec] text-[11px] font-semibold text-[#9065b0]">
+              <Brain className="w-3.5 h-3.5 text-[#9065b0]" />
+              <span>SuperMemo SM-2 • Chống Quên Lãng</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-black text-white">
+            <h3 className="text-base sm:text-lg font-bold text-[#37352f]">
               {srsStats.totalDue > 0 ? (
-                <>🎯 Hôm Nay Có <span className="text-[#f02c85] text-2xl font-black">{srsStats.totalDue}</span> Thẻ Cần Ôn Tập!</>
+                <>🎯 Hôm nay có <span className="text-[#d44c47] font-extrabold">{srsStats.totalDue}</span> thẻ cần ôn tập!</>
               ) : (
-                <>🎉 Tuyệt Vời! Bạn Đã Ôn Hết Tất Cả Thẻ Đến Hạn Hôm Nay!</>
+                <>🎉 Tuyệt vời! Bạn đã ôn hết tất cả thẻ đến hạn hôm nay!</>
               )}
             </h3>
-            <p className="text-xs text-pink-200/80 font-medium max-w-xl">
-              Hệ thống tự động tính toán chu kỳ lặp lại ngắt quãng (Spaced Repetition) giúp biến trí nhớ ngắn hạn thành trí nhớ vĩnh viễn trước ngày thi.
+            <p className="text-xs text-[#787774] max-w-xl">
+              Hệ thống tự động tính chu kỳ lặp lại ngắt quãng để củng cố trí nhớ dài hạn trước ngày thi.
             </p>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-xs">
-              <span className="px-2.5 py-1 rounded-lg bg-pink-900/50 border border-pink-700/50 text-pink-200 font-bold">
-                ⏰ Cần ôn: <strong className="text-white">{srsStats.totalDue}</strong>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-1 text-xs">
+              <span className="px-2 py-0.5 rounded bg-[#fdebec] border border-[#f9c9cb] text-[#d44c47] font-semibold">
+                ⏰ Cần ôn: <strong>{srsStats.totalDue}</strong>
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-emerald-950/50 border border-emerald-700/50 text-emerald-300 font-bold">
-                🧠 Đã nhớ sâu: <strong className="text-white">{srsStats.totalLearned}</strong>
+              <span className="px-2 py-0.5 rounded bg-[#edf3ec] border border-[#d3e5d7] text-[#448361] font-semibold">
+                🧠 Đã nhớ sâu: <strong>{srsStats.totalLearned}</strong>
               </span>
-              <span className="px-2.5 py-1 rounded-lg bg-amber-950/50 border border-amber-700/50 text-amber-300 font-bold">
-                ✨ Thẻ mới: <strong className="text-white">{srsStats.totalNew}</strong>
+              <span className="px-2 py-0.5 rounded bg-[#fbf3db] border border-[#f4e4b7] text-[#c29243] font-semibold">
+                ✨ Thẻ mới: <strong>{srsStats.totalNew}</strong>
               </span>
             </div>
           </div>
@@ -132,18 +132,20 @@ export default function LibraryView({
           <div className="shrink-0 w-full md:w-auto">
             {srsStats.totalDue > 0 ? (
               <button
+                type="button"
                 onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
-                className="w-full md:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#f02c85] to-pink-500 hover:brightness-110 text-white font-black text-xs sm:text-sm shadow-lg shadow-pink-900/50 flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+                className="w-full md:w-auto px-4 py-2.5 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white font-semibold text-xs shadow-2xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
               >
-                <Flame className="w-5 h-5 text-amber-300 animate-pulse" />
-                <span>Ôn Tập Toàn Bộ {srsStats.totalDue} Thẻ Đến Hạn</span>
+                <Flame className="w-4 h-4 text-amber-400 fill-amber-400" />
+                <span>Ôn Toàn Bộ {srsStats.totalDue} Thẻ Đến Hạn</span>
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
-                className="w-full md:w-auto px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-pink-200 font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
+                className="w-full md:w-auto px-4 py-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] font-semibold text-xs flex items-center justify-center space-x-1.5 transition-colors"
               >
-                <CheckCircle className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-[#448361]" />
                 <span>Ôn Tập Thêm Luyện Phản Xạ</span>
               </button>
             )}
@@ -151,42 +153,43 @@ export default function LibraryView({
         </div>
       )}
 
-      {/* MISTAKES QUICK ACCESS CARD */}
+      {/* MISTAKES QUICK ACCESS CALLOUT */}
       {unmasteredMistakesCount > 0 && (
-        <div className="bg-gradient-to-r from-rose-950/70 to-purple-950/70 border border-rose-500/40 rounded-2xl p-4 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-rose-100 shadow-md">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-rose-600 text-white flex items-center justify-center shrink-0 shadow-sm">
-              <BookMarked className="w-5 h-5" />
+        <div className="bg-[#fdebec] border border-[#f9c9cb] rounded-xl p-3.5 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-[#d44c47] shadow-2xs">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-white border border-[#f9c9cb] text-[#d44c47] flex items-center justify-center shrink-0">
+              <BookMarked className="w-4 h-4" />
             </div>
             <div>
-              <span className="font-black text-white text-sm block">
-                Sổ Tay Câu Sai: Bạn có {unmasteredMistakesCount} câu cần khắc phục!
+              <span className="font-bold text-sm block text-[#37352f]">
+                Sổ Tay Câu Sai: Có {unmasteredMistakesCount} câu cần khắc phục!
               </span>
-              <span className="text-rose-200/80 font-medium text-[11px]">
-                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ AI OnThiHub.
+              <span className="text-[#787774] text-[11px]">
+                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ AI.
               </span>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={onOpenMistakes}
-            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95 shrink-0"
+            className="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-[#d44c47] hover:bg-[#c23d38] text-white font-semibold text-xs shadow-2xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shrink-0"
           >
-            <span>Mở Sổ Tay Câu Sai ({unmasteredMistakesCount})</span>
+            <span>Mở Sổ Tay ({unmasteredMistakesCount})</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
-      {/* C2C PASS TIPS BANNER */}
-      <div className="bg-gradient-to-r from-purple-950/70 to-pink-950/70 border border-[#f02c85]/40 rounded-2xl p-4 text-xs flex items-center justify-between gap-3 text-pink-100 shadow-md">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-8 h-8 rounded-xl bg-[#f02c85] flex items-center justify-center shrink-0 shadow-sm">
-            <Repeat className="w-4 h-4 text-white" />
+      {/* C2C PASS TIPS CALLOUT */}
+      <div className="bg-[#f1f1ef] border border-[#e9e9e8] rounded-xl p-3 text-xs flex items-center justify-between gap-2.5 text-[#37352f]">
+        <div className="flex items-center space-x-2">
+          <div className="w-7 h-7 rounded-md bg-white border border-[#e9e9e8] text-[#2383e2] flex items-center justify-center shrink-0">
+            <Repeat className="w-3.5 h-3.5" />
           </div>
-          <div>
-            <span className="font-black text-white block">Bạn đã ôn thi đỗ hoặc học xong tài liệu?</span>
-            <span className="text-pink-200/80 font-medium text-[11px]">Bấm nút "Pass Lại Thẻ Cũ" ở mỗi bộ thẻ bên dưới để nhượng lại cho bạn học khác trên Sàn C2C và nhận Xu vào ví!</span>
+          <div className="text-[11px] leading-relaxed">
+            <span className="font-bold">Đã thi đỗ hoặc học xong tài liệu? </span>
+            <span className="text-[#787774]">Bạn có thể bấm nút "Pass Lại Thẻ Cũ" ở mỗi bộ thẻ bên dưới để nhượng lại cho bạn học khác trên Sàn C2C và nhận Xu vào ví!</span>
           </div>
         </div>
       </div>
@@ -307,117 +310,129 @@ export default function LibraryView({
               }}
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredUnlockedList.map((course) => {
-            const deckSrs = getDeckDueStats(course);
-            return (
-              <div
-                key={course.id}
-                className="p-5 rounded-3xl border border-[#eadfcb] bg-[#fcf7ec] hover:border-[#f02c85] shadow-md hover:shadow-xl transition-all flex flex-col justify-between text-[#28071a]"
-              >
-                <div>
-                  <div className="flex items-center justify-between flex-wrap gap-1">
-                    <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                      BẢN QUYỀN ĐÃ MỞ KHÓA
-                    </span>
-                    {deckSrs.due > 0 ? (
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200">
-                        ⏰ {deckSrs.due} thẻ cần ôn
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-                        ✓ Đã ôn đủ
-                      </span>
-                    )}
+                const deckSrs = getDeckDueStats(course);
+                return (
+                  <div
+                    key={course.id}
+                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] bg-white hover:border-[#c5c4c0] hover:shadow-xs transition-all flex flex-col justify-between text-[#37352f]"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between flex-wrap gap-1">
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#edf3ec] text-[#448361] border border-[#d3e5d7]">
+                          ĐÃ SỞ HỮU
+                        </span>
+                        {deckSrs.due > 0 ? (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#fdebec] text-[#d44c47] border border-[#f9c9cb]">
+                            ⏰ {deckSrs.due} thẻ cần ôn
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f1f1ef] text-[#787774] border border-[#e3e2e0]">
+                            ✓ Đã ôn đủ
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-[#37352f] mt-2 line-clamp-2 leading-snug">
+                        {course.title}
+                      </h4>
+                      <p className="text-xs text-[#787774] mt-1 line-clamp-2">
+                        {course.subtitle || course.description}
+                      </p>
+                      <div className="mt-2.5 text-[11px] text-[#9b9a97]">
+                        {course.previewCards?.length || 0} thẻ Anki • {course.previewQuiz?.length || 0} câu trắc nghiệm
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="mt-4 pt-3 border-t border-[#e9e9e8] space-y-2">
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => onOpenFlashcards(course)}
+                          className="py-1.5 px-2.5 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white text-xs font-semibold flex items-center justify-center space-x-1 shadow-2xs transition-colors cursor-pointer"
+                        >
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>Học Thẻ 3D</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onOpenQuiz(course)}
+                          className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1 transition-colors cursor-pointer"
+                        >
+                          <PlayCircle className="w-3.5 h-3.5 text-[#cc782f]" />
+                          <span>Thi Thử</span>
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => onOpenMatchGame(course)}
+                        className="w-full py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                      >
+                        <Gamepad2 className="w-3.5 h-3.5 text-[#2383e2]" />
+                        <span>🎮 Ghép Thẻ Phản Xạ (Match)</span>
+                      </button>
+
+                      {/* C2C Actions: Bán Thẻ Lên Sàn & Pass Thẻ Cũ */}
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => onOpenSellDeck?.(course)}
+                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-[11px] font-semibold flex items-center justify-center space-x-1 transition-colors"
+                          title="Đăng bán bộ thẻ này lên Chợ Thẻ C2C kiếm Xu"
+                        >
+                          <Tag className="w-3 h-3 text-[#cc782f]" />
+                          <span>🏷️ Đăng Bán</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => onOpenPassDeck?.(course)}
+                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-[11px] font-semibold flex items-center justify-center space-x-1 transition-colors"
+                          title="Pass lại thẻ đã học cho bạn học khác"
+                        >
+                          <Repeat className="w-3 h-3 text-[#9065b0]" />
+                          <span>🔁 Pass Lại</span>
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => exportAnkiDeckFile(course.title, course.previewCards)}
+                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
+                          title="Xuất file .txt nhập vào Anki"
+                        >
+                          <Download className="w-3 h-3" />
+                          <span>Tải Anki</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => printSummaryGuide(course)}
+                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
+                          title="In tài liệu hoặc xuất PDF"
+                        >
+                          <Printer className="w-3 h-3" />
+                          <span>In / PDF</span>
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => printFlashcardCutoutSheet(course)}
+                        className="w-full py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
+                        title="In bảng thẻ giấy A4 có viền nét đứt để cắt rời học offline"
+                      >
+                        <Scissors className="w-3 h-3" />
+                        <span>In Bảng Thẻ Giấy A4 (Học Offline)</span>
+                      </button>
+                    </div>
                   </div>
-                  <h4 className="text-base font-black text-[#28071a] mt-2 line-clamp-2 leading-snug">
-                    {course.title}
-                  </h4>
-                <p className="text-xs text-[#7a5a6b] mt-1 line-clamp-2 font-medium">
-                  {course.subtitle || course.description}
-                </p>
-                <div className="mt-3 text-[11px] text-[#7a5a6b] font-bold">
-                  {course.previewCards?.length || 0} thẻ Anki • {course.previewQuiz?.length || 0} câu trắc nghiệm
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="mt-5 pt-3 border-t border-[#eadfcb] grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => onOpenFlashcards(course)}
-                  className="py-2.5 px-3 rounded-xl bg-[#f02c85] hover:bg-[#dc1f74] text-white text-xs font-black flex items-center justify-center space-x-1 shadow-md shadow-pink-900/30 transition-transform transform hover:scale-105 active:scale-95"
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Học Thẻ 3D</span>
-                </button>
-
-                <button
-                  onClick={() => onOpenQuiz(course)}
-                  className="py-2.5 px-3 rounded-xl bg-[#28071a] hover:bg-[#3d0c27] text-white text-xs font-black flex items-center justify-center space-x-1 shadow-sm transition-transform transform hover:scale-105 active:scale-95"
-                >
-                  <PlayCircle className="w-3.5 h-3.5 text-pink-400" />
-                  <span>Thi Thử</span>
-                </button>
-
-                <button
-                  onClick={() => onOpenMatchGame(course)}
-                  className="col-span-2 py-2.5 px-3 rounded-xl btn-wayground-sunset text-white text-xs font-black flex items-center justify-center space-x-1 shadow-md transition-transform transform hover:scale-105 active:scale-95"
-                >
-                  <Gamepad2 className="w-3.5 h-3.5" />
-                  <span>🎮 Chơi Nối Thẻ Siêu Tốc (Match Mode)</span>
-                </button>
-
-                {/* C2C Actions: Bán Thẻ Lên Sàn & Pass Thẻ Cũ */}
-                <div className="col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <button
-                    onClick={() => onOpenSellDeck?.(course)}
-                    className="py-2 px-2 rounded-xl bg-gradient-to-r from-[#ff5f38] to-[#f02c85] hover:brightness-110 text-white text-xs font-black flex items-center justify-center space-x-1 shadow-sm transition-transform transform hover:scale-102 active:scale-95"
-                    title="Đăng bán bộ thẻ này lên Chợ Thẻ C2C kiếm Xu"
-                  >
-                    <Tag className="w-3.5 h-3.5" />
-                    <span>🏷️ Bán Thẻ Lên Sàn</span>
-                  </button>
-
-                  <button
-                    onClick={() => onOpenPassDeck?.(course)}
-                    className="py-2 px-2 rounded-xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black flex items-center justify-center space-x-1 shadow-sm transition-transform transform hover:scale-102 active:scale-95"
-                    title="Pass lại thẻ đã học cho bạn học khác với giá ưu đãi sinh viên"
-                  >
-                    <Repeat className="w-3.5 h-3.5" />
-                    <span>🔁 Pass Lại Thẻ</span>
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => exportAnkiDeckFile(course.title, course.previewCards)}
-                  className="py-2 px-2.5 rounded-xl bg-white hover:bg-[#faebd0] border border-[#eadfcb] text-[#28071a] text-xs font-bold flex items-center justify-center space-x-1"
-                  title="Xuất file .txt nhập vào Anki"
-                >
-                  <Download className="w-3.5 h-3.5 text-[#f02c85]" />
-                  <span>Tải Anki</span>
-                </button>
-
-                <button
-                  onClick={() => printSummaryGuide(course)}
-                  className="py-2 px-2.5 rounded-xl bg-white hover:bg-[#faebd0] border border-[#eadfcb] text-[#28071a] text-xs font-bold flex items-center justify-center space-x-1"
-                  title="In tài liệu hoặc xuất PDF"
-                >
-                  <Printer className="w-3.5 h-3.5 text-[#f02c85]" />
-                  <span>In / PDF</span>
-                </button>
-
-                <button
-                  onClick={() => printFlashcardCutoutSheet(course)}
-                  className="col-span-2 py-2 px-2.5 rounded-xl bg-white hover:bg-[#faebd0] border border-[#eadfcb] text-[#28071a] text-xs font-bold flex items-center justify-center space-x-1.5 transition-colors"
-                  title="In bảng thẻ giấy A4 có viền nét đứt để cắt rời học offline"
-                >
-                  <Scissors className="w-3.5 h-3.5 text-[#f02c85]" />
-                  <span>In Bảng Thẻ Cắt Giấy A4 (Học Offline)</span>
-                </button>
-              </div>
-            </div>
-              );
-            })}
+                );
+              })}
             </div>
           )}
         </div>

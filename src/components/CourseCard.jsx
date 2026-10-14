@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, CheckCircle, FileText, Layers, PlayCircle, ShoppingCart, Download, Check, Coins } from 'lucide-react';
+import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins } from 'lucide-react';
 
 export default function CourseCard({
   course,
@@ -45,63 +45,63 @@ export default function CourseCard({
     : 0;
 
   return (
-    <div className="bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] shadow-md hover:shadow-2xl hover:border-[#f02c85]/40 transition-all duration-300 flex flex-col overflow-hidden group">
+    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] hover:shadow-xs transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none">
       
-      {/* Top Banner with Badge */}
-      <div className="p-5 sm:p-6 pb-4 flex-1 flex flex-col">
+      {/* Top Banner with Notion Pill Badges */}
+      <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">
         
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="inline-flex items-center text-[11px] font-black px-2.5 py-1 rounded-lg bg-[#f02c85]/10 text-[#f02c85] border border-[#f02c85]/20">
+        <div className="flex items-center justify-between gap-1.5 mb-2.5">
+          <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#e7f3f8] text-[#2b7aa1] border border-[#cbe3ed]">
             {categoryLabel}
           </span>
-          <span className="inline-flex items-center text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#ff5f38]/15 text-[#e0451f] border border-[#ff5f38]/30">
+          <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#faece3] text-[#cc782f] border border-[#f3d6c1]">
             {badge}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-base sm:text-lg font-black text-[#28071a] group-hover:text-[#f02c85] transition-colors line-clamp-2 leading-snug">
+        <h3 className="text-sm sm:text-base font-bold text-[#37352f] group-hover:text-[#2383e2] transition-colors line-clamp-2 leading-snug">
           {course.title}
         </h3>
 
         {/* Subtitle */}
         {course.subtitle && (
-          <p className="mt-2 text-xs sm:text-sm text-[#7a5a6b] line-clamp-2 leading-relaxed font-medium">
+          <p className="mt-1.5 text-xs text-[#787774] line-clamp-2 leading-relaxed">
             {course.subtitle}
           </p>
         )}
 
         {/* Social Proof Stats */}
-        <div className="mt-3.5 flex items-center space-x-3 text-xs text-[#7a5a6b]">
-          <div className="flex items-center space-x-1 text-amber-500 font-bold">
-            <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+        <div className="mt-3 flex items-center space-x-2.5 text-xs text-[#787774]">
+          <div className="flex items-center space-x-1 text-amber-600 font-semibold">
+            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
             <span>{rating}</span>
-            <span className="text-[#99798b] font-normal">({reviewsCount})</span>
+            <span className="text-[#9b9a97] font-normal">({reviewsCount})</span>
           </div>
-          <span className="text-[#eadfcb]">•</span>
-          <span className="font-semibold text-[#5c3e4f]">
+          <span className="text-[#e9e9e8]">•</span>
+          <span className="text-[#787774]">
             {studentsCount} người học
           </span>
         </div>
 
         {/* Highlights List */}
-        <ul className="mt-4 space-y-1.5 text-xs text-[#5c3e4f] border-t border-[#eadfcb] pt-3">
-          {highlights.slice(0, 3).map((item, idx) => (
-            <li key={idx} className="flex items-start space-x-2">
-              <CheckCircle className="w-3.5 h-3.5 text-[#f02c85] shrink-0 mt-0.5" />
+        <ul className="mt-3.5 space-y-1 text-xs text-[#5a5751] border-t border-[#e9e9e8]/70 pt-2.5">
+          {highlights.slice(0, 2).map((item, idx) => (
+            <li key={idx} className="flex items-start space-x-1.5">
+              <CheckCircle className="w-3.5 h-3.5 text-[#448361] shrink-0 mt-0.5" />
               <span className="line-clamp-1">{item}</span>
             </li>
           ))}
         </ul>
 
         {/* Format Tags */}
-        <div className="mt-4 flex flex-wrap gap-1.5 pt-1">
+        <div className="mt-3 flex flex-wrap gap-1 pt-1">
           {formatList.map((fmt, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center space-x-1 text-[11px] font-bold px-2 py-0.5 bg-white text-[#28071a] border border-[#eadfcb] rounded-lg"
+              className="inline-flex items-center space-x-1 text-[10px] px-1.5 py-0.5 bg-[#f1f1ef] text-[#5a5751] border border-[#e3e2e0] rounded"
             >
-              <FileText className="w-3 h-3 text-[#f02c85]" />
+              <FileText className="w-3 h-3 text-[#787774]" />
               <span>{fmt}</span>
             </span>
           ))}
@@ -110,71 +110,74 @@ export default function CourseCard({
       </div>
 
       {/* Pricing & Footer Actions */}
-      <div className="p-5 sm:p-6 pt-3 bg-white/70 border-t border-[#eadfcb] mt-auto">
+      <div className="p-4 sm:p-5 pt-3 bg-[#faf9f8] border-t border-[#e9e9e8] mt-auto space-y-3">
         
-        {/* Price Row (Pure Coins) */}
-        <div className="flex items-baseline justify-between mb-4">
-          <div>
-            <div className="flex items-baseline space-x-1.5">
-              <Coins className="w-5 h-5 text-amber-500 fill-amber-400 self-center shrink-0" />
-              <span className="text-xl sm:text-2xl font-black text-[#28071a]">
-                {priceXu} Xu
-              </span>
-              {originalPriceXu > priceXu && (
-                <span className="text-xs sm:text-sm text-[#99798b] line-through font-bold">
-                  {originalPriceXu} Xu
-                </span>
-              )}
-            </div>
-            {discountPercent > 0 && (
-              <span className="text-[10px] text-[#f02c85] font-black uppercase block mt-0.5">
-                Tiết kiệm {discountPercent}%
+        {/* Price Row */}
+        <div className="flex items-baseline justify-between">
+          <div className="flex items-baseline space-x-1.5">
+            <Coins className="w-4 h-4 text-amber-500 fill-amber-400 self-center shrink-0" />
+            <span className="text-lg font-bold text-[#37352f]">
+              {priceXu} Xu
+            </span>
+            {originalPriceXu > priceXu && (
+              <span className="text-xs text-[#9b9a97] line-through">
+                {originalPriceXu} Xu
               </span>
             )}
           </div>
 
-          {isPurchased && (
-            <span className="inline-flex items-center space-x-1 text-xs font-black px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full border border-emerald-200">
-              <Check className="w-3.5 h-3.5" />
+          {isPurchased ? (
+            <span className="inline-flex items-center space-x-1 text-[11px] font-semibold px-2 py-0.5 bg-[#edf3ec] text-[#448361] rounded-md border border-[#d3e5d7]">
+              <Check className="w-3 h-3" />
               <span>Đã Mở Khóa</span>
             </span>
+          ) : (
+            discountPercent > 0 && (
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-[#fdebec] text-[#d44c47] rounded border border-[#f9c9cb]">
+                -{discountPercent}%
+              </span>
+            )
           )}
         </div>
 
         {/* Interactive Preview Buttons */}
-        <div className="grid grid-cols-2 gap-2 mb-2.5">
+        <div className="grid grid-cols-2 gap-1.5">
           <button
+            type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1.5 py-2 px-2 text-xs font-black text-[#2c081c] bg-[#fcf5e5] hover:bg-[#faebd0] rounded-xl border border-[#eadfcb] transition-colors"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs"
           >
-            <Layers className="w-3.5 h-3.5 text-[#f02c85]" />
-            <span>Học Thử Thẻ</span>
+            <Layers className="w-3 h-3 text-[#2383e2]" />
+            <span>Xem Thẻ</span>
           </button>
 
           <button
+            type="button"
             onClick={() => onOpenQuiz(course)}
-            className="flex items-center justify-center space-x-1.5 py-2 px-2 text-xs font-black text-[#2c081c] bg-white hover:bg-slate-50 rounded-xl border border-[#eadfcb] transition-colors"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs"
           >
-            <PlayCircle className="w-3.5 h-3.5 text-[#f02c85]" />
-            <span>Thi Thử 5 Câu</span>
+            <PlayCircle className="w-3 h-3 text-[#cc782f]" />
+            <span>Thi Thử</span>
           </button>
         </div>
 
         {/* Buy or Download Button */}
         {isPurchased ? (
           <button
+            type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 text-xs sm:text-sm font-black text-white bg-[#f02c85] hover:bg-[#dc1f74] rounded-xl shadow-md shadow-pink-900/30 transition-all"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-[#448361] bg-[#edf3ec] hover:bg-[#e0ece0] border border-[#d3e5d7] rounded-lg transition-colors cursor-pointer"
           >
-            <Download className="w-4 h-4" />
-            <span>Tải File & Học Full Bộ</span>
+            <Download className="w-3.5 h-3.5" />
+            <span>Vào Học Bộ Thẻ</span>
           </button>
         ) : (
           <button
+            type="button"
             onClick={() => onBuy(course)}
-            className="w-full flex items-center justify-center space-x-2 py-2.5 px-4 text-xs sm:text-sm font-black text-white btn-wayground-sunset hover:opacity-95 rounded-xl shadow-lg shadow-pink-900/30 transition-all transform hover:scale-[1.02] active:scale-95"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-white bg-[#2e2e2e] hover:bg-[#1a1a1a] rounded-lg shadow-2xs transition-all active:scale-[0.99] cursor-pointer"
           >
-            <Coins className="w-4 h-4 fill-white text-white" />
+            <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
             <span>Mở Khóa ({priceXu} Xu)</span>
           </button>
         )}

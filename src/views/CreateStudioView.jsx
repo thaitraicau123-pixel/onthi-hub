@@ -516,42 +516,43 @@ export default function CreateStudioView({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16 text-[#37352f]">
       
-      {/* STUDIO HEADER (Wayground Warm Cream Container) */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#fcf7ec] p-6 rounded-3xl border border-[#eadfcb] shadow-md text-[#28071a]">
-        <div>
-          <span className="text-xs font-black uppercase tracking-wider text-[#f02c85] bg-pink-100/70 px-3 py-1 rounded-full border border-pink-200">
-            AI CREATOR STUDIO
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-[#28071a] mt-2">
-            Studio Biên Soạn & Tạo Flashcard AI
-          </h2>
-          <p className="text-xs text-[#7a5a6b] mt-0.5 font-medium">
-            Dùng AI hỗ trợ tạo nhanh bản thảo hoặc tự tay nhập từng thẻ ghi nhớ theo chuẩn Anki.
-          </p>
-        </div>
-
-        {/* Quota Indicator Pill */}
-        <div className="bg-white p-3 rounded-2xl border border-[#eadfcb] flex items-center space-x-3 text-xs shadow-xs">
+      {/* NOTION PAGE HEADER */}
+      <div className="space-y-3 pb-2 border-b border-[#e9e9e8]">
+        <div className="text-4xl select-none">✍️</div>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] text-[#7a5a6b] block font-bold">Hạn mức tạo hôm nay:</span>
-            <strong className="text-sm text-[#28071a] font-black">{quota.remaining} / {quota.totalAllowed} lượt</strong>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] tracking-tight">
+              Studio Biên Soạn & Tạo Flashcard AI
+            </h1>
+            <p className="mt-1 text-xs sm:text-sm text-[#787774] leading-relaxed">
+              Tạo nhanh bộ thẻ từ tài liệu, câu hỏi hoặc ghi chú bằng AI, hoặc nhập thủ công theo chuẩn Anki.
+            </p>
           </div>
-          {!quota.isCheckedInToday && (
-            <button
-              onClick={handleCheckIn}
-              className="px-3 py-1.5 bg-[#f02c85] hover:bg-[#dc1f74] text-white rounded-xl text-xs font-black shadow-md flex items-center space-x-1"
-            >
-              <Gift className="w-3.5 h-3.5" />
-              <span>Điểm Danh (+{quota.tierConfig.checkInBonus})</span>
-            </button>
-          )}
+
+          {/* Quota Indicator Pill */}
+          <div className="bg-[#fbf3db] px-3 py-1.5 rounded-lg border border-[#f4e4b7] flex items-center space-x-3 text-xs shrink-0 shadow-2xs">
+            <div>
+              <span className="text-[10px] text-[#787774] block">Hạn mức AI hôm nay:</span>
+              <strong className="text-xs text-[#37352f] font-bold">{quota.remaining} / {quota.totalAllowed} lượt</strong>
+            </div>
+            {!quota.isCheckedInToday && (
+              <button
+                type="button"
+                onClick={handleCheckIn}
+                className="px-2.5 py-1 bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white rounded-md text-[11px] font-semibold shadow-2xs flex items-center space-x-1 cursor-pointer"
+              >
+                <Gift className="w-3 h-3" />
+                <span>Điểm Danh (+{quota.tierConfig.checkInBonus})</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* FORM WORKSPACE (Wayground Warm Ivory Card) */}
-      <div className="bg-[#fcf7ec] rounded-3xl p-6 sm:p-8 border border-[#eadfcb] shadow-xl space-y-6 text-[#28071a]">
+      {/* FORM WORKSPACE (Notion White Card) */}
+      <div className="bg-white rounded-xl p-5 sm:p-7 border border-[#e9e9e8] shadow-2xs space-y-6 text-[#37352f]">
         
         {/* Error Banner */}
         {formError && (

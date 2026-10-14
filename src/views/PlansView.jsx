@@ -64,70 +64,69 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
   };
 
   return (
-    <div className="space-y-8 animate-fade-in pb-16">
+    <div className="space-y-6 animate-fade-in pb-16 text-[#37352f]">
       
-      {/* HEADER */}
-      <div className="text-center max-w-3xl mx-auto">
-        <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-pink-100/70 text-[#f02c85] text-xs font-black mb-3 border border-pink-200">
-          <Sparkles className="w-3.5 h-3.5 fill-[#f02c85]" />
-          <span>NÂNG CẤP TRẠNG THÁI STATUS (HỘI VIÊN 2026)</span>
+      {/* NOTION PAGE HEADER */}
+      <div className="space-y-3 pb-2 border-b border-[#e9e9e8]">
+        <div className="text-4xl select-none">⚡</div>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] tracking-tight">
+            Gói Hội Viên & Quyền Lợi Đặc Quyền
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm text-[#787774] leading-relaxed">
+            Mở rộng hạn mức tạo Flashcard AI, mở khóa toàn bộ kho đề thi chính quy và đặc quyền Creator bán thẻ trên Sàn C2C.
+          </p>
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-          Chọn Gói Luyện Thi Phù Hợp Với Bạn
-        </h2>
-        <p className="mt-2 text-xs sm:text-base text-rose-200/80 font-medium">
-          Mở rộng hạn mức tạo Flashcard AI, mở khóa kho đề thi chính quy và đặc quyền Creator bán thẻ trên Sàn C2C. Thanh toán 100% bằng Tiền Xu.
-        </p>
       </div>
 
-      {/* PLANS GRID (Wayground Ivory Cards) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* PLANS GRID (Notion Cards) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {SUBSCRIPTION_PLANS.map((plan) => {
           const isCurrent = currentTier === plan.id;
           return (
             <div
               key={plan.id}
-              className={`rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 relative border ${
+              className={`rounded-xl p-5 flex flex-col justify-between transition-all duration-200 relative border ${
                 plan.isPopular
-                  ? 'border-[#f02c85] shadow-2xl ring-2 ring-[#f02c85]/30 bg-[#fcf7ec] text-[#28071a]'
-                  : 'border-[#eadfcb] bg-[#fcf7ec] hover:border-[#f02c85] shadow-md text-[#28071a]'
-              }`}
+                  ? 'border-[#2383e2] ring-1 ring-[#2383e2] bg-white shadow-xs'
+                  : 'border-[#e9e9e8] bg-white hover:border-[#c5c4c0] shadow-2xs'
+              } text-[#37352f]`}
             >
               {plan.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#f02c85] text-white text-[10px] font-black uppercase tracking-wide shadow-md">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#2383e2] text-white text-[10px] font-bold uppercase tracking-wide shadow-2xs">
                   {plan.badge}
                 </div>
               )}
 
               <div>
-                <h3 className="text-lg font-black text-[#28071a]">{plan.name}</h3>
-                <p className="text-xs text-[#7a5a6b] mt-1 line-clamp-1 font-medium">{plan.tagline}</p>
+                <h3 className="text-base font-bold text-[#37352f]">{plan.name}</h3>
+                <p className="text-xs text-[#787774] mt-0.5 line-clamp-1">{plan.tagline}</p>
 
-                <div className="mt-5 mb-5">
+                <div className="mt-4 mb-4">
                   {plan.priceXu === 0 ? (
                     <div>
-                      <span className="text-3xl font-black text-[#28071a]">Miễn Phí</span>
-                      <span className="text-[11px] text-[#7a5a6b] block font-bold mt-1">
+                      <span className="text-2xl font-bold text-[#37352f]">Miễn Phí</span>
+                      <span className="text-[11px] text-[#787774] block mt-0.5">
                         Mặc định cho mọi tài khoản
                       </span>
                     </div>
                   ) : (
                     <div>
                       <div className="flex items-baseline space-x-1.5">
-                        <span className="text-3xl sm:text-4xl font-black text-[#28071a]">
+                        <span className="text-2xl sm:text-3xl font-bold text-[#37352f]">
                           {plan.priceXu} Xu
                         </span>
-                        <span className="text-xs text-[#7a5a6b] font-bold">/{plan.period}</span>
+                        <span className="text-xs text-[#787774]">/{plan.period}</span>
                       </div>
-                      <span className="text-[11px] text-amber-700 font-bold mt-1 flex items-center space-x-1">
+                      <span className="text-[11px] text-[#976d57] font-semibold mt-1 flex items-center space-x-1">
                         <Coins className="w-3.5 h-3.5 fill-amber-500 text-amber-500 shrink-0" />
-                        <span>Thanh toán 100% bằng Ví Xu</span>
+                        <span>Thanh toán bằng Ví Xu</span>
                       </span>
                     </div>
                   )}
                 </div>
 
-                <ul className="space-y-2.5 text-xs text-[#4e2f41] border-t border-[#eadfcb] pt-4 font-medium">
+                <ul className="space-y-2 text-xs text-[#5a5751] border-t border-[#e9e9e8] pt-3">
                   {plan.features.map((feat, idx) => (
                     <li key={idx} className="flex items-start space-x-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />

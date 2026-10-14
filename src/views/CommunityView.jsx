@@ -121,67 +121,73 @@ export default function CommunityView({ user }) {
   });
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-16">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16">
       
-      {/* COMMUNITY HEADER (Wayground Sunset Gradient) */}
-      <div className="bg-gradient-to-r from-[#ff5f38] via-[#f02c85] to-[#7d1a52] text-white p-6 sm:p-8 rounded-3xl shadow-2xl flex items-center justify-between">
-        <div>
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-pink-100 text-xs font-black mb-2">
-            <Users className="w-3.5 h-3.5" />
-            <span>MẠNG XÃ HỘI HỌC VIÊN ÔN THI</span>
-          </div>
-          <h2 className="text-xl sm:text-3xl font-black">Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm</h2>
-          <p className="text-xs sm:text-sm text-pink-100 mt-1 font-medium">
-            Giao lưu, hỏi đáp đề thi khó, xin tài liệu và chia sẻ bí quyết đỗ tuyển dụng.
-          </p>
+      {/* NOTION PAGE HEADER */}
+      <div className="space-y-2 pb-2 border-b border-[#e9e9e8]">
+        <div className="text-4xl select-none">💬</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#37352f] tracking-tight">
+          Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm
+        </h1>
+        <p className="text-sm text-[#787774] font-normal">
+          Giao lưu, hỏi đáp câu hỏi khó, xin tài liệu và chia sẻ bí quyết đỗ kỳ thi tuyển dụng.
+        </p>
+      </div>
+
+      {/* NOTION CALLOUT TIP */}
+      <div className="notion-callout flex items-start gap-3">
+        <span className="text-lg">💡</span>
+        <div className="text-xs text-[#37352f] leading-relaxed">
+          <strong>Mẹo cộng đồng:</strong> Tích cực đặt câu hỏi và giải đáp thắc mắc sẽ được tặng <strong>+25 XP</strong> kinh nghiệm và tăng uy tín học viên trong bảng xếp hạng.
         </div>
       </div>
 
-      {/* SEARCH & FILTER TABS (Wayground Warm Cream Bar) */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#fcf7ec] p-3 rounded-3xl border border-[#eadfcb] shadow-md">
+      {/* SEARCH & FILTER TABS (Notion Control Bar) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-2.5 rounded-xl border border-[#e9e9e8]">
         {/* Search */}
-        <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <div className="relative flex-1 max-w-sm">
+          <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Tìm kiếm câu hỏi, đề thi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs bg-white text-[#28071a] font-bold rounded-2xl border border-[#eadfcb] focus:border-[#f02c85] outline-none shadow-xs"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] rounded-lg border border-[#e9e9e8] focus:border-[#2383e2] outline-none transition-all placeholder:text-[#9b9a97]"
           />
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 scrollbar-none text-xs font-black">
+        {/* Category Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none text-xs">
           {[
-            { id: 'all', label: 'Tất Cả' },
-            { id: 'cong-chuc', label: '🏛️ Công Chức' },
-            { id: 'it', label: '💻 IT Tech' },
-            { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ' },
-            { id: 'meo-thi', label: '💡 Mẹo Ôn' }
+            { id: 'all', label: 'Tất Cả', icon: '📋' },
+            { id: 'cong-chuc', label: 'Công Chức', icon: '🏛️' },
+            { id: 'it', label: 'IT & Tech', icon: '💻' },
+            { id: 'ngoai-ngu', label: 'Ngoại Ngữ', icon: '🌍' },
+            { id: 'meo-thi', label: 'Mẹo Ôn Thi', icon: '💡' }
           ].map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-3.5 py-1.5 rounded-xl transition-all shrink-0 ${
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors shrink-0 flex items-center space-x-1 ${
                 activeCategory === cat.id
-                  ? 'bg-[#f02c85] text-white shadow-md shadow-pink-900/40'
-                  : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                  ? 'bg-[#37352f] text-white shadow-2xs'
+                  : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#5a5955] border border-[#e9e9e8]'
               }`}
             >
-              {cat.label}
+              <span>{cat.icon}</span>
+              <span>{cat.label}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* CREATE POST INPUT BOX (Wayground Warm Cream Container) */}
-      <form onSubmit={handleAddPost} className="bg-[#fcf7ec] rounded-3xl p-5 border border-[#eadfcb] shadow-md space-y-3 text-[#28071a]">
+      {/* CREATE POST INPUT BOX (Notion Block Card) */}
+      <form onSubmit={handleAddPost} className="bg-white rounded-xl p-4 border border-[#e9e9e8] shadow-2xs space-y-3">
         <div className="flex items-center space-x-3">
           <img
             src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
             alt="Avatar"
-            className="w-10 h-10 rounded-full object-cover border border-[#eadfcb]"
+            className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
           />
           <input
             ref={postInputRef}
@@ -189,18 +195,18 @@ export default function CommunityView({ user }) {
             placeholder="Bạn đang ôn kỳ thi nào? Đặt câu hỏi hoặc chia sẻ tài liệu..."
             value={newPostText}
             onChange={(e) => setNewPostText(e.target.value)}
-            className="flex-1 px-4 py-2.5 text-xs sm:text-sm bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-2xl outline-none focus:border-[#f02c85]"
+            className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
           />
         </div>
 
         <div className="flex items-center justify-between pt-1">
           {/* Post category selection */}
-          <div className="flex items-center space-x-1.5 text-xs">
-            <Tag className="w-3.5 h-3.5 text-[#f02c85]" />
+          <div className="flex items-center space-x-2 text-xs">
+            <Tag className="w-3.5 h-3.5 text-[#787774]" />
             <select
               value={newPostCategory}
               onChange={(e) => setNewPostCategory(e.target.value)}
-              className="text-xs bg-white border border-[#eadfcb] rounded-xl px-2.5 py-1 text-[#28071a] font-bold outline-none cursor-pointer"
+              className="text-xs bg-[#f7f6f5] border border-[#e9e9e8] rounded-md px-2 py-1 text-[#37352f] font-medium outline-none cursor-pointer hover:bg-[#f0efed]"
             >
               <option value="cong-chuc">🏛️ Công Chức</option>
               <option value="it">💻 IT & Tech</option>
@@ -212,16 +218,16 @@ export default function CommunityView({ user }) {
           <button
             type="submit"
             disabled={!newPostText.trim()}
-            className="px-5 py-2 btn-wayground-sunset disabled:opacity-50 text-white rounded-xl text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+            className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 text-white rounded-md text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>Đăng Bài Lên Diễn Đàn (+25 XP)</span>
+            <span>Đăng bài (+25 XP)</span>
           </button>
         </div>
       </form>
 
       {/* POSTS FEED */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         {filteredPosts.length === 0 ? (
           <ActionableEmptyState
             icon={MessageSquare}
@@ -253,7 +259,7 @@ export default function CommunityView({ user }) {
             return (
               <div
                 key={post.id}
-                className="bg-[#fcf7ec] rounded-3xl p-5 sm:p-6 border border-[#eadfcb] shadow-md space-y-3.5 text-[#28071a]"
+                className="bg-white rounded-xl p-4 sm:p-5 border border-[#e9e9e8] hover:border-[#c5c4c0] shadow-2xs space-y-3 transition-colors"
               >
                 {/* Post Author */}
                 <div className="flex items-center justify-between">
@@ -261,61 +267,64 @@ export default function CommunityView({ user }) {
                     <img
                       src={post.avatar}
                       alt={post.author}
-                      className="w-10 h-10 rounded-full object-cover border border-[#eadfcb]"
+                      className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
                     />
                     <div>
-                      <div className="flex items-center space-x-1.5">
-                        <h4 className="text-sm font-black text-[#28071a]">{post.author}</h4>
+                      <div className="flex items-center space-x-2">
+                        <h4 className="text-xs sm:text-sm font-semibold text-[#37352f]">{post.author}</h4>
                         {post.isPinned && (
-                          <span className="flex items-center space-x-0.5 text-[10px] font-black text-amber-800 bg-amber-100 px-2 py-0.2 rounded-full border border-amber-200">
-                            <Pin className="w-3 h-3 text-amber-600" />
+                          <span className="notion-tag notion-tag-yellow text-[10px] flex items-center space-x-0.5">
+                            <Pin className="w-2.5 h-2.5" />
                             <span>Ghim</span>
                           </span>
                         )}
                         {post.categoryLabel && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-100 text-[#f02c85] border border-pink-200">
+                          <span className="notion-tag notion-tag-blue text-[10px]">
                             {post.categoryLabel}
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-[#f02c85] font-bold block">{post.role}</span>
-                      <span className="text-[10px] text-[#7a5a6b] font-medium block">{post.time}</span>
+                      <div className="flex items-center space-x-2 text-[11px] text-[#787774]">
+                        <span>{post.role}</span>
+                        <span>•</span>
+                        <span>{post.time}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Post Content */}
-                <p className="text-xs sm:text-sm text-[#3b1227] leading-relaxed whitespace-pre-line font-medium">
+                <p className="text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line font-normal">
                   {post.content}
                 </p>
 
                 {/* Likes & Comments Count Bar */}
-                <div className="pt-2 border-t border-[#eadfcb] flex items-center justify-between text-xs text-[#7a5a6b] font-bold">
-                  <div className="flex items-center space-x-4">
+                <div className="pt-2 border-t border-[#f0efed] flex items-center justify-between text-xs text-[#787774]">
+                  <div className="flex items-center space-x-3">
                     <button
                       onClick={() => handleLike(post.id)}
-                      className={`flex items-center space-x-1 font-black transition-colors ${
-                        isLiked ? 'text-[#f02c85]' : 'text-[#7a5a6b] hover:text-[#f02c85]'
+                      className={`flex items-center space-x-1.5 px-2 py-1 rounded-md transition-colors ${
+                        isLiked ? 'text-rose-600 bg-rose-50' : 'hover:bg-[#f7f6f5] hover:text-[#37352f]'
                       }`}
                     >
-                      <Heart className={`w-4 h-4 ${isLiked ? 'fill-[#f02c85] text-[#f02c85]' : ''}`} />
+                      <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
                       <span>{post.likes} Yêu thích</span>
                     </button>
 
-                    <div className="flex items-center space-x-1">
-                      <MessageSquare className="w-4 h-4 text-[#7a5a6b]" />
+                    <div className="flex items-center space-x-1.5 px-2 py-1">
+                      <MessageSquare className="w-3.5 h-3.5" />
                       <span>{post.comments.length} Bình luận</span>
                     </div>
                   </div>
 
                   <button
                     onClick={() => handleSharePost(post)}
-                    className="hover:text-[#28071a] flex items-center space-x-1.5 text-[#7a5a6b] text-xs font-bold transition-all"
+                    className="hover:bg-[#f7f6f5] hover:text-[#37352f] px-2 py-1 rounded-md flex items-center space-x-1 text-xs transition-colors"
                   >
                     {copiedPostId === post.id ? (
                       <>
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-600 font-black">Đã sao chép link!</span>
+                        <span className="text-emerald-600 font-medium">Đã sao chép link!</span>
                       </>
                     ) : (
                       <>
@@ -328,11 +337,11 @@ export default function CommunityView({ user }) {
 
                 {/* Comments Section */}
                 {post.comments.length > 0 && (
-                  <div className="pt-2 space-y-2 border-t border-[#eadfcb]">
+                  <div className="pt-2 space-y-2 border-t border-[#f0efed]">
                     {post.comments.map((cm, cIdx) => (
-                      <div key={cIdx} className="p-2.5 bg-white rounded-2xl text-xs space-y-0.5 border border-[#eadfcb]">
-                        <strong className="text-[#28071a] block font-black">{cm.author}</strong>
-                        <p className="text-[#4e2f41] font-medium">{cm.text}</p>
+                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] rounded-lg text-xs space-y-0.5 border border-[#e9e9e8]">
+                        <strong className="text-[#37352f] block font-medium">{cm.author}</strong>
+                        <p className="text-[#5a5955] font-normal">{cm.text}</p>
                       </div>
                     ))}
                   </div>
@@ -346,11 +355,11 @@ export default function CommunityView({ user }) {
                     value={commentInputs[post.id] || ''}
                     onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                    className="flex-1 px-3 py-1.5 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                    className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-md outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
                   />
                   <button
                     onClick={() => handleAddComment(post.id)}
-                    className="px-3.5 py-1.5 bg-[#f02c85] hover:bg-[#dc1f74] text-white rounded-xl text-xs font-black transition-colors"
+                    className="px-3 py-1.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-md text-xs font-medium transition-colors"
                   >
                     Gửi
                   </button>

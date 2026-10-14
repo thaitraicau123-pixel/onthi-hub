@@ -128,161 +128,170 @@ export default function WalletView({ user, onBalanceUpdated }) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-16">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16">
       
-      {/* VIBRANT WALLET CARD (Wayground Sunset Gradient) */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#ff5f38] via-[#f02c85] to-[#7d1a52] text-white p-6 sm:p-8 shadow-2xl">
-        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center space-x-2 text-pink-100 text-xs font-black uppercase tracking-wider mb-1">
-              <Wallet className="w-4 h-4 text-white" />
-              <span>VÍ XU ÔNTHIHUB</span>
-            </div>
-            <div className="flex items-baseline space-x-3">
-              <span className="text-3xl sm:text-5xl font-black">{balance} Xu</span>
-              <span className="text-xs sm:text-sm text-pink-100 font-bold">
-                ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
-              </span>
-            </div>
-            <p className="mt-2 text-xs text-pink-100 max-w-sm font-medium">
-              Đơn vị tiền tệ chính để giao dịch bộ thẻ trên Sàn C2C và nâng cấp gói hội viên.
-            </p>
-          </div>
-
-          <div className="flex sm:flex-col gap-2 w-full sm:w-auto">
-            <button
-              onClick={() => {
-                setActiveTab('deposit');
-                setDepositResult(null);
-              }}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-2xl bg-[#fcf7ec] hover:bg-white text-[#28071a] font-black text-xs shadow-md flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
-            >
-              <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
-              <span>Nạp Thêm Xu</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('withdraw')}
-              className="flex-1 sm:flex-none px-5 py-2.5 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-black text-xs border border-white/30 flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
-            >
-              <ArrowUpRight className="w-4 h-4 text-white" />
-              <span>Rút Tiền Mặt</span>
-            </button>
-          </div>
-        </div>
+      {/* NOTION PAGE HEADER */}
+      <div className="space-y-2 pb-2 border-b border-[#e9e9e8]">
+        <div className="text-4xl select-none">🪙</div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#37352f] tracking-tight">
+          Ví Xu & Giao Dịch
+        </h1>
+        <p className="text-sm text-[#787774] font-normal">
+          Quản lý số dư Xu cá nhân, nạp tiền tự động qua VietQR và rút doanh thu bán bộ thẻ.
+        </p>
       </div>
 
-      {/* TABS CONTAINER (Wayground Warm Cream Container) */}
-      <div className="bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] shadow-xl overflow-hidden text-[#28071a]">
-        
-        {/* Tab switch header */}
-        <div className="flex border-b border-[#eadfcb] bg-[#f5ecd8]/70 text-xs sm:text-sm font-black">
+      {/* NOTION BALANCE CARD */}
+      <div className="bg-white rounded-xl border border-[#e9e9e8] p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center space-x-1.5 text-xs text-[#787774] font-medium uppercase tracking-wider mb-1">
+            <Coins className="w-3.5 h-3.5 text-[#2383e2]" />
+            <span>SỐ DƯ KHẢ DỤNG</span>
+          </div>
+          <div className="flex items-baseline space-x-3">
+            <span className="text-3xl sm:text-4xl font-bold text-[#37352f]">{balance} Xu</span>
+            <span className="text-xs sm:text-sm text-[#787774] font-normal">
+              ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
+            </span>
+          </div>
+          <p className="mt-1.5 text-xs text-[#787774] max-w-sm">
+            1 Xu = 1.000 VNĐ. Dùng để mở khóa bộ thẻ, mua sắm trên Sàn C2C hoặc nâng cấp tài khoản.
+          </p>
+        </div>
+
+        <div className="flex sm:flex-col gap-2 w-full sm:w-auto shrink-0">
           <button
             onClick={() => {
               setActiveTab('deposit');
               setDepositResult(null);
             }}
-            className={`flex-1 py-3.5 text-center border-b-2 flex items-center justify-center space-x-2 transition-colors ${
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+          >
+            <ArrowDownLeft className="w-3.5 h-3.5" />
+            <span>Nạp Thêm Xu</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('withdraw')}
+            className="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] border border-[#e9e9e8] text-xs font-medium flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+          >
+            <ArrowUpRight className="w-3.5 h-3.5 text-[#787774]" />
+            <span>Rút Tiền Mặt</span>
+          </button>
+        </div>
+      </div>
+
+      {/* TABS CONTAINER (Notion Workspace Container) */}
+      <div className="bg-white rounded-xl border border-[#e9e9e8] shadow-2xs overflow-hidden">
+        
+        {/* Tab switch header */}
+        <div className="flex border-b border-[#e9e9e8] px-4 pt-2 bg-[#fbfbfa] text-xs font-medium">
+          <button
+            onClick={() => {
+              setActiveTab('deposit');
+              setDepositResult(null);
+            }}
+            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer ${
               activeTab === 'deposit'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#37352f] text-[#37352f] font-semibold'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <ArrowDownLeft className="w-4 h-4 text-emerald-600" />
+            <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-600" />
             <span>Nạp Xu (VietQR)</span>
           </button>
 
           <button
             onClick={() => setActiveTab('withdraw')}
-            className={`flex-1 py-3.5 text-center border-b-2 flex items-center justify-center space-x-2 transition-colors ${
+            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer ${
               activeTab === 'withdraw'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#37352f] text-[#37352f] font-semibold'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <ArrowUpRight className="w-4 h-4 text-rose-500" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-[#787774]" />
             <span>Rút Tiền Về Ngân Hàng</span>
           </button>
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`flex-1 py-3.5 text-center border-b-2 flex items-center justify-center space-x-2 transition-colors ${
+            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer ${
               activeTab === 'history'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#37352f] text-[#37352f] font-semibold'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <Clock className="w-4 h-4 text-[#f02c85]" />
+            <Clock className="w-3.5 h-3.5 text-[#787774]" />
             <span>Lịch Sử ({transactions.length})</span>
           </button>
         </div>
 
         {/* Tab content */}
-        <div className="p-6 sm:p-8">
+        <div className="p-5 sm:p-6">
           
           {/* TAB 1: NẠP XU */}
           {activeTab === 'deposit' && (
             <div>
               {!depositResult ? (
-                <div className="space-y-6">
+                <div className="space-y-5">
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-3">
+                    <label className="text-xs font-medium text-[#37352f] block mb-2.5">
                       Chọn gói Xu muốn nạp qua ngân hàng:
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                       {[20, 50, 100, 200].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => setDepositXu(num)}
-                          className={`p-4 rounded-2xl border text-center transition-all ${
+                          className={`p-3.5 rounded-lg border text-center transition-all cursor-pointer ${
                             depositXu === num
-                              ? 'border-[#f02c85] bg-pink-100/60 text-[#28071a] font-black ring-2 ring-[#f02c85]/30'
-                              : 'border-[#eadfcb] bg-white hover:border-[#f02c85] text-[#28071a]'
+                              ? 'border-[#2383e2] bg-[#e7f3f8] text-[#2b7aa1] font-semibold ring-1 ring-[#2383e2]'
+                              : 'border-[#e9e9e8] bg-[#fbfbfa] hover:bg-[#f7f6f5] text-[#37352f]'
                           }`}
                         >
-                          <span className="text-base font-black block">{num} Xu</span>
-                          <span className="text-xs text-[#7a5a6b] font-bold">{(num * 1000).toLocaleString()}đ</span>
+                          <span className="text-base font-bold block">{num} Xu</span>
+                          <span className="text-xs text-[#787774]">{(num * 1000).toLocaleString()}đ</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="p-4 bg-white rounded-2xl border border-[#eadfcb] text-xs sm:text-sm text-[#28071a] space-y-2">
+                  <div className="p-3.5 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8] text-xs text-[#37352f] space-y-1.5">
                     <div className="flex justify-between">
-                      <span className="font-bold">Số lượng Xu sẽ cộng:</span>
-                      <strong className="text-[#f02c85] font-black">{depositXu} Xu</strong>
+                      <span className="text-[#787774]">Số lượng Xu nhận được:</span>
+                      <strong className="text-[#2383e2] font-semibold">{depositXu} Xu</strong>
                     </div>
-                    <div className="flex justify-between font-bold text-[#28071a] text-sm">
-                      <span>Số tiền chuyển khoản VietQR:</span>
-                      <strong className="text-emerald-700 font-black">{(depositXu * COIN_RATE_VND).toLocaleString()}đ</strong>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-[#787774]">Số tiền thanh toán VietQR:</span>
+                      <strong className="text-emerald-700 font-semibold">{(depositXu * COIN_RATE_VND).toLocaleString()}đ</strong>
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1.5">
-                      Email / Số điện thoại nhận Xu (để hệ thống đồng bộ chính xác):
+                    <label className="text-xs font-medium text-[#37352f] block mb-1.5">
+                      Email / Số điện thoại nhận Xu:
                     </label>
                     <input
                       type="text"
                       value={depositEmail}
                       onChange={(e) => setDepositEmail(e.target.value)}
                       placeholder="VD: hocsinh@gmail.com hoặc 098xxxxxxx"
-                      className="w-full px-3.5 py-2.5 rounded-2xl border border-[#eadfcb] bg-white text-xs font-bold text-[#28071a] outline-none focus:border-[#f02c85] shadow-xs"
+                      className="w-full px-3 py-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-xs text-[#37352f] outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
                     />
                   </div>
 
                   <button
                     onClick={handleCreateDeposit}
                     disabled={isDepositing}
-                    className="w-full py-3.5 btn-wayground-sunset text-white rounded-2xl text-xs sm:text-sm font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 transition-transform transform hover:scale-105 active:scale-95 disabled:opacity-50"
+                    className="w-full py-2.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-lg text-xs sm:text-sm font-medium shadow-2xs flex items-center justify-center space-x-2 transition-colors disabled:opacity-50 cursor-pointer"
                   >
                     {isDepositing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <QrCode className="w-4 h-4" />}
-                    <span>{isDepositing ? 'Đang Tạo Lệnh...' : 'Tạo Lệnh Nạp & Quét Mã VietQR'}</span>
+                    <span>{isDepositing ? 'Đang tạo lệnh...' : 'Tạo Lệnh Nạp & Quét Mã VietQR'}</span>
                   </button>
 
-                  <p className="text-xs text-[#7a5a6b] text-center font-medium">
-                    Sau khi quét mã, lệnh sẽ tự động đưa lên Firebase và gửi thông báo tới <strong>{ADMIN_EMAIL}</strong> để duyệt.
+                  <p className="text-xs text-[#787774] text-center font-normal">
+                    Sau khi quét mã, lệnh sẽ tự động đồng bộ lên Firebase và gửi thông báo tới <strong>{ADMIN_EMAIL}</strong> để duyệt.
                   </p>
                 </div>
               ) : (
@@ -292,26 +301,26 @@ export default function WalletView({ user, onBalanceUpdated }) {
                   return (
                     <div className="text-center space-y-4">
                       {isApproved ? (
-                        <div className="p-4 bg-emerald-100 border-2 border-emerald-500 rounded-3xl text-emerald-950 text-center space-y-1.5 animate-bounce shadow-md">
-                          <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-                          <h4 className="font-black text-sm">GIAO DỊCH ĐÃ ĐƯỢC ADMIN PHÊ DUYỆT!</h4>
-                          <p className="text-xs font-bold text-emerald-800">
+                        <div className="p-4 bg-[#edf3ec] border border-[#d3e5d2] rounded-xl text-emerald-950 text-center space-y-1 animate-fade-in">
+                          <CheckCircle2 className="w-7 h-7 text-emerald-600 mx-auto" />
+                          <h4 className="font-semibold text-xs sm:text-sm">GIAO DỊCH ĐÃ ĐƯỢC ADMIN PHÊ DUYỆT!</h4>
+                          <p className="text-xs text-emerald-800">
                             Đã cộng +{liveTx.xuAmount} Xu vào ví của bạn. Số dư hiện tại: {balance} Xu.
                           </p>
                         </div>
                       ) : (
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                          <span className="text-xs font-black px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          <span className="notion-tag notion-tag-green text-xs">
                             Lệnh Nạp: {depositResult.tx.id}
                           </span>
-                          <span className="text-xs font-black px-3 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 flex items-center space-x-1.5 animate-pulse">
+                          <span className="notion-tag notion-tag-yellow text-xs flex items-center space-x-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
-                            <span>Đang Chờ Admin Duyệt Trên Firebase</span>
+                            <span>Đang chờ Admin duyệt</span>
                           </span>
                         </div>
                       )}
 
-                      <div className="p-3 bg-white rounded-2xl border border-[#eadfcb] inline-block shadow-md">
+                      <div className="p-3 bg-white rounded-xl border border-[#e9e9e8] inline-block shadow-2xs">
                         <img
                           src={generateVietQRUrl({
                             bank: bankConfig.bank,
@@ -321,47 +330,37 @@ export default function WalletView({ user, onBalanceUpdated }) {
                             memo: depositResult.tx.id
                           })}
                           alt="VietQR Deposit"
-                          className="w-52 h-52 mx-auto object-contain bg-white p-2 rounded-xl"
+                          className="w-48 h-48 mx-auto object-contain bg-white p-1 rounded-lg"
                         />
                       </div>
 
-                      <div className="text-xs sm:text-sm text-[#28071a] space-y-1 font-bold">
+                      <div className="text-xs sm:text-sm text-[#37352f] space-y-1">
                         <p>
-                          Số tiền cần chuyển: <strong className="text-emerald-700 font-black">{depositResult.tx.amountVnd.toLocaleString()}đ</strong>
+                          Số tiền chuyển: <strong className="text-emerald-700 font-semibold">{depositResult.tx.amountVnd.toLocaleString()}đ</strong>
                         </p>
                         <p>
-                          Nội dung chuyển khoản: <strong className="text-[#f02c85] font-mono font-black bg-pink-100 px-2 py-0.5 rounded">{depositResult.tx.id}</strong>
+                          Nội dung chuyển khoản: <strong className="font-mono text-[#2383e2] bg-[#e7f3f8] px-2 py-0.5 rounded border border-[#bfe1f1]">{depositResult.tx.id}</strong>
                         </p>
                       </div>
 
-                      <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 text-left max-w-lg mx-auto shadow-sm">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
-                              ✓
-                            </span>
-                            <div>
-                              <strong className="text-[#28071a] font-black text-xs block">
-                                Đã Đồng Bộ Lên Firebase & Báo Admin
-                              </strong>
-                              <span className="text-[#7a5a6b] text-[11px] font-medium">
-                                Lệnh đã lưu trên Firebase Firestore & push chuông điện thoại Admin
-                              </span>
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                            Firebase Realtime
+                      <div className="notion-callout text-xs space-y-1.5 text-left max-w-md mx-auto">
+                        <div className="flex items-center space-x-2">
+                          <span className="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+                            ✓
                           </span>
+                          <strong className="text-[#37352f] text-xs">
+                            Đã đồng bộ lên Firebase Realtime
+                          </strong>
                         </div>
 
-                        <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
-                          Bạn chỉ cần chuyển khoản đúng số tiền và nội dung <strong>{depositResult.tx.id}</strong> ở trên. Hệ thống sẽ tự động duyệt và cộng Xu vào ví của bạn ngay khi giao dịch được xác nhận!
+                        <p className="text-[#787774] leading-relaxed">
+                          Bạn chỉ cần chuyển khoản đúng số tiền và nội dung <strong>{depositResult.tx.id}</strong> ở trên. Hệ thống sẽ tự động cộng Xu vào ví ngay khi xác nhận!
                         </p>
                       </div>
 
                       <button
                         onClick={() => setDepositResult(null)}
-                        className="text-xs text-[#f02c85] hover:underline font-black"
+                        className="text-xs text-[#2383e2] hover:underline font-medium cursor-pointer"
                       >
                         Quay lại chọn gói nạp khác
                       </button>
@@ -376,45 +375,40 @@ export default function WalletView({ user, onBalanceUpdated }) {
           {activeTab === 'withdraw' && (
             <div className="space-y-4">
               {lastWithdrawTx && (
-                <div className="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl text-xs space-y-2 shadow-sm animate-fade-in text-left">
+                <div className="p-3.5 bg-[#edf3ec] border border-[#d3e5d2] rounded-xl text-xs space-y-1.5 text-left">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <span className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-xs">
+                      <span className="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
                         ✓
                       </span>
-                      <div>
-                        <strong className="text-[#28071a] font-black text-xs block">
-                          Đã Tạo Lệnh Rút Tiền Thành Công
-                        </strong>
-                        <span className="text-[#7a5a6b] text-[11px] font-medium">
-                          Mã giao dịch: <strong className="font-mono text-[#f02c85]">{lastWithdrawTx.tx.id}</strong>
-                        </span>
-                      </div>
+                      <strong className="text-[#37352f] text-xs">
+                        Đã tạo lệnh rút tiền thành công
+                      </strong>
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                    <span className="notion-tag notion-tag-green text-[10px]">
                       Đang xử lý
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-[#4e2f41] leading-relaxed font-medium">
-                    Hệ thống đã tự động gửi thông báo đến Admin. Tiền sẽ được chuyển khoản về tài khoản ngân hàng của bạn trong vòng ít phút!
+                  <p className="text-[#787774] text-xs leading-relaxed">
+                    Mã giao dịch: <strong className="font-mono text-[#37352f]">{lastWithdrawTx.tx.id}</strong>. Tiền sẽ được chuyển về tài khoản ngân hàng của bạn trong ít phút!
                   </p>
                 </div>
               )}
 
-              <form onSubmit={handleCreateWithdrawal} className="space-y-4 text-xs sm:text-sm text-[#28071a]">
+              <form onSubmit={handleCreateWithdrawal} className="space-y-3.5 text-xs text-[#37352f]">
                 {withdrawMsg.text && (
-                  <div className={`p-3.5 rounded-2xl border font-bold ${
+                  <div className={`p-3 rounded-lg border font-medium ${
                     withdrawMsg.isError
-                      ? 'bg-rose-100 border-rose-300 text-rose-800'
-                      : 'bg-emerald-100 border-emerald-300 text-emerald-800'
+                      ? 'bg-rose-50 border-rose-200 text-rose-700'
+                      : 'bg-[#edf3ec] border-[#d3e5d2] text-emerald-800'
                   }`}>
                     {withdrawMsg.text}
                   </div>
                 )}
 
                 <div>
-                  <label className="font-black text-[#28071a] block mb-1">
+                  <label className="font-medium text-[#37352f] block mb-1">
                     Số lượng Xu muốn rút (Khả dụng: {balance} Xu):
                   </label>
                   <div className="flex items-center space-x-2">
@@ -424,21 +418,21 @@ export default function WalletView({ user, onBalanceUpdated }) {
                       max={balance}
                       value={withdrawXu}
                       onChange={(e) => setWithdrawXu(e.target.value)}
-                      className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-black bg-white text-[#28071a]"
+                      className="w-full px-3 py-2 border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] font-semibold bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] transition-colors"
                       required
                     />
-                    <span className="font-black text-[#7a5a6b] shrink-0 text-xs sm:text-sm">
+                    <span className="text-[#787774] shrink-0 text-xs">
                       = {(withdrawXu * COIN_RATE_VND).toLocaleString()} VNĐ
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <label className="font-black text-[#28071a] block mb-1">Ngân hàng nhận tiền:</label>
+                  <label className="font-medium text-[#37352f] block mb-1">Ngân hàng nhận tiền:</label>
                   <select
                     value={bankName}
                     onChange={(e) => setBankName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] text-xs sm:text-sm bg-white font-bold text-[#28071a]"
+                    className="w-full px-3 py-2 border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] text-xs bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] transition-colors cursor-pointer"
                   >
                     <option value="MB Bank">MB Bank (Ngân Hàng Quân Đội)</option>
                     <option value="Vietcombank">Vietcombank</option>
@@ -452,25 +446,25 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 </div>
 
                 <div>
-                  <label className="font-black text-[#28071a] block mb-1">Số tài khoản ngân hàng:</label>
+                  <label className="font-medium text-[#37352f] block mb-1">Số tài khoản ngân hàng:</label>
                   <input
                     type="text"
                     placeholder="Nhập số tài khoản..."
                     value={accountNo}
                     onChange={(e) => setAccountNo(e.target.value)}
-                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono font-bold bg-white text-[#28071a]"
+                    className="w-full px-3 py-2 border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] font-mono text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] transition-colors"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-black text-[#28071a] block mb-1">Tên chủ tài khoản (in hoa):</label>
+                  <label className="font-medium text-[#37352f] block mb-1">Tên chủ tài khoản (in hoa):</label>
                   <input
                     type="text"
                     placeholder="VD: NGUYEN VAN A"
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value.toUpperCase())}
-                    className="w-full px-3.5 py-2.5 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-mono uppercase font-bold bg-white text-[#28071a]"
+                    className="w-full px-3 py-2 border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] font-mono uppercase text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] transition-colors"
                     required
                   />
                 </div>
@@ -479,15 +473,15 @@ export default function WalletView({ user, onBalanceUpdated }) {
                   <button
                     type="submit"
                     disabled={balance < 10}
-                    className="w-full py-3.5 bg-[#f02c85] hover:bg-[#dc1f74] text-white rounded-2xl font-black shadow-lg shadow-pink-900/30 flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
+                    className="w-full py-2.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-lg font-medium shadow-2xs flex items-center justify-center space-x-1.5 disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <ArrowUpRight className="w-4 h-4" />
-                    <span>Xác Nhận Rút Tiền Về Tài Khoản</span>
+                    <span>Xác nhận rút tiền về tài khoản</span>
                   </button>
                 </div>
 
-                <p className="text-xs text-[#7a5a6b] text-center font-medium">
-                  Hệ thống xử lý duyệt và chuyển khoản tự động 24/7.
+                <p className="text-xs text-[#787774] text-center font-normal">
+                  Hệ thống xử lý duyệt và chuyển khoản 24/7.
                 </p>
               </form>
             </div>
@@ -495,7 +489,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           {/* TAB 3: LỊCH SỬ GIAO DỊCH */}
           {activeTab === 'history' && (
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {transactions.length === 0 ? (
                 <ActionableEmptyState
                   icon={Clock}
@@ -510,30 +504,30 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 />
               ) : (
                 transactions.map((tx) => (
-                  <div key={tx.id} className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] flex items-center justify-between text-xs sm:text-sm">
+                  <div key={tx.id} className="p-3 bg-[#fbfbfa] hover:bg-white rounded-lg border border-[#e9e9e8] flex items-center justify-between text-xs transition-colors">
                     <div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-black text-[#28071a]">{tx.id}</span>
-                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
-                          tx.type === 'deposit' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                        <span className="font-semibold text-[#37352f]">{tx.id}</span>
+                        <span className={`text-[10px] ${
+                          tx.type === 'deposit' ? 'notion-tag notion-tag-green' : 'notion-tag notion-tag-red'
                         }`}>
                           {tx.type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}
                         </span>
                       </div>
-                      <span className="text-[11px] text-[#7a5a6b] block mt-1 font-medium">
+                      <span className="text-[11px] text-[#787774] block mt-0.5">
                         {new Date(tx.createdAt).toLocaleDateString('vi-VN')} {new Date(tx.createdAt).toLocaleTimeString('vi-VN')}
                       </span>
                     </div>
 
                     <div className="text-right">
-                      <span className="font-black text-[#28071a] block">
+                      <span className="font-semibold text-[#37352f] block">
                         {tx.type === 'deposit' ? '+' : '-'}{tx.xuAmount} Xu
                       </span>
                       <div className="flex items-center justify-end space-x-1.5 mt-0.5">
-                        <span className={`text-[11px] font-black ${
+                        <span className={`text-[11px] font-medium ${
                           tx.status === 'approved' ? 'text-emerald-700' : tx.status === 'rejected' ? 'text-rose-600' : 'text-amber-600'
                         }`}>
-                          {tx.status === 'approved' ? 'Đã duyệt ✅' : tx.status === 'rejected' ? 'Bị từ chối ❌' : 'Chờ duyệt chay ⏳'}
+                          {tx.status === 'approved' ? 'Đã duyệt ✅' : tx.status === 'rejected' ? 'Bị từ chối ❌' : 'Chờ duyệt ⏳'}
                         </span>
                       </div>
                     </div>

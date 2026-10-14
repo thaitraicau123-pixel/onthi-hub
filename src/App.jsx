@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
+import NotionSidebar from './components/NotionSidebar';
+import NotionTopbar from './components/NotionTopbar';
 import HomeView from './views/HomeView';
 import MarketplaceView from './views/MarketplaceView';
 import CommunityView from './views/CommunityView';
@@ -41,6 +42,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function App() {
   // Current Active Tab: 'home' | 'marketplace' | 'community' | 'create' | 'library' | 'wallet' | 'plans' | 'admin'
   const [activeTab, setActiveTab] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
 
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [user, setUser] = useState(null);
@@ -69,9 +71,20 @@ export default function App() {
     setWalletBalance(getWalletBalance());
     setMarketplaceDecks(getMarketplaceDecks());
 
-    // Secret Hotkey Ctrl + Shift + A switches to Admin Tab (Restricted to Authorized Admin Only)
+    // Notion Hotkeys:
+    // 1. Ctrl + \ toggles Notion Sidebar
+    // 2. Ctrl + Shift + A switches to Admin Tab
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+      if (e.ctrlKey && (e.key === '\\' || e.code === 'Backslash')) {
+        e.preventDefault();
+        setIsSidebarOpen((prev) => !prev);
+      } else if (e.ctrlKey && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setActiveTab('home');
+        setTimeout(() => {
+          document.querySelector('#catalog-section input')?.focus();
+        }, 120);
+      } else if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
         const activeUser = getCurrentUser();
         if (!isUserAdmin(activeUser)) {
@@ -133,135 +146,174 @@ export default function App() {
   const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
 
   return (
-    <div className="min-h-screen bg-[#240618] bg-[radial-gradient(circle_at_50%_0%,_#5c163f_0%,_#380b23_45%,_#1e0413_100%)] flex flex-col text-slate-100 font-sans selection:bg-[#f02c85] selection:text-white">
+    <div className="min-h-screen bg-white text-[#37352f] flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f]">
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-2xl bg-emerald-600 text-white shadow-xl text-xs sm:text-sm font-bold animate-bounce">
-          <CheckCircle2 className="w-5 h-5 text-emerald-200" />
+        <div className="fixed top-14 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl bg-[#2e2e2e] text-white shadow-xl text-xs sm:text-sm font-semibold border border-[#4a4a4a] animate-fade-in">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toastMessage}</span>
         </div>
       )}
 
-      {/* Modern Tab-based Navbar with Streak and Notifications */}
-      <Navbar
+      {/* Mobile Backdrop for Sidebar */}
+      {isSidebarOpen && (
+        <div
+          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-2xs md:hidden"
+        />
+      )}
+
+      {/* Notion Collapsible Sidebar (Left) */}
+      <NotionSidebar
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
         activeTab={activeTab}
         onSelectTab={(tab) => {
           setActiveTab(tab);
           window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (typeof window !== 'undefined' && window.innerWidth < 768) {
+            setIsSidebarOpen(false);
+          }
         }}
         purchasedCount={purchasedCourses.length}
         walletBalance={walletBalance}
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onCheckInCompleted={refreshState}
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
         onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
         onOpenChangelog={() => setIsChangelogOpen(true)}
+        onOpenSearch={() => {
+          setActiveTab('home');
+          setTimeout(() => {
+            document.querySelector('#catalog-section input')?.focus();
+          }, 120);
+        }}
       />
 
-      {/* MAIN TAB CONTENT AREA */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 mb-16 md:mb-0">
+      {/* Right Canvas: Notion Topbar + Main Canvas + Footer */}
+      <div className="flex-1 min-w-0 flex flex-col min-h-screen bg-white">
         
-        {/* TAB 1: TRANG CHỦ / ĐỀ THI CHÍNH QUY */}
-        {activeTab === 'home' && (
-          <HomeView
-            onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-            onOpenQuiz={(c) => setActiveQuizCourse(c)}
-            onBuyCourse={(c) => setActivePaymentItem(c)}
-            onBuyCombo={(combo) => setActivePaymentItem(combo)}
-            onSwitchTab={setActiveTab}
-            onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
-            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
-            onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-            allCourses={allAvailableCourses}
-          />
-        )}
+        {/* Notion Topbar with Breadcrumbs & Compact Utility Pills */}
+        <NotionTopbar
+          sidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          activeTab={activeTab}
+          onSelectTab={(tab) => {
+            setActiveTab(tab);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          walletBalance={walletBalance}
+          user={user}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onCheckInCompleted={refreshState}
+          onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+          onOpenChangelog={() => setIsChangelogOpen(true)}
+        />
 
-        {/* TAB 2: SÀN MUA BÁN C2C */}
-        {activeTab === 'marketplace' && (
-          <MarketplaceView
-            user={user}
-            marketplaceDecks={marketplaceDecks}
-            onOpenCreateDeck={() => setActiveTab('create')}
-            onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}
-            onBalanceUpdated={refreshState}
-            onOpenWallet={() => setActiveTab('wallet')}
-            onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-          />
-        )}
+        {/* MAIN NOTION PAGE CANVAS */}
+        <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
+          
+          {/* TAB 1: TRANG CHỦ / ĐỀ THI CHÍNH QUY */}
+          {activeTab === 'home' && (
+            <HomeView
+              onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+              onOpenQuiz={(c) => setActiveQuizCourse(c)}
+              onBuyCourse={(c) => setActivePaymentItem(c)}
+              onBuyCombo={(combo) => setActivePaymentItem(combo)}
+              onSwitchTab={setActiveTab}
+              onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
+              onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+              onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+              allCourses={allAvailableCourses}
+            />
+          )}
 
-        {/* TAB 3: DIỄN ĐÀN THẢO LUẬN & HỎI ĐÁP CỘNG ĐỒNG */}
-        {activeTab === 'community' && (
-          <CommunityView
-            user={user}
-          />
-        )}
+          {/* TAB 2: SÀN MUA BÁN C2C */}
+          {activeTab === 'marketplace' && (
+            <MarketplaceView
+              user={user}
+              marketplaceDecks={marketplaceDecks}
+              onOpenCreateDeck={() => setActiveTab('create')}
+              onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}
+              onBalanceUpdated={refreshState}
+              onOpenWallet={() => setActiveTab('wallet')}
+              onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+            />
+          )}
 
-        {/* TAB 4: STUDIO TẠO THẺ AI & THỦ CÔNG */}
-        {activeTab === 'create' && (
-          <CreateStudioView
-            user={user}
-            onDeckCreated={handleDeckCreated}
-            onOpenPricing={() => setActiveTab('plans')}
-            onSwitchTab={setActiveTab}
-          />
-        )}
+          {/* TAB 3: DIỄN ĐÀN THẢO LUẬN & HỎI ĐÁP CỘNG ĐỒNG */}
+          {activeTab === 'community' && (
+            <CommunityView
+              user={user}
+            />
+          )}
 
-        {/* TAB 5: TỦ THẺ CỦA TÔI */}
-        {activeTab === 'library' && (
-          <LibraryView
-            purchasedCourses={purchasedCourses}
-            allCourses={allAvailableCourses}
-            onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-            onOpenQuiz={(c) => setActiveQuizCourse(c)}
-            onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
-            onOpenPassDeck={(course) => setActivePassCourse(course)}
-            onOpenSellDeck={(course) => setActiveSellCourse(course)}
-            onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
-            onSwitchTab={setActiveTab}
-          />
-        )}
+          {/* TAB 4: STUDIO TẠO THẺ AI & THỦ CÔNG */}
+          {activeTab === 'create' && (
+            <CreateStudioView
+              user={user}
+              onDeckCreated={handleDeckCreated}
+              onOpenPricing={() => setActiveTab('plans')}
+              onSwitchTab={setActiveTab}
+            />
+          )}
 
-        {/* TAB 6: VÍ XU & NẠP/RÚT TIỀN */}
-        {activeTab === 'wallet' && (
-          <WalletView
-            user={user}
-            onBalanceUpdated={refreshState}
-          />
-        )}
+          {/* TAB 5: TỦ THẺ CỦA TÔI */}
+          {activeTab === 'library' && (
+            <LibraryView
+              purchasedCourses={purchasedCourses}
+              allCourses={allAvailableCourses}
+              onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+              onOpenQuiz={(c) => setActiveQuizCourse(c)}
+              onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
+              onOpenPassDeck={(course) => setActivePassCourse(course)}
+              onOpenSellDeck={(course) => setActiveSellCourse(course)}
+              onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+              onSwitchTab={setActiveTab}
+            />
+          )}
 
-        {/* TAB 7: GÓI HỘI VIÊN PLUS / PRO / ULTRA */}
-        {activeTab === 'plans' && (
-          <PlansView
-            onTierUpgraded={() => {
-              refreshState();
-              showToast('🎉 Nâng cấp gói thành viên thành công!');
-            }}
-            onPayVietQR={(planItem) => {
-              setActivePaymentItem(planItem);
-            }}
-            onOpenWallet={() => {
-              setActiveTab('wallet');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
+          {/* TAB 6: VÍ XU & NẠP/RÚT TIỀN */}
+          {activeTab === 'wallet' && (
+            <WalletView
+              user={user}
+              onBalanceUpdated={refreshState}
+            />
+          )}
 
-        {/* TAB 8: SECRET ADMIN PORTAL (PROTECTED) */}
-        {activeTab === 'admin' && (
-          <AdminView
-            user={user}
-            onBackToHome={() => setActiveTab('home')}
-            onOpenChangelog={() => setIsChangelogOpen(true)}
-          />
-        )}
+          {/* TAB 7: GÓI HỘI VIÊN PLUS / PRO / ULTRA */}
+          {activeTab === 'plans' && (
+            <PlansView
+              onTierUpgraded={() => {
+                refreshState();
+                showToast('🎉 Nâng cấp gói thành viên thành công!');
+              }}
+              onPayVietQR={(planItem) => {
+                setActivePaymentItem(planItem);
+              }}
+              onOpenWallet={() => {
+                setActiveTab('wallet');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          )}
 
-      </main>
+          {/* TAB 8: SECRET ADMIN PORTAL (PROTECTED) */}
+          {activeTab === 'admin' && (
+            <AdminView
+              user={user}
+              onBackToHome={() => setActiveTab('home')}
+              onOpenChangelog={() => setIsChangelogOpen(true)}
+            />
+          )}
 
-      {/* Footer */}
-      <Footer />
+        </main>
+
+        {/* Minimal Notion Footer */}
+        <Footer />
+      </div>
 
       {/* OVERLAY MODALS FOR FOCUSED INTERACTION */}
       
