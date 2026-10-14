@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   MessageSquare,
   Heart,
@@ -10,7 +10,8 @@ import {
   CheckCircle2,
   Pin,
   Search,
-  Tag
+  Tag,
+  RotateCw
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
@@ -21,6 +22,7 @@ import {
   addCommentToCommunityPost,
   subscribeToCommunityPosts
 } from '../data/communityData';
+import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
 export default function CommunityView({ user }) {
@@ -32,6 +34,7 @@ export default function CommunityView({ user }) {
   const [likedPosts, setLikedPosts] = useState([1]);
   const [commentInputs, setCommentInputs] = useState({});
   const [copiedPostId, setCopiedPostId] = useState(null);
+  const postInputRef = useRef(null);
 
   // Real-time synchronization (Firebase Firestore + Cloud Relay)
   useEffect(() => {
@@ -181,6 +184,7 @@ export default function CommunityView({ user }) {
             className="w-10 h-10 rounded-full object-cover border border-[#eadfcb]"
           />
           <input
+            ref={postInputRef}
             type="text"
             placeholder="Bạn đang ôn kỳ thi nào? Đặt câu hỏi hoặc chia sẻ tài liệu..."
             value={newPostText}
@@ -219,9 +223,30 @@ export default function CommunityView({ user }) {
       {/* POSTS FEED */}
       <div className="space-y-4">
         {filteredPosts.length === 0 ? (
-          <div className="text-center py-12 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-6 text-[#7a5a6b] text-xs font-bold">
-            Chưa có bài viết nào trong chủ đề này. Hãy là người đầu tiên đặt câu hỏi!
-          </div>
+          <ActionableEmptyState
+            icon={MessageSquare}
+            badge="DIỄN ĐÀN THẢO LUẬN"
+            title={searchQuery ? `Không tìm thấy bài viết nào khớp với "${searchQuery}"` : 'Chưa có bài viết nào trong chủ đề này'}
+            description="Hãy là người đầu tiên đặt câu hỏi ôn thi hoặc chia sẻ tài liệu hữu ích cho cộng đồng bạn học!"
+            primaryAction={{
+              label: 'Viết Bài / Đặt Câu Hỏi Ngay',
+              onClick: () => {
+                if (postInputRef.current) {
+                  postInputRef.current.focus();
+                  postInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              },
+              icon: Sparkles
+            }}
+            secondaryAction={(activeCategory !== 'all' || searchQuery) ? {
+              label: 'Xem Tất Cả Bài Viết',
+              onClick: () => {
+                setActiveCategory('all');
+                setSearchQuery('');
+              },
+              icon: RotateCw
+            } : null}
+          />
         ) : (
           filteredPosts.map((post) => {
             const isLiked = likedPosts.includes(post.id);

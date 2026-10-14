@@ -23,8 +23,10 @@ import {
   Store,
   ShieldCheck,
   BrainCircuit,
-  GraduationCap
+  GraduationCap,
+  RotateCw
 } from 'lucide-react';
+import { ActionableEmptyState } from '../components/UIStateFeedback';
 
 export default function HomeView({
   onOpenFlashcards,
@@ -315,18 +317,25 @@ export default function HomeView({
         </div>
 
         {sortedAndFiltered.length === 0 ? (
-          <div className="text-center py-10 bg-[#fcf7ec] rounded-2xl border border-[#eadfcb] p-6 text-[#7a5a6b] text-xs">
-            Không tìm thấy tài liệu phù hợp với từ khóa "{searchHome}".
-            <button
-              onClick={() => {
+          <ActionableEmptyState
+            icon={Search}
+            badge="KẾT QUẢ TÌM KIẾM"
+            title={searchHome ? `Không tìm thấy tài liệu phù hợp với "${searchHome}"` : 'Chưa có bộ đề nào trong danh mục này'}
+            description="Hãy thử kiểm tra lại chính tả hoặc quay về xem toàn bộ kho tài liệu chuẩn của OnThiHub."
+            primaryAction={{
+              label: `Xem Tất Cả (${allCourses.length} Bộ Đề)`,
+              onClick: () => {
                 setSearchHome('');
                 setSelectedCategory('all');
-              }}
-              className="block mx-auto mt-2 px-4 py-1.5 bg-[#f02c85] text-white text-xs font-bold rounded-lg"
-            >
-              Xem tất cả
-            </button>
-          </div>
+              },
+              icon: RotateCw
+            }}
+            secondaryAction={{
+              label: 'Yêu Cầu AI Soạn Thẻ Mới',
+              onClick: () => onSwitchTab('create'),
+              icon: Sparkles
+            }}
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {sortedAndFiltered.map((course) => (

@@ -16,11 +16,16 @@ import {
   Clock,
   BookMarked,
   Scissors,
-  Tag
+  Tag,
+  Search,
+  RotateCw,
+  Store,
+  ChevronDown
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet } from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
+import { ActionableEmptyState } from '../components/UIStateFeedback';
 
 export default function LibraryView({
   purchasedCourses,
@@ -33,6 +38,10 @@ export default function LibraryView({
   onOpenMistakes,
   onSwitchTab
 }) {
+  const [searchLibrary, setSearchLibrary] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('due_first'); // 'due_first' | 'title'
+
   const isComboUser = purchasedCourses.includes('combo-all-access');
   const unlockedList = isComboUser
     ? allCourses
@@ -40,6 +49,29 @@ export default function LibraryView({
 
   const srsStats = getAllDecksDueStats(unlockedList);
   const unmasteredMistakesCount = getUnmasteredMistakesCount();
+
+  const filteredUnlockedList = unlockedList
+    .filter((c) => {
+      const matchCat = selectedCategory === 'all' || c.category === selectedCategory;
+      const term = searchLibrary.toLowerCase().trim();
+      const matchTerm =
+        !term ||
+        c.title.toLowerCase().includes(term) ||
+        (c.subtitle && c.subtitle.toLowerCase().includes(term)) ||
+        (c.categoryLabel && c.categoryLabel.toLowerCase().includes(term));
+      return matchCat && matchTerm;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'due_first') {
+        const dueA = getDeckDueStats(a).due || 0;
+        const dueB = getDeckDueStats(b).due || 0;
+        return dueB - dueA;
+      }
+      if (sortBy === 'title') {
+        return a.title.localeCompare(b.title);
+      }
+      return 0;
+    });
 
   return (
     <div className="space-y-6 animate-fade-in pb-16">
@@ -160,37 +192,123 @@ export default function LibraryView({
       </div>
 
       {unlockedList.length === 0 ? (
-        /* Empty State */
-        <div className="text-center py-16 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-8 shadow-md text-[#28071a]">
-          <div className="w-16 h-16 rounded-2xl bg-pink-100 text-[#f02c85] flex items-center justify-center mx-auto mb-3">
-            <BookOpen className="w-8 h-8" />
-          </div>
-          <h4 className="text-base font-black text-[#28071a]">
-            Tủ tài liệu của bạn đang trống
-          </h4>
-          <p className="mt-1 text-xs text-[#7a5a6b] max-w-sm mx-auto font-medium">
-            Bạn chưa mở khóa bộ tài liệu nào. Hãy ghé qua Trang Chủ hoặc Chợ Thẻ C2C để tìm bộ đề phù hợp nhé!
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-3">
-            <button
-              onClick={() => onSwitchTab('home')}
-              className="px-5 py-2.5 rounded-2xl font-black text-xs text-white bg-[#f02c85] hover:bg-[#dc1f74] shadow-md inline-flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
-            >
-              <span>Xem Đề Thi Chuẩn</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => onSwitchTab('marketplace')}
-              className="px-5 py-2.5 rounded-2xl font-black text-xs text-[#28071a] bg-white border border-[#eadfcb] hover:bg-[#faebd0] transition-colors"
-            >
-              Vào Chợ Flashcard C2C
-            </button>
-          </div>
-        </div>
+        <ActionableEmptyState
+          icon={BookOpen}
+          badge="TỦ TÀI LIỆU TRỐNG"
+          title="Tủ tài liệu ôn tập của bạn đang chờ đón bộ thẻ đầu tiên"
+          description="Bạn chưa mở khóa bộ đề nào. Hãy ghé qua Chợ Thẻ C2C để tìm bộ đề chuẩn thi giá chỉ từ 2 Xu hoặc tự tạo bộ flashcard miễn phí bằng AI!"
+          primaryAction={{
+            label: 'Vào Chợ Flashcard C2C',
+            onClick: () => onSwitchTab('marketplace'),
+            icon: Store
+          }}
+          secondaryAction={{
+            label: 'Tự Tạo Thẻ Bằng AI',
+            onClick: () => onSwitchTab('create'),
+            icon: Sparkles
+          }}
+        />
       ) : (
-        /* Unlocked Cards Grid */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {unlockedList.map((course) => {
+        <div className="space-y-4">
+          {/* Filter and Search Bar for Library */}
+          <div className="bg-[#fcf7ec] p-3 sm:p-4 rounded-3xl border border-[#eadfcb] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-[#28071a]">
+            {/* Category Pills */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {[
+                { id: 'all', label: 'Tất Cả' },
+                { id: 'cong-chuc', label: '🏛️ Công Chức' },
+                { id: 'it-tech', label: '💻 IT & Tech' },
+                { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ' }
+              ].map((cat) => {
+                const count = cat.id === 'all'
+                  ? unlockedList.length
+                  : unlockedList.filter(c => c.category === cat.id).length;
+                const active = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 ${
+                      active
+                        ? 'bg-[#f02c85] text-white shadow-xs'
+                        : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                    }`}
+                  >
+                    <span>{cat.label}</span>
+                    <span className={`text-[10px] font-bold px-1.5 rounded-full ${
+                      active ? 'bg-white/20 text-white' : 'bg-[#eadfcb]/60 text-[#7a5a6b]'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Search Input & Sort dropdown */}
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1 md:w-56">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <input
+                  type="text"
+                  placeholder="Tìm trong tủ thẻ..."
+                  value={searchLibrary}
+                  onChange={(e) => setSearchLibrary(e.target.value)}
+                  className="w-full pl-8 pr-7 py-2 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                />
+                {searchLibrary && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchLibrary('')}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-3 py-2 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] cursor-pointer"
+              >
+                <option value="due_first">⏰ Cần ôn tập trước</option>
+                <option value="title">🔤 Tên A → Z</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Results count & quick clear */}
+          {(selectedCategory !== 'all' || searchLibrary) && (
+            <div className="flex items-center justify-between text-xs text-rose-200/80 px-1 font-bold">
+              <span>Đang hiển thị {filteredUnlockedList.length} / {unlockedList.length} bộ thẻ</span>
+              <button
+                type="button"
+                onClick={() => { setSelectedCategory('all'); setSearchLibrary(''); }}
+                className="text-pink-300 hover:text-white underline font-bold"
+              >
+                Xóa bộ lọc ✕
+              </button>
+            </div>
+          )}
+
+          {/* If search yields 0 items */}
+          {filteredUnlockedList.length === 0 ? (
+            <ActionableEmptyState
+              icon={Search}
+              badge="KHÔNG TÌM THẤY"
+              title={searchLibrary ? `Không tìm thấy bộ thẻ nào khớp với "${searchLibrary}"` : 'Không có bộ thẻ nào trong danh mục này'}
+              description={`Tủ của bạn hiện có ${unlockedList.length} bộ thẻ. Hãy thử kiểm tra lại chính tả hoặc đặt lại bộ lọc.`}
+              primaryAction={{
+                label: 'Xóa bộ lọc tìm kiếm',
+                onClick: () => { setSelectedCategory('all'); setSearchLibrary(''); },
+                icon: RotateCw
+              }}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {filteredUnlockedList.map((course) => {
             const deckSrs = getDeckDueStats(course);
             return (
               <div
@@ -298,9 +416,11 @@ export default function LibraryView({
                 </button>
               </div>
             </div>
-          );
-        })}
-      </div>
+              );
+            })}
+            </div>
+          )}
+        </div>
       )}
 
     </div>

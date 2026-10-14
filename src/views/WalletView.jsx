@@ -27,6 +27,7 @@ import {
   COIN_RATE_VND
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
+import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
 export default function WalletView({ user, onBalanceUpdated }) {
@@ -496,7 +497,17 @@ export default function WalletView({ user, onBalanceUpdated }) {
           {activeTab === 'history' && (
             <div className="space-y-3">
               {transactions.length === 0 ? (
-                <p className="text-xs text-[#7a5a6b] text-center py-8 font-medium">Chưa có giao dịch nạp / rút nào.</p>
+                <ActionableEmptyState
+                  icon={Clock}
+                  badge="LỊCH SỬ GIAO DỊCH"
+                  title="Chưa có giao dịch nạp hoặc rút Xu nào"
+                  description="Mọi biến động số dư khi nạp tiền qua VietQR, rút tiền về tài khoản hoặc nhận thưởng nhiệm vụ sẽ được lưu vết minh bạch tại đây."
+                  primaryAction={{
+                    label: 'Nạp Xu Vào Ví Ngay',
+                    onClick: () => setActiveTab('deposit'),
+                    icon: ArrowDownLeft
+                  }}
+                />
               ) : (
                 transactions.map((tx) => (
                   <div key={tx.id} className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] flex items-center justify-between text-xs sm:text-sm">

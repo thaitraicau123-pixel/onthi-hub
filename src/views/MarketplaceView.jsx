@@ -34,6 +34,7 @@ import { isCoursePurchased } from '../utils/storage';
 import { playSound } from '../utils/storage';
 import { getLikedDeckIds, toggleLikeDeck } from '../utils/gamification';
 import { getDailyDeals } from '../utils/dailyDeals';
+import { CardGridSkeleton } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
 export default function MarketplaceView({
@@ -543,7 +544,15 @@ export default function MarketplaceView({
 
       {/* 4. PRODUCT GRID (Wayground Ivory Cards) */}
       <section>
-        {filtered.length === 0 ? (
+        {isSyncing ? (
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2 text-xs font-black text-pink-200 animate-pulse px-1">
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#f02c85]" />
+              <span>Đang đồng bộ dữ liệu thời gian thực từ máy chủ đám mây...</span>
+            </div>
+            <CardGridSkeleton count={4} cols="grid-cols-1 md:grid-cols-2 lg:grid-cols-4" />
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-8 text-[#28071a] shadow-xs space-y-4">
             <div className="w-16 h-16 rounded-2xl bg-pink-100 flex items-center justify-center mx-auto text-[#f02c85] shadow-xs">
               <Store className="w-8 h-8 opacity-80" />
