@@ -41,11 +41,11 @@ export default function Footer() {
             <ul className="space-y-2 font-medium">
               <li className="flex items-center space-x-2">
                 <Phone className="w-4 h-4 text-[#f02c85]" />
-                <span>Hotline Hỗ Trợ: <strong className="text-white">0388.999.888</strong></span>
+                <span>Hotline Hỗ Trợ: <a href="tel:0986019623" className="text-white hover:text-[#f02c85] transition-colors font-bold">0986019623</a></span>
               </li>
               <li className="flex items-center space-x-2">
                 <Mail className="w-4 h-4 text-[#f02c85]" />
-                <span>Email: <span className="text-white">support@onthihub.vn</span></span>
+                <span>Email: <a href="mailto:thaitraicau123@gmail.com" className="text-white hover:text-[#f02c85] transition-colors">thaitraicau123@gmail.com</a></span>
               </li>
               <li className="text-rose-300/50 pt-2 font-medium">
                 Thời gian hỗ trợ: 8:00 - 23:00 hàng ngày (kể cả Thứ 7, CN)
