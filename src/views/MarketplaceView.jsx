@@ -464,47 +464,60 @@ export default function MarketplaceView({
       )}
 
       {/* 3. FILTER & SEARCH (Wayground Warm Cream Bar) */}
-      <section id="marketplace-catalog" className="bg-[#fcf7ec] rounded-3xl p-4 sm:p-5 border border-[#eadfcb] shadow-md text-[#28071a]">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          
-          <div className="flex items-center space-x-2 overflow-x-auto pb-1 text-xs font-black scrollbar-none">
-            {[
-              { id: 'all', name: 'Tất cả chợ' },
-              { id: 'pass', name: `🔁 Góc Pass Lại Học Viên (${passDecks.length})` },
-              { id: 'ngoai-ngu', name: 'Ngoại ngữ & SAT' },
-              { id: 'it-tech', name: 'IT & Lập Trình' },
-              { id: 'cong-chuc', name: 'Công Chức & Ngành Y' }
-            ].map((tab) => (
+      {/* 3. FILTER & SEARCH (Spacious 2-Tier Responsive Bar) */}
+      <section id="marketplace-catalog" className="bg-[#fcf7ec] rounded-3xl p-4 sm:p-5 border border-[#eadfcb] shadow-md text-[#28071a] space-y-3.5">
+        {/* Tier 1: Category Selection Tabs (Wraps cleanly without clipping) */}
+        <div className="flex flex-wrap items-center gap-2 text-xs font-black">
+          {[
+            { id: 'all', name: 'Tất cả chợ' },
+            { id: 'pass', name: `🔁 Góc Pass Lại (${passDecks.length})` },
+            { id: 'ngoai-ngu', name: 'Ngoại ngữ & SAT' },
+            { id: 'it-tech', name: 'IT & Lập Trình' },
+            { id: 'cong-chuc', name: 'Công Chức & Ngành Y' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveCategory(tab.id)}
+              className={`px-4 py-2.5 rounded-xl whitespace-nowrap transition-all shadow-xs ${
+                activeCategory === tab.id
+                  ? 'bg-[#f02c85] text-white shadow-md shadow-pink-900/30 scale-102'
+                  : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#f6ebd5] hover:border-[#dfd0b5]'
+              }`}
+            >
+              {tab.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Tier 2: Search Input, Sorting & Refresh Actions */}
+        <div className="pt-3 border-t border-[#eadfcb]/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+          {/* Search Box - Flexibly expands */}
+          <div className="relative flex-1 min-w-[220px]">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm bộ thẻ hoặc người pass..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-8 py-2.5 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] shadow-xs"
+            />
+            {searchQuery && (
               <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id)}
-                className={`px-4 py-2 rounded-xl whitespace-nowrap transition-all ${
-                  activeCategory === tab.id
-                    ? 'bg-[#f02c85] text-white shadow-md shadow-pink-900/40'
-                    : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#f6ebd5]'
-                }`}
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold w-4 h-4 rounded-full flex items-center justify-center hover:bg-slate-100"
+                title="Xóa tìm kiếm"
               >
-                {tab.name}
+                ✕
               </button>
-            ))}
+            )}
           </div>
 
-          <div className="flex items-center space-x-2">
-            <div className="relative max-w-xs w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm bộ thẻ hoặc người pass..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
-              />
-            </div>
-
+          {/* Controls: Sorting Dropdown & Realtime Refresh Button */}
+          <div className="flex items-center space-x-2 shrink-0">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-2 text-xs bg-white font-black text-[#28071a] rounded-xl border border-[#eadfcb] outline-none shrink-0 cursor-pointer hover:bg-[#f6ebd5]"
+              className="px-3.5 py-2.5 text-xs bg-white font-black text-[#28071a] rounded-xl border border-[#eadfcb] outline-none cursor-pointer hover:bg-[#f6ebd5] shadow-xs transition-colors"
             >
               <option value="newest">✨ Mới nhất (Vừa lên sàn)</option>
               <option value="sales">🔥 Bán chạy nhất</option>
@@ -517,14 +530,14 @@ export default function MarketplaceView({
               onClick={handleManualSync}
               disabled={isSyncing}
               title="Đồng bộ danh sách bộ thẻ từ đám mây thời gian thực"
-              className={`p-2 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] hover:bg-[#f6ebd5] transition-all flex items-center justify-center shrink-0 ${
+              className={`px-3 py-2.5 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] hover:bg-[#f6ebd5] transition-all flex items-center space-x-1.5 shrink-0 shadow-xs font-bold text-xs ${
                 isSyncing ? 'opacity-60 cursor-not-allowed' : ''
               }`}
             >
-              <RefreshCw className={`w-4 h-4 text-[#f02c85] ${isSyncing ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#f02c85] ${isSyncing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Làm Mới</span>
             </button>
           </div>
-
         </div>
       </section>
 
