@@ -574,7 +574,7 @@ export default function CreateStudioView({
         {/* Title & Category */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2">
-            <label className="text-xs font-black text-[#28071a] block mb-1">
+            <label className="text-xs font-semibold text-[#37352f] block mb-1">
               Tiêu đề bộ thẻ:
             </label>
             <input
@@ -582,16 +582,16 @@ export default function CreateStudioView({
               placeholder="VD: 50 Điều Luật Công Chức Hay Hỏi Vòng 1..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-white font-bold text-[#28071a]"
+              className="w-full px-3.5 py-2 text-xs sm:text-sm border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white font-medium text-[#37352f]"
             />
           </div>
 
           <div>
-            <label className="text-xs font-black text-[#28071a] block mb-1">Chuyên mục:</label>
+            <label className="text-xs font-semibold text-[#37352f] block mb-1">Chuyên mục:</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-white font-bold text-[#28071a]"
+              className="w-full px-3.5 py-2 text-xs sm:text-sm border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white font-medium text-[#37352f]"
             >
               <option value="cong-chuc">🏛️ Thi Công Chức / Viên Chức</option>
               <option value="it-tech">💻 Lập Trình & Phỏng Vấn IT</option>
@@ -601,51 +601,51 @@ export default function CreateStudioView({
         </div>
 
         {/* Tab switch */}
-        <div className="flex border-b border-[#eadfcb]">
+        <div className="flex border-b border-[#e9e9e8]">
           <button
             type="button"
             onClick={() => setActiveMode('ai')}
-            className={`py-3 px-5 text-xs sm:text-sm font-black border-b-2 flex items-center space-x-2 transition-all ${
+            className={`py-2.5 px-4 text-xs sm:text-sm font-semibold border-b-2 flex items-center space-x-2 transition-all ${
               activeMode === 'ai'
-                ? 'border-[#f02c85] text-[#f02c85]'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2]'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-[#f02c85]" />
+            <Sparkles className="w-4 h-4 text-[#2383e2]" />
             <span>Soạn Thảo Tự Động</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveMode('manual')}
-            className={`py-3 px-5 text-xs sm:text-sm font-black border-b-2 flex items-center space-x-2 transition-all ${
+            className={`py-2.5 px-4 text-xs sm:text-sm font-semibold border-b-2 flex items-center space-x-2 transition-all ${
               activeMode === 'manual'
-                ? 'border-[#f02c85] text-[#f02c85]'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2]'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <FileText className="w-4 h-4 text-[#7a5a6b]" />
+            <FileText className="w-4 h-4 text-[#787774]" />
             <span>Tự Soạn Thủ Công ({cards.length} Thẻ)</span>
           </button>
         </div>
 
         {/* AI Generator Panel */}
         {activeMode === 'ai' && (
-          <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-4 text-xs shadow-xs">
+          <div className="p-5 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8] space-y-4 text-xs">
             
             {/* Streamlined Status Indicator */}
-            <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-              <div className="flex items-center space-x-2 text-[#7a5a6b]">
+            <div className="flex items-center justify-between pb-2 border-b border-[#e9e9e8]">
+              <div className="flex items-center space-x-2 text-[#787774]">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="font-bold text-[11px] text-[#28071a]">Trích xuất thẻ thông minh từ chủ đề hoặc bài giảng</span>
+                <span className="font-medium text-xs text-[#37352f]">Trích xuất thẻ thông minh từ chủ đề hoặc bài giảng</span>
               </div>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+              <span className="notion-tag notion-tag-green text-[10px] font-semibold">
                 Sẵn sàng
               </span>
             </div>
 
             <div>
-              <label className="font-black text-[#28071a] block mb-1">
+              <label className="font-semibold text-[#37352f] block mb-1">
                 Chủ đề / Từ khóa trọng tâm cần ôn tập:
               </label>
               <input
@@ -653,12 +653,12 @@ export default function CreateStudioView({
                 placeholder="VD: Luật Viên Chức 2010, React 19 Hooks, Từ vựng IELTS Collocations môi trường..."
                 value={aiTopic}
                 onChange={(e) => setAiTopic(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-[#fcf7ec] font-bold text-[#28071a]"
+                className="w-full px-3.5 py-2 text-xs border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white font-medium text-[#37352f]"
               />
 
               {/* Quick Topic Starter Chips */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
-                <span className="text-[10px] text-[#7a5a6b] font-bold">Gợi ý chủ đề hot:</span>
+              <div className="flex flex-wrap items-center gap-1.5 pt-2">
+                <span className="text-[10px] text-[#787774] font-medium">Gợi ý chủ đề hot:</span>
                 {[
                   { label: '🏛️ Nghị định 138/2020', topic: 'Nghị định 138/2020/NĐ-CP về tuyển dụng công chức', cat: 'cong-chuc' },
                   { label: '⚖️ Luật CBCC 2026', topic: 'Trọng tâm Luật Cán bộ, công chức 2008 (sđbs 2019)', cat: 'cong-chuc' },
@@ -674,7 +674,7 @@ export default function CreateStudioView({
                       if (!title) setTitle(`Bộ Thẻ: ${chip.topic}`);
                       playSound('click');
                     }}
-                    className="px-2 py-0.5 text-[10px] font-bold bg-[#fcf7ec] hover:bg-pink-50 border border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a] rounded-lg transition-colors shadow-2xs"
+                    className="px-2 py-0.5 text-[10px] font-medium bg-white hover:bg-[#e9e9e8] border border-[#e9e9e8] text-[#37352f] rounded-md transition-colors"
                   >
                     {chip.label}
                   </button>
@@ -684,15 +684,15 @@ export default function CreateStudioView({
               {/* Instant Studio Starter Packs (1-Click Rich Presets) */}
               <div className="pt-2 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black text-[#28071a] flex items-center space-x-1.5">
-                    <Zap className="w-3.5 h-3.5 text-[#f02c85] fill-[#f02c85]" />
+                  <span className="text-[11px] font-semibold text-[#37352f] flex items-center space-x-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#2383e2]" />
                     <span>Bộ Mẫu Trải Nghiệm 1-Click (Tự Động Nạp Đầy Đủ Dữ Liệu):</span>
                   </span>
                   {activePresetId && (
                     <button
                       type="button"
                       onClick={handleClearPreset}
-                      className="text-[10px] text-rose-600 hover:text-rose-700 font-bold underline"
+                      className="text-[10px] text-rose-600 hover:text-rose-700 font-medium underline"
                     >
                       Xóa mẫu đã chọn ✕
                     </button>
@@ -707,26 +707,26 @@ export default function CreateStudioView({
                         key={preset.id}
                         type="button"
                         onClick={() => handleApplyPreset(preset)}
-                        className={`p-2.5 rounded-2xl text-left border transition-all relative overflow-hidden flex flex-col justify-between ${
+                        className={`p-2.5 rounded-lg text-left border transition-all relative overflow-hidden flex flex-col justify-between ${
                           isSelected
-                            ? 'bg-gradient-to-br from-pink-50 to-white border-[#f02c85] shadow-sm ring-2 ring-[#f02c85]/20'
-                            : 'bg-[#fcf7ec] hover:bg-white border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a]'
+                            ? 'bg-white border-[#2383e2] ring-1 ring-[#2383e2]'
+                            : 'bg-white hover:bg-[#f7f6f5] border-[#e9e9e8] text-[#37352f]'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-1 mb-1">
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-white border border-[#eadfcb] text-[#28071a] shadow-2xs">
+                          <span className="notion-tag notion-tag-blue text-[10px]">
                             {preset.badge}
                           </span>
-                          <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-md ${
-                            isSelected ? 'bg-[#f02c85] text-white' : 'bg-[#eadfcb]/60 text-[#7a5a6b]'
+                          <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-md ${
+                            isSelected ? 'bg-[#2383e2] text-white' : 'bg-[#e9e9e8] text-[#787774]'
                           }`}>
                             {isSelected ? '✓ Đang Dùng' : '1-Click Nạp'}
                           </span>
                         </div>
-                        <div className="text-xs font-black text-[#28071a] line-clamp-1">
+                        <div className="text-xs font-semibold text-[#37352f] line-clamp-1">
                           {preset.title}
                         </div>
-                        <div className="text-[10px] text-[#7a5a6b] font-medium mt-1 line-clamp-1 flex items-center space-x-1">
+                        <div className="text-[10px] text-[#787774] mt-1 line-clamp-1 flex items-center space-x-1">
                           <span>🎯 {preset.highlight}</span>
                           <span>•</span>
                           <span>{preset.cardCount} thẻ tối ưu</span>
@@ -740,13 +740,13 @@ export default function CreateStudioView({
 
             <div>
               <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
-                <label className="font-black text-[#28071a] block text-xs">
+                <label className="font-semibold text-[#37352f] block text-xs">
                   Đoạn ghi chú / Nội dung bài học (tùy chọn):
                 </label>
 
                 <div className="flex items-center space-x-1.5">
                   {notesCharCount > 0 && (
-                    <span className="text-[10px] font-mono font-bold text-[#7a5a6b] bg-[#fcf7ec] px-2 py-0.5 rounded-md border border-[#eadfcb]">
+                    <span className="text-[10px] font-mono text-[#787774] bg-white px-2 py-0.5 rounded-md border border-[#e9e9e8]">
                       {notesCharCount} ký tự • {notesWordCount} từ
                     </span>
                   )}
@@ -754,7 +754,7 @@ export default function CreateStudioView({
                   <button
                     type="button"
                     onClick={handlePasteNotes}
-                    className="px-2 py-0.5 text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-md transition-colors shadow-2xs"
+                    className="px-2 py-0.5 text-[10px] font-medium text-[#2383e2] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition-colors"
                     title="Dán nhanh văn bản từ clipboard"
                   >
                     📋 Dán nhanh
@@ -764,7 +764,7 @@ export default function CreateStudioView({
                     <button
                       type="button"
                       onClick={handleClearNotes}
-                      className="px-2 py-0.5 text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md transition-colors"
+                      className="px-2 py-0.5 text-[10px] font-medium text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-md transition-colors"
                       title="Xóa đoạn ghi chú này"
                     >
                       🧹 Xóa
@@ -774,7 +774,7 @@ export default function CreateStudioView({
                   <button
                     type="button"
                     onClick={() => setIsExpandedNotes(!isExpandedNotes)}
-                    className="px-2 py-0.5 text-[10px] font-bold text-[#7a5a6b] bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-md transition-colors"
+                    className="px-2 py-0.5 text-[10px] font-medium text-[#787774] bg-white hover:bg-[#e9e9e8] border border-[#e9e9e8] rounded-md transition-colors"
                     title={isExpandedNotes ? "Thu nhỏ ô nhập lại" : "Mở rộng ô nhập to hơn để dễ đọc"}
                   >
                     {isExpandedNotes ? "Thu nhỏ ↕" : "Mở rộng ↕"}
@@ -787,35 +787,35 @@ export default function CreateStudioView({
                 placeholder="Dán câu hỏi, bài giảng hoặc ghi chú ôn tập vào đây. Hệ thống sẽ phân tích độ dài và trích xuất thành bộ thẻ câu hỏi - đáp án sắc bén..."
                 value={aiNotes}
                 onChange={(e) => setAiNotes(e.target.value)}
-                className="w-full px-3.5 py-2.5 text-xs border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] bg-[#fcf7ec] font-medium text-[#28071a] transition-all"
+                className="w-full px-3.5 py-2.5 text-xs border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white text-[#37352f] transition-all"
               ></textarea>
 
               {/* Real-time Density & Quality Guidance */}
-              <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[11px] text-[#7a5a6b]">
+              <div className="mt-1 flex flex-wrap items-center justify-between gap-1 text-[11px] text-[#787774]">
                 <span>{getRecommendation().text}</span>
                 {notesCharCount > 0 && (
-                  <span className="text-[10px] font-bold text-[#f02c85]">
+                  <span className="text-[10px] font-semibold text-[#2383e2]">
                     {notesCharCount < 120 ? '• 1 Ý ngắn gọn' : notesCharCount < 450 ? '• Độ dài chuẩn' : notesCharCount < 1200 ? '• Chi tiết' : '• Chuyên sâu'}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Extraction Mode Selector (Phân biệt Câu hỏi vs Trả lời vs Lý thuyết) */}
-            <div className="p-3 bg-[#fcf7ec]/80 rounded-2xl border border-[#eadfcb] space-y-2">
+            {/* Extraction Mode Selector */}
+            <div className="p-3 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-1">
-                <span className="text-xs font-black text-[#28071a] flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-[#37352f] flex items-center gap-1.5">
                   <span>🎯</span>
                   <span>Quy Tắc Nhận Diện Kiến Thức:</span>
                 </span>
-                <span className="text-[10px] text-[#f02c85] font-black">
+                <span className="text-[10px] text-[#2383e2] font-semibold">
                   {extractionMode === 'auto'
-                    ? '✨ AI tự nhận diện thông minh'
+                    ? 'AI tự nhận diện thông minh'
                     : extractionMode === 'qa'
-                    ? '❓ Đã có sẵn Hỏi & Đáp (Tách Front - Back)'
+                    ? 'Đã có sẵn Hỏi & Đáp (Tách Front - Back)'
                     : extractionMode === 'questions_only'
-                    ? '💡 Danh sách câu hỏi (AI tự giải đáp)'
-                    : '📖 Bài giảng / Lý thuyết (AI tự sinh câu hỏi)'}
+                    ? 'Danh sách câu hỏi (AI tự giải đáp)'
+                    : 'Bài giảng / Lý thuyết (AI tự sinh câu hỏi)'}
                 </span>
               </div>
 
@@ -833,17 +833,17 @@ export default function CreateStudioView({
                       setExtractionMode(m.id);
                       playSound('click');
                     }}
-                    className={`p-2 rounded-xl text-left border transition-all ${
+                    className={`p-2 rounded-lg text-left border transition-all ${
                       extractionMode === m.id
-                        ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white border-[#f02c85] shadow-xs'
-                        : 'bg-white border-[#eadfcb] text-[#28071a] hover:bg-[#faf4e6]'
+                        ? 'bg-[#37352f] text-white border-[#37352f] shadow-xs'
+                        : 'bg-white border-[#e9e9e8] text-[#37352f] hover:bg-black/5'
                     }`}
                   >
-                    <div className="flex items-center space-x-1 font-black text-[11px]">
+                    <div className="flex items-center space-x-1 font-semibold text-[11px]">
                       <span>{m.icon}</span>
                       <span className="truncate">{m.label}</span>
                     </div>
-                    <div className={`text-[9px] mt-0.5 font-medium truncate ${extractionMode === m.id ? 'text-pink-100' : 'text-[#7a5a6b]'}`}>
+                    <div className={`text-[9px] mt-0.5 font-normal truncate ${extractionMode === m.id ? 'text-slate-200' : 'text-[#787774]'}`}>
                       {m.desc}
                     </div>
                   </button>
@@ -851,19 +851,19 @@ export default function CreateStudioView({
               </div>
             </div>
 
-            {/* Answer Length Selector: Chi tiết, Vừa đủ, Ngắn gọn */}
-            <div className="p-3 bg-[#fcf7ec]/80 rounded-2xl border border-[#eadfcb] space-y-2">
+            {/* Answer Length Selector */}
+            <div className="p-3 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-1">
-                <span className="text-xs font-black text-[#28071a] flex items-center gap-1.5">
+                <span className="text-xs font-semibold text-[#37352f] flex items-center gap-1.5">
                   <span>📏</span>
                   <span>Độ Dài Câu Trả Lời (Mặt Sau):</span>
                 </span>
-                <span className="text-[10px] text-[#f02c85] font-black">
+                <span className="text-[10px] text-[#2383e2] font-semibold">
                   {answerLength === 'detailed'
-                    ? '📝 Chi tiết (50 - 100 từ • Đầy đủ căn cứ & ví dụ)'
+                    ? 'Chi tiết (50 - 100 từ • Đầy đủ căn cứ & ví dụ)'
                     : answerLength === 'concise'
-                    ? '⚡ Ngắn gọn (10 - 25 từ • 1-2 dòng ôn phản xạ)'
-                    : '⚖️ Vừa đủ (25 - 50 từ • Chuẩn Anki SM-2)'}
+                    ? 'Ngắn gọn (10 - 25 từ • 1-2 dòng ôn phản xạ)'
+                    : 'Vừa đủ (25 - 50 từ • Chuẩn Anki SM-2)'}
                 </span>
               </div>
 
@@ -898,27 +898,27 @@ export default function CreateStudioView({
                       setAnswerLength(item.id);
                       playSound('click');
                     }}
-                    className={`p-2.5 rounded-xl text-left border transition-all ${
+                    className={`p-2.5 rounded-lg text-left border transition-all ${
                       answerLength === item.id
-                        ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white border-[#f02c85] shadow-xs'
-                        : 'bg-white border-[#eadfcb] text-[#28071a] hover:bg-[#faf4e6]'
+                        ? 'bg-[#37352f] text-white border-[#37352f] shadow-xs'
+                        : 'bg-white border-[#e9e9e8] text-[#37352f] hover:bg-black/5'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1 font-black text-xs">
+                      <div className="flex items-center space-x-1 font-semibold text-xs">
                         <span>{item.icon}</span>
                         <span>{item.label}</span>
                       </div>
-                      <span className={`text-[9px] font-black px-1.5 py-0.2 rounded-full ${
+                      <span className={`text-[9px] font-medium px-1.5 py-0.5 rounded-md ${
                         answerLength === item.id
                           ? 'bg-white/20 text-white'
-                          : 'bg-[#f4ebd7] text-[#7a5a6b]'
+                          : 'bg-[#e9e9e8] text-[#787774]'
                       }`}>
                         {item.badge}
                       </span>
                     </div>
-                    <div className={`text-[10px] mt-1 font-medium truncate ${
-                      answerLength === item.id ? 'text-pink-100' : 'text-[#7a5a6b]'
+                    <div className={`text-[10px] mt-1 font-normal truncate ${
+                      answerLength === item.id ? 'text-slate-200' : 'text-[#787774]'
                     }`}>
                       {item.desc}
                     </div>
@@ -928,35 +928,35 @@ export default function CreateStudioView({
             </div>
 
             {/* Custom Prompt Toggle & Input */}
-            <div className="p-3 bg-white rounded-2xl border border-[#eadfcb] space-y-2">
+            <div className="p-3 bg-white rounded-lg border border-[#e9e9e8] space-y-2">
               <div className="flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() => setShowCustomPrompt(!showCustomPrompt)}
-                  className="text-xs font-black text-[#f02c85] hover:text-[#d11c6d] flex items-center space-x-1.5 transition-colors"
+                  className="text-xs font-semibold text-[#2383e2] hover:underline flex items-center space-x-1.5 transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>{showCustomPrompt ? 'Ẩn Lời Nhắc Tùy Chỉnh (Custom Prompt) ▲' : '✍️ Thêm Lời Nhắc Tùy Chỉnh Cho AI (Custom Prompt) ▼'}</span>
                   {customPrompt.trim() && (
-                    <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-black ml-1">Đã Bật</span>
+                    <span className="notion-tag notion-tag-green text-[9px] font-semibold ml-1">Đã Bật</span>
                   )}
                 </button>
-                <span className="text-[10px] text-[#7a5a6b] font-medium hidden sm:inline">Ép khuôn AI theo phong cách của bạn</span>
+                <span className="text-[10px] text-[#787774] hidden sm:inline">Ép khuôn AI theo phong cách của bạn</span>
               </div>
 
               {showCustomPrompt && (
-                <div className="pt-2 border-t border-[#f4ecd8] space-y-2 animate-fade-in">
+                <div className="pt-2 border-t border-[#e9e9e8] space-y-2 animate-fade-in">
                   <textarea
                     rows={2}
                     placeholder="Ví dụ: Giữ nguyên câu hỏi có sẵn, viết câu trả lời ngắn dưới 25 từ, bổ sung căn cứ pháp lý và mẹo nhớ vui..."
                     value={customPrompt}
                     onChange={(e) => setCustomPrompt(e.target.value)}
-                    className="w-full p-2.5 text-xs bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] font-medium text-[#28071a] resize-none"
+                    className="w-full p-2.5 text-xs bg-[#f7f6f5] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] text-[#37352f] resize-none"
                   />
 
                   {/* Quick suggestion chips */}
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[10px] text-[#7a5a6b] font-bold">Gợi ý nhanh:</span>
+                    <span className="text-[10px] text-[#787774] font-medium">Gợi ý nhanh:</span>
                     {[
                       '📌 Giữ nguyên câu hỏi có sẵn',
                       '⚡ Trả lời súc tích < 30 từ',
@@ -970,7 +970,7 @@ export default function CreateStudioView({
                           setCustomPrompt(prev => prev ? `${prev}, ${chip}` : chip);
                           playSound('click');
                         }}
-                        className="px-2 py-0.5 text-[10px] font-bold bg-[#fcf7ec] hover:bg-pink-50 border border-[#eadfcb] hover:border-[#f02c85]/40 text-[#28071a] rounded-lg transition-colors"
+                        className="px-2 py-0.5 text-[10px] font-medium bg-white hover:bg-[#e9e9e8] border border-[#e9e9e8] text-[#37352f] rounded-md transition-colors"
                       >
                         {chip}
                       </button>
@@ -979,7 +979,7 @@ export default function CreateStudioView({
                       <button
                         type="button"
                         onClick={() => setCustomPrompt('')}
-                        className="px-2 py-0.5 text-[10px] font-bold text-rose-600 hover:text-rose-700 underline ml-auto"
+                        className="px-2 py-0.5 text-[10px] font-medium text-rose-600 hover:text-rose-700 underline ml-auto"
                       >
                         Xóa lời nhắc
                       </button>
@@ -990,18 +990,18 @@ export default function CreateStudioView({
             </div>
 
             {/* SỐ LƯỢNG THẺ - Flexible Selector & Stepper */}
-            <div className="p-3.5 rounded-2xl bg-[#fcf7ec]/70 border border-[#eadfcb] space-y-2.5">
+            <div className="p-3.5 rounded-lg bg-[#f7f6f5] border border-[#e9e9e8] space-y-2.5">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[#28071a] font-black text-xs">Số lượng thẻ cần tạo:</span>
-                  <span className="text-[10px] font-bold text-[#f02c85] px-2 py-0.5 bg-pink-50 border border-pink-200 rounded-full">
+                  <span className="text-[#37352f] font-semibold text-xs">Số lượng thẻ cần tạo:</span>
+                  <span className="notion-tag notion-tag-blue text-[10px] font-semibold">
                     {aiCount === 'auto' ? `Tự động đề xuất (${getRecommendation().count} thẻ)` : `Đã chọn: ${aiCount} thẻ`}
                   </span>
                 </div>
 
-                {/* Stepper +/- for fine-tuning any number from 1 to 30 */}
+                {/* Stepper +/- */}
                 <div className="flex items-center space-x-1.5 self-start sm:self-auto">
-                  <span className="text-[10px] font-bold text-[#7a5a6b] mr-1">Tùy biến:</span>
+                  <span className="text-[10px] text-[#787774] mr-1">Tùy biến:</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -1010,13 +1010,13 @@ export default function CreateStudioView({
                       setAiCount(next);
                       playSound('click');
                     }}
-                    className="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 border border-[#eadfcb] text-[#28071a] font-black text-xs flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-6 h-6 rounded-md bg-white hover:bg-[#e9e9e8] border border-[#e9e9e8] text-[#37352f] font-semibold text-xs flex items-center justify-center transition-colors"
                     title="Giảm 1 thẻ"
                   >
                     <Minus className="w-3 h-3" />
                   </button>
 
-                  <span className="min-w-8 text-center font-mono font-black text-xs text-[#28071a]">
+                  <span className="min-w-8 text-center font-mono font-semibold text-xs text-[#37352f]">
                     {aiCount === 'auto' ? `${getRecommendation().count} (A)` : aiCount}
                   </span>
 
@@ -1028,7 +1028,7 @@ export default function CreateStudioView({
                       setAiCount(next);
                       playSound('click');
                     }}
-                    className="w-6 h-6 rounded-lg bg-white hover:bg-slate-100 border border-[#eadfcb] text-[#28071a] font-black text-xs flex items-center justify-center transition-colors shadow-2xs"
+                    className="w-6 h-6 rounded-md bg-white hover:bg-[#e9e9e8] border border-[#e9e9e8] text-[#37352f] font-semibold text-xs flex items-center justify-center transition-colors"
                     title="Tăng 1 thẻ"
                   >
                     <Plus className="w-3 h-3" />
@@ -1044,10 +1044,10 @@ export default function CreateStudioView({
                     setAiCount('auto');
                     playSound('click');
                   }}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center space-x-1.5 ${
                     aiCount === 'auto'
-                      ? 'bg-gradient-to-r from-[#f02c85] to-[#c71767] text-white shadow-sm'
-                      : 'bg-white border border-[#eadfcb] text-[#28071a] hover:bg-slate-50'
+                      ? 'bg-[#37352f] text-white shadow-xs'
+                      : 'bg-white border border-[#e9e9e8] text-[#37352f] hover:bg-black/5'
                   }`}
                   title="Hệ thống tự động đo độ dài văn bản để tạo số thẻ tối ưu nhất"
                 >
@@ -1063,10 +1063,10 @@ export default function CreateStudioView({
                       setAiCount(num);
                       playSound('click');
                     }}
-                    className={`px-2.5 py-1.5 rounded-xl text-xs font-black transition-all ${
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       aiCount === num
-                        ? 'bg-[#f02c85] text-white shadow-sm'
-                        : 'bg-white border border-[#eadfcb] text-[#28071a] hover:bg-slate-50'
+                        ? 'bg-[#37352f] text-white shadow-xs'
+                        : 'bg-white border border-[#e9e9e8] text-[#37352f] hover:bg-black/5'
                     }`}
                   >
                     {num} thẻ
@@ -1077,49 +1077,49 @@ export default function CreateStudioView({
 
             {/* Dynamic AI Multi-Step Animated Progress Indicator */}
             {isGenerating && (
-              <div className="p-4 bg-gradient-to-r from-pink-50 via-purple-50 to-pink-50 rounded-2xl border-2 border-[#f02c85]/40 space-y-3 animate-fade-in shadow-xs">
+              <div className="p-4 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] space-y-3 animate-fade-in">
                 <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 text-[#28071a] font-black">
-                    <Sparkles className="w-4 h-4 text-[#f02c85] animate-spin" />
+                  <div className="flex items-center space-x-2 text-[#37352f] font-semibold">
+                    <Sparkles className="w-4 h-4 text-[#2383e2] animate-spin" />
                     <span>Trí Tuệ Nhân Tạo Đang Xử Lý & Trích Xuất Flashcard...</span>
                   </div>
-                  <span className="text-[11px] font-black text-[#f02c85] bg-pink-100/80 px-2 py-0.5 rounded-full border border-pink-200">
+                  <span className="notion-tag notion-tag-blue text-[11px] font-semibold">
                     {generatingStep === 0 ? 'Bước 1/3 (35%)' : generatingStep === 1 ? 'Bước 2/3 (75%)' : 'Bước 3/3 (95%)'}
                   </span>
                 </div>
 
                 {/* Animated Progress Bar */}
-                <div className="w-full h-2.5 bg-white rounded-full overflow-hidden border border-[#eadfcb]">
+                <div className="w-full h-2 bg-[#e9e9e8] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#ff5f38] via-[#f02c85] to-[#7d1a52] transition-all duration-700 rounded-full"
+                    className="h-full bg-[#2383e2] transition-all duration-700 rounded-full"
                     style={{ width: generatingStep === 0 ? '35%' : generatingStep === 1 ? '75%' : '95%' }}
                   ></div>
                 </div>
 
                 {/* Steps Visual List */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-0.5">
-                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
-                    generatingStep >= 0 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  <div className={`p-2 rounded-md flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 0 ? 'bg-white text-[#37352f] font-semibold border border-[#e9e9e8]' : 'text-[#787774] opacity-60'
                   }`}>
-                    <span className={generatingStep === 0 ? 'animate-bounce text-[#f02c85]' : 'text-emerald-600 font-black'}>
+                    <span className={generatingStep === 0 ? 'animate-bounce text-[#2383e2]' : 'text-emerald-600 font-semibold'}>
                       {generatingStep > 0 ? '✓' : '1.'}
                     </span>
                     <span className="truncate">Phân tích ngữ cảnh & tài liệu</span>
                   </div>
 
-                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
-                    generatingStep >= 1 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  <div className={`p-2 rounded-md flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 1 ? 'bg-white text-[#37352f] font-semibold border border-[#e9e9e8]' : 'text-[#787774] opacity-60'
                   }`}>
-                    <span className={generatingStep === 1 ? 'animate-bounce text-[#f02c85]' : generatingStep > 1 ? 'text-emerald-600 font-black' : 'text-slate-400'}>
+                    <span className={generatingStep === 1 ? 'animate-bounce text-[#2383e2]' : generatingStep > 1 ? 'text-emerald-600 font-semibold' : 'text-slate-400'}>
                       {generatingStep > 1 ? '✓' : '2.'}
                     </span>
                     <span className="truncate">Trích xuất cặp Hỏi-Đáp SM-2</span>
                   </div>
 
-                  <div className={`p-2 rounded-xl flex items-center space-x-1.5 transition-colors ${
-                    generatingStep >= 2 ? 'bg-white text-[#28071a] font-black border border-pink-200 shadow-2xs' : 'text-[#7a5a6b] opacity-60'
+                  <div className={`p-2 rounded-md flex items-center space-x-1.5 transition-colors ${
+                    generatingStep >= 2 ? 'bg-white text-[#37352f] font-semibold border border-[#e9e9e8]' : 'text-[#787774] opacity-60'
                   }`}>
-                    <span className={generatingStep === 2 ? 'animate-bounce text-[#f02c85]' : 'text-slate-400'}>
+                    <span className={generatingStep === 2 ? 'animate-bounce text-[#2383e2]' : 'text-slate-400'}>
                       {generatingStep === 2 ? '⚡' : '3.'}
                     </span>
                     <span className="truncate">Đóng gói & định dạng Anki</span>
@@ -1134,7 +1134,7 @@ export default function CreateStudioView({
                 type="button"
                 onClick={handleGenerateAI}
                 disabled={isGenerating || !quota.canCreate}
-                className="w-full sm:w-auto px-7 py-3 btn-wayground-sunset text-white font-black rounded-2xl shadow-xl flex items-center justify-center space-x-2 disabled:opacity-50 transition-transform transform hover:scale-105 active:scale-95"
+                className="w-full sm:w-auto px-6 py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white font-semibold rounded-lg shadow-xs flex items-center justify-center space-x-2 disabled:opacity-50 transition-colors"
               >
                 {isGenerating ? (
                   <>
@@ -1155,14 +1155,14 @@ export default function CreateStudioView({
         {/* Cards Editor List */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <span className="text-xs sm:text-sm font-black text-[#28071a]">
+            <span className="text-xs sm:text-sm font-semibold text-[#37352f]">
               Danh Sách Các Thẻ ({cards.length} thẻ):
             </span>
             <div className="flex flex-wrap items-center gap-1.5">
               <button
                 type="button"
                 onClick={handleOpenPreview}
-                className="px-3 py-1.5 text-xs font-black text-[#f02c85] bg-pink-50 hover:bg-pink-100 border border-pink-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                className="px-3 py-1.5 text-xs font-semibold text-[#2383e2] bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg flex items-center space-x-1.5 transition-colors shadow-2xs"
                 title="Xem trước trải nghiệm học 3D trước khi lưu"
               >
                 <Eye className="w-3.5 h-3.5" />
@@ -1172,7 +1172,7 @@ export default function CreateStudioView({
               <button
                 type="button"
                 onClick={handleSwapAllCards}
-                className="px-3 py-1.5 text-xs font-black text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                className="px-3 py-1.5 text-xs font-medium text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg flex items-center space-x-1.5 transition-colors shadow-2xs"
                 title="Đảo toàn bộ Mặt trước thành Mặt sau và ngược lại"
               >
                 <ArrowUpDown className="w-3.5 h-3.5 text-amber-700" />
@@ -1182,17 +1182,17 @@ export default function CreateStudioView({
               <button
                 type="button"
                 onClick={handleExportCards}
-                className="px-3 py-1.5 text-xs font-black text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl flex items-center space-x-1.5 transition-colors shadow-2xs"
+                className="px-3 py-1.5 text-xs font-medium text-[#787774] bg-[#f7f6f5] hover:bg-[#e9e9e8] border border-[#e9e9e8] rounded-lg flex items-center space-x-1.5 transition-colors shadow-2xs"
                 title="Copy dạng TSV để dán vào Excel hoặc Anki"
               >
-                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <Download className="w-3.5 h-3.5 text-[#787774]" />
                 <span>📋 Xuất TSV</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setShowImporterModal(true)}
-                className="px-3 py-1.5 text-xs font-black text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-xl flex items-center space-x-1.5 border border-indigo-200 transition-colors shadow-2xs"
+                className="px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg flex items-center space-x-1.5 border border-indigo-200 transition-colors shadow-2xs"
               >
                 <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600" />
                 <span>📥 Dán Excel/Quizlet</span>
@@ -1201,7 +1201,7 @@ export default function CreateStudioView({
               <button
                 type="button"
                 onClick={handleAddCard}
-                className="px-3.5 py-1.5 text-xs font-black text-white bg-[#f02c85] hover:bg-[#dc1f74] rounded-xl flex items-center space-x-1 transition-colors shadow-xs"
+                className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2383e2] hover:bg-[#1a73e8] rounded-lg flex items-center space-x-1 transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Thêm thẻ</span>
@@ -1212,17 +1212,17 @@ export default function CreateStudioView({
           {cards.map((card, idx) => (
             <div
               key={idx}
-              className="p-4 bg-white rounded-2xl border border-[#eadfcb] hover:border-[#f02c85] transition-colors space-y-3 text-xs shadow-xs"
+              className="p-4 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8] hover:border-[#2383e2] transition-colors space-y-3 text-xs"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <span className="font-black text-[#f02c85] text-xs">Thẻ #{idx + 1}</span>
+                  <span className="notion-tag notion-tag-blue text-xs font-semibold">Thẻ #{idx + 1}</span>
                   <input
                     type="text"
                     placeholder="Tag (VD: Điều 80)"
                     value={card.tag || ''}
                     onChange={(e) => handleCardChange(idx, 'tag', e.target.value)}
-                    className="px-2.5 py-1 border border-[#eadfcb] rounded-lg text-[10px] bg-[#fcf7ec] font-bold text-[#28071a]"
+                    className="px-2.5 py-1 border border-[#e9e9e8] rounded-md text-[11px] bg-white text-[#37352f]"
                   />
                 </div>
 
@@ -1230,7 +1230,7 @@ export default function CreateStudioView({
                   <button
                     type="button"
                     onClick={() => handleSwapCard(idx)}
-                    className="p-1.5 text-[#7a5a6b] hover:text-[#f02c85] hover:bg-pink-50 rounded-lg transition-colors"
+                    className="p-1.5 text-[#787774] hover:text-[#2383e2] hover:bg-blue-50 rounded-md transition-colors"
                     title="Đảo mặt trước & mặt sau của thẻ này"
                   >
                     <ArrowUpDown className="w-3.5 h-3.5" />
@@ -1239,7 +1239,7 @@ export default function CreateStudioView({
                   <button
                     type="button"
                     onClick={() => handleDuplicateCard(idx)}
-                    className="p-1.5 text-[#7a5a6b] hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-1.5 text-[#787774] hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                     title="Nhân bản thẻ này"
                   >
                     <Copy className="w-3.5 h-3.5" />
@@ -1249,7 +1249,7 @@ export default function CreateStudioView({
                     type="button"
                     onClick={() => handleMoveCard(idx, 'up')}
                     disabled={idx === 0}
-                    className="p-1.5 text-[#7a5a6b] hover:text-[#28071a] hover:bg-slate-100 disabled:opacity-30 rounded-lg transition-colors"
+                    className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 disabled:opacity-30 rounded-md transition-colors"
                     title="Di chuyển lên trên"
                   >
                     <ChevronUp className="w-3.5 h-3.5" />
@@ -1259,7 +1259,7 @@ export default function CreateStudioView({
                     type="button"
                     onClick={() => handleMoveCard(idx, 'down')}
                     disabled={idx === cards.length - 1}
-                    className="p-1.5 text-[#7a5a6b] hover:text-[#28071a] hover:bg-slate-100 disabled:opacity-30 rounded-lg transition-colors"
+                    className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 disabled:opacity-30 rounded-md transition-colors"
                     title="Di chuyển xuống dưới"
                   >
                     <ChevronDown className="w-3.5 h-3.5" />
@@ -1269,7 +1269,7 @@ export default function CreateStudioView({
                     <button
                       type="button"
                       onClick={() => handleRemoveCard(idx)}
-                      className="p-1.5 text-[#7a5a6b] hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors ml-1"
+                      className="p-1.5 text-[#787774] hover:text-rose-600 hover:bg-rose-50 rounded-md transition-colors ml-1"
                       title="Xóa thẻ này"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -1281,10 +1281,10 @@ export default function CreateStudioView({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block">
+                    <label className="text-[10px] font-semibold text-[#787774] uppercase block">
                       Mặt trước (Câu hỏi / Thuật ngữ):
                     </label>
-                    <span className={`text-[10px] font-mono ${card.front.length > 120 ? 'text-amber-600 font-black' : 'text-[#7a5a6b]'}`}>
+                    <span className={`text-[10px] font-mono ${card.front.length > 120 ? 'text-amber-700 font-semibold' : 'text-[#787774]'}`}>
                       {card.front.length} ký tự
                     </span>
                   </div>
@@ -1293,10 +1293,10 @@ export default function CreateStudioView({
                     placeholder="Nhập câu hỏi hoặc từ vựng..."
                     value={card.front}
                     onChange={(e) => handleCardChange(idx, 'front', e.target.value)}
-                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-y min-h-[52px] font-bold text-[#28071a]"
+                    className="w-full p-2.5 border border-[#e9e9e8] rounded-lg bg-white outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] resize-y min-h-[52px] font-medium text-[#37352f]"
                   />
                   {card.front.length > 120 && (
-                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1 font-semibold">
+                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1">
                       <span>💡</span>
                       <span>Mẹo Anki: Câu hỏi nên ngắn gọn (&lt;100 ký tự) để phản xạ tức thì.</span>
                     </p>
@@ -1305,10 +1305,10 @@ export default function CreateStudioView({
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-[10px] font-bold text-[#7a5a6b] uppercase block">
+                    <label className="text-[10px] font-semibold text-[#787774] uppercase block">
                       Mặt sau (Giải thích / Định nghĩa):
                     </label>
-                    <span className={`text-[10px] font-mono ${card.back.length > 300 ? 'text-amber-600 font-black' : 'text-[#7a5a6b]'}`}>
+                    <span className={`text-[10px] font-mono ${card.back.length > 300 ? 'text-amber-700 font-semibold' : 'text-[#787774]'}`}>
                       {card.back.length} ký tự
                     </span>
                   </div>
@@ -1317,10 +1317,10 @@ export default function CreateStudioView({
                     placeholder="Nhập câu trả lời hoặc căn cứ pháp lý..."
                     value={card.back}
                     onChange={(e) => handleCardChange(idx, 'back', e.target.value)}
-                    className="w-full p-2.5 border border-[#eadfcb] rounded-xl bg-[#fcf7ec] outline-none focus:border-[#f02c85] resize-y min-h-[52px] font-medium text-[#28071a]"
+                    className="w-full p-2.5 border border-[#e9e9e8] rounded-lg bg-white outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] resize-y min-h-[52px] text-[#37352f]"
                   />
                   {card.back.length > 300 && (
-                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1 font-semibold">
+                    <p className="text-[10px] text-amber-700 mt-1 flex items-center gap-1">
                       <span>💡</span>
                       <span>Mẹo Anki: Nội dung dài nên tách thành gạch đầu dòng hoặc chia thành nhiều thẻ nhỏ.</span>
                     </p>
@@ -1335,12 +1335,12 @@ export default function CreateStudioView({
         {title.trim().length > 3 && (() => {
           const liveDupCheck = checkDeckDuplication({ title, description, cards });
           return (
-            <div className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between gap-3 ${
+            <div className={`p-3.5 rounded-lg border text-xs flex items-center justify-between gap-3 ${
               liveDupCheck.similarityScore >= 55
-                ? 'bg-rose-50 border-rose-300 text-rose-900'
+                ? 'bg-rose-50 border-rose-200 text-rose-900'
                 : liveDupCheck.similarityScore >= 30
-                ? 'bg-amber-50 border-amber-300 text-amber-900'
-                : 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                ? 'bg-amber-50 border-amber-200 text-amber-900'
+                : 'bg-emerald-50 border-emerald-200 text-emerald-900'
             }`}>
               <div className="flex items-start space-x-2.5">
                 {liveDupCheck.similarityScore >= 55 ? (
@@ -1351,20 +1351,20 @@ export default function CreateStudioView({
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 )}
                 <div>
-                  <span className="font-black block">
+                  <span className="font-semibold block">
                     {liveDupCheck.similarityScore >= 55
-                      ? `⚠️ Cảnh Báo Trùng Lặp ${liveDupCheck.similarityScore}% (Có Nguy Cơ Đạo Văn)`
+                      ? `Cảnh Báo Trùng Lặp ${liveDupCheck.similarityScore}% (Có Nguy Cơ Đạo Văn)`
                       : liveDupCheck.similarityScore >= 30
-                      ? `ℹ️ Tương Đồng ${liveDupCheck.similarityScore}% so với bộ "${liveDupCheck.matchedDeck?.title}"`
-                      : `✅ Bộ Thẻ Độc Bản (${liveDupCheck.similarityScore}% trùng) - Hoàn Toàn Hợp Lệ!`}
+                      ? `Tương Đồng ${liveDupCheck.similarityScore}% so với bộ "${liveDupCheck.matchedDeck?.title}"`
+                      : `Bộ Thẻ Độc Bản (${liveDupCheck.similarityScore}% trùng) - Hoàn Toàn Hợp Lệ!`}
                   </span>
-                  <span className="text-[11px] opacity-80 font-medium block mt-0.5">
+                  <span className="text-[11px] opacity-80 block mt-0.5">
                     {liveDupCheck.reason}
                   </span>
                 </div>
               </div>
 
-              <span className="text-[10px] font-black uppercase px-2 py-1 rounded-lg bg-white/70 border border-current shrink-0">
+              <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md bg-white border border-current shrink-0">
                 {liveDupCheck.similarityScore}% MATCH
               </span>
             </div>
@@ -1372,23 +1372,23 @@ export default function CreateStudioView({
         })()}
 
         {/* Marketplace Publish Option */}
-        <div className="p-4 rounded-2xl border border-amber-300 bg-amber-100/50 space-y-2 text-xs">
+        <div className="p-4 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] space-y-2 text-xs">
           <label className="flex items-center space-x-2.5 cursor-pointer">
             <input
               type="checkbox"
               checked={publishToMarket}
               onChange={(e) => setPublishToMarket(e.target.checked)}
-              className="w-4 h-4 rounded text-[#f02c85] focus:ring-[#f02c85]"
+              className="w-4 h-4 rounded text-[#2383e2] focus:ring-[#2383e2]"
             />
-            <span className="font-black text-[#28071a] flex items-center space-x-1.5">
-              <Store className="w-4 h-4 text-[#f02c85]" />
+            <span className="font-semibold text-[#37352f] flex items-center space-x-1.5">
+              <Store className="w-4 h-4 text-[#2383e2]" />
               <span>Đồng thời đăng bán lên Sàn Thương Mại Điện Tử C2C để kiếm Xu</span>
             </span>
           </label>
 
           {publishToMarket && (
             <div className="pt-2 pl-6 flex items-center space-x-3">
-              <span className="text-[11px] text-[#7a5a6b] font-bold">Đặt giá bán bộ thẻ:</span>
+              <span className="text-[11px] text-[#787774]">Đặt giá bán bộ thẻ:</span>
               <div className="flex items-center space-x-1.5">
                 <input
                   type="number"
@@ -1396,10 +1396,10 @@ export default function CreateStudioView({
                   max="500"
                   value={priceXu}
                   onChange={(e) => setPriceXu(e.target.value)}
-                  className="w-20 px-2.5 py-1 text-xs font-black border border-[#eadfcb] rounded-lg bg-white text-[#28071a]"
+                  className="w-20 px-2.5 py-1 text-xs font-semibold border border-[#e9e9e8] rounded-md bg-white text-[#37352f]"
                 />
-                <span className="font-black text-[#28071a]">Xu</span>
-                <span className="text-[11px] text-[#7a5a6b] font-semibold">
+                <span className="font-semibold text-[#37352f]">Xu</span>
+                <span className="text-[11px] text-[#787774]">
                   (~{(priceXu * 1000).toLocaleString()}đ • Phí sàn {quota.tierConfig.marketplaceFee}%)
                 </span>
               </div>
@@ -1412,7 +1412,7 @@ export default function CreateStudioView({
           <button
             type="button"
             onClick={handleSaveDeck}
-            className="px-8 py-3.5 btn-wayground-sunset text-white rounded-2xl text-xs sm:text-sm font-black shadow-xl flex items-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+            className="px-6 py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs flex items-center space-x-2 transition-colors"
           >
             <Save className="w-4 h-4" />
             <span>{publishToMarket ? 'Lưu & Đăng Bán Kiếm Xu' : 'Lưu Vào Tủ Thẻ Của Tôi'}</span>
@@ -1425,20 +1425,20 @@ export default function CreateStudioView({
 
       {/* Modal Nhập Nhanh Từ Excel / Quizlet / Văn Bản */}
       {showImporterModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="relative w-full max-w-xl bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] space-y-4 max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-xl bg-white rounded-xl border border-[#e9e9e8] shadow-2xl p-6 text-[#37352f] space-y-4 max-h-[90vh] flex flex-col">
             
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3 shrink-0">
+            <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3 shrink-0">
               <div className="flex items-center space-x-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md">
+                <div className="w-9 h-9 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="font-black text-sm text-[#28071a]">
+                  <h4 className="font-bold text-sm text-[#37352f]">
                     Nhập Thẻ Nhanh Từ Excel / Quizlet / Văn Bản
                   </h4>
-                  <span className="text-[10px] text-indigo-700 font-bold block">
+                  <span className="text-[10px] text-[#787774] block">
                     Copy và dán trực tiếp từ bảng tính hoặc đề cương
                   </span>
                 </div>
@@ -1446,7 +1446,7 @@ export default function CreateStudioView({
               <button
                 type="button"
                 onClick={() => setShowImporterModal(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
+                className="p-1.5 rounded-md text-[#787774] hover:text-[#37352f] hover:bg-black/5"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -1456,11 +1456,11 @@ export default function CreateStudioView({
             <div className="space-y-3 shrink-0 text-xs">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center space-x-1.5">
-                  <span className="font-bold text-[#7a5a6b]">Dấu phân cách:</span>
+                  <span className="font-medium text-[#787774]">Dấu phân cách:</span>
                   <select
                     value={importSeparator}
                     onChange={(e) => setImportSeparator(e.target.value)}
-                    className="px-2.5 py-1 text-xs font-bold border border-[#eadfcb] rounded-lg bg-white text-[#28071a] outline-none"
+                    className="px-2.5 py-1 text-xs font-medium border border-[#e9e9e8] rounded-md bg-white text-[#37352f] outline-none"
                   >
                     <option value="auto">Tự động phát hiện (Auto)</option>
                     <option value="tab">Dấu Tab (Excel / Quizlet / Google Sheets)</option>
@@ -1479,7 +1479,7 @@ collaborate\thợp tác, cùng làm việc\tGiao tiếp
 meticulous\ttỉ mỉ, cẩn trọng từng chi tiết\tIELTS 7.0`);
                       setImportSeparator('tab');
                     }}
-                    className="px-2 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold text-[10px] border border-indigo-200 transition-colors"
+                    className="px-2 py-1 rounded-md bg-blue-50 hover:bg-blue-100 text-[#2383e2] font-medium text-[10px] border border-blue-200 transition-colors"
                   >
                     Mẫu Tab (Excel)
                   </button>
@@ -1491,7 +1491,7 @@ Cơ quan có thẩm quyền ban hành Nghị định? - Chính phủ ban hành N
 Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh bạch, khách quan, cạnh tranh lành mạnh.`);
                       setImportSeparator('dash');
                     }}
-                    className="px-2 py-1 rounded-lg bg-pink-50 hover:bg-pink-100 text-[#f02c85] font-bold text-[10px] border border-pink-200 transition-colors"
+                    className="px-2 py-1 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium text-[10px] border border-purple-200 transition-colors"
                   >
                     Mẫu Q&A ( - )
                   </button>
@@ -1500,12 +1500,12 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
 
               {/* Append vs Replace Checkbox */}
               <div className="flex items-center space-x-2 pt-1">
-                <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#28071a]">
+                <label className="flex items-center space-x-1.5 cursor-pointer font-medium text-xs text-[#37352f]">
                   <input
                     type="checkbox"
                     checked={importAppendMode}
                     onChange={(e) => setImportAppendMode(e.target.checked)}
-                    className="rounded text-[#f02c85] focus:ring-[#f02c85]"
+                    className="rounded text-[#2383e2] focus:ring-[#2383e2]"
                   />
                   <span>Thêm nối tiếp vào danh sách thẻ hiện có (Không xóa các thẻ cũ)</span>
                 </label>
@@ -1519,7 +1519,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                 value={importRawText}
                 onChange={(e) => setImportRawText(e.target.value)}
                 placeholder={`Dán nội dung vào đây. Mỗi dòng là 1 thẻ. Ví dụ:\nMặt trước\tMặt sau\tTag\nHoặc:\nCâu hỏi khái niệm - Định nghĩa trả lời`}
-                className="w-full flex-1 p-3.5 text-xs font-mono border border-[#eadfcb] rounded-2xl outline-none focus:border-[#f02c85] bg-white text-[#28071a] resize-none"
+                className="w-full flex-1 p-3.5 text-xs font-mono border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] bg-white text-[#37352f] resize-none"
               ></textarea>
             </div>
 
@@ -1528,36 +1528,36 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
               const previewParsed = parseImportedCards(importRawText, importSeparator);
               return (
                 <div className="shrink-0 space-y-2">
-                  <div className="flex items-center justify-between text-xs font-bold">
-                    <span className={previewParsed.length > 0 ? 'text-emerald-700' : 'text-slate-500'}>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className={previewParsed.length > 0 ? 'text-emerald-700 font-semibold' : 'text-[#787774]'}>
                       {previewParsed.length > 0
                         ? `✅ Đã nhận diện: ${previewParsed.length} thẻ hợp lệ`
                         : 'ℹ️ Chưa nhận diện được thẻ nào (hãy dán văn bản ở trên)'}
                     </span>
                     {previewParsed.length > 0 && (
-                      <span className="text-[11px] text-[#7a5a6b]">
+                      <span className="text-[11px] text-[#787774]">
                         Xem trước mẫu thẻ đầu tiên:
                       </span>
                     )}
                   </div>
 
                   {previewParsed.length > 0 && (
-                    <div className="p-2.5 bg-white rounded-xl border border-[#eadfcb] text-[11px] space-y-1">
-                      <p className="font-bold text-[#28071a] truncate">
+                    <div className="p-2.5 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] text-[11px] space-y-1">
+                      <p className="font-semibold text-[#37352f] truncate">
                         🏷️ Mặt trước: {previewParsed[0].front}
                       </p>
-                      <p className="text-[#7a5a6b] truncate">
+                      <p className="text-[#787774] truncate">
                         💡 Mặt sau: {previewParsed[0].back}
                       </p>
                     </div>
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#eadfcb]">
+                  <div className="flex items-center justify-end space-x-2 pt-2 border-t border-[#e9e9e8]">
                     <button
                       type="button"
                       onClick={() => setShowImporterModal(false)}
-                      className="px-4 py-2 rounded-xl border border-[#eadfcb] bg-white hover:bg-[#faebd0] text-[#28071a] text-xs font-bold"
+                      className="px-4 py-2 rounded-lg border border-[#e9e9e8] bg-white hover:bg-black/5 text-[#787774] text-xs font-medium transition-colors"
                     >
                       Hủy bỏ
                     </button>
@@ -1565,7 +1565,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                       type="button"
                       disabled={previewParsed.length === 0}
                       onClick={handleApplyImport}
-                      className="px-5 py-2 rounded-xl btn-wayground-sunset text-white text-xs font-black shadow-md disabled:opacity-50 flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                      className="px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center space-x-1.5 transition-colors"
                     >
                       <ArrowDownToLine className="w-4 h-4" />
                       <span>Nạp {previewParsed.length} Thẻ Vào Bộ Đề</span>
@@ -1586,18 +1586,18 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
         if (!currentCard) return null;
 
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in text-[#28071a]">
-            <div className="relative w-full max-w-lg bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in text-[#37352f]">
+            <div className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl p-6 space-y-4">
               
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+              <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#ff5f38] to-[#f02c85] text-white flex items-center justify-center font-bold shadow-md shadow-pink-900/30">
-                    <Eye className="w-5 h-5 fill-white" />
+                  <div className="w-9 h-9 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center">
+                    <Eye className="w-5 h-5" />
                   </div>
                   <div>
-                    <h4 className="font-black text-sm text-[#28071a]">Xem Trước Thẻ Học Thực Tế 3D</h4>
-                    <span className="text-[11px] text-[#f02c85] font-black">
+                    <h4 className="font-bold text-sm text-[#37352f]">Xem Trước Thẻ Học Thực Tế 3D</h4>
+                    <span className="text-[11px] text-[#2383e2] font-semibold">
                       Thẻ số {previewCardIndex + 1} / {validCards.length}
                     </span>
                   </div>
@@ -1606,7 +1606,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                 <button
                   type="button"
                   onClick={() => setShowPreviewModal(false)}
-                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
+                  className="p-1.5 rounded-md text-[#787774] hover:text-[#37352f] hover:bg-black/5 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -1637,18 +1637,18 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                 >
                   {/* Front Side */}
                   <div
-                    className={`absolute inset-0 backface-hidden rounded-3xl p-6 shadow-xl border-2 border-[#eadfcb] bg-white text-[#28071a] flex flex-col justify-between transition-opacity duration-200 ${
+                    className={`absolute inset-0 backface-hidden rounded-xl p-6 shadow-md border border-[#e9e9e8] bg-white text-[#37352f] flex flex-col justify-between transition-opacity duration-200 ${
                       isPreviewFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
                     }`}
                   >
                     {/* Top card info */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-[#fcf7ec] text-[#f02c85] border border-[#eadfcb]">
+                      <span className="notion-tag notion-tag-blue text-[10px] font-semibold">
                         Mặt Trước (Câu Hỏi)
                       </span>
 
                       {currentCard.tag && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-[#7a5a6b] bg-[#fcf7ec]">
+                        <span className="text-[10px] text-[#787774] bg-[#f7f6f5] px-2 py-0.5 rounded-md">
                           #{currentCard.tag}
                         </span>
                       )}
@@ -1656,14 +1656,14 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
 
                     {/* Main content */}
                     <div className="my-auto text-center px-2 sm:px-4 max-h-[140px] overflow-y-auto">
-                      <p className="font-black text-sm sm:text-base leading-relaxed text-[#28071a]">
+                      <p className="font-semibold text-sm sm:text-base leading-relaxed text-[#37352f]">
                         {currentCard.front || 'Chưa nhập câu hỏi'}
                       </p>
                     </div>
 
                     {/* Bottom hint */}
                     <div className="text-center">
-                      <span className="text-[10px] font-medium text-[#7a5a6b]">
+                      <span className="text-[10px] text-[#787774]">
                         👆 Chạm hoặc bấm [Space] để lật đáp án
                       </span>
                     </div>
@@ -1671,18 +1671,18 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
 
                   {/* Back Side */}
                   <div
-                    className={`absolute inset-0 backface-hidden rotate-y-180 rounded-3xl p-6 shadow-xl border-2 border-[#f02c85] bg-gradient-to-br from-[#28071a] to-[#430c2c] text-white flex flex-col justify-between transition-opacity duration-200 ${
+                    className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl p-6 shadow-md border border-[#e9e9e8] bg-[#fbfbfa] text-[#37352f] flex flex-col justify-between transition-opacity duration-200 ${
                       isPreviewFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                     }`}
                   >
                     {/* Top card info */}
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-300 border border-pink-400/30">
+                      <span className="notion-tag notion-tag-green text-[10px] font-semibold">
                         Mặt Sau (Đáp Án)
                       </span>
 
                       {currentCard.tag && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-lg text-pink-200/80 bg-white/10">
+                        <span className="text-[10px] text-[#787774] bg-white px-2 py-0.5 rounded-md border border-[#e9e9e8]">
                           #{currentCard.tag}
                         </span>
                       )}
@@ -1690,14 +1690,14 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
 
                     {/* Main content */}
                     <div className="my-auto text-left px-2 sm:px-4 max-h-[140px] overflow-y-auto">
-                      <p className="font-semibold text-sm sm:text-base leading-relaxed text-pink-100 whitespace-pre-line">
+                      <p className="text-sm leading-relaxed text-[#37352f] whitespace-pre-line">
                         {currentCard.back || 'Chưa nhập đáp án'}
                       </p>
                     </div>
 
                     {/* Bottom hint */}
                     <div className="text-center">
-                      <span className="text-[10px] font-medium text-pink-300/70">
+                      <span className="text-[10px] text-[#787774]">
                         👆 Chạm để lật lại mặt trước
                       </span>
                     </div>
@@ -1716,7 +1716,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                     playSound('click');
                   }}
                   disabled={previewCardIndex === 0}
-                  className="px-4 py-2 bg-white hover:bg-slate-100 border border-[#eadfcb] disabled:opacity-40 text-[#28071a] font-black text-xs rounded-xl flex items-center space-x-1 shadow-2xs transition-colors"
+                  className="px-4 py-2 bg-white hover:bg-black/5 border border-[#e9e9e8] disabled:opacity-40 text-[#787774] font-medium text-xs rounded-lg flex items-center space-x-1 transition-colors"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Thẻ Trước</span>
@@ -1729,7 +1729,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                     setIsPreviewFlipped(!isPreviewFlipped);
                     playSound('flip');
                   }}
-                  className="px-4 py-2 bg-[#f02c85] hover:bg-[#dc1f74] text-white font-black text-xs rounded-xl flex items-center space-x-1 shadow-xs transition-colors"
+                  className="px-4 py-2 bg-[#2383e2] hover:bg-[#1a73e8] text-white font-medium text-xs rounded-lg flex items-center space-x-1 transition-colors shadow-xs"
                 >
                   <RotateCw className="w-3.5 h-3.5" />
                   <span>{isPreviewFlipped ? 'Lật Mặt Trước' : 'Lật Mặt Sau'}</span>
@@ -1743,7 +1743,7 @@ Nguyên tắc tuyển dụng công chức gồm những gì? - Công khai, minh 
                     playSound('click');
                   }}
                   disabled={previewCardIndex === validCards.length - 1}
-                  className="px-4 py-2 bg-white hover:bg-slate-100 border border-[#eadfcb] disabled:opacity-40 text-[#28071a] font-black text-xs rounded-xl flex items-center space-x-1 shadow-2xs transition-colors"
+                  className="px-4 py-2 bg-white hover:bg-black/5 border border-[#e9e9e8] disabled:opacity-40 text-[#787774] font-medium text-xs rounded-lg flex items-center space-x-1 transition-colors"
                 >
                   <span>Thẻ Tiếp</span>
                   <ArrowRight className="w-3.5 h-3.5" />

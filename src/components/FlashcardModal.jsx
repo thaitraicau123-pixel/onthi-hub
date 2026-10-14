@@ -457,9 +457,9 @@ export default function FlashcardModal({
 
         {/* Hands-Free Auto-Play Active Notification Bar */}
         {isAutoPlaying && (
-          <div className="px-5 py-2 bg-gradient-to-r from-rose-500 via-[#f02c85] to-pink-600 text-white flex items-center justify-between text-xs font-bold animate-fade-in shadow-xs">
+          <div className="px-5 py-2 bg-[#e7f3f8] border-b border-[#cbe3ed] text-[#2b7aa1] flex items-center justify-between text-xs font-medium animate-fade-in">
             <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+              <span className="w-2 h-2 rounded-full bg-[#2383e2] animate-ping"></span>
               <span>🎧 Đang chạy Chế độ Rảnh Tay (Tự động lật & đọc thẻ sau {autoPlaySeconds}s)</span>
             </div>
             <div className="flex items-center space-x-1.5 text-[11px]">
@@ -468,10 +468,10 @@ export default function FlashcardModal({
                 <button
                   key={sec}
                   onClick={() => setAutoPlaySeconds(sec)}
-                  className={`px-2 py-0.5 rounded-md font-bold transition-colors ${
+                  className={`px-2 py-0.5 rounded-md font-medium transition-colors ${
                     autoPlaySeconds === sec
-                      ? 'bg-white text-rose-600 font-black shadow-xs'
-                      : 'text-rose-100 hover:bg-white/20'
+                      ? 'bg-[#2383e2] text-white font-semibold shadow-2xs'
+                      : 'text-[#2b7aa1] hover:bg-white/50'
                   }`}
                 >
                   {sec}s
@@ -483,9 +483,9 @@ export default function FlashcardModal({
 
         {/* Preview Notice Bar for Non-purchased */}
         {!isPurchased && (
-          <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/10 via-amber-50 to-orange-50 border-b border-amber-200/70 flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center space-x-2 text-amber-900 font-medium">
-              <Lock className="w-4 h-4 text-amber-600 shrink-0" />
+          <div className="px-5 py-2 bg-[#fbf3db] border-b border-[#f4e4b7] flex items-center justify-between gap-3 text-xs text-[#976d57]">
+            <div className="flex items-center space-x-2">
+              <Lock className="w-4 h-4 text-[#cc782f] shrink-0" />
               <span>
                 Đang xem thử <strong>{cards.length} thẻ mẫu</strong>. Trọn bộ gồm <strong>350+ thẻ</strong> và file tải về.
               </span>
@@ -495,7 +495,7 @@ export default function FlashcardModal({
                 onClose();
                 onBuy(course);
               }}
-              className="px-3 py-1 font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shrink-0 shadow-xs"
+              className="px-3 py-1 font-medium text-white bg-[#cc782f] hover:bg-[#b56722] rounded-md shrink-0 shadow-2xs cursor-pointer"
             >
               Mở Khóa Toàn Bộ ({course.priceXu || 25} Xu)
             </button>
@@ -503,7 +503,7 @@ export default function FlashcardModal({
         )}
 
         {/* Card Body - 3D Flip Area */}
-        <div className="p-4 sm:p-8 flex-1 flex flex-col items-center justify-center bg-slate-50 min-h-[340px] sm:min-h-[400px]">
+        <div className="p-4 sm:p-8 flex-1 flex flex-col items-center justify-center bg-[#fbfbfa] min-h-[340px] sm:min-h-[400px]">
           
           <div
             onClick={toggleFlip}
@@ -526,12 +526,12 @@ export default function FlashcardModal({
               
               {/* Front Side */}
               <div
-                className={`absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-white border-2 border-slate-200 shadow-xl transition-opacity duration-200 ${
+                className={`absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-white border border-[#e9e9e8] shadow-xs transition-opacity duration-200 ${
                   isFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
                 }`}
               >
-                <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase tracking-wider">
-                  <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-bold border border-slate-200 text-[11px]">
+                <div className="flex items-center justify-between text-xs text-[#787774] font-medium uppercase tracking-wider">
+                  <span className="notion-tag notion-tag-gray text-[10px]">
                     Mặt trước (Câu hỏi / Từ khóa)
                   </span>
                   <div className="flex items-center space-x-1.5">
@@ -541,10 +541,10 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         toggleStarCurrentCard();
                       }}
-                      className="p-2 hover:bg-amber-50 rounded-full transition-colors cursor-pointer"
+                      className="p-1.5 hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
                       title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
                     >
-                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-slate-300 hover:text-amber-400'}`} />
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-[#9b9a97] hover:text-amber-400'}`} />
                     </button>
                     <button
                       type="button"
@@ -552,7 +552,7 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         handleSpeak(currentCard.front);
                       }}
-                      className="p-2 hover:text-[#f02c85] hover:bg-pink-50 rounded-full transition-colors cursor-pointer"
+                      className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
                       title="Phát âm thanh"
                     >
                       <Volume2 className="w-4 h-4" />
@@ -561,25 +561,25 @@ export default function FlashcardModal({
                 </div>
 
                 <div className="my-auto text-center px-3 py-2 max-h-[170px] overflow-y-auto">
-                  <p className="text-lg sm:text-2xl font-bold text-slate-900 leading-snug whitespace-pre-line">
+                  <p className="text-lg sm:text-2xl font-bold text-[#37352f] leading-snug whitespace-pre-line">
                     {currentCard.front || (cards.length === 0 ? 'Bộ thẻ chưa có nội dung' : 'Thẻ trống')}
                   </p>
                 </div>
 
-                <div className="text-center text-xs text-slate-400 flex items-center justify-center space-x-1.5 font-medium">
-                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-[#f02c85]" />
+                <div className="text-center text-xs text-[#787774] flex items-center justify-center space-x-1.5 font-normal">
+                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-[#2383e2]" />
                   <span>Chạm hoặc bấm [Phím Cách] để lật đáp án</span>
                 </div>
               </div>
 
               {/* Back Side */}
               <div
-                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-white border-2 border-[#f02c85]/40 shadow-xl shadow-pink-100/50 transition-opacity duration-200 ${
+                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-white border-2 border-[#2383e2]/40 shadow-xs transition-opacity duration-200 ${
                   isFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
               >
-                <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider">
-                  <span className="px-2.5 py-1 rounded-full bg-pink-50 text-[#f02c85] font-bold border border-pink-200 text-[11px]">
+                <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wider">
+                  <span className="notion-tag notion-tag-blue text-[10px]">
                     Mặt sau (Giải thích / Đáp án)
                   </span>
                   <div className="flex items-center space-x-1.5">
@@ -589,10 +589,10 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         toggleStarCurrentCard();
                       }}
-                      className="p-2 hover:bg-amber-50 rounded-full transition-colors cursor-pointer"
+                      className="p-1.5 hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
                       title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
                     >
-                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-pink-300 hover:text-amber-400'}`} />
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-[#9b9a97] hover:text-amber-400'}`} />
                     </button>
                     <button
                       type="button"
@@ -600,7 +600,7 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         handleSpeak(currentCard.back);
                       }}
-                      className="p-2 text-[#f02c85] hover:bg-pink-50 rounded-full transition-colors cursor-pointer"
+                      className="p-1.5 text-[#2383e2] hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
                       title="Phát âm"
                     >
                       <Volume2 className="w-4 h-4" />
@@ -609,13 +609,13 @@ export default function FlashcardModal({
                 </div>
 
                 <div className="my-auto py-2 max-h-[170px] overflow-y-auto pr-1">
-                  <div className="text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line font-normal text-left sm:text-center">
+                  <div className="text-sm sm:text-base text-[#37352f] leading-relaxed whitespace-pre-line font-normal text-left sm:text-center">
                     {currentCard.back || (cards.length === 0 ? 'Chưa có đáp án' : 'Trống')}
                   </div>
                 </div>
 
-                <div className="text-center sm:text-right text-[11px] text-[#f02c85] font-semibold flex items-center justify-center sm:justify-end space-x-1">
-                  <RotateCw className="w-3 h-3 text-[#f02c85]" />
+                <div className="text-center sm:text-right text-[11px] text-[#2383e2] font-medium flex items-center justify-center sm:justify-end space-x-1">
+                  <RotateCw className="w-3 h-3 text-[#2383e2]" />
                   <span>Chạm để lật lại mặt trước</span>
                 </div>
               </div>
@@ -627,17 +627,17 @@ export default function FlashcardModal({
           <div className="mt-4 flex items-center space-x-4">
             <button
               onClick={goToPrev}
-              className="p-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors shadow-xs"
+              className="p-2 rounded-full bg-white border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] transition-colors shadow-2xs cursor-pointer"
               title="Thẻ trước [Phím Mũi tên trái]"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-xs font-bold text-slate-500">
+            <span className="text-xs font-medium text-[#787774]">
               {cards.length > 0 ? `${currentIndex + 1} / ${cards.length}` : '0 / 0'}
             </span>
             <button
               onClick={goToNext}
-              className="p-2 rounded-full bg-white border border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors shadow-xs"
+              className="p-2 rounded-full bg-white border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] transition-colors shadow-2xs cursor-pointer"
               title="Thẻ tiếp theo [Phím Mũi tên phải]"
             >
               <ChevronRight className="w-5 h-5" />
@@ -648,9 +648,9 @@ export default function FlashcardModal({
           <div className="mt-3 flex items-center space-x-2">
             <button
               onClick={handleAskAiTutor}
-              className="px-4 py-2 rounded-2xl bg-gradient-to-r from-purple-600 via-[#f02c85] to-pink-500 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+              className="px-3.5 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>Hỏi Trợ Lý AI Chuyên Gia (Bản Chất & Mẹo Nhớ)</span>
             </button>
           </div>
@@ -706,68 +706,68 @@ export default function FlashcardModal({
 
       {/* AI Tutor Slide-over Drawer / Modal */}
       {aiDrawerOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-xl max-h-[85vh] bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl overflow-hidden flex flex-col text-[#28071a]">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f]">
             
             {/* Drawer Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-[#240618] to-[#450a29] text-white flex items-center justify-between border-b border-[#f02c85]/30">
+            <div className="px-5 py-3.5 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8]">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                  <Bot className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
+                  <h4 className="text-sm font-bold uppercase tracking-tight flex items-center space-x-1.5">
                     <span>Trợ Lý Gia Sư AI OnThiHub</span>
-                    <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
+                    <span className="notion-tag notion-tag-blue text-[10px]">
                       Pro Turbo
                     </span>
                   </h4>
-                  <p className="text-[11px] text-pink-200/80 font-medium">
+                  <p className="text-[11px] text-[#787774] font-normal">
                     Phân tích bản chất, mẹo nhớ siêu tốc & bẫy đề thi
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5">
                 {aiExplanations[currentIndex] && (
                   <button
                     onClick={handleCopyAiText}
-                    className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                    className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
                     title="Copy nội dung giải thích"
                   >
-                    {copiedAiText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                    {copiedAiText ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                   </button>
                 )}
                 <button
                   onClick={() => setAiDrawerOpen(false)}
-                  className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                  className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {/* Drawer Content */}
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
+            <div className="p-5 overflow-y-auto space-y-3.5 flex-1 text-xs sm:text-sm">
               
               {/* Card Context Recap */}
-              <div className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs">
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-pink-100 text-[#f02c85]">
+              <div className="p-3 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8]">
+                <span className="notion-tag notion-tag-gray text-[10px]">
                   NỘI DUNG THẺ ĐANG HỌC
                 </span>
-                <p className="mt-1 font-black text-[#28071a]">
+                <p className="mt-1 font-semibold text-[#37352f]">
                   {currentCard.front}
                 </p>
-                <div className="mt-1.5 text-xs text-[#7a5a6b] whitespace-pre-line border-t border-[#eadfcb]/60 pt-1.5">
+                <div className="mt-1 text-xs text-[#787774] whitespace-pre-line border-t border-[#f0efed] pt-1">
                   {currentCard.back}
                 </div>
               </div>
 
               {/* AI Content Loading State */}
               {isAiLoading && (
-                <div className="py-12 flex flex-col items-center justify-center space-y-3">
-                  <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
+                <div className="py-10 flex flex-col items-center justify-center space-y-2.5">
+                  <div className="w-8 h-8 border-3 border-[#2383e2] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-xs text-[#787774] animate-pulse">
                     Đang kết nối hệ thống AI OnThiHub phân tích bẫy thi & sáng tác mẹo nhớ...
                   </p>
                 </div>
@@ -775,27 +775,27 @@ export default function FlashcardModal({
 
               {/* AI Error */}
               {aiError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
                   {aiError}
                 </div>
               )}
 
               {/* AI Explanation Formatted Result */}
               {aiExplanations[currentIndex] && (
-                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs text-xs sm:text-sm text-[#28071a] leading-relaxed whitespace-pre-line font-medium space-y-2">
+                <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line space-y-2">
                   {aiExplanations[currentIndex]}
                 </div>
               )}
             </div>
 
             {/* Drawer Footer */}
-            <div className="px-5 py-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#7a5a6b] font-bold">
+            <div className="px-5 py-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#787774]">
                 💡 Nhớ nhanh theo phương pháp Spaced Repetition (Lặp lại ngắt quãng)
               </span>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="px-4 py-2 rounded-xl bg-[#28071a] text-white text-xs font-bold hover:bg-[#3d0c27]"
+                className="px-3 py-1.5 rounded-lg bg-[#37352f] hover:bg-[#201f1d] text-white text-xs font-medium cursor-pointer"
               >
                 Đóng lại
               </button>
@@ -808,45 +808,45 @@ export default function FlashcardModal({
       {/* Topic & Concept Explorer Drawer */}
       {topicDrawerOpen && (
         <div className="fixed inset-0 z-60 bg-black/40 backdrop-blur-xs flex justify-end animate-fade-in">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-left">
+          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-left border-l border-[#e9e9e8] text-[#37352f]">
             
             {/* Drawer Header */}
-            <div className="px-5 py-4 border-b border-slate-100 bg-[#28071a] text-white flex items-center justify-between">
+            <div className="px-5 py-3.5 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
-                  <Layers className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                  <Layers className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-white">Mục Lục & Sơ Đồ Chủ Đề</h4>
-                  <p className="text-[11px] text-pink-200/80 font-medium">
+                  <h4 className="text-sm font-bold text-[#37352f]">Mục Lục & Sơ Đồ Chủ Đề</h4>
+                  <p className="text-[11px] text-[#787774]">
                     Tổng cộng {cards.length} thẻ ghi nhớ
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setTopicDrawerOpen(false)}
-                className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="p-4 bg-[#fcf7ec] border-b border-[#eadfcb] space-y-3">
+            <div className="p-3.5 bg-[#fbfbfa] border-b border-[#e9e9e8] space-y-2.5">
               {/* Search input */}
               <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={topicSearchTerm}
                   onChange={(e) => setTopicSearchTerm(e.target.value)}
                   placeholder="Tìm từ khóa câu hỏi, khái niệm..."
-                  className="w-full pl-9 pr-3 py-2 bg-white border border-[#eadfcb] rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#f02c85] shadow-2xs"
+                  className="w-full pl-8 pr-7 py-1.5 bg-white border border-[#e9e9e8] rounded-lg text-xs text-[#37352f] placeholder-[#9b9a97] focus:outline-none focus:border-[#2383e2] transition-colors"
                 />
                 {topicSearchTerm && (
                   <button
                     onClick={() => setTopicSearchTerm('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9b9a97] hover:text-[#37352f] text-xs font-bold cursor-pointer"
                   >
                     ✕
                   </button>
@@ -857,33 +857,33 @@ export default function FlashcardModal({
               <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
                 <button
                   onClick={() => setSelectedTagFilter('ALL')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
                     selectedTagFilter === 'ALL'
-                      ? 'bg-[#28071a] text-white shadow-2xs'
-                      : 'bg-white text-slate-600 border border-[#eadfcb] hover:bg-slate-100'
+                      ? 'bg-[#37352f] text-white shadow-2xs'
+                      : 'bg-white text-[#5a5751] border border-[#e9e9e8] hover:bg-[#f0efed]'
                   }`}
                 >
                   Tất cả ({cards.length})
                 </button>
                 <button
                   onClick={() => setSelectedTagFilter(selectedTagFilter === 'STARRED' ? 'ALL' : 'STARRED')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors flex items-center space-x-1 ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors flex items-center space-x-1 cursor-pointer ${
                     selectedTagFilter === 'STARRED'
-                      ? 'bg-amber-500 text-white shadow-2xs'
-                      : 'bg-white text-amber-800 border border-amber-300 hover:bg-amber-50'
+                      ? 'bg-[#fbf3db] text-[#976d57] border border-[#f4e4b7] font-semibold'
+                      : 'bg-white text-[#787774] border border-[#e9e9e8] hover:bg-[#f0efed]'
                   }`}
                 >
-                  <Star className="w-3 h-3 fill-current" />
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
                   <span>Đã Đánh Dấu ({starredCardIds.length})</span>
                 </button>
                 {uniqueTags.map((t) => (
                   <button
                     key={t}
                     onClick={() => setSelectedTagFilter(t)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors ${
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
                       selectedTagFilter === t
-                        ? 'bg-[#f02c85] text-white shadow-2xs'
-                        : 'bg-white text-slate-600 border border-[#eadfcb] hover:bg-slate-100'
+                        ? 'bg-[#2383e2] text-white shadow-2xs'
+                        : 'bg-white text-[#5a5751] border border-[#e9e9e8] hover:bg-[#f0efed]'
                     }`}
                   >
                     {t} ({tagCounts[t] || 0})
@@ -893,9 +893,9 @@ export default function FlashcardModal({
             </div>
 
             {/* Cards List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[#fdfcf9]">
+            <div className="flex-1 overflow-y-auto p-3.5 space-y-2 bg-[#ffffff]">
               {filteredCardItems.length === 0 ? (
-                <div className="py-12 text-center text-slate-400 text-xs font-medium">
+                <div className="py-12 text-center text-[#9b9a97] text-xs font-normal">
                   {selectedTagFilter === 'STARRED'
                     ? 'Bạn chưa đánh dấu sao thẻ nào. Hãy bấm biểu tượng ngôi sao trên thẻ để lưu lại thẻ quan trọng!'
                     : 'Không tìm thấy thẻ nào phù hợp từ khóa.'}
@@ -912,34 +912,34 @@ export default function FlashcardModal({
                     <div
                       key={idx}
                       onClick={() => handleJumpToCard(idx)}
-                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
+                      className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
                         isCurrent
-                          ? 'bg-pink-50/80 border-[#f02c85] shadow-xs ring-1 ring-[#f02c85]'
-                          : 'bg-white border-[#eadfcb] hover:border-[#d9c7ab] hover:bg-amber-50/30'
+                          ? 'bg-[#e7f3f8] border-[#2383e2] ring-1 ring-[#2383e2]'
+                          : 'bg-white border-[#e9e9e8] hover:border-[#c5c4c0] hover:bg-[#fbfbfa]'
                       }`}
                     >
                       <div className="flex items-center justify-between text-[10px] mb-1">
-                        <span className="font-black text-slate-400 flex items-center space-x-1">
+                        <span className="text-[#787774] flex items-center space-x-1">
                           {isStarred && (
                             <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
                           )}
                           <span>#{idx + 1} {card.tag ? `• ${card.tag}` : ''}</span>
                         </span>
                         {isCurrent ? (
-                          <span className="font-bold text-[#f02c85] bg-pink-100 px-1.5 py-0.5 rounded">
+                          <span className="notion-tag notion-tag-blue text-[10px]">
                             Đang xem
                           </span>
                         ) : srs.totalReviews > 0 ? (
-                          <span className="font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded">
+                          <span className="notion-tag notion-tag-purple text-[10px]">
                             Đã ôn {srs.totalReviews} lần
                           </span>
                         ) : (
-                          <span className="font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded">
+                          <span className="notion-tag notion-tag-yellow text-[10px]">
                             Thẻ mới
                           </span>
                         )}
                       </div>
-                      <p className="text-xs font-bold text-slate-800 line-clamp-2 leading-relaxed">
+                      <p className="text-xs font-semibold text-[#37352f] line-clamp-2 leading-relaxed">
                         {card.front}
                       </p>
                     </div>
@@ -949,13 +949,13 @@ export default function FlashcardModal({
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#7a5a6b] font-bold">
+            <div className="p-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#787774]">
                 Hiển thị {filteredCardItems.length}/{cards.length} thẻ
               </span>
               <button
                 onClick={() => setTopicDrawerOpen(false)}
-                className="px-4 py-1.5 rounded-xl bg-[#28071a] text-white font-bold text-xs hover:bg-[#3d0c27] transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-[#37352f] text-white font-medium text-xs hover:bg-[#201f1d] transition-colors cursor-pointer"
               >
                 Đóng
               </button>

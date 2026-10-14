@@ -32,7 +32,7 @@ import { recordStudyAction } from '../utils/gamification';
 import confetti from 'canvas-confetti';
 
 const MODES = {
-  focus: { label: 'Tập Trung', duration: 25 * 60, color: 'from-[#ff5f38] to-[#f02c85]' },
+  focus: { label: 'Tập Trung', duration: 25 * 60, color: 'from-blue-500 to-indigo-600' },
   shortBreak: { label: 'Nghỉ Ngắn', duration: 5 * 60, color: 'from-emerald-500 to-teal-600' },
   longBreak: { label: 'Nghỉ Dài', duration: 15 * 60, color: 'from-blue-500 to-cyan-600' }
 };
@@ -240,25 +240,25 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
               getAudioContext();
               setIsOpen(true);
             }}
-            className={`flex items-center space-x-2.5 px-4 py-2.5 rounded-full shadow-2xl text-white font-black text-xs sm:text-sm transition-all transform hover:scale-105 active:scale-95 border ${
+            className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full shadow-lg font-medium text-xs sm:text-sm transition-all border ${
               isActive
-                ? 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85] ring-2 ring-pink-400/50 shadow-pink-900/50 animate-pulse border-white/40'
-                : 'bg-[#240618] hover:bg-[#360b24] border-[#f02c85]/40 shadow-black/50'
+                ? 'bg-[#2383e2] text-white border-[#2383e2] shadow-blue-500/20'
+                : 'bg-white hover:bg-[#f7f6f5] text-[#37352f] border-[#e9e9e8]'
             }`}
             title="Đồng hồ Pomodoro tập trung học"
           >
-            <Timer className={`w-4 h-4 ${isActive ? 'animate-spin text-white' : 'text-[#f02c85]'}`} style={{ animationDuration: '6s' }} />
-            <span className="font-mono tracking-wider font-black">{formatTime(secondsLeft)}</span>
+            <Timer className={`w-4 h-4 ${isActive ? 'animate-spin text-white' : 'text-[#2383e2]'}`} style={{ animationDuration: '6s' }} />
+            <span className="font-mono tracking-wider font-semibold">{formatTime(secondsLeft)}</span>
             
             {/* Sound Icon on floating button */}
             {isTickSoundEnabled ? (
-              <Volume2 className="w-3.5 h-3.5 text-pink-300" />
+              <Volume2 className={`w-3.5 h-3.5 ${isActive ? 'text-blue-100' : 'text-[#787774]'}`} />
             ) : (
               <VolumeX className="w-3.5 h-3.5 text-slate-400" />
             )}
 
             {completedSessions > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black border border-amber-400/30">
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-semibold border border-amber-200">
                 🍅 {completedSessions}
               </span>
             )}
@@ -266,19 +266,19 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
         </div>
       )}
 
-      {/* EXPANDED POMODORO FOCUS DASHBOARD (Wayground Aesthetic) */}
+      {/* EXPANDED POMODORO FOCUS DASHBOARD */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-96 bg-[#fcf7ec] rounded-3xl sm:shadow-2xl border border-[#eadfcb] overflow-hidden flex flex-col animate-spring-3d text-[#28071a]">
+        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-96 bg-white rounded-xl sm:shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col text-[#37352f]">
           
           {/* Header */}
-          <div className="bg-[#260619] text-white px-5 py-4 flex items-center justify-between border-b border-[#f02c85]/20">
+          <div className="bg-[#fbfbfa] text-[#37352f] px-5 py-4 flex items-center justify-between border-b border-[#e9e9e8]">
             <div className="flex items-center space-x-2.5">
-              <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center font-bold shadow-md shadow-pink-900/40">
-                <Timer className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center font-bold">
+                <Timer className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="text-xs sm:text-sm font-black tracking-tight uppercase">Đồng Hồ Pomodoro</h4>
-                <p className="text-[10px] text-rose-200/70 font-medium">Tập trung học sâu • Tích lũy +50 XP rèn luyện</p>
+                <h4 className="text-xs sm:text-sm font-bold tracking-tight">Đồng Hồ Pomodoro</h4>
+                <p className="text-[10px] text-[#787774]">Tập trung học sâu • Tích lũy +50 XP rèn luyện</p>
               </div>
             </div>
 
@@ -286,10 +286,10 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
               {/* Quick Sound Toggle in Header */}
               <button
                 onClick={toggleMasterSound}
-                className={`p-1.5 rounded-xl border transition-colors ${
+                className={`p-1.5 rounded-md border transition-colors ${
                   isTickSoundEnabled
-                    ? 'bg-[#f02c85] text-white border-pink-400'
-                    : 'bg-[#360b24] text-rose-300 border-[#f02c85]/30 hover:text-white'
+                    ? 'bg-[#2383e2] text-white border-[#2383e2]'
+                    : 'bg-white text-[#787774] border-[#e9e9e8] hover:text-[#37352f]'
                 }`}
                 title={isTickSoundEnabled ? 'Tắt âm thanh đồng hồ' : 'Bật âm thanh tích tắc'}
               >
@@ -298,7 +298,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 text-rose-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
                 title="Thu nhỏ thành nút nổi"
               >
                 <Minimize2 className="w-4 h-4" />
@@ -308,7 +308,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
           {/* Completion Toast in Dashboard */}
           {completionToast && (
-            <div className="bg-emerald-600 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between animate-fade-in shadow-inner">
+            <div className="bg-emerald-600 text-white px-4 py-2.5 text-xs font-semibold flex items-center justify-between animate-fade-in">
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" />
                 <span>{completionToast}</span>
@@ -323,33 +323,33 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
           )}
 
           {/* Mode Switcher Tabs */}
-          <div className="p-3 bg-[#f5ecd8] border-b border-[#eadfcb] flex items-center gap-1.5 text-xs font-black">
+          <div className="p-2.5 bg-[#f7f6f5] border-b border-[#e9e9e8] flex items-center gap-1.5 text-xs font-medium">
             <button
               onClick={() => switchMode('focus')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 py-1.5 rounded-lg transition-all ${
                 currentMode === 'focus'
-                  ? 'bg-[#f02c85] text-white shadow-md shadow-pink-900/30'
-                  : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                  ? 'bg-[#37352f] text-white font-semibold shadow-xs'
+                  : 'bg-white text-[#787774] border border-[#e9e9e8] hover:text-[#37352f]'
               }`}
             >
               🍅 Tập Trung (25p)
             </button>
             <button
               onClick={() => switchMode('shortBreak')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 py-1.5 rounded-lg transition-all ${
                 currentMode === 'shortBreak'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                  ? 'bg-emerald-600 text-white font-semibold shadow-xs'
+                  : 'bg-white text-[#787774] border border-[#e9e9e8] hover:text-[#37352f]'
               }`}
             >
               ☕ Nghỉ (5p)
             </button>
             <button
               onClick={() => switchMode('longBreak')}
-              className={`flex-1 py-2 rounded-xl transition-all ${
+              className={`flex-1 py-1.5 rounded-lg transition-all ${
                 currentMode === 'longBreak'
-                  ? 'bg-[#28071a] text-white shadow-md'
-                  : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                  ? 'bg-[#37352f] text-white font-semibold shadow-xs'
+                  : 'bg-white text-[#787774] border border-[#e9e9e8] hover:text-[#37352f]'
               }`}
             >
               🌴 Dài (15p)
@@ -357,28 +357,28 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
           </div>
 
           {/* Timer Display Area */}
-          <div className="p-6 text-center flex flex-col items-center justify-center">
+          <div className="p-6 text-center flex flex-col items-center justify-center bg-white">
             
-            {/* Big Circular Dial with Hot Pink progress */}
-            <div className="relative w-48 h-48 rounded-full border-4 border-[#eadfcb] bg-white flex flex-col items-center justify-center shadow-lg my-1">
+            {/* Circular Dial */}
+            <div className="relative w-44 h-44 rounded-full border-4 border-[#e9e9e8] bg-[#fbfbfa] flex flex-col items-center justify-center my-1">
               <div
-                className="absolute inset-0 rounded-full border-4 border-[#f02c85] transition-all duration-1000"
+                className="absolute inset-0 rounded-full border-4 border-[#2383e2] transition-all duration-1000"
                 style={{
                   clipPath: `polygon(50% 50%, 50% 0%, ${progressPercent >= 25 ? '100% 0%,' : ''} ${progressPercent >= 50 ? '100% 100%,' : ''} ${progressPercent >= 75 ? '0% 100%,' : ''} 0% 0%)`,
-                  opacity: isActive ? 1 : 0.4
+                  opacity: isActive ? 1 : 0.3
                 }}
               />
-              <span className="text-4xl sm:text-5xl font-mono font-black text-[#28071a] tracking-tight">
+              <span className="text-4xl font-mono font-bold text-[#37352f] tracking-tight">
                 {formatTime(secondsLeft)}
               </span>
-              <span className="text-[11px] font-black text-[#f02c85] mt-1 uppercase tracking-wider">
+              <span className="text-[11px] font-semibold text-[#2383e2] mt-1 uppercase tracking-wider">
                 {MODES[currentMode].label}
               </span>
 
               {/* Sound status tag inside clock */}
-              <div className="mt-1 flex items-center space-x-1 text-[10px] font-bold text-[#7a5a6b]">
+              <div className="mt-1 flex items-center space-x-1 text-[10px] text-[#787774]">
                 {isTickSoundEnabled ? (
-                  <span className="text-emerald-700 flex items-center space-x-0.5">
+                  <span className="text-emerald-700 flex items-center space-x-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>{ambientSound === 'tick' ? 'Tích tắc ⏱️' : ambientSound === 'rain' ? 'Mưa 🌧️' : ambientSound === 'waves' ? 'Sóng 🌊' : ambientSound === 'cafe' ? 'Cafe ☕' : ambientSound === 'alpha' ? 'Alpha 🧠' : 'Âm thanh'}</span>
                   </span>
@@ -392,28 +392,28 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
             <div className="flex items-center space-x-3 mt-4">
               <button
                 onClick={resetTimer}
-                className="p-3.5 rounded-2xl bg-white hover:bg-[#faebd0] border border-[#eadfcb] text-[#28071a] transition-colors shadow-xs"
+                className="p-2.5 rounded-lg bg-white hover:bg-black/5 border border-[#e9e9e8] text-[#787774] transition-colors"
                 title="Đặt lại đồng hồ"
               >
-                <RotateCcw className="w-5 h-5 text-[#28071a]" />
+                <RotateCcw className="w-4 h-4 text-[#787774]" />
               </button>
 
               <button
                 onClick={toggleTimer}
-                className={`px-8 py-3.5 rounded-2xl text-white font-black text-sm shadow-xl flex items-center space-x-2 transition-transform transform hover:scale-105 active:scale-95 ${
+                className={`px-6 py-2.5 rounded-lg text-white font-semibold text-xs shadow-xs flex items-center space-x-1.5 transition-colors ${
                   isActive
-                    ? 'bg-[#28071a] hover:bg-[#3d0c27] shadow-black/20'
-                    : 'btn-wayground-sunset shadow-pink-900/30'
+                    ? 'bg-[#37352f] hover:bg-[#201f1d]'
+                    : 'bg-[#2383e2] hover:bg-[#1a73e8]'
                 }`}
               >
                 {isActive ? (
                   <>
-                    <Pause className="w-5 h-5 fill-white" />
+                    <Pause className="w-4 h-4 fill-white" />
                     <span>TẠM DỪNG</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-5 h-5 fill-white" />
+                    <Play className="w-4 h-4 fill-white" />
                     <span>BẮT ĐẦU</span>
                   </>
                 )}
@@ -423,16 +423,16 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
           </div>
 
           {/* Sound Controls Bar (Tick-Tock & White Noise Presets) */}
-          <div className="px-5 py-3.5 bg-[#f5ecd8] border-t border-[#eadfcb] space-y-2.5 text-xs">
+          <div className="px-5 py-3.5 bg-[#f7f6f5] border-t border-[#e9e9e8] space-y-2.5 text-xs">
             <div className="flex items-center justify-between">
-              <span className="text-[#28071a] font-black flex items-center space-x-1.5">
-                <Volume2 className="w-4 h-4 text-[#f02c85]" />
+              <span className="text-[#37352f] font-semibold flex items-center space-x-1.5">
+                <Volume2 className="w-4 h-4 text-[#2383e2]" />
                 <span>Âm thanh đồng hồ:</span>
               </span>
 
               <button
                 onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-                className="text-[11px] font-bold text-[#f02c85] hover:underline flex items-center space-x-1"
+                className="text-[11px] font-medium text-[#2383e2] hover:underline flex items-center space-x-1"
               >
                 <Sliders className="w-3 h-3" />
                 <span>{Math.round(clockVolume * 100)}% âm lượng</span>
@@ -441,8 +441,8 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
             {/* Volume slider toggle */}
             {showVolumeSlider && (
-              <div className="bg-white p-2.5 rounded-xl border border-[#eadfcb] flex items-center space-x-3 animate-fade-in">
-                <span className="text-[10px] font-bold text-[#7a5a6b]">Nhỏ</span>
+              <div className="bg-white p-2.5 rounded-lg border border-[#e9e9e8] flex items-center space-x-3 animate-fade-in">
+                <span className="text-[10px] text-[#787774]">Nhỏ</span>
                 <input
                   type="range"
                   min="0.1"
@@ -457,9 +457,9 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
                       playClockTick(true, val);
                     }
                   }}
-                  className="w-full accent-[#f02c85] cursor-pointer"
+                  className="w-full accent-[#2383e2] cursor-pointer"
                 />
-                <span className="text-[10px] font-bold text-[#7a5a6b]">Lớn</span>
+                <span className="text-[10px] text-[#787774]">Lớn</span>
               </div>
             )}
 
@@ -477,12 +477,12 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
                   key={s.id}
                   onClick={() => handleSelectSoundMode(s.id)}
                   title={s.title}
-                  className={`py-1.5 px-1 rounded-xl font-black text-[10px] sm:text-[11px] text-center transition-all ${
+                  className={`py-1.5 px-1 rounded-md font-medium text-[10px] sm:text-[11px] text-center transition-all ${
                     ambientSound === s.id && isTickSoundEnabled
-                      ? 'bg-[#f02c85] text-white shadow-sm'
+                      ? 'bg-[#2383e2] text-white shadow-xs'
                       : s.id === 'none' && !isTickSoundEnabled
-                      ? 'bg-[#28071a] text-white shadow-sm'
-                      : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                      ? 'bg-[#37352f] text-white shadow-xs'
+                      : 'bg-white text-[#37352f] border border-[#e9e9e8] hover:bg-black/5'
                   }`}
                 >
                   {s.label}
@@ -492,12 +492,12 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
           </div>
 
           {/* Daily Pomodoro Milestones */}
-          <div className="px-5 py-2.5 bg-[#260619] border-t border-[#f02c85]/20 flex items-center justify-between text-xs text-white">
-            <span className="flex items-center space-x-1.5 font-bold text-rose-200">
-              <Award className="w-3.5 h-3.5 text-[#f02c85]" />
+          <div className="px-5 py-2.5 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs text-[#37352f]">
+            <span className="flex items-center space-x-1.5 text-[#787774]">
+              <Award className="w-3.5 h-3.5 text-[#2383e2]" />
               <span>Hôm nay hoàn thành:</span>
             </span>
-            <span className="font-black text-amber-400 font-mono">
+            <span className="font-semibold text-amber-700 font-mono">
               🍅 {completedSessions} phiên (+{completedSessions * 50} XP)
             </span>
           </div>

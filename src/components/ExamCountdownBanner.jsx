@@ -153,11 +153,11 @@ export default function ExamCountdownBanner({ onStartReview }) {
               </button>
             </div>
 
-            <form onSubmit={handleSaveConfig} className="space-y-4 text-xs font-bold">
+            <form onSubmit={handleSaveConfig} className="space-y-4 text-xs font-medium text-[#37352f]">
               
               {/* Presets */}
               <div>
-                <label className="text-[#7a5a6b] block mb-1.5">Chọn nhanh kỳ thi phổ biến:</label>
+                <label className="text-[#787774] block mb-1.5">Chọn nhanh kỳ thi phổ biến:</label>
                 <div className="grid grid-cols-1 gap-1.5">
                   {PRESETS.map((p, idx) => (
                     <button
@@ -169,10 +169,10 @@ export default function ExamCountdownBanner({ onStartReview }) {
                         setInputName(p.name);
                         setInputDate(targetD.toISOString().split('T')[0]);
                       }}
-                      className="p-2 text-left rounded-xl bg-white hover:bg-pink-50 border border-[#eadfcb] text-[#28071a] font-bold text-xs transition-colors flex items-center justify-between"
+                      className="p-2 text-left rounded-lg bg-[#fbfbfa] hover:bg-[#f7f6f5] border border-[#e9e9e8] text-[#37352f] text-xs transition-colors flex items-center justify-between cursor-pointer"
                     >
                       <span className="line-clamp-1">{p.name}</span>
-                      <span className="text-[10px] text-[#f02c85] font-black shrink-0 ml-2">Còn ~{p.days}d</span>
+                      <span className="notion-tag notion-tag-blue text-[10px] shrink-0 ml-2">Còn ~{p.days}d</span>
                     </button>
                   ))}
                 </div>
@@ -180,41 +180,41 @@ export default function ExamCountdownBanner({ onStartReview }) {
 
               {/* Name */}
               <div>
-                <label className="text-[#28071a] block mb-1">Tên kỳ thi của bạn:</label>
+                <label className="text-[#37352f] block mb-1 font-medium">Tên kỳ thi của bạn:</label>
                 <input
                   type="text"
                   value={inputName}
                   onChange={(e) => setInputName(e.target.value)}
                   placeholder="Ví dụ: Thi Công Chức 2026..."
-                  className="w-full p-2.5 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] outline-none font-bold"
+                  className="w-full p-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] outline-none focus:border-[#2383e2] transition-colors"
                   required
                 />
               </div>
 
               {/* Date */}
               <div>
-                <label className="text-[#28071a] block mb-1">Ngày thi chính thức:</label>
+                <label className="text-[#37352f] block mb-1 font-medium">Ngày thi chính thức:</label>
                 <input
                   type="date"
                   value={inputDate}
                   onChange={(e) => setInputDate(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-[#eadfcb] bg-white text-[#28071a] outline-none font-bold"
+                  className="w-full p-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] outline-none focus:border-[#2383e2] transition-colors"
                   required
                 />
               </div>
 
               {/* Actions */}
-              <div className="pt-2 flex items-center justify-end space-x-2 border-t border-[#eadfcb]">
+              <div className="pt-2 flex items-center justify-end space-x-2 border-t border-[#e9e9e8]">
                 <button
                   type="button"
                   onClick={() => setShowConfigModal(false)}
-                  className="px-4 py-2 rounded-xl bg-white border border-[#eadfcb] text-slate-600 text-xs font-bold"
+                  className="px-3 py-1.5 rounded-lg bg-[#f7f6f5] hover:bg-[#f0efed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-xs transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl btn-wayground-sunset text-white text-xs font-black shadow-md"
+                  className="px-4 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs transition-colors cursor-pointer"
                 >
                   Lưu & Đếm Ngược
                 </button>

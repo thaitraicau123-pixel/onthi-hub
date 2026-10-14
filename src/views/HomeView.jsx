@@ -73,7 +73,7 @@ export default function HomeView({
   });
 
   const getCategoryIcon = (iconName, active) => {
-    const iconColor = active ? 'text-white' : 'text-[#f02c85]';
+    const iconColor = active ? 'text-white' : 'text-[#787774]';
     switch (iconName) {
       case 'Landmark':
         return <Landmark className={`w-4 h-4 ${iconColor}`} />;

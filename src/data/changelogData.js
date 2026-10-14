@@ -22,7 +22,7 @@ export const CHANGELOG_DATA = [
     version: 'v2.9',
     date: 'Tháng 10/2026 (Bản Mới Nhất)',
     badge: 'MỚI NHẤT 🔥',
-    badgeColor: 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85]',
+    badgeColor: 'bg-[#2383e2] text-white',
     title: 'Nâng Cấp Toàn Diện Động Cơ AI Tạo Thẻ Flashcard 🤖 & Hỗ Trợ Đa Mô Hình Gemini/OpenAI ⚡',
     summary: 'Sửa triệt để lỗi tạo thẻ AI bằng việc tích hợp các mô hình Gemini thế hệ mới (3.5-Flash, 3.6-Flash, 3-Flash-Preview), tự động failover đa tầng, tích hợp OpenAI Platform (GPT-4o-mini) và bộ bóc tách ngữ nghĩa thông minh ngoại tuyến.',
     highlights: [
@@ -87,7 +87,7 @@ export const CHANGELOG_DATA = [
     version: 'v2.7',
     date: 'Tháng 10/2026 (Bản Mới Nhất)',
     badge: 'MỚI NHẤT 🔥',
-    badgeColor: 'bg-gradient-to-r from-[#ff5f38] to-[#f02c85]',
+    badgeColor: 'bg-[#2383e2] text-white',
     title: 'Đánh Dấu Thẻ Sao ⭐, Game Nối Thẻ Kỷ Lục & Bản In Thẻ Cắt Giấy A4 ✂️',
     summary: 'Nâng cấp toàn diện trải nghiệm tự học: gắn sao thẻ khó, thi đua phá kỷ lục thời gian nối thẻ, xuất bản in cắt giấy A4 học offline và bộ lọc tìm kiếm thông minh.',
     highlights: [

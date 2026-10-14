@@ -321,14 +321,14 @@ export default function QuizModal({
                           <p className="text-xs text-slate-600 mt-1">
                             Đáp án đúng: <strong>{q.options[q.correct]}</strong>
                           </p>
-                          <p className="text-[11px] text-slate-500 bg-white p-2 rounded mt-1 border border-slate-100">
+                          <p className="text-[11px] text-[#787774] bg-[#fbfbfa] p-2 rounded-lg mt-1 border border-[#e9e9e8]">
                             💡 {q.explanation}
                           </p>
                           <button
                             onClick={() => handleAskAiTutor(idx)}
-                            className="mt-2 text-[11px] font-bold text-[#f02c85] hover:text-[#dc1f74] bg-pink-50 hover:bg-pink-100 border border-pink-200 px-2.5 py-1 rounded-lg inline-flex items-center space-x-1.5 transition-colors shadow-2xs"
+                            className="mt-2 text-[11px] font-medium text-[#2b7aa1] hover:text-[#1a73e8] bg-[#e7f3f8] hover:bg-[#d8ecf5] border border-[#cbe3ed] px-2.5 py-1 rounded-lg inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
                           >
-                            <Sparkles className="w-3 h-3 text-amber-500" />
+                            <Sparkles className="w-3 h-3 text-[#2383e2]" />
                             <span>Bóc Mẽ Bẫy & Mẹo Khoanh 10s Bằng AI</span>
                           </button>
                         </div>
@@ -341,7 +341,7 @@ export default function QuizModal({
               <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <button
                   onClick={handleReset}
-                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-50 flex items-center justify-center space-x-1.5"
+                  className="w-full sm:w-auto px-4 py-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] font-medium text-xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>Làm Lại Đề Này</span>
@@ -353,9 +353,9 @@ export default function QuizModal({
                       onClose();
                       onBuy(course);
                     }}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-black text-xs text-white btn-wayground-sunset shadow-md flex items-center justify-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                    className="w-full sm:w-auto px-4 py-2 rounded-lg font-medium text-xs text-white bg-[#2383e2] hover:bg-[#1a73e8] shadow-2xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                   >
-                    <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
+                    <Coins className="w-4 h-4 text-white" />
                     <span>Mở Khóa Toàn Bộ Đề Thi ({course.priceXu || 25} Xu)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -366,16 +366,16 @@ export default function QuizModal({
             /* Question Body */
             <div>
               <div className="mb-4">
-                <span className="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2 py-0.5 rounded">
+                <span className="notion-tag notion-tag-blue text-xs font-semibold">
                   Câu hỏi {currentIndex + 1}
                 </span>
-                <h3 className="mt-2 text-base sm:text-lg font-bold text-slate-900 leading-snug whitespace-pre-line">
+                <h3 className="mt-2 text-base sm:text-lg font-bold text-[#37352f] leading-snug whitespace-pre-line">
                   {currentQ.question}
                 </h3>
               </div>
 
               {/* Options */}
-              <div className="space-y-2.5 mt-5">
+              <div className="space-y-2 mt-4">
                 {currentQ.options?.map((opt, optIdx) => {
                   const isSelected = currentSelected === optIdx;
                   const optionLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -383,16 +383,16 @@ export default function QuizModal({
                     <button
                       key={optIdx}
                       onClick={() => handleSelectOption(optIdx)}
-                      className={`w-full p-3.5 text-left rounded-2xl text-xs sm:text-sm transition-all border flex items-center space-x-3.5 ${
+                      className={`w-full p-3 text-left rounded-xl text-xs sm:text-sm transition-all border flex items-center space-x-3 cursor-pointer ${
                         isSelected
-                          ? 'border-[#f02c85] bg-pink-50/80 text-[#28071a] font-bold ring-2 ring-pink-300 shadow-xs'
-                          : 'border-slate-200 hover:border-[#f02c85]/40 hover:bg-pink-50/20 text-slate-700'
+                          ? 'border-[#2383e2] bg-[#e7f3f8] text-[#37352f] font-medium ring-1 ring-[#2383e2]'
+                          : 'border-[#e9e9e8] hover:border-[#c5c4c0] hover:bg-[#fbfbfa] text-[#37352f]'
                       }`}
                     >
-                      <span className={`w-8 h-8 rounded-xl text-xs font-black flex items-center justify-center shrink-0 transition-colors ${
+                      <span className={`w-7 h-7 rounded-lg text-xs font-semibold flex items-center justify-center shrink-0 transition-colors ${
                         isSelected
-                          ? 'bg-[#f02c85] text-white shadow-xs'
-                          : 'bg-slate-100 text-slate-600 border border-slate-200'
+                          ? 'bg-[#2383e2] text-white shadow-2xs'
+                          : 'bg-[#f7f6f5] text-[#787774] border border-[#e9e9e8]'
                       }`}>
                         {optionLetters[optIdx] || optIdx + 1}
                       </span>
@@ -403,29 +403,29 @@ export default function QuizModal({
               </div>
 
               {/* Hotkey Hint Bar */}
-              <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-slate-400 font-medium">
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-[#787774]">
                 <span>⌨️ Bấm phím <strong>1, 2, 3, 4</strong> (hoặc <strong>A, B, C, D</strong>) để chọn nhanh</span>
                 <span>Phím <strong>← / →</strong> để chuyển câu</span>
               </div>
 
               {/* If answered, show instant hint/explanation and AI Tutor trigger */}
               {isAnswered && (
-                <div className="mt-5 space-y-3">
-                  <div className="p-3.5 bg-blue-50/70 rounded-2xl border border-blue-200/80 text-xs text-blue-900">
-                    <div className="flex items-center space-x-1.5 font-bold mb-1">
-                      <HelpCircle className="w-3.5 h-3.5 text-blue-600" />
+                <div className="mt-4 space-y-2.5">
+                  <div className="p-3 bg-[#e7f3f8] rounded-xl border border-[#cbe3ed] text-xs text-[#2b7aa1]">
+                    <div className="flex items-center space-x-1.5 font-semibold mb-1">
+                      <HelpCircle className="w-3.5 h-3.5 text-[#2383e2]" />
                       <span>Gợi ý & Căn cứ giải thích:</span>
                     </div>
-                    <p className="leading-relaxed text-blue-800">
+                    <p className="leading-relaxed text-[#2b7aa1]">
                       {currentQ.explanation}
                     </p>
                   </div>
 
                   <button
                     onClick={() => handleAskAiTutor(currentIndex)}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-gradient-to-r from-purple-700 via-[#f02c85] to-pink-600 hover:brightness-110 text-white text-xs font-black shadow-md flex items-center justify-center space-x-2 transition-transform transform hover:scale-101 active:scale-98"
+                    className="w-full py-2 px-4 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs flex items-center justify-center space-x-2 transition-colors cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
+                    <Sparkles className="w-4 h-4 text-amber-300" />
                     <span>✨ Bóc Mẽ Chiêu Trò Cài Bẫy & Mẹo 10s Bằng Trí Tuệ Nhân Tạo AI</span>
                   </button>
                 </div>
@@ -470,75 +470,75 @@ export default function QuizModal({
 
       {/* AI Tutor Slide-over Drawer / Modal */}
       {aiDrawerOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-xl max-h-[85vh] bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl overflow-hidden flex flex-col text-[#28071a]">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f]">
             
             {/* Drawer Header */}
-            <div className="px-5 py-4 bg-gradient-to-r from-[#240618] to-[#450a29] text-white flex items-center justify-between border-b border-[#f02c85]/30">
+            <div className="px-5 py-3.5 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8]">
               <div className="flex items-center space-x-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-[#f02c85] flex items-center justify-center shadow-md">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                  <Bot className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
+                  <h4 className="text-sm font-bold uppercase tracking-tight flex items-center space-x-1.5">
                     <span>Trợ Lý Giảng Viên AI OnThiHub</span>
-                    <span className="text-[10px] bg-pink-500/30 text-pink-200 border border-pink-400/40 px-2 py-0.2 rounded-full font-bold">
+                    <span className="notion-tag notion-tag-blue text-[10px]">
                       Pro Turbo
                     </span>
                   </h4>
-                  <p className="text-[11px] text-pink-200/80 font-medium">
+                  <p className="text-[11px] text-[#787774] font-normal">
                     Câu {activeAiQuestionIdx + 1} • Bóc mẽ bẫy đề thi & mẹo khoanh 10s
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1.5">
                 {aiExplanations[activeAiQuestionIdx] && (
                   <>
                     <button
                       onClick={() => handleSpeak(aiExplanations[activeAiQuestionIdx])}
-                      className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                      className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
                       title="Nghe giảng qua giọng đọc AI"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={handleCopyAiText}
-                      className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                      className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
                       title="Copy nội dung giải thích"
                     >
-                      {copiedAiText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      {copiedAiText ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                     </button>
                   </>
                 )}
                 <button
                   onClick={() => setAiDrawerOpen(false)}
-                  className="p-2 text-pink-200 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                  className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {/* Drawer Content */}
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-xs sm:text-sm">
+            <div className="p-5 overflow-y-auto space-y-3.5 flex-1 text-xs sm:text-sm">
               
               {/* Question Context Recap */}
               {questions[activeAiQuestionIdx] && (
-                <div className="p-3.5 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs space-y-2">
-                  <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-pink-100 text-[#f02c85]">
+                <div className="p-3 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8] space-y-2">
+                  <span className="notion-tag notion-tag-gray text-[10px]">
                     CÂU HỎI {activeAiQuestionIdx + 1}
                   </span>
-                  <p className="font-bold text-[#28071a]">
+                  <p className="font-semibold text-[#37352f]">
                     {questions[activeAiQuestionIdx].question}
                   </p>
                   
-                  <div className="pt-2 border-t border-[#eadfcb]/60 flex flex-wrap gap-2 text-xs">
-                    <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                  <div className="pt-2 border-t border-[#f0efed] flex flex-wrap gap-2 text-xs">
+                    <span className="px-2 py-0.5 rounded-md bg-[#edf3ec] text-[#448361] border border-[#d3e5d7] font-medium text-[11px]">
                       ✅ Đáp án đúng: {questions[activeAiQuestionIdx].options?.[questions[activeAiQuestionIdx].correct]}
                     </span>
                     {selectedAnswers[activeAiQuestionIdx] !== undefined && selectedAnswers[activeAiQuestionIdx] !== questions[activeAiQuestionIdx].correct && (
-                      <span className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 border border-rose-200 font-bold">
+                      <span className="px-2 py-0.5 rounded-md bg-[#fdebec] text-[#d44c47] border border-[#f9c9cb] font-medium text-[11px]">
                         ❌ Bạn đã chọn: {questions[activeAiQuestionIdx].options?.[selectedAnswers[activeAiQuestionIdx]]}
                       </span>
                     )}
@@ -548,9 +548,9 @@ export default function QuizModal({
 
               {/* AI Content Loading State */}
               {isAiLoading && (
-                <div className="py-12 flex flex-col items-center justify-center space-y-3">
-                  <div className="w-10 h-10 border-4 border-[#f02c85] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-xs font-bold text-[#7a5a6b] animate-pulse">
+                <div className="py-10 flex flex-col items-center justify-center space-y-2.5">
+                  <div className="w-8 h-8 border-3 border-[#2383e2] border-t-transparent rounded-full animate-spin"></div>
+                  <p className="text-xs text-[#787774] animate-pulse">
                     Hệ thống AI đang soi bẫy thi & tổng hợp quy tắc khoanh nhanh 10 giây...
                   </p>
                 </div>
@@ -558,27 +558,27 @@ export default function QuizModal({
 
               {/* AI Error */}
               {aiError && (
-                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold">
+                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
                   {aiError}
                 </div>
               )}
 
               {/* AI Explanation Formatted Result */}
               {aiExplanations[activeAiQuestionIdx] && (
-                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs text-xs sm:text-sm text-[#28071a] leading-relaxed whitespace-pre-line font-medium space-y-2">
+                <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line space-y-2">
                   {aiExplanations[activeAiQuestionIdx]}
                 </div>
               )}
             </div>
 
             {/* Drawer Footer */}
-            <div className="px-5 py-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#7a5a6b] font-bold">
+            <div className="px-5 py-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs">
+              <span className="text-[11px] text-[#787774]">
                 🎯 Luyện phản xạ nhận diện bẫy đề thi thật cùng ÔnThiHub
               </span>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="px-4 py-2 rounded-xl bg-[#28071a] text-white text-xs font-bold hover:bg-[#3d0c27]"
+                className="px-3 py-1.5 rounded-lg bg-[#37352f] text-white text-xs font-medium hover:bg-[#201f1d] cursor-pointer"
               >
                 Đóng lại
               </button>

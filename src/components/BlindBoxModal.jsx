@@ -167,7 +167,7 @@ export default function BlindBoxModal({
           particleCount: hasJackpot ? 180 : 90,
           spread: 85,
           origin: { y: 0.55 },
-          colors: ['#f02c85', '#ff5f38', '#ffd700', '#ffffff', '#a855f7']
+          colors: ['#2383e2', '#3b82f6', '#ffd700', '#ffffff', '#10b981']
         });
       } else {
         setUnboxingStage('idle');
@@ -188,26 +188,22 @@ export default function BlindBoxModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#240618] border-2 border-[#f02c85]/50 rounded-3xl shadow-2xl overflow-hidden my-4 sm:my-6 text-white flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fade-in overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white border border-[#e9e9e8] rounded-xl shadow-2xl overflow-hidden my-4 sm:my-6 text-[#37352f] flex flex-col">
         
-        {/* Radiant Backdrop Light Bursts */}
-        <div className="absolute -top-32 -left-32 w-80 h-80 bg-[#f02c85]/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 bg-amber-500/25 rounded-full blur-3xl pointer-events-none" />
-
         {/* 1. TOP TICKER: RECENT BIG WINNERS MARQUEE */}
-        <div className="bg-gradient-to-r from-amber-500/20 via-pink-500/20 to-purple-500/20 border-b border-white/10 px-4 py-1.5 flex items-center justify-between text-[11px] overflow-hidden">
+        <div className="bg-[#fbfbfa] border-b border-[#e9e9e8] px-4 py-1.5 flex items-center justify-between text-[11px] overflow-hidden text-[#787774]">
           <div className="flex items-center space-x-2 truncate">
-            <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-bounce" />
-            <span className="text-amber-300 font-black shrink-0">Nổ Hũ Gần Đây:</span>
-            <span className="text-rose-100 font-medium truncate">
-              {recentWinners[0]?.user} vừa trúng <strong className="text-amber-300">{recentWinners[0]?.reward}</strong> ({recentWinners[0]?.time})
+            <Trophy className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="text-amber-700 font-semibold shrink-0">Nổ Hũ Gần Đây:</span>
+            <span className="text-[#787774] truncate">
+              {recentWinners[0]?.user} vừa trúng <strong className="text-amber-700">{recentWinners[0]?.reward}</strong> ({recentWinners[0]?.time})
             </span>
           </div>
 
           <button
             onClick={() => setShowDropRates(!showDropRates)}
-            className="text-[10px] text-pink-300 hover:text-white font-black underline flex items-center space-x-1 shrink-0 ml-2"
+            className="text-[10px] text-[#2383e2] hover:underline font-semibold flex items-center space-x-1 shrink-0 ml-2"
           >
             <Info className="w-3 h-3" />
             <span>Tỷ Lệ Rơi</span>
@@ -215,21 +211,21 @@ export default function BlindBoxModal({
         </div>
 
         {/* 2. MODAL HEADER */}
-        <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-white/10 bg-white/5 backdrop-blur-sm">
+        <div className="relative z-10 flex items-center justify-between p-4 sm:p-5 border-b border-[#e9e9e8] bg-[#fbfbfa]">
           <div className="flex items-center space-x-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#f02c85] via-rose-500 to-amber-400 flex items-center justify-center shadow-lg shadow-pink-900/40">
-              <Gift className="w-5 h-5 text-white animate-pulse" />
+            <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+              <Gift className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-base sm:text-lg font-black tracking-tight uppercase">
-                  TÚI MÙ & HỘP MÙ TRI THỨC (BLIND BOX)
+                <h3 className="text-base sm:text-lg font-bold text-[#37352f]">
+                  Túi Mù & Hộp Mù Tri Thức (Blind Box)
                 </h3>
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40">
+                <span className="notion-tag notion-tag-yellow text-[10px] font-semibold">
                   100% TRÚNG THƯỞNG
                 </span>
               </div>
-              <p className="text-xs text-rose-200/70 font-medium">
+              <p className="text-xs text-[#787774]">
                 Khui quà ngẫu nhiên: Hoàn Xu có lãi, trọn bộ đề thi hiếm, voucher và Jackpot 100 Xu!
               </p>
             </div>
@@ -238,14 +234,14 @@ export default function BlindBoxModal({
           <div className="flex items-center space-x-1.5">
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-2 text-rose-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
               title={isMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
             >
-              {isMuted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-pink-400" />}
+              {isMuted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-[#2383e2]" />}
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-rose-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -254,34 +250,28 @@ export default function BlindBoxModal({
 
         {/* 3. DROP RATES TRANSPARENCY POPUP (DRAWER) */}
         {showDropRates && (
-          <div className="bg-[#1b0413] border-b border-white/15 p-4 animate-fade-in text-xs space-y-3">
+          <div className="bg-[#f7f6f5] border-b border-[#e9e9e8] p-4 animate-fade-in text-xs space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-black text-amber-300 uppercase flex items-center space-x-1.5">
-                <Info className="w-4 h-4" />
+              <span className="font-bold text-[#37352f] flex items-center space-x-1.5">
+                <Info className="w-4 h-4 text-[#2383e2]" />
                 <span>Bảng Tỷ Lệ Rơi Thưởng Minh Bạch ({selectedBox.name})</span>
               </span>
               <button
                 onClick={() => setShowDropRates(false)}
-                className="text-[11px] text-rose-300 hover:text-white font-bold"
+                className="text-[11px] text-[#787774] hover:text-[#37352f]"
               >
                 Đóng ✕
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {selectedBox.dropRates?.map((dr, idx) => (
-                <div key={idx} className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
-                  <span className="text-[11px] text-rose-100 font-bold truncate mr-2">{dr.name}</span>
+                <div key={idx} className="p-2.5 rounded-lg bg-white border border-[#e9e9e8] flex items-center justify-between">
+                  <span className="text-[11px] text-[#37352f] font-medium truncate mr-2">{dr.name}</span>
                   <div className="flex items-center space-x-1.5 shrink-0">
-                    <span className={`text-[8px] font-black uppercase px-1.5 py-0.2 rounded-md ${
-                      dr.rarity === 'secret' ? 'bg-amber-400 text-slate-950 animate-pulse' :
-                      dr.rarity === 'legendary' ? 'bg-purple-500 text-white' :
-                      dr.rarity === 'epic' ? 'bg-rose-500 text-white' :
-                      dr.rarity === 'rare' ? 'bg-indigo-500 text-white' :
-                      'bg-slate-700 text-slate-200'
-                    }`}>
+                    <span className="notion-tag notion-tag-blue text-[9px] font-semibold">
                       {dr.rarity}
                     </span>
-                    <span className="font-mono font-black text-amber-400 text-xs">{dr.rate}</span>
+                    <span className="font-mono font-bold text-amber-700 text-xs">{dr.rate}</span>
                   </div>
                 </div>
               ))}
@@ -290,14 +280,14 @@ export default function BlindBoxModal({
         )}
 
         {/* 4. MODAL BODY */}
-        <div className="relative z-10 p-4 sm:p-6 space-y-5">
+        <div className="relative z-10 p-4 sm:p-6 space-y-4 bg-white">
           
           {/* User Wallet Balance Bar */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/10 text-xs">
+          <div className="flex items-center justify-between p-3 rounded-lg bg-[#f7f6f5] border border-[#e9e9e8] text-xs">
             <div className="flex items-center space-x-2">
-              <Coins className="w-4 h-4 text-amber-400 animate-spin" />
-              <span className="text-rose-100 font-medium">Số dư ví của bạn:</span>
-              <span className="text-amber-300 font-black text-sm">{walletBalance} Xu</span>
+              <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span className="text-[#787774]">Số dư ví của bạn:</span>
+              <span className="text-[#37352f] font-bold text-sm">{walletBalance} Xu</span>
             </div>
 
             <button
@@ -305,7 +295,7 @@ export default function BlindBoxModal({
                 onClose();
                 onOpenWallet();
               }}
-              className="px-3 py-1 bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 rounded-xl font-black text-[11px] transition-all"
+              className="px-3 py-1 bg-white hover:bg-black/5 text-[#2383e2] border border-[#e9e9e8] rounded-md font-semibold text-[11px] transition-all"
             >
               + Nạp Thêm Xu
             </button>
@@ -316,7 +306,7 @@ export default function BlindBoxModal({
             <div>
               
               {/* 3 Box Selector Tabs */}
-              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-5">
+              <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-4">
                 {BLIND_BOXES.map((b) => {
                   const isSelected = b.id === selectedBoxId;
                   return (
@@ -328,25 +318,25 @@ export default function BlindBoxModal({
                         }
                       }}
                       disabled={unboxingStage !== 'idle'}
-                      className={`relative p-3 rounded-2xl border-2 transition-all flex flex-col items-center text-center cursor-pointer ${
+                      className={`relative p-3 rounded-lg border transition-all flex flex-col items-center text-center cursor-pointer ${
                         isSelected
-                          ? `bg-white/15 ${b.borderColor} ${b.glowColor} shadow-xl scale-102`
-                          : 'bg-white/5 border-white/10 hover:border-white/30 opacity-75 hover:opacity-100'
+                          ? `bg-[#fbfbfa] border-[#2383e2] ring-1 ring-[#2383e2] shadow-xs`
+                          : 'bg-white border-[#e9e9e8] hover:border-[#c5c4c0]'
                       }`}
                     >
-                      <span className="absolute -top-2.5 right-1 text-[8px] sm:text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs">
+                      <span className="absolute -top-2.5 right-1 text-[8px] sm:text-[9px] font-semibold uppercase px-2 py-0.5 rounded-full bg-[#37352f] text-white">
                         {b.badge}
                       </span>
-                      <div className="text-3xl sm:text-4xl my-1 transform hover:scale-110 transition-transform">
+                      <div className="text-3xl sm:text-4xl my-1 transform hover:scale-105 transition-transform">
                         {b.icon}
                       </div>
-                      <h4 className="text-[11px] sm:text-xs font-black text-white mt-1 leading-tight line-clamp-1">
+                      <h4 className="text-[11px] sm:text-xs font-bold text-[#37352f] mt-1 leading-tight line-clamp-1">
                         {b.name}
                       </h4>
-                      <span className="text-[10px] text-amber-300 font-bold mt-0.5">
+                      <span className="text-[10px] text-amber-700 font-medium mt-0.5">
                         {b.subname}
                       </span>
-                      <div className="mt-2 text-xs font-black px-2.5 py-0.5 rounded-xl bg-amber-400 text-[#240618] shadow-xs">
+                      <div className="mt-2 text-xs font-semibold px-2.5 py-0.5 rounded-md bg-[#f7f6f5] border border-[#e9e9e8] text-[#37352f]">
                         {b.costXu} Xu
                       </div>
                     </button>
@@ -354,17 +344,10 @@ export default function BlindBoxModal({
                 })}
               </div>
 
-              {/* 3D Visualizer Stage */}
-              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-white/10 via-white/5 to-transparent border border-white/15 text-center relative overflow-hidden">
+              {/* Visualizer Stage */}
+              <div className="p-6 rounded-xl bg-[#fbfbfa] border border-[#e9e9e8] text-center relative overflow-hidden">
                 
-                {/* Rotating Sunburst Ray Background when Shaking */}
-                {unboxingStage === 'shaking' && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-                    <div className="w-96 h-96 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-400 via-rose-500 to-transparent animate-spin-slow rounded-full blur-xl" />
-                  </div>
-                )}
-
-                {/* Interactive 3D Blind Box Illustration */}
+                {/* Interactive Blind Box Illustration */}
                 <div className="relative z-10 py-2">
                   <div
                     onClick={() => {
@@ -374,39 +357,39 @@ export default function BlindBoxModal({
                     }}
                     className={`inline-block select-none cursor-pointer transition-all duration-300 ${
                       unboxingStage === 'shaking'
-                        ? 'animate-bounce scale-125 rotate-12 filter brightness-125'
-                        : 'hover:scale-110 hover:-rotate-3 active:scale-95'
+                        ? 'animate-bounce scale-110 rotate-6'
+                        : 'hover:scale-105'
                     }`}
                   >
                     <div className="relative">
-                      <span className="text-7xl sm:text-8xl drop-shadow-2xl filter drop-shadow-[0_10px_20px_rgba(240,44,133,0.5)]">
+                      <span className="text-6xl sm:text-7xl drop-shadow-md">
                         {selectedBox.icon}
                       </span>
                       {unboxingStage === 'idle' && (
-                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2.5 py-0.5 bg-black/70 backdrop-blur-md rounded-full text-[10px] font-black text-amber-300 border border-amber-400/40 animate-pulse">
+                        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap px-2.5 py-0.5 bg-[#37352f] text-white rounded-full text-[10px] font-medium shadow-xs">
                           ✨ Chạm để lắc hộp ✨
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <h3 className="text-lg sm:text-xl font-black mt-4 text-white tracking-tight">
+                  <h3 className="text-base sm:text-lg font-bold mt-4 text-[#37352f]">
                     {selectedBox.name}
                   </h3>
-                  <p className="text-xs text-rose-200/80 max-w-md mx-auto mt-1 font-medium">
+                  <p className="text-xs text-[#787774] max-w-md mx-auto mt-1">
                     {selectedBox.description}
                   </p>
                 </div>
 
                 {/* Rewards preview pill badges */}
-                <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-center gap-1.5">
-                  <span className="text-[10px] text-rose-300/70 font-black uppercase tracking-wider mr-1">
+                <div className="mt-4 pt-3 border-t border-[#e9e9e8] flex flex-wrap items-center justify-center gap-1.5">
+                  <span className="text-[10px] text-[#787774] font-medium uppercase tracking-wider mr-1">
                     Quà trong hộp:
                   </span>
                   {selectedBox.expectedRewards.map((rw, i) => (
                     <span
                       key={i}
-                      className="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-bold text-amber-200"
+                      className="px-2.5 py-0.5 rounded-full bg-white border border-[#e9e9e8] text-[11px] font-medium text-amber-800"
                     >
                       ✨ {rw}
                     </span>
@@ -414,16 +397,16 @@ export default function BlindBoxModal({
                 </div>
 
                 {/* DUAL ACTION BUTTONS: MỞ 1 HỘP (x1) & MỞ COMBO (x5) */}
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-2.5">
                   
                   {/* Button 1: Single Open */}
                   <button
                     onClick={() => handleStartUnboxing(1)}
                     disabled={unboxingStage !== 'idle'}
-                    className={`w-full sm:w-auto flex-1 max-w-xs py-3.5 px-6 rounded-2xl font-black text-xs sm:text-sm text-white shadow-xl flex items-center justify-center space-x-2 transition-all transform active:scale-95 ${
+                    className={`w-full sm:w-auto flex-1 max-w-xs py-2.5 px-5 rounded-lg font-semibold text-xs sm:text-sm text-white shadow-xs flex items-center justify-center space-x-1.5 transition-colors ${
                       unboxingStage === 'shaking'
-                        ? 'bg-rose-500/50 cursor-wait'
-                        : 'bg-gradient-to-r from-amber-400 via-[#f02c85] to-purple-600 hover:brightness-110 shadow-pink-900/50 hover:scale-103'
+                        ? 'bg-blue-400 cursor-wait'
+                        : 'bg-[#2383e2] hover:bg-[#1a73e8]'
                     }`}
                   >
                     {unboxingStage === 'shaking' ? (
@@ -443,29 +426,29 @@ export default function BlindBoxModal({
                   <button
                     onClick={() => handleStartUnboxing(5)}
                     disabled={unboxingStage !== 'idle'}
-                    className={`w-full sm:w-auto flex-1 max-w-xs py-3.5 px-6 rounded-2xl font-black text-xs sm:text-sm text-white shadow-xl flex items-center justify-center space-x-2 transition-all transform active:scale-95 ${
+                    className={`w-full sm:w-auto flex-1 max-w-xs py-2.5 px-5 rounded-lg font-semibold text-xs sm:text-sm text-white shadow-xs flex items-center justify-center space-x-1.5 transition-colors ${
                       unboxingStage === 'shaking'
                         ? 'opacity-40 cursor-not-allowed'
-                        : 'bg-[#28071a] hover:bg-[#3d0c27] border-2 border-amber-400 hover:scale-103 shadow-amber-500/20'
+                        : 'bg-[#37352f] hover:bg-[#201f1d]'
                     }`}
                   >
-                    <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
                     <span>Khui Combo x5 ({selectedBox.costXu * 5} Xu)</span>
                   </button>
 
                 </div>
 
-                <p className="text-[10px] text-rose-200/60 mt-2.5 font-medium">
+                <p className="text-[10px] text-[#787774] mt-2">
                   Cam kết 100% trúng thưởng hoàn Xu, thẻ Anki hoặc mã giảm giá. Không bao giờ tay trắng!
                 </p>
 
               </div>
             </div>
           ) : (
-            /* STAGE B: REWARDS REVEALED (SINGLE OR MULTI COMBO GRID) */
-            <div className="animate-fade-in text-center p-5 sm:p-7 rounded-3xl bg-gradient-to-b from-white/15 to-white/5 border-2 border-amber-400 shadow-2xl">
+            /* STAGE B: REWARDS REVEALED */
+            <div className="animate-fade-in text-center p-5 sm:p-6 rounded-xl bg-[#fbfbfa] border border-[#e9e9e8]">
               
-              <div className="inline-block px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black tracking-wider uppercase border border-amber-400/40 mb-3 animate-pulse">
+              <div className="inline-block px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-semibold tracking-wider uppercase border border-amber-200 mb-3">
                 {revealRewards.length > 1 ? `🎉 CHÚC MỪNG BẠN ĐÃ NHẬN ĐƯỢC ${revealRewards.length} PHẦN THƯỞNG!` : revealRewards[0]?.rarityLabel}
               </div>
 
@@ -473,25 +456,25 @@ export default function BlindBoxModal({
               {revealRewards.length === 1 ? (
                 /* Single Card Hero */
                 <div className="py-2">
-                  <div className="text-7xl my-3 animate-bounce">
+                  <div className="text-6xl my-2 animate-bounce">
                     {revealRewards[0].icon}
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#37352f]">
                     {revealRewards[0].title}
                   </h2>
-                  <p className="text-xs sm:text-sm text-rose-100 max-w-md mx-auto mt-2 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-[#787774] max-w-md mx-auto mt-1 leading-relaxed">
                     {revealRewards[0].description}
                   </p>
 
                   {/* Copy Voucher code action if applicable */}
                   {revealRewards[0].code && (
-                    <div className="mt-4 inline-flex items-center space-x-2 p-2 rounded-xl bg-white/10 border border-white/20">
-                      <span className="font-mono font-black text-amber-300 text-sm">
+                    <div className="mt-3 inline-flex items-center space-x-2 p-2 rounded-lg bg-white border border-[#e9e9e8]">
+                      <span className="font-mono font-bold text-amber-700 text-sm">
                         {revealRewards[0].code}
                       </span>
                       <button
                         onClick={() => handleCopyVoucher(revealRewards[0].code)}
-                        className="px-2.5 py-1 bg-amber-400 text-[#240618] rounded-lg text-xs font-black flex items-center space-x-1 hover:brightness-110"
+                        className="px-2.5 py-1 bg-[#37352f] text-white rounded-md text-xs font-medium flex items-center space-x-1 hover:bg-[#201f1d]"
                       >
                         <Copy className="w-3 h-3" />
                         <span>{copiedCode === revealRewards[0].code ? 'Đã chép!' : 'Sao chép'}</span>
@@ -501,22 +484,22 @@ export default function BlindBoxModal({
                 </div>
               ) : (
                 /* Multi Combo Grid (x5) */
-                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2.5 my-4">
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 my-3">
                   {revealRewards.map((rw, idx) => (
                     <div
                       key={idx}
-                      className="p-3 rounded-2xl bg-white/10 border border-white/20 flex flex-col items-center justify-between hover:bg-white/15 transition-all text-center"
+                      className="p-3 rounded-lg bg-white border border-[#e9e9e8] flex flex-col items-center justify-between text-center"
                     >
-                      <span className="text-[9px] font-black uppercase text-amber-300">
+                      <span className="text-[9px] font-semibold uppercase text-amber-700">
                         Hộp #{idx + 1}
                       </span>
-                      <div className="text-3xl my-1.5 animate-bounce">
+                      <div className="text-3xl my-1.5">
                         {rw.icon}
                       </div>
-                      <h4 className="text-[11px] font-black text-white leading-tight">
+                      <h4 className="text-[11px] font-bold text-[#37352f] leading-tight">
                         {rw.title}
                       </h4>
-                      <span className="text-[9px] text-rose-200/80 font-medium mt-1 line-clamp-2">
+                      <span className="text-[9px] text-[#787774] mt-1 line-clamp-2">
                         {rw.description}
                       </span>
                     </div>
@@ -525,20 +508,20 @@ export default function BlindBoxModal({
               )}
 
               {/* Action Buttons */}
-              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-center gap-3">
+              <div className="mt-5 pt-3 border-t border-[#e9e9e8] flex items-center justify-center gap-2">
                 <button
                   onClick={handleResetToIdle}
-                  className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white text-xs font-black border border-white/20 flex items-center space-x-1.5 transition-all"
+                  className="px-4 py-2 rounded-lg bg-white hover:bg-black/5 text-[#787774] text-xs font-medium border border-[#e9e9e8] flex items-center space-x-1.5 transition-colors"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   <span>Khui Thêm Hộp Khác</span>
                 </button>
 
                 <button
                   onClick={onClose}
-                  className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-[#f02c85] hover:brightness-110 text-white text-xs font-black shadow-xl shadow-pink-900/40 flex items-center space-x-1.5 transition-all transform hover:scale-105 active:scale-95"
+                  className="px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>Nhận Quà & Đóng</span>
                 </button>
               </div>

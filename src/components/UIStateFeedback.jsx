@@ -2,45 +2,45 @@ import React from 'react';
 import { AlertCircle, RefreshCw, ArrowRight, Sparkles } from 'lucide-react';
 
 /**
- * High-fidelity Skeleton loader for cards grid
+ * High-fidelity Skeleton loader for Notion cards grid
  * Matches CourseCard and Marketplace card geometry for Zero CLS
  */
 export function CardGridSkeleton({ count = 6, cols = 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' }) {
   return (
-    <div className={`grid ${cols} gap-5 animate-pulse`}>
+    <div className={`grid ${cols} gap-4 animate-pulse`}>
       {Array.from({ length: count }).map((_, idx) => (
         <div
           key={idx}
-          className="bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4"
+          className="bg-[#fbfbfa] rounded-xl border border-[#e9e9e8] p-4 shadow-2xs flex flex-col justify-between space-y-3"
         >
           {/* Top badges */}
           <div className="flex items-center justify-between">
-            <div className="h-5 w-24 bg-[#eadfcb]/60 rounded-lg"></div>
-            <div className="h-5 w-16 bg-[#eadfcb]/60 rounded-full"></div>
+            <div className="h-4 w-20 bg-[#efefed] rounded-md"></div>
+            <div className="h-4 w-14 bg-[#efefed] rounded-md"></div>
           </div>
 
           {/* Title lines */}
-          <div className="space-y-2">
-            <div className="h-5 w-5/6 bg-[#eadfcb]/80 rounded-md"></div>
-            <div className="h-4 w-4/6 bg-[#eadfcb]/50 rounded-md"></div>
+          <div className="space-y-1.5">
+            <div className="h-4 w-5/6 bg-[#e3e2e0] rounded-md"></div>
+            <div className="h-3 w-4/6 bg-[#efefed] rounded-md"></div>
           </div>
 
           {/* Social / stats */}
-          <div className="flex items-center space-x-3 pt-2">
-            <div className="h-4 w-14 bg-[#eadfcb]/60 rounded-md"></div>
-            <div className="h-4 w-20 bg-[#eadfcb]/40 rounded-md"></div>
+          <div className="flex items-center space-x-2 pt-1">
+            <div className="h-3 w-12 bg-[#efefed] rounded-md"></div>
+            <div className="h-3 w-16 bg-[#efefed] rounded-md"></div>
           </div>
 
           {/* Highlights */}
-          <div className="space-y-2 border-t border-[#eadfcb]/40 pt-3">
-            <div className="h-3 w-full bg-[#eadfcb]/40 rounded-md"></div>
-            <div className="h-3 w-4/5 bg-[#eadfcb]/40 rounded-md"></div>
+          <div className="space-y-1.5 border-t border-[#f0efed] pt-2">
+            <div className="h-2.5 w-full bg-[#efefed] rounded-md"></div>
+            <div className="h-2.5 w-4/5 bg-[#efefed] rounded-md"></div>
           </div>
 
           {/* Footer action buttons */}
-          <div className="pt-4 border-t border-[#eadfcb] flex items-center justify-between">
-            <div className="h-6 w-16 bg-[#eadfcb]/70 rounded-md"></div>
-            <div className="h-9 w-28 bg-[#eadfcb]/80 rounded-xl"></div>
+          <div className="pt-3 border-t border-[#f0efed] flex items-center justify-between">
+            <div className="h-5 w-14 bg-[#efefed] rounded-md"></div>
+            <div className="h-7 w-20 bg-[#e3e2e0] rounded-lg"></div>
           </div>
         </div>
       ))}
@@ -53,32 +53,32 @@ export function CardGridSkeleton({ count = 6, cols = 'grid-cols-1 md:grid-cols-2
  */
 export function PostSkeleton({ count = 3 }) {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="space-y-3 animate-pulse">
       {Array.from({ length: count }).map((_, idx) => (
         <div
           key={idx}
-          className="bg-[#fcf7ec] rounded-3xl p-5 sm:p-6 border border-[#eadfcb] shadow-sm space-y-4"
+          className="bg-white rounded-xl p-4 border border-[#e9e9e8] shadow-2xs space-y-3"
         >
           {/* Author row */}
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-[#eadfcb]/80"></div>
-            <div className="space-y-1.5 flex-1">
-              <div className="h-4 w-32 bg-[#eadfcb]/80 rounded-md"></div>
-              <div className="h-3 w-20 bg-[#eadfcb]/50 rounded-md"></div>
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-full bg-[#efefed]"></div>
+            <div className="space-y-1 flex-1">
+              <div className="h-3.5 w-28 bg-[#e3e2e0] rounded-md"></div>
+              <div className="h-2.5 w-16 bg-[#efefed] rounded-md"></div>
             </div>
           </div>
 
           {/* Content lines */}
-          <div className="space-y-2">
-            <div className="h-4 w-full bg-[#eadfcb]/60 rounded-md"></div>
-            <div className="h-4 w-5/6 bg-[#eadfcb]/60 rounded-md"></div>
-            <div className="h-4 w-2/3 bg-[#eadfcb]/40 rounded-md"></div>
+          <div className="space-y-1.5">
+            <div className="h-3.5 w-full bg-[#efefed] rounded-md"></div>
+            <div className="h-3.5 w-5/6 bg-[#efefed] rounded-md"></div>
+            <div className="h-3.5 w-2/3 bg-[#efefed] rounded-md"></div>
           </div>
 
           {/* Interaction bar */}
-          <div className="pt-3 border-t border-[#eadfcb]/50 flex items-center space-x-4">
-            <div className="h-4 w-16 bg-[#eadfcb]/50 rounded-md"></div>
-            <div className="h-4 w-20 bg-[#eadfcb]/50 rounded-md"></div>
+          <div className="pt-2 border-t border-[#f0efed] flex items-center space-x-3">
+            <div className="h-3 w-14 bg-[#efefed] rounded-md"></div>
+            <div className="h-3 w-16 bg-[#efefed] rounded-md"></div>
           </div>
         </div>
       ))}
@@ -87,8 +87,7 @@ export function PostSkeleton({ count = 3 }) {
 }
 
 /**
- * Standardized Actionable Empty State
- * Guarantees every empty screen provides a clear recovery or exploratory path
+ * Standardized Actionable Empty State (Notion Style)
  */
 export function ActionableEmptyState({
   icon: Icon,
@@ -99,27 +98,27 @@ export function ActionableEmptyState({
   secondaryAction
 }) {
   return (
-    <div className="text-center py-14 sm:py-16 bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] p-6 sm:p-8 text-[#28071a] shadow-sm space-y-4 animate-fade-in">
+    <div className="text-center py-12 bg-white rounded-xl border border-[#e9e9e8] p-6 sm:p-8 text-[#37352f] shadow-2xs space-y-3 animate-fade-in">
       {/* Icon badge */}
       {Icon && (
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-100 to-amber-100 border border-pink-200 text-[#f02c85] flex items-center justify-center mx-auto shadow-xs">
-          <Icon className="w-8 h-8 opacity-90" />
+        <div className="w-12 h-12 rounded-xl bg-[#f7f6f5] border border-[#e9e9e8] text-[#787774] flex items-center justify-center mx-auto">
+          <Icon className="w-6 h-6" />
         </div>
       )}
 
       {badge && (
-        <span className="inline-block text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-pink-100 text-[#f02c85] border border-pink-200">
+        <span className="notion-tag notion-tag-gray text-[10px]">
           {badge}
         </span>
       )}
 
       {/* Title & Desc */}
-      <div className="max-w-md mx-auto space-y-1.5">
-        <h4 className="text-base sm:text-lg font-black text-[#28071a] leading-snug">
+      <div className="max-w-md mx-auto space-y-1">
+        <h4 className="text-sm sm:text-base font-bold text-[#37352f]">
           {title}
         </h4>
         {description && (
-          <p className="text-xs text-[#7a5a6b] font-medium leading-relaxed">
+          <p className="text-xs text-[#787774] font-normal leading-relaxed">
             {description}
           </p>
         )}
@@ -127,14 +126,14 @@ export function ActionableEmptyState({
 
       {/* Action Buttons */}
       {(primaryAction || secondaryAction) && (
-        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
           {secondaryAction && (
             <button
               type="button"
               onClick={secondaryAction.onClick}
-              className="px-4 py-2.5 rounded-xl bg-white border border-[#eadfcb] hover:bg-[#f6ebd5] text-xs font-black text-[#28071a] transition-all shadow-xs flex items-center space-x-1.5"
+              className="px-3.5 py-1.5 rounded-lg bg-[#f7f6f5] hover:bg-[#f0efed] border border-[#e9e9e8] text-xs font-medium text-[#37352f] transition-colors flex items-center space-x-1.5 cursor-pointer"
             >
-              {secondaryAction.icon && <secondaryAction.icon className="w-3.5 h-3.5" />}
+              {secondaryAction.icon && <secondaryAction.icon className="w-3.5 h-3.5 text-[#787774]" />}
               <span>{secondaryAction.label}</span>
             </button>
           )}
@@ -143,7 +142,7 @@ export function ActionableEmptyState({
             <button
               type="button"
               onClick={primaryAction.onClick}
-              className="px-5 py-2.5 rounded-xl btn-wayground-sunset text-xs font-black text-white transition-all shadow-md flex items-center space-x-1.5 transform hover:scale-105 active:scale-95"
+              className="px-4 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-xs font-medium text-white transition-colors shadow-2xs flex items-center space-x-1.5 cursor-pointer"
             >
               {primaryAction.icon && <primaryAction.icon className="w-3.5 h-3.5" />}
               <span>{primaryAction.label}</span>
@@ -156,7 +155,7 @@ export function ActionableEmptyState({
 }
 
 /**
- * Standardized Error State Card with Retry
+ * Standardized Error State Card with Retry (Notion Style)
  */
 export function ErrorStateCard({
   title = 'Có lỗi xảy ra khi tải dữ liệu',
@@ -164,16 +163,16 @@ export function ErrorStateCard({
   onRetry
 }) {
   return (
-    <div className="text-center py-12 bg-rose-50/80 rounded-3xl border border-rose-200 p-6 sm:p-8 text-rose-950 shadow-sm space-y-3.5 animate-fade-in">
-      <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-xs border border-rose-200">
-        <AlertCircle className="w-7 h-7" />
+    <div className="text-center py-8 bg-[#fdebec] rounded-xl border border-[#f9c9cb] p-6 text-[#d44c47] space-y-2.5 animate-fade-in">
+      <div className="w-10 h-10 rounded-lg bg-[#fadad7] text-[#d44c47] flex items-center justify-center mx-auto">
+        <AlertCircle className="w-5 h-5" />
       </div>
 
-      <div className="max-w-md mx-auto space-y-1">
-        <h4 className="text-sm sm:text-base font-black text-rose-950">
+      <div className="max-w-md mx-auto space-y-0.5">
+        <h4 className="text-xs sm:text-sm font-bold text-[#d44c47]">
           {title}
         </h4>
-        <p className="text-xs text-rose-800/80 font-medium">
+        <p className="text-xs text-[#a3322e]">
           {message}
         </p>
       </div>
@@ -183,7 +182,7 @@ export function ErrorStateCard({
           <button
             type="button"
             onClick={onRetry}
-            className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-black shadow-md inline-flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+            className="px-3.5 py-1.5 rounded-lg bg-[#d44c47] hover:bg-[#b83833] text-white text-xs font-medium shadow-2xs inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Thử lại ngay</span>

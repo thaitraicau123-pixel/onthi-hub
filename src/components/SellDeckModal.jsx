@@ -104,20 +104,20 @@ export default function SellDeckModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-lg bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl overflow-hidden my-6 text-[#28071a]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in overflow-y-auto">
+      <div className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden my-6 text-[#37352f]">
         
         {/* Header */}
-        <div className="flex items-center justify-between p-5 bg-gradient-to-r from-[#240618] to-[#450a29] text-white">
+        <div className="flex items-center justify-between p-5 bg-[#fbfbfa] border-b border-[#e9e9e8] text-[#37352f]">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-[#ff5f38] to-[#f02c85] flex items-center justify-center shadow-md">
-              <Store className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center">
+              <Store className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-black uppercase tracking-tight">
-                ĐĂNG BÁN BỘ THẺ LÊN SÀN C2C
+              <h3 className="text-sm sm:text-base font-bold text-[#37352f]">
+                Đăng Bán Bộ Thẻ Lên Sàn C2C
               </h3>
-              <p className="text-[11px] text-pink-200/80 font-medium">
+              <p className="text-[11px] text-[#787774]">
                 Kiếm Xu vào ví khi học viên khác trên toàn quốc mua bộ thẻ của bạn
               </p>
             </div>
@@ -125,7 +125,7 @@ export default function SellDeckModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-pink-200 hover:text-white rounded-xl transition-colors"
+            className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -135,18 +135,18 @@ export default function SellDeckModal({
         <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-4">
           
           {/* Deck Summary Card */}
-          <div className="p-4 rounded-2xl bg-white border border-[#eadfcb] shadow-xs">
+          <div className="p-4 rounded-lg bg-[#f7f6f5] border border-[#e9e9e8]">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-pink-100 text-[#f02c85] border border-pink-200">
+              <span className="notion-tag notion-tag-blue text-[10px] font-semibold">
                 BỘ THẺ TỪ TỦ CỦA BẠN
               </span>
-              <span className="text-[11px] font-black text-[#7a5a6b]">
+              <span className="text-[11px] font-medium text-[#787774]">
                 {course?.previewCards?.length || course?.cardCount || 10} thẻ Anki
               </span>
             </div>
             
             <div className="mt-2.5">
-              <label className="text-[11px] font-black text-[#7a5a6b] block mb-1">
+              <label className="text-[11px] font-semibold text-[#787774] block mb-1">
                 Tiêu đề hiển thị trên sàn:
               </label>
               <input
@@ -154,7 +154,7 @@ export default function SellDeckModal({
                 value={sellTitle}
                 onChange={(e) => setSellTitle(e.target.value)}
                 placeholder="VD: 50 Thẻ Ghi Nhớ Nhanh Nghị Định 138..."
-                className="w-full px-3 py-2 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-black text-[#28071a] outline-none focus:border-[#f02c85]"
+                className="w-full px-3 py-2 bg-white border border-[#e9e9e8] rounded-lg text-xs font-semibold text-[#37352f] outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2]"
               />
             </div>
           </div>
@@ -163,9 +163,9 @@ export default function SellDeckModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Price setting */}
             <div>
-              <label className="text-xs font-black text-[#28071a] flex items-center justify-between mb-1.5">
+              <label className="text-xs font-semibold text-[#37352f] flex items-center justify-between mb-1.5">
                 <span>Giá bán (Xu):</span>
-                <span className="text-[10px] text-[#f02c85] font-black">1 Xu = 1.000đ</span>
+                <span className="text-[10px] text-[#2383e2] font-semibold">1 Xu = 1.000đ</span>
               </label>
               <div className="relative">
                 <input
@@ -174,9 +174,9 @@ export default function SellDeckModal({
                   max="200"
                   value={sellPriceXu}
                   onChange={(e) => setSellPriceXu(Math.max(1, parseInt(e.target.value, 10) || 0))}
-                  className="w-full px-3.5 py-2.5 bg-white border border-[#eadfcb] rounded-xl text-xs font-black text-[#28071a] outline-none focus:border-[#f02c85]"
+                  className="w-full px-3.5 py-2 bg-white border border-[#e9e9e8] rounded-lg text-xs font-semibold text-[#37352f] outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2]"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-amber-600">
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-amber-700">
                   Xu
                 </span>
               </div>
@@ -184,13 +184,13 @@ export default function SellDeckModal({
 
             {/* Category selection */}
             <div>
-              <label className="text-xs font-black text-[#28071a] block mb-1.5">
+              <label className="text-xs font-semibold text-[#37352f] block mb-1.5">
                 Danh mục phân loại:
               </label>
               <select
                 value={sellCategory}
                 onChange={(e) => setSellCategory(e.target.value)}
-                className="w-full px-3 py-2.5 bg-white border border-[#eadfcb] rounded-xl text-xs font-black text-[#28071a] outline-none focus:border-[#f02c85] cursor-pointer"
+                className="w-full px-3 py-2 bg-white border border-[#e9e9e8] rounded-lg text-xs font-semibold text-[#37352f] outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] cursor-pointer"
               >
                 <option value="cong-chuc">🏛️ Công Chức</option>
                 <option value="it-tech">💻 IT & Lập Trình</option>
@@ -201,7 +201,7 @@ export default function SellDeckModal({
 
           {/* Description */}
           <div>
-            <label className="text-xs font-black text-[#28071a] block mb-1.5">
+            <label className="text-xs font-semibold text-[#37352f] block mb-1.5">
               Mô tả ngắn thu hút học viên:
             </label>
             <textarea
@@ -209,28 +209,28 @@ export default function SellDeckModal({
               value={sellDescription}
               onChange={(e) => setSellDescription(e.target.value)}
               placeholder="Tóm tắt nội dung trọng tâm và lý do nên học bộ thẻ này..."
-              className="w-full p-2.5 bg-white border border-[#eadfcb] rounded-xl text-xs font-medium text-[#28071a] outline-none focus:border-[#f02c85] resize-none"
+              className="w-full p-2.5 bg-white border border-[#e9e9e8] rounded-lg text-xs text-[#37352f] outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] resize-none"
             />
           </div>
 
           {/* Financial Breakdown */}
-          <div className="p-3.5 rounded-2xl bg-[#f5ecd8] border border-[#eadfcb] space-y-1.5 text-xs">
-            <div className="flex items-center justify-between font-bold text-[#7a5a6b]">
+          <div className="p-3.5 rounded-lg bg-[#f7f6f5] border border-[#e9e9e8] space-y-1.5 text-xs">
+            <div className="flex items-center justify-between text-[#787774]">
               <span>Giá niêm yết bán:</span>
-              <span className="text-[#28071a] font-black">{sellPriceXu} Xu (~{(sellPriceXu * 1000).toLocaleString()}đ)</span>
+              <span className="text-[#37352f] font-semibold">{sellPriceXu} Xu (~{(sellPriceXu * 1000).toLocaleString()}đ)</span>
             </div>
-            <div className="flex items-center justify-between font-bold text-[#7a5a6b]">
+            <div className="flex items-center justify-between text-[#787774]">
               <span>Phí sàn nền tảng ({tierConfig.name} {feePercent}%):</span>
-              <span className="text-rose-600 font-black">-{Math.round(sellPriceXu * (feePercent / 100))} Xu</span>
+              <span className="text-rose-600 font-semibold">-{Math.round(sellPriceXu * (feePercent / 100))} Xu</span>
             </div>
-            <div className="border-t border-[#eadfcb] pt-1.5 flex items-center justify-between font-black text-emerald-800 text-sm">
+            <div className="border-t border-[#e9e9e8] pt-1.5 flex items-center justify-between font-semibold text-emerald-800 text-sm">
               <span>Bạn thực nhận mỗi lượt mua:</span>
               <span className="text-base text-emerald-700">+{netEarnings} Xu</span>
             </div>
           </div>
 
           {/* Real-time Firebase Sync notice */}
-          <div className="flex items-start space-x-2 text-[11px] text-[#7a5a6b] font-medium p-2.5 bg-white/70 rounded-xl border border-[#eadfcb]">
+          <div className="flex items-start space-x-2 text-[11px] text-[#787774] p-2.5 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8]">
             <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
             <span>
               🔥 <strong>Tự động đưa lên Firebase:</strong> Bộ thẻ sẽ xuất hiện ngay lập tức trên Chợ Thẻ C2C cho toàn bộ người dùng trên cả nước nhìn thấy và mua!
@@ -242,17 +242,17 @@ export default function SellDeckModal({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl border border-[#eadfcb] text-xs font-bold text-[#7a5a6b] hover:bg-white"
+              className="px-4 py-2 rounded-lg border border-[#e9e9e8] text-xs font-medium text-[#787774] hover:bg-black/5 transition-colors"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 rounded-xl btn-wayground-sunset text-white text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+              className="px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-colors disabled:opacity-50"
             >
               <Store className="w-4 h-4" />
-              <span>{isSubmitting ? 'Đang Đăng Lên Sàn...' : '🚀 Xác Nhận Đăng Bán Ngay'}</span>
+              <span>{isSubmitting ? 'Đang Đăng Lên Sàn...' : 'Xác Nhận Đăng Bán Ngay'}</span>
             </button>
           </div>
 

@@ -136,9 +136,9 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                 </ul>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[#eadfcb]">
+              <div className="mt-8 pt-4 border-t border-[#e9e9e8]">
                 {isCurrent ? (
-                  <div className="w-full py-3 rounded-2xl bg-[#f5ecd8] text-[#28071a] text-xs font-black text-center border border-[#eadfcb]">
+                  <div className="w-full py-2.5 rounded-lg bg-[#f7f6f5] text-[#787774] text-xs font-semibold text-center border border-[#e9e9e8]">
                     ✓ Trạng Thái Đang Kích Hoạt
                   </div>
                 ) : plan.priceXu === 0 ? (
@@ -147,7 +147,7 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                       setUserTier('free');
                       onTierUpgraded('free');
                     }}
-                    className="w-full py-3 rounded-2xl border border-[#eadfcb] hover:bg-[#faebd0] text-[#28071a] text-xs font-black transition-colors"
+                    className="w-full py-2.5 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] text-xs font-medium transition-colors cursor-pointer"
                   >
                     Dùng Gói Free
                   </button>
@@ -155,23 +155,23 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                   <div className="space-y-2">
                     <button
                       onClick={() => handleUpgradeWithXu(plan)}
-                      className="w-full py-3 rounded-2xl btn-wayground-sunset text-white text-xs font-black shadow-lg shadow-pink-900/30 transition-transform transform hover:scale-105 active:scale-95 flex items-center justify-center space-x-1.5"
+                      className="w-full py-2.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                     >
-                      <Coins className="w-4 h-4 fill-amber-300 text-amber-300" />
+                      <Coins className="w-4 h-4 text-white" />
                       <span>Kích Hoạt Gói ({plan.priceXu} Xu)</span>
                     </button>
 
                     {walletBalance < plan.priceXu ? (
                       <button
                         onClick={onOpenWallet}
-                        className="w-full py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-[11px] font-bold transition-colors flex items-center justify-center space-x-1"
+                        className="w-full py-1.5 rounded-lg bg-[#fbf3db] hover:bg-[#f6ebd0] text-[#976d57] border border-[#f4e4b7] text-[11px] font-medium transition-colors flex items-center justify-center space-x-1 cursor-pointer"
                       >
-                        <Wallet className="w-3.5 h-3.5 text-amber-700" />
+                        <Wallet className="w-3.5 h-3.5 text-[#cc782f]" />
                         <span>Ví có {walletBalance} Xu • Nạp thêm {plan.priceXu - walletBalance} Xu</span>
                       </button>
                     ) : (
-                      <div className="text-[10px] text-center text-[#7a5a6b] font-bold">
-                        Số dư ví: <strong className="text-emerald-700">{walletBalance} Xu</strong> (Đủ điều kiện)
+                      <div className="text-[10px] text-center text-[#787774]">
+                        Số dư ví: <strong className="text-emerald-700 font-semibold">{walletBalance} Xu</strong> (Đủ điều kiện)
                       </div>
                     )}
                   </div>
@@ -183,59 +183,59 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
       </div>
 
       {/* GUARANTEE NOTE */}
-      <div className="p-4 bg-[#fcf7ec] rounded-2xl border border-[#eadfcb] flex items-center justify-center space-x-2 text-xs text-[#28071a] font-bold text-center max-w-xl mx-auto shadow-md">
+      <div className="notion-callout p-3.5 rounded-xl border border-[#e9e9e8] flex items-center justify-center space-x-2 text-xs text-[#37352f] text-center max-w-xl mx-auto shadow-2xs">
         <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-        <span>Kích hoạt tự động sau 3 giây • Bảo hành cập nhật trọn vẹn</span>
+        <span>Kích hoạt tự động ngay sau 3 giây • Bảo hành cập nhật trọn vẹn</span>
       </div>
 
       {/* CONFIRM UPGRADE WITH XU MODAL */}
       {confirmPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] animate-scale-up space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#eadfcb]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-md bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl p-6 text-[#37352f] space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e9e9e8]">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-xl bg-pink-100 text-[#f02c85] flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 fill-[#f02c85]" />
+                <div className="w-7 h-7 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                  <Sparkles className="w-4 h-4" />
                 </div>
-                <h3 className="text-base font-black text-[#28071a]">Xác Nhận Nâng Cấp Hội Viên</h3>
+                <h3 className="text-sm sm:text-base font-bold text-[#37352f]">Xác Nhận Nâng Cấp Hội Viên</h3>
               </div>
               <button
                 onClick={() => setConfirmPlan(null)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                className="p-1 text-[#9b9a97] hover:text-[#37352f] rounded-lg cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl border border-[#eadfcb] space-y-2">
+            <div className="p-3.5 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8] space-y-2">
               <div className="flex justify-between text-xs">
-                <span className="text-[#7a5a6b] font-medium">Gói hội viên:</span>
-                <span className="font-black text-[#28071a]">{confirmPlan.name}</span>
+                <span className="text-[#787774]">Gói hội viên:</span>
+                <span className="font-semibold text-[#37352f]">{confirmPlan.name}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-[#7a5a6b] font-medium">Chi phí kích hoạt:</span>
-                <span className="font-black text-amber-600">{confirmPlan.priceXu} Xu</span>
+                <span className="text-[#787774]">Chi phí kích hoạt:</span>
+                <span className="font-semibold text-[#2383e2]">{confirmPlan.priceXu} Xu</span>
               </div>
-              <div className="flex justify-between text-xs pt-2 border-t border-slate-100">
-                <span className="text-[#7a5a6b] font-medium">Số dư ví hiện tại:</span>
-                <span className="font-black text-[#28071a]">{walletBalance} Xu</span>
+              <div className="flex justify-between text-xs pt-2 border-t border-[#e9e9e8]">
+                <span className="text-[#787774]">Số dư ví hiện tại:</span>
+                <span className="font-semibold text-[#37352f]">{walletBalance} Xu</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-[#7a5a6b] font-medium">Số dư sau khi trừ:</span>
-                <span className="font-black text-emerald-600">{walletBalance - confirmPlan.priceXu} Xu</span>
+                <span className="text-[#787774]">Số dư sau khi trừ:</span>
+                <span className="font-semibold text-emerald-700">{walletBalance - confirmPlan.priceXu} Xu</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex items-center gap-2.5 pt-1">
               <button
                 onClick={() => setConfirmPlan(null)}
-                className="flex-1 py-2.5 rounded-xl border border-[#eadfcb] bg-white hover:bg-slate-50 text-[#28071a] font-bold text-xs"
+                className="flex-1 py-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] font-medium text-xs cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button
                 onClick={handleConfirmUpgrade}
-                className="flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md shadow-pink-900/30 flex items-center justify-center space-x-1"
+                className="flex-1 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white font-medium text-xs shadow-2xs flex items-center justify-center space-x-1 cursor-pointer"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Xác Nhận Kích Hoạt</span>
@@ -247,40 +247,40 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
 
       {/* INSUFFICIENT COINS MODAL */}
       {insufficientError && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-md bg-[#fcf7ec] rounded-3xl border-2 border-[#eadfcb] shadow-2xl p-6 text-[#28071a] animate-scale-up space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#eadfcb]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="relative w-full max-w-md bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl p-6 text-[#37352f] space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#e9e9e8]">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
-                  <Coins className="w-4 h-4 fill-amber-700" />
+                <div className="w-7 h-7 rounded-lg bg-[#fbf3db] text-[#cc782f] flex items-center justify-center">
+                  <Coins className="w-4 h-4" />
                 </div>
-                <h3 className="text-base font-black text-[#28071a]">Số Dư Xu Chưa Đủ</h3>
+                <h3 className="text-sm sm:text-base font-bold text-[#37352f]">Số Dư Xu Chưa Đủ</h3>
               </div>
               <button
                 onClick={() => setInsufficientError(null)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
+                className="p-1 text-[#9b9a97] hover:text-[#37352f] rounded-lg cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="p-4 bg-white rounded-2xl border border-[#eadfcb] space-y-2 text-xs">
-              <p className="text-[#4e2f41]">
+            <div className="p-3.5 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8] space-y-2 text-xs">
+              <p className="text-[#37352f]">
                 Để nâng cấp <strong>{insufficientError.plan.name}</strong>, bạn cần <strong>{insufficientError.needed} Xu</strong>.
               </p>
-              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 flex items-center justify-between font-bold">
-                <span className="text-amber-800">Hiện có trong ví: {insufficientError.current} Xu</span>
-                <span className="text-rose-600">Thiếu: {insufficientError.deficit} Xu</span>
+              <div className="p-2.5 bg-[#fbf3db] rounded-lg border border-[#f4e4b7] flex items-center justify-between font-medium">
+                <span className="text-[#976d57]">Hiện có trong ví: {insufficientError.current} Xu</span>
+                <span className="text-rose-600 font-semibold">Thiếu: {insufficientError.deficit} Xu</span>
               </div>
-              <p className="text-[#7a5a6b] text-[11px]">
+              <p className="text-[#787774] text-[11px] leading-relaxed">
                 Hệ thống chỉ chấp nhận thanh toán bằng Tiền Xu. Bạn hãy nạp thêm <strong>{insufficientError.deficit} Xu</strong> qua mã VietQR để kích hoạt gói ngay nhé!
               </p>
             </div>
 
-            <div className="flex items-center gap-2 pt-2">
+            <div className="flex items-center gap-2 pt-1">
               <button
                 onClick={() => setInsufficientError(null)}
-                className="py-2.5 px-4 rounded-xl border border-[#eadfcb] bg-white hover:bg-slate-50 text-[#28071a] font-bold text-xs"
+                className="py-2 px-3.5 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] font-medium text-xs cursor-pointer"
               >
                 Để Sau
               </button>
@@ -289,10 +289,10 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                   setInsufficientError(null);
                   onOpenWallet?.();
                 }}
-                className="flex-1 py-2.5 rounded-xl btn-wayground-sunset text-white font-black text-xs shadow-md flex items-center justify-center space-x-1.5"
+                className="flex-1 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white font-medium text-xs shadow-2xs flex items-center justify-center space-x-1.5 cursor-pointer"
               >
-                <Wallet className="w-4 h-4 text-amber-200" />
-                <span>Mở Ví Nạp {insufficientError.deficit} Xu Ngay</span>
+                <Wallet className="w-4 h-4" />
+                <span>Nạp {insufficientError.deficit} Xu Ngay</span>
               </button>
             </div>
           </div>

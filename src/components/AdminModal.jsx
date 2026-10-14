@@ -495,7 +495,7 @@ export default function AdminModal({ onClose }) {
                             <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-50 text-purple-700">
                               Mã: {n.code}
                             </span>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-pink-50 text-[#f02c85]">
+                            <span className="notion-tag notion-tag-blue text-[10px]">
                               {n.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
                             </span>
                           </div>

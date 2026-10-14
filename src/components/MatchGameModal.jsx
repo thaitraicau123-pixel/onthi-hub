@@ -149,39 +149,39 @@ export default function MatchGameModal({ course, onClose }) {
   const totalPairs = Math.min(course.previewCards?.length || 6, 6);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-3xl bg-[#fcf7ec] rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border-2 border-[#eadfcb] text-[#28071a] animate-scale-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-[#e9e9e8] text-[#37352f]">
         
-        {/* Game Header (Wayground Velvet Wine) */}
-        <div className="flex items-center justify-between px-5 sm:px-6 py-4 bg-gradient-to-r from-[#240618] via-[#380b23] to-[#240618] text-white border-b border-[#f02c85]/40 shrink-0">
+        {/* Game Header (Notion Minimalist) */}
+        <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 bg-[#fbfbfa] text-[#37352f] border-b border-[#e9e9e8] shrink-0">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#f02c85] to-[#ff5f38] text-white flex items-center justify-center font-bold shadow-md shadow-pink-900/40">
-              <Sparkles className="w-5 h-5 fill-white" />
+            <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+              <Sparkles className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h4 className="text-sm sm:text-base font-black text-white uppercase tracking-tight">
+                <h4 className="text-sm sm:text-base font-bold text-[#37352f] uppercase tracking-tight">
                   Game Ghép Thẻ Siêu Tốc
                 </h4>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#f02c85] text-white">
+                <span className="notion-tag notion-tag-blue text-[10px]">
                   Match Mode
                 </span>
               </div>
-              <p className="text-[11px] text-pink-200/80 font-medium line-clamp-1">
+              <p className="text-[11px] text-[#787774] line-clamp-1">
                 {course.title}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-2.5">
             {/* Pronunciation toggle */}
             <button
               type="button"
               onClick={() => setAutoSpeech(!autoSpeech)}
-              className={`p-2 rounded-xl text-xs font-bold transition-colors ${
+              className={`p-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                 autoSpeech
-                  ? 'bg-[#f02c85] text-white'
-                  : 'bg-white/10 text-pink-200 hover:text-white'
+                  ? 'bg-[#2383e2] text-white shadow-2xs'
+                  : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#787774]'
               }`}
               title={autoSpeech ? 'Phát âm khi chạm: BẬT' : 'Phát âm khi chạm: TẮT'}
             >
@@ -189,72 +189,72 @@ export default function MatchGameModal({ course, onClose }) {
             </button>
 
             {/* Stopwatch Timer */}
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 bg-[#f02c85]/20 border border-[#f02c85]/40 text-pink-200 rounded-xl text-xs font-mono font-black shadow-xs">
-              <Timer className="w-3.5 h-3.5 text-[#ff80b5]" />
-              <span className="text-white text-sm">{timer.toFixed(1)}s</span>
+            <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-[#f7f6f5] border border-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-mono font-semibold">
+              <Timer className="w-3.5 h-3.5 text-[#2383e2]" />
+              <span className="text-[#37352f] text-xs">{timer.toFixed(1)}s</span>
             </div>
 
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-2 text-rose-200/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
         {/* Best Record Ribbon */}
         {bestTime !== null && !isGameOver && (
-          <div className="px-5 sm:px-6 py-1.5 bg-[#f6ebd5] border-b border-[#eadfcb] flex items-center justify-between text-[11px] text-[#7a5a6b] font-bold">
+          <div className="px-5 sm:px-6 py-2 bg-[#fbfbfa] border-b border-[#e9e9e8] flex items-center justify-between text-[11px] text-[#787774]">
             <span className="flex items-center space-x-1.5">
               <Award className="w-3.5 h-3.5 text-amber-500" />
-              <span>Kỷ lục cá nhân tốt nhất: <strong className="text-amber-700 font-mono font-black">{bestTime.toFixed(1)}s</strong></span>
+              <span>Kỷ lục cá nhân tốt nhất: <strong className="text-amber-700 font-mono font-semibold">{bestTime.toFixed(1)}s</strong></span>
             </span>
             <span>Chạm 2 thẻ tương ứng để triệt tiêu</span>
           </div>
         )}
 
         {/* Game Arena */}
-        <div className="p-5 sm:p-6 overflow-y-auto flex-1 bg-[#fcf7ec] flex flex-col justify-center">
+        <div className="p-5 sm:p-6 overflow-y-auto flex-1 bg-white flex flex-col justify-center">
           {isGameOver ? (
             /* Win Screen */
             <div className="text-center py-6 sm:py-8 max-w-md mx-auto space-y-4 animate-scale-up">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-[#f02c85] to-[#ff5f38] text-white flex items-center justify-center mx-auto shadow-xl shadow-pink-900/30 animate-bounce">
-                <Trophy className="w-10 h-10 fill-white" />
+              <div className="w-16 h-16 rounded-2xl bg-[#fbf3db] text-[#cc782f] flex items-center justify-center mx-auto shadow-2xs">
+                <Trophy className="w-8 h-8" />
               </div>
 
               <div>
                 {isNewRecord ? (
-                  <span className="text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-amber-500 to-rose-500 px-3.5 py-1 rounded-full shadow-md animate-pulse">
+                  <span className="notion-tag notion-tag-yellow text-xs font-semibold">
                     🏆 PHÁ KỶ LỤC CÁ NHÂN MỚI!
                   </span>
                 ) : (
-                  <span className="text-xs font-black uppercase tracking-wider text-[#f02c85] bg-pink-100 px-3 py-1 rounded-full border border-pink-200">
+                  <span className="notion-tag notion-tag-green text-xs font-semibold">
                     🎉 Hoàn Thành Xuất Sắc!
                   </span>
                 )}
 
-                <h3 className="text-3xl font-black text-[#28071a] mt-2.5">
-                  Thời Gian: <span className="text-[#f02c85] font-mono">{timer.toFixed(1)}s</span>
+                <h3 className="text-2xl sm:text-3xl font-bold text-[#37352f] mt-2.5">
+                  Thời Gian: <span className="text-[#2383e2] font-mono">{timer.toFixed(1)}s</span>
                 </h3>
 
-                <p className="text-xs text-[#7a5a6b] mt-1 font-medium">
-                  Bạn nhận được <strong className="text-emerald-700 font-black">+60 XP</strong> và giữ chuỗi Streak học tập hôm nay!
+                <p className="text-xs text-[#787774] mt-1 font-normal">
+                  Bạn nhận được <strong className="text-emerald-700 font-semibold">+60 XP</strong> và duy trì chuỗi Streak học tập hôm nay!
                 </p>
               </div>
 
-              <div className="pt-3 flex flex-wrap justify-center gap-3">
+              <div className="pt-2 flex flex-wrap justify-center gap-2.5">
                 <button
                   onClick={initGame}
-                  className="px-6 py-2.5 btn-wayground-sunset text-white rounded-xl text-xs font-black shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                  className="px-4 py-2 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-lg text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <RotateCcw className="w-3.5 h-3.5" />
                   <span>Chơi Lại Vòng Này</span>
                 </button>
                 <button
                   onClick={onClose}
-                  className="px-5 py-2.5 bg-white border border-[#eadfcb] hover:bg-[#faebd0] text-[#28071a] rounded-xl text-xs font-bold transition-colors"
+                  className="px-4 py-2 bg-[#f7f6f5] border border-[#e9e9e8] hover:bg-[#f0efed] text-[#37352f] rounded-lg text-xs font-medium transition-colors cursor-pointer"
                 >
                   Đóng Lại
                 </button>
@@ -262,7 +262,7 @@ export default function MatchGameModal({ course, onClose }) {
             </div>
           ) : (
             /* Grid of Tiles */
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 sm:gap-3">
               {tiles.map((tile) => {
                 const isMatched = matchedIds.includes(tile.pairId);
                 const isSelected = selectedTile?.tileId === tile.tileId;
@@ -272,9 +272,9 @@ export default function MatchGameModal({ course, onClose }) {
                   return (
                     <div
                       key={tile.tileId}
-                      className="h-28 rounded-2xl border border-dashed border-emerald-300 bg-emerald-50/50 flex items-center justify-center opacity-40 transition-all pointer-events-none"
+                      className="h-24 sm:h-28 rounded-xl border border-dashed border-[#d3e5d7] bg-[#edf3ec] flex items-center justify-center opacity-40 transition-all pointer-events-none"
                     >
-                      <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                     </div>
                   );
                 }
@@ -283,12 +283,12 @@ export default function MatchGameModal({ course, onClose }) {
                   <button
                     key={tile.tileId}
                     onClick={() => handleTileClick(tile)}
-                    className={`h-28 p-3 rounded-2xl border text-xs sm:text-sm font-bold flex items-center justify-center text-center transition-all duration-200 select-none shadow-xs ${
+                    className={`h-24 sm:h-28 p-3 rounded-xl border text-xs sm:text-sm font-medium flex items-center justify-center text-center transition-all select-none shadow-2xs cursor-pointer ${
                       isSelected
-                        ? 'border-[#f02c85] bg-pink-100/80 text-[#28071a] ring-2 ring-[#f02c85] scale-102 font-black shadow-md'
+                        ? 'border-[#2383e2] bg-[#e7f3f8] text-[#37352f] ring-2 ring-[#2383e2] font-semibold'
                         : isWrong
-                        ? 'border-rose-500 bg-rose-100/80 text-rose-900 ring-2 ring-rose-400 animate-shake'
-                        : 'border-[#eadfcb] bg-white hover:border-[#f02c85] hover:shadow-md text-[#28071a]'
+                        ? 'border-[#f9c9cb] bg-[#fdebec] text-[#d44c47] ring-1 ring-[#d44c47] animate-shake'
+                        : 'border-[#e9e9e8] bg-[#fbfbfa] hover:border-[#c5c4c0] hover:bg-white text-[#37352f]'
                     }`}
                   >
                     <span className="line-clamp-4 leading-snug">{tile.text}</span>
@@ -300,11 +300,11 @@ export default function MatchGameModal({ course, onClose }) {
         </div>
 
         {/* Footer Hint */}
-        <div className="px-5 sm:px-6 py-3 bg-[#f5ecd8] border-t border-[#eadfcb] flex items-center justify-between text-xs text-[#7a5a6b] font-medium shrink-0">
-          <span>Tiến độ ghép: <strong className="text-[#28071a] font-black">{matchedIds.length} / {totalPairs} cặp</strong></span>
+        <div className="px-5 sm:px-6 py-2.5 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs text-[#787774] shrink-0">
+          <span>Tiến độ ghép: <strong className="text-[#37352f] font-semibold">{matchedIds.length} / {totalPairs} cặp</strong></span>
           <button
             onClick={initGame}
-            className="text-xs font-bold text-[#f02c85] hover:underline flex items-center space-x-1"
+            className="text-xs font-medium text-[#2383e2] hover:underline flex items-center space-x-1 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Xáo lại đề</span>

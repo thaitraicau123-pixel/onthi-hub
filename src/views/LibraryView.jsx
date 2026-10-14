@@ -213,8 +213,8 @@ export default function LibraryView({
         />
       ) : (
         <div className="space-y-4">
-          {/* Filter and Search Bar for Library */}
-          <div className="bg-[#fcf7ec] p-3 sm:p-4 rounded-3xl border border-[#eadfcb] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-[#28071a]">
+          {/* Filter and Search Bar for Library (Notion Control Bar) */}
+          <div className="bg-white p-3 rounded-xl border border-[#e9e9e8] shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-[#37352f]">
             {/* Category Pills */}
             <div className="flex flex-wrap items-center gap-1.5">
               {[
@@ -232,15 +232,15 @@ export default function LibraryView({
                     key={cat.id}
                     type="button"
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center space-x-1.5 cursor-pointer ${
                       active
-                        ? 'bg-[#f02c85] text-white shadow-xs'
-                        : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                        ? 'bg-[#37352f] text-white shadow-2xs font-semibold'
+                        : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#5a5955] border border-[#e9e9e8]'
                     }`}
                   >
                     <span>{cat.label}</span>
-                    <span className={`text-[10px] font-bold px-1.5 rounded-full ${
-                      active ? 'bg-white/20 text-white' : 'bg-[#eadfcb]/60 text-[#7a5a6b]'
+                    <span className={`text-[10px] font-medium px-1.5 rounded-full ${
+                      active ? 'bg-white/20 text-white' : 'bg-[#e9e9e8] text-[#787774]'
                     }`}>
                       {count}
                     </span>
@@ -252,19 +252,19 @@ export default function LibraryView({
             {/* Search Input & Sort dropdown */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1 md:w-56">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Tìm trong tủ thẻ..."
                   value={searchLibrary}
                   onChange={(e) => setSearchLibrary(e.target.value)}
-                  className="w-full pl-8 pr-7 py-2 text-xs bg-white text-[#28071a] font-bold placeholder:text-slate-400 border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                  className="w-full pl-8 pr-7 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] placeholder:text-[#9b9a97] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors"
                 />
                 {searchLibrary && (
                   <button
                     type="button"
                     onClick={() => setSearchLibrary('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9b9a97] hover:text-[#37352f] text-xs font-bold cursor-pointer"
                   >
                     ×
                   </button>
@@ -274,7 +274,7 @@ export default function LibraryView({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-3 py-2 text-xs bg-white text-[#28071a] font-bold border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] cursor-pointer"
+                className="px-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] text-[#37352f] font-medium border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors cursor-pointer"
               >
                 <option value="due_first">⏰ Cần ôn tập trước</option>
                 <option value="title">🔤 Tên A → Z</option>

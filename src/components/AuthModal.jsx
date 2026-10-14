@@ -211,7 +211,7 @@ export default function AuthModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#ffffff] text-[#1e1e24] rounded-3xl shadow-2xl overflow-hidden border border-[#eadfcb] animate-spring-3d flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-2xl bg-[#ffffff] text-[#1e1e24] rounded-xl shadow-2xl overflow-hidden border border-[#e9e9e8] animate-spring-3d flex flex-col max-h-[92vh]">
         
         {/* =========================================================
             HEADER: QUẢN LÝ TÀI KHOẢN (Theo phong cách Image 1)

@@ -77,20 +77,20 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
   // STRICT ADMIN AUTHORIZATION CHECK: ONLY 1 AUTHORIZED ACCOUNT ALLOWED
   if (!isUserAdmin(user)) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-[#fcf7ec] rounded-3xl border-2 border-rose-400 text-center text-[#28071a] shadow-2xl">
+      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-white rounded-xl border border-rose-200 text-center text-[#37352f] shadow-lg">
         <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mx-auto mb-4 border border-rose-300 shadow-sm">
           <ShieldAlert className="w-9 h-9 text-rose-600 animate-pulse" />
         </div>
         <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-rose-200/80 text-rose-900 rounded-full border border-rose-300">
           CẢNH BÁO BẢO MẬT HỆ THỐNG
         </span>
-        <h2 className="text-xl sm:text-2xl font-black text-[#28071a] uppercase tracking-tight mt-3 mb-2">
+        <h2 className="text-xl sm:text-2xl font-black text-[#37352f] uppercase tracking-tight mt-3 mb-2">
           403 - KHÔNG CÓ QUYỀN TRUY CẬP
         </h2>
         <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
           Cửa sổ Quản Trị Viên (Secret Admin Portal) được bảo mật nghiêm ngặt và <strong>chỉ duy nhất 1 tài khoản Admin chính thức</strong> mới có quyền thao tác:
           <br />
-          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#eadfcb] font-mono font-bold text-[#f02c85] shadow-xs">
+          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#e9e9e8] font-mono font-bold text-[#2383e2] shadow-xs">
             👑 {PRIMARY_ADMIN_EMAIL}
           </span>
         </p>
@@ -108,7 +108,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
         <div className="flex items-center justify-center space-x-3">
           <button
             onClick={onBackToHome}
-            className="px-6 py-2.5 rounded-2xl bg-[#f02c85] hover:bg-[#d82174] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
+            className="px-6 py-2.5 rounded-2xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
           >
             Quay Về Trang Chủ
           </button>
@@ -481,9 +481,9 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
     <div className="space-y-6 animate-fade-in pb-16">
       
       {/* ADMIN HEADER (Wayground Dark Velvet Wine Card) */}
-      <div className="bg-[#260619] border border-[#f02c85]/40 text-white p-6 rounded-3xl shadow-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-[#fbfbfa] border border-[#e9e9e8] text-[#37352f] p-6 rounded-xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#f02c85] flex items-center justify-center font-bold shadow-md shadow-pink-900/40">
+          <div className="w-10 h-10 rounded-2xl bg-[#2383e2] flex items-center justify-center font-bold shadow-md shadow-pink-900/40">
             <ShieldAlert className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -491,11 +491,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight">
                 CỬA SỔ QUẢN TRỊ VIÊN (SECRET ADMIN PORTAL)
               </h2>
-              <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-[#f02c85]/20 text-[#ff80b5] border border-[#f02c85]/30">
+              <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-blue-50 text-[#2383e2] border border-blue-200">
                 Duyệt Chay 24/7
               </span>
             </div>
-            <p className="text-xs text-rose-200/80 mt-1 font-medium flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-xs text-[#787774] mt-1 font-normal flex flex-wrap items-center gap-x-3 gap-y-1">
               <span>Admin Phone: <strong className="text-amber-300 font-mono font-black">{ADMIN_PHONE}</strong></span>
               <span>•</span>
               <span>Email: <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong></span>
@@ -509,7 +509,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           {onOpenChangelog && (
             <button
               onClick={onOpenChangelog}
-              className="px-3.5 py-2 bg-gradient-to-r from-[#f02c85] to-[#ff5f38] hover:opacity-95 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md shadow-pink-900/40 transition-transform transform hover:scale-105 active:scale-95"
+              className="px-3.5 py-2 bg-gradient-to-r from-[#2383e2] to-[#2383e2] hover:opacity-95 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 shadow-md shadow-pink-900/40 transition-transform transform hover:scale-105 active:scale-95"
               title="Xem bảng tin cập nhật tính năng mới nhất"
             >
               <Sparkles className="w-3.5 h-3.5 fill-white" />
@@ -518,36 +518,36 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           )}
           <button
             onClick={reloadData}
-            className="p-2.5 text-rose-200/80 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+            className="p-2.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-xl transition-colors"
             title="Làm mới dữ liệu"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
           <button
             onClick={onBackToHome}
-            className="px-4 py-2 bg-[#360b24] hover:bg-[#4d1033] border border-[#f02c85]/30 text-white rounded-xl text-xs font-black flex items-center space-x-1.5 transition-colors"
+            className="px-4 py-2 bg-white hover:bg-black/5 border border-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors"
           >
-            <ArrowLeft className="w-3.5 h-3.5 text-[#f02c85]" />
+            <ArrowLeft className="w-3.5 h-3.5 text-[#2383e2]" />
             <span>Quay Lại Trang Chủ</span>
           </button>
         </div>
       </div>
 
       {/* ADMIN TABS SWITCHER (Wayground Warm Cream Container) */}
-      <div className="bg-[#fcf7ec] rounded-3xl border border-[#eadfcb] shadow-xl overflow-hidden text-[#28071a]">
-        <div className="flex border-b border-[#eadfcb] bg-[#f5ecd8]/70 text-xs sm:text-sm font-black overflow-x-auto">
+      <div className="bg-white rounded-xl border border-[#e9e9e8] shadow-xs overflow-hidden text-[#37352f]">
+        <div className="flex border-b border-[#e9e9e8] bg-[#f7f6f5] text-xs sm:text-sm font-semibold overflow-x-auto">
           <button
             onClick={() => setActiveTab('transactions')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'transactions'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
             <Coins className="w-4 h-4 text-amber-500" />
             <span>Duyệt Nạp & Rút Tiền</span>
             {transactions.filter(t => t.status === 'pending').length > 0 && (
-              <span className="px-1.5 py-0.2 bg-[#f02c85] text-white rounded-full text-[10px]">
+              <span className="px-1.5 py-0.2 bg-[#2383e2] text-white rounded-full text-[10px]">
                 {transactions.filter(t => t.status === 'pending').length}
               </span>
             )}
@@ -557,11 +557,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('tiers')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'tiers'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <Sliders className="w-4 h-4 text-[#f02c85]" />
+            <Sliders className="w-4 h-4 text-[#2383e2]" />
             <span>Tùy Chỉnh Giới Hạn Gói (Free/Plus/Pro/Ultra)</span>
           </button>
 
@@ -569,8 +569,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('marketplace')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'marketplace'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
             <Store className="w-4 h-4 text-emerald-600" />
@@ -581,11 +581,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('notifications')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'notifications'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
-            <BellRing className="w-4 h-4 text-[#f02c85]" />
+            <BellRing className="w-4 h-4 text-[#2383e2]" />
             <span>Nhật Ký Thông Báo ({notifications.length})</span>
           </button>
 
@@ -593,8 +593,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('firebase')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'firebase'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
             <Database className="w-4 h-4 text-amber-500" />
@@ -610,8 +610,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('blindbox')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'blindbox'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
             <Gift className="w-4 h-4 text-purple-600" />
@@ -625,8 +625,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('ai_api')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'ai_api'
-                ? 'border-[#f02c85] text-[#f02c85] bg-[#fcf7ec] font-black'
-                : 'border-transparent text-[#7a5a6b] hover:text-[#28071a]'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
             }`}
           >
             <Cpu className="w-4 h-4 text-cyan-600" />
@@ -648,13 +648,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center space-x-2">
-                    <h4 className="text-sm font-black text-[#28071a]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
+                    <h4 className="text-sm font-black text-[#37352f]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
                     <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black border border-emerald-200">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-0.5"></span>
                       <span>Firebase Realtime Sync</span>
                     </span>
                   </div>
-                  <p className="text-xs text-[#7a5a6b] font-medium">
+                  <p className="text-xs text-[#787774] font-medium">
                     Tất cả tài khoản/điện thoại nạp rút đều được đưa lên Firebase Firestore và đồng bộ thời gian thực tại đây.
                   </p>
                 </div>
@@ -662,21 +662,21 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   <button
                     onClick={handleManualSyncFirebase}
                     disabled={isSyncingFirebase}
-                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#fcf7ec] border border-[#eadfcb] text-xs font-black text-[#28071a] shadow-xs transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#ffffff] border border-[#e9e9e8] text-xs font-black text-[#37352f] shadow-xs transition-colors"
                     title="Đồng bộ lại dữ liệu mới nhất từ Firebase Firestore"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 text-[#f02c85] ${isSyncingFirebase ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 text-[#2383e2] ${isSyncingFirebase ? 'animate-spin' : ''}`} />
                     <span>{isSyncingFirebase ? 'Đang Tải...' : 'Làm Mới Firebase'}</span>
                   </button>
-                  <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#28071a] border border-[#eadfcb]">
+                  <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#37352f] border border-[#e9e9e8]">
                     Tổng {transactions.length} lệnh
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 bg-gradient-to-r from-pink-50 to-amber-50 rounded-2xl border border-[#eadfcb] text-xs text-[#28071a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
+              <div className="p-3 bg-gradient-to-r from-pink-50 to-amber-50 rounded-2xl border border-[#e9e9e8] text-xs text-[#37352f] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
                 <div className="flex items-center space-x-2">
-                  <Database className="w-4 h-4 text-[#f02c85] shrink-0" />
+                  <Database className="w-4 h-4 text-[#2383e2] shrink-0" />
                   <span>
                     Tính năng duyệt tiền đã kết nối <strong>Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của học viên trên mọi thiết bị sẽ được cộng Xu tức thì!
                   </span>
@@ -685,7 +685,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   href="https://console.firebase.google.com/project/onthi-hub/firestore"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#f02c85] hover:text-[#b81860] font-black underline flex items-center space-x-1 shrink-0 text-[11px]"
+                  className="text-[#2383e2] hover:text-[#1a73e8] font-black underline flex items-center space-x-1 shrink-0 text-[11px]"
                 >
                   <span>Mở Firestore Console</span>
                   <ExternalLink className="w-3 h-3" />
@@ -693,14 +693,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {transactions.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-2xl border border-[#eadfcb]">
+                <div className="text-center py-12 bg-white rounded-2xl border border-[#e9e9e8]">
                   <Coins className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-[#7a5a6b] font-bold">Chưa có giao dịch nạp / rút nào.</p>
+                  <p className="text-xs text-[#787774] font-bold">Chưa có giao dịch nạp / rút nào.</p>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-[#eadfcb] overflow-hidden shadow-xs">
+                <div className="bg-white rounded-2xl border border-[#e9e9e8] overflow-hidden shadow-xs">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#f5ecd8] border-b border-[#eadfcb] text-[#28071a] uppercase tracking-wider font-black">
+                    <thead className="bg-[#f7f6f5] border-b border-[#e9e9e8] text-[#37352f] uppercase tracking-wider font-black">
                       <tr>
                         <th className="p-3">Mã GD</th>
                         <th className="p-3">Loại</th>
@@ -710,12 +710,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         <th className="p-3 text-right">Thao Tác Duyệt</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#eadfcb]/60">
+                    <tbody className="divide-y divide-[#e9e9e8]/60">
                       {transactions.map((tx) => (
-                        <tr key={tx.id} className="hover:bg-[#fcf7ec]/60 transition-colors">
-                          <td className="p-3 font-mono font-black text-[#28071a]">
+                        <tr key={tx.id} className="hover:bg-[#ffffff]/60 transition-colors">
+                          <td className="p-3 font-mono font-black text-[#37352f]">
                             {tx.id}
-                            <span className="block text-[10px] text-[#7a5a6b] font-normal">
+                            <span className="block text-[10px] text-[#787774] font-normal">
                               {new Date(tx.createdAt).toLocaleTimeString('vi-VN')} {new Date(tx.createdAt).toLocaleDateString('vi-VN')}
                             </span>
                           </td>
@@ -729,17 +729,17 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                             </span>
                           </td>
                           <td className="p-3">
-                            <strong className="text-[#28071a] font-black">{tx.xuAmount} Xu</strong>
-                            <span className="block text-[11px] text-[#7a5a6b] font-bold">
+                            <strong className="text-[#37352f] font-black">{tx.xuAmount} Xu</strong>
+                            <span className="block text-[11px] text-[#787774] font-bold">
                               ~{(tx.amountVnd || tx.xuAmount * COIN_RATE_VND).toLocaleString()}đ
                             </span>
                           </td>
                           <td className="p-3 max-w-xs">
-                            <div className="text-[#28071a] font-black truncate">{tx.userEmail}</div>
+                            <div className="text-[#37352f] font-black truncate">{tx.userEmail}</div>
                             {tx.type === 'withdraw' && tx.details && (
-                              <div className="text-[11px] text-[#4e2f41] bg-[#fcf7ec] p-2 rounded-xl mt-1 border border-[#eadfcb]">
-                                <span className="font-black text-[#28071a]">{tx.details.bankName}</span> • STK: <span className="font-mono font-black text-[#f02c85]">{tx.details.accountNo}</span>
-                                <div className="text-[#7a5a6b]">Chủ TK: {tx.details.accountName}</div>
+                              <div className="text-[11px] text-[#787774] bg-[#ffffff] p-2 rounded-xl mt-1 border border-[#e9e9e8]">
+                                <span className="font-black text-[#37352f]">{tx.details.bankName}</span> • STK: <span className="font-mono font-black text-[#2383e2]">{tx.details.accountNo}</span>
+                                <div className="text-[#787774]">Chủ TK: {tx.details.accountName}</div>
                               </div>
                             )}
                           </td>
@@ -785,7 +785,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-[#7a5a6b] text-[11px] italic font-bold">Hoàn tất</span>
+                              <span className="text-[#787774] text-[11px] italic font-bold">Hoàn tất</span>
                             )}
                           </td>
                         </tr>
@@ -802,16 +802,16 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             <form onSubmit={handleSaveTierLimits} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-black text-[#28071a]">
+                  <h4 className="text-sm font-black text-[#37352f]">
                     Cấu Hình Giới Hạn Từng Gói (Free, Plus, Pro, Ultra)
                   </h4>
-                  <p className="text-xs text-[#7a5a6b] font-medium">
+                  <p className="text-xs text-[#787774] font-medium">
                     Chỉnh sửa số lượt tạo thẻ mỗi ngày, lượt thưởng khi điểm danh hàng ngày và phí sàn C2C.
                   </p>
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 btn-wayground-sunset text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                  className="px-5 py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Lưu Cấu Hình</span>
@@ -828,19 +828,19 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 {Object.keys(tierLimits).map((tierKey) => {
                   const cfg = tierLimits[tierKey];
                   return (
-                    <div key={tierKey} className="p-4 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
-                      <div className="flex items-center justify-between border-b border-[#eadfcb] pb-2">
-                        <span className="text-xs font-black uppercase text-[#28071a] tracking-wide">
+                    <div key={tierKey} className="p-4 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
+                      <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-2">
+                        <span className="text-xs font-black uppercase text-[#37352f] tracking-wide">
                           {cfg.name}
                         </span>
-                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 text-[#f02c85] border border-pink-200">
+                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 text-[#2383e2] border border-pink-200">
                           {tierKey}
                         </span>
                       </div>
 
                       <div className="grid grid-cols-3 gap-2 text-xs">
                         <div>
-                          <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
+                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
                             Lượt tạo/ngày:
                           </label>
                           <input
@@ -854,12 +854,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], dailyLimit: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#eadfcb] rounded-lg text-xs font-black bg-[#fcf7ec] text-[#28071a]"
+                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
+                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
                             Thưởng điểm danh:
                           </label>
                           <input
@@ -873,12 +873,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], checkInBonus: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#eadfcb] rounded-lg text-xs font-black bg-[#fcf7ec] text-[#28071a]"
+                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-bold text-[#7a5a6b] block mb-1">
+                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
                             Phí sàn (%):
                           </label>
                           <input
@@ -893,7 +893,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], marketplaceFee: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#eadfcb] rounded-lg text-xs font-black bg-[#fcf7ec] text-[#28071a]"
+                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
                           />
                         </div>
                       </div>
@@ -926,10 +926,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h4 className="text-sm font-black text-[#28071a]">
+                    <h4 className="text-sm font-black text-[#37352f]">
                       Quản Lý & Kiểm Duyệt Trùng Lặp Sàn Flashcard C2C
                     </h4>
-                    <p className="text-xs text-[#7a5a6b] font-medium">
+                    <p className="text-xs text-[#787774] font-medium">
                       Hệ thống tự động đối chiếu Jaccard & N-gram để phát hiện đạo văn hoặc sao chép thẻ trái phép.
                     </p>
                   </div>
@@ -940,8 +940,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       onClick={() => setMarketFilter('all')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         marketFilter === 'all'
-                          ? 'bg-[#28071a] text-white shadow-xs'
-                          : 'bg-white text-[#28071a] border border-[#eadfcb] hover:bg-[#faebd0]'
+                          ? 'bg-[#37352f] text-white shadow-xs'
+                          : 'bg-white text-[#37352f] border border-[#e9e9e8] hover:bg-[#f7f6f5]'
                       }`}
                     >
                       Tất cả ({marketDecks.length})
@@ -986,7 +986,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 </div>
 
                 {filteredDecks.length === 0 ? (
-                  <div className="p-8 text-center bg-white rounded-2xl border border-[#eadfcb] text-xs text-[#7a5a6b]">
+                  <div className="p-8 text-center bg-white rounded-2xl border border-[#e9e9e8] text-xs text-[#787774]">
                     Không có bộ thẻ nào trong danh mục lọc này.
                   </div>
                 ) : (
@@ -997,27 +997,27 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         className={`p-4 bg-white rounded-2xl border flex flex-col justify-between shadow-xs transition-all ${
                           deck.dupCheck.similarityScore >= 55
                             ? 'border-rose-400 bg-rose-50/20'
-                            : 'border-[#eadfcb]'
+                            : 'border-[#e9e9e8]'
                         }`}
                       >
                         <div>
                           <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#fcf7ec] text-[#28071a] border border-[#eadfcb]">
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#ffffff] text-[#37352f] border border-[#e9e9e8]">
                               {deck.categoryName || deck.category}
                             </span>
-                            <span className="text-xs font-black text-[#f02c85]">
+                            <span className="text-xs font-black text-[#2383e2]">
                               {deck.priceXu} Xu (~{(deck.priceXu * 1000).toLocaleString()}đ)
                             </span>
                           </div>
 
-                          <h5 className="text-xs font-black text-[#28071a] line-clamp-1">
+                          <h5 className="text-xs font-black text-[#37352f] line-clamp-1">
                             {deck.title}
                           </h5>
-                          <p className="text-[11px] text-[#4e2f41] mt-1 line-clamp-2 font-medium">
+                          <p className="text-[11px] text-[#787774] mt-1 line-clamp-2 font-medium">
                             {deck.description}
                           </p>
 
-                          <div className="mt-2 text-[10px] text-[#7a5a6b] font-bold">
+                          <div className="mt-2 text-[10px] text-[#787774] font-bold">
                             Tác giả: <strong>{deck.authorName}</strong> • Đã bán: {deck.salesCount || 0} lượt
                           </div>
 
@@ -1064,7 +1064,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         </div>
 
                         {/* Admin Action Buttons */}
-                        <div className="mt-3 pt-2.5 border-t border-[#eadfcb] flex items-center justify-between">
+                        <div className="mt-3 pt-2.5 border-t border-[#e9e9e8] flex items-center justify-between">
                           <span className={`text-[11px] font-black ${deck.isApproved !== false ? 'text-emerald-700' : 'text-slate-400'}`}>
                             {deck.isApproved !== false ? 'Đang hiển thị trên sàn' : 'Đang tạm ẩn'}
                           </span>
@@ -1105,10 +1105,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-black text-[#28071a]">
+                  <h4 className="text-sm font-black text-[#37352f]">
                     Nhật Ký Thông Báo Giao Dịch (ntfy.sh & Gmail)
                   </h4>
-                  <p className="text-xs text-[#7a5a6b] font-medium">
+                  <p className="text-xs text-[#787774] font-medium">
                     Mỗi khi có khách nạp/rút tiền, hệ thống tự động đẩy thông báo qua Web Push ntfy.sh, Email và lưu lại nhật ký tại đây.
                   </p>
                 </div>
@@ -1122,10 +1122,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       <Mail className="w-5 h-5" />
                     </div>
                     <div>
-                      <h5 className="text-sm font-black text-[#28071a]">
-                        Gửi Email Tự Động Trực Tiếp Về Gmail: <span className="text-[#f02c85] font-mono">{ADMIN_EMAIL}</span>
+                      <h5 className="text-sm font-black text-[#37352f]">
+                        Gửi Email Tự Động Trực Tiếp Về Gmail: <span className="text-[#2383e2] font-mono">{ADMIN_EMAIL}</span>
                       </h5>
-                      <span className="text-[11px] text-[#7a5a6b] font-medium">
+                      <span className="text-[11px] text-[#787774] font-medium">
                         Cơ chế tự động qua FormSubmit API • Không cần máy chủ backend • Nhận email trong 1-3 giây
                       </span>
                     </div>
@@ -1148,8 +1148,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   </div>
                 )}
 
-                <div className="p-3 bg-white/90 rounded-xl border border-amber-200 text-[#4e2f41] space-y-1.5 text-[11px] leading-relaxed">
-                  <strong className="text-[#28071a] font-black block">
+                <div className="p-3 bg-white/90 rounded-xl border border-amber-200 text-[#787774] space-y-1.5 text-[11px] leading-relaxed">
+                  <strong className="text-[#37352f] font-black block">
                     ⚠️ Hướng dẫn kích hoạt nhận email lần đầu (Chỉ làm 1 lần duy nhất):
                   </strong>
                   <p>1. Mở hòm thư <strong>{ADMIN_EMAIL}</strong> (vui lòng kiểm tra cả thư mục <strong>Hộp thư đến</strong> và <strong>Thư rác / Spam</strong>).</p>
@@ -1162,17 +1162,17 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
                 {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
-              <div className="p-5 sm:p-6 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-4 text-xs">
+              <div className="p-5 sm:p-6 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-4 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2.5">
                     <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-purple-900/20">
                       <BellRing className="w-5 h-5" />
                     </div>
                     <div>
-                      <h5 className="text-sm sm:text-base font-black text-[#28071a]">
+                      <h5 className="text-sm sm:text-base font-black text-[#37352f]">
                         Chuông Báo & Màn Hình Khóa Điện Thoại (ntfy.sh)
                       </h5>
-                      <span className="text-[11px] text-[#7a5a6b] font-medium">
+                      <span className="text-[11px] text-[#787774] font-medium">
                         Không cần tài khoản hay mật khẩu • Reo chuông màn hình khóa tức thì khi có khách Nạp / Rút
                       </span>
                     </div>
@@ -1286,20 +1286,20 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {/* CARD 3: TÙY CHỌN TELEGRAM BOT TỰ ĐỘNG */}
-              <form onSubmit={handleSaveTelegram} className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-3 text-xs">
-                <div className="flex items-center justify-between border-b border-[#eadfcb] pb-2.5">
+              <form onSubmit={handleSaveTelegram} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-2.5">
                   <div className="flex items-center space-x-2">
                     <Send className="w-4 h-4 text-[#0068ff]" />
-                    <h5 className="text-xs font-black uppercase text-[#28071a] tracking-wider">
+                    <h5 className="text-xs font-black uppercase text-[#37352f] tracking-wider">
                       Tùy Chọn: Bắn Tin Nhắn Tức Thì Qua Telegram Bot (Tin Nhắn Riêng)
                     </h5>
                   </div>
-                  <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#28071a]">
+                  <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#37352f]">
                     <input
                       type="checkbox"
                       checked={telegramConfig.enabled}
                       onChange={(e) => setTelegramConfig(prev => ({ ...prev, enabled: e.target.checked }))}
-                      className="rounded accent-[#f02c85] w-4 h-4"
+                      className="rounded accent-[#2383e2] w-4 h-4"
                     />
                     <span>Bật gửi qua Telegram</span>
                   </label>
@@ -1313,23 +1313,23 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="font-bold text-[#7a5a6b] block mb-1">Telegram Bot Token (từ @BotFather):</label>
+                    <label className="font-bold text-[#787774] block mb-1">Telegram Bot Token (từ @BotFather):</label>
                     <input
                       type="text"
                       placeholder="VD: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
                       value={telegramConfig.botToken}
                       onChange={(e) => setTelegramConfig(prev => ({ ...prev, botToken: e.target.value }))}
-                      className="w-full px-3 py-2 border border-[#eadfcb] rounded-xl font-mono text-xs bg-[#fcf7ec] text-[#28071a] outline-none focus:border-[#0068ff]"
+                      className="w-full px-3 py-2 border border-[#e9e9e8] rounded-xl font-mono text-xs bg-[#ffffff] text-[#37352f] outline-none focus:border-[#0068ff]"
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-[#7a5a6b] block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
+                    <label className="font-bold text-[#787774] block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
                     <input
                       type="text"
                       placeholder="VD: 987654321"
                       value={telegramConfig.chatId}
                       onChange={(e) => setTelegramConfig(prev => ({ ...prev, chatId: e.target.value }))}
-                      className="w-full px-3 py-2 border border-[#eadfcb] rounded-xl font-mono text-xs bg-[#fcf7ec] text-[#28071a] outline-none focus:border-[#0068ff]"
+                      className="w-full px-3 py-2 border border-[#e9e9e8] rounded-xl font-mono text-xs bg-[#ffffff] text-[#37352f] outline-none focus:border-[#0068ff]"
                     />
                   </div>
                 </div>
@@ -1339,7 +1339,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     type="button"
                     disabled={isSendingTelegramTest || !telegramConfig.botToken || !telegramConfig.chatId}
                     onClick={handleTestTelegram}
-                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#28071a] font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
+                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#37352f] font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
                   >
                     <span>{isSendingTelegramTest ? 'Đang gửi...' : 'Gửi Thử Telegram'}</span>
                   </button>
@@ -1355,44 +1355,44 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
               {/* LỊCH SỬ THÔNG BÁO */}
               <div className="pt-2">
-                <h5 className="text-xs font-black uppercase text-[#28071a] tracking-wider mb-2">
+                <h5 className="text-xs font-black uppercase text-[#37352f] tracking-wider mb-2">
                   Lịch Sử Các Thông Báo Đã Ghi Nhận ({notifications.length})
                 </h5>
               </div>
 
               {notifications.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-2xl border border-[#eadfcb]">
+                <div className="text-center py-12 bg-white rounded-2xl border border-[#e9e9e8]">
                   <BellRing className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-[#7a5a6b] font-bold">Chưa có thông báo nạp/rút nào được ghi nhận.</p>
+                  <p className="text-xs text-[#787774] font-bold">Chưa có thông báo nạp/rút nào được ghi nhận.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {notifications.map((n) => (
-                    <div key={n.id} className="p-4 bg-white rounded-2xl border border-[#eadfcb] shadow-2xs">
+                    <div key={n.id} className="p-4 bg-white rounded-2xl border border-[#e9e9e8] shadow-2xs">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="flex items-center space-x-2">
                             <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 uppercase border border-purple-200">
                               Mã: {n.code}
                             </span>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-pink-100 text-[#f02c85]">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-pink-100 text-[#2383e2]">
                               {n.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
                             </span>
                           </div>
-                          <h5 className="text-xs font-black text-[#28071a] mt-1.5">{n.subject}</h5>
-                          <span className="text-[10px] text-[#7a5a6b] block mt-0.5 font-medium">{n.timestamp}</span>
+                          <h5 className="text-xs font-black text-[#37352f] mt-1.5">{n.subject}</h5>
+                          <span className="text-[10px] text-[#787774] block mt-0.5 font-medium">{n.timestamp}</span>
                         </div>
                         <div className="flex items-center space-x-1.5 shrink-0">
                           <a
                             href={`mailto:${n.targetEmail}?subject=${encodeURIComponent(n.subject)}&body=${encodeURIComponent(n.body)}`}
-                            className="px-2.5 py-1 text-[11px] font-bold text-[#7a5a6b] bg-white hover:bg-slate-50 rounded-lg flex items-center space-x-1 border border-[#eadfcb]"
+                            className="px-2.5 py-1 text-[11px] font-bold text-[#787774] bg-white hover:bg-slate-50 rounded-lg flex items-center space-x-1 border border-[#e9e9e8]"
                           >
                             <ExternalLink className="w-3 h-3" />
                             <span>Mail</span>
                           </a>
                         </div>
                       </div>
-                      <pre className="mt-3 p-3 bg-[#fcf7ec] rounded-xl text-[11px] text-[#28071a] font-mono whitespace-pre-wrap border border-[#eadfcb]">
+                      <pre className="mt-3 p-3 bg-[#ffffff] rounded-xl text-[11px] text-[#37352f] font-mono whitespace-pre-wrap border border-[#e9e9e8]">
                         {n.zaloMessage || n.body}
                       </pre>
                     </div>
@@ -1406,15 +1406,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           {activeTab === 'firebase' && (
             <div className="space-y-6">
               {/* Header and status banner */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#eadfcb]">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#e9e9e8]">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
                     <Database className="w-5 h-5 text-amber-500" />
-                    <h4 className="text-base font-black text-[#28071a]">
+                    <h4 className="text-base font-black text-[#37352f]">
                       Quản Lý & Tích Hợp Firebase Cloud (Google Services)
                     </h4>
                   </div>
-                  <p className="text-xs text-[#7a5a6b] font-medium leading-relaxed max-w-2xl">
+                  <p className="text-xs text-[#787774] font-medium leading-relaxed max-w-2xl">
                     Firebase hỗ trợ xác thực tài khoản Google 1-chạm, khôi phục mật khẩu qua Gmail, và đồng bộ dữ liệu ví Xu/tiến độ học lên Firestore Database thực tế.
                   </p>
                 </div>
@@ -1433,7 +1433,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   <button
                     type="button"
                     onClick={handleCopyVercelEnv}
-                    className="px-4 py-2 bg-[#28071a] hover:bg-[#3d0b28] text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1.5 transition-all"
+                    className="px-4 py-2 bg-[#37352f] hover:bg-[#3d0b28] text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1.5 transition-all"
                   >
                     {copiedVercelEnv ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-rose-300" />}
                     <span>{copiedVercelEnv ? 'Đã Sao Chép Cho Vercel!' : 'Sao Chép .env Cho Vercel'}</span>
@@ -1472,21 +1472,21 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               )}
 
               {/* Quick Paste Snippet Section */}
-              <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3">
+              <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Code className="w-4 h-4 text-[#f02c85]" />
-                    <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                    <Code className="w-4 h-4 text-[#2383e2]" />
+                    <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
                       Dán Nhanh Mã Cấu Hình từ Firebase Console (Auto-Detect Parser)
                     </h5>
                   </div>
-                  <span className="text-[10px] font-bold text-[#7a5a6b] bg-[#f5ecd8] px-2 py-0.5 rounded-lg">
+                  <span className="text-[10px] font-bold text-[#787774] bg-[#f7f6f5] px-2 py-0.5 rounded-lg">
                     Hỗ trợ cú pháp JS & JSON
                   </span>
                 </div>
 
-                <p className="text-[11px] text-[#7a5a6b] leading-relaxed">
-                  Vào <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#f02c85] font-black underline">console.firebase.google.com</a> ➔ Project Settings ➔ Your apps ➔ Chọn Web app ➔ Sao chép đoạn mã <code>const firebaseConfig = &#123; ... &#125;</code> rồi dán vào ô bên dưới:
+                <p className="text-[11px] text-[#787774] leading-relaxed">
+                  Vào <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#2383e2] font-black underline">console.firebase.google.com</a> ➔ Project Settings ➔ Your apps ➔ Chọn Web app ➔ Sao chép đoạn mã <code>const firebaseConfig = &#123; ... &#125;</code> rồi dán vào ô bên dưới:
                 </p>
 
                 <textarea
@@ -1494,16 +1494,16 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   value={rawSnippet}
                   onChange={(e) => handleParseSnippet(e.target.value)}
                   placeholder={`// Dán đoạn mã này từ Firebase Console vào đây:\nconst firebaseConfig = {\n  apiKey: "AIzaSy...",\n  authDomain: "my-app.firebaseapp.com",\n  projectId: "my-app",\n  storageBucket: "my-app.appspot.com",\n  messagingSenderId: "123456789",\n  appId: "1:123456789:web:abcdef"\n};`}
-                  className="w-full p-3 font-mono text-xs bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85] focus:ring-2 focus:ring-[#f02c85]/20 text-[#28071a] leading-relaxed"
+                  className="w-full p-3 font-mono text-xs bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2] focus:ring-2 focus:ring-[#2383e2]/20 text-[#37352f] leading-relaxed"
                 />
               </div>
 
               {/* Individual Form Fields */}
-              <form onSubmit={handleSaveFirebaseConfig} className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-4">
-                <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+              <form onSubmit={handleSaveFirebaseConfig} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-4">
+                <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
                   <div className="flex items-center space-x-2">
                     <Key className="w-4 h-4 text-amber-500" />
-                    <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                    <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
                       Chi Tiết Khóa API & Thông Số Firebase
                     </h5>
                   </div>
@@ -1519,7 +1519,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-black text-[#28071a] block">
+                      <label className="text-xs font-black text-[#37352f] block">
                         API Key (VITE_FIREBASE_API_KEY):
                       </label>
                       {firebaseConfig.apiKey && (
@@ -1534,7 +1534,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         value={firebaseConfig.apiKey || ''}
                         onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
                         placeholder="AIzaSy..."
-                        className="w-full pl-3 pr-10 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                        className="w-full pl-3 pr-10 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                         required
                       />
                       <button
@@ -1549,7 +1549,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                    <label className="text-xs font-black text-[#37352f] block mb-1">
                       Project ID (VITE_FIREBASE_PROJECT_ID):
                     </label>
                     <input
@@ -1557,13 +1557,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.projectId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, projectId: e.target.value })}
                       placeholder="my-project-id"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                    <label className="text-xs font-black text-[#37352f] block mb-1">
                       Auth Domain (VITE_FIREBASE_AUTH_DOMAIN):
                     </label>
                     <input
@@ -1571,12 +1571,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.authDomain || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, authDomain: e.target.value })}
                       placeholder="my-project.firebaseapp.com"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                    <label className="text-xs font-black text-[#37352f] block mb-1">
                       Storage Bucket (VITE_FIREBASE_STORAGE_BUCKET):
                     </label>
                     <input
@@ -1584,12 +1584,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.storageBucket || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, storageBucket: e.target.value })}
                       placeholder="my-project.appspot.com"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                    <label className="text-xs font-black text-[#37352f] block mb-1">
                       Messaging Sender ID (VITE_FIREBASE_MESSAGING_SENDER_ID):
                     </label>
                     <input
@@ -1597,12 +1597,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.messagingSenderId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, messagingSenderId: e.target.value })}
                       placeholder="1234567890"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#28071a] block mb-1">
+                    <label className="text-xs font-black text-[#37352f] block mb-1">
                       App ID (VITE_FIREBASE_APP_ID):
                     </label>
                     <input
@@ -1610,19 +1610,19 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.appId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, appId: e.target.value })}
                       placeholder="1:1234567890:web:abcdef..."
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#fcf7ec] border border-[#eadfcb] rounded-xl outline-none focus:border-[#f02c85]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
                     />
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#eadfcb]">
-                  <p className="text-[11px] text-[#7a5a6b]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#e9e9e8]">
+                  <p className="text-[11px] text-[#787774]">
                     Khóa lưu trên máy của bạn sẽ ghi đè cấu hình thử nghiệm và kích hoạt Cloud thật ngay lập tức.
                   </p>
 
                   <button
                     type="submit"
-                    className="px-5 py-2.5 bg-gradient-to-r from-[#f02c85] to-[#c71767] hover:from-[#e02078] hover:to-[#b3105a] text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-all"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#2383e2] to-[#1a73e8] hover:from-[#1a73e8] hover:to-[#1a73e8] text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-all"
                   >
                     <Save className="w-4 h-4" />
                     <span>Lưu Cấu Hình Firebase</span>
@@ -1631,17 +1631,17 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </form>
 
               {/* 3-Step Firebase Setup Guide */}
-              <div className="p-5 bg-[#f5ecd8]/70 rounded-2xl border border-[#eadfcb] space-y-3">
+              <div className="p-5 bg-[#f7f6f5]/70 rounded-2xl border border-[#e9e9e8] space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Info className="w-4 h-4 text-[#f02c85]" />
-                  <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                  <Info className="w-4 h-4 text-[#2383e2]" />
+                  <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
                     Hướng Dẫn 3 Bước Tạo Firebase Cho Dự Án:
                   </h5>
                 </div>
 
-                <ol className="list-decimal list-inside space-y-2 text-xs text-[#28071a] font-medium leading-relaxed">
+                <ol className="list-decimal list-inside space-y-2 text-xs text-[#37352f] font-medium leading-relaxed">
                   <li>
-                    <strong>Tạo Project:</strong> Truy cập <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#f02c85] underline font-bold">console.firebase.google.com</a>, bấm <em>Add project</em> đặt tên là <code>onthihub</code>.
+                    <strong>Tạo Project:</strong> Truy cập <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#2383e2] underline font-bold">console.firebase.google.com</a>, bấm <em>Add project</em> đặt tên là <code>onthihub</code>.
                   </li>
                   <li>
                     <strong>Bật Authentication:</strong> Chọn menu <em>Build ➔ Authentication ➔ Sign-in method</em>, bật <strong>Email/Password</strong> và <strong>Google</strong>.
@@ -1660,15 +1660,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             <div className="space-y-6">
               
               {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#eadfcb]">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 bg-white rounded-2xl border border-[#e9e9e8]">
                 <div>
                   <div className="flex items-center space-x-2">
                     <Gift className="w-5 h-5 text-purple-600" />
-                    <h4 className="text-base font-black text-[#28071a]">
+                    <h4 className="text-base font-black text-[#37352f]">
                       Quản Lý & Kiểm Soát Tỷ Lệ Rơi Thưởng Túi Mù (Gacha System)
                     </h4>
                   </div>
-                  <p className="text-xs text-[#7a5a6b] font-medium mt-1 max-w-2xl">
+                  <p className="text-xs text-[#787774] font-medium mt-1 max-w-2xl">
                     Tỷ lệ rơi đã được cân bằng toán học (100% tròn trịa), đảm bảo người chơi có trải nghiệm mở thưởng kích thích, minh bạch, đồng thời giữ vững kinh tế ví Xu của nền tảng.
                   </p>
                 </div>
@@ -1683,25 +1683,25 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               {/* 3 Box Rate Breakdown Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {BLIND_BOXES.map((box) => (
-                  <div key={box.id} className="p-5 bg-white rounded-2xl border border-[#eadfcb] shadow-xs space-y-4">
+                  <div key={box.id} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-4">
                     
                     {/* Box Title */}
-                    <div className="flex items-center justify-between border-b border-[#eadfcb] pb-3">
+                    <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
                       <div className="flex items-center space-x-2.5">
                         <span className="text-3xl">{box.icon}</span>
                         <div>
-                          <h5 className="text-sm font-black text-[#28071a]">{box.name}</h5>
+                          <h5 className="text-sm font-black text-[#37352f]">{box.name}</h5>
                           <span className="text-[11px] font-bold text-amber-700">{box.subname}</span>
                         </div>
                       </div>
-                      <div className="px-2.5 py-1 rounded-xl bg-amber-400 text-[#28071a] font-black text-xs">
+                      <div className="px-2.5 py-1 rounded-xl bg-amber-400 text-[#37352f] font-black text-xs">
                         {box.costXu} Xu
                       </div>
                     </div>
 
                     {/* Rates Table */}
                     <div className="space-y-2">
-                      <span className="text-[10px] font-black text-[#7a5a6b] uppercase tracking-wider block">
+                      <span className="text-[10px] font-black text-[#787774] uppercase tracking-wider block">
                         Tỷ Lệ Rơi Thưởng (Tổng 100%):
                       </span>
 
@@ -1709,7 +1709,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         {box.dropRates.map((item, idx) => (
                           <div
                             key={idx}
-                            className="p-2 rounded-xl bg-[#fcf7ec] border border-[#eadfcb] flex items-center justify-between text-xs"
+                            className="p-2 rounded-xl bg-[#ffffff] border border-[#e9e9e8] flex items-center justify-between text-xs"
                           >
                             <div className="flex items-center space-x-1.5 min-w-0 pr-2">
                               <span className={`text-[8px] font-black uppercase px-1.5 py-0.2 rounded shrink-0 ${
@@ -1721,7 +1721,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                               }`}>
                                 {item.rarity}
                               </span>
-                              <span className="font-bold text-[#28071a] text-[11px] truncate">
+                              <span className="font-bold text-[#37352f] text-[11px] truncate">
                                 {item.name}
                               </span>
                             </div>
@@ -1735,7 +1735,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     </div>
 
                     {/* Summary Tag */}
-                    <div className="p-2.5 rounded-xl bg-[#f5ecd8]/60 text-[11px] text-[#7a5a6b] font-medium leading-relaxed">
+                    <div className="p-2.5 rounded-xl bg-[#f7f6f5]/60 text-[11px] text-[#787774] font-medium leading-relaxed">
                       💡 {box.description}
                     </div>
 
@@ -1747,25 +1747,25 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <div className="p-5 bg-gradient-to-r from-purple-900/10 via-pink-900/10 to-amber-900/10 rounded-2xl border border-purple-200 space-y-3">
                 <div className="flex items-center space-x-2">
                   <Sparkles className="w-4 h-4 text-purple-600" />
-                  <h5 className="text-xs font-black text-[#28071a] uppercase tracking-wider">
+                  <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
                     Các Điểm Sáng Trong Cơ Chế Rơi Thưởng Mới:
                   </h5>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#28071a]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#37352f]">
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
                     <strong className="text-emerald-700 font-bold block">1. Chủ Sàn Luôn Thắng (House Edge 80%)</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
+                    <p className="text-[11px] text-[#787774]">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
                     <strong className="text-amber-700 font-bold block">2. Tỷ Lệ Đồ Xịn Siêu Thấp (1% - 5%)</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Jackpot chỉ 1%, PRO/PLUS chỉ 2%, thẻ đắt tiền chỉ 5%. Hàng trăm người mở mới có 1 người trúng để tạo hiệu ứng viral.</p>
+                    <p className="text-[11px] text-[#787774]">Jackpot chỉ 1%, PRO/PLUS chỉ 2%, thẻ đắt tiền chỉ 5%. Hàng trăm người mở mới có 1 người trúng để tạo hiệu ứng viral.</p>
                   </div>
 
                   <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
                     <strong className="text-purple-700 font-bold block">3. Ép Khách Nạp Thêm Tiền Thật</strong>
-                    <p className="text-[11px] text-[#7a5a6b]">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
+                    <p className="text-[11px] text-[#787774]">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
                   </div>
                 </div>
               </div>
@@ -1780,11 +1780,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               {/* Header */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <h4 className="text-base font-black text-[#28071a] flex items-center space-x-2">
+                  <h4 className="text-base font-black text-[#37352f] flex items-center space-x-2">
                     <Cpu className="w-5 h-5 text-cyan-600" />
                     <span>Cấu Hình Khóa Động Cơ AI ÔnThiHub Cloud (High Performance)</span>
                   </h4>
-                  <p className="text-xs text-[#7a5a6b] font-medium mt-0.5">
+                  <p className="text-xs text-[#787774] font-medium mt-0.5">
                     Tích hợp trí tuệ nhân tạo chuyên biệt để tự động trích xuất tài liệu, sách giáo trình thành bộ thẻ Anki thật 100%.
                   </p>
                 </div>
@@ -1802,9 +1802,9 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   
                   <button
                     onClick={handleCopyAiEnv}
-                    className="px-3.5 py-2 rounded-xl bg-white border border-[#eadfcb] text-[#28071a] hover:bg-[#faebd0] text-xs font-black flex items-center space-x-1.5"
+                    className="px-3.5 py-2 rounded-xl bg-white border border-[#e9e9e8] text-[#37352f] hover:bg-[#f7f6f5] text-xs font-black flex items-center space-x-1.5"
                   >
-                    {copiedAiEnv ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#f02c85]" />}
+                    {copiedAiEnv ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-[#2383e2]" />}
                     <span>{copiedAiEnv ? 'Đã Copy .env' : 'Copy .env Vercel'}</span>
                   </button>
                 </div>
@@ -1865,15 +1865,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <form onSubmit={handleSaveAiKey} className="space-y-4">
                 
                 {/* 1. Cloud AI Key Card */}
-                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
+                <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <span className="text-base">✨</span>
                       <div>
-                        <strong className="text-sm font-black text-[#28071a] block">
+                        <strong className="text-sm font-black text-[#37352f] block">
                           Khóa Động Cơ AI ÔnThiHub Cloud (Khuyên Dùng - Tốc Độ Cao)
                         </strong>
-                        <span className="text-[11px] text-[#7a5a6b] font-medium">
+                        <span className="text-[11px] text-[#787774] font-medium">
                           Mô hình AI Flash siêu tốc: phân tích và trích xuất cấu trúc đề thi, hỗ trợ tiếng Việt cực chuẩn.
                         </span>
                       </div>
@@ -1892,8 +1892,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] font-bold text-[#7a5a6b] block">
-                        Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">AIzaSy...</code>):
+                      <label className="text-[11px] font-bold text-[#787774] block">
+                        Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#2383e2]">AIzaSy...</code>):
                       </label>
                       {geminiApiKey && (
                         <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
@@ -1907,7 +1907,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         placeholder="AIzaSy..."
                         value={geminiApiKey}
                         onChange={(e) => setGeminiApiKey(e.target.value)}
-                        className="w-full pl-4 pr-10 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                        className="w-full pl-4 pr-10 py-2.5 bg-[#ffffff] border border-[#e9e9e8] rounded-xl text-xs font-mono font-bold text-[#37352f] outline-none focus:border-[#2383e2]"
                       />
                       <button
                         type="button"
@@ -1932,15 +1932,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 </div>
 
                 {/* 2. OpenAI Key Card (Optional) */}
-                <div className="p-5 bg-white rounded-2xl border border-[#eadfcb] space-y-3 shadow-xs">
+                <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <span className="text-base">🤖</span>
                       <div>
-                        <strong className="text-sm font-black text-[#28071a] block">
+                        <strong className="text-sm font-black text-[#37352f] block">
                           OpenAI API Key (Tùy Chọn - GPT-4o / GPT-4o-mini)
                         </strong>
-                        <span className="text-[11px] text-[#7a5a6b] font-medium">
+                        <span className="text-[11px] text-[#787774] font-medium">
                           Dành cho trường hợp bạn muốn dùng tài khoản OpenAI Platform trả phí.
                         </span>
                       </div>
@@ -1959,8 +1959,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] font-bold text-[#7a5a6b] block">
-                        OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#f02c85]">sk-...</code>):
+                      <label className="text-[11px] font-bold text-[#787774] block">
+                        OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#2383e2]">sk-...</code>):
                       </label>
                       {openaiApiKey && (
                         <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
@@ -1974,7 +1974,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         placeholder="sk-..."
                         value={openaiApiKey}
                         onChange={(e) => setOpenaiApiKey(e.target.value)}
-                        className="w-full pl-4 pr-10 py-2.5 bg-[#fcf7ec] border border-[#eadfcb] rounded-xl text-xs font-mono font-bold text-[#28071a] outline-none focus:border-[#f02c85]"
+                        className="w-full pl-4 pr-10 py-2.5 bg-[#ffffff] border border-[#e9e9e8] rounded-xl text-xs font-mono font-bold text-[#37352f] outline-none focus:border-[#2383e2]"
                       />
                       <button
                         type="button"
@@ -1992,7 +1992,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 <div className="flex items-center justify-end space-x-3 pt-2">
                   <button
                     type="submit"
-                    className="px-6 py-3 btn-wayground-sunset text-white text-xs font-black rounded-xl shadow-lg flex items-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
+                    className="px-6 py-3 bg-[#2383e2] hover:bg-[#1a73e8] text-white text-white text-xs font-black rounded-xl shadow-lg flex items-center space-x-2 transition-transform transform hover:scale-105 active:scale-95"
                   >
                     <Save className="w-4 h-4" />
                     <span>Lưu Cấu Hình Thẻ API</span>
