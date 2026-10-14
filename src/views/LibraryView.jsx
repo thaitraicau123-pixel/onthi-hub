@@ -20,7 +20,8 @@ import {
   Search,
   RotateCw,
   Store,
-  ChevronDown
+  ChevronDown,
+  MoreHorizontal
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet } from '../utils/storage';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
@@ -41,6 +42,7 @@ export default function LibraryView({
   const [searchLibrary, setSearchLibrary] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('due_first'); // 'due_first' | 'title'
+  const [openMenuDeckId, setOpenMenuDeckId] = useState(null);
 
   const isComboUser = purchasedCourses.includes('combo-all-access');
   const unlockedList = isComboUser
@@ -284,12 +286,12 @@ export default function LibraryView({
 
           {/* Results count & quick clear */}
           {(selectedCategory !== 'all' || searchLibrary) && (
-            <div className="flex items-center justify-between text-xs text-rose-200/80 px-1 font-bold">
+            <div className="flex items-center justify-between text-xs text-[#787774] px-1 font-medium">
               <span>Đang hiển thị {filteredUnlockedList.length} / {unlockedList.length} bộ thẻ</span>
               <button
                 type="button"
                 onClick={() => { setSelectedCategory('all'); setSearchLibrary(''); }}
-                className="text-pink-300 hover:text-white underline font-bold"
+                className="text-[#2383e2] hover:underline font-semibold cursor-pointer"
               >
                 Xóa bộ lọc ✕
               </button>
@@ -313,44 +315,133 @@ export default function LibraryView({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredUnlockedList.map((course) => {
                 const deckSrs = getDeckDueStats(course);
+                const isMenuOpen = openMenuDeckId === course.id;
+
                 return (
                   <div
                     key={course.id}
-                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] bg-white hover:border-[#c5c4c0] hover:shadow-xs transition-all flex flex-col justify-between text-[#37352f]"
+                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] bg-white hover:border-[#c5c4c0] hover:shadow-xs transition-all flex flex-col justify-between text-[#37352f] relative"
                   >
                     <div>
-                      <div className="flex items-center justify-between flex-wrap gap-1">
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#edf3ec] text-[#448361] border border-[#d3e5d7]">
-                          ĐÃ SỞ HỮU
-                        </span>
-                        {deckSrs.due > 0 ? (
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#fdebec] text-[#d44c47] border border-[#f9c9cb]">
-                            ⏰ {deckSrs.due} thẻ cần ôn
+                      {/* Top Badges & More Options Menu */}
+                      <div className="flex items-center justify-between gap-1">
+                        <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#edf3ec] text-[#448361] border border-[#d3e5d7]">
+                            ĐÃ SỞ HỮU
                           </span>
-                        ) : (
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f1f1ef] text-[#787774] border border-[#e3e2e0]">
-                            ✓ Đã ôn đủ
-                          </span>
-                        )}
+                          {deckSrs.due > 0 ? (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#fdebec] text-[#d44c47] border border-[#f9c9cb]">
+                              ⏰ {deckSrs.due} thẻ cần ôn
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f1f1ef] text-[#787774] border border-[#e3e2e0]">
+                              ✓ Đã ôn đủ
+                            </span>
+                          )}
+                        </div>
+
+                        {/* More Actions Dropdown */}
+                        <div className="relative">
+                          <button
+                            type="button"
+                            onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
+                            className="p-1 rounded-md hover:bg-[#efefed] text-[#787774] hover:text-[#37352f] transition-colors cursor-pointer"
+                            title="Tùy chọn khác (In, Tải Anki, Pass lại, Bán thẻ)"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+
+                          {isMenuOpen && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-30"
+                                onClick={() => setOpenMenuDeckId(null)}
+                              />
+                              <div className="absolute right-0 top-7 z-40 w-56 bg-white rounded-xl border border-[#e9e9e8] shadow-lg py-1.5 text-xs text-[#37352f] animate-fade-in divide-y divide-[#f1f1ef]">
+                                <div className="py-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      onOpenSellDeck?.(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Tag className="w-3.5 h-3.5 text-[#cc782f]" />
+                                    <span>🏷️ Đăng Bán Lên Sàn C2C</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      onOpenPassDeck?.(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Repeat className="w-3.5 h-3.5 text-[#9065b0]" />
+                                    <span>🔁 Pass Lại Thẻ Cũ</span>
+                                  </button>
+                                </div>
+                                <div className="py-1">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      exportAnkiDeckFile(course.title, course.previewCards);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Download className="w-3.5 h-3.5 text-[#2383e2]" />
+                                    <span>📥 Xuất File Anki (.txt)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      printSummaryGuide(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Printer className="w-3.5 h-3.5 text-[#448361]" />
+                                    <span>🖨️ In Tài Liệu / Xuất PDF</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      printFlashcardCutoutSheet(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Scissors className="w-3.5 h-3.5 text-[#d44c47]" />
+                                    <span>✂️ In Thẻ Giấy A4 (Học Offline)</span>
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
-                      <h4 className="text-sm sm:text-base font-bold text-[#37352f] mt-2 line-clamp-2 leading-snug">
+
+                      <h4 className="text-sm sm:text-base font-bold text-[#37352f] mt-2.5 line-clamp-2 leading-snug">
                         {course.title}
                       </h4>
-                      <p className="text-xs text-[#787774] mt-1 line-clamp-2">
+                      <p className="text-xs text-[#787774] mt-1 line-clamp-2 leading-relaxed">
                         {course.subtitle || course.description}
                       </p>
-                      <div className="mt-2.5 text-[11px] text-[#9b9a97]">
-                        {course.previewCards?.length || 0} thẻ Anki • {course.previewQuiz?.length || 0} câu trắc nghiệm
+                      <div className="mt-2.5 text-[11px] text-[#9b9a97] flex items-center space-x-1.5">
+                        <Layers className="w-3 h-3" />
+                        <span>{course.previewCards?.length || 0} thẻ Anki • {course.previewQuiz?.length || 0} câu trắc nghiệm</span>
                       </div>
                     </div>
 
-                    {/* Actions */}
+                    {/* Notion Action Bar: Clean & Focused */}
                     <div className="mt-4 pt-3 border-t border-[#e9e9e8] space-y-2">
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="grid grid-cols-2 gap-2">
                         <button
                           type="button"
                           onClick={() => onOpenFlashcards(course)}
-                          className="py-1.5 px-2.5 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white text-xs font-semibold flex items-center justify-center space-x-1 shadow-2xs transition-colors cursor-pointer"
+                          className="py-2 px-3 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white text-xs font-semibold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer"
                         >
                           <Layers className="w-3.5 h-3.5" />
                           <span>Học Thẻ 3D</span>
@@ -359,76 +450,33 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => onOpenQuiz(course)}
-                          className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1 transition-colors cursor-pointer"
+                          className="py-2 px-3 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                         >
                           <PlayCircle className="w-3.5 h-3.5 text-[#cc782f]" />
                           <span>Thi Thử</span>
                         </button>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => onOpenMatchGame(course)}
-                        className="w-full py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
-                      >
-                        <Gamepad2 className="w-3.5 h-3.5 text-[#2383e2]" />
-                        <span>🎮 Ghép Thẻ Phản Xạ (Match)</span>
-                      </button>
-
-                      {/* C2C Actions: Bán Thẻ Lên Sàn & Pass Thẻ Cũ */}
-                      <div className="grid grid-cols-2 gap-1.5">
+                      <div className="flex items-center space-x-2">
                         <button
                           type="button"
-                          onClick={() => onOpenSellDeck?.(course)}
-                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-[11px] font-semibold flex items-center justify-center space-x-1 transition-colors"
-                          title="Đăng bán bộ thẻ này lên Chợ Thẻ C2C kiếm Xu"
+                          onClick={() => onOpenMatchGame(course)}
+                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                         >
-                          <Tag className="w-3 h-3 text-[#cc782f]" />
-                          <span>🏷️ Đăng Bán</span>
+                          <Gamepad2 className="w-3.5 h-3.5 text-[#2383e2]" />
+                          <span>Ghép Thẻ (Match)</span>
                         </button>
 
                         <button
                           type="button"
-                          onClick={() => onOpenPassDeck?.(course)}
-                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-[11px] font-semibold flex items-center justify-center space-x-1 transition-colors"
-                          title="Pass lại thẻ đã học cho bạn học khác"
+                          onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
+                          className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-xs font-medium flex items-center space-x-1 transition-colors cursor-pointer"
+                          title="In, Xuất Anki, Pass lại, Bán thẻ"
                         >
-                          <Repeat className="w-3 h-3 text-[#9065b0]" />
-                          <span>🔁 Pass Lại</span>
+                          <span>Tiện ích</span>
+                          <ChevronDown className="w-3 h-3" />
                         </button>
                       </div>
-
-                      <div className="grid grid-cols-2 gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => exportAnkiDeckFile(course.title, course.previewCards)}
-                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
-                          title="Xuất file .txt nhập vào Anki"
-                        >
-                          <Download className="w-3 h-3" />
-                          <span>Tải Anki</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => printSummaryGuide(course)}
-                          className="py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
-                          title="In tài liệu hoặc xuất PDF"
-                        >
-                          <Printer className="w-3 h-3" />
-                          <span>In / PDF</span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() => printFlashcardCutoutSheet(course)}
-                        className="w-full py-1.5 px-2 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-[11px] flex items-center justify-center space-x-1"
-                        title="In bảng thẻ giấy A4 có viền nét đứt để cắt rời học offline"
-                      >
-                        <Scissors className="w-3 h-3" />
-                        <span>In Bảng Thẻ Giấy A4 (Học Offline)</span>
-                      </button>
                     </div>
                   </div>
                 );
