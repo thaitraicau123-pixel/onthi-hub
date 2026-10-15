@@ -2,9 +2,9 @@ import React from 'react';
 
 /**
  * ThemeAtmosphereBackground
- * High-fidelity atmospheric illustrated background artwork for 10 themes.
- * Renders detailed vector drawings, ambient scene silhouettes, and animated particles.
- * Designed with calibrated opacity and masks so all text and cards remain 100% legible.
+ * Full-color, rich, expressive Messenger & Instagram style illustrated background wallpapers.
+ * Features charming kawaii character mascots (like the Avocado theme in Messenger),
+ * soft glowing auras, rich color fills, and delightful thematic personality.
  */
 export default function ThemeAtmosphereBackground({ theme }) {
   if (!theme) return null;
@@ -13,744 +13,675 @@ export default function ThemeAtmosphereBackground({ theme }) {
   return (
     <div
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 transition-all duration-700 ease-in-out"
+      className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 transition-opacity duration-700 ease-in-out"
     >
-      {/* 1. NOTION MINIMALIST: ARCHITECTURAL BLUEPRINT & ISOMETRIC DRAFTING */}
-      {themeId === 'default' && (
-        <div className="absolute inset-0 opacity-[0.35] transition-opacity duration-700">
-          {/* Subtle blueprint dot grid */}
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="minimal-dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="1" fill="#2383e2" fillOpacity="0.18" />
-              </pattern>
-              <linearGradient id="blueprint-fade" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#2383e2" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#2383e2" stopOpacity="0.02" />
-              </linearGradient>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#minimal-dots)" />
-
-            {/* Architectural Drafting Compass (Top Right) */}
-            <g transform="translate(1100, 40) scale(0.85)" stroke="#2383e2" strokeWidth="1.2" fill="none" opacity="0.45">
-              <circle cx="120" cy="120" r="80" strokeDasharray="4 4" />
-              <circle cx="120" cy="120" r="110" strokeDasharray="2 6" />
-              <line x1="20" y1="120" x2="220" y2="120" strokeDasharray="3 3" />
-              <line x1="120" y1="20" x2="120" y2="220" strokeDasharray="3 3" />
-              {/* Compass legs */}
-              <path d="M120 40 L90 180 M120 40 L150 180" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="120" cy="40" r="7" fill="#2383e2" fillOpacity="0.3" strokeWidth="2" />
-              <path d="M100 130 Q120 140 140 130" strokeWidth="1.5" />
-            </g>
-
-            {/* Isometric 3D Wireframe Cube (Top Left) */}
-            <g transform="translate(60, 80) scale(0.9)" stroke="#2383e2" strokeWidth="1.2" fill="none" opacity="0.35">
-              <path d="M60 20 L110 50 L110 110 L60 140 L10 110 L10 50 Z" />
-              <path d="M60 20 L60 80 L110 110 M60 80 L10 110" />
-              <circle cx="60" cy="80" r="3" fill="#2383e2" />
-            </g>
-
-            {/* Minimalist Open Notebook Line Art (Bottom Left) */}
-            <g transform="translate(80, 560) scale(0.95)" stroke="#2383e2" strokeWidth="1.2" fill="none" opacity="0.3">
-              <path d="M10 80 Q60 65 110 80 L110 160 Q60 145 10 160 Z" fill="#2383e2" fillOpacity="0.03" />
-              <path d="M110 80 Q160 65 210 80 L210 160 Q160 145 110 160 Z" fill="#2383e2" fillOpacity="0.03" />
-              <line x1="110" y1="75" x2="110" y2="165" strokeWidth="2" />
-              {/* Notebook page lines */}
-              <line x1="25" y1="100" x2="95" y2="100" strokeDasharray="2 3" />
-              <line x1="25" y1="115" x2="95" y2="115" strokeDasharray="2 3" />
-              <line x1="25" y1="130" x2="95" y2="130" strokeDasharray="2 3" />
-              <line x1="125" y1="100" x2="195" y2="100" strokeDasharray="2 3" />
-              <line x1="125" y1="115" x2="195" y2="115" strokeDasharray="2 3" />
-              <line x1="125" y1="130" x2="195" y2="130" strokeDasharray="2 3" />
-            </g>
-
-            {/* Subtle Drafting Angle Protractor (Bottom Right) */}
-            <g transform="translate(1050, 620) scale(0.8)" stroke="#2383e2" strokeWidth="1" fill="none" opacity="0.35">
-              <path d="M30 150 A120 120 0 0 1 270 150 Z" />
-              <circle cx="150" cy="150" r="6" strokeWidth="2" />
-              <line x1="150" y1="150" x2="235" y2="65" strokeWidth="1.5" />
-            </g>
-          </svg>
-        </div>
-      )}
-
-      {/* 2. LOFI CAFE: WARM LATTE ART, VINYL GROOVES & COZY STEAM */}
-      {themeId === 'lofi-cafe' && (
-        <div className="absolute inset-0 opacity-[0.4] transition-opacity duration-700">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="coffee-steam-grad" x1="0" y1="1" x2="0" y2="0">
-                <stop offset="0%" stopColor="#8c532b" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#d97706" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-
-            {/* Vintage Vinyl Record (Bottom Right) */}
-            <g transform="translate(1080, 520) scale(1)" stroke="#8c532b" fill="none" opacity="0.4">
-              <circle cx="150" cy="150" r="140" strokeWidth="1.5" />
-              <circle cx="150" cy="150" r="120" strokeWidth="0.8" strokeDasharray="5 3" />
-              <circle cx="150" cy="150" r="100" strokeWidth="0.8" />
-              <circle cx="150" cy="150" r="80" strokeWidth="0.8" strokeDasharray="3 4" />
-              <circle cx="150" cy="150" r="60" strokeWidth="1" />
-              <circle cx="150" cy="150" r="45" fill="#8c532b" fillOpacity="0.15" strokeWidth="1.5" />
-              <circle cx="150" cy="150" r="8" fill="#8c532b" />
-              {/* Turntable tonearm */}
-              <path d="M40 30 L110 80 L140 120" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="40" cy="30" r="10" fill="#8c532b" fillOpacity="0.3" strokeWidth="2" />
-            </g>
-
-            {/* Steaming Coffee Cup with Latte Heart (Top Left) */}
-            <g transform="translate(80, 50) scale(0.95)" stroke="#8c532b" fill="none" opacity="0.45">
-              {/* Cup body & saucer */}
-              <ellipse cx="100" cy="150" rx="65" ry="14" strokeWidth="2" fill="#8c532b" fillOpacity="0.08" />
-              <path d="M50 80 Q45 130 100 135 Q155 130 150 80 Z" strokeWidth="2.2" fill="#8c532b" fillOpacity="0.04" />
-              <ellipse cx="100" cy="80" rx="50" ry="12" strokeWidth="2" fill="#f4ede1" />
-              {/* Cup handle */}
-              <path d="M148 90 Q175 90 170 115 Q165 130 138 126" strokeWidth="2.2" strokeLinecap="round" />
-              {/* Latte Art Heart */}
-              <path d="M100 84 C95 78 85 78 85 84 C85 91 100 97 100 97 C100 97 115 91 115 84 C115 78 105 78 100 84 Z" fill="#8c532b" fillOpacity="0.4" stroke="none" />
-              {/* Animated rising steam curls */}
-              <path d="M85 65 Q75 45 90 25 T85 5" stroke="url(#coffee-steam-grad)" strokeWidth="2.5" strokeLinecap="round" className="animate-steam-1" />
-              <path d="M105 60 Q120 40 105 20 T115 0" stroke="url(#coffee-steam-grad)" strokeWidth="2" strokeLinecap="round" className="animate-steam-2" />
-            </g>
-
-            {/* Vintage Desk Gooseneck Lamp Silhouette (Top Right) */}
-            <g transform="translate(1120, 30) scale(0.85)" stroke="#8c532b" fill="none" opacity="0.35">
-              <path d="M120 220 L160 220" strokeWidth="4" strokeLinecap="round" />
-              <path d="M140 220 L140 140 Q140 70 80 70 L40 70" strokeWidth="3" />
-              {/* Lampshade */}
-              <path d="M40 50 L10 85 L60 85 Z" strokeWidth="2" fill="#8c532b" fillOpacity="0.1" />
-              {/* Warm light cone */}
-              <polygon points="10,85 60,85 120,220 -50,220" fill="#fef3c7" fillOpacity="0.08" stroke="none" />
-            </g>
-
-            {/* Floating Coffee Beans (Scattered) */}
-            <g fill="#8c532b" fillOpacity="0.25" stroke="#8c532b" strokeWidth="0.8" opacity="0.5">
-              <g transform="translate(260, 220) rotate(25) scale(0.7)">
-                <ellipse cx="12" cy="18" rx="10" ry="14" />
-                <path d="M12 4 Q16 18 12 32" fill="none" strokeWidth="1.2" />
-              </g>
-              <g transform="translate(880, 180) rotate(-40) scale(0.6)">
-                <ellipse cx="12" cy="18" rx="10" ry="14" />
-                <path d="M12 4 Q8 18 12 32" fill="none" strokeWidth="1.2" />
-              </g>
-              <g transform="translate(420, 680) rotate(15) scale(0.65)">
-                <ellipse cx="12" cy="18" rx="10" ry="14" />
-                <path d="M12 4 Q16 18 12 32" fill="none" strokeWidth="1.2" />
-              </g>
-            </g>
-          </svg>
-        </div>
-      )}
-
-      {/* 3. SAKURA BLOSSOM: JAPANESE CHERRY BLOSSOM BRANCH, MT FUJI & FALLING PETALS */}
-      {themeId === 'sakura-blossom' && (
-        <div className="absolute inset-0 opacity-[0.45] transition-opacity duration-700">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            {/* Mount Fuji Silhouette (Center Horizon) */}
-            <g transform="translate(380, 520) scale(1.1)" opacity="0.25">
-              {/* Mountain cone */}
-              <polygon points="260,30 40,240 480,240" fill="#db4d86" fillOpacity="0.15" />
-              {/* Snow cap */}
-              <polygon points="260,30 200,95 230,110 260,95 290,110 320,95" fill="#ffffff" fillOpacity="0.75" />
-            </g>
-
-            {/* Traditional Japanese Torii Gate (Bottom Left) */}
-            <g transform="translate(90, 580) scale(0.7)" stroke="#db4d86" strokeWidth="3" fill="#db4d86" fillOpacity="0.15" opacity="0.35">
-              {/* Main Pillars */}
-              <line x1="40" y1="40" x2="40" y2="180" strokeWidth="8" strokeLinecap="round" />
-              <line x1="160" y1="40" x2="160" y2="180" strokeWidth="8" strokeLinecap="round" />
-              {/* Curved Top Lintel (Kasagi) */}
-              <path d="M10 40 Q100 20 190 40 L195 25 Q100 5 5 25 Z" strokeWidth="2" />
-              {/* Second Lintel (Nuki) */}
-              <rect x="25" y="65" width="150" height="12" rx="2" strokeWidth="1" />
-              {/* Center Plaque */}
-              <rect x="90" y="40" width="20" height="26" fill="#db4d86" fillOpacity="0.4" strokeWidth="1" />
-            </g>
-
-            {/* Cherry Blossom Gnarled Branch Reaching from Top Right */}
-            <g transform="translate(850, -40) scale(1.15)" opacity="0.6">
-              {/* Main branch wood */}
-              <path
-                d="M450 20 Q320 80 240 60 Q180 50 140 110 Q90 180 20 200"
-                stroke="#8b4d66"
-                strokeWidth="7"
-                strokeLinecap="round"
-                fill="none"
-              />
-              <path d="M250 65 Q230 140 180 170" stroke="#8b4d66" strokeWidth="4" strokeLinecap="round" fill="none" />
-              <path d="M330 75 Q360 150 410 180" stroke="#8b4d66" strokeWidth="3.5" strokeLinecap="round" fill="none" />
-
-              {/* Sakura Flower Clusters */}
-              {[
-                { cx: 140, cy: 110, s: 1.1, rot: 15 },
-                { cx: 80, cy: 175, s: 0.9, rot: -20 },
-                { cx: 20, cy: 200, s: 1.2, rot: 45 },
-                { cx: 180, cy: 170, s: 1.0, rot: 70 },
-                { cx: 245, cy: 60, s: 1.3, rot: 5 },
-                { cx: 340, cy: 100, s: 0.85, rot: -35 },
-                { cx: 410, cy: 180, s: 1.05, rot: 60 },
-              ].map((f, i) => (
-                <g key={i} transform={`translate(${f.cx}, ${f.cy}) scale(${f.s}) rotate(${f.rot})`}>
-                  {/* 5 petals */}
-                  {[0, 72, 144, 216, 288].map((angle, idx) => (
-                    <path
-                      key={idx}
-                      d="M0 0 C-7 -18 7 -18 0 -26 C-7 -18 7 -18 0 0"
-                      transform={`rotate(${angle})`}
-                      fill="#fbb6ce"
-                      stroke="#db4d86"
-                      strokeWidth="0.8"
-                    />
-                  ))}
-                  <circle cx="0" cy="0" r="3.5" fill="#f43f5e" />
-                  <circle cx="0" cy="0" r="1.5" fill="#fef08a" />
-                </g>
-              ))}
-            </g>
-
-            {/* Falling Sakura Petals (Floating across the screen) */}
-            <g fill="#f472b6" fillOpacity="0.45" stroke="#db4d86" strokeWidth="0.6">
-              <path d="M180 140 C175 130 190 120 195 130 C200 140 185 150 180 140 Z" className="animate-pulse" />
-              <path d="M340 280 C335 270 350 260 355 270 C360 280 345 290 340 280 Z" />
-              <path d="M680 190 C675 180 690 170 695 180 C700 190 685 200 680 190 Z" />
-              <path d="M520 420 C515 410 530 400 535 410 C540 420 525 430 520 420 Z" />
-              <path d="M820 540 C815 530 830 520 835 530 C840 540 825 550 820 540 Z" />
-              <path d="M220 620 C215 610 230 600 235 610 C240 620 225 630 220 620 Z" />
-            </g>
-          </svg>
-        </div>
-      )}
-
-      {/* 4. COSMIC GALAXY: SPIRAL GALAXY, CONSTELLATIONS, NEBULA & ASTRONAUT */}
-      {themeId === 'cosmic-galaxy' && (
-        <div className="absolute inset-0 opacity-[0.6] transition-opacity duration-700">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="galactic-core" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#c084fc" stopOpacity="0.6" />
-                <stop offset="40%" stopColor="#818cf8" stopOpacity="0.3" />
-                <stop offset="80%" stopColor="#38bdf8" stopOpacity="0.1" />
-                <stop offset="100%" stopColor="#0f0d1b" stopOpacity="0" />
-              </radialGradient>
-              <linearGradient id="meteor-trail" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-                <stop offset="30%" stopColor="#c084fc" stopOpacity="0.6" />
-                <stop offset="100%" stopColor="#a855f7" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-
-            {/* Glowing Spiral Galaxy (Top Right) */}
-            <g transform="translate(1000, 60) scale(1.2)" opacity="0.75">
-              <ellipse cx="140" cy="140" rx="140" ry="90" fill="url(#galactic-core)" transform="rotate(-25 140 140)" />
-              {/* Spiral galaxy arms */}
-              <path
-                d="M140 140 Q180 80 240 110 T280 180"
-                stroke="#c084fc"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-                opacity="0.6"
-              />
-              <path
-                d="M140 140 Q100 200 40 170 T0 100"
-                stroke="#818cf8"
-                strokeWidth="2"
-                strokeLinecap="round"
-                fill="none"
-                opacity="0.6"
-              />
-              <circle cx="140" cy="140" r="14" fill="#ffffff" opacity="0.8" className="animate-pulse" />
-            </g>
-
-            {/* Saturn Ringed Planet (Bottom Left) */}
-            <g transform="translate(120, 520) scale(0.95)" opacity="0.65">
-              {/* Planet sphere */}
-              <circle cx="100" cy="100" r="50" fill="#3b2d69" stroke="#c084fc" strokeWidth="1.5" />
-              {/* Planet Rings */}
-              <ellipse
-                cx="100"
-                cy="100"
-                rx="110"
-                ry="32"
-                fill="none"
-                stroke="#d8b4fe"
-                strokeWidth="4"
-                transform="rotate(-20 100 100)"
-                opacity="0.75"
-              />
-              <ellipse
-                cx="100"
-                cy="100"
-                rx="90"
-                ry="24"
-                fill="none"
-                stroke="#818cf8"
-                strokeWidth="2"
-                transform="rotate(-20 100 100)"
-                opacity="0.5"
-              />
-            </g>
-
-            {/* Constellation Charts: Ursa Major & Cassiopeia */}
-            <g stroke="#a855f7" strokeWidth="1" fill="#ffffff" opacity="0.45">
-              {/* Cassiopeia (Top Center) */}
-              <g transform="translate(560, 60)">
-                <line x1="20" y1="40" x2="60" y2="15" strokeDasharray="2 3" />
-                <line x1="60" y1="15" x2="100" y2="45" strokeDasharray="2 3" />
-                <line x1="100" y1="45" x2="140" y2="10" strokeDasharray="2 3" />
-                <line x1="140" y1="10" x2="180" y2="35" strokeDasharray="2 3" />
-                <circle cx="20" cy="40" r="3" />
-                <circle cx="60" cy="15" r="3.5" />
-                <circle cx="100" cy="45" r="3" />
-                <circle cx="140" cy="10" r="4" className="animate-ping" />
-                <circle cx="180" cy="35" r="3" />
-              </g>
-
-              {/* Big Dipper (Center Left) */}
-              <g transform="translate(80, 240) scale(0.9)">
-                <line x1="40" y1="30" x2="90" y2="50" strokeDasharray="2 3" />
-                <line x1="90" y1="50" x2="130" y2="80" strokeDasharray="2 3" />
-                <line x1="130" y1="80" x2="180" y2="90" strokeDasharray="2 3" />
-                <line x1="180" y1="90" x2="230" y2="60" strokeDasharray="2 3" />
-                <line x1="230" y1="60" x2="240" y2="110" strokeDasharray="2 3" />
-                <line x1="240" y1="110" x2="190" y2="130" strokeDasharray="2 3" />
-                <line x1="190" y1="130" x2="180" y2="90" strokeDasharray="2 3" />
-                <circle cx="40" cy="30" r="3" />
-                <circle cx="90" cy="50" r="3" />
-                <circle cx="130" cy="80" r="3.5" />
-                <circle cx="180" cy="90" r="3" />
-                <circle cx="230" cy="60" r="3.5" />
-                <circle cx="240" cy="110" r="3" />
-                <circle cx="190" cy="130" r="3.5" />
-              </g>
-            </g>
-
-            {/* Shooting Star Trail (Diagonal streak) */}
-            <g transform="translate(450, 180) rotate(35)" opacity="0.8">
-              <line x1="0" y1="0" x2="180" y2="0" stroke="url(#meteor-trail)" strokeWidth="3" strokeLinecap="round" />
-              <circle cx="180" cy="0" r="3" fill="#ffffff" />
-            </g>
-
-            {/* Floating Deep Space Astronaut Sketch (Center Right) */}
-            <g transform="translate(1120, 420) scale(0.7) rotate(15)" stroke="#c084fc" strokeWidth="1.5" fill="none" opacity="0.45">
-              {/* Helmet */}
-              <circle cx="50" cy="30" r="22" strokeWidth="2" fill="#0f0d1b" />
-              <ellipse cx="50" cy="30" rx="15" ry="12" fill="#38bdf8" fillOpacity="0.4" stroke="none" />
-              {/* Body suit */}
-              <rect x="30" y="52" width="40" height="45" rx="10" strokeWidth="2" fill="#241b47" />
-              {/* Backpack oxygen tank */}
-              <rect x="20" y="50" width="10" height="42" rx="3" strokeWidth="1.5" />
-              {/* Arms */}
-              <path d="M30 60 Q10 75 20 95" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M70 60 Q90 75 80 95" strokeWidth="2.5" strokeLinecap="round" />
-              {/* Legs */}
-              <path d="M40 97 L35 130" strokeWidth="3" strokeLinecap="round" />
-              <path d="M60 97 L68 130" strokeWidth="3" strokeLinecap="round" />
-            </g>
-          </svg>
-        </div>
-      )}
-
-      {/* 5. BOTANICAL GARDEN: MONSTERA, PALM FRONDS & GLOWING FIREFLIES */}
+      {/* =========================================================================
+          1. BOTANICAL GARDEN / AVOCADO THEME (EXACT MATCH TO MESSENGER AVOCADO CHAT)
+          ========================================================================= */}
       {themeId === 'botanical-garden' && (
-        <div className="absolute inset-0 opacity-[0.4] transition-opacity duration-700">
+        <div className="absolute inset-0 opacity-[0.92] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            {/* Monstera Deliciosa Giant Leaf (Top Left) */}
-            <g transform="translate(-40, -40) scale(1.2)" stroke="#0f8a5f" fill="#0f8a5f" fillOpacity="0.12" opacity="0.6">
+            <defs>
+              {/* Messenger Avocado Soft Halo Glow */}
+              <filter id="avocado-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#7ca895" floodOpacity="0.55" />
+              </filter>
+              <filter id="seed-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="1" dy="3" stdDeviation="2" floodColor="#2e1f13" floodOpacity="0.4" />
+              </filter>
+            </defs>
+
+            {/* AVOCADO 1: Large Sleepy Avocado (Top-Left, Peeking In - Just like Messenger) */}
+            <g transform="translate(-20, -10) scale(1.15)" filter="url(#avocado-glow)">
+              {/* Stem and Little Leaf */}
+              <path d="M100 38 Q95 18 80 12" stroke="#4a3728" strokeWidth="6" strokeLinecap="round" fill="none" />
+              <path d="M86 16 C68 12 62 25 78 30 C90 32 94 22 86 16 Z" fill="#466859" stroke="#355245" strokeWidth="1.5" />
+
+              {/* Outer Dark Green Skin */}
               <path
-                d="M60 20 C180 -10 280 120 220 280 C180 340 60 320 30 220 C10 160 20 80 60 20 Z"
-                strokeWidth="2.5"
+                d="M100 35 C135 35 155 65 155 105 C155 135 140 155 170 195 C205 240 185 305 130 325 C65 345 20 300 15 235 C10 165 45 135 55 100 C65 60 70 35 100 35 Z"
+                fill="#547b6e"
+                stroke="#3d5e53"
+                strokeWidth="4"
               />
-              {/* Leaf spine */}
-              <path d="M60 20 Q120 180 220 280" stroke="#0f8a5f" strokeWidth="3" fill="none" />
-              {/* Leaf slits/holes */}
-              <ellipse cx="120" cy="110" rx="30" ry="10" transform="rotate(35 120 110)" fill="#f4f9f5" stroke="#0f8a5f" strokeWidth="1.5" />
-              <ellipse cx="150" cy="170" rx="35" ry="12" transform="rotate(25 150 170)" fill="#f4f9f5" stroke="#0f8a5f" strokeWidth="1.5" />
-              <ellipse cx="170" cy="230" rx="30" ry="10" transform="rotate(15 170 230)" fill="#f4f9f5" stroke="#0f8a5f" strokeWidth="1.5" />
-              <ellipse cx="90" cy="160" rx="25" ry="8" transform="rotate(-45 90 160)" fill="#f4f9f5" stroke="#0f8a5f" strokeWidth="1.5" />
+
+              {/* Inner Light Mint / Cream Flesh */}
+              <path
+                d="M100 48 C128 48 143 72 143 108 C143 135 128 152 154 190 C184 230 166 288 120 306 C66 322 30 284 26 230 C22 170 50 144 60 110 C68 75 75 48 100 48 Z"
+                fill="#9ec4b5"
+              />
+
+              {/* Rosy Cheeks */}
+              <ellipse cx="68" cy="145" rx="10" ry="7" fill="#f8a5ab" fillOpacity="0.5" />
+              <ellipse cx="132" cy="145" rx="10" ry="7" fill="#f8a5ab" fillOpacity="0.5" />
+
+              {/* Sleepy Eyes (u_u / lashes) */}
+              <path d="M72 135 Q82 146 92 135" stroke="#374d44" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <path d="M78 141 L76 146" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M86 141 L88 146" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" />
+
+              <path d="M108 135 Q118 146 128 135" stroke="#374d44" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <path d="M114 141 L112 146" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M122 141 L124 146" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" />
+
+              {/* Cute little mouth */}
+              <path d="M98 152 Q100 156 102 152" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+
+              {/* Rich Brown Avocado Seed (with 3D highlight) */}
+              <g filter="url(#seed-shadow)">
+                <ellipse cx="100" cy="235" rx="42" ry="46" fill="#5c4028" stroke="#48321e" strokeWidth="2.5" />
+                {/* 3D Crescent Highlight */}
+                <path d="M80 205 C95 195 118 200 126 215 C118 206 100 204 86 215 Z" fill="#875f3d" />
+                {/* Bottom Shadow Crescent */}
+                <path d="M72 245 C80 270 120 270 128 245 C120 262 80 262 72 245 Z" fill="#3a2818" />
+              </g>
             </g>
 
-            {/* Cascading Palm Fronds (Top Right) */}
-            <g transform="translate(1020, -50) scale(1.1)" stroke="#0f8a5f" strokeWidth="1.8" fill="none" opacity="0.55">
-              <path d="M300 0 Q180 120 20 200" strokeWidth="3.5" stroke="#0b704c" />
+            {/* AVOCADO 2: Tilted Happy Avocado (Right Side, Peeking - Exact Messenger Layout) */}
+            <g transform="translate(1080, 220) rotate(-14) scale(0.95)" filter="url(#avocado-glow)">
+              <path d="M100 38 Q108 20 122 14" stroke="#4a3728" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+              <path d="M115 16 C132 12 138 25 122 30 C110 32 106 22 115 16 Z" fill="#466859" stroke="#355245" strokeWidth="1.5" />
+
+              <path
+                d="M100 35 C135 35 155 65 155 105 C155 135 140 155 170 195 C205 240 185 305 130 325 C65 345 20 300 15 235 C10 165 45 135 55 100 C65 60 70 35 100 35 Z"
+                fill="#547b6e"
+                stroke="#3d5e53"
+                strokeWidth="4"
+              />
+              <path
+                d="M100 48 C128 48 143 72 143 108 C143 135 128 152 154 190 C184 230 166 288 120 306 C66 322 30 284 26 230 C22 170 50 144 60 110 C68 75 75 48 100 48 Z"
+                fill="#9ec4b5"
+              />
+
+              {/* Eyes with wink: Left wink, Right happy open eye */}
+              <ellipse cx="70" cy="142" rx="9" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+              <ellipse cx="130" cy="142" rx="9" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+
+              <path d="M72 134 Q82 144 92 134" stroke="#374d44" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <circle cx="118" cy="132" r="4.5" fill="#374d44" />
+              <circle cx="120" cy="130" r="1.5" fill="#ffffff" />
+
+              {/* Cute smiling mouth */}
+              <path d="M94 148 Q100 158 106 148" stroke="#374d44" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+
+              {/* Seed */}
+              <g filter="url(#seed-shadow)">
+                <ellipse cx="100" cy="235" rx="42" ry="46" fill="#5c4028" stroke="#48321e" strokeWidth="2.5" />
+                <path d="M80 205 C95 195 118 200 126 215 C118 206 100 204 86 215 Z" fill="#875f3d" />
+              </g>
+            </g>
+
+            {/* AVOCADO 3: Bottom Left Avocado (Chilling with sleepy cute face) */}
+            <g transform="translate(80, 520) rotate(12) scale(0.85)" filter="url(#avocado-glow)">
+              <path d="M100 38 Q95 18 80 12" stroke="#4a3728" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+              <path d="M86 16 C68 12 62 25 78 30 C90 32 94 22 86 16 Z" fill="#466859" stroke="#355245" strokeWidth="1.5" />
+
+              <path
+                d="M100 35 C135 35 155 65 155 105 C155 135 140 155 170 195 C205 240 185 305 130 325 C65 345 20 300 15 235 C10 165 45 135 55 100 C65 60 70 35 100 35 Z"
+                fill="#547b6e"
+                stroke="#3d5e53"
+                strokeWidth="4"
+              />
+              <path
+                d="M100 48 C128 48 143 72 143 108 C143 135 128 152 154 190 C184 230 166 288 120 306 C66 322 30 284 26 230 C22 170 50 144 60 110 C68 75 75 48 100 48 Z"
+                fill="#9ec4b5"
+              />
+
+              <ellipse cx="70" cy="144" rx="8" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+              <ellipse cx="130" cy="144" rx="8" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+              <path d="M72 135 Q82 145 92 135" stroke="#374d44" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <path d="M108 135 Q118 145 128 135" stroke="#374d44" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <path d="M98 150 Q100 154 102 150" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+
+              <g filter="url(#seed-shadow)">
+                <ellipse cx="100" cy="235" rx="42" ry="46" fill="#5c4028" stroke="#48321e" strokeWidth="2.5" />
+                <path d="M80 205 C95 195 118 200 126 215 C118 206 100 204 86 215 Z" fill="#875f3d" />
+              </g>
+            </g>
+
+            {/* AVOCADO 4: Bottom Right Avocado (Peeking up from bottom) */}
+            <g transform="translate(980, 560) rotate(-8) scale(0.8)" filter="url(#avocado-glow)">
+              <path d="M100 38 Q108 20 122 14" stroke="#4a3728" strokeWidth="5.5" strokeLinecap="round" fill="none" />
+              <path d="M115 16 C132 12 138 25 122 30 C110 32 106 22 115 16 Z" fill="#466859" />
+
+              <path
+                d="M100 35 C135 35 155 65 155 105 C155 135 140 155 170 195 C205 240 185 305 130 325 C65 345 20 300 15 235 C10 165 45 135 55 100 C65 60 70 35 100 35 Z"
+                fill="#547b6e"
+                stroke="#3d5e53"
+                strokeWidth="4"
+              />
+              <path
+                d="M100 48 C128 48 143 72 143 108 C143 135 128 152 154 190 C184 230 166 288 120 306 C66 322 30 284 26 230 C22 170 50 144 60 110 C68 75 75 48 100 48 Z"
+                fill="#9ec4b5"
+              />
+
+              <ellipse cx="70" cy="144" rx="8" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+              <ellipse cx="130" cy="144" rx="8" ry="6" fill="#f8a5ab" fillOpacity="0.5" />
+              <circle cx="82" cy="135" r="4" fill="#374d44" />
+              <circle cx="118" cy="135" r="4" fill="#374d44" />
+              <path d="M96 148 Q100 156 104 148" stroke="#374d44" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+
+              <g filter="url(#seed-shadow)">
+                <ellipse cx="100" cy="235" rx="42" ry="46" fill="#5c4028" stroke="#48321e" strokeWidth="2.5" />
+              </g>
+            </g>
+
+            {/* Floating Soft Ambient Green Halo Spheres (Messenger Style) */}
+            <circle cx="480" cy="160" r="14" fill="#7ca895" fillOpacity="0.25" filter="url(#avocado-glow)" />
+            <circle cx="780" cy="320" r="10" fill="#7ca895" fillOpacity="0.2" filter="url(#avocado-glow)" />
+            <circle cx="340" cy="560" r="16" fill="#7ca895" fillOpacity="0.2" filter="url(#avocado-glow)" />
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
+          2. LOFI CAFE: KAWAII BOBA TEA CUP & STEAMING COFFEE MUG MASCOTS
+          ========================================================================= */}
+      {themeId === 'lofi-cafe' && (
+        <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="cafe-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="14" floodColor="#d97706" floodOpacity="0.35" />
+              </filter>
+            </defs>
+
+            {/* Cute Boba Milk Tea Cup (Top-Left) */}
+            <g transform="translate(60, 40) rotate(-6) scale(1)" filter="url(#cafe-glow)">
+              {/* Pink Bent Straw */}
+              <path d="M120 10 L120 40 L105 80" stroke="#f472b6" strokeWidth="12" strokeLinecap="round" fill="none" />
+              {/* Cup Lid Dome */}
+              <ellipse cx="100" cy="65" rx="60" ry="16" fill="#ffffff" stroke="#e5e7eb" strokeWidth="2" />
+              {/* Cup Body */}
+              <path d="M45 65 L60 210 Q62 230 100 230 Q138 230 140 210 L155 65 Z" fill="#edd6be" stroke="#d5b292" strokeWidth="3" />
+              {/* Rich Iced Milk Tea Layer */}
+              <path d="M48 90 L59 205 Q62 225 100 225 Q138 225 141 205 L152 90 Z" fill="#d4976a" />
+              {/* Milk swirl top */}
+              <path d="M48 90 Q100 110 152 90 Q100 75 48 90 Z" fill="#fff7ed" />
+              {/* Glossy Tapioca Boba Pearls */}
               {[
-                { x: 260, y: 30, len: 70, ang: -45 },
-                { x: 220, y: 65, len: 85, ang: -40 },
-                { x: 180, y: 95, len: 90, ang: -35 },
-                { x: 140, y: 125, len: 85, ang: -30 },
-                { x: 100, y: 155, len: 75, ang: -25 },
-                { x: 60, y: 180, len: 65, ang: -20 },
+                { cx: 75, cy: 195, r: 10 },
+                { cx: 98, cy: 205, r: 11 },
+                { cx: 122, cy: 198, r: 10 },
+                { cx: 85, cy: 175, r: 9.5 },
+                { cx: 110, cy: 180, r: 10.5 },
+                { cx: 130, cy: 178, r: 9 }
               ].map((p, i) => (
-                <path
-                  key={i}
-                  d={`M${p.x} ${p.y} q${p.len / 2} 20 ${p.len} 0`}
-                  strokeLinecap="round"
-                />
+                <circle key={i} cx={p.cx} cy={p.cy} r={p.r} fill="#29180c" />
               ))}
+              {/* Kawaii Face on Cup */}
+              <circle cx="82" cy="135" r="4.5" fill="#382417" />
+              <circle cx="84" cy="133" r="1.5" fill="#ffffff" />
+              <circle cx="118" cy="135" r="4.5" fill="#382417" />
+              <circle cx="120" cy="133" r="1.5" fill="#ffffff" />
+              <ellipse cx="73" cy="144" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <ellipse cx="127" cy="144" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <path d="M95 142 Q100 150 105 142" stroke="#382417" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             </g>
 
-            {/* Greenhouse Arch Glass Windows (Center Background) */}
-            <g transform="translate(480, 500) scale(1)" stroke="#0f8a5f" strokeWidth="1" fill="none" opacity="0.2">
-              <path d="M0 240 L0 100 A160 160 0 0 1 320 100 L320 240" strokeWidth="2" />
-              <line x1="80" y1="240" x2="80" y2="40" />
-              <line x1="160" y1="240" x2="160" y2="20" strokeWidth="2" />
-              <line x1="240" y1="240" x2="240" y2="40" />
-              <line x1="0" y1="160" x2="320" y2="160" />
+            {/* Steaming Coffee Mug Character (Bottom-Right) */}
+            <g transform="translate(1080, 520) rotate(8) scale(0.95)" filter="url(#cafe-glow)">
+              {/* Saucer */}
+              <ellipse cx="100" cy="170" rx="75" ry="16" fill="#f5ede2" stroke="#d5c2ad" strokeWidth="2.5" />
+              {/* Mug Body */}
+              <path d="M45 80 Q40 145 100 150 Q160 145 155 80 Z" fill="#ffffff" stroke="#d5c2ad" strokeWidth="3" />
+              {/* Handle */}
+              <path d="M152 90 Q185 90 180 120 Q175 140 145 135" stroke="#d5c2ad" strokeWidth="6" strokeLinecap="round" fill="none" />
+              {/* Coffee Surface & Heart Latte Art */}
+              <ellipse cx="100" cy="80" rx="55" ry="14" fill="#6f3e1b" />
+              <path d="M100 82 C93 74 80 74 80 82 C80 91 100 98 100 98 C100 98 120 91 120 82 C120 74 107 74 100 82 Z" fill="#fff7ed" />
+              {/* Kawaii Sleepy Face */}
+              <path d="M78 115 Q86 122 94 115" stroke="#6f3e1b" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <path d="M106 115 Q114 122 122 115" stroke="#6f3e1b" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <ellipse cx="70" cy="122" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <ellipse cx="130" cy="122" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              {/* Rising Steam Heart */}
+              <path d="M100 55 C90 40 75 40 75 52 C75 64 100 74 100 74 C100 74 125 64 125 52 C125 40 110 40 100 55 Z" fill="#f59e0b" fillOpacity="0.3" className="animate-steam-1" />
             </g>
 
-            {/* Glowing Fireflies (Scattered with bioluminescence) */}
-            <g fill="#84cc16" opacity="0.75">
-              {[
-                { cx: 320, cy: 180, r: 4 },
-                { cx: 480, cy: 340, r: 3.5 },
-                { cx: 860, cy: 260, r: 4.5 },
-                { cx: 240, cy: 520, r: 3 },
-                { cx: 980, cy: 620, r: 4 },
-                { cx: 720, cy: 480, r: 3.5 },
-              ].map((f, i) => (
-                <g key={i}>
-                  <circle cx={f.cx} cy={f.cy} r={f.r * 2.5} fill="#84cc16" fillOpacity="0.2" className="animate-ping" />
-                  <circle cx={f.cx} cy={f.cy} r={f.r} fill="#a3e635" />
-                </g>
-              ))}
+            {/* Glazed Pink Strawberry Donut (Top-Right) */}
+            <g transform="translate(1120, 60) scale(0.85)" filter="url(#cafe-glow)">
+              <circle cx="80" cy="80" r="60" fill="#f3af65" stroke="#d48835" strokeWidth="3" />
+              <circle cx="80" cy="80" r="50" fill="#f472b6" />
+              <circle cx="80" cy="80" r="22" fill="#fbf7f0" stroke="#d48835" strokeWidth="2.5" />
+              {/* Sprinkles */}
+              <line x1="60" y1="45" x2="70" y2="40" stroke="#fef08a" strokeWidth="4" strokeLinecap="round" />
+              <line x1="95" y1="42" x2="105" y2="48" stroke="#60a5fa" strokeWidth="4" strokeLinecap="round" />
+              <line x1="115" y1="75" x2="125" y2="70" stroke="#a7f3d0" strokeWidth="4" strokeLinecap="round" />
+              <line x1="50" y1="95" x2="60" y2="102" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
             </g>
           </svg>
         </div>
       )}
 
-      {/* 6. SUNSET WAVES: GREAT OCEAN WAVE, GOLDEN SUN & FLYING SEAGULLS */}
+      {/* =========================================================================
+          3. SAKURA BLOSSOM: KAWAII SLEEPING KITTY & MOCHI DANGO SKEWER
+          ========================================================================= */}
+      {themeId === 'sakura-blossom' && (
+        <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="sakura-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#f472b6" floodOpacity="0.5" />
+              </filter>
+            </defs>
+
+            {/* Adorable Chubby White Kitten Sleeping (Top-Left) */}
+            <g transform="translate(60, 45) scale(1)" filter="url(#sakura-glow)">
+              {/* Kitty Body */}
+              <ellipse cx="110" cy="115" rx="75" ry="55" fill="#ffffff" stroke="#fbcfe8" strokeWidth="3" />
+              {/* Fluffy Tail Curled */}
+              <path d="M180 115 C200 90 205 135 175 140" stroke="#ffffff" strokeWidth="18" strokeLinecap="round" fill="none" />
+              <path d="M180 115 C200 90 205 135 175 140" stroke="#fbcfe8" strokeWidth="3" strokeLinecap="round" fill="none" />
+              {/* Kitty Head */}
+              <circle cx="75" cy="85" r="45" fill="#ffffff" stroke="#fbcfe8" strokeWidth="3" />
+              {/* Left & Right Ears */}
+              <polygon points="45,55 35,20 70,45" fill="#ffffff" stroke="#fbcfe8" strokeWidth="3" />
+              <polygon points="50,50 42,28 65,46" fill="#fca5a5" />
+              <polygon points="90,45 115,20 110,55" fill="#ffffff" stroke="#fbcfe8" strokeWidth="3" />
+              <polygon points="95,46 110,28 105,50" fill="#fca5a5" />
+              {/* Sakura Blossom on Ear */}
+              <g transform="translate(108, 45) scale(0.7)">
+                {[0, 72, 144, 216, 288].map((ang, i) => (
+                  <path key={i} d="M0 0 C-6 -16 6 -16 0 -22 C-6 -16 6 -16 0 0" transform={`rotate(${ang})`} fill="#f472b6" />
+                ))}
+                <circle cx="0" cy="0" r="3" fill="#fbbf24" />
+              </g>
+              {/* Cute Sleeping Face: (- w -) */}
+              <path d="M52 85 Q62 93 72 85" stroke="#472233" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <path d="M82 85 Q92 93 102 85" stroke="#472233" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+              <polygon points="76,92 78,95 80,92" fill="#f43f5e" />
+              <path d="M74 97 Q77 101 80 97 Q83 101 86 97" stroke="#472233" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* Whiskers & Blush */}
+              <line x1="38" y1="88" x2="22" y2="86" stroke="#fbcfe8" strokeWidth="2" strokeLinecap="round" />
+              <line x1="38" y1="94" x2="22" y2="98" stroke="#fbcfe8" strokeWidth="2" strokeLinecap="round" />
+              <ellipse cx="48" cy="95" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <ellipse cx="106" cy="95" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+            </g>
+
+            {/* Tri-Color Mochi Dango Skewer (Bottom-Right) */}
+            <g transform="translate(1100, 520) rotate(-18) scale(0.9)" filter="url(#sakura-glow)">
+              {/* Wooden Stick */}
+              <line x1="30" y1="30" x2="160" y2="160" stroke="#d97706" strokeWidth="6" strokeLinecap="round" />
+              {/* Pink Dango (Happy) */}
+              <circle cx="60" cy="60" r="24" fill="#f472b6" stroke="#db2777" strokeWidth="2.5" />
+              <circle cx="53" cy="58" r="2.5" fill="#831843" />
+              <circle cx="67" cy="58" r="2.5" fill="#831843" />
+              <path d="M57 65 Q60 69 63 65" stroke="#831843" strokeWidth="2" strokeLinecap="round" fill="none" />
+              {/* White Dango (Wink) */}
+              <circle cx="95" cy="95" r="24" fill="#ffffff" stroke="#e5e7eb" strokeWidth="2.5" />
+              <path d="M88 93 Q92 97 96 93" stroke="#4b5563" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <circle cx="104" cy="93" r="2.5" fill="#4b5563" />
+              {/* Green Matcha Dango (Sleepy) */}
+              <circle cx="130" cy="130" r="24" fill="#86efac" stroke="#16a34a" strokeWidth="2.5" />
+              <path d="M122 128 Q126 134 130 128" stroke="#14532d" strokeWidth="2" strokeLinecap="round" fill="none" />
+              <path d="M134 128 Q138 134 142 128" stroke="#14532d" strokeWidth="2" strokeLinecap="round" fill="none" />
+            </g>
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
+          4. COSMIC GALAXY: CHIBI ASTRONAUT & BABY SATURN MASCOT
+          ========================================================================= */}
+      {themeId === 'cosmic-galaxy' && (
+        <div className="absolute inset-0 opacity-[0.95] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="cosmic-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#c084fc" floodOpacity="0.6" />
+              </filter>
+            </defs>
+
+            {/* Chibi Astronaut Mascot (Top-Left) */}
+            <g transform="translate(60, 50) rotate(8) scale(1.05)" filter="url(#cosmic-glow)">
+              {/* Star Balloon Tether */}
+              <path d="M110 50 Q130 20 150 10" stroke="#c084fc" strokeWidth="2" strokeDasharray="3 3" fill="none" />
+              <polygon points="150,0 156,12 168,14 158,22 162,34 150,26 138,34 142,22 132,14 144,12" fill="#facc15" stroke="#eab308" strokeWidth="1.5" />
+              {/* Backpack Oxygen Tank */}
+              <rect x="35" y="65" width="22" height="60" rx="8" fill="#a855f7" stroke="#7e22ce" strokeWidth="2" />
+              {/* Chubby Suit Body */}
+              <rect x="50" y="70" width="55" height="60" rx="18" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="3" />
+              {/* Cute Bubble Helmet */}
+              <circle cx="78" cy="50" r="36" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="3" />
+              {/* Gold/Cyan Mirrored Visor with Smiley Face Reflection */}
+              <ellipse cx="78" cy="50" rx="26" ry="20" fill="#38bdf8" stroke="#0284c7" strokeWidth="2" />
+              <ellipse cx="74" cy="46" rx="20" ry="12" fill="#0369a1" />
+              {/* Visor Cute Reflection: (^ o ^) */}
+              <path d="M66 48 Q70 54 74 48" stroke="#bae6fd" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <path d="M78 48 Q82 54 86 48" stroke="#bae6fd" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              {/* Waving Hand Mitten */}
+              <circle cx="118" cy="75" r="11" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2.5" />
+              {/* Feet */}
+              <rect x="52" y="125" width="22" height="18" rx="8" fill="#a855f7" />
+              <rect x="80" y="125" width="22" height="18" rx="8" fill="#a855f7" />
+            </g>
+
+            {/* Baby Saturn Character (Bottom-Right) */}
+            <g transform="translate(1080, 500) rotate(-14) scale(1)" filter="url(#cosmic-glow)">
+              {/* Planet Rings Behind */}
+              <ellipse cx="100" cy="100" rx="90" ry="26" fill="none" stroke="#f472b6" strokeWidth="10" strokeOpacity="0.4" transform="rotate(-15 100 100)" />
+              {/* Purple Planet Body */}
+              <circle cx="100" cy="100" r="50" fill="#7c3aed" stroke="#6d28d9" strokeWidth="3" />
+              {/* Planet Rings Front */}
+              <path d="M15 100 A90 26 0 0 0 185 100" fill="none" stroke="#f472b6" strokeWidth="10" strokeLinecap="round" transform="rotate(-15 100 100)" />
+              {/* Kawaii Sleepy Face */}
+              <path d="M80 94 Q88 102 96 94" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <path d="M106 94 Q114 102 122 94" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" fill="none" />
+              <ellipse cx="74" cy="102" rx="7" ry="5" fill="#ec4899" />
+              <ellipse cx="128" cy="102" rx="7" ry="5" fill="#ec4899" />
+              <path d="M98 106 Q101 110 104 106" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" fill="none" />
+            </g>
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
+          5. SUNSET WAVES: CHUBBY BABY WHALE & SUNNY SMILE MASCOT
+          ========================================================================= */}
       {themeId === 'sunset-waves' && (
-        <div className="absolute inset-0 opacity-[0.42] transition-opacity duration-700">
+        <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <radialGradient id="sunset-sun-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#f97316" stopOpacity="0.8" />
-                <stop offset="40%" stopColor="#fb923c" stopOpacity="0.4" />
-                <stop offset="80%" stopColor="#fdba74" stopOpacity="0.15" />
-                <stop offset="100%" stopColor="#fdf8f5" stopOpacity="0" />
-              </radialGradient>
+              <filter id="sunset-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#f97316" floodOpacity="0.45" />
+              </filter>
             </defs>
 
-            {/* Radiant Setting Sun (Center Horizon) */}
-            <g transform="translate(620, 360)">
-              <circle cx="100" cy="100" r="140" fill="url(#sunset-sun-glow)" />
-              <circle cx="100" cy="100" r="65" fill="#ea580c" fillOpacity="0.3" stroke="#ea580c" strokeWidth="2" />
-              {/* Concentric Horizon Rings */}
-              <line x1="-150" y1="140" x2="350" y2="140" stroke="#ea580c" strokeWidth="2" strokeDasharray="12 6" opacity="0.4" />
-              <line x1="-100" y1="160" x2="300" y2="160" stroke="#ea580c" strokeWidth="1.5" strokeDasharray="8 4" opacity="0.3" />
+            {/* Chubby Baby Blue Whale (Bottom-Left) */}
+            <g transform="translate(60, 520) scale(1)" filter="url(#sunset-glow)">
+              {/* Heart Water Sprout */}
+              <path d="M90 35 C80 20 65 20 65 32 C65 44 90 55 90 55 C90 55 115 44 115 32 C115 20 100 20 90 35 Z" fill="#38bdf8" />
+              <path d="M90 55 L90 70" stroke="#38bdf8" strokeWidth="4" strokeLinecap="round" />
+              {/* Whale Body */}
+              <path d="M20 120 C20 70 80 60 140 70 C190 80 210 110 240 90 C240 120 220 145 190 145 C140 145 70 150 20 120 Z" fill="#60a5fa" stroke="#3b82f6" strokeWidth="3" />
+              {/* White Belly */}
+              <path d="M40 125 C70 140 120 142 170 135 C140 145 90 145 40 125 Z" fill="#ffffff" />
+              {/* Waving Flipper */}
+              <ellipse cx="100" cy="125" rx="20" ry="10" fill="#3b82f6" transform="rotate(20 100 125)" />
+              {/* Shiny Kawaii Eye & Rosy Cheek */}
+              <circle cx="65" cy="98" r="5" fill="#1e3a8a" />
+              <circle cx="67" cy="96" r="1.8" fill="#ffffff" />
+              <ellipse cx="60" cy="108" rx="8" ry="5" fill="#fca5a5" fillOpacity="0.7" />
+              <path d="M75 106 Q82 112 88 106" stroke="#1e3a8a" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             </g>
 
-            {/* Ukiyo-e Great Ocean Waves (Rolling along bottom edge) */}
-            <g transform="translate(0, 560) scale(1)" stroke="#ea580c" strokeWidth="2" fill="none" opacity="0.5">
-              {/* Wave crest 1 */}
-              <path
-                d="M-40 180 Q120 180 220 120 Q290 80 320 30 Q330 0 310 20 Q280 40 250 80 Q180 130 80 140 Z"
-                fill="#ea580c"
-                fillOpacity="0.08"
-              />
-              {/* Wave crest 2 */}
-              <path
-                d="M300 200 Q500 200 620 130 Q700 80 740 20 Q750 -10 720 10 Q680 40 640 90 Q560 140 450 160 Z"
-                fill="#ea580c"
-                fillOpacity="0.1"
-              />
-              {/* Wave crest 3 */}
-              <path
-                d="M720 220 Q920 220 1060 140 Q1140 90 1180 30 Q1200 -5 1170 15 Q1120 50 1080 100 Q980 160 860 180 Z"
-                fill="#ea580c"
-                fillOpacity="0.08"
-              />
-            </g>
-
-            {/* Flying Seagull Silhouettes in V-Formation */}
-            <g stroke="#ea580c" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.55">
-              <path d="M220 160 Q235 145 250 160 Q265 145 280 160" />
-              <path d="M270 130 Q282 118 295 130 Q307 118 320 130" transform="scale(0.85)" />
-              <path d="M320 170 Q330 160 340 170 Q350 160 360 170" transform="scale(0.75)" />
-            </g>
-
-            {/* Swaying Coastal Palm Silhouette (Right Border) */}
-            <g transform="translate(1180, 160) scale(0.95)" stroke="#ea580c" strokeWidth="2" fill="none" opacity="0.45">
-              <path d="M80 450 Q40 250 20 120" strokeWidth="8" strokeLinecap="round" stroke="#c2410c" />
-              {/* Palm fronds */}
-              <path d="M20 120 Q-60 80 -120 140" strokeWidth="3" />
-              <path d="M20 120 Q-20 40 -60 0" strokeWidth="3" />
-              <path d="M20 120 Q60 50 100 20" strokeWidth="3" />
-              <path d="M20 120 Q80 100 120 160" strokeWidth="3" />
+            {/* Smiling Sun with Sunglasses (Top-Right) */}
+            <g transform="translate(1120, 50) scale(0.95)" filter="url(#sunset-glow)">
+              {/* Sun Body */}
+              <circle cx="80" cy="80" r="55" fill="#f59e0b" stroke="#d97706" strokeWidth="3" />
+              {/* Cool Dark Sunglasses */}
+              <rect x="42" y="65" width="34" height="24" rx="6" fill="#1e293b" />
+              <rect x="84" y="65" width="34" height="24" rx="6" fill="#1e293b" />
+              <line x1="74" y1="72" x2="84" y2="72" stroke="#1e293b" strokeWidth="4" />
+              <line x1="46" y1="70" x2="60" y2="84" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="88" y1="70" x2="102" y2="84" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" />
+              {/* Smile & Rosy Cheeks */}
+              <ellipse cx="38" cy="96" rx="8" ry="5" fill="#ef4444" fillOpacity="0.5" />
+              <ellipse cx="122" cy="96" rx="8" ry="5" fill="#ef4444" fillOpacity="0.5" />
+              <path d="M70 102 Q80 114 90 102" stroke="#78350f" strokeWidth="3" strokeLinecap="round" fill="none" />
             </g>
           </svg>
         </div>
       )}
 
-      {/* 7. CYBERPUNK NEON: NEO-TOKYO MATRIX, CIRCUIT HUD & GLITCH TELEMETRY */}
+      {/* =========================================================================
+          6. CYBERPUNK NEON: RETRO CHIBI ROBOT & PIXEL HEART
+          ========================================================================= */}
       {themeId === 'cyberpunk-neon' && (
-        <div className="absolute inset-0 opacity-[0.55] transition-opacity duration-700">
+        <div className="absolute inset-0 opacity-[0.95] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern id="cyber-hex" x="0" y="0" width="40" height="69.28" patternUnits="userSpaceOnUse">
-                <path
-                  d="M40 0 L20 11.55 L0 0 L0 23.09 L20 34.64 L40 23.09 Z M0 46.19 L20 57.74 L40 46.19 L40 69.28 L20 80.83 L0 69.28 Z"
-                  stroke="#06b6d4"
-                  strokeWidth="0.6"
-                  strokeOpacity="0.15"
-                  fill="none"
-                />
-              </pattern>
+              <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#06b6d4" floodOpacity="0.65" />
+              </filter>
             </defs>
-            <rect width="100%" height="100%" fill="url(#cyber-hex)" />
 
-            {/* High-tech HUD Targeting Reticle (Top Right) */}
-            <g transform="translate(1080, 70) scale(0.95)" stroke="#06b6d4" fill="none" opacity="0.6">
-              <circle cx="120" cy="120" r="100" strokeWidth="1.5" strokeDasharray="8 6" />
-              <circle cx="120" cy="120" r="80" strokeWidth="1" strokeDasharray="3 4" />
-              <circle cx="120" cy="120" r="40" strokeWidth="2" />
-              <circle cx="120" cy="120" r="6" fill="#06b6d4" />
-              {/* Corner brackets */}
-              <path d="M10 40 L10 10 L40 10" strokeWidth="2.5" />
-              <path d="M230 40 L230 10 L200 10" strokeWidth="2.5" />
-              <path d="M10 200 L10 230 L40 230" strokeWidth="2.5" />
-              <path d="M230 200 L230 230 L200 230" strokeWidth="2.5" />
-              {/* Angle scale ticks */}
-              <line x1="20" y1="120" x2="220" y2="120" strokeWidth="1" strokeDasharray="4 4" />
-              <line x1="120" y1="20" x2="120" y2="220" strokeWidth="1" strokeDasharray="4 4" />
+            {/* Chibi CRT Monitor Robot (Top-Left) */}
+            <g transform="translate(60, 45) rotate(-6) scale(1)" filter="url(#neon-glow)">
+              {/* Antenna */}
+              <line x1="85" y1="35" x2="85" y2="15" stroke="#06b6d4" strokeWidth="4" />
+              <circle cx="85" cy="12" r="7" fill="#ec4899" />
+              {/* Monitor Head */}
+              <rect x="35" y="35" width="100" height="85" rx="18" fill="#1e293b" stroke="#06b6d4" strokeWidth="3.5" />
+              {/* Glowing CRT Face Screen */}
+              <rect x="45" y="45" width="80" height="65" rx="10" fill="#0f172a" stroke="#0891b2" strokeWidth="2" />
+              {/* Pixel Face: ( ^ o ^ ) */}
+              <path d="M58 70 L65 62 L72 70" stroke="#22d3ee" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M98 70 L105 62 L112 70" stroke="#22d3ee" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <ellipse cx="85" cy="84" rx="8" ry="7" fill="#22d3ee" />
+              {/* Pink Pixel Blush */}
+              <rect x="54" y="80" width="8" height="5" fill="#f43f5e" />
+              <rect x="108" y="80" width="8" height="5" fill="#f43f5e" />
+              {/* Robot Body */}
+              <rect x="55" y="125" width="60" height="45" rx="12" fill="#1e293b" stroke="#06b6d4" strokeWidth="3" />
+              <circle cx="85" cy="148" r="8" fill="#ec4899" />
             </g>
 
-            {/* Cyberpunk City Skyline Silhouette (Bottom Edge) */}
-            <g transform="translate(0, 580)" fill="#090d16" stroke="#06b6d4" strokeWidth="1.2" opacity="0.7">
-              <polygon points="40,200 40,90 90,90 90,200" fill="#0c1424" />
-              <polygon points="100,200 100,50 160,50 160,200" fill="#0e182c" />
-              <line x1="130" y1="50" x2="130" y2="10" stroke="#ec4899" strokeWidth="2" />
-              <polygon points="180,200 180,120 230,120 230,200" fill="#0c1424" />
-              <polygon points="250,200 250,40 320,40 320,200" fill="#13213a" />
-              <circle cx="285" cy="40" r="3" fill="#06b6d4" />
-              <polygon points="340,200 340,110 410,110 410,200" fill="#0c1424" />
-              <polygon points="430,200 430,70 510,70 510,200" fill="#0e182c" />
-              {/* Digital Grid Horizon Line */}
-              <line x1="0" y1="200" x2="1600" y2="200" stroke="#06b6d4" strokeWidth="2" />
-            </g>
-
-            {/* Glowing Circuit Traces with Pulse Nodes */}
-            <g stroke="#06b6d4" strokeWidth="1.5" fill="none" opacity="0.5">
-              <path d="M80 60 L140 60 L190 110 L320 110" />
-              <circle cx="80" cy="60" r="4" fill="#06b6d4" />
-              <circle cx="320" cy="110" r="4" fill="#06b6d4" />
-
-              <path d="M40 340 L120 340 L160 380 L160 480" />
-              <circle cx="40" cy="340" r="4" fill="#ec4899" stroke="#ec4899" />
-              <circle cx="160" cy="480" r="4" fill="#ec4899" stroke="#ec4899" />
+            {/* Glowing Pixel Heart (Bottom-Right) */}
+            <g transform="translate(1120, 520) scale(0.9)" filter="url(#neon-glow)">
+              <path
+                d="M50 20 L70 20 L70 30 L80 30 L80 20 L100 20 L100 40 L90 40 L90 50 L80 50 L80 60 L70 60 L70 70 L60 70 L60 60 L50 60 L50 50 L40 50 L40 40 L30 40 L30 20 L50 20 Z"
+                fill="#ec4899"
+                stroke="#f43f5e"
+                strokeWidth="2"
+              />
             </g>
           </svg>
         </div>
       )}
 
-      {/* 8. LEMON CITRUS: TRANSLUCENT CITRUS SLICES, FIZZY BUBBLES & SUNBURST */}
+      {/* =========================================================================
+          7. LEMON CITRUS: CHUBBY SUNNY LEMON & JUICY ORANGE WHEEL MASCOTS
+          ========================================================================= */}
       {themeId === 'lemon-citrus' && (
-        <div className="absolute inset-0 opacity-[0.38] transition-opacity duration-700">
-          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            {/* Glowing Summer Sunburst (Top Right) */}
-            <g transform="translate(1150, 40)" opacity="0.4">
-              <circle cx="80" cy="80" r="70" fill="#fef08a" />
-              {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => (
-                <line
-                  key={i}
-                  x1="80"
-                  y1="80"
-                  x2={80 + 130 * Math.cos((deg * Math.PI) / 180)}
-                  y2={80 + 130 * Math.sin((deg * Math.PI) / 180)}
-                  stroke="#d97706"
-                  strokeWidth="2"
-                  strokeDasharray="6 8"
-                />
-              ))}
-            </g>
-
-            {/* Juicy Sliced Lemon Wheel (Top Left) */}
-            <g transform="translate(80, 70) scale(1.1)" stroke="#d97706" fill="none" opacity="0.55">
-              {/* Outer Rind */}
-              <circle cx="80" cy="80" r="70" strokeWidth="6" stroke="#f59e0b" fill="#fef3c7" fillOpacity="0.15" />
-              <circle cx="80" cy="80" r="62" strokeWidth="2" stroke="#fbbf24" />
-              <circle cx="80" cy="80" r="10" fill="#f59e0b" />
-              {/* 8 Citrus Vesicle Wedges */}
-              {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, idx) => (
-                <path
-                  key={idx}
-                  d="M80 80 L73 24 A58 58 0 0 1 87 24 Z"
-                  transform={`rotate(${angle} 80 80)`}
-                  fill="#fef08a"
-                  fillOpacity="0.4"
-                  stroke="#f59e0b"
-                  strokeWidth="1.2"
-                />
-              ))}
-            </g>
-
-            {/* Half Sliced Orange Wheel (Bottom Right) */}
-            <g transform="translate(1080, 540) scale(1)" stroke="#ea580c" fill="none" opacity="0.5">
-              <path d="M20 100 A80 80 0 0 1 180 100 Z" strokeWidth="5" stroke="#ea580c" fill="#ffedd5" fillOpacity="0.2" />
-              <line x1="20" y1="100" x2="180" y2="100" strokeWidth="4" />
-              {[30, 60, 90, 120, 150].map((angle, idx) => (
-                <line
-                  key={idx}
-                  x1="100"
-                  y1="100"
-                  x2={100 + 70 * Math.cos((angle * Math.PI) / 180)}
-                  y2={100 - 70 * Math.sin((angle * Math.PI) / 180)}
-                  strokeWidth="1.5"
-                />
-              ))}
-            </g>
-
-            {/* Fresh Mint Leaves (Bottom Left) */}
-            <g transform="translate(100, 580) scale(0.9)" stroke="#65a30d" fill="#84cc16" fillOpacity="0.2" opacity="0.5">
-              <path d="M30 60 C30 10 90 20 110 50 C110 90 50 90 30 60 Z" strokeWidth="2" />
-              <path d="M30 60 Q70 50 110 50" strokeWidth="1.8" fill="none" />
-              <path d="M80 80 C80 50 130 55 145 75 C145 105 100 105 80 80 Z" strokeWidth="2" />
-            </g>
-
-            {/* Effervescent Rising Fizz Bubbles */}
-            <g fill="none" stroke="#d97706" strokeWidth="1.2" opacity="0.4">
-              {[
-                { cx: 320, cy: 350, r: 6 },
-                { cx: 335, cy: 280, r: 4 },
-                { cx: 480, cy: 450, r: 8 },
-                { cx: 720, cy: 380, r: 5 },
-                { cx: 860, cy: 220, r: 7 },
-                { cx: 940, cy: 480, r: 6 },
-              ].map((b, i) => (
-                <circle key={i} cx={b.cx} cy={b.cy} r={b.r} />
-              ))}
-            </g>
-          </svg>
-        </div>
-      )}
-
-      {/* 9. NORDIC FROST: AURORA BOREALIS, SNOWY PINES & CRYSTALLINE FLAKES */}
-      {themeId === 'nordic-frost' && (
-        <div className="absolute inset-0 opacity-[0.45] transition-opacity duration-700">
+        <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="aurora-glow-1" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.35" />
-                <stop offset="50%" stopColor="#10b981" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#6366f1" stopOpacity="0.25" />
-              </linearGradient>
+              <filter id="citrus-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#f59e0b" floodOpacity="0.45" />
+              </filter>
             </defs>
 
-            {/* Aurora Borealis Shimmering Wave (Upper Atmosphere) */}
-            <g opacity="0.75">
+            {/* Chubby Kawaii Lemon Character (Top-Left) */}
+            <g transform="translate(60, 45) rotate(10) scale(1)" filter="url(#citrus-glow)">
+              {/* Little Green Leaf */}
+              <path d="M95 35 C110 15 130 25 125 40 C115 45 105 40 95 35 Z" fill="#84cc16" stroke="#65a30d" strokeWidth="2" />
+              {/* Lemon Body */}
               <path
-                d="M-50 120 Q300 40 700 160 T1500 80 L1500 0 L-50 0 Z"
-                fill="url(#aurora-glow-1)"
-                filter="blur(16px)"
+                d="M30 100 C30 60 70 35 100 35 C130 35 170 60 170 100 C170 140 130 165 100 165 C70 165 30 140 30 100 Z"
+                fill="#fde047"
+                stroke="#eab308"
+                strokeWidth="3.5"
               />
-              <path
-                d="M-50 160 Q400 90 850 210 T1600 120 L1600 0 L-50 0 Z"
-                fill="url(#aurora-glow-1)"
-                filter="blur(24px)"
-                opacity="0.6"
-              />
+              {/* Big Sparkling Kawaii Eyes */}
+              <ellipse cx="78" cy="95" rx="7" ry="10" fill="#713f12" />
+              <circle cx="76" cy="91" r="3" fill="#ffffff" />
+              <ellipse cx="122" cy="95" rx="7" ry="10" fill="#713f12" />
+              <circle cx="120" cy="91" r="3" fill="#ffffff" />
+              {/* Blush & Big Smile */}
+              <ellipse cx="65" cy="108" rx="8" ry="6" fill="#fb7185" fillOpacity="0.6" />
+              <ellipse cx="135" cy="108" rx="8" ry="6" fill="#fb7185" fillOpacity="0.6" />
+              <path d="M90 108 Q100 124 110 108 Z" fill="#e11d48" stroke="#be123c" strokeWidth="2" />
             </g>
 
-            {/* Nordic Snowy Pine Forest Silhouette (Bottom Edge) */}
-            <g transform="translate(0, 560)" fill="#0284c7" fillOpacity="0.18" stroke="#0284c7" strokeWidth="1" opacity="0.6">
-              {[
-                { x: 30, h: 140, w: 50 },
-                { x: 90, h: 180, w: 60 },
-                { x: 160, h: 130, w: 45 },
-                { x: 220, h: 160, w: 55 },
-                { x: 300, h: 190, w: 65 },
-                { x: 800, h: 150, w: 50 },
-                { x: 860, h: 190, w: 65 },
-                { x: 940, h: 140, w: 45 },
-                { x: 1000, h: 175, w: 60 },
-                { x: 1080, h: 130, w: 40 },
-              ].map((tree, i) => (
-                <g key={i} transform={`translate(${tree.x}, ${200 - tree.h})`}>
-                  <polygon points={`${tree.w / 2},0 0,${tree.h * 0.4} ${tree.w * 0.2},${tree.h * 0.4} 0,${tree.h * 0.7} ${tree.w * 0.2},${tree.h * 0.7} 0,${tree.h} ${tree.w},${tree.h} ${tree.w * 0.8},${tree.h * 0.7} ${tree.w},${tree.h * 0.7} ${tree.w * 0.8},${tree.h * 0.4} ${tree.w},${tree.h * 0.4}`} />
-                </g>
+            {/* Smiling Orange Wheel (Bottom-Right) */}
+            <g transform="translate(1080, 520) scale(0.95)" filter="url(#citrus-glow)">
+              {/* Orange Rind */}
+              <circle cx="80" cy="80" r="65" fill="#ffedd5" stroke="#f97316" strokeWidth="6" />
+              <circle cx="80" cy="80" r="54" fill="#fb923c" />
+              <circle cx="80" cy="80" r="12" fill="#fff7ed" />
+              {/* Pulp wedges */}
+              {[0, 45, 90, 135, 180, 225, 270, 315].map((ang, i) => (
+                <path key={i} d="M80 80 L75 32 A48 48 0 0 1 85 32 Z" transform={`rotate(${ang} 80 80)`} fill="#ea580c" />
               ))}
-            </g>
-
-            {/* Intricate Geometric Snowflakes (Scattered) */}
-            <g stroke="#0284c7" strokeWidth="1.2" strokeLinecap="round" opacity="0.45">
-              {[
-                { cx: 160, cy: 120, s: 0.9 },
-                { cx: 480, cy: 220, s: 1.2 },
-                { cx: 860, cy: 140, s: 1.0 },
-                { cx: 1150, cy: 260, s: 1.1 },
-                { cx: 340, cy: 460, s: 0.8 },
-                { cx: 980, cy: 480, s: 0.95 },
-              ].map((flake, i) => (
-                <g key={i} transform={`translate(${flake.cx}, ${flake.cy}) scale(${flake.s})`}>
-                  {[0, 60, 120].map((deg, idx) => (
-                    <g key={idx} transform={`rotate(${deg})`}>
-                      <line x1="-30" y1="0" x2="30" y2="0" />
-                      <line x1="-20" y1="-8" x2="-15" y2="0" />
-                      <line x1="-20" y1="8" x2="-15" y2="0" />
-                      <line x1="20" y1="-8" x2="15" y2="0" />
-                      <line x1="20" y1="8" x2="15" y2="0" />
-                    </g>
-                  ))}
-                  <circle cx="0" cy="0" r="3" fill="#0284c7" />
-                </g>
-              ))}
+              {/* Cute Winking Face */}
+              <circle cx="70" cy="74" r="3.5" fill="#ffffff" />
+              <path d="M85 74 Q90 80 95 74" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             </g>
           </svg>
         </div>
       )}
 
-      {/* 10. CLASSIC ACADEMIA: GOTHIC ARCH WINDOWS, ANTIQUE COMPASS & DA VINCI MANUSCRIPT */}
-      {themeId === 'classic-academia' && (
-        <div className="absolute inset-0 opacity-[0.38] transition-opacity duration-700">
+      {/* =========================================================================
+          8. NORDIC FROST: BABY PENGUIN IN WINTER EARMUFFS & SNOWFLAKES
+          ========================================================================= */}
+      {themeId === 'nordic-frost' && (
+        <div className="absolute inset-0 opacity-[0.92] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            {/* Grand Gothic Library Cathedral Arched Window (Top Right) */}
-            <g transform="translate(1080, 40) scale(0.9)" stroke="#854d0e" strokeWidth="1.5" fill="none" opacity="0.5">
-              <path d="M20 280 L20 120 Q20 30 110 10 Q200 30 200 120 L200 280 Z" strokeWidth="3" />
-              {/* Gothic tracery interior arches */}
-              <path d="M20 120 Q20 70 70 50 Q110 70 110 120" strokeWidth="1.5" />
-              <path d="M110 120 Q110 70 150 50 Q200 70 200 120" strokeWidth="1.5" />
-              <circle cx="110" cy="55" r="28" strokeWidth="1.8" />
-              <circle cx="110" cy="55" r="10" strokeWidth="1" />
-              {/* Leaded glass window panes */}
-              <line x1="20" y1="160" x2="200" y2="160" strokeDasharray="3 3" />
-              <line x1="20" y1="200" x2="200" y2="200" strokeDasharray="3 3" />
-              <line x1="20" y1="240" x2="200" y2="240" strokeDasharray="3 3" />
+            <defs>
+              <filter id="frost-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#38bdf8" floodOpacity="0.5" />
+              </filter>
+            </defs>
+
+            {/* Baby Penguin in Earmuffs & Scarf (Bottom-Left) */}
+            <g transform="translate(60, 500) scale(1.05)" filter="url(#frost-glow)">
+              {/* Fluffy Earmuff Band */}
+              <path d="M45 55 Q75 15 105 55" stroke="#f43f5e" strokeWidth="6" strokeLinecap="round" fill="none" />
+              <circle cx="42" cy="58" r="14" fill="#fb7185" stroke="#e11d48" strokeWidth="2" />
+              <circle cx="108" cy="58" r="14" fill="#fb7185" stroke="#e11d48" strokeWidth="2" />
+              {/* Penguin Body */}
+              <ellipse cx="75" cy="115" rx="42" ry="52" fill="#1e293b" stroke="#0f172a" strokeWidth="3" />
+              {/* White Belly */}
+              <ellipse cx="75" cy="120" rx="28" ry="38" fill="#ffffff" />
+              {/* Striped Winter Scarf */}
+              <rect x="45" y="85" width="60" height="16" rx="6" fill="#f43f5e" />
+              <line x1="58" y1="85" x2="58" y2="101" stroke="#ffffff" strokeWidth="4" />
+              <line x1="75" y1="85" x2="75" y2="101" stroke="#ffffff" strokeWidth="4" />
+              <line x1="92" y1="85" x2="92" y2="101" stroke="#ffffff" strokeWidth="4" />
+              {/* Happy Kawaii Eyes: (> <) */}
+              <path d="M58 64 L66 69 L58 74" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M92 64 L84 69 L92 74" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              {/* Orange Beak & Blush */}
+              <polygon points="70,72 80,72 75,80" fill="#f97316" />
+              <ellipse cx="54" cy="74" rx="6" ry="4" fill="#fb7185" fillOpacity="0.7" />
+              <ellipse cx="96" cy="74" rx="6" ry="4" fill="#fb7185" fillOpacity="0.7" />
+              {/* Orange Feet */}
+              <ellipse cx="62" cy="165" rx="10" ry="6" fill="#f97316" />
+              <ellipse cx="88" cy="165" rx="10" ry="6" fill="#f97316" />
             </g>
 
-            {/* Classical Armillary Sphere / Astrolabe (Top Left) */}
-            <g transform="translate(80, 60) scale(0.95)" stroke="#854d0e" strokeWidth="1.2" fill="none" opacity="0.45">
-              <circle cx="100" cy="100" r="80" strokeWidth="2" />
-              <ellipse cx="100" cy="100" rx="80" ry="35" strokeWidth="1.5" />
-              <ellipse cx="100" cy="100" rx="35" ry="80" strokeWidth="1.5" />
-              <line x1="100" y1="10" x2="100" y2="190" strokeWidth="2" />
-              <line x1="10" y1="100" x2="190" y2="100" strokeWidth="2" />
-              <circle cx="100" cy="100" r="16" fill="#854d0e" fillOpacity="0.2" strokeWidth="1.5" />
+            {/* Sleepy Polar Bear Cub (Top-Right) */}
+            <g transform="translate(1120, 50) scale(0.9)" filter="url(#frost-glow)">
+              <circle cx="80" cy="80" r="45" fill="#ffffff" stroke="#cbd5e1" strokeWidth="3" />
+              <circle cx="48" cy="50" r="14" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2.5" />
+              <circle cx="50" cy="52" r="7" fill="#fbcfe8" />
+              <circle cx="112" cy="50" r="14" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2.5" />
+              <circle cx="110" cy="52" r="7" fill="#fbcfe8" />
+              {/* Sleepy Eyes & Snout */}
+              <path d="M60 80 Q66 86 72 80" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <path d="M88 80 Q94 86 100 80" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <ellipse cx="80" cy="92" rx="16" ry="11" fill="#f1f5f9" />
+              <ellipse cx="80" cy="88" rx="6" ry="4" fill="#334155" />
+            </g>
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
+          9. CLASSIC ACADEMIA: SCHOLAR OWL MASCOT & STACK OF KAWAII BOOKS
+          ========================================================================= */}
+      {themeId === 'classic-academia' && (
+        <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="academia-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#d97706" floodOpacity="0.4" />
+              </filter>
+            </defs>
+
+            {/* Scholar Owl Mascot (Top-Left) */}
+            <g transform="translate(60, 40) scale(1)" filter="url(#academia-glow)">
+              {/* Graduation Mortarboard Cap */}
+              <polygon points="80,15 130,30 80,45 30,30" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
+              <rect x="62" y="38" width="36" height="15" rx="3" fill="#1e293b" />
+              {/* Gold Tassel */}
+              <path d="M80 30 Q115 35 125 55" stroke="#eab308" strokeWidth="2.5" fill="none" />
+              <circle cx="125" cy="57" r="4" fill="#eab308" />
+              {/* Owl Body */}
+              <ellipse cx="80" cy="95" rx="42" ry="46" fill="#854d0e" stroke="#713f12" strokeWidth="3" />
+              <ellipse cx="80" cy="105" rx="28" ry="32" fill="#fef3c7" />
+              {/* Big Round Glasses & Eyes */}
+              <circle cx="62" cy="78" r="16" fill="#ffffff" stroke="#eab308" strokeWidth="3" />
+              <circle cx="62" cy="78" r="6" fill="#451a03" />
+              <circle cx="64" cy="76" r="2" fill="#ffffff" />
+              <circle cx="98" cy="78" r="16" fill="#ffffff" stroke="#eab308" strokeWidth="3" />
+              <circle cx="98" cy="78" r="6" fill="#451a03" />
+              <circle cx="100" cy="76" r="2" fill="#ffffff" />
+              <line x1="78" y1="78" x2="82" y2="78" stroke="#eab308" strokeWidth="3" />
+              {/* Beak & Blush */}
+              <polygon points="76,86 84,86 80,94" fill="#ea580c" />
+              <ellipse cx="50" cy="92" rx="6" ry="4" fill="#fca5a5" fillOpacity="0.7" />
+              <ellipse cx="110" cy="92" rx="6" ry="4" fill="#fca5a5" fillOpacity="0.7" />
             </g>
 
-            {/* Vintage Navigational Compass Rose (Bottom Left) */}
-            <g transform="translate(100, 520) scale(0.9)" stroke="#854d0e" strokeWidth="1" fill="none" opacity="0.4">
-              <circle cx="120" cy="120" r="90" strokeWidth="1.8" />
-              <circle cx="120" cy="120" r="75" strokeDasharray="2 3" />
-              {/* 8-Point Compass Star */}
-              <polygon points="120,30 126,110 120,120 114,110" fill="#854d0e" />
-              <polygon points="120,30 120,120 114,110" fill="#713f12" />
-              <polygon points="120,210 126,130 120,120 114,130" fill="#854d0e" />
-              <polygon points="30,120 110,126 120,120 110,114" fill="#854d0e" />
-              <polygon points="210,120 130,126 120,120 130,114" fill="#854d0e" />
-              <text x="114" y="22" fill="#854d0e" fontSize="14" fontWeight="bold">N</text>
+            {/* Stack of Happy Antique Books (Bottom-Right) */}
+            <g transform="translate(1080, 520) scale(0.95)" filter="url(#academia-glow)">
+              {/* Bottom Book (Navy) with Kawaii Face */}
+              <rect x="20" y="110" width="120" height="30" rx="5" fill="#1e3a8a" stroke="#172554" strokeWidth="2.5" />
+              <rect x="35" y="115" width="100" height="20" rx="3" fill="#fef3c7" />
+              {/* Cute Smiling Face on Bottom Book */}
+              <circle cx="70" cy="125" r="2.5" fill="#1e3a8a" />
+              <circle cx="95" cy="125" r="2.5" fill="#1e3a8a" />
+              <path d="M80 126 Q82 130 85 126" stroke="#1e3a8a" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+              {/* Middle Book (Emerald) */}
+              <rect x="30" y="85" width="105" height="26" rx="5" fill="#065f46" stroke="#064e3b" strokeWidth="2.5" />
+              <rect x="42" y="90" width="88" height="16" rx="3" fill="#fef3c7" />
+              {/* Top Book (Burgundy) */}
+              <rect x="40" y="62" width="90" height="24" rx="5" fill="#881337" stroke="#4c0519" strokeWidth="2.5" />
+              <rect x="50" y="67" width="76" height="14" rx="3" fill="#fef3c7" />
+            </g>
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
+          10. NOTION MINIMALIST: KAWAII NOTION NOTEBOOK & CHILL TEACUP
+          ========================================================================= */}
+      {themeId === 'default' && (
+        <div className="absolute inset-0 opacity-[0.88] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="notion-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="15" floodColor="#3b82f6" floodOpacity="0.3" />
+              </filter>
+            </defs>
+
+            {/* Cute Notion Notebook Mascot (Top-Left) */}
+            <g transform="translate(60, 45) rotate(-6) scale(1)" filter="url(#notion-glow)">
+              {/* Yellow Pencil Tucked behind ear */}
+              <polygon points="120,20 135,35 70,100 55,85" fill="#facc15" stroke="#ca8a04" strokeWidth="2" />
+              <polygon points="120,20 135,35 142,28 127,13" fill="#f43f5e" />
+              {/* Notebook Body */}
+              <rect x="40" y="40" width="85" height="110" rx="8" fill="#ffffff" stroke="#cbd5e1" strokeWidth="3" />
+              {/* Bookmark Ribbon */}
+              <path d="M55 40 L55 75 L62 68 L70 75 L70 40 Z" fill="#ef4444" />
+              {/* Spiral Binder Rings */}
+              {[50, 70, 90, 110, 130].map((y, i) => (
+                <rect key={i} x="34" y={y} width="12" height="6" rx="3" fill="#94a3b8" />
+              ))}
+              {/* Kawaii Face: (• ‿ •) */}
+              <circle cx="72" cy="95" r="4.5" fill="#1e293b" />
+              <circle cx="74" cy="93" r="1.5" fill="#ffffff" />
+              <circle cx="102" cy="95" r="4.5" fill="#1e293b" />
+              <circle cx="104" cy="93" r="1.5" fill="#ffffff" />
+              <ellipse cx="65" cy="103" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <ellipse cx="109" cy="103" rx="7" ry="5" fill="#fca5a5" fillOpacity="0.6" />
+              <path d="M82 104 Q87 112 92 104" stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             </g>
 
-            {/* Da Vinci Style Feather Quill & Parchment (Bottom Right) */}
-            <g transform="translate(1080, 560) scale(0.95)" stroke="#854d0e" strokeWidth="1.5" fill="none" opacity="0.45">
-              {/* Long curved feather quill */}
-              <path d="M140 20 Q120 120 40 220" strokeWidth="3" stroke="#854d0e" strokeLinecap="round" />
-              <path d="M140 20 C110 40 90 80 80 130 C90 130 110 90 140 20 Z" fill="#854d0e" fillOpacity="0.15" />
-              <path d="M140 20 C150 50 140 90 120 140 C120 130 130 80 140 20 Z" fill="#854d0e" fillOpacity="0.15" />
-              {/* Ink splatter drops */}
-              <circle cx="35" cy="225" r="3.5" fill="#854d0e" />
-              <circle cx="45" cy="235" r="2" fill="#854d0e" />
-              <circle cx="25" cy="230" r="1.5" fill="#854d0e" />
+            {/* Cute Steaming Teacup (Bottom-Right) */}
+            <g transform="translate(1100, 520) scale(0.95)" filter="url(#notion-glow)">
+              <ellipse cx="80" cy="130" rx="60" ry="14" fill="#f1f5f9" stroke="#cbd5e1" strokeWidth="2.5" />
+              <path d="M35 70 Q30 115 80 120 Q130 115 125 70 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="3" />
+              <path d="M123 78 Q145 78 140 100 Q135 112 115 110" stroke="#cbd5e1" strokeWidth="4.5" strokeLinecap="round" fill="none" />
+              {/* Cute Winking Face */}
+              <circle cx="65" cy="92" r="3.5" fill="#334155" />
+              <path d="M85 92 Q90 98 95 92" stroke="#334155" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+              <ellipse cx="58" cy="98" rx="6" ry="4" fill="#fca5a5" fillOpacity="0.6" />
+              <ellipse cx="102" cy="98" rx="6" ry="4" fill="#fca5a5" fillOpacity="0.6" />
+              <path d="M72 102 Q76 106 80 102" stroke="#334155" strokeWidth="2" strokeLinecap="round" fill="none" />
             </g>
           </svg>
         </div>
