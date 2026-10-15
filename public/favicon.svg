@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="onthi_gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ff4297" />
-      <stop offset="100%" stop-color="#f02c85" />
+    <linearGradient id="onthi_blue_gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2383e2" />
+      <stop offset="100%" stop-color="#1a73e8" />
     </linearGradient>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e3a8a" flood-opacity="0.3" />
     </filter>
   </defs>
   <!-- App Squircle Background matching OnThiHub Header Logo -->
-  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#onthi_gradient)" filter="url(#shadow)" />
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#onthi_blue_gradient)" filter="url(#shadow)" />
   <!-- Crisp BookOpen Icon in White matching Navbar -->
   <g transform="translate(14, 14) scale(1.5)" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12 7v14" />
