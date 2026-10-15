@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Check, Palette, Sparkles, Wand2 } from 'lucide-react';
-import { THEMES, getSelectedThemeId, applyTheme } from '../utils/themeManager';
+import { THEMES, getSelectedThemeId, applyTheme, getSleepMode, setSleepMode as setGlobalSleepMode, subscribeToSleepMode } from '../utils/themeManager';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
 
@@ -8,6 +8,16 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
   if (!isOpen) return null;
 
   const currentThemeId = currentTheme?.id || getSelectedThemeId();
+  const [sleepMode, setLocalSleepMode] = useState(() => getSleepMode());
+
+  useEffect(() => {
+    const unsub = subscribeToSleepMode((mode) => {
+      setLocalSleepMode(mode);
+    });
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, []);
 
   const handleSelect = (theme) => {
     playSound('flip');
@@ -23,29 +33,35 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
     });
   };
 
+  const handleSetSleepMode = (mode) => {
+    playSound('click');
+    setGlobalSleepMode(mode);
+    setLocalSleepMode(mode);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/50 backdrop-blur-xs animate-fade-in">
       <div className="fixed inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-3d-floating border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[92vh] z-10 text-[#37352f]">
+      <div className="relative w-full max-w-3xl bg-white dark:bg-[#121626] rounded-2xl shadow-3d-floating border border-[#e9e9e8] dark:border-white/10 overflow-hidden flex flex-col max-h-[92vh] z-10 text-[#37352f] dark:text-white">
         
         {/* Header (Messenger / Instagram Theme Picker Style) */}
-        <div className="px-5 sm:px-6 py-4 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between shrink-0">
+        <div className="px-5 sm:px-6 py-4 border-b border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-[#181d33] flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-2.5">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white flex items-center justify-center shadow-md shadow-purple-500/20">
               <Palette className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-base font-bold text-[#37352f] tracking-tight">
+                <h3 className="text-base font-bold text-[#37352f] dark:text-white tracking-tight">
                   Chủ Đề & Giao Diện Không Gian Học
                 </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-600/40">
                   {THEMES.length} Chủ Đề Độc Đáo
                 </span>
               </div>
-              <p className="text-xs text-[#787774]">
-                Tự động thay đổi hình vẽ wallpaper, hiệu ứng thời tiết (tuyết rơi/hoa bay/sao rơi) và toàn bộ icon nhỏ theo phong cách bạn chọn!
+              <p className="text-xs text-[#787774] dark:text-slate-300">
+                Tự động thay đổi hình vẽ wallpaper, hiệu ứng thời tiết và toàn bộ icon nhỏ theo chủ đề bạn chọn!
               </p>
             </div>
           </div>
@@ -53,10 +69,52 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1ef] transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white hover:bg-[#f1f1ef] dark:hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
+        </div>
+
+        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Toggle Selector */}
+        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl bg-slate-100/90 dark:bg-slate-850/80 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+          <div className="flex items-center space-x-2">
+            <span className="text-lg">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
+            <div>
+              <p className="text-xs font-bold text-slate-900 dark:text-white">
+                Chế Độ Tương Phản (Chế Độ Ngủ & Ban Ngày)
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-300">
+                {sleepMode === 'dark'
+                  ? '🌙 Chế độ ngủ: Chữ trắng/vàng/cyan nổi bật trên nền tối, dịu mắt ban đêm.'
+                  : '☀️ Chế độ ban ngày: Chữ than đậm tương phản cao trên nền sáng, dễ đọc.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-1.5 shrink-0 bg-slate-200/80 dark:bg-slate-900/80 p-1 rounded-lg">
+            <button
+              type="button"
+              onClick={() => handleSetSleepMode('dark')}
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
+                sleepMode === 'dark'
+                  ? 'bg-indigo-600 text-white shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>🌙 Chế độ ngủ</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleSetSleepMode('light')}
+              className={`px-3 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
+                sleepMode === 'light'
+                  ? 'bg-amber-500 text-white shadow-xs font-bold'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>☀️ Ban ngày</span>
+            </button>
+          </div>
         </div>
 
         {/* Themes Grid */}

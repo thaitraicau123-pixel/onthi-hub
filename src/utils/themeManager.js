@@ -8,30 +8,30 @@ export const THEMES = [
   {
     id: 'super-mario-3d',
     name: 'Super Mario 3D Cinema',
-    subtitle: 'Vương Quốc Nấm 4K • Mario & Peach',
-    description: 'Chủ đề 3D Cinema 4K từ The Super Mario Bros. Movie với Mario, Công chúa Peach, Toad và vương quốc nấm rực rỡ.',
+    subtitle: 'Vương Quốc Nấm 4K • Bé Nấm Toad & Mario',
+    description: 'Chủ đề 3D Cinema 4K với Bé Nấm Toad trong thế giới nấm phát sáng kỳ ảo từ The Super Mario Bros. Movie rực rỡ.',
     category: '3D Cinema 4K',
-    artDetail: '🍄 Mario, Peach, Toad & Vương Quốc Nấm 3D 4K',
+    artDetail: '🍄 Bé Nấm Toad & Vương Quốc Nấm 3D Cinema 4K',
     bgImageUrl: '/wallpapers/mario-4k.png',
-    bgOverlayClass: 'bg-gradient-to-b from-sky-950/25 via-sky-900/35 to-amber-950/45 backdrop-blur-[0.5px]',
+    bgOverlayClass: 'bg-gradient-to-b from-slate-950/45 via-slate-900/50 to-amber-950/55 backdrop-blur-[0.5px]',
     weatherType: 'mario-stars',
-    isDark: false,
-    previewGradient: 'from-rose-500 via-amber-400 to-sky-500',
-    primaryColor: '#e11d48',
-    primaryHover: '#be123c',
+    isDark: true,
+    previewGradient: 'from-amber-500 via-rose-600 to-sky-600',
+    primaryColor: '#f59e0b',
+    primaryHover: '#d97706',
     primaryText: '#ffffff',
-    bgClass: 'bg-[#0f172a]',
-    canvasBgClass: 'bg-[#0f172a]',
-    sidebarBgClass: 'bg-white/92 backdrop-blur-md',
-    topbarBgClass: 'bg-white/92 backdrop-blur-md',
-    cardBgClass: 'bg-white/95 backdrop-blur-md',
-    cardAltBgClass: 'bg-amber-50/80',
-    textClass: 'text-slate-900 font-medium',
-    subtextClass: 'text-slate-600',
-    borderClass: 'border-amber-200/80',
-    accentPillClass: 'bg-[#e11d48] text-white font-bold shadow-rose-500/25',
-    accentTagClass: 'bg-rose-50 text-rose-700 border-rose-200',
-    wallpaperGlow: 'radial-gradient(ellipse at 80% 0%, rgba(225, 29, 72, 0.15) 0%, transparent 60%)',
+    bgClass: 'bg-[#0b0f19]',
+    canvasBgClass: 'bg-[#0b0f19]',
+    sidebarBgClass: 'bg-[#0f172a]/92 backdrop-blur-md',
+    topbarBgClass: 'bg-[#0b0f19]/90 backdrop-blur-md',
+    cardBgClass: 'bg-[#131d36]/92 backdrop-blur-md',
+    cardAltBgClass: 'bg-[#1b2746]',
+    textClass: 'text-slate-100 font-medium',
+    subtextClass: 'text-amber-200/90',
+    borderClass: 'border-amber-400/30',
+    accentPillClass: 'bg-[#f59e0b] text-slate-950 font-bold shadow-amber-500/25',
+    accentTagClass: 'bg-amber-950/70 text-amber-300 border-amber-700/50',
+    wallpaperGlow: 'radial-gradient(ellipse at 80% 0%, rgba(245, 158, 11, 0.2) 0%, transparent 60%)',
     icons: {
       logo: '🍄',
       workspace: '🏰',
@@ -872,6 +872,7 @@ export const THEMES = [
 
 export const THEME_STORAGE_KEY = 'onthi_selected_theme_v2';
 export const WEATHER_STORAGE_KEY = 'onthi_weather_enabled_v1';
+export const SLEEP_MODE_STORAGE_KEY = 'onthi_sleep_mode_pref_v1';
 
 export function isWeatherEffectsEnabled() {
   try {
@@ -898,6 +899,51 @@ export function subscribeToWeatherToggle(callback) {
   return () => window.removeEventListener('onthi-weather-toggle', handler);
 }
 
+// =========================================================================
+// CHẾ ĐỘ NGỦ (SLEEP / DARK MODE) & CHẾ ĐỘ BAN NGÀY (LIGHT / DAY MODE)
+// =========================================================================
+
+export function getSleepMode() {
+  try {
+    const saved = localStorage.getItem(SLEEP_MODE_STORAGE_KEY);
+    if (saved === 'dark' || saved === 'light') {
+      return saved;
+    }
+  } catch (e) {}
+  // Default to the current theme's native isDark preference
+  const current = getSelectedTheme();
+  return current?.isDark ? 'dark' : 'light';
+}
+
+export function setSleepMode(mode) {
+  const normalized = mode === 'dark' ? 'dark' : 'light';
+  try {
+    localStorage.setItem(SLEEP_MODE_STORAGE_KEY, normalized);
+  } catch (e) {}
+
+  if (typeof document !== 'undefined') {
+    const root = document.documentElement;
+    root.setAttribute('data-sleep-mode', normalized);
+    root.classList.toggle('dark', normalized === 'dark');
+    window.dispatchEvent(new CustomEvent('onthi-sleep-mode-change', { detail: normalized }));
+  }
+
+  return normalized;
+}
+
+export function toggleSleepMode() {
+  const current = getSleepMode();
+  const next = current === 'dark' ? 'light' : 'dark';
+  return setSleepMode(next);
+}
+
+export function subscribeToSleepMode(callback) {
+  if (typeof window === 'undefined') return () => {};
+  const handler = (e) => callback(e.detail || getSleepMode());
+  window.addEventListener('onthi-sleep-mode-change', handler);
+  return () => window.removeEventListener('onthi-sleep-mode-change', handler);
+}
+
 export function getSelectedThemeId() {
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
@@ -919,11 +965,25 @@ export function applyTheme(themeId) {
     localStorage.setItem(THEME_STORAGE_KEY, theme.id);
   } catch (e) {}
 
-  // Set CSS Variables on document element
+  // Determine sleep mode: if user explicitly saved preference, use that; else theme default
+  let currentSleepMode = 'light';
+  try {
+    const savedPref = localStorage.getItem(SLEEP_MODE_STORAGE_KEY);
+    if (savedPref === 'dark' || savedPref === 'light') {
+      currentSleepMode = savedPref;
+    } else {
+      currentSleepMode = theme.isDark ? 'dark' : 'light';
+    }
+  } catch (e) {
+    currentSleepMode = theme.isDark ? 'dark' : 'light';
+  }
+
+  // Set CSS Variables & Attributes on document element
   if (typeof document !== 'undefined') {
     const root = document.documentElement;
     root.setAttribute('data-theme', theme.id);
-    root.classList.toggle('dark', !!theme.isDark);
+    root.setAttribute('data-sleep-mode', currentSleepMode);
+    root.classList.toggle('dark', currentSleepMode === 'dark');
     root.style.setProperty('--theme-primary', theme.primaryColor);
     root.style.setProperty('--theme-primary-hover', theme.primaryHover);
     root.style.setProperty('--theme-border', theme.borderClass);
@@ -936,6 +996,7 @@ export function applyTheme(themeId) {
 
     // Dispatch global custom event for instant component reactivity
     window.dispatchEvent(new CustomEvent('onthi-theme-change', { detail: theme }));
+    window.dispatchEvent(new CustomEvent('onthi-sleep-mode-change', { detail: currentSleepMode }));
   }
 
   return theme;
@@ -951,3 +1012,4 @@ export function subscribeToTheme(callback) {
   window.addEventListener('onthi-theme-change', handler);
   return () => window.removeEventListener('onthi-theme-change', handler);
 }
+

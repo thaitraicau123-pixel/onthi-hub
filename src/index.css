@@ -272,27 +272,282 @@ body {
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.14), 0 8px 18px -4px rgba(0, 0, 0, 0.06);
 }
 
-/* DARK THEME SYSTEM SUPPORT (Cosmic Galaxy & Cyberpunk Neon) */
-.dark body {
-  background-color: #0f0d1b;
-  color: #f1eeff;
+/* =========================================================================
+   HIGH-CONTRAST CHẾ ĐỘ NGỦ (SLEEP / DARK MODE) & BAN NGÀY (LIGHT MODE)
+   ========================================================================= */
+
+/* Dark Mode Color Scheme */
+.dark,
+[data-sleep-mode="dark"] {
+  color-scheme: dark;
 }
 
-.dark .notion-sidebar {
-  background-color: #151128;
-  color: #f1eeff;
-  border-color: #2f2757;
+.dark body,
+[data-sleep-mode="dark"] body {
+  background-color: #0b0f19;
+  color: #f8fafc;
 }
 
-.dark .notion-card {
-  background-color: #1b1633;
-  border-color: #2f2757;
+/* 1. TYPOGRAPHY CONTRAST IN SLEEP / DARK MODE (WCAG AAA) */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+[data-sleep-mode="dark"] h1,
+[data-sleep-mode="dark"] h2,
+[data-sleep-mode="dark"] h3,
+[data-sleep-mode="dark"] h4,
+[data-sleep-mode="dark"] h5,
+[data-sleep-mode="dark"] h6 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
-.dark .notion-callout {
-  background-color: #1b1633;
-  border-color: #2f2757;
+.dark .text-\[\#37352f\],
+[data-sleep-mode="dark"] .text-\[\#37352f\] {
+  color: #f8fafc !important;
 }
+
+.dark .text-\[\#5a5751\],
+[data-sleep-mode="dark"] .text-\[\#5a5751\] {
+  color: #e2e8f0 !important;
+}
+
+.dark .text-\[\#787774\],
+[data-sleep-mode="dark"] .text-\[\#787774\] {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-\[\#9b9a97\],
+[data-sleep-mode="dark"] .text-\[\#9b9a97\] {
+  color: #94a3b8 !important;
+}
+
+.dark .text-slate-900,
+[data-sleep-mode="dark"] .text-slate-900 {
+  color: #ffffff !important;
+}
+
+.dark .text-slate-800,
+[data-sleep-mode="dark"] .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+.dark .text-slate-700,
+[data-sleep-mode="dark"] .text-slate-700 {
+  color: #f1f5f9 !important;
+}
+
+.dark .text-slate-600,
+[data-sleep-mode="dark"] .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-stone-900,
+.dark .text-stone-800,
+.dark .text-stone-700,
+[data-sleep-mode="dark"] .text-stone-900,
+[data-sleep-mode="dark"] .text-stone-800,
+[data-sleep-mode="dark"] .text-stone-700 {
+  color: #f8fafc !important;
+}
+
+.dark .text-stone-600,
+.dark .text-stone-500,
+[data-sleep-mode="dark"] .text-stone-600,
+[data-sleep-mode="dark"] .text-stone-500 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700,
+[data-sleep-mode="dark"] .text-gray-900,
+[data-sleep-mode="dark"] .text-gray-800,
+[data-sleep-mode="dark"] .text-gray-700 {
+  color: #f8fafc !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500,
+[data-sleep-mode="dark"] .text-gray-600,
+[data-sleep-mode="dark"] .text-gray-500 {
+  color: #cbd5e1 !important;
+}
+
+/* 2. CONTAINERS & FROSTED GLASS CARDS IN SLEEP / DARK MODE */
+.dark .bg-white,
+[data-sleep-mode="dark"] .bg-white {
+  background-color: rgba(18, 24, 38, 0.9) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+}
+
+.dark .bg-\[\#fbfbfa\],
+.dark .bg-\[\#f7f6f5\],
+.dark .bg-\[\#faf9f8\],
+.dark .bg-\[\#f1f1ef\],
+[data-sleep-mode="dark"] .bg-\[\#fbfbfa\],
+[data-sleep-mode="dark"] .bg-\[\#f7f6f5\],
+[data-sleep-mode="dark"] .bg-\[\#faf9f8\],
+[data-sleep-mode="dark"] .bg-\[\#f1f1ef\] {
+  background-color: rgba(26, 33, 52, 0.85) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .border-\[\#e9e9e8\],
+.dark .border-\[\#f1f1ef\],
+.dark .border-\[\#e3e2e0\],
+.dark .border-\[\#deddd9\],
+[data-sleep-mode="dark"] .border-\[\#e9e9e8\],
+[data-sleep-mode="dark"] .border-\[\#f1f1ef\],
+[data-sleep-mode="dark"] .border-\[\#e3e2e0\],
+[data-sleep-mode="dark"] .border-\[\#deddd9\] {
+  border-color: rgba(255, 255, 255, 0.13) !important;
+}
+
+/* 3. NOTION COMPONENTS IN SLEEP / DARK MODE */
+.dark .notion-sidebar,
+[data-sleep-mode="dark"] .notion-sidebar {
+  background-color: rgba(15, 20, 32, 0.94) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.dark .notion-card,
+[data-sleep-mode="dark"] .notion-card {
+  background-color: rgba(18, 24, 38, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #f8fafc !important;
+}
+
+.dark .notion-callout,
+[data-sleep-mode="dark"] .notion-callout {
+  background-color: rgba(28, 36, 56, 0.88) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #f1f5f9 !important;
+}
+
+.dark .notion-item,
+[data-sleep-mode="dark"] .notion-item {
+  color: #cbd5e1 !important;
+}
+
+.dark .notion-item:hover,
+[data-sleep-mode="dark"] .notion-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+
+.dark .notion-item-active,
+[data-sleep-mode="dark"] .notion-item-active {
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+}
+
+/* 4. FORM INPUTS & TEXTAREAS IN SLEEP / DARK MODE */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select,
+[data-sleep-mode="dark"] input:not([type="checkbox"]):not([type="radio"]),
+[data-sleep-mode="dark"] textarea,
+[data-sleep-mode="dark"] select {
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+[data-sleep-mode="dark"] input::placeholder,
+[data-sleep-mode="dark"] textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* 5. NOTION PILL BADGES IN SLEEP / DARK MODE */
+.dark .notion-pill-gray,
+[data-sleep-mode="dark"] .notion-pill-gray {
+  background-color: rgba(51, 65, 85, 0.6) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.dark .notion-pill-blue,
+[data-sleep-mode="dark"] .notion-pill-blue {
+  background-color: rgba(14, 116, 144, 0.35) !important;
+  color: #38bdf8 !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.dark .notion-pill-green,
+[data-sleep-mode="dark"] .notion-pill-green {
+  background-color: rgba(21, 128, 61, 0.35) !important;
+  color: #4ade80 !important;
+  border-color: rgba(74, 222, 128, 0.4) !important;
+}
+
+.dark .notion-pill-yellow,
+[data-sleep-mode="dark"] .notion-pill-yellow {
+  background-color: rgba(161, 98, 7, 0.35) !important;
+  color: #facc15 !important;
+  border-color: rgba(250, 204, 21, 0.4) !important;
+}
+
+.dark .notion-pill-orange,
+[data-sleep-mode="dark"] .notion-pill-orange {
+  background-color: rgba(194, 65, 12, 0.35) !important;
+  color: #fb923c !important;
+  border-color: rgba(251, 146, 60, 0.4) !important;
+}
+
+.dark .notion-pill-purple,
+[data-sleep-mode="dark"] .notion-pill-purple {
+  background-color: rgba(126, 34, 206, 0.35) !important;
+  color: #c084fc !important;
+  border-color: rgba(192, 132, 252, 0.4) !important;
+}
+
+.dark .notion-pill-pink,
+[data-sleep-mode="dark"] .notion-pill-pink {
+  background-color: rgba(190, 24, 93, 0.35) !important;
+  color: #f472b6 !important;
+  border-color: rgba(244, 114, 182, 0.4) !important;
+}
+
+.dark .notion-pill-red,
+[data-sleep-mode="dark"] .notion-pill-red {
+  background-color: rgba(185, 28, 28, 0.35) !important;
+  color: #f87171 !important;
+  border-color: rgba(248, 113, 113, 0.4) !important;
+}
+
+/* 6. DAY MODE (LIGHT / KHÔNG NGỦ) CONTRAST GUARANTEE */
+[data-sleep-mode="light"]:not(.dark) h1,
+[data-sleep-mode="light"]:not(.dark) h2,
+[data-sleep-mode="light"]:not(.dark) h3,
+[data-sleep-mode="light"]:not(.dark) h4,
+[data-sleep-mode="light"]:not(.dark) h5,
+[data-sleep-mode="light"]:not(.dark) h6 {
+  color: #0f172a;
+}
+
+[data-sleep-mode="light"]:not(.dark) .text-\[\#37352f\] {
+  color: #0f172a;
+}
+
+[data-sleep-mode="light"]:not(.dark) .text-\[\#787774\] {
+  color: #475569;
+}
+
 
 
 

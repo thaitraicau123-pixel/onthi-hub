@@ -358,36 +358,36 @@ export default function NotionSidebar({
       </div>
 
       {/* BOTTOM SECTION: USER PROFILE & COLLAPSE FOOTER */}
-      <div className="p-3 border-t border-[#e9e9e8] bg-[#f7f6f5] space-y-2 shrink-0">
+      <div className="p-3 border-t border-[#e9e9e8] dark:border-white/10 bg-[#f7f6f5] dark:bg-slate-900/90 space-y-2 shrink-0">
         
         {/* User Card */}
         <div
           onClick={onOpenAuth}
-          className="flex items-center justify-between p-2 rounded-lg hover:bg-[rgba(55,53,47,0.08)] cursor-pointer transition-colors"
+          className="flex items-center justify-between p-2 rounded-lg hover:bg-[rgba(55,53,47,0.08)] dark:hover:bg-white/10 cursor-pointer transition-colors"
           title="Xem thông tin tài khoản & thiết lập"
         >
           <div className="flex items-center space-x-2.5 min-w-0">
-            <div className="w-7 h-7 rounded-full bg-[#37352f] text-white flex items-center justify-center text-xs font-bold shrink-0">
+            <div className="w-7 h-7 rounded-full bg-[#37352f] dark:bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
               {user?.displayName ? user.displayName.charAt(0).toUpperCase() : user?.email ? user.email.charAt(0).toUpperCase() : '👤'}
             </div>
             <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-[#37352f] truncate">
+              <span className="text-xs font-bold text-[#37352f] dark:text-white truncate">
                 {user ? (user.displayName || user.email.split('@')[0]) : 'Đăng nhập'}
               </span>
-              <span className="text-[10px] text-[#787774] flex items-center space-x-1">
+              <span className="text-[10px] text-[#787774] dark:text-slate-300 flex items-center space-x-1">
                 <span>Ví:</span>
-                <strong className="text-amber-600 font-bold">{walletBalance} Xu</strong>
+                <strong className="text-amber-600 dark:text-amber-400 font-bold">{walletBalance} Xu</strong>
               </span>
             </div>
           </div>
           
-          <Settings className="w-3.5 h-3.5 text-[#9b9a97] hover:text-[#37352f]" />
+          <Settings className="w-3.5 h-3.5 text-[#9b9a97] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white" />
         </div>
 
         {/* Bottom subtle label */}
-        <div className="flex items-center justify-between px-2 text-[10px] text-[#9b9a97]">
+        <div className="flex items-center justify-between px-2 text-[10px] text-[#9b9a97] dark:text-slate-400">
           <span>Ôn Thi Hub v{APP_VERSION}</span>
-          <span className="text-[#b8b7b4]">Notion UI Mode</span>
+          <span className="text-[#b8b7b4] dark:text-slate-400">Notion UI Mode</span>
         </div>
 
       </div>

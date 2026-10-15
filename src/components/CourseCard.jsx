@@ -84,35 +84,35 @@ export default function CourseCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base font-bold text-[#37352f] group-hover:text-[#2383e2] transition-colors line-clamp-2 leading-snug">
+        <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white group-hover:text-[#2383e2] transition-colors line-clamp-2 leading-snug">
           {course.title}
         </h3>
 
         {/* Subtitle */}
         {course.subtitle && (
-          <p className="mt-1.5 text-xs text-[#787774] line-clamp-2 leading-relaxed">
+          <p className="mt-1.5 text-xs text-[#787774] dark:text-slate-300 line-clamp-2 leading-relaxed">
             {course.subtitle}
           </p>
         )}
 
         {/* Social Proof Stats */}
-        <div className="mt-3 flex items-center space-x-2.5 text-xs text-[#787774]">
-          <div className="flex items-center space-x-1 text-amber-600 font-semibold">
+        <div className="mt-3 flex items-center space-x-2.5 text-xs text-[#787774] dark:text-slate-300">
+          <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-semibold">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
             <span>{rating}</span>
-            <span className="text-[#9b9a97] font-normal">({reviewsCount})</span>
+            <span className="text-[#9b9a97] dark:text-slate-400 font-normal">({reviewsCount})</span>
           </div>
-          <span className="text-[#e9e9e8]">•</span>
-          <span className="text-[#787774]">
+          <span className="text-[#e9e9e8] dark:text-white/20">•</span>
+          <span className="text-[#787774] dark:text-slate-300">
             {studentsCount} người học
           </span>
         </div>
 
         {/* Highlights List */}
-        <ul className="mt-3.5 space-y-1 text-xs text-[#5a5751] border-t border-[#e9e9e8]/70 pt-2.5">
+        <ul className="mt-3.5 space-y-1 text-xs text-[#5a5751] dark:text-slate-300 border-t border-[#e9e9e8]/70 dark:border-white/10 pt-2.5">
           {highlights.slice(0, 2).map((item, idx) => (
             <li key={idx} className="flex items-start space-x-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-[#448361] shrink-0 mt-0.5" />
+              <CheckCircle className="w-3.5 h-3.5 text-[#448361] dark:text-emerald-400 shrink-0 mt-0.5" />
               <span className="line-clamp-1">{item}</span>
             </li>
           ))}
@@ -123,9 +123,9 @@ export default function CourseCard({
           {formatList.map((fmt, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center space-x-1 text-[10px] px-1.5 py-0.5 bg-[#f1f1ef] text-[#5a5751] border border-[#e3e2e0] rounded"
+              className="inline-flex items-center space-x-1 text-[10px] px-1.5 py-0.5 bg-[#f1f1ef] dark:bg-slate-800/80 text-[#5a5751] dark:text-slate-200 border border-[#e3e2e0] dark:border-white/10 rounded"
             >
-              <FileText className="w-3 h-3 text-[#787774]" />
+              <FileText className="w-3 h-3 text-[#787774] dark:text-slate-400" />
               <span>{fmt}</span>
             </span>
           ))}
@@ -140,24 +140,24 @@ export default function CourseCard({
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline space-x-1.5">
             <Coins className="w-4 h-4 text-amber-500 fill-amber-400 self-center shrink-0" />
-            <span className="text-lg font-bold text-[#37352f]">
+            <span className="text-lg font-bold text-[#37352f] dark:text-white">
               {priceXu} Xu
             </span>
             {originalPriceXu > priceXu && (
-              <span className="text-xs text-[#9b9a97] line-through">
+              <span className="text-xs text-[#9b9a97] dark:text-slate-400 line-through">
                 {originalPriceXu} Xu
               </span>
             )}
           </div>
 
           {isPurchased ? (
-            <span className="inline-flex items-center space-x-1 text-[11px] font-semibold px-2 py-0.5 bg-[#edf3ec] text-[#448361] rounded-md border border-[#d3e5d7]">
+            <span className="inline-flex items-center space-x-1 text-[11px] font-semibold px-2 py-0.5 bg-[#edf3ec] dark:bg-emerald-950/60 text-[#448361] dark:text-emerald-300 rounded-md border border-[#d3e5d7] dark:border-emerald-600/40">
               <Check className="w-3 h-3" />
               <span>Đã Mở Khóa</span>
             </span>
           ) : (
             discountPercent > 0 && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-[#fdebec] text-[#d44c47] rounded border border-[#f9c9cb]">
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-[#fdebec] dark:bg-rose-950/60 text-[#d44c47] dark:text-rose-300 rounded border border-[#f9c9cb] dark:border-rose-600/40">
                 -{discountPercent}%
               </span>
             )
@@ -169,18 +169,18 @@ export default function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs touch-3d cursor-pointer"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
           >
-            <Layers className="w-3 h-3 text-[#2383e2]" />
+            <Layers className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
             <span>Xem Thẻ</span>
           </button>
 
           <button
             type="button"
             onClick={() => onOpenQuiz(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs touch-3d cursor-pointer"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
           >
-            <PlayCircle className="w-3 h-3 text-[#cc782f]" />
+            <PlayCircle className="w-3 h-3 text-[#cc782f] dark:text-amber-400" />
             <span>Thi Thử</span>
           </button>
         </div>

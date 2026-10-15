@@ -47,7 +47,9 @@ import {
   subscribeToTheme,
   isWeatherEffectsEnabled,
   setWeatherEffectsEnabled,
-  subscribeToWeatherToggle
+  subscribeToWeatherToggle,
+  getSleepMode,
+  subscribeToSleepMode
 } from './utils/themeManager';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
@@ -81,6 +83,7 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = useState(() => getSelectedTheme());
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
+  const [sleepMode, setSleepMode] = useState(() => getSleepMode());
 
   // Sync initial state
   useEffect(() => {
@@ -97,6 +100,10 @@ export default function App() {
 
     const unsubWeather = subscribeToWeatherToggle((enabled) => {
       setIsWeatherEnabled(enabled);
+    });
+
+    const unsubSleep = subscribeToSleepMode((mode) => {
+      setSleepMode(mode);
     });
 
     // Notion Hotkeys:
@@ -146,6 +153,7 @@ export default function App() {
       if (typeof unsubMarket === 'function') unsubMarket();
       if (typeof unsubTheme === 'function') unsubTheme();
       if (typeof unsubWeather === 'function') unsubWeather();
+      if (typeof unsubSleep === 'function') unsubSleep();
     };
   }, []);
 
@@ -185,8 +193,8 @@ export default function App() {
           className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none transition-all duration-700 select-none"
           style={{ backgroundImage: `url(${currentTheme.bgImageUrl})` }}
         >
-          {/* Calibrated Overlay for Crisp Contrast & Pristine Text Readability */}
-          <div className={`absolute inset-0 ${currentTheme.bgOverlayClass || 'bg-black/35 backdrop-blur-[0.5px]'}`} />
+          {/* Calibrated Overlay for Crisp Contrast & Pristine Text Readability in both Sleep Mode & Day Mode */}
+          <div className={`absolute inset-0 ${currentTheme.bgOverlayClass || 'bg-black/35 backdrop-blur-[0.5px]'} ${sleepMode === 'dark' ? 'bg-slate-950/40 backdrop-blur-[1px]' : 'bg-slate-950/15'}`} />
         </div>
       )}
 

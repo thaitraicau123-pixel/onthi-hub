@@ -109,6 +109,27 @@ async function runTests() {
     });
   });
 
+  // Verify Mario theme has Toad 4K metadata & proper wallpaper
+  const marioTheme = THEMES.find(t => t.id === 'super-mario-3d');
+  assert(marioTheme && marioTheme.subtitle.includes('Bé Nấm Toad'), 'Mario theme subtitle features Bé Nấm Toad 4K');
+  const marioImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'mario-4k.png'));
+  assert(marioImgStats.size > 200000, `Mario Toad 4K image is high-res (${marioImgStats.size} bytes)`);
+
+  // Verify Sleep Mode (Chế độ ngủ) Engine
+  console.log('\n--- 2b. Testing Sleep Mode (Chế độ ngủ 🌙 / Ban ngày ☀️) ---');
+  const { getSleepMode, setSleepMode, toggleSleepMode } = themeModule;
+  assert(typeof getSleepMode === 'function', 'getSleepMode is defined');
+  assert(typeof setSleepMode === 'function', 'setSleepMode is defined');
+  assert(typeof toggleSleepMode === 'function', 'toggleSleepMode is defined');
+
+  setSleepMode('dark');
+  assert(getSleepMode() === 'dark', 'Sleep mode set to dark (Chế độ ngủ)');
+  toggleSleepMode();
+  assert(getSleepMode() === 'light', 'Sleep mode toggled to light (Ban ngày)');
+  toggleSleepMode();
+  assert(getSleepMode() === 'dark', 'Sleep mode toggled back to dark');
+
+
   // 3. BLIND BOX REWARDS (No useless vouchers, profitable for user & platform)
   console.log('\n--- 3. Testing Lucky Blind Box Utility & Rewards ---');
   const blindBoxModule = await import('./src/utils/blindBox.js');

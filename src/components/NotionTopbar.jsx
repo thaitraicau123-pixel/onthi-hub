@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   PanelLeft,
   Flame,
@@ -19,6 +19,7 @@ import {
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
+import { getSleepMode, toggleSleepMode, subscribeToSleepMode } from '../utils/themeManager';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -42,7 +43,17 @@ export default function NotionTopbar({
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
   const [isMuted, setIsMuted] = useState(() => isSoundMuted());
+  const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const streakInfo = getStreakInfo();
+
+  useEffect(() => {
+    const unsub = subscribeToSleepMode((mode) => {
+      setSleepMode(mode);
+    });
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, []);
 
   const handleToggleMute = () => {
     const next = toggleSoundMute();
@@ -181,6 +192,31 @@ export default function NotionTopbar({
         >
           <Palette className="w-3.5 h-3.5 text-purple-600" />
           <span className="hidden sm:inline">Chủ Đề</span>
+        </button>
+
+        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Toggle Button */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            const nextMode = toggleSleepMode();
+            setSleepMode(nextMode);
+          }}
+          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
+            sleepMode === 'dark'
+              ? 'bg-indigo-950/80 text-indigo-200 border-indigo-400/50 hover:bg-indigo-900/90 ring-1 ring-indigo-400/30'
+              : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 ring-1 ring-amber-400/20'
+          }`}
+          title={
+            sleepMode === 'dark'
+              ? 'Đang bật Chế độ ngủ (Dịu mắt ban đêm, độ tương phản cao). Bấm để chuyển sang Ban ngày ☀️'
+              : 'Đang bật Chế độ ban ngày (Sáng rõ, tỉnh táo). Bấm để chuyển sang Chế độ ngủ 🌙'
+          }
+        >
+          <span className="text-xs">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
+          <span className="hidden sm:inline text-[11px]">
+            {sleepMode === 'dark' ? 'Chế Độ Ngủ' : 'Ban Ngày'}
+          </span>
         </button>
 
         {/* Dynamic Weather & Atmosphere Particle Toggle Button (14 Bespoke Engines) */}
