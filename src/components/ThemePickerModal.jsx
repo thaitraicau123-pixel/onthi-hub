@@ -94,21 +94,30 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                     </div>
 
                     <div className="flex items-center space-x-1">
-                      {theme.weatherType === 'snow' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200 flex items-center space-x-0.5 shadow-2xs">
-                          <span>❄️ Tuyết</span>
-                        </span>
-                      )}
-                      {theme.weatherType === 'sakura' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-800 border border-pink-200 flex items-center space-x-0.5 shadow-2xs">
-                          <span>🌸 Hoa</span>
-                        </span>
-                      )}
-                      {theme.weatherType === 'stars' && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex items-center space-x-0.5 shadow-2xs">
-                          <span>✨ Sao</span>
-                        </span>
-                      )}
+                      {(() => {
+                        const weatherBadgeMap = {
+                          snow: { icon: '❄️', label: 'Tuyết', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
+                          halloween: { icon: '🎃', label: 'Halloween', color: 'bg-orange-100 text-orange-900 border-orange-300' },
+                          sakura: { icon: '🌸', label: 'Hoa Đào', color: 'bg-pink-100 text-pink-800 border-pink-200' },
+                          stars: { icon: '✨', label: 'Sao Băng', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
+                          fireflies: { icon: '🍃', label: 'Đom Đóm', color: 'bg-lime-100 text-lime-800 border-lime-200' },
+                          'coffee-steam': { icon: '☕', label: 'Hơi Cà Phê', color: 'bg-amber-100 text-amber-900 border-amber-300' },
+                          'digital-rain': { icon: '⚡', label: 'Ma Trận', color: 'bg-cyan-100 text-cyan-900 border-cyan-300' },
+                          'sunset-dust': { icon: '🌅', label: 'Bụi Nắng', color: 'bg-rose-100 text-rose-800 border-rose-200' },
+                          'fizzy-citrus': { icon: '🫧', label: 'Bọt Khí', color: 'bg-yellow-100 text-yellow-900 border-yellow-300' },
+                          'aurora-ice': { icon: '🌌', label: 'Cực Quang', color: 'bg-teal-100 text-teal-800 border-teal-200' },
+                          'autumn-leaves': { icon: '🍂', label: 'Lá Vàng', color: 'bg-amber-100 text-amber-800 border-amber-200' },
+                          'minimal-sparkles': { icon: '✨', label: 'Tinh Tế', color: 'bg-slate-100 text-slate-800 border-slate-200' },
+                        };
+                        const w = weatherBadgeMap[theme.weatherType];
+                        if (!w) return null;
+                        return (
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex items-center space-x-0.5 shadow-2xs ${w.color}`}>
+                            <span>{w.icon}</span>
+                            <span>{w.label}</span>
+                          </span>
+                        );
+                      })()}
                       {isSelected ? (
                         <span className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#2383e2] text-white text-[11px] font-bold shadow-xs">
                           <Check className="w-3.5 h-3.5" />

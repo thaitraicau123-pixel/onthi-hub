@@ -76,10 +76,10 @@ export default function NotionSidebar({
       id: 'theme',
       label: 'Đổi Chủ Đề Nền',
       emoji: '🎨',
-      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '10 Themes',
+      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '12 Themes',
       badgeColor: 'notion-pill-blue',
       action: onOpenThemePicker,
-      desc: '10 phong cách Messenger / Instagram'
+      desc: '12 phong cách Messenger / Instagram'
     },
     {
       id: 'analytics',
@@ -157,9 +157,34 @@ export default function NotionSidebar({
 
   return (
     <aside
-      className={`fixed md:sticky top-0 left-0 w-64 h-screen shrink-0 ${currentTheme?.sidebarBgClass || 'bg-[#f7f6f5]'} border-r ${currentTheme?.borderClass || 'border-[#e9e9e8]'} ${currentTheme?.textClass || 'text-[#37352f]'} flex flex-col justify-between select-none z-40 transition-all duration-300 text-sm shadow-xl md:shadow-none backdrop-blur-md`}
+      className={`fixed md:sticky top-0 left-0 w-64 h-screen shrink-0 ${currentTheme?.sidebarBgClass || 'bg-[#f7f6f5]'} border-r ${currentTheme?.borderClass || 'border-[#e9e9e8]'} ${currentTheme?.textClass || 'text-[#37352f]'} flex flex-col justify-between select-none z-40 transition-all duration-300 text-sm shadow-xl md:shadow-none backdrop-blur-md relative`}
       aria-label="Thanh bên điều hướng Notion"
     >
+      {/* Festive Snow Cap Drip on Sidebar */}
+      {currentTheme?.hasSnowCaps && (
+        <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none overflow-hidden z-40">
+          <svg className="w-full h-2.5" preserveAspectRatio="none" viewBox="0 0 300 10" fill="none">
+            <path
+              d="M0 0 L300 0 L300 3 Q270 8 240 3 Q210 0 180 5 Q150 9 120 3 Q90 0 60 6 Q30 9 0 3 Z"
+              fill="#ffffff"
+              fillOpacity="0.88"
+            />
+          </svg>
+        </div>
+      )}
+
+      {/* Spooky Halloween Spiderweb on Sidebar */}
+      {currentTheme?.hasWebDecor && (
+        <div className="absolute top-0 right-0 w-12 h-12 pointer-events-none overflow-hidden z-40 opacity-70">
+          <svg viewBox="0 0 60 60" className="w-full h-full fill-none stroke-purple-400/50" strokeWidth="1.2">
+            <path d="M60 0 Q35 5 20 20 Q5 35 0 60" />
+            <path d="M60 0 L20 20" strokeWidth="1" />
+            <path d="M50 0 C45 8 38 15 28 15" />
+            <circle cx="20" cy="20" r="1.5" fill="#c084fc" />
+          </svg>
+        </div>
+      )}
+
       {/* TOP SECTION: WORKSPACE SWITCHER & SEARCH */}
       <div className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
         

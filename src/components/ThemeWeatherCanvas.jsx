@@ -2,13 +2,20 @@ import React, { useEffect, useRef } from 'react';
 
 /**
  * ThemeWeatherCanvas
- * High-performance 60fps HTML5 Canvas Particle Engine.
- * Dynamically produces realistic weather and atmospheric effects:
- * - 'snow': Gentle, realistic 3D falling snowflakes with wind drift and crystalline stars (Christmas & Nordic).
- * - 'sakura': Drifting, 3D rotating pastel pink cherry blossom petals (Sakura Blossom).
- * - 'stars': Twinkling stardust nebulas and shooting stars (Cosmic Galaxy).
- * - 'leaves': Floating fireflies with soft lime bioluminescence and leaves (Avocado Garden).
- * - 'bubbles': Effervescent rising fizzy bubbles (Lemon Citrus).
+ * High-performance 60fps HTML5 Canvas Particle & Atmosphere Engine.
+ * Features 12 COMPLETELY UNIQUE, BESPOKE VISUAL SCENES for all 12 themes:
+ * 1. 'snow': Crystalline 3D falling snowflakes & star flakes (Christmas Wonderland)
+ * 2. 'halloween': Rising spooky Jack-o'-lantern embers, floating baby ghosts & swooping bats (Halloween Spooky)
+ * 3. 'sakura': Fluttering, 3D rotating pastel pink cherry blossom petals (Sakura Blossom)
+ * 4. 'stars': Pulsing celestial stardust nebulas & high-speed shooting stars (Cosmic Galaxy)
+ * 5. 'fireflies': Bioluminescent lime-green fireflies hovering in breathing pulses (Botanical Avocado)
+ * 6. 'coffee-steam': Rising cozy wavy coffee steam wisps & floating coffee bean motes (Lofi Cafe)
+ * 7. 'digital-rain': Cyberpunk neon cyan & magenta digital matrix rain & laser streaks (Cyberpunk Neon)
+ * 8. 'sunset-dust': Golden sunbeam dust motes drifting across glowing amber rays (Sunset Waves)
+ * 9. 'fizzy-citrus': Effervescent rising soda bubbles with refractions & citrus sparkles (Lemon Citrus)
+ * 10. 'aurora-ice': Shimmering polar Aurora Borealis waves & glinting diamond ice crystals (Nordic Frost)
+ * 11. 'autumn-leaves': Golden amber & crimson maple leaves spiraling in autumn gusts (Classic Academia)
+ * 12. 'minimal-sparkles': Elegant minimalist Notion geometric diamonds & micro-dust (Notion Minimalist)
  */
 export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = true }) {
   const canvasRef = useRef(null);
@@ -34,31 +41,62 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
     };
     window.addEventListener('resize', handleResize);
 
-    // Particle state initialization
+    // Particle pool creation
     const particles = [];
-    const count = weatherType === 'snow' ? 75 : weatherType === 'sakura' ? 42 : weatherType === 'stars' ? 55 : 35;
-
+    const count = getParticleCount(weatherType);
     for (let i = 0; i < count; i++) {
       particles.push(createParticle(weatherType, width, height, true));
     }
 
+    // Special event controllers
     let shootingStar = null;
-    let nextShootingStarTime = Date.now() + 2500;
+    let nextShootingStarTime = Date.now() + 2000;
+    let batEvent = null;
+    let nextBatTime = Date.now() + 3000;
+    let auroraTime = 0;
 
     let lastTime = performance.now();
 
     const render = (now) => {
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
+      auroraTime += dt * 0.8;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Render each particle based on weather type
+      // -------------------------------------------------------------
+      // SPECIAL BACKGROUND PASS (e.g. AURORA BOREALIS FOR NORDIC)
+      // -------------------------------------------------------------
+      if (weatherType === 'aurora-ice') {
+        ctx.save();
+        const grad = ctx.createLinearGradient(0, 0, width, height * 0.5);
+        const wave1 = Math.sin(auroraTime) * 0.04 + 0.08;
+        const wave2 = Math.cos(auroraTime * 0.7) * 0.03 + 0.06;
+        grad.addColorStop(0, `rgba(6, 182, 212, ${wave1})`);
+        grad.addColorStop(0.5, `rgba(52, 211, 153, ${wave2})`);
+        grad.addColorStop(1, 'rgba(6, 182, 212, 0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        for (let x = 0; x <= width; x += 40) {
+          const y = Math.sin(x * 0.003 + auroraTime) * 45 + Math.cos(x * 0.006 - auroraTime * 0.5) * 25 + height * 0.18;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // -------------------------------------------------------------
+      // INDIVIDUAL PARTICLES RENDER & PHYSICS
+      // -------------------------------------------------------------
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
 
+        // 1. CHRISTMAS SNOW
         if (weatherType === 'snow') {
-          // --- SNOWFLAKE PHYSICS ---
           p.y += p.speed * 60 * dt;
           p.angle += p.swaySpeed * dt;
           p.x += Math.sin(p.angle) * p.swayAmount * 60 * dt + p.wind * 60 * dt;
@@ -70,7 +108,6 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
           ctx.shadowBlur = p.isSpecial ? 8 : 4;
 
           if (p.isSpecial) {
-            // Draw 6-arm crystal snowflake
             ctx.translate(p.x, p.y);
             ctx.rotate(p.rot);
             p.rot += 0.015;
@@ -80,25 +117,79 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
               ctx.rotate(Math.PI / 3);
               ctx.beginPath();
               ctx.moveTo(0, 0);
-              ctx.lineTo(0, p.radius * 2.2);
+              ctx.lineTo(0, p.radius * 2);
               ctx.stroke();
             }
           } else {
-            // Soft glowing fluffy snowball
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fill();
           }
           ctx.restore();
 
-          // Reset when fallen off screen
-          if (p.y > height + 20) {
-            particles[i] = createParticle('snow', width, height, false);
-          }
+          if (p.y > height + 20) particles[i] = createParticle('snow', width, height, false);
           if (p.x < -20) p.x = width + 20;
           if (p.x > width + 20) p.x = -20;
+        }
 
-        } else if (weatherType === 'sakura') {
-          // --- SAKURA PETAL 3D FLUTTER ---
+        // 2. HALLOWEEN SPOOKY (Embers & Mini Floating Ghosts)
+        else if (weatherType === 'halloween') {
+          if (p.isGhost) {
+            // Floating Mini Ghost
+            p.angle += 0.03;
+            p.y -= p.speed * 40 * dt;
+            p.x += Math.sin(p.angle) * 1.5;
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.beginPath();
+            ctx.fillStyle = `rgba(253, 244, 255, ${p.opacity})`;
+            ctx.shadowColor = '#c084fc';
+            ctx.shadowBlur = 12;
+            // Ghost body curve
+            ctx.arc(0, -6, 9, Math.PI, 0, false);
+            ctx.lineTo(9, 6);
+            ctx.quadraticCurveTo(5, 3, 0, 7);
+            ctx.quadraticCurveTo(-5, 3, -9, 6);
+            ctx.closePath();
+            ctx.fill();
+            // Ghost cute eyes
+            ctx.fillStyle = '#2e1065';
+            ctx.beginPath();
+            ctx.arc(-3, -6, 1.3, 0, Math.PI * 2);
+            ctx.arc(3, -6, 1.3, 0, Math.PI * 2);
+            ctx.fill();
+            // Blush dots
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.arc(-5, -3, 1.5, 0, Math.PI * 2);
+            ctx.arc(5, -3, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            if (p.y < -30) particles[i] = createParticle('halloween', width, height, false);
+          } else {
+            // Jack-o'-lantern Embers (Amber & Violet Sparks)
+            p.y -= p.speed * 60 * dt;
+            p.x += Math.sin(p.y * 0.03) * 0.8;
+            p.pulse += 0.05;
+
+            ctx.save();
+            ctx.beginPath();
+            const glow = Math.sin(p.pulse) * 0.3 + 0.7;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 10;
+            ctx.globalAlpha = p.opacity * glow;
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            if (p.y < -20) particles[i] = createParticle('halloween', width, height, false);
+          }
+        }
+
+        // 3. SAKURA BLOSSOM (3D Rotating Pink Petals)
+        else if (weatherType === 'sakura') {
           p.y += p.speed * 60 * dt;
           p.x += (Math.cos(p.angle) * p.swayAmount + p.wind) * 60 * dt;
           p.angle += 0.02;
@@ -112,39 +203,39 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
 
           ctx.beginPath();
           ctx.fillStyle = p.color;
-          ctx.shadowColor = 'rgba(244, 114, 182, 0.4)';
+          ctx.shadowColor = 'rgba(244, 114, 182, 0.45)';
           ctx.shadowBlur = 6;
-          // Petal heart curve
           ctx.moveTo(0, 0);
           ctx.bezierCurveTo(-p.radius, -p.radius * 1.5, -p.radius * 1.5, p.radius * 1.2, 0, p.radius * 2);
           ctx.bezierCurveTo(p.radius * 1.5, p.radius * 1.2, p.radius, -p.radius * 1.5, 0, 0);
           ctx.fill();
           ctx.restore();
 
-          if (p.y > height + 30) {
-            particles[i] = createParticle('sakura', width, height, false);
-          }
+          if (p.y > height + 30) particles[i] = createParticle('sakura', width, height, false);
+        }
 
-        } else if (weatherType === 'stars') {
-          // --- PULSATING COSMIC STARDUST ---
+        // 4. COSMIC GALAXY (Stardust & Twinkles)
+        else if (weatherType === 'stars') {
           p.pulse += p.pulseSpeed;
-          const currentRadius = Math.max(0.5, p.radius + Math.sin(p.pulse) * 0.8);
-          const currentOpacity = Math.max(0.2, p.opacity + Math.sin(p.pulse) * 0.3);
+          const currentRadius = Math.max(0.6, p.radius + Math.sin(p.pulse) * 0.9);
+          const currentOpacity = Math.max(0.2, p.opacity + Math.sin(p.pulse) * 0.35);
 
           ctx.save();
           ctx.beginPath();
           ctx.fillStyle = p.color;
           ctx.shadowColor = p.color;
-          ctx.shadowBlur = p.isSpecial ? 12 : 5;
+          ctx.shadowBlur = p.isSpecial ? 14 : 5;
+          ctx.globalAlpha = currentOpacity;
           ctx.arc(p.x, p.y, currentRadius, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
+        }
 
-        } else if (weatherType === 'leaves') {
-          // --- GLOWING FIREFLIES & MINT LEAVES (AVOCADO THEME) ---
-          p.angle += 0.025;
-          p.y += Math.sin(p.angle) * 0.6 - 0.4;
-          p.x += Math.cos(p.angle * 0.7) * 0.8;
+        // 5. BIOLUMINESCENT FIREFLIES & MINT LEAVES (Botanical Avocado)
+        else if (weatherType === 'fireflies') {
+          p.angle += 0.03;
+          p.y += Math.sin(p.angle) * 0.8 - 0.2;
+          p.x += Math.cos(p.angle * 0.7) * 1.1;
           p.pulse += 0.05;
 
           ctx.save();
@@ -152,7 +243,7 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
           const glow = Math.sin(p.pulse) * 0.4 + 0.6;
           ctx.fillStyle = p.isLeaf ? '#547b6e' : `rgba(134, 239, 172, ${glow})`;
           ctx.shadowColor = '#34d399';
-          ctx.shadowBlur = p.isLeaf ? 2 : 12;
+          ctx.shadowBlur = p.isLeaf ? 3 : 15;
 
           if (p.isLeaf) {
             ctx.translate(p.x, p.y);
@@ -168,33 +259,190 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
           if (p.y < -20) p.y = height + 20;
           if (p.x < -20) p.x = width + 20;
           if (p.x > width + 20) p.x = -20;
+        }
 
-        } else if (weatherType === 'bubbles') {
-          // --- EFFERVESCENT FIZZY BUBBLES ---
-          p.y -= p.speed * 60 * dt;
-          p.x += Math.sin(p.y * 0.05) * 0.6;
+        // 6. COZY COFFEE STEAM & BEANS (Lofi Cafe)
+        else if (weatherType === 'coffee-steam') {
+          p.y -= p.speed * 55 * dt;
+          p.x += Math.sin(p.y * 0.02 + p.angle) * 1.2;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+
+          if (p.isBean) {
+            // Floating Coffee Bean Mote
+            ctx.rotate(p.y * 0.02);
+            ctx.fillStyle = 'rgba(140, 83, 43, 0.45)';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 5, 3.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(-4, 0);
+            ctx.lineTo(4, 0);
+            ctx.stroke();
+          } else {
+            // Soft warm steam puff
+            ctx.fillStyle = `rgba(245, 235, 220, ${p.opacity * 0.7})`;
+            ctx.shadowColor = '#d97706';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+
+          if (p.y < -30) particles[i] = createParticle('coffee-steam', width, height, false);
+        }
+
+        // 7. DIGITAL MATRIX RAIN (Cyberpunk Neon)
+        else if (weatherType === 'digital-rain') {
+          p.y += p.speed * 90 * dt;
+
+          ctx.save();
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 8;
+
+          // Vertical neon trail line
+          ctx.fillRect(p.x, p.y, p.width, p.length);
+          // Bright leading head tip
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(p.x, p.y + p.length - 3, p.width, 3);
+          ctx.restore();
+
+          if (p.y > height + 40) particles[i] = createParticle('digital-rain', width, height, false);
+        }
+
+        // 8. GOLDEN SUNSET DUST (Sunset Waves)
+        else if (weatherType === 'sunset-dust') {
+          p.x += (p.speed * 40 + 0.5) * dt;
+          p.y += Math.sin(p.x * 0.02) * 0.5;
+          p.pulse += 0.04;
+
+          ctx.save();
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = '#ea580c';
+          ctx.shadowBlur = 10;
+          ctx.globalAlpha = Math.sin(p.pulse) * 0.3 + 0.6;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          if (p.x > width + 20) particles[i] = createParticle('sunset-dust', width, height, false);
+        }
+
+        // 9. EFFERVESCENT CITRUS BUBBLES (Lemon Citrus)
+        else if (weatherType === 'fizzy-citrus') {
+          p.y -= p.speed * 70 * dt;
+          p.x += Math.sin(p.y * 0.04) * 0.7;
 
           ctx.save();
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(245, 158, 11, ${p.opacity})`;
-          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = `rgba(217, 119, 6, ${p.opacity})`;
+          ctx.lineWidth = 1.6;
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.stroke();
 
-          // Small bubble gleam
+          // Gleam reflection
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
           ctx.beginPath();
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
           ctx.arc(p.x - p.radius * 0.35, p.y - p.radius * 0.35, p.radius * 0.25, 0, Math.PI * 2);
           ctx.fill();
           ctx.restore();
 
-          if (p.y < -30) {
-            particles[i] = createParticle('bubbles', width, height, false);
+          if (p.y < -30) particles[i] = createParticle('fizzy-citrus', width, height, false);
+        }
+
+        // 10. POLAR ICE CRYSTAL DUST (Nordic Frost)
+        else if (weatherType === 'aurora-ice') {
+          p.y += p.speed * 45 * dt;
+          p.x += Math.sin(p.y * 0.02) * 0.6 + p.wind;
+          p.rot += 0.02;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = `rgba(224, 242, 254, ${p.opacity})`;
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 8;
+          // Diamond / Rhombus ice crystal
+          ctx.beginPath();
+          ctx.moveTo(0, -p.radius * 1.5);
+          ctx.lineTo(p.radius, 0);
+          ctx.lineTo(0, p.radius * 1.5);
+          ctx.lineTo(-p.radius, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+
+          if (p.y > height + 20) particles[i] = createParticle('aurora-ice', width, height, false);
+        }
+
+        // 11. GOLDEN AUTUMN LEAVES (Classic Academia)
+        else if (weatherType === 'autumn-leaves') {
+          p.y += p.speed * 50 * dt;
+          p.x += (Math.sin(p.angle) * 1.8 + 0.4) * 60 * dt;
+          p.angle += 0.03;
+          p.rot += p.rotSpeed;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.shadowColor = '#d97706';
+          ctx.shadowBlur = 5;
+
+          // Maple/Oak leaf shape
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.radius * 1.6, p.radius * 0.9, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(-p.radius * 1.5, 0);
+          ctx.lineTo(p.radius * 1.5, 0);
+          ctx.stroke();
+          ctx.restore();
+
+          if (p.y > height + 25) particles[i] = createParticle('autumn-leaves', width, height, false);
+        }
+
+        // 12. MINIMALIST NOTION SPARKLES (Notion Minimalist)
+        else if (weatherType === 'minimal-sparkles') {
+          p.pulse += 0.03;
+          const op = Math.max(0.15, p.opacity + Math.sin(p.pulse) * 0.25);
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.fillStyle = `rgba(35, 131, 226, ${op})`;
+          ctx.shadowColor = '#2383e2';
+          ctx.shadowBlur = 4;
+
+          if (p.isDiamond) {
+            // Little 4-pointed micro star
+            ctx.beginPath();
+            ctx.moveTo(0, -p.radius * 1.4);
+            ctx.lineTo(p.radius * 0.5, 0);
+            ctx.lineTo(0, p.radius * 1.4);
+            ctx.lineTo(-p.radius * 0.5, 0);
+            ctx.closePath();
+            ctx.fill();
+          } else {
+            // Micro circle dust
+            ctx.beginPath();
+            ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+            ctx.fill();
           }
+          ctx.restore();
         }
       }
 
-      // --- OCCASIONAL SHOOTING STAR (FOR COSMIC THEME) ---
+      // -------------------------------------------------------------
+      // OCCASIONAL CELESTIAL SHOOTING STAR (FOR STARS THEME)
+      // -------------------------------------------------------------
       if (weatherType === 'stars') {
         if (!shootingStar && Date.now() > nextShootingStarTime) {
           shootingStar = {
@@ -229,7 +477,57 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
 
           if (shootingStar.opacity <= 0 || shootingStar.x > width || shootingStar.y > height) {
             shootingStar = null;
-            nextShootingStarTime = Date.now() + Math.random() * 6000 + 3500;
+            nextShootingStarTime = Date.now() + Math.random() * 5000 + 3000;
+          }
+        }
+      }
+
+      // -------------------------------------------------------------
+      // OCCASIONAL SWOOPING BAT SHADOW (FOR HALLOWEEN THEME)
+      // -------------------------------------------------------------
+      if (weatherType === 'halloween') {
+        if (!batEvent && Date.now() > nextBatTime) {
+          batEvent = {
+            x: -40,
+            y: Math.random() * (height * 0.4) + 40,
+            speedX: Math.random() * 4 + 4,
+            speedY: Math.random() * 2 - 1,
+            wingPhase: 0,
+            scale: Math.random() * 0.3 + 0.6
+          };
+        }
+
+        if (batEvent) {
+          batEvent.x += batEvent.speedX * 60 * dt;
+          batEvent.y += Math.sin(batEvent.x * 0.03) * 1.5;
+          batEvent.wingPhase += 0.3;
+
+          ctx.save();
+          ctx.translate(batEvent.x, batEvent.y);
+          ctx.scale(batEvent.scale, batEvent.scale * Math.cos(batEvent.wingPhase));
+          ctx.fillStyle = '#1e1b4b';
+          ctx.shadowColor = '#a855f7';
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.moveTo(0, 8);
+          ctx.quadraticCurveTo(-15, -12, -28, -2);
+          ctx.quadraticCurveTo(-20, 10, -10, 8);
+          ctx.quadraticCurveTo(-6, 16, 0, 10);
+          ctx.quadraticCurveTo(6, 16, 10, 8);
+          ctx.quadraticCurveTo(20, 10, 28, -2);
+          ctx.quadraticCurveTo(15, -12, 0, 8);
+          ctx.fill();
+          // Glowing eyes
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(-2, 4, 1.2, 0, Math.PI * 2);
+          ctx.arc(2, 4, 1.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          if (batEvent.x > width + 50) {
+            batEvent = null;
+            nextBatTime = Date.now() + Math.random() * 7000 + 4000;
           }
         }
       }
@@ -260,7 +558,39 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
   );
 }
 
+function getParticleCount(type) {
+  switch (type) {
+    case 'snow':
+      return 70;
+    case 'halloween':
+      return 45;
+    case 'sakura':
+      return 38;
+    case 'stars':
+      return 55;
+    case 'fireflies':
+      return 35;
+    case 'coffee-steam':
+      return 32;
+    case 'digital-rain':
+      return 45;
+    case 'sunset-dust':
+      return 40;
+    case 'fizzy-citrus':
+      return 35;
+    case 'aurora-ice':
+      return 40;
+    case 'autumn-leaves':
+      return 32;
+    case 'minimal-sparkles':
+      return 26;
+    default:
+      return 30;
+  }
+}
+
 function createParticle(type, width, height, randomY = true) {
+  // 1. SNOW
   if (type === 'snow') {
     const isSpecial = Math.random() < 0.18;
     return {
@@ -278,6 +608,24 @@ function createParticle(type, width, height, randomY = true) {
     };
   }
 
+  // 2. HALLOWEEN
+  if (type === 'halloween') {
+    const isGhost = Math.random() < 0.14;
+    const colors = ['#f97316', '#ea580c', '#fb923c', '#a855f7', '#c084fc'];
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : height + 25,
+      radius: isGhost ? 9 : Math.random() * 3 + 1.5,
+      speed: isGhost ? Math.random() * 0.8 + 0.5 : Math.random() * 1.2 + 0.7,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: isGhost ? Math.random() * 0.4 + 0.5 : Math.random() * 0.6 + 0.4,
+      isGhost,
+      angle: Math.random() * Math.PI * 2,
+      pulse: Math.random() * Math.PI * 2
+    };
+  }
+
+  // 3. SAKURA
   if (type === 'sakura') {
     const colors = ['rgba(244, 114, 182, 0.75)', 'rgba(251, 207, 232, 0.85)', 'rgba(249, 168, 212, 0.8)'];
     return {
@@ -296,6 +644,7 @@ function createParticle(type, width, height, randomY = true) {
     };
   }
 
+  // 4. STARS
   if (type === 'stars') {
     const colors = ['#ffffff', '#e9d5ff', '#c084fc', '#38bdf8', '#fef08a'];
     return {
@@ -306,11 +655,12 @@ function createParticle(type, width, height, randomY = true) {
       color: colors[Math.floor(Math.random() * colors.length)],
       pulse: Math.random() * Math.PI * 2,
       pulseSpeed: Math.random() * 0.04 + 0.015,
-      isSpecial: Math.random() < 0.2
+      isSpecial: Math.random() < 0.25
     };
   }
 
-  if (type === 'leaves') {
+  // 5. FIREFLIES
+  if (type === 'fireflies') {
     const isLeaf = Math.random() < 0.25;
     return {
       x: Math.random() * width,
@@ -322,12 +672,93 @@ function createParticle(type, width, height, randomY = true) {
     };
   }
 
-  // bubbles
+  // 6. COFFEE STEAM
+  if (type === 'coffee-steam') {
+    const isBean = Math.random() < 0.2;
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : height + 20,
+      radius: Math.random() * 6 + 4,
+      speed: Math.random() * 0.9 + 0.5,
+      opacity: Math.random() * 0.5 + 0.25,
+      angle: Math.random() * Math.PI * 2,
+      isBean
+    };
+  }
+
+  // 7. DIGITAL MATRIX RAIN
+  if (type === 'digital-rain') {
+    const isCyan = Math.random() < 0.7;
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -40,
+      width: Math.random() * 1.5 + 1.2,
+      length: Math.random() * 25 + 15,
+      speed: Math.random() * 3.5 + 2.5,
+      color: isCyan ? 'rgba(6, 182, 212, 0.75)' : 'rgba(236, 72, 153, 0.75)'
+    };
+  }
+
+  // 8. SUNSET DUST
+  if (type === 'sunset-dust') {
+    const colors = ['#f59e0b', '#fb923c', '#fdba74', '#fed7aa'];
+    return {
+      x: randomY ? Math.random() * width : -20,
+      y: Math.random() * height,
+      radius: Math.random() * 3 + 1.5,
+      speed: Math.random() * 1.2 + 0.6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      pulse: Math.random() * Math.PI * 2
+    };
+  }
+
+  // 9. FIZZY CITRUS BUBBLES
+  if (type === 'fizzy-citrus') {
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : height + 20,
+      radius: Math.random() * 5 + 2.5,
+      speed: Math.random() * 1.8 + 0.9,
+      opacity: Math.random() * 0.6 + 0.3
+    };
+  }
+
+  // 10. AURORA ICE CRYSTALS
+  if (type === 'aurora-ice') {
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -20,
+      radius: Math.random() * 3.5 + 2,
+      speed: Math.random() * 1.1 + 0.5,
+      wind: Math.random() * 0.4 - 0.2,
+      opacity: Math.random() * 0.6 + 0.35,
+      rot: Math.random() * Math.PI * 2
+    };
+  }
+
+  // 11. AUTUMN LEAVES
+  if (type === 'autumn-leaves') {
+    const colors = ['#b45309', '#d97706', '#9a3412', '#78350f', '#ca8a04'];
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -25,
+      radius: Math.random() * 4 + 4,
+      speed: Math.random() * 1.3 + 0.7,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      angle: Math.random() * Math.PI * 2,
+      rot: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.05
+    };
+  }
+
+  // 12. MINIMAL SPARKLES
+  const isDiamond = Math.random() < 0.3;
   return {
     x: Math.random() * width,
-    y: randomY ? Math.random() * height : height + 20,
-    radius: Math.random() * 5 + 3,
-    speed: Math.random() * 1.5 + 0.8,
-    opacity: Math.random() * 0.6 + 0.25
+    y: Math.random() * height,
+    radius: isDiamond ? Math.random() * 2.5 + 2 : Math.random() * 1.5 + 0.8,
+    opacity: Math.random() * 0.5 + 0.2,
+    pulse: Math.random() * Math.PI * 2,
+    isDiamond
   };
 }

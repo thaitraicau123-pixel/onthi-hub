@@ -938,6 +938,182 @@ export default function ThemeAtmosphereBackground({ theme }) {
           </svg>
         </div>
       )}
+
+      {/* =========================================================================
+          12. HALLOWEEN SPOOKY: GLOWING PUMPKIN, BABY GHOST BOO, CAULDRON & BATS
+          ========================================================================= */}
+      {themeId === 'halloween-spooky' && (
+        <div className="absolute inset-0 opacity-[0.92] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="hw-pumpkin-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="18" floodColor="#f97316" floodOpacity="0.55" />
+              </filter>
+              <filter id="hw-ghost-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#c084fc" floodOpacity="0.5" />
+              </filter>
+              <filter id="hw-moon-glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="0" stdDeviation="22" floodColor="#fde047" floodOpacity="0.65" />
+              </filter>
+              <filter id="hw-cauldron-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#22c55e" floodOpacity="0.55" />
+              </filter>
+            </defs>
+
+            {/* MASCOT 1: Kawaii Floating Baby Ghost Boo (Top-Left) */}
+            <g transform="translate(60, 45) scale(1.05)" filter="url(#hw-ghost-glow)">
+              {/* Cute Little Witch Hat on Ghost */}
+              <polygon points="68,2 50,38 86,38" fill="#1e1b4b" stroke="#312e81" strokeWidth="2" />
+              <ellipse cx="68" cy="38" rx="24" ry="6" fill="#1e1b4b" stroke="#312e81" strokeWidth="1.5" />
+              <rect x="54" y="32" width="28" height="5" fill="#a855f7" />
+              <rect x="65" y="31" width="6" height="7" rx="1.5" fill="#facc15" />
+
+              {/* Ghost Body (Translucent White Sheet with Wavy Hem) */}
+              <path
+                d="M38 65 C38 32 98 32 98 65 C98 95 98 120 98 128 Q88 120 78 128 Q68 120 58 128 Q48 120 38 128 Z"
+                fill="#fdf4ff"
+                stroke="#d8b4fe"
+                strokeWidth="2.5"
+              />
+
+              {/* Floating Little Ghost Arms */}
+              <path d="M40 76 Q26 84 34 94 Q40 92 42 84 Z" fill="#fdf4ff" stroke="#d8b4fe" strokeWidth="2" />
+              <path d="M96 76 Q110 84 102 94 Q96 92 94 84 Z" fill="#fdf4ff" stroke="#d8b4fe" strokeWidth="2" />
+
+              {/* Rosy Blushing Cheeks */}
+              <ellipse cx="50" cy="78" rx="7" ry="5" fill="#f472b6" fillOpacity="0.6" />
+              <ellipse cx="86" cy="78" rx="7" ry="5" fill="#f472b6" fillOpacity="0.6" />
+
+              {/* Kawaii Happy Eyes: ( > ‿ < ) */}
+              <path d="M50 68 L58 72 L50 76" stroke="#2e1065" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M86 68 L78 72 L86 76" stroke="#2e1065" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              {/* Cute Open Mouth :D */}
+              <ellipse cx="68" cy="82" rx="4.5" ry="6" fill="#2e1065" />
+              <ellipse cx="68" cy="84" rx="3" ry="2.5" fill="#fb7185" />
+
+              {/* Mini Pumpkin Trick-or-Treat Bucket held in hand */}
+              <g transform="translate(100, 85) scale(0.7)">
+                <path d="M12 0 Q22 -8 32 0" stroke="#713f12" strokeWidth="2.5" fill="none" />
+                <ellipse cx="22" cy="18" rx="16" ry="14" fill="#f97316" stroke="#c2410c" strokeWidth="2" />
+                <polygon points="17,14 14,18 20,18" fill="#1e1b4b" />
+                <polygon points="27,14 24,18 30,18" fill="#1e1b4b" />
+                <path d="M15 22 Q22 28 29 22" stroke="#1e1b4b" strokeWidth="2" strokeLinecap="round" fill="none" />
+              </g>
+            </g>
+
+            {/* MASCOT 2: Chubby Smiling Jack-o'-Lantern Pumpkin (Bottom-Right) */}
+            <g transform="translate(1080, 470) scale(1.1)" filter="url(#hw-pumpkin-glow)">
+              {/* Curly Green Stem */}
+              <path d="M75 35 Q70 15 85 8 Q92 5 90 15 Q80 25 80 35" fill="#15803d" stroke="#166534" strokeWidth="2" />
+              <path d="M85 8 Q98 12 92 24" stroke="#22c55e" strokeWidth="2" fill="none" />
+
+              {/* Pumpkin Outer Segments (Left & Right) */}
+              <ellipse cx="38" cy="85" rx="30" ry="42" fill="#ea580c" stroke="#9a3412" strokeWidth="2.5" />
+              <ellipse cx="112" cy="85" rx="30" ry="42" fill="#ea580c" stroke="#9a3412" strokeWidth="2.5" />
+
+              {/* Pumpkin Middle Segments */}
+              <ellipse cx="54" cy="85" rx="26" ry="45" fill="#f97316" stroke="#c2410c" strokeWidth="2" />
+              <ellipse cx="96" cy="85" rx="26" ry="45" fill="#f97316" stroke="#c2410c" strokeWidth="2" />
+
+              {/* Pumpkin Center Segment */}
+              <ellipse cx="75" cy="85" rx="26" ry="47" fill="#fb923c" stroke="#ea580c" strokeWidth="2" />
+
+              {/* Rosy Cheeks */}
+              <ellipse cx="42" cy="88" rx="8" ry="5.5" fill="#f43f5e" fillOpacity="0.5" />
+              <ellipse cx="108" cy="88" rx="8" ry="5.5" fill="#f43f5e" fillOpacity="0.5" />
+
+              {/* Glowing Carved Triangular Eyes */}
+              <polygon points="54,65 44,78 64,78" fill="#fef08a" stroke="#ca8a04" strokeWidth="2" />
+              <polygon points="96,65 86,78 106,78" fill="#fef08a" stroke="#ca8a04" strokeWidth="2" />
+              {/* Carved Nose */}
+              <polygon points="75,76 70,84 80,84" fill="#fef08a" />
+
+              {/* Big Carved Toothy Smile with Fangs (Glowing Golden Flame) */}
+              <path
+                d="M45 92 Q75 125 105 92 Q95 102 90 95 Q82 108 75 96 Q68 108 60 95 Q55 102 45 92 Z"
+                fill="#fef08a"
+                stroke="#ca8a04"
+                strokeWidth="2"
+              />
+              {/* Internal Candle Glow */}
+              <circle cx="75" cy="88" r="14" fill="#fef9c3" fillOpacity="0.5" filter="url(#hw-pumpkin-glow)" />
+            </g>
+
+            {/* MASCOT 3: Bubbling Witch Cauldron with Green Magic Potion (Bottom-Left) */}
+            <g transform="translate(60, 460) scale(0.95)" filter="url(#hw-cauldron-glow)">
+              {/* Glowing Green Potion Aura */}
+              <ellipse cx="80" cy="55" rx="46" ry="14" fill="#22c55e" fillOpacity="0.5" />
+
+              {/* Cauldron Cast Iron Body */}
+              <ellipse cx="80" cy="105" rx="55" ry="42" fill="#1e1b4b" stroke="#0f172a" strokeWidth="3" />
+              {/* Cauldron Rim */}
+              <ellipse cx="80" cy="55" rx="50" ry="12" fill="#312e81" stroke="#1e1b4b" strokeWidth="3" />
+
+              {/* Boiling Slime-Green Potion Surface */}
+              <ellipse cx="80" cy="55" rx="44" ry="9" fill="#4ade80" />
+              <circle cx="65" cy="53" r="5" fill="#86efac" />
+              <circle cx="95" cy="56" r="6" fill="#86efac" />
+              <circle cx="78" cy="57" r="4" fill="#bbf7d0" />
+
+              {/* Rising Slime Bubbles */}
+              <circle cx="62" cy="38" r="6" fill="#4ade80" stroke="#22c55e" strokeWidth="1.5" />
+              <circle cx="85" cy="30" r="8" fill="#4ade80" stroke="#22c55e" strokeWidth="1.5" />
+              <circle cx="98" cy="42" r="5" fill="#86efac" />
+              <circle cx="75" cy="18" r="4" fill="#bbf7d0" />
+
+              {/* Cauldron Feet */}
+              <path d="M45 140 L35 158 L48 156 Z" fill="#0f172a" />
+              <path d="M115 140 L125 158 L112 156 Z" fill="#0f172a" />
+              <path d="M80 145 L80 160 Z" stroke="#0f172a" strokeWidth="6" strokeLinecap="round" />
+            </g>
+
+            {/* TOP-RIGHT DECOR: Glowing Crescent Moon, Flying Bats & Spiderweb */}
+            <g transform="translate(1080, 20) scale(0.95)">
+              {/* Crescent Moon */}
+              <path
+                d="M80 0 C40 0 10 32 10 72 C10 112 40 144 80 144 C55 125 50 85 65 50 C75 25 95 10 110 5 C100 2 90 0 80 0 Z"
+                fill="#fde047"
+                filter="url(#hw-moon-glow)"
+              />
+
+              {/* Flying Bat 1 (Near Moon) */}
+              <g transform="translate(30, 45) scale(0.85) rotate(-12)">
+                <path
+                  d="M0 12 Q-18 0 -35 8 Q-28 20 -15 16 Q-10 26 0 18 Q10 26 15 16 Q28 20 35 8 Q18 0 0 12 Z"
+                  fill="#1e1b4b"
+                />
+                <circle cx="-3" cy="12" r="1.5" fill="#fde047" />
+                <circle cx="3" cy="12" r="1.5" fill="#fde047" />
+              </g>
+
+              {/* Flying Bat 2 (Further Out) */}
+              <g transform="translate(-40, 95) scale(0.65) rotate(15)">
+                <path
+                  d="M0 12 Q-18 0 -35 8 Q-28 20 -15 16 Q-10 26 0 18 Q10 26 15 16 Q28 20 35 8 Q18 0 0 12 Z"
+                  fill="#1e1b4b"
+                />
+                <circle cx="-3" cy="12" r="1.5" fill="#fde047" />
+                <circle cx="3" cy="12" r="1.5" fill="#fde047" />
+              </g>
+
+              {/* Delicate Corner Spiderweb */}
+              <g transform="translate(120, -10)" stroke="#6b21a8" strokeWidth="1.2" fill="none" opacity="0.6">
+                <line x1="0" y1="0" x2="-80" y2="40" />
+                <line x1="0" y1="0" x2="-60" y2="70" />
+                <line x1="0" y1="0" x2="-30" y2="90" />
+                <path d="M-25 12 Q-20 22 -10 28" />
+                <path d="M-50 25 Q-40 45 -20 56" />
+                <path d="M-75 38 Q-58 66 -28 85" />
+                {/* Hanging Cute Spider */}
+                <line x1="-40" y1="50" x2="-40" y2="85" stroke="#a855f7" strokeWidth="1" />
+                <circle cx="-40" cy="88" r="4.5" fill="#581c87" />
+                <circle cx="-42" cy="87" r="1" fill="#fde047" />
+                <circle cx="-38" cy="87" r="1" fill="#fde047" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      )}
     </div>
   );
 }
