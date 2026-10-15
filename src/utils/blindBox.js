@@ -2,10 +2,10 @@
 // Phần thưởng 100% THỰC TẾ & CÓ LỢI CHO CẢ HỌC VIÊN LẪN CHỦ HỆ THỐNG
 // KHÔNG CÒN VOUCHER ẢO VÔ NGHĨA! Mọi phần thưởng được kích hoạt thẳng vào tài khoản ngay lập tức!
 
-import { getWalletBalance, deductWalletCoins, addWalletCoins } from './wallet';
-import { savePurchasedCourse } from './storage';
-import { setUserTier, addUserAiQuotaBonus } from './userTier';
-import { recordStudyAction } from './gamification';
+import { getWalletBalance, deductWalletCoins, addWalletCoins } from './wallet.js';
+import { savePurchasedCourse } from './storage.js';
+import { setUserTier, addUserAiQuotaBonus } from './userTier.js';
+import { recordStudyAction } from './gamification.js';
 
 export const DEFAULT_BLIND_BOXES = [
   {

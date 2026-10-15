@@ -241,6 +241,74 @@ export const INITIAL_MARKETPLACE_DECKS = [
         explanation: 'おっしゃる là Tôn kính ngữ của 言う dùng cho khách hàng/sếp. 申す và 申し上げる là Khiêm nhường ngữ hạ mình.'
       }
     ]
+  },
+  {
+    id: 'mkt_digital_marketing_growth',
+    title: '30 Thuật Ngữ & Framework Digital Marketing & Growth Hacking 2026',
+    subtitle: 'Làm chủ CAC, LTV, ROAS, Phễu AARRR và tối ưu chuyển đổi chiến dịch',
+    description: 'Bộ thẻ chuyên sâu dành cho Marketer và Growth Hacker: Công thức tính LTV/CAC, AARRR Pirate Metrics, A/B Testing với P-value, SEO Search Intent và Performance Marketing Facebook/Google Ads.',
+    category: 'tai-chinh',
+    categoryName: 'Marketing & Kinh Doanh',
+    categoryLabel: 'Digital Marketing & Growth',
+    priceXu: 4,
+    cardCount: 20,
+    authorName: 'Hoàng Long (Head of Growth)',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    authorTier: 'ultra',
+    salesCount: 420,
+    rating: 4.94,
+    createdAt: '2026-10-10',
+    isApproved: true,
+    previewCards: [
+      { id: 1, front: 'Tỷ lệ vàng giữa LTV (Customer Lifetime Value) và CAC (Customer Acquisition Cost) là bao nhiêu?', back: 'Tỷ lệ vàng là LTV / CAC ≥ 3:1.\n\n📌 Nếu LTV/CAC < 3:1: Chi phí quảng cáo thu hút khách hàng quá đắt đỏ, doanh nghiệp dễ lỗ.\n📌 Nếu LTV/CAC > 5:1: Doanh nghiệp đang quá thận trọng và bỏ lỡ cơ hội mở rộng thị trường.', tag: 'Growth Metric' },
+      { id: 2, front: 'Mô hình phễu 5 bước "AARRR Pirate Metrics" của Dave McClure bao gồm những gì?', back: '1. Acquisition (Thu hút): Người dùng ghé thăm web/app.\n2. Activation (Kích hoạt): Người dùng có trải nghiệm "Aha Moment" đầu tiên.\n3. Retention (Giữ chân): Người dùng quay lại sử dụng định kỳ.\n4. Referral (Giới thiệu): Người dùng giới thiệu bạn bè.\n5. Revenue (Doanh thu): Người dùng trả tiền mua hàng.', tag: 'Framework' },
+      { id: 3, front: 'Sự khác biệt giữa ROAS (Return on Ad Spend) và ROI (Return on Investment) là gì?', back: '• ROAS = (Doanh thu từ quảng cáo / Chi phí quảng cáo) × 100%. Đo lường hiệu quả trực tiếp của kênh chạy ads.\n• ROI = (Lợi nhuận ròng / Tổng chi phí đầu tư) × 100%. Đo lường hiệu quả tài chính sau khi đã trừ toàn bộ giá vốn (COGS), vận hành và thuế.', tag: 'Metrics' },
+      { id: 4, front: 'Trong A/B Testing, khái niệm "Statistical Significance" (Độ tin cậy thống kê) thường đặt ở ngưỡng nào?', back: 'Ngưỡng 95% (tương ứng với P-value < 0.05).\n\n📌 Nghĩa là chỉ có 5% khả năng sự chênh lệch tỷ lệ chuyển đổi (Conversion Rate) giữa phiên bản A và B là do may mắn ngẫu nhiên.', tag: 'Conversion Rate' },
+      { id: 5, front: 'Khái niệm "Search Intent" (Ý định tìm kiếm) trong SEO được chia thành 4 nhóm nào?', back: '1. Informational: Tìm thông tin giải đáp ("cách làm flashcard").\n2. Navigational: Tìm tới trang web cụ thể ("onthihub login").\n3. Commercial Investigation: So sánh lựa chọn ("đánh giá anki vs quizlet").\n4. Transactional: Có nhu cầu mua ngay ("mua tài liệu ôn thi công chức 2026").', tag: 'SEO Core' }
+    ],
+    previewQuiz: [
+      {
+        id: 1,
+        question: 'Tỷ lệ LTV/CAC được coi là lành mạnh và lý tưởng cho các công ty khởi nghiệp SaaS là:',
+        options: ['A. 1:1', 'B. 2:1', 'C. 3:1 trở lên', 'D. 10:1'],
+        correct: 2,
+        explanation: 'Tỷ lệ LTV/CAC ≥ 3:1 chứng minh giá trị trọn đời của khách hàng gấp 3 lần chi phí bỏ ra để có được khách hàng đó.'
+      }
+    ]
+  },
+  {
+    id: 'mkt_vietnam_history_trivia',
+    title: '35 Mốc Lịch Sử & Nhân Vật Việt Nam Hào Hùng Thi Đấu Trường Tri Thức',
+    subtitle: 'Tổng hợp các trận đánh oanh liệt, triều đại và danh nhân văn hóa dân tộc',
+    description: 'Bộ thẻ ôn luyện thần tốc đấu trường tri thức và bài thi lịch sử: Từ thời Hùng Vương dựng nước, Ngô Quyền đại phá quân Nam Hán trên sông Bạch Đằng, Hào khí Đông A ba lần đánh tan Nguyên Mông đến Đại thắng mùa Xuân 1975.',
+    category: 'cong-chuc',
+    categoryName: 'Lịch Sử & Văn Hóa',
+    categoryLabel: 'Lịch Sử Việt Nam',
+    priceXu: 3,
+    cardCount: 20,
+    authorName: 'Thầy Tuấn (Thạc sĩ Lịch Sử)',
+    authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+    authorTier: 'vip',
+    salesCount: 610,
+    rating: 4.98,
+    createdAt: '2026-10-12',
+    isApproved: true,
+    previewCards: [
+      { id: 1, front: 'Trận chiến trên sông Bạch Đằng năm 938 do ai chỉ huy và có ý nghĩa lịch sử gì?', back: 'Do NGÔ QUYỀN chỉ huy đánh bại quân Nam Hán bằng trận địa cọc gỗ bịt sắt.\n\n📌 Ý nghĩa: Chấm dứt hơn 1.000 năm Bắc thuộc và đô hộ phong kiến phương Bắc, mở ra kỷ nguyên độc lập tự chủ lâu dài cho dân tộc.', tag: 'Chiến thắng Bạch Đằng' },
+      { id: 2, front: 'Vị danh tướng nào đã chỉ huy quân dân nhà Trần 3 lần đại thắng giặc Nguyên Mông (1258, 1285, 1288)?', back: 'HƯNG ĐẠO ĐẠI VƯƠNG TRẦN QUỐC TUẤN.\n\n💡 Tác giả của áng văn bất hủ "Hịch tướng sĩ" và binh thư "Binh thư yếu lược". Ông được nhân dân tôn xưng là Đức Thánh Trần.', tag: 'Nhân vật lịch sử' },
+      { id: 3, front: 'Bản Tuyên ngôn Độc lập thứ hai của nước ta "Bình Ngô Đại Cáo" được ai chấp bút thay lời Lê Lợi?', back: 'DANH NHÂN VĂN HÓA NGUYỄN TRÃI (năm 1428 sau chiến thắng khởi nghĩa Lam Sơn).\n\n📌 Khẳng định chủ quyền: "Như nước Đại Việt ta từ trước, Vốn xưng nền văn hiến đã lâu..."', tag: 'Văn học lịch sử' },
+      { id: 4, front: 'Chiến thắng "Lừng lẫy năm châu, chấn động địa cầu" ngày 7/5/1954 là chiến dịch nào?', back: 'CHIẾN DỊCH ĐIỆN BIÊN PHỦ.\n\n📌 56 ngày đêm khoét núi ngủ hầm do Đại tướng Tổng tư lệnh Võ Nguyên Giáp chỉ huy, đập tan tập đoàn cứ điểm quân sự mạnh nhất của thực dân Pháp tại Đông Dương, dẫn tới việc ký Hiệp định Genève.', tag: 'Kháng chiến chống Pháp' },
+      { id: 5, front: 'Chiến dịch giải phóng hoàn toàn miền Nam thống nhất đất nước ngày 30/4/1975 có tên chính thức là gì?', back: 'CHIẾN DỊCH HỒ CHÍ MINH.\n\n📌 Kết thúc thắng lợi cuộc kháng chiến chống Mỹ cứu nước, non sông thu về một mối.', tag: 'Lịch sử hiện đại' }
+    ],
+    previewQuiz: [
+      {
+        id: 1,
+        question: 'Ai là người lãnh đạo chiến thắng Bạch Đằng năm 938 chấm dứt hơn 1000 năm Bắc thuộc?',
+        options: ['A. Đinh Bộ Lĩnh', 'B. Ngô Quyền', 'C. Lê Hoàn', 'D. Lý Thường Kiệt'],
+        correct: 1,
+        explanation: 'Ngô Quyền là người chỉ huy trận Bạch Đằng năm 938 đánh tan quân Nam Hán.'
+      }
+    ]
   }
 ];
 

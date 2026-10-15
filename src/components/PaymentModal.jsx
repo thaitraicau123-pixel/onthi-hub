@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   X,
   Coins,
@@ -36,13 +36,26 @@ export default function PaymentModal({
   onOpenWallet,
   onGoToLibrary
 }) {
-  if (!item) return null;
-
   const [walletBalance, setWalletBalance] = useState(() => getWalletBalance());
   const [isPurchasedSuccess, setIsPurchasedSuccess] = useState(false);
   const [isTopupOpen, setIsTopupOpen] = useState(false);
   const [copiedMemo, setCopiedMemo] = useState(false);
   const [isSimulatingTopup, setIsSimulatingTopup] = useState(false);
+
+  const [topupAmount, setTopupAmount] = useState(() => {
+    if (!item) return 50;
+    const pXu = item.priceXu !== undefined
+      ? Number(item.priceXu)
+      : item.price
+      ? Math.max(5, Math.round(item.price / 3000))
+      : 25;
+    const bal = getWalletBalance();
+    const missing = Math.max(0, pXu - bal);
+    return missing > 0 ? Math.max(20, Math.ceil(missing / 10) * 10) : 50;
+  });
+  const [topupOrderCode] = useState(() => 'XU' + Math.floor(100000 + Math.random() * 900000));
+
+  if (!item) return null;
 
   // Pure Coin Pricing
   const priceXu = item.priceXu !== undefined
@@ -58,11 +71,6 @@ export default function PaymentModal({
   const discountXu = Math.max(0, originalPriceXu - priceXu);
   const hasEnoughCoins = walletBalance >= priceXu;
   const missingCoins = Math.max(0, priceXu - walletBalance);
-
-  // Quick Top-up Selection
-  const defaultTopupTier = missingCoins > 0 ? Math.max(20, Math.ceil(missingCoins / 10) * 10) : 50;
-  const [topupAmount, setTopupAmount] = useState(defaultTopupTier);
-  const [topupOrderCode] = useState(() => 'XU' + Math.floor(100000 + Math.random() * 900000));
   const bankConfig = getBankConfig();
 
   // VietQR for quick top-up

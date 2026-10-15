@@ -2,7 +2,7 @@
 // Converts topic / notes into Anki/Quizlet formatted flashcards
 // Supports Real Gemini Multi-Model API + OpenAI GPT-4o-mini API + Offline Smart Semantic Heuristics Fallback
 
-import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey';
+import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey.js';
 
 /**
  * Calculate recommended card count based on text length and density

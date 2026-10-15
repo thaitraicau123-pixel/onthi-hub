@@ -1,7 +1,7 @@
 // AI API Key Management & Connection Tester
 // Supports Google Gemini (Free & High Performance) and OpenAI
 
-import { maskApiKey } from './adminGuard';
+import { maskApiKey } from './adminGuard.js';
 export { maskApiKey };
 
 const GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';

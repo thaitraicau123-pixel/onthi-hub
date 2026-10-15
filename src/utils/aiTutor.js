@@ -1,7 +1,7 @@
 // AI Tutor Assistant for Flashcards & Quizzes
 // Powered by Google Gemini Multi-Model API + OpenAI Platform + Offline Smart Tutor Fallback
 
-import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey';
+import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey.js';
 
 /**
  * Request deeper AI explanation for a Flashcard

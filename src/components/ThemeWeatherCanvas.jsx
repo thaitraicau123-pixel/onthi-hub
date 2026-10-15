@@ -923,6 +923,37 @@ function createParticle(type, width, height, randomY = true) {
     };
   }
 
+  // 13. SUPER MARIO BROS (Coins, Stars & Mushrooms)
+  if (type === 'mario-stars') {
+    const r = Math.random();
+    const kind = r < 0.4 ? 'coin' : (r < 0.7 ? 'star' : (r < 0.9 ? 'mushroom' : 'sparkle'));
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -30,
+      radius: kind === 'coin' ? Math.random() * 3 + 7 : (kind === 'star' ? Math.random() * 4 + 8 : (kind === 'mushroom' ? Math.random() * 3 + 7 : Math.random() * 2 + 2)),
+      speed: Math.random() * 1.2 + 0.8,
+      angle: Math.random() * Math.PI * 2,
+      flip: Math.random() * Math.PI * 2,
+      rot: Math.random() * Math.PI * 2,
+      kind,
+      isGreen: Math.random() < 0.5
+    };
+  }
+
+  // 14. ANIME COMET TIAMAT DUST
+  if (type === 'anime-comet') {
+    return {
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -20,
+      radius: Math.random() * 2.5 + 1.2,
+      speed: Math.random() * 1.4 + 0.8,
+      pulse: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.5 + 0.35,
+      isPink: Math.random() < 0.5,
+      isSpecial: Math.random() < 0.25
+    };
+  }
+
   // 12. MINIMAL SPARKLES
   const isDiamond = Math.random() < 0.3;
   return {

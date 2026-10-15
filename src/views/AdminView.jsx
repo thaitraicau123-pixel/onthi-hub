@@ -74,48 +74,7 @@ import {
 } from '../utils/aiApiKey';
 
 export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
-  // STRICT ADMIN AUTHORIZATION CHECK: ONLY 1 AUTHORIZED ACCOUNT ALLOWED
-  if (!isUserAdmin(user)) {
-    return (
-      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-white rounded-xl border border-rose-200 text-center text-[#37352f] shadow-lg">
-        <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mx-auto mb-4 border border-rose-300 shadow-sm">
-          <ShieldAlert className="w-9 h-9 text-rose-600 animate-pulse" />
-        </div>
-        <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-rose-200/80 text-rose-900 rounded-full border border-rose-300">
-          CẢNH BÁO BẢO MẬT HỆ THỐNG
-        </span>
-        <h2 className="text-xl sm:text-2xl font-black text-[#37352f] uppercase tracking-tight mt-3 mb-2">
-          403 - KHÔNG CÓ QUYỀN TRUY CẬP
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
-          Cửa sổ Quản Trị Viên (Secret Admin Portal) được bảo mật nghiêm ngặt và <strong>chỉ duy nhất 1 tài khoản Admin chính thức</strong> mới có quyền thao tác:
-          <br />
-          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#e9e9e8] font-mono font-bold text-[#2383e2] shadow-xs">
-            👑 {PRIMARY_ADMIN_EMAIL}
-          </span>
-        </p>
-
-        <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] text-amber-900 mb-6 text-left space-y-1">
-          <div className="flex items-center space-x-1.5 font-bold">
-            <Lock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-            <span>Tài khoản hiện tại của bạn:</span>
-          </div>
-          <p className="font-mono text-slate-800 font-bold pl-5">
-            {user?.email ? user.email : '(Chưa đăng nhập tài khoản nào)'}
-          </p>
-        </div>
-
-        <div className="flex items-center justify-center space-x-3">
-          <button
-            onClick={onBackToHome}
-            className="px-6 py-2.5 rounded-2xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
-          >
-            Quay Về Trang Chủ
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const isAdmin = isUserAdmin(user);
 
   const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
@@ -173,6 +132,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
   };
 
   useEffect(() => {
+    if (!isAdmin) return;
     reloadData();
     // Real-time listener for Firestore & cross-device transactions
     const unsubscribe = subscribeToTransactions((latestTxs) => {
@@ -181,7 +141,50 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
-  }, []);
+  }, [isAdmin]);
+
+  // STRICT ADMIN AUTHORIZATION CHECK: ONLY 1 AUTHORIZED ACCOUNT ALLOWED
+  if (!isAdmin) {
+    return (
+      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-white rounded-xl border border-rose-200 text-center text-[#37352f] shadow-lg">
+        <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mx-auto mb-4 border border-rose-300 shadow-sm">
+          <ShieldAlert className="w-9 h-9 text-rose-600 animate-pulse" />
+        </div>
+        <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-rose-200/80 text-rose-900 rounded-full border border-rose-300">
+          CẢNH BÁO BẢO MẬT HỆ THỐNG
+        </span>
+        <h2 className="text-xl sm:text-2xl font-black text-[#37352f] uppercase tracking-tight mt-3 mb-2">
+          403 - KHÔNG CÓ QUYỀN TRUY CẬP
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
+          Cửa sổ Quản Trị Viên (Secret Admin Portal) được bảo mật nghiêm ngặt và <strong>chỉ duy nhất 1 tài khoản Admin chính thức</strong> mới có quyền thao tác:
+          <br />
+          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#e9e9e8] font-mono font-bold text-[#2383e2] shadow-xs">
+            👑 {PRIMARY_ADMIN_EMAIL}
+          </span>
+        </p>
+
+        <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] text-amber-900 mb-6 text-left space-y-1">
+          <div className="flex items-center space-x-1.5 font-bold">
+            <Lock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
+            <span>Tài khoản hiện tại của bạn:</span>
+          </div>
+          <p className="font-mono text-slate-800 font-bold pl-5">
+            {user?.email ? user.email : '(Chưa đăng nhập tài khoản nào)'}
+          </p>
+        </div>
+
+        <div className="flex items-center justify-center space-x-3">
+          <button
+            onClick={onBackToHome}
+            className="px-6 py-2.5 rounded-2xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
+          >
+            Quay Về Trang Chủ
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleManualSyncFirebase = async () => {
     setIsSyncingFirebase(true);

@@ -1,4 +1,4 @@
-import { ADMIN_EMAIL } from './wallet';
+import { ADMIN_EMAIL } from './wallet.js';
 
 export const PRIMARY_ADMIN_EMAIL = ADMIN_EMAIL || 'thaitraicau123@gmail.com';
 

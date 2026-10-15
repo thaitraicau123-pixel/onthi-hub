@@ -2,7 +2,7 @@
 // Automatically captures failed quiz questions and forgotten flashcards
 // Powered by Google Gemini Multi-Model AI for Cognitive Gap Diagnosis
 
-import { getGeminiApiKey, GEMINI_MODELS } from './aiApiKey';
+import { getGeminiApiKey, GEMINI_MODELS } from './aiApiKey.js';
 
 const MISTAKES_STORAGE_KEY = 'onthi_mistakes_v1';
 
