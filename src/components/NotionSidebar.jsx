@@ -31,6 +31,7 @@ import { getUserTier } from '../utils/userTier';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
 import { playSound } from '../utils/storage';
+import BrandLogo from './BrandLogo';
 
 export default function NotionSidebar({
   isOpen,
@@ -46,7 +47,9 @@ export default function NotionSidebar({
   onOpenMistakes,
   onOpenChangelog,
   onOpenSearch,
-  onOpenAnalytics
+  onOpenAnalytics,
+  currentTheme,
+  onOpenThemePicker
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const userIsAdmin = isUserAdmin(user);
@@ -58,26 +61,37 @@ export default function NotionSidebar({
     onSelectTab(tabId);
   };
 
+  const icons = currentTheme?.icons || {};
+
   const workspaceNavItems = [
-    { id: 'home', label: 'Trang Chủ', icon: Home, emoji: '🏠', desc: 'Đề thi chuẩn & Khám phá' },
-    { id: 'library', label: 'Tủ Thẻ Của Tôi', icon: FolderHeart, emoji: '📚', count: purchasedCount, desc: 'Thẻ đã mua & Anki' },
-    { id: 'create', label: 'Studio Tạo Thẻ AI', icon: PlusSquare, emoji: '✍️', desc: 'Tạo thẻ ghi nhớ tự động' },
-    { id: 'marketplace', label: 'Chợ Thẻ C2C', icon: Store, emoji: '🏪', badge: 'HOT', desc: 'Sàn mua bán thẻ' },
-    { id: 'community', label: 'Cộng Đồng Học Viên', icon: Users, emoji: '💬', desc: 'Thảo luận & Hỏi đáp' },
+    { id: 'home', label: 'Trang Chủ', icon: Home, emoji: icons.home || '🏠', desc: 'Đề thi chuẩn & Khám phá' },
+    { id: 'library', label: 'Tủ Thẻ Của Tôi', icon: FolderHeart, emoji: icons.library || '📚', count: purchasedCount, desc: 'Thẻ đã mua & Anki' },
+    { id: 'create', label: 'Studio Tạo Thẻ AI', icon: PlusSquare, emoji: icons.create || '✍️', desc: 'Tạo thẻ ghi nhớ tự động' },
+    { id: 'marketplace', label: 'Chợ Thẻ C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán thẻ' },
+    { id: 'community', label: 'Cộng Đồng Học Viên', icon: Users, emoji: icons.community || '💬', desc: 'Thảo luận & Hỏi đáp' },
   ];
 
   const toolsNavItems = [
     {
+      id: 'theme',
+      label: 'Đổi Chủ Đề Nền',
+      emoji: '🎨',
+      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '10 Themes',
+      badgeColor: 'notion-pill-blue',
+      action: onOpenThemePicker,
+      desc: '10 phong cách Messenger / Instagram'
+    },
+    {
       id: 'analytics',
       label: 'Tiến Độ & Phân Tích',
-      emoji: '📊',
+      emoji: icons.analytics || '📊',
       action: onOpenAnalytics,
       desc: 'Tỷ lệ nhớ sâu SM-2 & Biểu đồ học'
     },
     {
       id: 'mistakes',
       label: 'Sổ Tay Câu Sai',
-      emoji: '📓',
+      emoji: icons.mistakes || '📓',
       badge: unmasteredMistakesCount > 0 ? `${unmasteredMistakesCount}` : null,
       badgeColor: 'notion-pill-red',
       action: onOpenMistakes,
@@ -86,21 +100,21 @@ export default function NotionSidebar({
     {
       id: 'leaderboard',
       label: 'Bảng Vàng & Streak',
-      emoji: '🏆',
+      emoji: icons.leaderboard || '🏆',
       action: onOpenLeaderboard,
       desc: 'Bảng xếp hạng & Chuỗi học tập'
     },
     {
       id: 'blindbox',
       label: 'Túi Mù Tri Thức',
-      emoji: '🎁',
+      emoji: icons.blindbox || '🎁',
       action: onOpenBlindBox,
       desc: '100% trúng quà & nổ hũ Xu'
     },
     {
       id: 'changelog',
       label: `Bản Tin Cập Nhật`,
-      emoji: '✨',
+      emoji: icons.changelog || '✨',
       badge: isChangelogUnread() ? 'NEW' : null,
       badgeColor: 'notion-pill-blue',
       action: onOpenChangelog,
@@ -113,7 +127,7 @@ export default function NotionSidebar({
       id: 'wallet',
       label: 'Ví Xu ÔnThiHub',
       icon: Wallet,
-      emoji: '🪙',
+      emoji: icons.wallet || '🪙',
       highlight: `${walletBalance} Xu`
     },
     {
@@ -149,16 +163,14 @@ export default function NotionSidebar({
       {/* TOP SECTION: WORKSPACE SWITCHER & SEARCH */}
       <div className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
         
-        {/* Workspace Switcher Header */}
+        {/* Workspace Switcher Header with Synchronized BrandLogo */}
         <div className="p-3 border-b border-[#e9e9e8]/70 flex items-center justify-between">
           <div
             onClick={() => setIsWorkspaceMenuOpen(!isWorkspaceMenuOpen)}
-            className="flex items-center space-x-2.5 p-1.5 rounded-lg hover:bg-[rgba(55,53,47,0.08)] cursor-pointer flex-1 min-w-0 transition-colors"
+            className="flex items-center space-x-2.5 p-1.5 rounded-lg hover:bg-[rgba(55,53,47,0.08)] cursor-pointer flex-1 min-w-0 transition-colors touch-3d"
             title="Đổi workspace hoặc thông tin tài khoản"
           >
-            <div className="w-6 h-6 rounded-md bg-white border border-[#e9e9e8] shadow-2xs flex items-center justify-center text-sm shrink-0">
-              🎓
-            </div>
+            <BrandLogo size={24} className="shadow-xs" />
             <div className="flex flex-col min-w-0 flex-1">
               <div className="flex items-center space-x-1">
                 <span className="font-bold text-xs text-[#37352f] truncate tracking-tight">

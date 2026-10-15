@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Search,
   Sparkles,
-  BarChart2
+  BarChart2,
+  Palette
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
@@ -32,7 +33,9 @@ export default function NotionTopbar({
   onOpenLeaderboard,
   onOpenChangelog,
   onOpenSearch,
-  onOpenAnalytics
+  onOpenAnalytics,
+  currentTheme,
+  onOpenThemePicker
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
@@ -137,6 +140,20 @@ export default function NotionTopbar({
           </kbd>
         </button>
 
+        {/* Theme Picker Button (Messenger / Instagram Theme Style) */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenThemePicker?.();
+          }}
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
+          title="Đổi chủ đề nền & icon (10 Themes Messenger / Instagram)"
+        >
+          <Palette className="w-3.5 h-3.5 text-purple-600" />
+          <span className="hidden sm:inline">Chủ Đề</span>
+        </button>
+
         {/* Analytics Dashboard Button */}
         <button
           type="button"
@@ -144,7 +161,7 @@ export default function NotionTopbar({
             playSound('click');
             onOpenAnalytics?.();
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#f4f0f7] hover:bg-[#eae3f1] text-[#9065b0] border border-[#e3d7ec] transition-all font-semibold shadow-2xs cursor-pointer"
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#f4f0f7] hover:bg-[#eae3f1] text-[#9065b0] border border-[#e3d7ec] transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
           title="Xem phân tích & tiến độ học tập SM-2"
         >
           <BarChart2 className="w-3.5 h-3.5 text-[#9065b0]" />
@@ -158,7 +175,7 @@ export default function NotionTopbar({
             playSound('click');
             onSelectTab('wallet');
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#fbf3db] hover:bg-[#f8eed0] text-[#976d57] border border-[#f4e4b7] transition-all font-semibold shadow-2xs"
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#fbf3db] hover:bg-[#f8eed0] text-[#976d57] border border-[#f4e4b7] transition-all font-semibold shadow-2xs touch-3d cursor-pointer"
           title="Bấm để mở Ví Xu & nạp tiền"
         >
           <Coins className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
@@ -172,10 +189,10 @@ export default function NotionTopbar({
             playSound('flip');
             onOpenLeaderboard?.();
           }}
-          className="hidden sm:flex items-center space-x-1 px-2 py-1 rounded-md bg-[#faece3] hover:bg-[#f6dfd2] text-[#cc782f] border border-[#f3d6c1] transition-all font-semibold"
+          className="hidden sm:flex items-center space-x-1.5 px-2 py-1 rounded-md bg-[#faece3] hover:bg-[#f6dfd2] text-[#cc782f] border border-[#f3d6c1] transition-all font-semibold touch-3d cursor-pointer"
           title={`Chuỗi học tập liên tục: ${streakInfo.currentStreak} ngày`}
         >
-          <Flame className="w-3.5 h-3.5 text-[#cc782f] fill-[#cc782f]" />
+          <span className="text-xs select-none">{currentTheme?.icons?.streak || '🔥'}</span>
           <span>{streakInfo.currentStreak} ngày</span>
         </button>
 
@@ -183,10 +200,10 @@ export default function NotionTopbar({
         <button
           type="button"
           onClick={handleCheckIn}
-          className="hidden md:flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#edf3ec] hover:bg-[#e0ece0] text-[#448361] border border-[#d3e5d7] transition-all font-semibold shadow-2xs cursor-pointer"
+          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-[#edf3ec] hover:bg-[#e0ece0] text-[#448361] border border-[#d3e5d7] transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
           title="Điểm danh mỗi ngày nhận Xu miễn phí"
         >
-          <Gift className="w-3.5 h-3.5 text-[#448361]" />
+          <span className="text-xs select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
           <span>Điểm Danh</span>
         </button>
 

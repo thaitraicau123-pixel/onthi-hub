@@ -1,0 +1,171 @@
+import React from 'react';
+import { X, Check, Palette, Sparkles, Wand2 } from 'lucide-react';
+import { THEMES, getSelectedThemeId, applyTheme } from '../utils/themeManager';
+import { playSound } from '../utils/storage';
+import confetti from 'canvas-confetti';
+
+export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThemeSelect }) {
+  if (!isOpen) return null;
+
+  const currentThemeId = currentTheme?.id || getSelectedThemeId();
+
+  const handleSelect = (theme) => {
+    playSound('flip');
+    const applied = applyTheme(theme.id);
+    onThemeSelect?.(applied);
+
+    // Light celebratory confetti
+    confetti({
+      particleCount: 40,
+      spread: 60,
+      origin: { y: 0.6 }
+    });
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/50 backdrop-blur-xs animate-fade-in">
+      <div className="fixed inset-0" onClick={onClose} />
+
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-3d-floating border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[92vh] z-10 text-[#37352f]">
+        
+        {/* Header (Messenger / Instagram Theme Picker Style) */}
+        <div className="px-5 sm:px-6 py-4 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between shrink-0">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 text-white flex items-center justify-center shadow-md shadow-purple-500/20">
+              <Palette className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h3 className="text-base font-bold text-[#37352f] tracking-tight">
+                  Chủ Đề & Giao Diện Không Gian Học
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                  10 Chủ Đề
+                </span>
+              </div>
+              <p className="text-xs text-[#787774]">
+                Tự động thay đổi hình nền, màu chủ đạo và toàn bộ icon nhỏ theo phong cách bạn chọn (như Messenger & Instagram)
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1ef] transition-colors cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Themes Grid */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {THEMES.map((theme) => {
+              const isSelected = theme.id === currentThemeId;
+
+              return (
+                <div
+                  key={theme.id}
+                  onClick={() => handleSelect(theme)}
+                  className={`p-4 rounded-xl border-2 transition-all cursor-pointer relative overflow-hidden card-3d ${
+                    isSelected
+                      ? 'border-[#2383e2] ring-2 ring-[#2383e2]/20 shadow-3d-md'
+                      : 'border-[#e9e9e8] hover:border-[#c5c4c0] bg-white'
+                  }`}
+                  style={{
+                    backgroundColor: theme.isDark ? '#141126' : undefined
+                  }}
+                >
+                  {/* Subtle Theme Wallpaper Glow in Card Header */}
+                  <div
+                    className={`h-16 -mx-4 -mt-4 mb-3 p-3 bg-gradient-to-r ${theme.previewGradient} flex items-center justify-between border-b ${
+                      theme.isDark ? 'border-white/10' : 'border-black/5'
+                    }`}
+                  >
+                    {/* Thematic preview chips */}
+                    <div className="flex items-center space-x-1.5">
+                      <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.logo}</span>
+                      <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.workspace}</span>
+                      <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.home}</span>
+                      <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.streak}</span>
+                      <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.due}</span>
+                    </div>
+
+                    {isSelected ? (
+                      <span className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#2383e2] text-white text-[11px] font-bold shadow-xs">
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Đang Dùng</span>
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/70 backdrop-blur-2xs text-[#37352f] border border-black/5">
+                        {theme.category}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Theme Info */}
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <h4
+                        className={`text-sm font-bold tracking-tight ${
+                          theme.isDark ? 'text-white' : 'text-[#37352f]'
+                        }`}
+                      >
+                        {theme.icons.logo} {theme.name}
+                      </h4>
+                      <span
+                        className="w-3.5 h-3.5 rounded-full shadow-2xs border border-white"
+                        style={{ backgroundColor: theme.primaryColor }}
+                        title={`Màu chủ đạo: ${theme.primaryColor}`}
+                      />
+                    </div>
+
+                    <p
+                      className={`text-xs line-clamp-2 leading-relaxed ${
+                        theme.isDark ? 'text-purple-200/70' : 'text-[#787774]'
+                      }`}
+                    >
+                      {theme.description}
+                    </p>
+
+                    {/* Thematic Icons Strip */}
+                    <div className="pt-2 border-t border-[#e9e9e8]/50 flex items-center justify-between text-[11px]">
+                      <span className={theme.isDark ? 'text-purple-300/80 font-medium' : 'text-[#787774]'}>
+                        Icon chủ đề:
+                      </span>
+                      <div className="flex items-center space-x-1 text-xs select-none">
+                        <span title="Thẻ">{theme.icons.study3D}</span>
+                        <span title="Thi thử">{theme.icons.quiz}</span>
+                        <span title="Ghép thẻ">{theme.icons.match}</span>
+                        <span title="Tủ thẻ">{theme.icons.library}</span>
+                        <span title="Túi mù">{theme.icons.blindbox}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 sm:px-6 py-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs text-[#787774] shrink-0">
+          <div className="flex items-center space-x-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Chủ đề được lưu tự động trên thiết bị của bạn.</span>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-lg text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+          >
+            Hoàn Tất
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+}

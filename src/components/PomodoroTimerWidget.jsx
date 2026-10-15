@@ -234,15 +234,15 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
       {/* FLOATING PILL BUTTON (Always accessible in bottom right) */}
       {!isOpen && (
-        <div className="fixed bottom-20 md:bottom-6 right-5 z-40 animate-fade-in">
+        <div className="fixed bottom-20 md:bottom-6 right-5 z-40 animate-fade-in select-none">
           <button
             onClick={() => {
               getAudioContext();
               setIsOpen(true);
             }}
-            className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full shadow-lg font-medium text-xs sm:text-sm transition-all border ${
+            className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full shadow-3d-floating touch-3d font-medium text-xs sm:text-sm transition-all border ${
               isActive
-                ? 'bg-[#2383e2] text-white border-[#2383e2] shadow-blue-500/20'
+                ? 'bg-[#2383e2] text-white border-[#2383e2]'
                 : 'bg-white hover:bg-[#f7f6f5] text-[#37352f] border-[#e9e9e8]'
             }`}
             title="Đồng hồ Pomodoro tập trung học"
@@ -268,7 +268,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
       {/* EXPANDED POMODORO FOCUS DASHBOARD */}
       {isOpen && (
-        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-96 bg-white rounded-xl sm:shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col text-[#37352f]">
+        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 z-50 sm:w-96 bg-white rounded-xl sm:shadow-3d-floating border border-[#e9e9e8] overflow-hidden flex flex-col text-[#37352f]">
           
           {/* Header */}
           <div className="bg-[#fbfbfa] text-[#37352f] px-5 py-4 flex items-center justify-between border-b border-[#e9e9e8]">

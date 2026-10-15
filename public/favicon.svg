@@ -5,14 +5,18 @@
       <stop offset="100%" stop-color="#1a73e8" />
     </linearGradient>
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e3a8a" flood-opacity="0.3" />
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e3a8a" flood-opacity="0.35" />
     </filter>
   </defs>
-  <!-- App Squircle Background matching OnThiHub Header Logo -->
+  <!-- App Squircle Background matching OnThiHub In-App Brand Logo -->
   <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#onthi_blue_gradient)" filter="url(#shadow)" />
-  <!-- Crisp BookOpen Icon in White matching Navbar -->
-  <g transform="translate(14, 14) scale(1.5)" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 7v14" />
-    <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1 9 9 0 0 1 9 9 9 9 0 0 1 9-9 1 1 0 0 1 1 1v13a1 1 0 0 1-1 1 9 9 0 0 0-9 9 9 9 0 0 0-9-9z" />
+  <!-- Crisp Book & Pages Vector Icon -->
+  <g transform="translate(13, 13) scale(1.6)" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+    <path d="M6 6h10" />
+    <path d="M6 10h10" />
+    <path d="M6 14h6" />
   </g>
+  <!-- Gold Accent Sparkle Star -->
+  <circle cx="50" cy="14" r="4.5" fill="#fbbf24" stroke="#ffffff" stroke-width="1.5" />
 </svg>

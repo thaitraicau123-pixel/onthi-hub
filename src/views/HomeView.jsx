@@ -185,7 +185,7 @@ export default function HomeView({
             const el = document.getElementById('catalog-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-2xs hover:border-[#c5c4c0] hover:shadow-xs cursor-pointer transition-all group"
+          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#fbf3db] text-[#c29243] border border-[#f4e4b7] flex items-center justify-center mb-2">
             <Landmark className="w-4 h-4" />
@@ -197,7 +197,7 @@ export default function HomeView({
         {/* Card 2: Chợ Thẻ C2C */}
         <div
           onClick={() => onSwitchTab('marketplace')}
-          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-2xs hover:border-[#c5c4c0] hover:shadow-xs cursor-pointer transition-all group"
+          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#edf3ec] text-[#448361] border border-[#d3e5d7] flex items-center justify-center mb-2">
             <Store className="w-4 h-4" />
@@ -212,7 +212,7 @@ export default function HomeView({
         {/* Card 3: Túi Mù Tri Thức */}
         <div
           onClick={onOpenBlindBox}
-          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-2xs hover:border-[#c5c4c0] hover:shadow-xs cursor-pointer transition-all group"
+          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#f4f0f7] text-[#9065b0] border border-[#e3d7ec] flex items-center justify-center mb-2">
             <Gift className="w-4 h-4" />
@@ -224,7 +224,7 @@ export default function HomeView({
         {/* Card 4: Game Nối Thẻ */}
         <div
           onClick={() => onOpenMatchGame(allCourses[0])}
-          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-2xs hover:border-[#c5c4c0] hover:shadow-xs cursor-pointer transition-all group"
+          className="p-3.5 rounded-xl bg-white border border-[#e9e9e8] shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] border border-[#cbe3ed] flex items-center justify-center mb-2">
             <Gamepad2 className="w-4 h-4" />
@@ -321,10 +321,10 @@ export default function HomeView({
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-white tracking-tight">
+            <h3 className="text-lg sm:text-xl font-black text-[#37352f] tracking-tight">
               Kho Bộ Đề & Flashcard Tiêu Chuẩn ({sortedAndFiltered.length})
             </h3>
-            <p className="text-xs text-rose-200/70 mt-0.5">
+            <p className="text-xs text-[#787774] mt-0.5">
               Học thử lật thẻ 3D và thi trắc nghiệm tính giờ miễn phí trước khi mở khóa toàn bộ.
             </p>
           </div>

@@ -17,7 +17,8 @@ import {
   Coins,
   X,
   CornerDownLeft,
-  Command
+  Command,
+  Palette
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 
@@ -34,7 +35,8 @@ export default function CommandPaletteModal({
   onOpenLeaderboard,
   onOpenBlindBox,
   onOpenWallet,
-  onOpenAnalytics
+  onOpenAnalytics,
+  onOpenThemePicker
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -50,6 +52,18 @@ export default function CommandPaletteModal({
   }, [isOpen]);
 
   const quickActions = [
+    {
+      id: 'action-theme',
+      title: 'Đổi Chủ Đề Nền & Giao Diện (10 Phong Cách)',
+      desc: 'Thay đổi hình nền, bảng màu và icon nhỏ (như Messenger & Instagram)',
+      icon: Palette,
+      category: 'Giao diện',
+      badge: '10 Themes',
+      onSelect: () => {
+        onOpenThemePicker?.();
+        onClose();
+      }
+    },
     {
       id: 'action-library',
       title: 'Tủ Thẻ & Tài Liệu Của Tôi',

@@ -328,7 +328,7 @@ export default function LibraryView({
                 return (
                   <div
                     key={course.id}
-                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] bg-white hover:border-[#c5c4c0] hover:shadow-xs transition-all flex flex-col justify-between text-[#37352f] relative"
+                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] bg-white hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all flex flex-col justify-between text-[#37352f] relative"
                   >
                     <div>
                       {/* Top Badges & More Options Menu */}
@@ -471,7 +471,7 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => onOpenFlashcards(course)}
-                          className="py-2 px-3 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white text-xs font-semibold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer"
+                          className="py-2 px-3 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white text-xs font-semibold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer touch-3d btn-3d"
                         >
                           <Layers className="w-3.5 h-3.5" />
                           <span>Học Thẻ 3D</span>
@@ -480,7 +480,7 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => onOpenQuiz(course)}
-                          className="py-2 px-3 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                          className="py-2 px-3 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer touch-3d"
                         >
                           <PlayCircle className="w-3.5 h-3.5 text-[#cc782f]" />
                           <span>Thi Thử</span>
@@ -491,7 +491,7 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => onOpenMatchGame(course)}
-                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer touch-3d"
                         >
                           <Gamepad2 className="w-3.5 h-3.5 text-[#2383e2]" />
                           <span>Ghép Thẻ (Match)</span>
@@ -500,7 +500,7 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
-                          className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-xs font-medium flex items-center space-x-1 transition-colors cursor-pointer"
+                          className="py-1.5 px-2.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-xs font-medium flex items-center space-x-1 transition-colors cursor-pointer touch-3d"
                           title="In, Xuất Anki, Pass lại, Bán thẻ"
                         >
                           <span>Tiện ích</span>

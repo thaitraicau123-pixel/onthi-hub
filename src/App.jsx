@@ -23,6 +23,7 @@ import MistakeNotebookModal from './components/MistakeNotebookModal';
 import ChangelogModal from './components/ChangelogModal';
 import CommandPaletteModal from './components/CommandPaletteModal';
 import AnalyticsModal from './components/AnalyticsModal';
+import ThemePickerModal from './components/ThemePickerModal';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
@@ -38,6 +39,7 @@ import {
 } from './utils/wallet';
 import { playSound } from './utils/storage';
 import { isUserAdmin, PRIMARY_ADMIN_EMAIL } from './utils/adminGuard';
+import { getSelectedTheme, applyTheme, subscribeToTheme } from './utils/themeManager';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -67,6 +69,8 @@ export default function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [currentTheme, setCurrentTheme] = useState(() => getSelectedTheme());
+  const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
 
   // Sync initial state
   useEffect(() => {
@@ -74,6 +78,12 @@ export default function App() {
     setUser(getCurrentUser());
     setWalletBalance(getWalletBalance());
     setMarketplaceDecks(getMarketplaceDecks());
+
+    // Initialize & subscribe to theme changes
+    applyTheme(currentTheme.id);
+    const unsubTheme = subscribeToTheme((newTheme) => {
+      setCurrentTheme(newTheme);
+    });
 
     // Notion Hotkeys:
     // 1. Ctrl + \ toggles Notion Sidebar
@@ -120,6 +130,7 @@ export default function App() {
       window.removeEventListener('keydown', handleKeyDown);
       if (typeof unsubTxs === 'function') unsubTxs();
       if (typeof unsubMarket === 'function') unsubMarket();
+      if (typeof unsubTheme === 'function') unsubTheme();
     };
   }, []);
 
@@ -148,7 +159,10 @@ export default function App() {
   const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
 
   return (
-    <div className="min-h-screen bg-white text-[#37352f] flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f]">
+    <div 
+      className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500`}
+      style={{ backgroundImage: currentTheme.wallpaperGlow }}
+    >
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -188,10 +202,12 @@ export default function App() {
         onOpenChangelog={() => setIsChangelogOpen(true)}
         onOpenSearch={() => setIsCommandPaletteOpen(true)}
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+        currentTheme={currentTheme}
+        onOpenThemePicker={() => setIsThemePickerOpen(true)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer */}
-      <div className="flex-1 min-w-0 flex flex-col min-h-screen bg-white">
+      <div className={`flex-1 min-w-0 flex flex-col min-h-screen ${currentTheme.canvasBgClass} transition-colors duration-500`}>
         
         {/* Notion Topbar with Breadcrumbs & Compact Utility Pills */}
         <NotionTopbar
@@ -210,6 +226,8 @@ export default function App() {
           onOpenChangelog={() => setIsChangelogOpen(true)}
           onOpenSearch={() => setIsCommandPaletteOpen(true)}
           onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+          currentTheme={currentTheme}
+          onOpenThemePicker={() => setIsThemePickerOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -502,6 +520,7 @@ export default function App() {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+        onOpenThemePicker={() => setIsThemePickerOpen(true)}
       />
 
       {/* 14. Learning Analytics & Mastery Dashboard */}
@@ -515,6 +534,17 @@ export default function App() {
 
       {/* 15. Floating Pomodoro Focus Timer Widget */}
       <PomodoroTimerWidget onBonusReward={refreshState} />
+
+      {/* 16. Messenger / Instagram Style Theme & Atmospheric Background Picker */}
+      <ThemePickerModal
+        isOpen={isThemePickerOpen}
+        onClose={() => setIsThemePickerOpen(false)}
+        currentTheme={currentTheme}
+        onSelectTheme={(theme) => {
+          setCurrentTheme(theme);
+          showToast(`🎨 Đã đổi sang giao diện: ${theme.name}`);
+        }}
+      />
 
     </div>
   );

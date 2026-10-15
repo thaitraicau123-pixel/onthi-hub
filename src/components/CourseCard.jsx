@@ -45,7 +45,7 @@ export default function CourseCard({
     : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] hover:shadow-xs transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none">
+    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none">
       
       {/* Top Banner with Notion Pill Badges */}
       <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">
@@ -145,7 +145,7 @@ export default function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs touch-3d cursor-pointer"
           >
             <Layers className="w-3 h-3 text-[#2383e2]" />
             <span>Xem Thẻ</span>
@@ -154,7 +154,7 @@ export default function CourseCard({
           <button
             type="button"
             onClick={() => onOpenQuiz(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs"
+            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] bg-white hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors shadow-2xs touch-3d cursor-pointer"
           >
             <PlayCircle className="w-3 h-3 text-[#cc782f]" />
             <span>Thi Thử</span>
@@ -166,7 +166,7 @@ export default function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-[#448361] bg-[#edf3ec] hover:bg-[#e0ece0] border border-[#d3e5d7] rounded-lg transition-colors cursor-pointer"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-[#448361] bg-[#edf3ec] hover:bg-[#e0ece0] border border-[#d3e5d7] rounded-lg transition-colors cursor-pointer touch-3d"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Vào Học Bộ Thẻ</span>
@@ -175,7 +175,7 @@ export default function CourseCard({
           <button
             type="button"
             onClick={() => onBuy(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-white bg-[#2e2e2e] hover:bg-[#1a1a1a] rounded-lg shadow-2xs transition-all active:scale-[0.99] cursor-pointer"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-white bg-[#2e2e2e] hover:bg-[#1a1a1a] rounded-lg shadow-2xs transition-all active:scale-[0.98] cursor-pointer touch-3d btn-3d"
           >
             <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
             <span>Mở Khóa ({priceXu} Xu)</span>
