@@ -448,6 +448,22 @@ export default function App() {
           onOpenWallet={() => {
             setIsBlindBoxOpen(false);
             setActiveTab('wallet');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onGoToLibrary={() => {
+            setIsBlindBoxOpen(false);
+            setActiveTab('library');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onGoToStudio={() => {
+            setIsBlindBoxOpen(false);
+            setActiveTab('create');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          onGoToPlans={() => {
+            setIsBlindBoxOpen(false);
+            setActiveTab('plans');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
       )}

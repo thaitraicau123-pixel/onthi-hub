@@ -100,7 +100,10 @@ function playSynthSound(type = 'shake') {
 export default function BlindBoxModal({
   onClose,
   onRewardClaimed,
-  onOpenWallet
+  onOpenWallet,
+  onGoToLibrary,
+  onGoToStudio,
+  onGoToPlans
 }) {
   const [selectedBoxId, setSelectedBoxId] = useState('silver');
   const [unboxingStage, setUnboxingStage] = useState('idle'); // 'idle' | 'shaking' | 'revealed'
@@ -222,11 +225,11 @@ export default function BlindBoxModal({
                   Túi Mù & Hộp Mù Tri Thức (Blind Box)
                 </h3>
                 <span className="notion-tag notion-tag-yellow text-[10px] font-semibold">
-                  100% TRÚNG THƯỞNG
+                  100% QUÀ THỰC TẾ
                 </span>
               </div>
               <p className="text-xs text-[#787774]">
-                Khui quà ngẫu nhiên: Hoàn Xu có lãi, trọn bộ đề thi hiếm, voucher và Jackpot 100 Xu!
+                Khui quà 100% nhận thật: Hoàn Xu có lãi, tặng vé tạo thẻ AI Studio, mở khóa trọn bộ đề thi và Jackpot 150 Xu!
               </p>
             </div>
           </div>
@@ -439,7 +442,7 @@ export default function BlindBoxModal({
                 </div>
 
                 <p className="text-[10px] text-[#787774] mt-2">
-                  Cam kết 100% trúng thưởng hoàn Xu, thẻ Anki hoặc mã giảm giá. Không bao giờ tay trắng!
+                  Cam kết 100% phần thưởng thực tế: Tự động cộng Xu vào ví, mở khóa bộ thẻ vào Tủ Của Tôi, hoặc tặng lượt tạo AI ngay lập tức!
                 </p>
 
               </div>
@@ -466,44 +469,59 @@ export default function BlindBoxModal({
                     {revealRewards[0].description}
                   </p>
 
-                  {/* Copy Voucher code action if applicable */}
-                  {revealRewards[0].code && (
-                    <div className="mt-3 inline-flex items-center space-x-2 p-2 rounded-lg bg-white border border-[#e9e9e8]">
-                      <span className="font-mono font-bold text-amber-700 text-sm">
-                        {revealRewards[0].code}
-                      </span>
+                  {/* Immediate Action Navigation Button */}
+                  {revealRewards[0]?.actionText && (
+                    <div className="mt-4 flex flex-col items-center justify-center space-y-2">
                       <button
-                        onClick={() => handleCopyVoucher(revealRewards[0].code)}
-                        className="px-2.5 py-1 bg-[#37352f] text-white rounded-md text-xs font-medium flex items-center space-x-1 hover:bg-[#201f1d]"
+                        type="button"
+                        onClick={() => {
+                          onRewardClaimed?.();
+                          onClose();
+                          if (revealRewards[0].actionType === 'library') onGoToLibrary?.();
+                          else if (revealRewards[0].actionType === 'studio') onGoToStudio?.();
+                          else if (revealRewards[0].actionType === 'wallet') onOpenWallet?.();
+                          else if (revealRewards[0].actionType === 'plans') onGoToPlans?.();
+                        }}
+                        className="px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 shadow-lg shadow-orange-500/25 flex items-center space-x-2 transition-all cursor-pointer transform hover:scale-105 active:scale-95"
                       >
-                        <Copy className="w-3 h-3" />
-                        <span>{copiedCode === revealRewards[0].code ? 'Đã chép!' : 'Sao chép'}</span>
+                        <span>{revealRewards[0].actionText}</span>
+                        <ChevronRight className="w-4 h-4" />
                       </button>
+                      <span className="text-[11px] text-emerald-600 font-semibold flex items-center space-x-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>Đã tự động cộng thẳng vào tài khoản của bạn!</span>
+                      </span>
                     </div>
                   )}
                 </div>
               ) : (
                 /* Multi Combo Grid (x5) */
-                <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 my-3">
-                  {revealRewards.map((rw, idx) => (
-                    <div
-                      key={idx}
-                      className="p-3 rounded-lg bg-white border border-[#e9e9e8] flex flex-col items-center justify-between text-center"
-                    >
-                      <span className="text-[9px] font-semibold uppercase text-amber-700">
-                        Hộp #{idx + 1}
-                      </span>
-                      <div className="text-3xl my-1.5">
-                        {rw.icon}
+                <div className="space-y-3 my-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                    {revealRewards.map((rw, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-xl bg-white border border-[#e9e9e8] shadow-2xs flex flex-col items-center justify-between text-center relative overflow-hidden group hover:border-[#2383e2] transition-colors"
+                      >
+                        <span className="text-[9px] font-bold uppercase text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                          Hộp #{idx + 1}
+                        </span>
+                        <div className="text-3xl my-1.5 transform group-hover:scale-110 transition-transform">
+                          {rw.icon}
+                        </div>
+                        <h4 className="text-[11px] font-bold text-[#37352f] leading-tight">
+                          {rw.title}
+                        </h4>
+                        <span className="text-[9px] text-[#787774] mt-1 line-clamp-2">
+                          {rw.description}
+                        </span>
                       </div>
-                      <h4 className="text-[11px] font-bold text-[#37352f] leading-tight">
-                        {rw.title}
-                      </h4>
-                      <span className="text-[9px] text-[#787774] mt-1 line-clamp-2">
-                        {rw.description}
-                      </span>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-center space-x-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>Tất cả {revealRewards.length} phần thưởng trên đã được cộng trực tiếp vào tài khoản của bạn!</span>
+                  </div>
                 </div>
               )}
 

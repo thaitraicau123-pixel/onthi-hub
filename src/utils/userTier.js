@@ -169,3 +169,14 @@ export function performDailyCheckIn() {
     message: `🎉 Điểm danh thành công! Bạn được cộng thêm +${bonusAmount} lượt tạo thẻ Flashcard hôm nay!`
   };
 }
+
+// Add bonus AI generation quota (from rewards, blind boxes, gifts)
+export function addUserAiQuotaBonus(amount = 5) {
+  const today = getTodayString();
+  const raw = localStorage.getItem(USER_QUOTA_KEY);
+  let quota = raw ? JSON.parse(raw) : { date: today, usedToday: 0, bonusEarned: 0 };
+
+  quota.bonusEarned = (quota.bonusEarned || 0) + amount;
+  localStorage.setItem(USER_QUOTA_KEY, JSON.stringify(quota));
+  return quota.bonusEarned;
+}
