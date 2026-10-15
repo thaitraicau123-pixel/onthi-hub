@@ -76,16 +76,16 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
         </div>
 
         {/* Chế Độ Phân Bổ: Ban Ngày (5 chủ đề) & Chế Độ Ngủ 4K (11 chủ đề) */}
-        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl bg-slate-100/90 dark:bg-slate-850/80 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+        <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
           <div className="flex items-center space-x-2.5">
             <span className="text-xl">🌙</span>
             <div>
               <p className="text-xs font-bold text-slate-900 dark:text-white">
                 Cơ Chế Phân Bổ Chế Độ Ban Ngày & Chế Độ Ngủ 4K
               </p>
-              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mt-0.5">
-                ☀️ <strong>Chỉ 5 chủ đề chạy Ban Ngày:</strong> Notion Tối Giản, Hoa Anh Đào, Vườn Bơ Xanh, Cà Phê Lofi, Nước Chanh (màu pastel tươi tắn).<br />
-                🌙 <strong>11 chủ đề 4K & Rạp Chiếu Phim:</strong> Mario 3D, Your Name, Cyberpunk, Alps, Totoro, Halloween... tự động tối ưu Chế độ ngủ với chữ trắng/vàng tương phản tuyệt đối!
+              <p className="text-[11px] text-slate-600 dark:text-slate-200 leading-relaxed mt-0.5">
+                ☀️ <strong className="text-slate-900 dark:text-white">Chỉ 5 chủ đề chạy Ban Ngày:</strong> Notion Tối Giản, Hoa Anh Đào, Vườn Bơ Xanh, Cà Phê Lofi, Nước Chanh (màu pastel tươi tắn).<br />
+                🌙 <strong className="text-slate-900 dark:text-white">11 chủ đề 4K & Rạp Chiếu Phim:</strong> Mario 3D, Your Name, Cyberpunk, Alps, Totoro, Halloween... tự động tối ưu Chế độ ngủ với chữ trắng tương phản tuyệt đối!
               </p>
             </div>
           </div>
@@ -104,10 +104,12 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                   className={`p-4 rounded-xl border-2 transition-all cursor-pointer relative overflow-hidden card-3d ${
                     isSelected
                       ? 'border-[#2383e2] ring-2 ring-[#2383e2]/20 shadow-3d-md'
-                      : 'border-[#e9e9e8] hover:border-[#c5c4c0] bg-white'
+                      : theme.isDark
+                        ? 'border-white/10 hover:border-white/20 bg-[#141829]'
+                        : 'border-[#e9e9e8] hover:border-[#c5c4c0] bg-white'
                   }`}
                   style={{
-                    backgroundColor: theme.isDark ? '#141126' : undefined
+                    backgroundColor: theme.isDark ? '#141829' : undefined
                   }}
                 >
                   {/* Subtle Theme Wallpaper Glow in Card Header */}
@@ -171,7 +173,7 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                       <div className="flex items-center space-x-2 truncate mr-2">
                         <h4
                           className={`text-sm font-bold tracking-tight truncate ${
-                            theme.isDark ? 'text-white' : 'text-[#37352f]'
+                            theme.isDark ? 'text-white' : 'text-slate-900'
                           }`}
                         >
                           {theme.icons.logo} {theme.name}
@@ -195,7 +197,7 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
 
                     <p
                       className={`text-xs line-clamp-2 leading-relaxed ${
-                        theme.isDark ? 'text-purple-200/70' : 'text-[#787774]'
+                        theme.isDark ? 'text-slate-200' : 'text-slate-600'
                       }`}
                     >
                       {theme.description}
@@ -206,18 +208,18 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                       <div
                         className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1.5 ${
                           theme.isDark
-                            ? 'bg-purple-950/60 text-purple-300 border border-purple-800/40'
+                            ? 'bg-white/10 text-slate-100 border border-white/15'
                             : 'bg-black/5 text-[#423412] border border-black/5'
                         }`}
                       >
-                        <Sparkles className="w-3 h-3 text-amber-500 shrink-0" />
+                        <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
                         <span className="truncate">{theme.artDetail}</span>
                       </div>
                     )}
 
                     {/* Thematic Icons Strip */}
-                    <div className="pt-2 border-t border-[#e9e9e8]/50 flex items-center justify-between text-[11px]">
-                      <span className={theme.isDark ? 'text-purple-300/80 font-medium' : 'text-[#787774]'}>
+                    <div className="pt-2 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between text-[11px]">
+                      <span className={theme.isDark ? 'text-slate-300 font-semibold' : 'text-slate-500 font-semibold'}>
                         Icon chủ đề:
                       </span>
                       <div className="flex items-center space-x-1 text-xs select-none">
@@ -236,7 +238,7 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
         </div>
 
         {/* Footer */}
-        <div className="px-5 sm:px-6 py-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs text-[#787774] shrink-0">
+        <div className="px-5 sm:px-6 py-3 bg-[#fbfbfa] dark:bg-[#181d33] border-t border-[#e9e9e8] dark:border-white/10 flex items-center justify-between text-xs text-[#787774] dark:text-slate-300 shrink-0">
           <div className="flex items-center space-x-1.5">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             <span>Chủ đề được lưu tự động trên thiết bị của bạn.</span>

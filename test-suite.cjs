@@ -156,6 +156,24 @@ async function runTests() {
   applyTheme('super-mario-3d');
   assert(getSleepMode() === 'dark', 'Switched back to Mario 4K, automatically in Sleep Mode');
 
+  // 2c. TESTING HIGH-CONTRAST TEXT STANDARDS ACROSS ALL THEMES & UI
+  console.log('\n--- 2c. Testing High-Contrast Text Standards Across All Themes & UI ---');
+  THEMES.forEach(t => {
+    if (DAY_THEMES.includes(t.id)) {
+      assert(t.textClass === 'text-slate-900 font-medium', `Day Theme "${t.name}" uses clean high-contrast dark text (#0f172a)`);
+      assert(t.subtextClass === 'text-slate-600', `Day Theme "${t.name}" uses readable slate secondary text (#475569)`);
+    } else {
+      assert(t.textClass === 'text-white font-medium', `Dark Theme "${t.name}" uses pure white heading/body text (#ffffff)`);
+      assert(t.subtextClass === 'text-slate-200', `Dark Theme "${t.name}" uses high-contrast light slate secondary text (#e2e8f0)`);
+    }
+  });
+
+  // Verify no invalid Tailwind classes in codebase
+  const themePickerCode = fs.readFileSync(path.resolve(__dirname, 'src/components/ThemePickerModal.jsx'), 'utf8');
+  assert(!themePickerCode.includes('slate-850'), 'ThemePickerModal has zero invalid slate-850 classes');
+  const homeViewCode = fs.readFileSync(path.resolve(__dirname, 'src/views/HomeView.jsx'), 'utf8');
+  assert(!homeViewCode.includes('slate-850'), 'HomeView has zero invalid slate-850 classes');
+  assert(!homeViewCode.includes('slate-750'), 'HomeView has zero invalid slate-750 classes');
 
   // 3. BLIND BOX REWARDS (No useless vouchers, profitable for user & platform)
   console.log('\n--- 3. Testing Lucky Blind Box Utility & Rewards ---');

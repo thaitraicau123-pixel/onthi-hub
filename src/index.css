@@ -306,22 +306,30 @@ body {
 }
 
 .dark .text-\[\#37352f\],
-[data-sleep-mode="dark"] .text-\[\#37352f\] {
-  color: #f8fafc !important;
+.dark [class*="text-[#37352f]"],
+[data-sleep-mode="dark"] .text-\[\#37352f\],
+[data-sleep-mode="dark"] [class*="text-[#37352f]"] {
+  color: #ffffff !important;
 }
 
 .dark .text-\[\#5a5751\],
-[data-sleep-mode="dark"] .text-\[\#5a5751\] {
-  color: #e2e8f0 !important;
+.dark [class*="text-[#5a5751]"],
+[data-sleep-mode="dark"] .text-\[\#5a5751\],
+[data-sleep-mode="dark"] [class*="text-[#5a5751]"] {
+  color: #f1f5f9 !important;
 }
 
 .dark .text-\[\#787774\],
-[data-sleep-mode="dark"] .text-\[\#787774\] {
+.dark [class*="text-[#787774]"],
+[data-sleep-mode="dark"] .text-\[\#787774\],
+[data-sleep-mode="dark"] [class*="text-[#787774]"] {
   color: #cbd5e1 !important;
 }
 
 .dark .text-\[\#9b9a97\],
-[data-sleep-mode="dark"] .text-\[\#9b9a97\] {
+.dark [class*="text-[#9b9a97]"],
+[data-sleep-mode="dark"] .text-\[\#9b9a97\],
+[data-sleep-mode="dark"] [class*="text-[#9b9a97]"] {
   color: #94a3b8 !important;
 }
 

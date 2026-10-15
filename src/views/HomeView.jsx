@@ -193,19 +193,19 @@ export default function HomeView({
             const el = document.getElementById('catalog-section');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="p-3.5 rounded-xl bg-white dark:bg-slate-850/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
+          className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#fbf3db] dark:bg-amber-950/70 text-[#c29243] dark:text-amber-300 border border-[#f4e4b7] dark:border-amber-700/50 flex items-center justify-center mb-2">
             <Landmark className="w-4 h-4" />
           </div>
           <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">Đề Thi Công Chức</h4>
-          <p className="text-[11px] text-[#787774] dark:text-slate-300 mt-0.5">Chuẩn Nghị định 138/2020</p>
+          <p className="text-[11px] text-[#787774] dark:text-slate-200 mt-0.5">Chuẩn Nghị định 138/2020</p>
         </div>
 
         {/* Card 2: Chợ Thẻ C2C */}
         <div
           onClick={() => onSwitchTab('marketplace')}
-          className="p-3.5 rounded-xl bg-white dark:bg-slate-850/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
+          className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#edf3ec] dark:bg-emerald-950/70 text-[#448361] dark:text-emerald-300 border border-[#d3e5d7] dark:border-emerald-700/50 flex items-center justify-center mb-2">
             <Store className="w-4 h-4" />
@@ -214,31 +214,31 @@ export default function HomeView({
             <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">Chợ Thẻ C2C</h4>
             <span className="text-[8px] font-bold px-1.5 py-0.2 rounded notion-pill-orange">HOT</span>
           </div>
-          <p className="text-[11px] text-[#787774] dark:text-slate-300 mt-0.5">Mua bán & Pass lại thẻ</p>
+          <p className="text-[11px] text-[#787774] dark:text-slate-200 mt-0.5">Mua bán & Pass lại thẻ</p>
         </div>
 
         {/* Card 3: Túi Mù Tri Thức */}
         <div
           onClick={onOpenBlindBox}
-          className="p-3.5 rounded-xl bg-white dark:bg-slate-850/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
+          className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#f4f0f7] dark:bg-purple-950/70 text-[#9065b0] dark:text-purple-300 border border-[#e3d7ec] dark:border-purple-700/50 flex items-center justify-center mb-2">
             <Gift className="w-4 h-4" />
           </div>
           <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">Túi Mù Tri Thức</h4>
-          <p className="text-[11px] text-[#787774] dark:text-slate-300 mt-0.5">100% trúng hoàn Xu & VIP</p>
+          <p className="text-[11px] text-[#787774] dark:text-slate-200 mt-0.5">100% trúng hoàn Xu & VIP</p>
         </div>
 
         {/* Card 4: Game Nối Thẻ */}
         <div
           onClick={() => onOpenMatchGame(allCourses[0])}
-          className="p-3.5 rounded-xl bg-white dark:bg-slate-850/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
+          className="p-3.5 rounded-xl bg-white dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/10 shadow-3d-sm hover:shadow-3d-md card-3d touch-3d cursor-pointer transition-all group select-none"
         >
           <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] dark:bg-sky-950/70 text-[#2b7aa1] dark:text-sky-300 border border-[#cbe3ed] dark:border-sky-700/50 flex items-center justify-center mb-2">
             <Gamepad2 className="w-4 h-4" />
           </div>
           <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">Game Nối Thẻ</h4>
-          <p className="text-[11px] text-[#787774] dark:text-slate-300 mt-0.5">Học nhanh qua phản xạ</p>
+          <p className="text-[11px] text-[#787774] dark:text-slate-200 mt-0.5">Học nhanh qua phản xạ</p>
         </div>
 
       </section>
@@ -309,7 +309,7 @@ export default function HomeView({
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none pl-2.5 pr-7 py-1.5 text-xs bg-white dark:bg-slate-800 text-[#37352f] dark:text-white font-semibold border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 hover:bg-[#efefed] dark:hover:bg-slate-750 cursor-pointer shadow-2xs transition-colors"
+                className="appearance-none pl-2.5 pr-7 py-1.5 text-xs bg-white dark:bg-slate-800 text-[#37352f] dark:text-white font-semibold border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 hover:bg-[#efefed] dark:hover:bg-slate-700 cursor-pointer shadow-2xs transition-colors"
               >
                 <option value="popular">🔥 Bán chạy</option>
                 <option value="rating">⭐ Đánh giá cao</option>
@@ -329,10 +329,10 @@ export default function HomeView({
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-[#37352f] tracking-tight">
+            <h3 className="text-lg sm:text-xl font-black text-[#37352f] dark:text-white tracking-tight">
               Kho Bộ Đề & Flashcard Tiêu Chuẩn ({sortedAndFiltered.length})
             </h3>
-            <p className="text-xs text-[#787774] mt-0.5">
+            <p className="text-xs text-[#787774] dark:text-slate-200 mt-0.5">
               Học thử lật thẻ 3D và thi trắc nghiệm tính giờ miễn phí trước khi mở khóa toàn bộ.
             </p>
           </div>
