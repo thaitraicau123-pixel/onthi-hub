@@ -24,7 +24,9 @@ import {
   ShieldCheck,
   BrainCircuit,
   GraduationCap,
-  RotateCw
+  RotateCw,
+  Activity,
+  TrendingUp
 } from 'lucide-react';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 
@@ -77,10 +79,16 @@ export default function HomeView({
     switch (iconName) {
       case 'Landmark':
         return <Landmark className={`w-4 h-4 ${iconColor}`} />;
+      case 'Gamepad2':
+        return <Gamepad2 className={`w-4 h-4 ${iconColor}`} />;
       case 'Code2':
         return <Code2 className={`w-4 h-4 ${iconColor}`} />;
       case 'Languages':
         return <Languages className={`w-4 h-4 ${iconColor}`} />;
+      case 'Activity':
+        return <Activity className={`w-4 h-4 ${iconColor}`} />;
+      case 'TrendingUp':
+        return <TrendingUp className={`w-4 h-4 ${iconColor}`} />;
       default:
         return <Sparkles className={`w-4 h-4 ${iconColor}`} />;
     }

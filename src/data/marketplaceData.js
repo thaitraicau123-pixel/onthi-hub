@@ -175,6 +175,73 @@ export const INITIAL_MARKETPLACE_DECKS = [
       }
     ]
   },
+  {
+    id: 'mkt_leetcode_patterns',
+    title: '30 Thuật Toán & Pattern LeetCode Blind 75 Phỏng Vấn Big Tech',
+    subtitle: 'Two Pointers, Sliding Window, DFS/BFS, Dynamic Programming & Backtracking',
+    description: 'Tổng hợp 30 mẫu tư duy cốt lõi (algorithmic patterns) xuất hiện trong 90% các kỳ phỏng vấn coding tại Google, Meta, Amazon, Shopee. Kèm độ phức tạp Time/Space complexity và code mẫu tối ưu.',
+    category: 'it-tech',
+    categoryName: 'IT & Thuật Toán',
+    categoryLabel: 'LeetCode & FAANG',
+    priceXu: 5,
+    cardCount: 30,
+    authorName: 'Hoàng Long (Senior SDE / LeetCode Guardian 2300+)',
+    authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    authorTier: 'ultra',
+    salesCount: 654,
+    rating: 4.98,
+    createdAt: '2026-10-05',
+    isApproved: true,
+    previewCards: [
+      { id: 1, front: 'Kỹ thuật "Two Pointers" (Hai con trỏ) thường áp dụng cho dạng bài toán nào và tối ưu độ phức tạp ra sao?', back: 'Thường áp dụng cho mảng hoặc chuỗi ĐÃ ĐƯỢC SẮP XẾP (Sorted Array).\n\n📌 Ví dụ: 2 Sum II, 3 Sum, Container With Most Water, Trapping Rain Water.\n💡 Tối ưu: Giảm độ phức tạp từ O(N²) (vét cạn 2 vòng lặp) xuống O(N) chỉ bằng một lượt duyệt duy nhất.', tag: 'Two Pointers' },
+      { id: 2, front: 'Pattern "Sliding Window" (Cửa sổ trượt) nhận biết qua dấu hiệu nào trong đề bài?', back: 'Đề bài yêu cầu tìm chuỗi con (substring) hoặc mảng con (subarray) liên tục dài nhất / ngắn nhất / có tổng thỏa mãn điều kiện K.\n\n📌 Ví dụ: Longest Substring Without Repeating Characters, Minimum Size Subarray Sum.\n💡 Kỹ thuật: Mở rộng con trỏ Right để thêm phần tử; co con trỏ Left khi điều kiện bị vi phạm.', tag: 'Sliding Window' },
+      { id: 3, front: 'Khi nào nên dùng BFS (Breadth-First Search) thay vì DFS (Depth-First Search)?', back: 'Dùng BFS khi cần tìm ĐƯỜNG ĐI NGẮN NHẤT (Shortest Path) hoặc số bước biến đổi ít nhất trong đồ thị có trọng số bằng nhau.\n\n📌 Ví dụ: Word Ladder, Rotting Oranges, Shortest Path in Binary Matrix.\n💡 Cấu trúc dữ liệu: BFS luôn sử dụng Queue (FIFO), trong khi DFS sử dụng Stack / Đệ quy.', tag: 'Graph & BFS' },
+      { id: 4, front: 'Fast & Slow Pointers (Thuật toán Rùa và Thỏ - Floyd\'s Cycle Detection) hoạt động thế nào?', back: 'Sử dụng 2 con trỏ cùng xuất phát: Slow đi 1 bước mỗi lượt, Fast đi 2 bước mỗi lượt.\n\n📌 Nếu danh sách liên kết có vòng lặp (cycle), Fast chắc chắn sẽ bắt kịp và gặp Slow.\n💡 Ứng dụng: Linked List Cycle I/II, Find the Duplicate Number (mảng có số trùng lặp).', tag: 'Fast & Slow' },
+      { id: 5, front: 'Nguyên lý cơ bản của kỹ thuật "Monotonic Stack" (Ngăn xếp đơn điệu) là gì?', back: 'Duy trì các phần tử trong stack luôn tăng dần hoặc giảm dần theo thứ tự nghiêm ngặt.\n\n📌 Khi gặp phần tử vi phạm trật tự, pop các phần tử cũ ra để xử lý.\n💡 Ứng dụng: Next Greater Element, Daily Temperatures, Largest Rectangle in Histogram (độ phức tạp O(N)).', tag: 'Monotonic Stack' }
+    ],
+    previewQuiz: [
+      {
+        id: 1,
+        question: 'Cấu trúc dữ liệu nào là bắt buộc khi hiện thực thuật toán BFS (Breadth-First Search)?',
+        options: ['A. Stack (LIFO)', 'B. Queue (FIFO)', 'C. Priority Queue', 'D. Hash Table'],
+        correct: 1,
+        explanation: 'BFS duyệt theo từng tầng nên bắt buộc dùng hàng đợi Queue (First-In, First-Out).'
+      }
+    ]
+  },
+  {
+    id: 'mkt_business_japanese',
+    title: '35 Mẫu Câu Giao Tiếp Kính Ngữ & Kaiwa Tiếng Nhật Doanh Nghiệp',
+    subtitle: 'Kính ngữ Sonkeigo, Khiêm nhường ngữ Kenjougo và giao tiếp Business',
+    category: 'ngoai-ngu',
+    categoryName: 'Tiếng Nhật Business',
+    categoryLabel: 'Business Japanese',
+    priceXu: 4,
+    cardCount: 35,
+    authorName: 'Hương Giang (BJT J1+ / Thông dịch viên Tokyo)',
+    authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80',
+    authorTier: 'pro',
+    salesCount: 512,
+    rating: 4.95,
+    createdAt: '2026-10-08',
+    isApproved: true,
+    previewCards: [
+      { id: 1, front: 'Kính ngữ (Sonkeigo) và Khiêm nhường ngữ (Kenjougo) của động từ 「行く」(Đi) và 「来る」(Đến) là gì?', back: '• Tôn kính ngữ (Nâng đối phương lên): いらっしゃる / おいでになる\n• Khiêm nhường ngữ (Hạ mình xuống): 参る (まいる) / 伺う (うかがう)\n\n📝 Ví dụ:\n- Khách hàng: 社長がいらっしゃいました (Giám đốc bên đối tác đã đến ạ).\n- Bản thân: 明日の10時に伺います (10h sáng mai tôi xin phép ghé qua công ty anh ạ).', tag: 'Kính ngữ Cơ bản' },
+      { id: 2, front: 'Kính ngữ đặc biệt của động từ 「言う」(Nói) đối với sếp/đối tác và đối với bản thân là gì?', back: '• Tôn kính ngữ: おっしゃる (Ossharu)\n• Khiêm nhường ngữ: 申し上げる (Moushiageru) / 申す (Mousu)\n\n📝 Ví dụ: 先ほど田中様がおっしゃったように (Như quý khách Tanaka vừa nói khi nãy).', tag: 'Business Kaiwa' },
+      { id: 3, front: 'Mẫu câu nhờ vả cấp trên hoặc khách hàng kiểm tra tài liệu lịch sự chuẩn Nhật là gì?', back: 'ご確認のほど、よろしくお願いいたします。\n(Go-kakunin no hodo, yoroshiku onegai itashimasu).\n\n💡 Tinh tế hơn câu cơ bản: 確認してください (câu này nghe như ra lệnh, không dùng cho sếp/khách hàng).', tag: 'Email Business' },
+      { id: 4, front: 'Khi nghe điện thoại công ty Nhật, câu chào mở đầu bắt buộc là gì?', back: 'いつもお世話になっております。[Tên công ty]の[Tên bạn]でございます。\n(Itsumo osewa ni natte orimasu. [Tên công ty] no [Tên bạn] de gozaimasu).\n\n📌 Nghĩa: Xin cảm ơn quý khách luôn chiếu cố và ủng hộ công ty chúng tôi.', tag: 'Điện thoại' },
+      { id: 5, front: 'Cách xin lỗi trang trọng trong kinh doanh khi làm sai hoặc giao hàng chậm trễ là gì?', back: '大変ご迷惑をおかけいたしまして、誠に申し訳ございませんでした。\n(Taihen gomeiwaku wo okake itashimashite, makoto ni moushiwake gozaimasen deshita).\n\n⚠️ Tuyệt đối không nói "ごめんなさい" trong môi trường công sở Nhật Bản.', tag: 'Tạ lỗi Business' }
+    ],
+    previewQuiz: [
+      {
+        id: 1,
+        question: 'Khi nói về hành động "NÓI" của khách hàng, từ nào sau đây là Tôn kính ngữ chính xác?',
+        options: ['A. 申す (Mousu)', 'B. おっしゃる (Ossharu)', 'C. 申し上げる (Moushiageru)', 'D. 言われる (Iwareru)'],
+        correct: 1,
+        explanation: 'おっしゃる là Tôn kính ngữ của 言う dùng cho khách hàng/sếp. 申す và 申し上げる là Khiêm nhường ngữ hạ mình.'
+      }
+    ]
+  }
 ];
 
 // Ensure each deck has sampleCards alias for backward compatibility

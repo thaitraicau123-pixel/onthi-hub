@@ -178,7 +178,19 @@ export default function App() {
       className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500 relative`}
       style={{ backgroundImage: currentTheme.wallpaperGlow }}
     >
-      {/* 60fps Particle Weather Engine (Snow, Petals, Stardust, Fireflies) */}
+      {/* 4K UHD Photorealistic Wallpaper Background (e.g. Super Mario 3D, Kimi no Na wa, Cyberpunk 4K) */}
+      {currentTheme.bgImageUrl && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat pointer-events-none transition-all duration-700 select-none"
+          style={{ backgroundImage: `url(${currentTheme.bgImageUrl})` }}
+        >
+          {/* Calibrated Overlay for Crisp Contrast & Pristine Text Readability */}
+          <div className={`absolute inset-0 ${currentTheme.bgOverlayClass || 'bg-black/35 backdrop-blur-[0.5px]'}`} />
+        </div>
+      )}
+
+      {/* 60fps Particle Weather Engine (Snow, Petals, Stardust, Fireflies, Mario Stars) */}
       <ThemeWeatherCanvas weatherType={currentTheme.weatherType} isEnabled={isWeatherEnabled} />
 
       {/* High-Fidelity Themed Atmosphere Illustrated Artwork */}

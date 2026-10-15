@@ -438,6 +438,174 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
           }
           ctx.restore();
         }
+
+        // 13. SUPER MARIO BROS (Spinning Coins, Super Stars & 1-Up Mushrooms)
+        else if (weatherType === 'mario-stars') {
+          p.y += p.speed * 45 * dt;
+          p.angle += 0.025;
+          p.x += Math.sin(p.angle) * 1.2;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+
+          if (p.kind === 'coin') {
+            // Spinning Golden Mario Coin
+            p.flip += 0.08;
+            const scaleX = Math.cos(p.flip);
+            ctx.scale(scaleX, 1);
+            ctx.fillStyle = '#facc15';
+            ctx.strokeStyle = '#ca8a04';
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = '#fde047';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, p.radius, p.radius * 1.3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            // Inner coin shine
+            ctx.strokeStyle = '#fef08a';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, -p.radius * 0.7);
+            ctx.lineTo(0, p.radius * 0.7);
+            ctx.stroke();
+          } else if (p.kind === 'star') {
+            // Super Star with 2 cute black oval eyes
+            p.rot += 0.02;
+            ctx.rotate(p.rot);
+            ctx.fillStyle = '#fde047';
+            ctx.shadowColor = '#eab308';
+            ctx.shadowBlur = 12;
+            ctx.beginPath();
+            for (let s = 0; s < 5; s++) {
+              ctx.lineTo(Math.cos((18 + s * 72) * Math.PI / 180) * p.radius * 1.4, -Math.sin((18 + s * 72) * Math.PI / 180) * p.radius * 1.4);
+              ctx.lineTo(Math.cos((54 + s * 72) * Math.PI / 180) * p.radius * 0.6, -Math.sin((54 + s * 72) * Math.PI / 180) * p.radius * 0.6);
+            }
+            ctx.closePath();
+            ctx.fill();
+            // Two cute eyes
+            ctx.fillStyle = '#1e1b4b';
+            ctx.beginPath();
+            ctx.ellipse(-p.radius * 0.25, -p.radius * 0.1, 1, 2.2, 0, 0, Math.PI * 2);
+            ctx.ellipse(p.radius * 0.25, -p.radius * 0.1, 1, 2.2, 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (p.kind === 'mushroom') {
+            // Cute Mini 1-Up / Super Mushroom
+            ctx.shadowColor = p.isGreen ? '#22c55e' : '#ef4444';
+            ctx.shadowBlur = 6;
+            ctx.fillStyle = p.isGreen ? '#22c55e' : '#ef4444';
+            ctx.beginPath();
+            ctx.arc(0, -2, p.radius, Math.PI, 0, false);
+            ctx.closePath();
+            ctx.fill();
+            // White dots
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(0, -p.radius * 0.6, p.radius * 0.3, 0, Math.PI * 2);
+            ctx.arc(-p.radius * 0.6, -2, p.radius * 0.25, 0, Math.PI * 2);
+            ctx.arc(p.radius * 0.6, -2, p.radius * 0.25, 0, Math.PI * 2);
+            ctx.fill();
+            // Stalk
+            ctx.fillStyle = '#fef3c7';
+            ctx.beginPath();
+            ctx.rect(-p.radius * 0.55, -2, p.radius * 1.1, p.radius * 0.8);
+            ctx.fill();
+            // Eyes
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.ellipse(-p.radius * 0.2, p.radius * 0.2, 0.8, 1.6, 0, 0, Math.PI * 2);
+            ctx.ellipse(p.radius * 0.2, p.radius * 0.2, 0.8, 1.6, 0, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Sparkle
+            ctx.fillStyle = '#fef08a';
+            ctx.shadowColor = '#facc15';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+
+          if (p.y > height + 30) particles[i] = createParticle('mario-stars', width, height, false);
+          if (p.x < -20) p.x = width + 20;
+          if (p.x > width + 20) p.x = -20;
+        }
+
+        // 14. ANIME COMET TIAMAT (Kimi no Na wa)
+        else if (weatherType === 'anime-comet') {
+          p.pulse += 0.04;
+          p.y += p.speed * 30 * dt;
+          p.x += Math.sin(p.pulse) * 0.8 - 0.4;
+
+          ctx.save();
+          ctx.beginPath();
+          const op = Math.max(0.2, p.opacity + Math.sin(p.pulse) * 0.3);
+          ctx.fillStyle = p.isPink ? `rgba(244, 114, 182, ${op})` : `rgba(56, 189, 248, ${op})`;
+          ctx.shadowColor = p.isPink ? '#f472b6' : '#38bdf8';
+          ctx.shadowBlur = p.isSpecial ? 12 : 5;
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          if (p.y > height + 20) particles[i] = createParticle('anime-comet', width, height, false);
+        }
+      }
+
+      // -------------------------------------------------------------
+      // OCCASIONAL DUAL SPLIT COMET TIAMAT (FOR YOUR NAME ANIME THEME)
+      // -------------------------------------------------------------
+      if (weatherType === 'anime-comet') {
+        if (!shootingStar && Date.now() > nextShootingStarTime) {
+          shootingStar = {
+            x: Math.random() * (width * 0.5) + width * 0.1,
+            y: -10,
+            length: Math.random() * 160 + 120,
+            speed: Math.random() * 8 + 9,
+            angle: Math.PI / 3.2,
+            opacity: 1
+          };
+        }
+
+        if (shootingStar) {
+          ctx.save();
+          // Main Blue/White Comet
+          ctx.strokeStyle = `rgba(224, 242, 254, ${shootingStar.opacity})`;
+          ctx.lineWidth = 3;
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 18;
+          ctx.beginPath();
+          ctx.moveTo(shootingStar.x, shootingStar.y);
+          ctx.lineTo(
+            shootingStar.x - Math.cos(shootingStar.angle) * shootingStar.length,
+            shootingStar.y - Math.sin(shootingStar.angle) * shootingStar.length
+          );
+          ctx.stroke();
+
+          // Split Pink Secondary Fragment
+          ctx.strokeStyle = `rgba(244, 114, 182, ${shootingStar.opacity * 0.8})`;
+          ctx.lineWidth = 1.8;
+          ctx.shadowColor = '#ec4899';
+          ctx.shadowBlur = 14;
+          ctx.beginPath();
+          ctx.moveTo(shootingStar.x + 12, shootingStar.y - 8);
+          ctx.lineTo(
+            shootingStar.x + 12 - Math.cos(shootingStar.angle + 0.08) * (shootingStar.length * 0.75),
+            shootingStar.y - 8 - Math.sin(shootingStar.angle + 0.08) * (shootingStar.length * 0.75)
+          );
+          ctx.stroke();
+          ctx.restore();
+
+          shootingStar.x += Math.cos(shootingStar.angle) * shootingStar.speed;
+          shootingStar.y += Math.sin(shootingStar.angle) * shootingStar.speed;
+          shootingStar.opacity -= 0.012;
+
+          if (shootingStar.opacity <= 0 || shootingStar.x > width + 100 || shootingStar.y > height + 100) {
+            shootingStar = null;
+            nextShootingStarTime = Date.now() + Math.random() * 6000 + 4000;
+          }
+        }
       }
 
       // -------------------------------------------------------------
@@ -584,6 +752,10 @@ function getParticleCount(type) {
       return 32;
     case 'minimal-sparkles':
       return 26;
+    case 'mario-stars':
+      return 35;
+    case 'anime-comet':
+      return 45;
     default:
       return 30;
   }

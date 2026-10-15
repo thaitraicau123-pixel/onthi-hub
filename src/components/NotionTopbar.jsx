@@ -177,15 +177,17 @@ export default function NotionTopbar({
             onOpenThemePicker?.();
           }}
           className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
-          title="Đổi chủ đề không gian học & icon (12 Themes Messenger / Instagram)"
+          title="Đổi chủ đề không gian học & icon (16 Themes Messenger & 3D 4K)"
         >
           <Palette className="w-3.5 h-3.5 text-purple-600" />
           <span className="hidden sm:inline">Chủ Đề</span>
         </button>
 
-        {/* Dynamic Weather & Atmosphere Particle Toggle Button (12 Bespoke Engines) */}
+        {/* Dynamic Weather & Atmosphere Particle Toggle Button (14 Bespoke Engines) */}
         {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
           const weatherInfoMap = {
+            'mario-stars': { icon: '🍄', label: 'Mario Stars', activeClass: 'bg-rose-500/20 text-rose-300 border-rose-400/40 hover:bg-rose-500/30 ring-1 ring-rose-400/30' },
+            'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat', activeClass: 'bg-pink-500/20 text-pink-300 border-pink-400/40 hover:bg-pink-500/30 ring-1 ring-pink-400/30' },
             snow: { icon: '❄️', label: 'Tuyết Rơi', activeClass: 'bg-blue-500/15 text-blue-300 border-blue-400/40 hover:bg-blue-500/25 ring-1 ring-blue-400/30' },
             halloween: { icon: '🎃', label: 'Halloween', activeClass: 'bg-orange-500/20 text-orange-300 border-orange-400/40 hover:bg-orange-500/30 ring-1 ring-orange-400/30' },
             sakura: { icon: '🌸', label: 'Hoa Đào', activeClass: 'bg-pink-500/15 text-pink-300 border-pink-400/40 hover:bg-pink-500/25 ring-1 ring-pink-400/30' },

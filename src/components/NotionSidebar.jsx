@@ -76,10 +76,10 @@ export default function NotionSidebar({
       id: 'theme',
       label: 'Đổi Chủ Đề Nền',
       emoji: '🎨',
-      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '12 Themes',
+      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '16 Themes',
       badgeColor: 'notion-pill-blue',
       action: onOpenThemePicker,
-      desc: '12 phong cách Messenger / Instagram'
+      desc: '16 chủ đề 3D 4K & Messenger'
     },
     {
       id: 'analytics',

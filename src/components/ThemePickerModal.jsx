@@ -96,6 +96,8 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                     <div className="flex items-center space-x-1">
                       {(() => {
                         const weatherBadgeMap = {
+                          'mario-stars': { icon: '🍄', label: 'Mario Stars', color: 'bg-rose-100 text-rose-900 border-rose-300' },
+                          'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat', color: 'bg-pink-100 text-pink-900 border-pink-300' },
                           snow: { icon: '❄️', label: 'Tuyết', color: 'bg-cyan-100 text-cyan-800 border-cyan-200' },
                           halloween: { icon: '🎃', label: 'Halloween', color: 'bg-orange-100 text-orange-900 border-orange-300' },
                           sakura: { icon: '🌸', label: 'Hoa Đào', color: 'bg-pink-100 text-pink-800 border-pink-200' },

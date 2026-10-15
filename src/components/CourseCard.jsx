@@ -57,7 +57,7 @@ export default function CourseCard({
     : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none relative">
+    <div className="bg-white/95 dark:bg-[#16122b]/95 backdrop-blur-md rounded-xl border border-[#e9e9e8] dark:border-white/10 hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none relative text-[#37352f] dark:text-[#f8fafc]">
       {/* Festive Winter Snow Cap Banner */}
       {hasSnowCaps && (
         <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none z-10 overflow-hidden">
@@ -134,7 +134,7 @@ export default function CourseCard({
       </div>
 
       {/* Pricing & Footer Actions */}
-      <div className="p-4 sm:p-5 pt-3 bg-[#faf9f8] border-t border-[#e9e9e8] mt-auto space-y-3">
+      <div className="p-4 sm:p-5 pt-3 bg-[#faf9f8]/95 dark:bg-[#1a1533]/95 border-t border-[#e9e9e8] dark:border-white/10 mt-auto space-y-3">
         
         {/* Price Row */}
         <div className="flex items-baseline justify-between">
