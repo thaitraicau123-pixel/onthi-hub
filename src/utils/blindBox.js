@@ -41,7 +41,7 @@ export const DEFAULT_BLIND_BOXES = [
     expectedRewards: ['Voucher VIP Giảm 15%', 'Hoàn Xu An Ủi (3 - 7 Xu)', '100 Thẻ IT System Design', 'Kích Hoạt Gói PLUS'],
     badge: '🔥 BÁN CHẠY NHẤT',
     dropRates: [
-      { name: '🎟️ Voucher VIP Giảm 15% (Đơn từ 149K)', rate: '50%', rarity: 'common' },
+      { name: '🎟️ Voucher VIP Giảm 15% (Đơn từ 29K)', rate: '50%', rarity: 'common' },
       { name: '🪙 Hoàn Xu An Ủi (3 - 7 Xu)', rate: '42%', rarity: 'common' },
       { name: '💻 100 Thẻ IT System Design', rate: '5%', rarity: 'epic' },
       { name: '👑 Nâng Cấp Hội Viên PLUS', rate: '2.5%', rarity: 'legendary' },
@@ -188,8 +188,8 @@ function rollSingleReward(boxId) {
         type: 'voucher',
         rarity: 'common',
         rarityLabel: 'PHỔ THÔNG (COMMON)',
-        title: 'Voucher VIP Giảm 15% (Đơn từ 149K)',
-        description: 'Mã: VIP15PERCENT - Áp dụng giảm 15% khi thanh toán đơn từ 149.000đ.',
+        title: 'Voucher VIP Giảm 15% (Đơn từ 29K)',
+        description: 'Mã: VIP15PERCENT - Áp dụng giảm 15% khi thanh toán đơn từ 29.000đ.',
         code: 'VIP15PERCENT',
         icon: '🎟️'
       };
@@ -246,8 +246,8 @@ function rollSingleReward(boxId) {
         type: 'voucher',
         rarity: 'common',
         rarityLabel: 'PHỔ THÔNG (COMMON)',
-        title: 'Siêu Voucher Giảm 20% (Đơn từ 199K)',
-        description: 'Mã: ULTRA20OFF - Giảm ngay 20% khi thanh toán đơn từ 199.000đ.',
+        title: 'Siêu Voucher Giảm 20% (Đơn từ 59K)',
+        description: 'Mã: ULTRA20OFF - Giảm ngay 20% khi thanh toán đơn từ 59.000đ.',
         code: 'ULTRA20OFF',
         icon: '🎟️'
       };
