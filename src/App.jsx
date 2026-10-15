@@ -24,6 +24,7 @@ import ChangelogModal from './components/ChangelogModal';
 import CommandPaletteModal from './components/CommandPaletteModal';
 import AnalyticsModal from './components/AnalyticsModal';
 import ThemePickerModal from './components/ThemePickerModal';
+import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
@@ -160,9 +161,11 @@ export default function App() {
 
   return (
     <div 
-      className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500`}
+      className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500 relative`}
       style={{ backgroundImage: currentTheme.wallpaperGlow }}
     >
+      {/* High-Fidelity Themed Atmosphere Illustrated Artwork */}
+      <ThemeAtmosphereBackground theme={currentTheme} />
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -206,8 +209,8 @@ export default function App() {
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
       />
 
-      {/* Right Canvas: Notion Topbar + Main Canvas + Footer */}
-      <div className={`flex-1 min-w-0 flex flex-col min-h-screen ${currentTheme.canvasBgClass} transition-colors duration-500`}>
+      {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
+      <div className={`flex-1 min-w-0 flex flex-col min-h-screen bg-transparent relative z-10 transition-colors duration-500`}>
         
         {/* Notion Topbar with Breadcrumbs & Compact Utility Pills */}
         <NotionTopbar

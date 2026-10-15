@@ -129,6 +129,20 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                       {theme.description}
                     </p>
 
+                    {/* Themed Illustrated Artwork Highlight */}
+                    {theme.artDetail && (
+                      <div
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center space-x-1.5 ${
+                          theme.isDark
+                            ? 'bg-purple-950/60 text-purple-300 border border-purple-800/40'
+                            : 'bg-black/5 text-[#423412] border border-black/5'
+                        }`}
+                      >
+                        <Sparkles className="w-3 h-3 text-amber-500 shrink-0" />
+                        <span className="truncate">{theme.artDetail}</span>
+                      </div>
+                    )}
+
                     {/* Thematic Icons Strip */}
                     <div className="pt-2 border-t border-[#e9e9e8]/50 flex items-center justify-between text-[11px]">
                       <span className={theme.isDark ? 'text-purple-300/80 font-medium' : 'text-[#787774]'}>

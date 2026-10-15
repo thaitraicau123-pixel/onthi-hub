@@ -157,7 +157,7 @@ export default function NotionSidebar({
 
   return (
     <aside
-      className="fixed md:sticky top-0 left-0 w-64 h-screen shrink-0 bg-[#f7f6f5] border-r border-[#e9e9e8] text-[#37352f] flex flex-col justify-between select-none z-40 transition-all duration-200 text-sm shadow-xl md:shadow-none"
+      className={`fixed md:sticky top-0 left-0 w-64 h-screen shrink-0 ${currentTheme?.sidebarBgClass || 'bg-[#f7f6f5]'} border-r ${currentTheme?.borderClass || 'border-[#e9e9e8]'} ${currentTheme?.textClass || 'text-[#37352f]'} flex flex-col justify-between select-none z-40 transition-all duration-300 text-sm shadow-xl md:shadow-none backdrop-blur-md`}
       aria-label="Thanh bên điều hướng Notion"
     >
       {/* TOP SECTION: WORKSPACE SWITCHER & SEARCH */}

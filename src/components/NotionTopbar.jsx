@@ -88,7 +88,7 @@ export default function NotionTopbar({
   const currentBreadcrumb = breadcrumbMap[activeTab] || breadcrumbMap.home;
 
   return (
-    <header className="sticky top-0 z-30 h-11 bg-white/90 backdrop-blur-md border-b border-[#e9e9e8] flex items-center justify-between px-3 sm:px-5 select-none text-xs text-[#37352f]">
+    <header className={`sticky top-0 z-30 h-11 ${currentTheme?.topbarBgClass || 'bg-white/90 backdrop-blur-md'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8]'} flex items-center justify-between px-3 sm:px-5 select-none text-xs ${currentTheme?.textClass || 'text-[#37352f]'} transition-colors duration-500`}>
       {/* LEFT: SIDEBAR TOGGLE & NOTION BREADCRUMB */}
       <div className="flex items-center space-x-2 min-w-0">
         
