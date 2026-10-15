@@ -237,25 +237,25 @@ export const THEMES = [
     category: 'Ghibli 4K',
     artDetail: '🍃 Totoro, Xe Buýt Mèo & Khu Rừng Cổ Tích 4K',
     bgImageUrl: '/wallpapers/totoro-ghibli-4k.jpg',
-    bgOverlayClass: 'bg-gradient-to-b from-emerald-950/25 via-emerald-900/35 to-teal-950/45 backdrop-blur-[0.5px]',
+    bgOverlayClass: 'bg-gradient-to-b from-emerald-950/45 via-emerald-900/50 to-teal-950/55 backdrop-blur-[0.5px]',
     weatherType: 'fireflies',
-    isDark: false,
-    previewGradient: 'from-emerald-600 via-teal-500 to-amber-200',
-    primaryColor: '#059669',
-    primaryHover: '#047857',
+    isDark: true,
+    previewGradient: 'from-emerald-900 via-teal-950 to-slate-950',
+    primaryColor: '#10b981',
+    primaryHover: '#059669',
     primaryText: '#ffffff',
-    bgClass: 'bg-[#064e3b]',
-    canvasBgClass: 'bg-[#064e3b]',
-    sidebarBgClass: 'bg-white/92 backdrop-blur-md',
-    topbarBgClass: 'bg-white/92 backdrop-blur-md',
-    cardBgClass: 'bg-white/95 backdrop-blur-md',
-    cardAltBgClass: 'bg-emerald-50/80',
-    textClass: 'text-slate-900 font-medium',
-    subtextClass: 'text-slate-600',
-    borderClass: 'border-emerald-300/60',
-    accentPillClass: 'bg-[#059669] text-white font-bold shadow-emerald-500/25',
-    accentTagClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    wallpaperGlow: 'radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.15) 0%, transparent 60%)',
+    bgClass: 'bg-[#042018]',
+    canvasBgClass: 'bg-[#042018]',
+    sidebarBgClass: 'bg-[#062c22]/92 backdrop-blur-md',
+    topbarBgClass: 'bg-[#051e18]/90 backdrop-blur-md',
+    cardBgClass: 'bg-[#0a3528]/92 backdrop-blur-md',
+    cardAltBgClass: 'bg-[#104838]',
+    textClass: 'text-emerald-50 font-medium',
+    subtextClass: 'text-emerald-300',
+    borderClass: 'border-emerald-500/30',
+    accentPillClass: 'bg-[#10b981] text-slate-950 font-bold shadow-emerald-500/25',
+    accentTagClass: 'bg-emerald-950/70 text-emerald-300 border-emerald-700/50',
+    wallpaperGlow: 'radial-gradient(circle at 80% 0%, rgba(16, 185, 129, 0.2) 0%, transparent 60%)',
     icons: {
       logo: '🍃',
       workspace: '🌲',
@@ -901,22 +901,47 @@ export function subscribeToWeatherToggle(callback) {
 
 // =========================================================================
 // CHẾ ĐỘ NGỦ (SLEEP / DARK MODE) & CHẾ ĐỘ BAN NGÀY (LIGHT / DAY MODE)
+// Chỉ 5 chủ đề pastel/nhẹ nhàng được chạy Ban Ngày; toàn bộ 11 chủ đề 4K
+// và rạp chiếu phim luôn luôn chạy Chế Độ Ngủ để đảm bảo màu sắc ăn khớp và tương phản cao nhất.
 // =========================================================================
 
-export function getSleepMode() {
+export const DAY_THEMES = [
+  'default',           // Notion Tối Giản
+  'sakura-blossom',    // Mùa Hoa Anh Đào
+  'botanical-garden',  // Khu Vườn Bơ Xanh
+  'lofi-cafe',         // Cà Phê & Lofi
+  'lemon-citrus'       // Nước Chanh Tươi Mát
+];
+
+export function isDayTheme(themeId) {
+  return DAY_THEMES.includes(themeId);
+}
+
+export function getSleepMode(themeId) {
+  const current = themeId ? THEMES.find(t => t.id === themeId) : getSelectedTheme();
+  // Tất cả 11 chủ đề 4K / cinema / lễ hội BẮT BUỘC luôn luôn chạy Chế Độ Ngủ
+  if (!current || !isDayTheme(current.id)) {
+    return 'dark';
+  }
+
+  // Chỉ 5 chủ đề ban ngày mới kiểm tra thiết lập hoặc mặc định là 'light'
   try {
     const saved = localStorage.getItem(SLEEP_MODE_STORAGE_KEY);
     if (saved === 'dark' || saved === 'light') {
       return saved;
     }
   } catch (e) {}
-  // Default to the current theme's native isDark preference
-  const current = getSelectedTheme();
-  return current?.isDark ? 'dark' : 'light';
+  return 'light';
 }
 
 export function setSleepMode(mode) {
-  const normalized = mode === 'dark' ? 'dark' : 'light';
+  const current = getSelectedTheme();
+  // Nếu đang ở chủ đề 4K cinema, cưỡng chế giữ 'dark' để không bị chìm chữ và lệch màu
+  let normalized = mode === 'dark' ? 'dark' : 'light';
+  if (!isDayTheme(current.id)) {
+    normalized = 'dark';
+  }
+
   try {
     localStorage.setItem(SLEEP_MODE_STORAGE_KEY, normalized);
   } catch (e) {}
@@ -932,8 +957,13 @@ export function setSleepMode(mode) {
 }
 
 export function toggleSleepMode() {
-  const current = getSleepMode();
-  const next = current === 'dark' ? 'light' : 'dark';
+  const current = getSelectedTheme();
+  if (!isDayTheme(current.id)) {
+    // Không thể chuyển sang ban ngày với các theme 4K rạp chiếu phim
+    return 'dark';
+  }
+  const currentMode = getSleepMode();
+  const next = currentMode === 'dark' ? 'light' : 'dark';
   return setSleepMode(next);
 }
 
@@ -965,17 +995,17 @@ export function applyTheme(themeId) {
     localStorage.setItem(THEME_STORAGE_KEY, theme.id);
   } catch (e) {}
 
-  // Determine sleep mode: if user explicitly saved preference, use that; else theme default
-  let currentSleepMode = 'light';
-  try {
-    const savedPref = localStorage.getItem(SLEEP_MODE_STORAGE_KEY);
-    if (savedPref === 'dark' || savedPref === 'light') {
-      currentSleepMode = savedPref;
-    } else {
-      currentSleepMode = theme.isDark ? 'dark' : 'light';
+  // Chỉ 5 chủ đề Ban Ngày mới chạy 'light'; các chủ đề 4K/Cinema tự động kích hoạt 'dark'
+  let currentSleepMode = 'dark';
+  if (isDayTheme(theme.id)) {
+    try {
+      const savedPref = localStorage.getItem(SLEEP_MODE_STORAGE_KEY);
+      currentSleepMode = savedPref === 'dark' ? 'dark' : 'light';
+    } catch (e) {
+      currentSleepMode = 'light';
     }
-  } catch (e) {
-    currentSleepMode = theme.isDark ? 'dark' : 'light';
+  } else {
+    currentSleepMode = 'dark';
   }
 
   // Set CSS Variables & Attributes on document element

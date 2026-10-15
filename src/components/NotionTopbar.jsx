@@ -19,7 +19,7 @@ import {
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
-import { getSleepMode, toggleSleepMode, subscribeToSleepMode } from '../utils/themeManager';
+import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -194,30 +194,40 @@ export default function NotionTopbar({
           <span className="hidden sm:inline">Chủ Đề</span>
         </button>
 
-        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Toggle Button */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('click');
-            const nextMode = toggleSleepMode();
-            setSleepMode(nextMode);
-          }}
-          className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
-            sleepMode === 'dark'
-              ? 'bg-indigo-950/80 text-indigo-200 border-indigo-400/50 hover:bg-indigo-900/90 ring-1 ring-indigo-400/30'
-              : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 ring-1 ring-amber-400/20'
-          }`}
-          title={
-            sleepMode === 'dark'
-              ? 'Đang bật Chế độ ngủ (Dịu mắt ban đêm, độ tương phản cao). Bấm để chuyển sang Ban ngày ☀️'
-              : 'Đang bật Chế độ ban ngày (Sáng rõ, tỉnh táo). Bấm để chuyển sang Chế độ ngủ 🌙'
-          }
-        >
-          <span className="text-xs">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
-          <span className="hidden sm:inline text-[11px]">
-            {sleepMode === 'dark' ? 'Chế Độ Ngủ' : 'Ban Ngày'}
-          </span>
-        </button>
+        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Controls */}
+        {isDayTheme(currentTheme?.id) ? (
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              const nextMode = toggleSleepMode();
+              setSleepMode(nextMode);
+            }}
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
+              sleepMode === 'dark'
+                ? 'bg-indigo-950/80 text-indigo-200 border-indigo-400/50 hover:bg-indigo-900/90 ring-1 ring-indigo-400/30'
+                : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 ring-1 ring-amber-400/20'
+            }`}
+            title={
+              sleepMode === 'dark'
+                ? 'Đang bật Chế độ ngủ (Dịu mắt ban đêm). Bấm để chuyển sang Ban ngày ☀️'
+                : 'Đang bật Chế độ ban ngày (Sáng rõ, tươi tắn). Bấm để chuyển sang Chế độ ngủ 🌙'
+            }
+          >
+            <span className="text-xs">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
+            <span className="hidden sm:inline text-[11px]">
+              {sleepMode === 'dark' ? 'Chế Độ Ngủ' : 'Ban Ngày'}
+            </span>
+          </button>
+        ) : (
+          <div
+            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-md bg-indigo-950/80 text-indigo-200 border border-indigo-400/40 shadow-2xs text-[11px] font-semibold"
+            title="Chủ đề 3D 4K này tự động chạy Chế độ ngủ chuẩn rạp chiếu phim để màu sắc hòa hợp và độ tương phản cao nhất."
+          >
+            <span className="text-xs">🌙</span>
+            <span>Chế Độ Ngủ 4K</span>
+          </div>
+        )}
 
         {/* Dynamic Weather & Atmosphere Particle Toggle Button (14 Bespoke Engines) */}
         {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {

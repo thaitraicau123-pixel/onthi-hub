@@ -115,19 +115,46 @@ async function runTests() {
   const marioImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'mario-4k.png'));
   assert(marioImgStats.size > 200000, `Mario Toad 4K image is high-res (${marioImgStats.size} bytes)`);
 
-  // Verify Sleep Mode (Chế độ ngủ) Engine
-  console.log('\n--- 2b. Testing Sleep Mode (Chế độ ngủ 🌙 / Ban ngày ☀️) ---');
-  const { getSleepMode, setSleepMode, toggleSleepMode } = themeModule;
+  // Verify Sleep Mode (Chế độ ngủ) Engine & Day Mode Theme Allocation
+  console.log('\n--- 2b. Testing Sleep Mode & Day Theme Allocation ---');
+  const { getSleepMode, setSleepMode, toggleSleepMode, isDayTheme, DAY_THEMES, applyTheme } = themeModule;
   assert(typeof getSleepMode === 'function', 'getSleepMode is defined');
   assert(typeof setSleepMode === 'function', 'setSleepMode is defined');
   assert(typeof toggleSleepMode === 'function', 'toggleSleepMode is defined');
+  assert(Array.isArray(DAY_THEMES) && DAY_THEMES.length === 5, `Exactly 5 daylight themes allocated (found ${DAY_THEMES.length})`);
 
-  setSleepMode('dark');
-  assert(getSleepMode() === 'dark', 'Sleep mode set to dark (Chế độ ngủ)');
+  // Verify that only the 5 daylight themes return isDayTheme === true
+  assert(isDayTheme('default') === true, 'Notion Tối Giản is a Day Theme');
+  assert(isDayTheme('sakura-blossom') === true, 'Sakura Blossom is a Day Theme');
+  assert(isDayTheme('botanical-garden') === true, 'Botanical Avocado is a Day Theme');
+  assert(isDayTheme('lofi-cafe') === true, 'Lofi Cafe is a Day Theme');
+  assert(isDayTheme('lemon-citrus') === true, 'Lemon Citrus is a Day Theme');
+
+  // Verify that 4K cinema & night themes are NOT day themes
+  assert(isDayTheme('super-mario-3d') === false, 'Mario Toad 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('cyberpunk-city-3d') === false, 'Cyberpunk 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('your-name-anime') === false, 'Your Name 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('alps-milkyway-4k') === false, 'Alps 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('totoro-ghibli-4k') === false, 'Totoro 4K is strictly NOT a Day Theme');
+
+  // Verify Mario 3D strictly locks to Sleep Mode (dark)
+  applyTheme('super-mario-3d');
+  assert(getSleepMode('super-mario-3d') === 'dark', 'Mario Toad 4K always returns dark mode');
+  setSleepMode('light'); // should be ignored/enforced to dark for 4K theme
+  assert(getSleepMode() === 'dark', '4K theme resists light mode override to prevent contrast issues');
+
+  // Verify a daylight theme can run in day mode ('light') and toggle
+  applyTheme('default');
+  setSleepMode('light');
+  assert(getSleepMode('default') === 'light', 'Notion Default runs in Day mode');
   toggleSleepMode();
-  assert(getSleepMode() === 'light', 'Sleep mode toggled to light (Ban ngày)');
+  assert(getSleepMode('default') === 'dark', 'Day theme toggled to sleep mode');
   toggleSleepMode();
-  assert(getSleepMode() === 'dark', 'Sleep mode toggled back to dark');
+  assert(getSleepMode('default') === 'light', 'Day theme toggled back to day mode');
+
+  // Switch back to Mario 4K as default exciting theme
+  applyTheme('super-mario-3d');
+  assert(getSleepMode() === 'dark', 'Switched back to Mario 4K, automatically in Sleep Mode');
 
 
   // 3. BLIND BOX REWARDS (No useless vouchers, profitable for user & platform)

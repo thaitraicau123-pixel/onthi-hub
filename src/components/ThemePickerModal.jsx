@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Palette, Sparkles, Wand2 } from 'lucide-react';
-import { THEMES, getSelectedThemeId, applyTheme, getSleepMode, setSleepMode as setGlobalSleepMode, subscribeToSleepMode } from '../utils/themeManager';
+import { THEMES, getSelectedThemeId, applyTheme, getSleepMode, setSleepMode as setGlobalSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
 
@@ -75,45 +75,19 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
           </button>
         </div>
 
-        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Toggle Selector */}
+        {/* Chế Độ Phân Bổ: Ban Ngày (5 chủ đề) & Chế Độ Ngủ 4K (11 chủ đề) */}
         <div className="mx-4 sm:mx-6 mt-4 p-3 rounded-xl bg-slate-100/90 dark:bg-slate-850/80 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-          <div className="flex items-center space-x-2">
-            <span className="text-lg">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
+          <div className="flex items-center space-x-2.5">
+            <span className="text-xl">🌙</span>
             <div>
               <p className="text-xs font-bold text-slate-900 dark:text-white">
-                Chế Độ Tương Phản (Chế Độ Ngủ & Ban Ngày)
+                Cơ Chế Phân Bổ Chế Độ Ban Ngày & Chế Độ Ngủ 4K
               </p>
-              <p className="text-[11px] text-slate-500 dark:text-slate-300">
-                {sleepMode === 'dark'
-                  ? '🌙 Chế độ ngủ: Chữ trắng/vàng/cyan nổi bật trên nền tối, dịu mắt ban đêm.'
-                  : '☀️ Chế độ ban ngày: Chữ than đậm tương phản cao trên nền sáng, dễ đọc.'}
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mt-0.5">
+                ☀️ <strong>Chỉ 5 chủ đề chạy Ban Ngày:</strong> Notion Tối Giản, Hoa Anh Đào, Vườn Bơ Xanh, Cà Phê Lofi, Nước Chanh (màu pastel tươi tắn).<br />
+                🌙 <strong>11 chủ đề 4K & Rạp Chiếu Phim:</strong> Mario 3D, Your Name, Cyberpunk, Alps, Totoro, Halloween... tự động tối ưu Chế độ ngủ với chữ trắng/vàng tương phản tuyệt đối!
               </p>
             </div>
-          </div>
-
-          <div className="flex items-center space-x-1.5 shrink-0 bg-slate-200/80 dark:bg-slate-900/80 p-1 rounded-lg">
-            <button
-              type="button"
-              onClick={() => handleSetSleepMode('dark')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
-                sleepMode === 'dark'
-                  ? 'bg-indigo-600 text-white shadow-xs font-bold'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <span>🌙 Chế độ ngủ</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSetSleepMode('light')}
-              className={`px-3 py-1 text-xs font-semibold rounded-md transition-all flex items-center space-x-1 cursor-pointer ${
-                sleepMode === 'light'
-                  ? 'bg-amber-500 text-white shadow-xs font-bold'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <span>☀️ Ban ngày</span>
-            </button>
           </div>
         </div>
 
@@ -194,15 +168,26 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                   {/* Theme Info */}
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <h4
-                        className={`text-sm font-bold tracking-tight ${
-                          theme.isDark ? 'text-white' : 'text-[#37352f]'
-                        }`}
-                      >
-                        {theme.icons.logo} {theme.name}
-                      </h4>
+                      <div className="flex items-center space-x-2 truncate mr-2">
+                        <h4
+                          className={`text-sm font-bold tracking-tight truncate ${
+                            theme.isDark ? 'text-white' : 'text-[#37352f]'
+                          }`}
+                        >
+                          {theme.icons.logo} {theme.name}
+                        </h4>
+                        {isDayTheme(theme.id) ? (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 border border-amber-300 shrink-0">
+                            ☀️ Ban ngày
+                          </span>
+                        ) : (
+                          <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-200 border border-indigo-700/60 shrink-0">
+                            🌙 Chế độ ngủ 4K
+                          </span>
+                        )}
+                      </div>
                       <span
-                        className="w-3.5 h-3.5 rounded-full shadow-2xs border border-white"
+                        className="w-3.5 h-3.5 rounded-full shadow-2xs border border-white shrink-0"
                         style={{ backgroundColor: theme.primaryColor }}
                         title={`Màu chủ đạo: ${theme.primaryColor}`}
                       />
