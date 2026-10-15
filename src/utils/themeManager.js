@@ -9,6 +9,7 @@ export const THEMES = [
     description: 'Phong cách tối giản kinh điển của Notion với mascot sổ tay và cốc trà cute phong cách Messenger.',
     category: 'Minimal',
     artDetail: '📖 Sổ tay Notion & Cốc trà cute Messenger',
+    weatherType: 'none',
     isDark: false,
     previewGradient: 'from-slate-100 via-white to-blue-50',
     primaryColor: '#2383e2',
@@ -51,12 +52,64 @@ export const THEMES = [
     }
   },
   {
+    id: 'christmas-wonderland',
+    name: 'Giáng Sinh Rực Rỡ',
+    subtitle: 'Tuyết Rơi • Ông Già Noel & Tuần Lộc',
+    description: 'Đại tiệc Giáng Sinh lung linh với tuyết rơi trắng xoá, ông già Noel má hồng, cây thông Noel rực rỡ và tuần lộc mũi đỏ.',
+    category: 'Lễ Hội',
+    artDetail: '🎅 Ông già Noel, Tuần lộc mũi đỏ & Cây thông lung linh',
+    weatherType: 'snow',
+    hasSnowCaps: true,
+    isDark: true,
+    previewGradient: 'from-red-950 via-emerald-950 to-slate-950',
+    primaryColor: '#ef4444',
+    primaryHover: '#dc2626',
+    primaryText: '#ffffff',
+    bgClass: 'bg-[#0f1d18]',
+    canvasBgClass: 'bg-[#0f1d18]',
+    sidebarBgClass: 'bg-[#0a1512]',
+    topbarBgClass: 'bg-[#0f1d18]/90 backdrop-blur-md',
+    cardBgClass: 'bg-[#152720]',
+    cardAltBgClass: 'bg-[#1b322a]',
+    textClass: 'text-[#f0fdf4]',
+    subtextClass: 'text-[#86efac]',
+    borderClass: 'border-[#1e3a2f]',
+    accentPillClass: 'bg-[#ef4444] text-white font-bold shadow-red-500/25',
+    accentTagClass: 'bg-[#2d1215] text-[#fca5a5] border-[#4c1d24]',
+    wallpaperGlow: 'radial-gradient(circle at 80% 0%, rgba(239, 68, 68, 0.22) 0%, transparent 60%), radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.18) 0%, transparent 60%)',
+    icons: {
+      logo: '🎄',
+      workspace: '🎁',
+      home: '🎅',
+      library: '🎁',
+      create: '✨',
+      marketplace: '🦌',
+      community: '⛄',
+      analytics: '📊',
+      mistakes: '❄️',
+      leaderboard: '🏆',
+      blindbox: '🎁',
+      changelog: '🎄',
+      wallet: '🪙',
+      due: '❄️',
+      mastered: '⭐',
+      newCard: '✨',
+      streak: '🔥',
+      checkin: '🎁',
+      sparkle: '⭐',
+      study3D: '🧦',
+      quiz: '🎯',
+      match: '🔔'
+    }
+  },
+  {
     id: 'lofi-cafe',
     name: 'Cà Phê & Lofi',
     subtitle: 'Ấm cúng • Latte Art',
     description: 'Không gian học tập ấm cúng, hương thơm cà phê sữa và ánh đèn vàng Lofi êm dịu.',
     category: 'Cozy',
     artDetail: '🧋 Trà sữa trân châu & Cốc cafe má hồng',
+    weatherType: 'bubbles',
     isDark: false,
     previewGradient: 'from-amber-100 via-orange-50 to-stone-200',
     primaryColor: '#8c532b',
@@ -105,6 +158,7 @@ export const THEMES = [
     description: 'Cánh hoa anh đào rơi dịu dàng cùng bé mèo trắng cuộn tròn ngủ say và xiên dango 3 màu ngọt ngào.',
     category: 'Nature',
     artDetail: '🐱 Bé Mèo ngủ hoa đào & Xiên dango 3 màu',
+    weatherType: 'sakura',
     isDark: false,
     previewGradient: 'from-pink-100 via-rose-50 to-pink-200',
     primaryColor: '#db4d86',
@@ -153,6 +207,7 @@ export const THEMES = [
     description: 'Bầu trời vũ trụ bao la huyền ảo với phi hành gia nhí, bé Sao Thổ má hồng và sao băng lướt qua.',
     category: 'Space',
     artDetail: '👨‍🚀 Phi hành gia nhí & Bé Sao Thổ má hồng',
+    weatherType: 'stars',
     isDark: true,
     previewGradient: 'from-indigo-900 via-purple-900 to-black',
     primaryColor: '#a855f7',
@@ -201,6 +256,7 @@ export const THEMES = [
     description: 'Bộ hình nền trái bơ ngái ngủ với má hồng, hạt quả bơ 3D và sắc xanh teal êm dịu chuẩn 100% Messenger.',
     category: 'Messenger Cute',
     artDetail: '🥑 Bé Bơ ngái ngủ má hồng chuẩn Messenger',
+    weatherType: 'leaves',
     isDark: true,
     previewGradient: 'from-emerald-950 via-teal-900 to-slate-950',
     primaryColor: '#34d399',
@@ -249,6 +305,7 @@ export const THEMES = [
     description: 'Ánh chiều tà bên bờ sóng biển cùng bé cá voi xanh phun nước hình trái tim và mặt trời ngộ nghĩnh.',
     category: 'Warm',
     artDetail: '🐳 Bé Cá Voi phun tim & Mặt trời kính râm',
+    weatherType: 'stars',
     isDark: false,
     previewGradient: 'from-orange-200 via-rose-100 to-amber-200',
     primaryColor: '#ea580c',
@@ -297,6 +354,7 @@ export const THEMES = [
     description: 'Giao diện công nghệ tương lai với bé robot màn hình CRT retro đáng yêu và trái tim pixel neon phát sáng.',
     category: 'Tech',
     artDetail: '🤖 Robot màn hình CRT & Trái tim Pixel',
+    weatherType: 'stars',
     isDark: true,
     previewGradient: 'from-cyan-900 via-slate-900 to-black',
     primaryColor: '#06b6d4',
@@ -345,6 +403,7 @@ export const THEMES = [
     description: 'Sự tươi mát bừng sáng của bé chanh vàng mắt to lấp lánh cùng lát cam mọng nước tràn đầy sức sống.',
     category: 'Vibrant',
     artDetail: '🍋 Bé Chanh mắt to lấp lánh & Lát cam mọng',
+    weatherType: 'bubbles',
     isDark: false,
     previewGradient: 'from-amber-200 via-yellow-100 to-lime-100',
     primaryColor: '#d97706',
@@ -393,6 +452,8 @@ export const THEMES = [
     description: 'Bầu không khí băng tuyết với bé chim cánh cụt đeo bịt tai len và gấu bắc cực con ngái ngủ.',
     category: 'Calm',
     artDetail: '🐧 Bé Cánh Cụt bịt tai len & Gấu tuyết ngủ',
+    weatherType: 'snow',
+    hasSnowCaps: true,
     isDark: false,
     previewGradient: 'from-sky-100 via-blue-50 to-indigo-100',
     primaryColor: '#0284c7',
@@ -441,6 +502,7 @@ export const THEMES = [
     description: 'Vẻ đẹp tri thức cổ điển với bé cú học giả đeo kính, chồng sách vintage có mặt cười dễ thương.',
     category: 'Classic',
     artDetail: '🦉 Cú học giả đeo kính & Chồng sách cười',
+    weatherType: 'stars',
     isDark: false,
     previewGradient: 'from-amber-200 via-stone-100 to-amber-300',
     primaryColor: '#854d0e',
@@ -485,6 +547,32 @@ export const THEMES = [
 ];
 
 const THEME_STORAGE_KEY = 'onthi_selected_theme_id';
+const WEATHER_STORAGE_KEY = 'onthi_weather_effects_enabled';
+
+export function isWeatherEffectsEnabled() {
+  if (typeof window === 'undefined') return true;
+  try {
+    const raw = localStorage.getItem(WEATHER_STORAGE_KEY);
+    return raw !== null ? raw === 'true' : true;
+  } catch (e) {
+    return true;
+  }
+}
+
+export function setWeatherEffectsEnabled(enabled) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(WEATHER_STORAGE_KEY, String(enabled));
+  } catch (e) {}
+  window.dispatchEvent(new CustomEvent('onthi-weather-toggle', { detail: enabled }));
+}
+
+export function subscribeToWeatherToggle(callback) {
+  if (typeof window === 'undefined') return () => {};
+  const handler = (e) => callback(e.detail);
+  window.addEventListener('onthi-weather-toggle', handler);
+  return () => window.removeEventListener('onthi-weather-toggle', handler);
+}
 
 export function getSelectedThemeId() {
   try {

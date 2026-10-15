@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins } from 'lucide-react';
+import { getSelectedTheme, subscribeToTheme } from '../utils/themeManager';
 
 export default function CourseCard({
   course,
@@ -8,6 +9,17 @@ export default function CourseCard({
   onOpenQuiz,
   onBuy
 }) {
+  const [hasSnowCaps, setHasSnowCaps] = useState(() => !!getSelectedTheme()?.hasSnowCaps);
+
+  useEffect(() => {
+    const unsub = subscribeToTheme((theme) => {
+      setHasSnowCaps(!!theme?.hasSnowCaps);
+    });
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, []);
+
   if (!course) return null;
 
   // Safe Fallback Calculations
@@ -45,7 +57,19 @@ export default function CourseCard({
     : 0;
 
   return (
-    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none">
+    <div className="bg-white rounded-xl border border-[#e9e9e8] hover:border-[#c5c4c0] card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none relative">
+      {/* Festive Winter Snow Cap Banner */}
+      {hasSnowCaps && (
+        <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none z-10 overflow-hidden">
+          <svg className="w-full h-2.5" preserveAspectRatio="none" viewBox="0 0 400 10" fill="none">
+            <path
+              d="M0 0 L400 0 L400 2 Q370 7 340 3 Q310 0 280 4 Q250 8 220 3 Q190 0 160 5 Q130 8 100 3 Q70 0 40 5 Q20 7 0 2 Z"
+              fill="#ffffff"
+              fillOpacity="0.92"
+            />
+          </svg>
+        </div>
+      )}
       
       {/* Top Banner with Notion Pill Badges */}
       <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">

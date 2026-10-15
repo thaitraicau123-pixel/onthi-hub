@@ -686,6 +686,258 @@ export default function ThemeAtmosphereBackground({ theme }) {
           </svg>
         </div>
       )}
+
+      {/* =========================================================================
+          11. CHRISTMAS WONDERLAND: CHUBBY SANTA, BABY RUDOLPH, SPARKLING TREE & SNOWMAN
+          ========================================================================= */}
+      {themeId === 'christmas-wonderland' && (
+        <div className="absolute inset-0 opacity-[0.92] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              {/* Christmas Atmospheric Glow Filters */}
+              <filter id="santa-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="18" floodColor="#ef4444" floodOpacity="0.45" />
+              </filter>
+              <filter id="rudolph-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#f59e0b" floodOpacity="0.4" />
+              </filter>
+              <filter id="nose-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="0" dy="0" stdDeviation="12" floodColor="#ff0000" floodOpacity="0.85" />
+              </filter>
+              <filter id="star-glow" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="0" stdDeviation="14" floodColor="#fde047" floodOpacity="0.8" />
+              </filter>
+              <filter id="tree-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#10b981" floodOpacity="0.35" />
+              </filter>
+            </defs>
+
+            {/* MASCOT 1: Chubby Smiling Santa Claus peeking from Top-Left */}
+            <g transform="translate(40, -15) scale(1.05)" filter="url(#santa-glow)">
+              {/* Santa Red Hat Droop & White Pom-pom */}
+              <path d="M70 45 C75 10 140 10 165 45 C150 15 190 20 200 65" fill="#ef4444" stroke="#b91c1c" strokeWidth="2.5" />
+              <circle cx="205" cy="70" r="14" fill="#ffffff" stroke="#e2e8f0" strokeWidth="2" />
+              <circle cx="203" cy="67" r="4" fill="#f1f5f9" />
+
+              {/* Hat Fluffy White Trim */}
+              <rect x="58" y="42" width="105" height="22" rx="11" fill="#ffffff" stroke="#e2e8f0" strokeWidth="2.5" />
+
+              {/* Santa Face & Ears */}
+              <circle cx="58" cy="70" r="10" fill="#fed7aa" />
+              <circle cx="162" cy="70" r="10" fill="#fed7aa" />
+              <rect x="65" y="55" width="90" height="70" rx="35" fill="#fed7aa" />
+
+              {/* Rosy Cheeks */}
+              <ellipse cx="80" cy="88" rx="10" ry="7" fill="#f87171" fillOpacity="0.6" />
+              <ellipse cx="140" cy="88" rx="10" ry="7" fill="#f87171" fillOpacity="0.6" />
+
+              {/* Merry Smiling Eyes: (^ ‿ ^) */}
+              <path d="M76 76 Q84 68 92 76" stroke="#374151" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+              <path d="M128 76 Q136 68 144 76" stroke="#374151" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+
+              {/* Cute Round Button Nose */}
+              <ellipse cx="110" cy="84" rx="8" ry="6" fill="#fca5a5" stroke="#f87171" strokeWidth="1.5" />
+
+              {/* Big Fluffy Santa Beard */}
+              <path
+                d="M60 85 C45 105 50 145 70 165 C85 180 105 190 110 190 C115 190 135 180 150 165 C170 145 175 105 160 85 C145 110 130 115 110 115 C90 115 75 110 60 85 Z"
+                fill="#ffffff"
+                stroke="#e2e8f0"
+                strokeWidth="3"
+              />
+              <path d="M85 100 Q110 120 135 100" stroke="#f1f5f9" strokeWidth="3" fill="none" strokeLinecap="round" />
+
+              {/* Santa Red Coat Shoulders */}
+              <path d="M45 155 C35 200 45 220 70 230 L150 230 C175 220 185 200 175 155 Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="3" />
+              {/* White Coat Trim */}
+              <rect x="98" y="160" width="24" height="70" rx="4" fill="#ffffff" />
+              {/* Black Belt & Golden Buckle */}
+              <rect x="52" y="200" width="116" height="18" fill="#1e293b" />
+              <rect x="94" y="196" width="32" height="26" rx="4" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
+              <rect x="100" y="202" width="20" height="14" rx="2" fill="#1e293b" />
+
+              {/* Waving Mitten with Candy Cane */}
+              <g transform="translate(170, 110) rotate(-15)">
+                {/* Candy Cane */}
+                <path d="M12 50 L12 18 Q12 0 28 0 Q44 0 44 18 L44 26" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" fill="none" />
+                <path d="M12 50 L12 18 Q12 0 28 0 Q44 0 44 18 L44 26" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" strokeDasharray="6 6" fill="none" />
+                {/* Emerald Green Mitten */}
+                <ellipse cx="12" cy="40" rx="14" ry="16" fill="#10b981" stroke="#047857" strokeWidth="2" />
+                <ellipse cx="2" cy="36" rx="6" ry="8" fill="#10b981" stroke="#047857" strokeWidth="1.5" />
+                <rect x="0" y="48" width="24" height="8" rx="4" fill="#ffffff" />
+              </g>
+            </g>
+
+            {/* MASCOT 2: Adorable Rudolph Baby Reindeer with Glowing Red Nose (Bottom-Right) */}
+            <g transform="translate(1100, 480) scale(1.05)" filter="url(#rudolph-glow)">
+              {/* Branching Antlers */}
+              <g stroke="#78350f" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none">
+                {/* Left Antler */}
+                <path d="M45 40 L30 10 L15 18" />
+                <path d="M30 10 L30 -5" />
+                <path d="M38 25 L50 15" />
+                {/* Right Antler */}
+                <path d="M105 40 L120 10 L135 18" />
+                <path d="M120 10 L120 -5" />
+                <path d="M112 25 L100 15" />
+              </g>
+
+              {/* Floppy Reindeer Ears */}
+              <ellipse cx="28" cy="48" rx="14" ry="8" transform="rotate(-25 28 48)" fill="#b45309" stroke="#78350f" strokeWidth="2" />
+              <ellipse cx="28" cy="48" rx="9" ry="5" transform="rotate(-25 28 48)" fill="#fca5a5" />
+
+              <ellipse cx="122" cy="48" rx="14" ry="8" transform="rotate(25 122 48)" fill="#b45309" stroke="#78350f" strokeWidth="2" />
+              <ellipse cx="122" cy="48" rx="9" ry="5" transform="rotate(25 122 48)" fill="#fca5a5" />
+
+              {/* Head Body */}
+              <ellipse cx="75" cy="72" rx="42" ry="38" fill="#d97706" stroke="#92400e" strokeWidth="3" />
+              {/* Cream Muzzle */}
+              <ellipse cx="75" cy="86" rx="26" ry="18" fill="#fef3c7" stroke="#fde68a" strokeWidth="1.5" />
+
+              {/* Shiny Glowing Red Nose (The Star of the Show!) */}
+              <circle cx="75" cy="80" r="13" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" filter="url(#nose-glow)" />
+              <circle cx="71" cy="76" r="3.5" fill="#ffffff" />
+              <circle cx="74" cy="74" r="1.5" fill="#ffffff" />
+
+              {/* Big Kawaii Anime Eyes */}
+              <ellipse cx="54" cy="62" rx="6.5" ry="8" fill="#1c1917" />
+              <circle cx="52" cy="59" r="2.5" fill="#ffffff" />
+              <circle cx="56" cy="65" r="1" fill="#ffffff" />
+
+              <ellipse cx="96" cy="62" rx="6.5" ry="8" fill="#1c1917" />
+              <circle cx="94" cy="59" r="2.5" fill="#ffffff" />
+              <circle cx="98" cy="65" r="1" fill="#ffffff" />
+
+              {/* Sweet Blush Cheeks */}
+              <ellipse cx="42" cy="72" rx="7" ry="5" fill="#f87171" fillOpacity="0.55" />
+              <ellipse cx="108" cy="72" rx="7" ry="5" fill="#f87171" fillOpacity="0.55" />
+
+              {/* Cozy Emerald Collar with Golden Bell */}
+              <rect x="52" y="105" width="46" height="10" rx="5" fill="#059669" stroke="#047857" strokeWidth="1.5" />
+              {/* Golden Jingle Bell */}
+              <circle cx="75" cy="120" r="9" fill="#fbbf24" stroke="#d97706" strokeWidth="2" />
+              <circle cx="75" cy="122" r="2" fill="#78350f" />
+              <path d="M72 126 L78 126" stroke="#78350f" strokeWidth="1.5" />
+            </g>
+
+            {/* MASCOT 3: Sparkling Christmas Tree with Ornaments & Fairy Lights (Left Side) */}
+            <g transform="translate(60, 420) scale(0.95)" filter="url(#tree-glow)">
+              {/* Tree Trunk */}
+              <rect x="75" y="240" width="26" height="35" rx="4" fill="#78350f" stroke="#451a03" strokeWidth="2" />
+              
+              {/* Tier 3 (Bottom Layer) */}
+              <polygon points="88,140 10,240 166,240" fill="#15803d" stroke="#166534" strokeWidth="2.5" />
+              <path d="M10 240 Q30 250 50 240 Q70 250 88 240 Q106 250 126 240 Q146 250 166 240 L166 230 Q126 240 88 230 Q50 240 10 230 Z" fill="#ffffff" opacity="0.95" />
+
+              {/* Tier 2 (Middle Layer) */}
+              <polygon points="88,90 28,175 148,175" fill="#16a34a" stroke="#15803d" strokeWidth="2.5" />
+              <path d="M28 175 Q58 185 88 175 Q118 185 148 175 L148 165 Q118 175 88 165 Q58 175 28 165 Z" fill="#ffffff" opacity="0.95" />
+
+              {/* Tier 1 (Top Layer) */}
+              <polygon points="88,40 45,115 131,115" fill="#22c55e" stroke="#16a34a" strokeWidth="2.5" />
+              <path d="M45 115 Q66 123 88 115 Q110 123 131 115 L131 107 Q110 115 88 107 Q66 115 45 107 Z" fill="#ffffff" opacity="0.95" />
+
+              {/* Golden Star at the Peak */}
+              <polygon
+                points="88,15 93,30 108,30 96,39 100,54 88,44 76,54 80,39 68,30 83,30"
+                fill="#facc15"
+                stroke="#eab308"
+                strokeWidth="1.5"
+                filter="url(#star-glow)"
+              />
+
+              {/* Twinkling Fairy Light Swags */}
+              <path d="M55 105 Q88 120 120 105" stroke="#fef08a" strokeWidth="2" strokeDasharray="3 5" fill="none" />
+              <path d="M38 160 Q88 185 138 160" stroke="#fef08a" strokeWidth="2" strokeDasharray="3 6" fill="none" />
+              <path d="M22 225 Q88 255 154 225" stroke="#fef08a" strokeWidth="2" strokeDasharray="3 6" fill="none" />
+
+              {/* Colorful Bauble Ornaments */}
+              <circle cx="68" cy="100" r="5" fill="#ef4444" stroke="#b91c1c" strokeWidth="1" />
+              <circle cx="106" cy="98" r="5" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1" />
+              <circle cx="50" cy="155" r="6" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+              <circle cx="88" cy="150" r="6" fill="#ec4899" stroke="#be185d" strokeWidth="1" />
+              <circle cx="125" cy="158" r="6" fill="#ef4444" stroke="#b91c1c" strokeWidth="1" />
+              <circle cx="35" cy="215" r="7" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1" />
+              <circle cx="70" cy="210" r="7" fill="#a855f7" stroke="#7e22ce" strokeWidth="1" />
+              <circle cx="108" cy="215" r="7" fill="#10b981" stroke="#047857" strokeWidth="1" />
+              <circle cx="145" cy="212" r="7" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+
+              {/* Gift Boxes under Tree */}
+              <rect x="25" y="245" width="28" height="26" rx="4" fill="#ef4444" stroke="#b91c1c" strokeWidth="1.5" />
+              <rect x="36" y="245" width="6" height="26" fill="#fbbf24" />
+              <rect x="25" y="255" width="28" height="6" fill="#fbbf24" />
+
+              <rect x="120" y="248" width="24" height="23" rx="3" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1.5" />
+              <rect x="129" y="248" width="6" height="23" fill="#f43f5e" />
+              <rect x="120" y="256" width="24" height="6" fill="#f43f5e" />
+            </g>
+
+            {/* MASCOT 4: Smiling Cute Snowman holding broom (Bottom Center-Left) */}
+            <g transform="translate(260, 520) scale(0.85)" filter="url(#santa-glow)">
+              {/* Bottom Snowball */}
+              <circle cx="60" cy="130" r="42" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2.5" />
+              {/* Top Snowball */}
+              <circle cx="60" cy="65" r="30" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2.5" />
+
+              {/* Coal Eyes */}
+              <circle cx="50" cy="58" r="3" fill="#1e293b" />
+              <circle cx="68" cy="58" r="3" fill="#1e293b" />
+
+              {/* Carrot Nose */}
+              <polygon points="58,64 78,67 58,70" fill="#f97316" stroke="#ea580c" strokeWidth="1" />
+
+              {/* Pebble Smile */}
+              <circle cx="48" cy="75" r="1.8" fill="#1e293b" />
+              <circle cx="54" cy="78" r="1.8" fill="#1e293b" />
+              <circle cx="62" cy="78" r="1.8" fill="#1e293b" />
+              <circle cx="68" cy="75" r="1.8" fill="#1e293b" />
+
+              {/* Cozy Red Striped Scarf */}
+              <rect x="40" y="85" width="40" height="12" rx="6" fill="#ef4444" stroke="#b91c1c" strokeWidth="1.5" />
+              <path d="M68 95 L68 125 L80 125 L80 95 Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="1.5" />
+              <rect x="70" y="103" width="8" height="5" fill="#ffffff" />
+              <rect x="70" y="115" width="8" height="5" fill="#ffffff" />
+
+              {/* Top Hat */}
+              <rect x="36" y="38" width="48" height="7" rx="3" fill="#1e293b" />
+              <rect x="44" y="12" width="32" height="28" rx="3" fill="#1e293b" stroke="#0f172a" strokeWidth="1.5" />
+              <rect x="44" y="32" width="32" height="6" fill="#ef4444" />
+
+              {/* Coal Buttons */}
+              <circle cx="60" cy="115" r="3" fill="#1e293b" />
+              <circle cx="60" cy="132" r="3" fill="#1e293b" />
+              <circle cx="60" cy="149" r="3" fill="#1e293b" />
+            </g>
+
+            {/* TOP-RIGHT DECOR: Hanging Christmas Stockings & Pine Garland */}
+            <g transform="translate(1050, 0) scale(0.95)">
+              {/* Pine Needle Swag */}
+              <path d="M0 10 Q100 45 200 15 Q250 5 300 10" stroke="#15803d" strokeWidth="8" strokeLinecap="round" fill="none" />
+              <path d="M10 12 Q100 48 190 18" stroke="#16a34a" strokeWidth="4" strokeLinecap="round" fill="none" />
+              <path d="M0 15 Q100 50 200 20" stroke="#facc15" strokeWidth="2" strokeDasharray="4 8" fill="none" />
+
+              {/* Hanging Red Christmas Stocking */}
+              <g transform="translate(100, 32)">
+                <line x1="14" y1="-8" x2="14" y2="0" stroke="#fbbf24" strokeWidth="2" />
+                <path d="M6 0 L24 0 L22 28 C22 36 32 40 32 46 C32 54 22 56 12 56 C2 56 0 46 2 34 L6 0 Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="2" />
+                <rect x="4" y="-3" width="22" height="10" rx="4" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1.5" />
+                <circle cx="15" cy="22" r="4" fill="#10b981" />
+              </g>
+
+              {/* Golden Bell with Mistletoe */}
+              <g transform="translate(180, 20)">
+                <line x1="12" y1="-5" x2="12" y2="0" stroke="#fbbf24" strokeWidth="2" />
+                <path d="M12 0 C6 0 4 12 0 16 L24 16 C20 12 18 0 12 0 Z" fill="#fbbf24" stroke="#d97706" strokeWidth="1.5" />
+                <circle cx="12" cy="17" r="3" fill="#f59e0b" />
+                {/* Red Bow */}
+                <circle cx="12" cy="1" r="3" fill="#ef4444" />
+                <ellipse cx="6" cy="1" rx="4" ry="2" fill="#ef4444" />
+                <ellipse cx="18" cy="1" rx="4" ry="2" fill="#ef4444" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { THEMES, getSelectedThemeId, applyTheme } from '../utils/themeManager';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
 
-export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThemeSelect }) {
+export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThemeSelect, onSelectTheme }) {
   if (!isOpen) return null;
 
   const currentThemeId = currentTheme?.id || getSelectedThemeId();
@@ -12,7 +12,8 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
   const handleSelect = (theme) => {
     playSound('flip');
     const applied = applyTheme(theme.id);
-    onThemeSelect?.(applied);
+    if (onSelectTheme) onSelectTheme(applied);
+    if (onThemeSelect) onThemeSelect(applied);
 
     // Light celebratory confetti
     confetti({
@@ -40,11 +41,11 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                   Chủ Đề & Giao Diện Không Gian Học
                 </h3>
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                  10 Chủ Đề
+                  {THEMES.length} Chủ Đề Độc Đáo
                 </span>
               </div>
               <p className="text-xs text-[#787774]">
-                Tự động thay đổi hình nền, màu chủ đạo và toàn bộ icon nhỏ theo phong cách bạn chọn (như Messenger & Instagram)
+                Tự động thay đổi hình vẽ wallpaper, hiệu ứng thời tiết (tuyết rơi/hoa bay/sao rơi) và toàn bộ icon nhỏ theo phong cách bạn chọn!
               </p>
             </div>
           </div>
@@ -92,16 +93,33 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
                       <span className="text-lg select-none filter drop-shadow-xs">{theme.icons.due}</span>
                     </div>
 
-                    {isSelected ? (
-                      <span className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#2383e2] text-white text-[11px] font-bold shadow-xs">
-                        <Check className="w-3.5 h-3.5" />
-                        <span>Đang Dùng</span>
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/70 backdrop-blur-2xs text-[#37352f] border border-black/5">
-                        {theme.category}
-                      </span>
-                    )}
+                    <div className="flex items-center space-x-1">
+                      {theme.weatherType === 'snow' && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200 flex items-center space-x-0.5 shadow-2xs">
+                          <span>❄️ Tuyết</span>
+                        </span>
+                      )}
+                      {theme.weatherType === 'sakura' && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-100 text-pink-800 border border-pink-200 flex items-center space-x-0.5 shadow-2xs">
+                          <span>🌸 Hoa</span>
+                        </span>
+                      )}
+                      {theme.weatherType === 'stars' && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex items-center space-x-0.5 shadow-2xs">
+                          <span>✨ Sao</span>
+                        </span>
+                      )}
+                      {isSelected ? (
+                        <span className="flex items-center space-x-1 px-2.5 py-1 rounded-full bg-[#2383e2] text-white text-[11px] font-bold shadow-xs">
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Đang Dùng</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/70 backdrop-blur-2xs text-[#37352f] border border-black/5">
+                          {theme.category}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Theme Info */}

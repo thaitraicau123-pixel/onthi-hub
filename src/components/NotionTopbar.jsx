@@ -35,7 +35,9 @@ export default function NotionTopbar({
   onOpenSearch,
   onOpenAnalytics,
   currentTheme,
-  onOpenThemePicker
+  onOpenThemePicker,
+  isWeatherEnabled = true,
+  onToggleWeather
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
@@ -88,7 +90,20 @@ export default function NotionTopbar({
   const currentBreadcrumb = breadcrumbMap[activeTab] || breadcrumbMap.home;
 
   return (
-    <header className={`sticky top-0 z-30 h-11 ${currentTheme?.topbarBgClass || 'bg-white/90 backdrop-blur-md'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8]'} flex items-center justify-between px-3 sm:px-5 select-none text-xs ${currentTheme?.textClass || 'text-[#37352f]'} transition-colors duration-500`}>
+    <header className={`sticky top-0 z-30 h-11 ${currentTheme?.topbarBgClass || 'bg-white/90 backdrop-blur-md'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8]'} flex items-center justify-between px-3 sm:px-5 select-none text-xs ${currentTheme?.textClass || 'text-[#37352f]'} transition-colors duration-500 relative`}>
+      {/* Festive Snow Cap Drip on Header */}
+      {currentTheme?.hasSnowCaps && (
+        <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none overflow-hidden z-40">
+          <svg className="w-full h-2.5" preserveAspectRatio="none" viewBox="0 0 1000 10" fill="none">
+            <path
+              d="M0 0 L1000 0 L1000 3 Q950 8 900 3 Q850 0 800 5 Q750 9 700 3 Q650 0 600 6 Q550 9 500 3 Q450 0 400 6 Q350 9 300 3 Q250 0 200 6 Q150 9 100 3 Q50 0 0 3 Z"
+              fill="#ffffff"
+              fillOpacity="0.88"
+            />
+          </svg>
+        </div>
+      )}
+
       {/* LEFT: SIDEBAR TOGGLE & NOTION BREADCRUMB */}
       <div className="flex items-center space-x-2 min-w-0">
         
@@ -148,11 +163,43 @@ export default function NotionTopbar({
             onOpenThemePicker?.();
           }}
           className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
-          title="Đổi chủ đề nền & icon (10 Themes Messenger / Instagram)"
+          title="Đổi chủ đề nền & icon (11 Themes Messenger / Instagram)"
         >
           <Palette className="w-3.5 h-3.5 text-purple-600" />
           <span className="hidden sm:inline">Chủ Đề</span>
         </button>
+
+        {/* Weather Effect Toggle Button (Snow / Sakura / Stars) */}
+        {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              onToggleWeather?.();
+            }}
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
+              isWeatherEnabled
+                ? currentTheme.weatherType === 'snow'
+                  ? 'bg-red-500/15 text-red-300 border-red-400/40 hover:bg-red-500/25 ring-1 ring-red-400/30'
+                  : 'bg-emerald-500/15 text-emerald-300 border-emerald-400/40 hover:bg-emerald-500/25'
+                : 'bg-stone-500/10 text-stone-400 border-stone-500/20 hover:bg-stone-500/20 opacity-70'
+            }`}
+            title={
+              isWeatherEnabled
+                ? `Tắt hiệu ứng ${currentTheme.weatherType === 'snow' ? 'tuyết rơi' : 'thời tiết'}`
+                : `Bật hiệu ứng ${currentTheme.weatherType === 'snow' ? 'tuyết rơi' : 'thời tiết'}`
+            }
+          >
+            <span className="text-xs">
+              {currentTheme.weatherType === 'snow' ? '❄️' : currentTheme.weatherType === 'sakura' ? '🌸' : currentTheme.weatherType === 'stars' ? '✨' : currentTheme.weatherType === 'leaves' ? '🍃' : '🫧'}
+            </span>
+            <span className="hidden sm:inline text-[11px]">
+              {currentTheme.weatherType === 'snow'
+                ? (isWeatherEnabled ? 'Tuyết' : 'Tuyết: Tắt')
+                : (isWeatherEnabled ? 'Hiệu Ứng' : 'Tắt')}
+            </span>
+          </button>
+        )}
 
         {/* Analytics Dashboard Button */}
         <button

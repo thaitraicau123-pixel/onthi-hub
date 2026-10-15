@@ -25,6 +25,7 @@ import CommandPaletteModal from './components/CommandPaletteModal';
 import AnalyticsModal from './components/AnalyticsModal';
 import ThemePickerModal from './components/ThemePickerModal';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
+import ThemeWeatherCanvas from './components/ThemeWeatherCanvas';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import Footer from './components/Footer';
 
@@ -40,7 +41,14 @@ import {
 } from './utils/wallet';
 import { playSound } from './utils/storage';
 import { isUserAdmin, PRIMARY_ADMIN_EMAIL } from './utils/adminGuard';
-import { getSelectedTheme, applyTheme, subscribeToTheme } from './utils/themeManager';
+import {
+  getSelectedTheme,
+  applyTheme,
+  subscribeToTheme,
+  isWeatherEffectsEnabled,
+  setWeatherEffectsEnabled,
+  subscribeToWeatherToggle
+} from './utils/themeManager';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -72,6 +80,7 @@ export default function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [currentTheme, setCurrentTheme] = useState(() => getSelectedTheme());
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
+  const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
 
   // Sync initial state
   useEffect(() => {
@@ -84,6 +93,10 @@ export default function App() {
     applyTheme(currentTheme.id);
     const unsubTheme = subscribeToTheme((newTheme) => {
       setCurrentTheme(newTheme);
+    });
+
+    const unsubWeather = subscribeToWeatherToggle((enabled) => {
+      setIsWeatherEnabled(enabled);
     });
 
     // Notion Hotkeys:
@@ -132,6 +145,7 @@ export default function App() {
       if (typeof unsubTxs === 'function') unsubTxs();
       if (typeof unsubMarket === 'function') unsubMarket();
       if (typeof unsubTheme === 'function') unsubTheme();
+      if (typeof unsubWeather === 'function') unsubWeather();
     };
   }, []);
 
@@ -164,6 +178,9 @@ export default function App() {
       className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500 relative`}
       style={{ backgroundImage: currentTheme.wallpaperGlow }}
     >
+      {/* 60fps Particle Weather Engine (Snow, Petals, Stardust, Fireflies) */}
+      <ThemeWeatherCanvas weatherType={currentTheme.weatherType} isEnabled={isWeatherEnabled} />
+
       {/* High-Fidelity Themed Atmosphere Illustrated Artwork */}
       <ThemeAtmosphereBackground theme={currentTheme} />
       
@@ -231,6 +248,8 @@ export default function App() {
           onOpenAnalytics={() => setIsAnalyticsOpen(true)}
           currentTheme={currentTheme}
           onOpenThemePicker={() => setIsThemePickerOpen(true)}
+          isWeatherEnabled={isWeatherEnabled}
+          onToggleWeather={() => setWeatherEffectsEnabled(!isWeatherEnabled)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
