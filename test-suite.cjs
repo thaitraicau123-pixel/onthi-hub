@@ -115,11 +115,11 @@ async function runTests() {
   const marioImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'mario-4k.png'));
   assert(marioImgStats.size > 200000, `Mario Toad 4K image is high-res (${marioImgStats.size} bytes)`);
 
-  // Verify Cyberpunk Porsche 4K wallpaper
+  // Verify Cyberpunk V & Quadra Turbo-R 4K wallpaper
   const cyberpunkTheme = THEMES.find(t => t.id === 'cyberpunk-city-3d');
-  assert(cyberpunkTheme && cyberpunkTheme.subtitle.includes('Porsche 911 Turbo'), 'Cyberpunk theme subtitle features Porsche 911 Turbo');
-  const cyberpunkImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'cyberpunk-porsche-4k.png'));
-  assert(cyberpunkImgStats.size > 500000, `Cyberpunk Porsche 4K image is ultra high-res (${cyberpunkImgStats.size} bytes)`);
+  assert(cyberpunkTheme && cyberpunkTheme.subtitle.includes('Quadra Turbo-R'), 'Cyberpunk theme subtitle features Quadra Turbo-R');
+  const cyberpunkImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'cyberpunk-quadra-4k.png'));
+  assert(cyberpunkImgStats.size > 500000, `Cyberpunk Quadra 4K image is ultra high-res (${cyberpunkImgStats.size} bytes)`);
 
   // Verify Classic Academia 4K wallpaper
   const academiaTheme = THEMES.find(t => t.id === 'classic-academia');
