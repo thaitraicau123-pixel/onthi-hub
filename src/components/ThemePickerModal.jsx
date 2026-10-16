@@ -5,19 +5,18 @@ import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
 
 export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThemeSelect, onSelectTheme }) {
-  if (!isOpen) return null;
-
   const currentThemeId = currentTheme?.id || getSelectedThemeId();
   const [sleepMode, setLocalSleepMode] = useState(() => getSleepMode());
 
   useEffect(() => {
+    if (!isOpen) return;
     const unsub = subscribeToSleepMode((mode) => {
       setLocalSleepMode(mode);
     });
     return () => {
       if (typeof unsub === 'function') unsub();
     };
-  }, []);
+  }, [isOpen]);
 
   const handleSelect = (theme) => {
     playSound('flip');
@@ -38,6 +37,8 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
     setGlobalSleepMode(mode);
     setLocalSleepMode(mode);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/50 backdrop-blur-xs animate-fade-in">

@@ -65,6 +65,46 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
     }
   });
 
+  const handleCompleteSession = () => {
+    setIsActive(false);
+    playPomodoroCompletionChime(clockVolume);
+    confetti({
+      particleCount: 120,
+      spread: 80,
+      origin: { y: 0.6 }
+    });
+
+    if (currentMode === 'focus') {
+      const newCount = completedSessions + 1;
+      setCompletedSessions(newCount);
+      const today = getHanoiDateString();
+      localStorage.setItem('onthi_pomodoro_stats', JSON.stringify({ date: today, count: newCount }));
+
+      // Reward +50 XP rèn luyện & Lưu vết thời gian học tập Giờ Hà Nội
+      recordStudyAction(50, 'Hoàn thành 25 phút tập trung Pomodoro');
+      recordStudyTimeLog({
+        type: 'pomodoro',
+        title: 'Phiên Pomodoro 25 phút tập trung cao độ',
+        durationMinutes: 25,
+        xpGained: 50
+      });
+      if (onBonusReward) onBonusReward();
+
+      setCompletionToast('🎉 Chúc mừng bạn đã hoàn thành 25 phút tập trung (+50 XP)! Hãy nghỉ ngơi 5 phút nhé.');
+      setTimeout(() => setCompletionToast(''), 7000);
+
+      // Auto switch to short break
+      setCurrentMode('shortBreak');
+      setSecondsLeft(MODES.shortBreak.duration);
+    } else {
+      setCompletionToast('☕ Hết giờ nghỉ ngơi rồi! Bắt đầu phiên tập trung mới nào!');
+      setTimeout(() => setCompletionToast(''), 7000);
+
+      setCurrentMode('focus');
+      setSecondsLeft(MODES.focus.duration);
+    }
+  };
+
   // Countdown timer effect with real clock sound every second
   useEffect(() => {
     let interval = null;
@@ -110,46 +150,6 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
       setAmbientSoundVolume(clockVolume);
     }
   }, [clockVolume]);
-
-  const handleCompleteSession = () => {
-    setIsActive(false);
-    playPomodoroCompletionChime(clockVolume);
-    confetti({
-      particleCount: 120,
-      spread: 80,
-      origin: { y: 0.6 }
-    });
-
-    if (currentMode === 'focus') {
-      const newCount = completedSessions + 1;
-      setCompletedSessions(newCount);
-      const today = getHanoiDateString();
-      localStorage.setItem('onthi_pomodoro_stats', JSON.stringify({ date: today, count: newCount }));
-
-      // Reward +50 XP rèn luyện & Lưu vết thời gian học tập Giờ Hà Nội
-      recordStudyAction(50, 'Hoàn thành 25 phút tập trung Pomodoro');
-      recordStudyTimeLog({
-        type: 'pomodoro',
-        title: 'Phiên Pomodoro 25 phút tập trung cao độ',
-        durationMinutes: 25,
-        xpGained: 50
-      });
-      if (onBonusReward) onBonusReward();
-
-      setCompletionToast('🎉 Chúc mừng bạn đã hoàn thành 25 phút tập trung (+50 XP)! Hãy nghỉ ngơi 5 phút nhé.');
-      setTimeout(() => setCompletionToast(''), 7000);
-
-      // Auto switch to short break
-      setCurrentMode('shortBreak');
-      setSecondsLeft(MODES.shortBreak.duration);
-    } else {
-      setCompletionToast('☕ Hết giờ nghỉ ngơi rồi! Bắt đầu phiên tập trung mới nào!');
-      setTimeout(() => setCompletionToast(''), 7000);
-
-      setCurrentMode('focus');
-      setSecondsLeft(MODES.focus.duration);
-    }
-  };
 
   const switchMode = (modeKey) => {
     getAudioContext();

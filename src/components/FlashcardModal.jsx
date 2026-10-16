@@ -236,6 +236,29 @@ export default function FlashcardModal({
     setTimeout(() => setCopiedAiText(false), 2500);
   };
 
+  // Rate spaced repetition
+  const handleRate = (type) => {
+    setReviewedStats((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    recordCardReview(targetDeckId, targetCardIndex, type);
+
+    if (type === 'again') {
+      recordMistake({
+        type: 'flashcard',
+        deckId: targetDeckId,
+        deckTitle: course.title,
+        question: currentCard.front,
+        answer: currentCard.back,
+        tag: currentCard.tag
+      });
+    } else if (currentCard.mistakeId && (type === 'good' || type === 'easy')) {
+      markMistakeMastered(currentCard.mistakeId);
+    }
+
+    recordStudyAction(5);
+    completeDailyQuest('review_cards');
+    goToNext();
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -266,29 +289,6 @@ export default function FlashcardModal({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, cards.length, isFlipped, currentCardId, starredCardIds]);
-
-  // Rate spaced repetition
-  const handleRate = (type) => {
-    setReviewedStats((prev) => ({ ...prev, [type]: prev[type] + 1 }));
-    recordCardReview(targetDeckId, targetCardIndex, type);
-
-    if (type === 'again') {
-      recordMistake({
-        type: 'flashcard',
-        deckId: targetDeckId,
-        deckTitle: course.title,
-        question: currentCard.front,
-        answer: currentCard.back,
-        tag: currentCard.tag
-      });
-    } else if (currentCard.mistakeId && (type === 'good' || type === 'easy')) {
-      markMistakeMastered(currentCard.mistakeId);
-    }
-
-    recordStudyAction(5);
-    completeDailyQuest('review_cards');
-    goToNext();
-  };
 
   // Audio pronunciation using native Web Speech Synthesis
   const handleSpeak = (text) => {

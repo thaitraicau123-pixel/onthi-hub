@@ -37,7 +37,8 @@ import {
   Search,
   Download,
   ThumbsUp,
-  UserCheck
+  UserCheck,
+  Users
 } from 'lucide-react';
 import { isUserAdmin, getAdminEmail, maskApiKey, PRIMARY_ADMIN_EMAIL } from '../utils/adminGuard';
 import {
