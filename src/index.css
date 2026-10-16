@@ -387,7 +387,9 @@ body {
 
 /* 2. CONTAINERS & FROSTED GLASS CARDS IN SLEEP / DARK MODE */
 .dark .bg-white,
-[data-sleep-mode="dark"] .bg-white {
+.dark .bg-\[\#ffffff\],
+[data-sleep-mode="dark"] .bg-white,
+[data-sleep-mode="dark"] .bg-\[\#ffffff\] {
   background-color: rgba(18, 24, 38, 0.9) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;

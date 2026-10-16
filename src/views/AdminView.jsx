@@ -574,26 +574,26 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
     <div className="space-y-6 animate-fade-in pb-16">
       
       {/* ADMIN HEADER (Wayground Dark Velvet Wine Card) */}
-      <div className="bg-[#fbfbfa] border border-[#e9e9e8] text-[#37352f] p-6 rounded-xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 p-6 rounded-xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-2xl bg-[#2383e2] flex items-center justify-center font-bold shadow-md shadow-pink-900/40">
             <ShieldAlert className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight">
+              <h2 className="text-lg sm:text-xl font-black uppercase tracking-tight text-slate-900 dark:text-white">
                 CỬA SỔ QUẢN TRỊ VIÊN (SECRET ADMIN PORTAL)
               </h2>
-              <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-blue-50 text-[#2383e2] border border-blue-200">
+              <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-blue-50 text-[#2383e2] dark:bg-sky-950/80 dark:text-sky-300 border border-blue-200 dark:border-sky-800">
                 Duyệt Chay 24/7
               </span>
             </div>
-            <p className="text-xs text-[#787774] mt-1 font-normal flex flex-wrap items-center gap-x-3 gap-y-1">
-              <span>Admin Phone: <strong className="text-amber-300 font-mono font-black">{ADMIN_PHONE}</strong></span>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 font-normal flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span>Admin Phone: <strong className="text-amber-700 dark:text-amber-300 font-mono font-black">{ADMIN_PHONE}</strong></span>
               <span>•</span>
-              <span>Email: <strong className="text-amber-300 font-mono">{ADMIN_EMAIL}</strong></span>
+              <span>Email: <strong className="text-amber-700 dark:text-amber-300 font-mono font-bold">{ADMIN_EMAIL}</strong></span>
               <span>•</span>
-              <span>Web Push: <a href={ADMIN_NTFY_TOPIC} target="_blank" rel="noreferrer" className="text-cyan-300 font-mono underline hover:text-white">ntfy.sh Topic</a></span>
+              <span>Web Push: <a href={ADMIN_NTFY_TOPIC} target="_blank" rel="noreferrer" className="text-sky-600 dark:text-sky-400 font-mono underline hover:text-sky-800 dark:hover:text-white font-bold">ntfy.sh Topic</a></span>
             </p>
           </div>
         </div>
@@ -611,14 +611,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           )}
           <button
             onClick={reloadData}
-            className="p-2.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-xl transition-colors"
+            className="p-2.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors"
             title="Làm mới dữ liệu"
           >
             <RefreshCw className="w-4 h-4" />
           </button>
           <button
             onClick={onBackToHome}
-            className="px-4 py-2 bg-white hover:bg-black/5 border border-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors"
+            className="px-4 py-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5 text-[#2383e2]" />
             <span>Quay Lại Trang Chủ</span>
@@ -627,14 +627,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
       </div>
 
       {/* ADMIN TABS SWITCHER (Wayground Warm Cream Container) */}
-      <div className="bg-white rounded-xl border border-[#e9e9e8] shadow-xs overflow-hidden text-[#37352f]">
-        <div className="flex border-b border-[#e9e9e8] bg-[#f7f6f5] text-xs sm:text-sm font-semibold overflow-x-auto">
+      <div className="bg-white dark:bg-slate-900/95 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden text-slate-900 dark:text-slate-100">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/80 text-xs sm:text-sm font-semibold overflow-x-auto">
           <button
             onClick={() => setActiveTab('transactions')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'transactions'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Coins className="w-4 h-4 text-amber-500" />
@@ -650,13 +650,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('community')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'community'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <MessageSquare className="w-4 h-4 text-indigo-500" />
             <span>Quản Lý Diễn Đàn & Xóa Bài</span>
-            <span className="px-1.5 py-0.2 bg-indigo-100 text-indigo-800 rounded-full text-[10px] font-bold">
+            <span className="px-1.5 py-0.2 bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 rounded-full text-[10px] font-bold">
               {communityPosts.length}
             </span>
           </button>
@@ -665,8 +665,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('tiers')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'tiers'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Sliders className="w-4 h-4 text-[#2383e2]" />
@@ -677,8 +677,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('marketplace')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'marketplace'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Store className="w-4 h-4 text-emerald-600" />
@@ -689,8 +689,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('system_logs')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors cursor-pointer ${
               activeTab === 'system_logs'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Clock className="w-4 h-4 text-teal-600" />
@@ -701,8 +701,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('notifications')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'notifications'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <BellRing className="w-4 h-4 text-[#2383e2]" />
@@ -713,14 +713,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('firebase')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'firebase'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Database className="w-4 h-4 text-amber-500" />
             <span>Cấu Hình Firebase Cloud</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-              isRealFirebaseConfigured() ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+              isRealFirebaseConfigured() ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
             }`}>
               {isRealFirebaseConfigured() ? '🟢 Cloud Thật' : '🟡 Thử Nghiệm'}
             </span>
@@ -730,13 +730,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('blindbox')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'blindbox'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Gift className="w-4 h-4 text-purple-600" />
             <span>Tỷ Lệ Túi Mù (Gacha)</span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
               Nhà Cái 80%+
             </span>
           </button>
@@ -745,14 +745,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             onClick={() => setActiveTab('ai_api')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'ai_api'
-                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
-                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
             }`}
           >
             <Cpu className="w-4 h-4 text-cyan-600" />
             <span>Thẻ API Key AI (ÔnThiHub Cloud)</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
-              hasValidAiKey() ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+              hasValidAiKey() ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
             }`}>
               {hasValidAiKey() ? '🟢 Đã Kích Hoạt' : '🔴 Chưa Có Key'}
             </span>
@@ -768,13 +768,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="flex items-center space-x-2">
-                    <h4 className="text-sm font-black text-[#37352f]">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
-                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black border border-emerald-200">
+                    <h4 className="text-sm font-black text-slate-900 dark:text-white">Danh Sách Lệnh Nạp / Rút Chờ Duyệt Chay</h4>
+                    <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-0.5"></span>
                       <span>Firebase Realtime Sync</span>
                     </span>
                   </div>
-                  <p className="text-xs text-[#787774] font-medium">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                     Tất cả tài khoản/điện thoại nạp rút đều được đưa lên Firebase Firestore và đồng bộ thời gian thực tại đây.
                   </p>
                 </div>
@@ -782,30 +782,30 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   <button
                     onClick={handleManualSyncFirebase}
                     disabled={isSyncingFirebase}
-                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-[#ffffff] border border-[#e9e9e8] text-xs font-black text-[#37352f] shadow-xs transition-colors"
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-black text-slate-800 dark:text-slate-200 shadow-xs transition-colors"
                     title="Đồng bộ lại dữ liệu mới nhất từ Firebase Firestore"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 text-[#2383e2] ${isSyncingFirebase ? 'animate-spin' : ''}`} />
                     <span>{isSyncingFirebase ? 'Đang Tải...' : 'Làm Mới Firebase'}</span>
                   </button>
-                  <span className="text-xs font-black px-3 py-1 rounded-xl bg-white text-[#37352f] border border-[#e9e9e8]">
+                  <span className="text-xs font-black px-3 py-1 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                     Tổng {transactions.length} lệnh
                   </span>
                 </div>
               </div>
 
-              <div className="p-3 bg-gradient-to-r from-pink-50 to-amber-50 rounded-2xl border border-[#e9e9e8] text-xs text-[#37352f] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
+              <div className="p-3.5 bg-blue-50/90 dark:bg-slate-800/90 rounded-2xl border border-blue-200 dark:border-blue-500/30 text-xs text-blue-950 dark:text-blue-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
                 <div className="flex items-center space-x-2">
-                  <Database className="w-4 h-4 text-[#2383e2] shrink-0" />
+                  <Database className="w-4 h-4 text-[#2383e2] dark:text-sky-400 shrink-0" />
                   <span>
-                    Tính năng duyệt tiền đã kết nối <strong>Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của học viên trên mọi thiết bị sẽ được cộng Xu tức thì!
+                    Tính năng duyệt tiền đã kết nối <strong className="font-bold text-blue-900 dark:text-sky-200">Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của học viên trên mọi thiết bị sẽ được cộng Xu tức thì!
                   </span>
                 </div>
                 <a
                   href="https://console.firebase.google.com/project/onthi-hub/firestore"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#2383e2] hover:text-[#1a73e8] font-black underline flex items-center space-x-1 shrink-0 text-[11px]"
+                  className="text-[#2383e2] dark:text-sky-400 hover:text-[#1a73e8] dark:hover:text-sky-300 font-black underline flex items-center space-x-1 shrink-0 text-[11px]"
                 >
                   <span>Mở Firestore Console</span>
                   <ExternalLink className="w-3 h-3" />
@@ -813,14 +813,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {transactions.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-2xl border border-[#e9e9e8]">
-                  <Coins className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-[#787774] font-bold">Chưa có giao dịch nạp / rút nào.</p>
+                <div className="text-center py-12 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <Coins className="w-10 h-10 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="text-xs text-slate-600 dark:text-slate-400 font-bold">Chưa có giao dịch nạp / rút nào.</p>
                 </div>
               ) : (
-                <div className="bg-white rounded-2xl border border-[#e9e9e8] overflow-hidden shadow-xs">
+                <div className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#f7f6f5] border-b border-[#e9e9e8] text-[#37352f] uppercase tracking-wider font-black">
+                    <thead className="bg-slate-100 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase tracking-wider font-black">
                       <tr>
                         <th className="p-3">Mã GD</th>
                         <th className="p-3">Loại</th>
@@ -830,52 +830,52 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         <th className="p-3 text-right">Thao Tác Duyệt</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#e9e9e8]/60">
+                    <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800">
                       {transactions.map((tx) => (
-                        <tr key={tx.id} className="hover:bg-[#ffffff]/60 transition-colors">
-                          <td className="p-3 font-mono font-black text-[#37352f]">
+                        <tr key={tx.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
+                          <td className="p-3 font-mono font-black text-slate-900 dark:text-slate-100">
                             {tx.id}
-                            <span className="block text-[10px] text-[#787774] font-normal">
-                              {new Date(tx.createdAt).toLocaleTimeString('vi-VN')} {new Date(tx.createdAt).toLocaleDateString('vi-VN')}
+                            <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                              {formatHanoiDateTime(tx.createdAt)}
                             </span>
                           </td>
                           <td className="p-3">
                             <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black ${
                               tx.type === 'deposit'
-                                ? 'bg-emerald-100 text-emerald-800'
-                                : 'bg-rose-100 text-rose-800'
+                                ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                                : 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
                             }`}>
                               {tx.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
                             </span>
                           </td>
                           <td className="p-3">
-                            <strong className="text-[#37352f] font-black">{tx.xuAmount} Xu</strong>
-                            <span className="block text-[11px] text-[#787774] font-bold">
+                            <strong className="text-slate-900 dark:text-slate-100 font-black">{tx.xuAmount} Xu</strong>
+                            <span className="block text-[11px] text-slate-500 dark:text-slate-400 font-bold">
                               ~{(tx.amountVnd || tx.xuAmount * COIN_RATE_VND).toLocaleString()}đ
                             </span>
                           </td>
                           <td className="p-3 max-w-xs">
-                            <div className="text-[#37352f] font-black truncate">{tx.userEmail}</div>
+                            <div className="text-slate-900 dark:text-slate-100 font-black truncate">{tx.userEmail}</div>
                             {tx.type === 'withdraw' && tx.details && (
-                              <div className="text-[11px] text-[#787774] bg-[#ffffff] p-2 rounded-xl mt-1 border border-[#e9e9e8]">
-                                <span className="font-black text-[#37352f]">{tx.details.bankName}</span> • STK: <span className="font-mono font-black text-[#2383e2]">{tx.details.accountNo}</span>
-                                <div className="text-[#787774]">Chủ TK: {tx.details.accountName}</div>
+                              <div className="text-[11px] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/90 p-2 rounded-xl mt-1 border border-slate-200 dark:border-slate-700">
+                                <span className="font-black text-slate-900 dark:text-white">{tx.details.bankName}</span> • STK: <span className="font-mono font-black text-[#2383e2] dark:text-sky-400">{tx.details.accountNo}</span>
+                                <div className="text-slate-500 dark:text-slate-400">Chủ TK: {tx.details.accountName}</div>
                               </div>
                             )}
                           </td>
                           <td className="p-3">
                             {tx.status === 'pending' && (
-                              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-black animate-pulse">
+                              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[10px] font-black animate-pulse">
                                 Chờ Duyệt Chay
                               </span>
                             )}
                             {tx.status === 'approved' && (
-                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">
+                              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-[10px] font-black">
                                 Đã Duyệt ✅
                               </span>
                             )}
                             {tx.status === 'rejected' && (
-                              <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 text-[10px] font-black" title={tx.rejectReason}>
+                              <span className="px-2.5 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-[10px] font-black" title={tx.rejectReason}>
                                 Từ Chối ❌
                               </span>
                             )}
@@ -898,14 +898,14 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 <button
                                   onClick={() => handleReject(tx.id)}
                                   disabled={approvingTxId === tx.id}
-                                  className="px-3 py-1 bg-rose-100 hover:bg-rose-200 disabled:opacity-50 text-rose-700 rounded-lg text-[11px] font-black border border-rose-300 flex items-center space-x-1 transition-all"
+                                  className="px-3 py-1 bg-rose-100 dark:bg-rose-950/80 hover:bg-rose-200 dark:hover:bg-rose-900 disabled:opacity-50 text-rose-700 dark:text-rose-300 rounded-lg text-[11px] font-black border border-rose-300 dark:border-rose-800 flex items-center space-x-1 transition-all"
                                 >
                                   <XCircle className="w-3 h-3" />
                                   <span>Từ chối</span>
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-[#787774] text-[11px] italic font-bold">Hoàn tất</span>
+                              <span className="text-slate-500 dark:text-slate-400 text-[11px] italic font-bold">Hoàn tất</span>
                             )}
                           </td>
                         </tr>
@@ -953,54 +953,54 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                 {/* Top Metrics Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
-                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                  <div className="p-4 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1">
                       <span className="text-xs font-semibold">Tổng Bài Viết</span>
                       <MessageSquare className="w-4 h-4 text-indigo-500" />
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-[#37352f]">{communityPosts.length}</div>
-                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Đang hoạt động trên web</div>
+                    <div className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">{communityPosts.length}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Đang hoạt động trên web</div>
                   </div>
 
-                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
-                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                  <div className="p-4 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1">
                       <span className="text-xs font-semibold">Bài Ghim Đầu Trang</span>
                       <Pin className="w-4 h-4 text-amber-500" />
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-amber-600">{pinnedCount}</div>
-                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Thông báo & hướng dẫn</div>
+                    <div className="text-xl sm:text-2xl font-black text-amber-600 dark:text-amber-400">{pinnedCount}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Thông báo & hướng dẫn</div>
                   </div>
 
-                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
-                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                  <div className="p-4 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1">
                       <span className="text-xs font-semibold">Tổng Bình Luận</span>
                       <Users className="w-4 h-4 text-[#2383e2]" />
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-[#2383e2]">{totalComments}</div>
-                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Tương tác hỏi đáp</div>
+                    <div className="text-xl sm:text-2xl font-black text-[#2383e2] dark:text-sky-400">{totalComments}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Tương tác hỏi đáp</div>
                   </div>
 
-                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
-                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                  <div className="p-4 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 mb-1">
                       <span className="text-xs font-semibold">Lượt Thả Tim</span>
                       <ThumbsUp className="w-4 h-4 text-rose-500" />
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-rose-600">{totalLikes}</div>
-                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Học viên ủng hộ</div>
+                    <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">{totalLikes}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Học viên ủng hộ</div>
                   </div>
                 </div>
 
                 {/* Control & Filter Toolbar */}
-                <div className="bg-white p-4 rounded-xl border border-[#e9e9e8] shadow-xs space-y-3">
+                <div className="bg-white dark:bg-slate-800/90 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <h4 className="text-sm font-black text-[#37352f] flex items-center space-x-2">
+                      <h4 className="text-sm font-black text-slate-900 dark:text-white flex items-center space-x-2">
                         <span>🛡️ Bảng Điều Khiển Kiểm Duyệt Bài Viết Cộng Đồng</span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
                           Admin Quyền Năng
                         </span>
                       </h4>
-                      <p className="text-xs text-[#787774] font-medium">
+                      <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                         Xóa ngay lập tức bài đăng spam, ghim bài hữu ích, và gỡ bình luận tiêu cực. Dữ liệu đồng bộ trực tiếp lên Firebase & Cloud Relay.
                       </p>
                     </div>
@@ -1008,7 +1008,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                       <button
                         onClick={reloadData}
-                        className="px-3 py-1.5 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold border border-[#e9e9e8] flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 flex items-center space-x-1.5 transition-colors cursor-pointer"
                         title="Tải lại toàn bộ bài viết mới nhất"
                       >
                         <RefreshCw className="w-3.5 h-3.5" />
@@ -1017,34 +1017,34 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                       <button
                         onClick={handleExportCommunityJson}
-                        className="px-3 py-1.5 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold border border-[#e9e9e8] flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-lg text-xs font-semibold border border-slate-200 dark:border-slate-600 flex items-center space-x-1.5 transition-colors cursor-pointer"
                         title="Tải về file JSON sao lưu bài viết"
                       >
-                        <Download className="w-3.5 h-3.5 text-[#2383e2]" />
+                        <Download className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
                         <span>Xuất Sao Lưu JSON</span>
                       </button>
 
                       <button
                         onClick={handleAdminClearSpam}
-                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-semibold border border-rose-200 flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        className="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 rounded-lg text-xs font-semibold border border-rose-200 dark:border-rose-800 flex items-center space-x-1.5 transition-colors cursor-pointer"
                         title="Dọn dẹp bài spam và khôi phục bài viết mặc định"
                       >
-                        <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                        <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                         <span>Dọn Rác / Khôi Phục</span>
                       </button>
                     </div>
                   </div>
 
                   {/* Search and Category Filter */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-[#f0efed]">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-700">
                     <div className="relative flex-1 max-w-md">
-                      <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         placeholder="Tìm bài viết theo nội dung, tác giả, hoặc ID (#post_...)"
                         value={communitySearchQuery}
                         onChange={(e) => setCommunitySearchQuery(e.target.value)}
-                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] rounded-lg border border-[#e9e9e8] focus:border-[#2383e2] outline-none transition-all placeholder:text-[#9b9a97]"
+                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 text-slate-900 dark:text-white rounded-lg border border-slate-200 dark:border-slate-700 focus:border-[#2383e2] outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
                       />
                     </div>
 
@@ -1061,8 +1061,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                           onClick={() => setCommunityCategoryFilter(cat.id)}
                           className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors shrink-0 ${
                             communityCategoryFilter === cat.id
-                              ? 'bg-[#37352f] text-white shadow-2xs'
-                              : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#5a5955] border border-[#e9e9e8]'
+                              ? 'bg-slate-900 dark:bg-sky-600 text-white shadow-2xs'
+                              : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600'
                           }`}
                         >
                           {cat.label}
@@ -1074,10 +1074,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                 {/* Posts List */}
                 {filteredPosts.length === 0 ? (
-                  <div className="text-center py-12 bg-white rounded-xl border border-[#e9e9e8] space-y-2">
-                    <MessageSquare className="w-10 h-10 text-slate-300 mx-auto" />
-                    <p className="text-sm font-bold text-[#37352f]">Không tìm thấy bài viết nào</p>
-                    <p className="text-xs text-[#787774]">
+                  <div className="text-center py-12 bg-white dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <MessageSquare className="w-10 h-10 text-slate-400 dark:text-slate-600 mx-auto" />
+                    <p className="text-sm font-bold text-slate-900 dark:text-white">Không tìm thấy bài viết nào</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {communitySearchQuery
                         ? `Không có bài viết nào khớp với từ khóa "${communitySearchQuery}"`
                         : 'Chưa có bài viết nào trong danh mục này'}
@@ -1090,19 +1090,19 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       return (
                         <div
                           key={post.id}
-                          className="bg-white rounded-xl p-4 sm:p-5 border border-[#e9e9e8] hover:border-[#c5c4c0] shadow-xs space-y-3 transition-colors"
+                          className="bg-white dark:bg-slate-800/95 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 shadow-xs space-y-3 transition-colors"
                         >
                           {/* Post Header Row */}
-                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#f0efed]">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-slate-700">
                             <div className="flex items-center space-x-3">
                               <img
                                 src={post.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
                                 alt={post.author}
-                                className="w-9 h-9 rounded-full object-cover border border-[#e9e9e8] shrink-0"
+                                className="w-9 h-9 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0"
                               />
                               <div>
                                 <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                                  <h4 className="text-xs sm:text-sm font-bold text-[#37352f]">{post.author}</h4>
+                                  <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{post.author}</h4>
                                   {post.isPinned && (
                                     <span className="notion-tag notion-tag-yellow text-[10px] flex items-center space-x-0.5">
                                       <Pin className="w-2.5 h-2.5" />
@@ -1112,11 +1112,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                   <span className="notion-tag notion-tag-blue text-[10px]">
                                     {post.categoryLabel || catMap[post.category] || post.category || 'Hỏi Đáp'}
                                   </span>
-                                  <span className="text-[10px] font-mono text-[#9b9a97] bg-[#f7f6f5] px-1.5 py-0.5 rounded border border-[#e9e9e8]">
+                                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
                                     #{post.id}
                                   </span>
                                 </div>
-                                <div className="text-[11px] text-[#787774] flex items-center space-x-2 mt-0.5">
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center space-x-2 mt-0.5">
                                   <span>{post.role || 'Thành Viên'}</span>
                                   <span>•</span>
                                   <span>{formatHanoiDateTime(post.createdAt || new Date())}</span>
@@ -1130,8 +1130,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 onClick={() => handleAdminTogglePin(post.id)}
                                 className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center space-x-1 transition-colors border cursor-pointer ${
                                   post.isPinned
-                                    ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
-                                    : 'bg-[#f7f6f5] text-[#5a5955] border-[#e9e9e8] hover:bg-[#e9e9e8]'
+                                    ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700 hover:bg-amber-200 dark:hover:bg-amber-900'
+                                    : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600'
                                 }`}
                                 title={post.isPinned ? 'Bỏ ghim bài viết này' : 'Ghim bài viết này lên đầu diễn đàn'}
                               >
@@ -1143,10 +1143,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 onClick={() =>
                                   setExpandedCommentsPostId(isExpanded ? null : post.id)
                                 }
-                                className="px-2.5 py-1 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] border border-[#e9e9e8] rounded-md text-xs font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
+                                className="px-2.5 py-1 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600 rounded-md text-xs font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
                                 title="Xem và quản lý các bình luận dưới bài viết"
                               >
-                                <MessageSquare className="w-3.5 h-3.5 text-[#2383e2]" />
+                                <MessageSquare className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
                                 <span>Bình luận ({post.comments?.length || 0})</span>
                               </button>
 
@@ -1162,12 +1162,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                           </div>
 
                           {/* Post Content */}
-                          <div className="p-3 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8] text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line font-normal">
+                          <div className="p-3 bg-slate-50 dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed whitespace-pre-line font-normal">
                             {post.content}
                           </div>
 
                           {/* Post Interactions */}
-                          <div className="flex items-center justify-between text-xs text-[#787774] pt-1">
+                          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
                             <div className="flex items-center space-x-4">
                               <span className="flex items-center space-x-1">
                                 <ThumbsUp className="w-3.5 h-3.5 text-rose-500" />
@@ -1178,23 +1178,23 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 <span>{post.comments?.length || 0} bình luận</span>
                               </span>
                             </div>
-                            <span className="text-[11px] text-[#9b9a97]">
+                            <span className="text-[11px] text-slate-400 dark:text-slate-500">
                               Tình trạng: {post.isPinned ? '📌 Ưu tiên hiển thị' : 'Tiêu chuẩn'}
                             </span>
                           </div>
 
                           {/* Expandable Comments Management Panel */}
                           {isExpanded && (
-                            <div className="pt-3 border-t border-[#e9e9e8] space-y-2 animate-fade-in">
-                              <div className="flex items-center justify-between text-xs font-bold text-[#37352f]">
+                            <div className="pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2 animate-fade-in">
+                              <div className="flex items-center justify-between text-xs font-bold text-slate-900 dark:text-white">
                                 <span>Danh Sách Bình Luận ({post.comments?.length || 0})</span>
-                                <span className="text-[11px] text-[#787774] font-normal">
+                                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
                                   Bấm vào biểu tượng thùng rác để xóa bình luận vi phạm
                                 </span>
                               </div>
 
                               {(!post.comments || post.comments.length === 0) ? (
-                                <p className="text-xs text-[#787774] italic py-2">
+                                <p className="text-xs text-slate-500 dark:text-slate-400 italic py-2">
                                   Chưa có bình luận nào dưới bài viết này.
                                 </p>
                               ) : (
@@ -1202,23 +1202,23 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                   {post.comments.map((cm, cIdx) => (
                                     <div
                                       key={cIdx}
-                                      className="p-2.5 bg-[#f7f6f5] rounded-lg text-xs flex items-start justify-between gap-3 border border-[#e9e9e8]"
+                                      className="p-2.5 bg-slate-100 dark:bg-slate-900/90 rounded-lg text-xs flex items-start justify-between gap-3 border border-slate-200 dark:border-slate-700"
                                     >
                                       <div className="space-y-0.5">
-                                        <div className="font-bold text-[#37352f] flex items-center space-x-2">
+                                        <div className="font-bold text-slate-900 dark:text-white flex items-center space-x-2">
                                           <span>{cm.author}</span>
                                           {cm.createdAt && (
-                                            <span className="text-[10px] text-[#9b9a97] font-normal">
+                                            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
                                               {formatHanoiDateTime(cm.createdAt)}
                                             </span>
                                           )}
                                         </div>
-                                        <p className="text-[#5a5955] leading-relaxed font-normal">{cm.text}</p>
+                                        <p className="text-slate-700 dark:text-slate-200 leading-relaxed font-normal">{cm.text}</p>
                                       </div>
 
                                       <button
                                         onClick={() => handleAdminDeleteComment(post.id, cIdx)}
-                                        className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-100 transition-colors shrink-0"
+                                        className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-100 dark:hover:bg-rose-950/80 transition-colors shrink-0"
                                         title="Xóa bình luận này (Admin)"
                                       >
                                         <Trash2 className="w-3.5 h-3.5" />
@@ -1243,16 +1243,16 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             <form onSubmit={handleSaveTierLimits} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-black text-[#37352f]">
+                  <h4 className="text-sm font-black text-slate-900 dark:text-white">
                     Cấu Hình Giới Hạn Từng Gói (Free, Plus, Pro, Ultra)
                   </h4>
-                  <p className="text-xs text-[#787774] font-medium">
+                  <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                     Chỉnh sửa số lượt tạo thẻ mỗi ngày, lượt thưởng khi điểm danh hàng ngày và phí sàn C2C.
                   </p>
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
+                  className="px-5 py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-black rounded-xl shadow-md flex items-center space-x-1.5 transition-transform transform hover:scale-105 active:scale-95"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Lưu Cấu Hình</span>
@@ -1260,7 +1260,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {saveSuccessMsg && (
-                <div className="p-3 bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-black rounded-xl">
+                <div className="p-3 bg-emerald-100 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-black rounded-xl">
                   {saveSuccessMsg}
                 </div>
               )}
@@ -1269,19 +1269,19 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 {Object.keys(tierLimits).map((tierKey) => {
                   const cfg = tierLimits[tierKey];
                   return (
-                    <div key={tierKey} className="p-4 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
-                      <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-2">
-                        <span className="text-xs font-black uppercase text-[#37352f] tracking-wide">
+                    <div key={tierKey} className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
+                      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
+                        <span className="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wide">
                           {cfg.name}
                         </span>
-                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 text-[#2383e2] border border-pink-200">
+                        <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pink-100 dark:bg-pink-950/80 text-[#2383e2] dark:text-sky-300 border border-pink-200 dark:border-pink-800">
                           {tierKey}
                         </span>
                       </div>
 
                       <div className="grid grid-cols-3 gap-2 text-xs">
                         <div>
-                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
                             Lượt tạo/ngày:
                           </label>
                           <input
@@ -1295,12 +1295,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], dailyLimit: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
+                            className="w-full px-2.5 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-black bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
                             Thưởng điểm danh:
                           </label>
                           <input
@@ -1314,12 +1314,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], checkInBonus: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
+                            className="w-full px-2.5 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-black bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-bold text-[#787774] block mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
                             Phí sàn (%):
                           </label>
                           <input
@@ -1334,7 +1334,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                                 [tierKey]: { ...prev[tierKey], marketplaceFee: val }
                               }));
                             }}
-                            className="w-full px-2.5 py-1.5 border border-[#e9e9e8] rounded-lg text-xs font-black bg-[#ffffff] text-[#37352f]"
+                            className="w-full px-2.5 py-1.5 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-black bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
                           />
                         </div>
                       </div>
@@ -1367,10 +1367,10 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <h4 className="text-sm font-black text-[#37352f]">
+                    <h4 className="text-sm font-black text-slate-900 dark:text-white">
                       Quản Lý & Kiểm Duyệt Trùng Lặp Sàn Flashcard C2C
                     </h4>
-                    <p className="text-xs text-[#787774] font-medium">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                       Hệ thống tự động đối chiếu Jaccard & N-gram để phát hiện đạo văn hoặc sao chép thẻ trái phép.
                     </p>
                   </div>
@@ -1381,8 +1381,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       onClick={() => setMarketFilter('all')}
                       className={`px-3 py-1.5 rounded-xl transition-all ${
                         marketFilter === 'all'
-                          ? 'bg-[#37352f] text-white shadow-xs'
-                          : 'bg-white text-[#37352f] border border-[#e9e9e8] hover:bg-[#f7f6f5]'
+                          ? 'bg-slate-900 dark:bg-sky-600 text-white shadow-xs'
+                          : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
                       }`}
                     >
                       Tất cả ({marketDecks.length})
@@ -1393,7 +1393,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       className={`px-3 py-1.5 rounded-xl flex items-center space-x-1 transition-all ${
                         marketFilter === 'duplicates'
                           ? 'bg-rose-600 text-white shadow-xs'
-                          : 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+                          : 'bg-rose-50 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 dark:hover:bg-rose-900'
                       }`}
                     >
                       <AlertTriangle className="w-3.5 h-3.5" />
@@ -1405,7 +1405,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       className={`px-3 py-1.5 rounded-xl flex items-center space-x-1 transition-all ${
                         marketFilter === 'pass'
                           ? 'bg-purple-700 text-white shadow-xs'
-                          : 'bg-purple-50 text-purple-700 border border-purple-200 hover:bg-purple-100'
+                          : 'bg-purple-50 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900'
                       }`}
                     >
                       <Repeat className="w-3.5 h-3.5" />
@@ -1417,7 +1417,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       className={`px-3 py-1.5 rounded-xl flex items-center space-x-1 transition-all ${
                         marketFilter === 'clean'
                           ? 'bg-emerald-700 text-white shadow-xs'
-                          : 'bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100'
+                          : 'bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900'
                       }`}
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
@@ -1427,7 +1427,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 </div>
 
                 {filteredDecks.length === 0 ? (
-                  <div className="p-8 text-center bg-white rounded-2xl border border-[#e9e9e8] text-xs text-[#787774]">
+                  <div className="p-8 text-center bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                     Không có bộ thẻ nào trong danh mục lọc này.
                   </div>
                 ) : (
@@ -1435,42 +1435,42 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     {filteredDecks.map((deck) => (
                       <div
                         key={deck.id}
-                        className={`p-4 bg-white rounded-2xl border flex flex-col justify-between shadow-xs transition-all ${
+                        className={`p-4 bg-white dark:bg-slate-900/90 rounded-2xl border flex flex-col justify-between shadow-xs transition-all ${
                           deck.dupCheck.similarityScore >= 55
-                            ? 'border-rose-400 bg-rose-50/20'
-                            : 'border-[#e9e9e8]'
+                            ? 'border-rose-400 dark:border-rose-700 bg-rose-50/20 dark:bg-rose-950/20'
+                            : 'border-slate-200 dark:border-slate-800'
                         }`}
                       >
                         <div>
                           <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#ffffff] text-[#37352f] border border-[#e9e9e8]">
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                               {deck.categoryName || deck.category}
                             </span>
-                            <span className="text-xs font-black text-[#2383e2]">
+                            <span className="text-xs font-black text-[#2383e2] dark:text-sky-400">
                               {deck.priceXu} Xu (~{(deck.priceXu * 1000).toLocaleString()}đ)
                             </span>
                           </div>
 
-                          <h5 className="text-xs font-black text-[#37352f] line-clamp-1">
+                          <h5 className="text-xs font-black text-slate-900 dark:text-white line-clamp-1">
                             {deck.title}
                           </h5>
-                          <p className="text-[11px] text-[#787774] mt-1 line-clamp-2 font-medium">
+                          <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 line-clamp-2 font-medium">
                             {deck.description}
                           </p>
 
-                          <div className="mt-2 text-[10px] text-[#787774] font-bold">
+                          <div className="mt-2 text-[10px] text-slate-500 dark:text-slate-400 font-bold">
                             Tác giả: <strong>{deck.authorName}</strong> • Đã bán: {deck.salesCount || 0} lượt
                           </div>
 
                           {/* Pass Deck indicator */}
                           {deck.isPassDeck && (
-                            <div className="mt-2 p-2 rounded-xl bg-purple-50 border border-purple-200 text-purple-900 text-[11px]">
+                            <div className="mt-2 p-2 rounded-xl bg-purple-50 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-[11px]">
                               <span className="font-black flex items-center space-x-1">
-                                <Repeat className="w-3.5 h-3.5 text-purple-600" />
+                                <Repeat className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
                                 <span>Thẻ Pass C2C từ học viên: {deck.passSellerName}</span>
                               </span>
                               {deck.passNote && (
-                                <span className="text-[10px] text-purple-700 italic block mt-0.5">
+                                <span className="text-[10px] text-purple-700 dark:text-purple-300 italic block mt-0.5">
                                   "{deck.passNote}"
                                 </span>
                               )}
@@ -1479,26 +1479,26 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                           {/* Duplicate Detection Alert Badge */}
                           {deck.dupCheck.similarityScore >= 55 ? (
-                            <div className="mt-2.5 p-2 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-[11px] font-bold">
-                              <div className="flex items-center space-x-1 font-black text-rose-900">
-                                <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+                            <div className="mt-2.5 p-2 rounded-xl bg-rose-50 dark:bg-rose-950/80 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 text-[11px] font-bold">
+                              <div className="flex items-center space-x-1 font-black text-rose-900 dark:text-rose-200">
+                                <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                                 <span>CẢNH BÁO TRÙNG LẶP CAO ({deck.dupCheck.similarityScore}%)</span>
                               </div>
-                              <div className="mt-0.5 text-[10px] text-rose-700 font-medium">
+                              <div className="mt-0.5 text-[10px] text-rose-700 dark:text-rose-300 font-medium">
                                 {deck.dupCheck.reason}
                               </div>
-                              <div className="mt-0.5 text-[10px] text-rose-600 truncate">
+                              <div className="mt-0.5 text-[10px] text-rose-600 dark:text-rose-400 truncate">
                                 Bộ đối chiếu: <strong>{deck.dupCheck.matchedDeck?.title}</strong> ({deck.dupCheck.matchedDeck?.source})
                               </div>
                             </div>
                           ) : deck.dupCheck.similarityScore >= 30 ? (
-                            <div className="mt-2 p-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold flex items-center space-x-1">
+                            <div className="mt-2 p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/80 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 text-[10px] font-bold flex items-center space-x-1">
                               <span>ℹ️ Tương đồng vừa phải ({deck.dupCheck.similarityScore}%) với:</span>
                               <span className="truncate max-w-[150px] font-black">{deck.dupCheck.matchedDeck?.title}</span>
                             </div>
                           ) : (
-                            <div className="mt-2 inline-flex items-center space-x-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <div className="mt-2 inline-flex items-center space-x-1 text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                               <span>Độc bản an toàn ({deck.dupCheck.similarityScore}% trùng lặp)</span>
                             </div>
                           )}
@@ -1547,18 +1547,18 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             return (
               <div className="space-y-6">
                 {/* Hanoi Time Engine Status Banner */}
-                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 p-5 rounded-xl border border-teal-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-950/60 dark:to-cyan-950/60 p-5 rounded-xl border border-teal-200 dark:border-teal-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <Clock className="w-5 h-5 text-teal-600 animate-pulse" />
-                      <h4 className="text-sm font-black text-teal-900">
+                      <Clock className="w-5 h-5 text-teal-600 dark:text-teal-400 animate-pulse" />
+                      <h4 className="text-sm font-black text-teal-900 dark:text-teal-200">
                         Đồng Bộ Chuẩn Thời Gian Hà Nội (ICT - GMT+7)
                       </h4>
-                      <span className="px-2 py-0.5 rounded-full bg-teal-200 text-teal-900 text-[10px] font-black">
+                      <span className="px-2 py-0.5 rounded-full bg-teal-200 dark:bg-teal-800 text-teal-900 dark:text-teal-200 text-[10px] font-black">
                         LIVE CLOCK
                       </span>
                     </div>
-                    <p className="text-xs text-teal-800 leading-relaxed font-medium">
+                    <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed font-medium">
                       Thời gian hiện tại: <strong>{hanoiNow.dayName}, {hanoiNow.fullFormatted}</strong>.
                       Tất cả các phiên làm bài thi thử, mục tiêu học tập hàng ngày và lịch sử giao dịch đều được ghi nhận chuẩn theo múi giờ Việt Nam.
                     </p>
@@ -1566,33 +1566,33 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                   <button
                     onClick={handleClearStudyLogs}
-                    className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer"
+                    className="px-3 py-1.5 bg-white dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer"
                   >
                     Xóa Nhật Ký Vết Thời Gian
                   </button>
                 </div>
 
                 {/* Study Time Trace Logs Feed */}
-                <div className="bg-white rounded-xl border border-[#e9e9e8] overflow-hidden shadow-xs">
-                  <div className="p-4 border-b border-[#e9e9e8] bg-[#f7f6f5] flex items-center justify-between">
+                <div className="bg-white dark:bg-slate-900/90 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                  <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/90 flex items-center justify-between">
                     <div>
-                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#37352f]">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                         Nhật Ký Vết Thời Gian Học Tập ({studyLogs.length})
                       </h4>
-                      <p className="text-[11px] text-[#787774]">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
                         Lưu vết các phiên học, hoàn thành nhiệm vụ và bài thi theo chuẩn giờ Hà Nội
                       </p>
                     </div>
                   </div>
 
                   {studyLogs.length === 0 ? (
-                    <div className="text-center py-10 text-xs text-[#787774] font-medium">
+                    <div className="text-center py-10 text-xs text-slate-500 dark:text-slate-400 font-medium">
                       Chưa có vết thời gian học tập nào được ghi nhận.
                     </div>
                   ) : (
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs">
-                        <thead className="bg-[#f7f6f5] border-b border-[#e9e9e8] text-[#787774] font-bold">
+                        <thead className="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold">
                           <tr>
                             <th className="p-3">Thời Gian (Hà Nội)</th>
                             <th className="p-3">Hoạt Động</th>
@@ -1601,28 +1601,28 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                             <th className="p-3">Mã Vết</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-[#e9e9e8]">
+                        <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                           {studyLogs.map((log) => (
-                            <tr key={log.id} className="hover:bg-[#fbfbfa] transition-colors">
-                              <td className="p-3 font-mono font-medium text-[#37352f]">
+                            <tr key={log.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors">
+                              <td className="p-3 font-mono font-medium text-slate-900 dark:text-slate-100">
                                 <div>{log.hanoiTime}</div>
-                                <span className="text-[10px] text-[#787774]">{log.hanoiDate}</span>
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400">{log.hanoiDate}</span>
                               </td>
                               <td className="p-3">
-                                <div className="font-semibold text-[#37352f]">{log.title || 'Phiên học OnThiHub'}</div>
-                                <span className="text-[10px] text-[#787774] uppercase tracking-wider font-bold">
+                                <div className="font-semibold text-slate-900 dark:text-white">{log.title || 'Phiên học OnThiHub'}</div>
+                                <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">
                                   {log.type}
                                 </span>
                               </td>
-                              <td className="p-3 font-bold text-[#37352f]">
+                              <td className="p-3 font-bold text-slate-900 dark:text-slate-100">
                                 {log.durationMinutes} phút
                               </td>
                               <td className="p-3">
-                                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">
+                                <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[10px] font-bold">
                                   +{log.xpGained} XP
                                 </span>
                               </td>
-                              <td className="p-3 font-mono text-[10px] text-[#9b9a97]">
+                              <td className="p-3 font-mono text-[10px] text-slate-400 dark:text-slate-500">
                                 {log.id}
                               </td>
                             </tr>
@@ -1651,17 +1651,17 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {/* CARD 1: CẤU HÌNH GMAIL GỬI TRỰC TIẾP QUA FORMSUBMIT */}
-              <div className="p-5 bg-gradient-to-r from-amber-50/80 to-orange-50/80 rounded-2xl border-2 border-amber-300 shadow-sm space-y-3.5 text-xs">
+              <div className="p-5 bg-gradient-to-r from-amber-50/90 to-orange-50/90 dark:from-amber-950/40 dark:to-orange-950/40 rounded-2xl border-2 border-amber-300 dark:border-amber-700/60 shadow-sm space-y-3.5 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2.5">
                     <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold shadow-xs">
                       <Mail className="w-5 h-5" />
                     </div>
                     <div>
-                      <h5 className="text-sm font-black text-[#37352f]">
-                        Gửi Email Tự Động Trực Tiếp Về Gmail: <span className="text-[#2383e2] font-mono">{ADMIN_EMAIL}</span>
+                      <h5 className="text-sm font-black text-slate-900 dark:text-amber-100">
+                        Gửi Email Tự Động Trực Tiếp Về Gmail: <span className="text-[#2383e2] dark:text-sky-400 font-mono">{ADMIN_EMAIL}</span>
                       </h5>
-                      <span className="text-[11px] text-[#787774] font-medium">
+                      <span className="text-[11px] text-slate-600 dark:text-amber-200/80 font-medium">
                         Cơ chế tự động qua FormSubmit API • Không cần máy chủ backend • Nhận email trong 1-3 giây
                       </span>
                     </div>
@@ -1679,36 +1679,36 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 </div>
 
                 {emailTestMsg && (
-                  <div className="p-3 bg-white border border-amber-300 rounded-xl font-bold text-amber-950 text-xs">
+                  <div className="p-3 bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 rounded-xl font-bold text-amber-950 dark:text-amber-200 text-xs">
                     {emailTestMsg}
                   </div>
                 )}
 
-                <div className="p-3 bg-white/90 rounded-xl border border-amber-200 text-[#787774] space-y-1.5 text-[11px] leading-relaxed">
-                  <strong className="text-[#37352f] font-black block">
+                <div className="p-3 bg-white/90 dark:bg-slate-900/90 rounded-xl border border-amber-200 dark:border-amber-800 text-slate-600 dark:text-slate-300 space-y-1.5 text-[11px] leading-relaxed">
+                  <strong className="text-slate-900 dark:text-white font-black block">
                     ⚠️ Hướng dẫn kích hoạt nhận email lần đầu (Chỉ làm 1 lần duy nhất):
                   </strong>
                   <p>1. Mở hòm thư <strong>{ADMIN_EMAIL}</strong> (vui lòng kiểm tra cả thư mục <strong>Hộp thư đến</strong> và <strong>Thư rác / Spam</strong>).</p>
                   <p>2. Tìm email do máy chủ <strong>FormSubmit</strong> gửi tới với tiêu đề <em>"FormSubmit - Confirm your email address"</em> hoặc <em>"Activate Form"</em>.</p>
                   <p>3. Bấm vào nút <strong>"Activate Form"</strong> trong email đó.</p>
-                  <p className="text-emerald-700 font-bold">
+                  <p className="text-emerald-700 dark:text-emerald-400 font-bold">
                     ✅ Sau khi bấm, máy chủ FormSubmit sẽ kích hoạt vĩnh viễn. Mọi lệnh Nạp tiền và Rút tiền từ học viên trên web sẽ tự động gửi thẳng email chi tiết về Gmail của anh!
                   </p>
                 </div>
               </div>
 
                 {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
-              <div className="p-5 sm:p-6 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-4 text-xs">
+              <div className="p-5 sm:p-6 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2.5">
                     <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-purple-900/20">
                       <BellRing className="w-5 h-5" />
                     </div>
                     <div>
-                      <h5 className="text-sm sm:text-base font-black text-[#37352f]">
+                      <h5 className="text-sm sm:text-base font-black text-slate-900 dark:text-white">
                         Chuông Báo & Màn Hình Khóa Điện Thoại (ntfy.sh)
                       </h5>
-                      <span className="text-[11px] text-[#787774] font-medium">
+                      <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                         Không cần tài khoản hay mật khẩu • Reo chuông màn hình khóa tức thì khi có khách Nạp / Rút
                       </span>
                     </div>
@@ -1728,7 +1728,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       href={ADMIN_NTFY_TOPIC}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3.5 py-2 bg-purple-100 hover:bg-purple-200 text-purple-900 border border-purple-300 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
+                      className="px-3.5 py-2 bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-900 dark:text-purple-300 border border-purple-300 dark:border-purple-800 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       <span>Mở Trang ntfy.sh</span>
@@ -1744,42 +1744,42 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 )}
 
                 {/* Giới thiệu cơ chế không cần đăng nhập */}
-                <div className="p-4 bg-purple-50/70 border border-purple-200 rounded-2xl space-y-3">
+                <div className="p-4 bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-2xl space-y-3">
                   <div className="flex items-start gap-3">
-                    <Smartphone className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
+                    <Smartphone className="w-5 h-5 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
                     <div className="space-y-1">
-                      <strong className="text-purple-950 font-black text-xs block">
+                      <strong className="text-purple-950 dark:text-purple-200 font-black text-xs block">
                         ❓ Vì sao trên ứng dụng ntfy không có chỗ đăng nhập tài khoản?
                       </strong>
-                      <p className="text-[11px] text-purple-900/90 leading-relaxed font-medium">
+                      <p className="text-[11px] text-purple-900/90 dark:text-purple-300 leading-relaxed font-medium">
                         <strong>ntfy</strong> được thiết kế theo cơ chế ẩn danh (Zero-login). 
                         Anh không cần tạo tài khoản hay ghi nhớ mật khẩu! Thay vào đó, 
-                        chủ đề (Topic) <code className="bg-purple-200/80 text-purple-950 px-1.5 py-0.5 rounded font-mono font-black">Onthihubbbbb</code> chính là kênh thông báo riêng biệt của website ÔnThiHub.
+                        chủ đề (Topic) <code className="bg-purple-200/80 dark:bg-purple-900/80 text-purple-950 dark:text-purple-200 px-1.5 py-0.5 rounded font-mono font-black">Onthihubbbbb</code> chính là kênh thông báo riêng biệt của website ÔnThiHub.
                       </p>
                     </div>
                   </div>
 
                   {/* 2 Cột: Quét Mã QR & Các Bước Thao Tác */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-purple-200/80 items-center">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-purple-200/80 dark:border-purple-850 items-center">
                     
                     {/* Cột 1: Mã QR để quét nhanh trên điện thoại */}
-                    <div className="p-3 bg-white rounded-xl border border-purple-200 shadow-2xs flex flex-col items-center text-center">
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-800 shadow-2xs flex flex-col items-center text-center">
                       <img
                         src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://ntfy.sh/Onthihubbbbb"
                         alt="QR Code ntfy Onthihubbbbb"
-                        className="w-32 h-32 rounded-lg border border-purple-100 mb-2"
+                        className="w-32 h-32 rounded-lg border border-purple-100 dark:border-purple-900 mb-2"
                       />
-                      <span className="text-[10px] text-purple-900 font-black">
+                      <span className="text-[10px] text-purple-900 dark:text-purple-300 font-black">
                         Quét mã QR bằng Camera điện thoại
                       </span>
                     </div>
 
                     {/* Cột 2 & 3: Hướng dẫn 2 bước cực dễ */}
-                    <div className="md:col-span-2 space-y-2.5 text-[11px] text-purple-950 font-medium">
+                    <div className="md:col-span-2 space-y-2.5 text-[11px] text-purple-950 dark:text-purple-200 font-medium">
                       <div className="flex items-start space-x-2">
                         <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center font-black text-[10px] shrink-0 mt-0.5">1</span>
                         <div>
-                          <strong>Bước 1: Tải ứng dụng ntfy về điện thoại</strong> (tìm từ khóa <code className="font-mono bg-purple-100 px-1 py-0.2 rounded font-bold">ntfy</code> trên App Store hoặc Google Play, tải hoàn toàn miễn phí).
+                          <strong>Bước 1: Tải ứng dụng ntfy về điện thoại</strong> (tìm từ khóa <code className="font-mono bg-purple-100 dark:bg-purple-900 px-1 py-0.2 rounded font-bold">ntfy</code> trên App Store hoặc Google Play, tải hoàn toàn miễn phí).
                         </div>
                       </div>
 
@@ -1788,7 +1788,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         <div>
                           <strong>Bước 2: Đăng ký nhận thông báo</strong>: Mở app ntfy &gt; Bấm dấu cộng (<strong>+</strong>) ở góc màn hình &gt; Nhập đúng tên chủ đề:
                           <div className="mt-1.5 flex items-center space-x-2">
-                            <span className="px-2.5 py-1 bg-white border border-purple-300 font-mono font-black text-purple-700 rounded-lg text-xs">
+                            <span className="px-2.5 py-1 bg-white dark:bg-slate-900 border border-purple-300 dark:border-purple-700 font-mono font-black text-purple-700 dark:text-purple-300 rounded-lg text-xs">
                               Onthihubbbbb
                             </span>
                             <button
@@ -1805,13 +1805,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                               <span>{copiedNtfyTopic ? 'Đã Copy!' : 'Copy Tên Chủ Đề'}</span>
                             </button>
                           </div>
-                          <span className="block mt-1 text-[10px] text-purple-800">
+                          <span className="block mt-1 text-[10px] text-purple-800 dark:text-purple-300">
                             Sau đó bấm <strong>Subscribe</strong> là xong 100%!
                           </span>
                         </div>
                       </div>
 
-                      <div className="p-2.5 bg-emerald-50 border border-emerald-300 rounded-xl text-emerald-900 text-[10px] font-bold flex items-center space-x-1.5">
+                      <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-800 rounded-xl text-emerald-900 dark:text-emerald-300 text-[10px] font-bold flex items-center space-x-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span>Từ giờ, mỗi khi có khách Nạp hoặc Rút tiền, màn hình khóa điện thoại của anh sẽ reo chuông ting ting ngay lập tức.</span>
                       </div>
@@ -1822,15 +1822,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {/* CARD 3: TÙY CHỌN TELEGRAM BOT TỰ ĐỘNG */}
-              <form onSubmit={handleSaveTelegram} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-3 text-xs">
-                <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-2.5">
+              <form onSubmit={handleSaveTelegram} className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2.5">
                   <div className="flex items-center space-x-2">
                     <Send className="w-4 h-4 text-[#0068ff]" />
-                    <h5 className="text-xs font-black uppercase text-[#37352f] tracking-wider">
+                    <h5 className="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">
                       Tùy Chọn: Bắn Tin Nhắn Tức Thì Qua Telegram Bot (Tin Nhắn Riêng)
                     </h5>
                   </div>
-                  <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-[#37352f]">
+                  <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-slate-900 dark:text-white">
                     <input
                       type="checkbox"
                       checked={telegramConfig.enabled}
@@ -1842,30 +1842,30 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 </div>
 
                 {telegramTestMsg && (
-                  <div className="p-3 bg-blue-50 border border-blue-200 text-blue-950 font-bold rounded-xl text-xs">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-blue-950 dark:text-blue-200 font-bold rounded-xl text-xs">
                     {telegramTestMsg}
                   </div>
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="font-bold text-[#787774] block mb-1">Telegram Bot Token (từ @BotFather):</label>
+                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Bot Token (từ @BotFather):</label>
                     <input
                       type="text"
                       placeholder="VD: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
                       value={telegramConfig.botToken}
                       onChange={(e) => setTelegramConfig(prev => ({ ...prev, botToken: e.target.value }))}
-                      className="w-full px-3 py-2 border border-[#e9e9e8] rounded-xl font-mono text-xs bg-[#ffffff] text-[#37352f] outline-none focus:border-[#0068ff]"
+                      className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-[#0068ff]"
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-[#787774] block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
+                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
                     <input
                       type="text"
                       placeholder="VD: 987654321"
                       value={telegramConfig.chatId}
                       onChange={(e) => setTelegramConfig(prev => ({ ...prev, chatId: e.target.value }))}
-                      className="w-full px-3 py-2 border border-[#e9e9e8] rounded-xl font-mono text-xs bg-[#ffffff] text-[#37352f] outline-none focus:border-[#0068ff]"
+                      className="w-full px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-xs bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white outline-none focus:border-[#0068ff]"
                     />
                   </div>
                 </div>
@@ -1875,7 +1875,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     type="button"
                     disabled={isSendingTelegramTest || !telegramConfig.botToken || !telegramConfig.chatId}
                     onClick={handleTestTelegram}
-                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#37352f] font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
+                    className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
                   >
                     <span>{isSendingTelegramTest ? 'Đang gửi...' : 'Gửi Thử Telegram'}</span>
                   </button>
@@ -1891,44 +1891,44 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
               {/* LỊCH SỬ THÔNG BÁO */}
               <div className="pt-2">
-                <h5 className="text-xs font-black uppercase text-[#37352f] tracking-wider mb-2">
+                <h5 className="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider mb-2">
                   Lịch Sử Các Thông Báo Đã Ghi Nhận ({notifications.length})
                 </h5>
               </div>
 
               {notifications.length === 0 ? (
-                <div className="text-center py-12 bg-white rounded-2xl border border-[#e9e9e8]">
-                  <BellRing className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-[#787774] font-bold">Chưa có thông báo nạp/rút nào được ghi nhận.</p>
+                <div className="text-center py-12 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <BellRing className="w-10 h-10 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="text-xs text-slate-600 dark:text-slate-400 font-bold">Chưa có thông báo nạp/rút nào được ghi nhận.</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {notifications.map((n) => (
-                    <div key={n.id} className="p-4 bg-white rounded-2xl border border-[#e9e9e8] shadow-2xs">
+                    <div key={n.id} className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 uppercase border border-purple-200">
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 uppercase border border-purple-200 dark:border-purple-800">
                               Mã: {n.code}
                             </span>
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-pink-100 text-[#2383e2]">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-pink-100 dark:bg-pink-950/80 text-[#2383e2] dark:text-sky-300">
                               {n.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
                             </span>
                           </div>
-                          <h5 className="text-xs font-black text-[#37352f] mt-1.5">{n.subject}</h5>
-                          <span className="text-[10px] text-[#787774] block mt-0.5 font-medium">{n.timestamp}</span>
+                          <h5 className="text-xs font-black text-slate-900 dark:text-white mt-1.5">{n.subject}</h5>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5 font-medium">{n.timestamp}</span>
                         </div>
                         <div className="flex items-center space-x-1.5 shrink-0">
                           <a
                             href={`mailto:${n.targetEmail}?subject=${encodeURIComponent(n.subject)}&body=${encodeURIComponent(n.body)}`}
-                            className="px-2.5 py-1 text-[11px] font-bold text-[#787774] bg-white hover:bg-slate-50 rounded-lg flex items-center space-x-1 border border-[#e9e9e8]"
+                            className="px-2.5 py-1 text-[11px] font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg flex items-center space-x-1 border border-slate-200 dark:border-slate-700"
                           >
                             <ExternalLink className="w-3 h-3" />
                             <span>Mail</span>
                           </a>
                         </div>
                       </div>
-                      <pre className="mt-3 p-3 bg-[#ffffff] rounded-xl text-[11px] text-[#37352f] font-mono whitespace-pre-wrap border border-[#e9e9e8]">
+                      <pre className="mt-3 p-3 bg-slate-50 dark:bg-slate-950/90 rounded-xl text-[11px] text-slate-800 dark:text-slate-200 font-mono whitespace-pre-wrap border border-slate-200 dark:border-slate-800">
                         {n.zaloMessage || n.body}
                       </pre>
                     </div>
@@ -2008,21 +2008,21 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               )}
 
               {/* Quick Paste Snippet Section */}
-              <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3">
+              <div className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Code className="w-4 h-4 text-[#2383e2]" />
-                    <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
+                    <Code className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
+                    <h5 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                       Dán Nhanh Mã Cấu Hình từ Firebase Console (Auto-Detect Parser)
                     </h5>
                   </div>
-                  <span className="text-[10px] font-bold text-[#787774] bg-[#f7f6f5] px-2 py-0.5 rounded-lg">
+                  <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg">
                     Hỗ trợ cú pháp JS & JSON
                   </span>
                 </div>
 
-                <p className="text-[11px] text-[#787774] leading-relaxed">
-                  Vào <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#2383e2] font-black underline">console.firebase.google.com</a> ➔ Project Settings ➔ Your apps ➔ Chọn Web app ➔ Sao chép đoạn mã <code>const firebaseConfig = &#123; ... &#125;</code> rồi dán vào ô bên dưới:
+                <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Vào <a href="https://console.firebase.google.com" target="_blank" rel="noreferrer" className="text-[#2383e2] dark:text-sky-400 font-black underline">console.firebase.google.com</a> ➔ Project Settings ➔ Your apps ➔ Chọn Web app ➔ Sao chép đoạn mã <code>const firebaseConfig = &#123; ... &#125;</code> rồi dán vào ô bên dưới:
                 </p>
 
                 <textarea
@@ -2030,16 +2030,16 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   value={rawSnippet}
                   onChange={(e) => handleParseSnippet(e.target.value)}
                   placeholder={`// Dán đoạn mã này từ Firebase Console vào đây:\nconst firebaseConfig = {\n  apiKey: "AIzaSy...",\n  authDomain: "my-app.firebaseapp.com",\n  projectId: "my-app",\n  storageBucket: "my-app.appspot.com",\n  messagingSenderId: "123456789",\n  appId: "1:123456789:web:abcdef"\n};`}
-                  className="w-full p-3 font-mono text-xs bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2] focus:ring-2 focus:ring-[#2383e2]/20 text-[#37352f] leading-relaxed"
+                  className="w-full p-3 font-mono text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] focus:ring-2 focus:ring-[#2383e2]/20 text-slate-900 dark:text-white leading-relaxed"
                 />
               </div>
 
               {/* Individual Form Fields */}
-              <form onSubmit={handleSaveFirebaseConfig} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-4">
-                <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
+              <form onSubmit={handleSaveFirebaseConfig} className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                   <div className="flex items-center space-x-2">
                     <Key className="w-4 h-4 text-amber-500" />
-                    <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
+                    <h5 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                       Chi Tiết Khóa API & Thông Số Firebase
                     </h5>
                   </div>
@@ -2055,11 +2055,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-black text-[#37352f] block">
+                      <label className="text-xs font-black text-slate-900 dark:text-white block">
                         API Key (VITE_FIREBASE_API_KEY):
                       </label>
                       {firebaseConfig.apiKey && (
-                        <span className="text-[10px] font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                        <span className="text-[10px] font-mono font-bold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-800">
                           🔒 {maskApiKey(firebaseConfig.apiKey)}
                         </span>
                       )}
@@ -2070,7 +2070,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         value={firebaseConfig.apiKey || ''}
                         onChange={(e) => setFirebaseConfig({ ...firebaseConfig, apiKey: e.target.value })}
                         placeholder="AIzaSy..."
-                        className="w-full pl-3 pr-10 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                        className="w-full pl-3 pr-10 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                         required
                       />
                       <button
@@ -2085,7 +2085,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#37352f] block mb-1">
+                    <label className="text-xs font-black text-slate-900 dark:text-white block mb-1">
                       Project ID (VITE_FIREBASE_PROJECT_ID):
                     </label>
                     <input
@@ -2093,13 +2093,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.projectId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, projectId: e.target.value })}
                       placeholder="my-project-id"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#37352f] block mb-1">
+                    <label className="text-xs font-black text-slate-900 dark:text-white block mb-1">
                       Auth Domain (VITE_FIREBASE_AUTH_DOMAIN):
                     </label>
                     <input
@@ -2107,12 +2107,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.authDomain || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, authDomain: e.target.value })}
                       placeholder="my-project.firebaseapp.com"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#37352f] block mb-1">
+                    <label className="text-xs font-black text-slate-900 dark:text-white block mb-1">
                       Storage Bucket (VITE_FIREBASE_STORAGE_BUCKET):
                     </label>
                     <input
@@ -2120,12 +2120,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.storageBucket || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, storageBucket: e.target.value })}
                       placeholder="my-project.appspot.com"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#37352f] block mb-1">
+                    <label className="text-xs font-black text-slate-900 dark:text-white block mb-1">
                       Messaging Sender ID (VITE_FIREBASE_MESSAGING_SENDER_ID):
                     </label>
                     <input
@@ -2133,12 +2133,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.messagingSenderId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, messagingSenderId: e.target.value })}
                       placeholder="1234567890"
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-black text-[#37352f] block mb-1">
+                    <label className="text-xs font-black text-slate-900 dark:text-white block mb-1">
                       App ID (VITE_FIREBASE_APP_ID):
                     </label>
                     <input
@@ -2146,13 +2146,13 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       value={firebaseConfig.appId || ''}
                       onChange={(e) => setFirebaseConfig({ ...firebaseConfig, appId: e.target.value })}
                       placeholder="1:1234567890:web:abcdef..."
-                      className="w-full px-3 py-2 text-xs font-mono bg-[#ffffff] border border-[#e9e9e8] rounded-xl outline-none focus:border-[#2383e2]"
+                      className="w-full px-3 py-2 text-xs font-mono bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:border-[#2383e2] text-slate-900 dark:text-white"
                     />
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#e9e9e8]">
-                  <p className="text-[11px] text-[#787774]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Khóa lưu trên máy của bạn sẽ ghi đè cấu hình thử nghiệm và kích hoạt Cloud thật ngay lập tức.
                   </p>
 
@@ -2219,25 +2219,25 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               {/* 3 Box Rate Breakdown Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {BLIND_BOXES.map((box) => (
-                  <div key={box.id} className="p-5 bg-white rounded-2xl border border-[#e9e9e8] shadow-xs space-y-4">
+                  <div key={box.id} className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
                     
                     {/* Box Title */}
-                    <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                       <div className="flex items-center space-x-2.5">
                         <span className="text-3xl">{box.icon}</span>
                         <div>
-                          <h5 className="text-sm font-black text-[#37352f]">{box.name}</h5>
-                          <span className="text-[11px] font-bold text-amber-700">{box.subname}</span>
+                          <h5 className="text-sm font-black text-slate-900 dark:text-white">{box.name}</h5>
+                          <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400">{box.subname}</span>
                         </div>
                       </div>
-                      <div className="px-2.5 py-1 rounded-xl bg-amber-400 text-[#37352f] font-black text-xs">
+                      <div className="px-2.5 py-1 rounded-xl bg-amber-400 text-slate-950 font-black text-xs">
                         {box.costXu} Xu
                       </div>
                     </div>
 
                     {/* Rates Table */}
                     <div className="space-y-2">
-                      <span className="text-[10px] font-black text-[#787774] uppercase tracking-wider block">
+                      <span className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase tracking-wider block">
                         Tỷ Lệ Rơi Thưởng (Tổng 100%):
                       </span>
 
@@ -2245,7 +2245,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         {box.dropRates.map((item, idx) => (
                           <div
                             key={idx}
-                            className="p-2 rounded-xl bg-[#ffffff] border border-[#e9e9e8] flex items-center justify-between text-xs"
+                            className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs"
                           >
                             <div className="flex items-center space-x-1.5 min-w-0 pr-2">
                               <span className={`text-[8px] font-black uppercase px-1.5 py-0.2 rounded shrink-0 ${
@@ -2257,12 +2257,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                               }`}>
                                 {item.rarity}
                               </span>
-                              <span className="font-bold text-[#37352f] text-[11px] truncate">
+                              <span className="font-bold text-slate-900 dark:text-white text-[11px] truncate">
                                 {item.name}
                               </span>
                             </div>
 
-                            <span className="font-mono font-black text-amber-700 shrink-0 text-xs">
+                            <span className="font-mono font-black text-amber-700 dark:text-amber-300 shrink-0 text-xs">
                               {item.rate}
                             </span>
                           </div>
@@ -2271,7 +2271,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     </div>
 
                     {/* Summary Tag */}
-                    <div className="p-2.5 rounded-xl bg-[#f7f6f5]/60 text-[11px] text-[#787774] font-medium leading-relaxed">
+                    <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-[11px] text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                       💡 {box.description}
                     </div>
 
@@ -2280,28 +2280,28 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               </div>
 
               {/* Economic Balance & Highlights */}
-              <div className="p-5 bg-gradient-to-r from-purple-900/10 via-pink-900/10 to-amber-900/10 rounded-2xl border border-purple-200 space-y-3">
+              <div className="p-5 bg-gradient-to-r from-purple-900/10 via-pink-900/10 to-amber-900/10 dark:from-purple-950/40 dark:via-pink-950/40 dark:to-amber-950/40 rounded-2xl border border-purple-200 dark:border-purple-800 space-y-3">
                 <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
-                  <h5 className="text-xs font-black text-[#37352f] uppercase tracking-wider">
+                  <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  <h5 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">
                     Các Điểm Sáng Trong Cơ Chế Rơi Thưởng Mới:
                   </h5>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-[#37352f]">
-                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-emerald-700 font-bold block">1. Chủ Sàn Luôn Thắng (House Edge 80%)</strong>
-                    <p className="text-[11px] text-[#787774]">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-900 dark:text-white">
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
+                    <strong className="text-emerald-700 dark:text-emerald-400 font-bold block">1. Chủ Sàn Luôn Thắng (House Edge 80%)</strong>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
                   </div>
 
-                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-amber-700 font-bold block">2. Tỷ Lệ Đồ Xịn Siêu Thấp (1% - 5%)</strong>
-                    <p className="text-[11px] text-[#787774]">Jackpot chỉ 1%, PRO/PLUS chỉ 2%, thẻ đắt tiền chỉ 5%. Hàng trăm người mở mới có 1 người trúng để tạo hiệu ứng viral.</p>
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
+                    <strong className="text-amber-700 dark:text-amber-400 font-bold block">2. Tỷ Lệ Đồ Xịn Siêu Thấp (1% - 5%)</strong>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Jackpot chỉ 1%, PRO/PLUS chỉ 2%, thẻ đắt tiền chỉ 5%. Hàng trăm người mở mới có 1 người trúng để tạo hiệu ứng viral.</p>
                   </div>
 
-                  <div className="p-3 bg-white rounded-xl border border-purple-100 space-y-1">
-                    <strong className="text-purple-700 font-bold block">3. Ép Khách Nạp Thêm Tiền Thật</strong>
-                    <p className="text-[11px] text-[#787774]">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
+                  <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
+                    <strong className="text-purple-700 dark:text-purple-400 font-bold block">3. Ép Khách Nạp Thêm Tiền Thật</strong>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
                   </div>
                 </div>
               </div>
@@ -2401,15 +2401,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               <form onSubmit={handleSaveAiKey} className="space-y-4">
                 
                 {/* 1. Cloud AI Key Card */}
-                <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
+                <div className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <span className="text-base">✨</span>
                       <div>
-                        <strong className="text-sm font-black text-[#37352f] block">
+                        <strong className="text-sm font-black text-slate-900 dark:text-white block">
                           Khóa Động Cơ AI ÔnThiHub Cloud (Khuyên Dùng - Tốc Độ Cao)
                         </strong>
-                        <span className="text-[11px] text-[#787774] font-medium">
+                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                           Mô hình AI Flash siêu tốc: phân tích và trích xuất cấu trúc đề thi, hỗ trợ tiếng Việt cực chuẩn.
                         </span>
                       </div>
@@ -2419,7 +2419,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       href={API_KEY_LINKS.gemini}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs font-black text-blue-600 hover:underline flex items-center space-x-1"
+                      className="text-xs font-black text-blue-600 dark:text-sky-400 hover:underline flex items-center space-x-1"
                     >
                       <span>Cổng Đăng Ký Khóa AI</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -2428,11 +2428,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] font-bold text-[#787774] block">
-                        Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#2383e2]">AIzaSy...</code>):
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">
+                        Khóa bí mật AI Engine Key (Bắt đầu bằng <code className="font-mono text-[#2383e2] dark:text-sky-400">AIzaSy...</code>):
                       </label>
                       {geminiApiKey && (
-                        <span className="text-[10px] font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <span className="text-[10px] font-mono font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800">
                           🔒 {maskApiKey(geminiApiKey)}
                         </span>
                       )}
@@ -2443,12 +2443,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         placeholder="AIzaSy..."
                         value={geminiApiKey}
                         onChange={(e) => setGeminiApiKey(e.target.value)}
-                        className="w-full pl-4 pr-10 py-2.5 bg-[#ffffff] border border-[#e9e9e8] rounded-xl text-xs font-mono font-bold text-[#37352f] outline-none focus:border-[#2383e2]"
+                        className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
                       />
                       <button
                         type="button"
                         onClick={() => setShowGeminiKey(!showGeminiKey)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                         title={showGeminiKey ? 'Ẩn khóa' : 'Hiện khóa'}
                       >
                         {showGeminiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -2457,26 +2457,26 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                   </div>
 
                   {/* 3 Steps Guide to get free key */}
-                  <div className="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1.5">
-                    <strong className="font-black block text-blue-950">📋 Hướng dẫn kích hoạt khóa trong 30 giây:</strong>
+                  <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-sky-950/60 border border-blue-200 dark:border-sky-800 text-xs text-blue-900 dark:text-sky-200 space-y-1.5">
+                    <strong className="font-black block text-blue-950 dark:text-white">📋 Hướng dẫn kích hoạt khóa trong 30 giây:</strong>
                     <ol className="list-decimal pl-4 space-y-1 text-[11px] font-medium">
-                      <li>Truy cập <a href={API_KEY_LINKS.gemini} target="_blank" rel="noreferrer" className="font-bold underline text-blue-700">Cổng đăng ký khóa AI Cloud</a> và đăng nhập Gmail.</li>
+                      <li>Truy cập <a href={API_KEY_LINKS.gemini} target="_blank" rel="noreferrer" className="font-bold underline text-blue-700 dark:text-sky-300">Cổng đăng ký khóa AI Cloud</a> và đăng nhập Gmail.</li>
                       <li>Bấm vào nút <strong>"Get API key"</strong> &gt; chọn <strong>"Create API key in new project"</strong>.</li>
-                      <li>Copy chuỗi ký tự dạng <code className="font-mono bg-blue-100 px-1 rounded">AIzaSy...</code> và dán vào ô trên rồi bấm <strong>Lưu Cấu Hình</strong>!</li>
+                      <li>Copy chuỗi ký tự dạng <code className="font-mono bg-blue-100 dark:bg-sky-900 px-1 rounded">AIzaSy...</code> và dán vào ô trên rồi bấm <strong>Lưu Cấu Hình</strong>!</li>
                     </ol>
                   </div>
                 </div>
 
                 {/* 2. OpenAI Key Card (Optional) */}
-                <div className="p-5 bg-white rounded-2xl border border-[#e9e9e8] space-y-3 shadow-xs">
+                <div className="p-5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <span className="text-base">🤖</span>
                       <div>
-                        <strong className="text-sm font-black text-[#37352f] block">
+                        <strong className="text-sm font-black text-slate-900 dark:text-white block">
                           OpenAI API Key (Tùy Chọn - GPT-4o / GPT-4o-mini)
                         </strong>
-                        <span className="text-[11px] text-[#787774] font-medium">
+                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                           Dành cho trường hợp bạn muốn dùng tài khoản OpenAI Platform trả phí.
                         </span>
                       </div>
@@ -2486,7 +2486,7 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                       href={API_KEY_LINKS.openai}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-xs font-black text-emerald-600 hover:underline flex items-center space-x-1"
+                      className="text-xs font-black text-emerald-600 dark:text-emerald-400 hover:underline flex items-center space-x-1"
                     >
                       <span>Lấy OpenAI Key</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -2495,11 +2495,11 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
 
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-[11px] font-bold text-[#787774] block">
-                        OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#2383e2]">sk-...</code>):
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">
+                        OpenAI API Key (Bắt đầu bằng <code className="font-mono text-[#2383e2] dark:text-sky-400">sk-...</code>):
                       </label>
                       {openaiApiKey && (
-                        <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                        <span className="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
                           🔒 {maskApiKey(openaiApiKey)}
                         </span>
                       )}
@@ -2510,12 +2510,12 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                         placeholder="sk-..."
                         value={openaiApiKey}
                         onChange={(e) => setOpenaiApiKey(e.target.value)}
-                        className="w-full pl-4 pr-10 py-2.5 bg-[#ffffff] border border-[#e9e9e8] rounded-xl text-xs font-mono font-bold text-[#37352f] outline-none focus:border-[#2383e2]"
+                        className="w-full pl-4 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-mono font-bold text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
                       />
                       <button
                         type="button"
                         onClick={() => setShowOpenaiKey(!showOpenaiKey)}
-                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
                         title={showOpenaiKey ? 'Ẩn khóa' : 'Hiện khóa'}
                       >
                         {showOpenaiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

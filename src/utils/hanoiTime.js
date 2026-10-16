@@ -8,10 +8,32 @@ export const STUDY_LOGS_KEY = 'onthi_study_time_logs_v1';
 export const TARGET_CLOCK_KEY = 'onthi_target_study_clock_v1';
 
 /**
+ * Chuyển đổi an toàn mọi đầu vào (Date, ISO string, timestamp) thành đối tượng Date hợp lệ
+ */
+export function toValidHanoiDate(val) {
+  if (!val) return new Date();
+  if (val instanceof Date) {
+    return isNaN(val.getTime()) ? new Date() : val;
+  }
+  if (typeof val === 'number') {
+    const d = new Date(val);
+    return isNaN(d.getTime()) ? new Date() : d;
+  }
+  if (typeof val === 'string') {
+    const parsed = new Date(val);
+    if (!isNaN(parsed.getTime())) {
+      return parsed;
+    }
+  }
+  return null;
+}
+
+/**
  * Lấy chuỗi ngày YYYY-MM-DD theo giờ Hà Nội (GMT+7)
  * Đảm bảo sau 00:00 đêm tính đúng ngày mới của Việt Nam
  */
-export function getHanoiDateString(date = new Date()) {
+export function getHanoiDateString(input = new Date()) {
+  const date = toValidHanoiDate(input) || new Date();
   try {
     const formatter = new Intl.DateTimeFormat('en-CA', {
       timeZone: HANOI_TIMEZONE,
@@ -30,7 +52,8 @@ export function getHanoiDateString(date = new Date()) {
 /**
  * Lấy chuỗi giờ HH:mm:ss hoặc HH:mm theo giờ Hà Nội (GMT+7)
  */
-export function getHanoiTimeString(date = new Date(), includeSeconds = true) {
+export function getHanoiTimeString(input = new Date(), includeSeconds = true) {
+  const date = toValidHanoiDate(input) || new Date();
   try {
     return new Intl.DateTimeFormat('vi-VN', {
       timeZone: HANOI_TIMEZONE,
@@ -50,9 +73,14 @@ export function getHanoiTimeString(date = new Date(), includeSeconds = true) {
 
 /**
  * Lấy chuỗi định dạng đầy đủ ngày & giờ theo chuẩn Việt Nam
+ * Hỗ trợ nhận Date, chuỗi ISO, timestamp hoặc chuỗi mô tả (fallback an toàn)
  * Ví dụ: "17/10/2026, 00:05:12 (Giờ Hà Nội)"
  */
-export function formatHanoiDateTime(date = new Date(), includeLabel = true) {
+export function formatHanoiDateTime(input = new Date(), includeLabel = true) {
+  const date = toValidHanoiDate(input);
+  if (!date) {
+    return String(input || 'Vừa xong');
+  }
   try {
     const dStr = new Intl.DateTimeFormat('vi-VN', {
       timeZone: HANOI_TIMEZONE,
@@ -70,7 +98,8 @@ export function formatHanoiDateTime(date = new Date(), includeLabel = true) {
 /**
  * Lấy tên thứ trong tuần theo giờ Hà Nội (Thứ Hai, Thứ Ba...)
  */
-export function getHanoiDayOfWeekName(date = new Date()) {
+export function getHanoiDayOfWeekName(input = new Date()) {
+  const date = toValidHanoiDate(input) || new Date();
   try {
     return new Intl.DateTimeFormat('vi-VN', {
       timeZone: HANOI_TIMEZONE,
