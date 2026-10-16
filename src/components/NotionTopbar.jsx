@@ -14,12 +14,15 @@ import {
   Search,
   Sparkles,
   BarChart2,
-  Palette
+  Palette,
+  Clock,
+  Target
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
+import { getHanoiTimeString } from '../utils/hanoiTime';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -38,20 +41,28 @@ export default function NotionTopbar({
   currentTheme,
   onOpenThemePicker,
   isWeatherEnabled = true,
-  onToggleWeather
+  onToggleWeather,
+  onOpenTargetClock
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
   const [isMuted, setIsMuted] = useState(() => isSoundMuted());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
+  const [hanoiTime, setHanoiTime] = useState(() => getHanoiTimeString(new Date(), false));
   const streakInfo = getStreakInfo();
 
   useEffect(() => {
     const unsub = subscribeToSleepMode((mode) => {
       setSleepMode(mode);
     });
+
+    const timer = setInterval(() => {
+      setHanoiTime(getHanoiTimeString(new Date(), false));
+    }, 1000);
+
     return () => {
       if (typeof unsub === 'function') unsub();
+      clearInterval(timer);
     };
   }, []);
 
@@ -274,6 +285,21 @@ export default function NotionTopbar({
             </button>
           );
         })()}
+
+        {/* Live Hanoi Clock & Target Study Goal Pill */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenTargetClock?.();
+          }}
+          className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 font-bold text-xs shadow-2xs cursor-pointer touch-3d"
+          title="Đồng hồ chuẩn Giờ Hà Nội & Thiết lập mục tiêu học tập hôm nay"
+        >
+          <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <span className="font-mono">{hanoiTime}</span>
+          <span className="hidden lg:inline text-[10px] text-emerald-700 dark:text-emerald-300 font-extrabold">• Hà Nội</span>
+        </button>
 
         {/* Analytics Dashboard Button */}
         <button

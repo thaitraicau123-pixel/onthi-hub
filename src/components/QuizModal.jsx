@@ -30,6 +30,7 @@ import { playClockTick, playCountdownWarningBeep } from '../utils/pomodoroAudio'
 import { explainQuizQuestionWithAi } from '../utils/aiTutor';
 import { recordMistake } from '../utils/mistakeTracker';
 import { getCurrentUser } from '../utils/firebaseConfig';
+import { recordStudyTimeLog } from '../utils/hanoiTime';
 
 // Helper to synthesize a full 60-question exam or 10-question quick exam
 function buildExamQuestions(course, mode = 'official_60') {
@@ -219,6 +220,16 @@ export default function QuizModal({
           explanation: q.explanation
         });
       }
+    });
+
+    // Lưu vết thời gian làm bài thi trắc nghiệm theo Giờ Hà Nội
+    const timeSpentMinutes = Math.max(1, Math.round((totalDuration - timeLeft) / 60));
+    recordStudyTimeLog({
+      type: 'quiz',
+      title: `Thi thử trắc nghiệm: ${course.title} (${score}/${questions.length} câu - ${isPassed ? 'ĐỖ' : 'CHƯA ĐẠT'})`,
+      durationMinutes: timeSpentMinutes,
+      xpGained: isPassed ? 50 : 25,
+      metadata: { courseId: course.id, score, totalQuestions: questions.length, isPassed }
     });
 
     if (isPassed) {

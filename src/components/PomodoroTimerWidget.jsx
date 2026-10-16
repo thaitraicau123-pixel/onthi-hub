@@ -29,6 +29,7 @@ import {
   getAudioContext
 } from '../utils/pomodoroAudio';
 import { recordStudyAction } from '../utils/gamification';
+import { getHanoiDateString, recordStudyTimeLog } from '../utils/hanoiTime';
 import confetti from 'canvas-confetti';
 
 const MODES = {
@@ -52,7 +53,7 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
 
   const [completedSessions, setCompletedSessions] = useState(() => {
     try {
-      const today = new Date().toISOString().split('T')[0];
+      const today = getHanoiDateString();
       const raw = localStorage.getItem('onthi_pomodoro_stats');
       if (raw) {
         const parsed = JSON.parse(raw);
@@ -122,11 +123,17 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
     if (currentMode === 'focus') {
       const newCount = completedSessions + 1;
       setCompletedSessions(newCount);
-      const today = new Date().toISOString().split('T')[0];
+      const today = getHanoiDateString();
       localStorage.setItem('onthi_pomodoro_stats', JSON.stringify({ date: today, count: newCount }));
 
-      // Reward +50 XP rèn luyện (KHÔNG CỘNG XU THEO YÊU CẦU CỦA ADMIN)
-      recordStudyAction(50);
+      // Reward +50 XP rèn luyện & Lưu vết thời gian học tập Giờ Hà Nội
+      recordStudyAction(50, 'Hoàn thành 25 phút tập trung Pomodoro');
+      recordStudyTimeLog({
+        type: 'pomodoro',
+        title: 'Phiên Pomodoro 25 phút tập trung cao độ',
+        durationMinutes: 25,
+        xpGained: 50
+      });
       if (onBonusReward) onBonusReward();
 
       setCompletionToast('🎉 Chúc mừng bạn đã hoàn thành 25 phút tập trung (+50 XP)! Hãy nghỉ ngơi 5 phút nhé.');

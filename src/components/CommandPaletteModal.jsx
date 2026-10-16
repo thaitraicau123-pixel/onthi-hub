@@ -18,7 +18,8 @@ import {
   X,
   CornerDownLeft,
   Command,
-  Palette
+  Palette,
+  Clock
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 
@@ -36,7 +37,8 @@ export default function CommandPaletteModal({
   onOpenBlindBox,
   onOpenWallet,
   onOpenAnalytics,
-  onOpenThemePicker
+  onOpenThemePicker,
+  onOpenTargetClock
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -53,8 +55,20 @@ export default function CommandPaletteModal({
 
   const quickActions = [
     {
+      id: 'action-target-clock',
+      title: 'Đồng Hồ Mục Tiêu & Vết Thời Gian (Giờ Hà Nội)',
+      desc: 'Xem giờ thực tế Việt Nam, đặt mục tiêu học và xem nhật ký vết thời gian',
+      icon: Clock,
+      category: 'Thời gian & Mục tiêu',
+      badge: 'Giờ Hà Nội',
+      onSelect: () => {
+        onOpenTargetClock?.();
+        onClose();
+      }
+    },
+    {
       id: 'action-theme',
-      title: 'Đổi Chủ Đề Nền & Giao Diện (10 Phong Cách)',
+      title: 'Đổi Chủ Đề Nền & Giao Diện (16 Phong Cách)',
       desc: 'Thay đổi hình nền, bảng màu và icon nhỏ (như Messenger & Instagram)',
       icon: Palette,
       category: 'Giao diện',

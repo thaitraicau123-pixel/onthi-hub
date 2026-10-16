@@ -1,14 +1,15 @@
 // Gamification & Engagement Engine (Duolingo Streak, Quizizz Leaderboard, Shopee Vouchers & Notifications)
+import { getHanoiDateString, recordStudyTimeLog } from './hanoiTime.js';
 
 const STREAK_KEY = 'onthi_streak_data';
 const NOTIFICATIONS_KEY = 'onthi_user_notifications';
 const CLAIMED_VOUCHERS_KEY = 'onthi_claimed_vouchers';
 const LIKES_KEY = 'onthi_deck_likes';
 
-// 1. STREAK & XP ENGINE (Duolingo style)
+// 1. STREAK & XP ENGINE (Duolingo style - Đồng bộ chuẩn Giờ Hà Nội)
 export function getStreakInfo() {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getHanoiDateString();
     const raw = localStorage.getItem(STREAK_KEY);
     const data = raw ? JSON.parse(raw) : {
       streak: 3, // Default starting streak for engagement
@@ -23,14 +24,14 @@ export function getStreakInfo() {
   }
 }
 
-export function recordStudyAction(xpGained = 25) {
+export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên học tập ôn thi') {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getHanoiDateString();
     const current = getStreakInfo();
     
     let newStreak = current.streak;
     if (current.lastDate !== today) {
-      // New day study action
+      // New day study action in Hanoi Time
       newStreak += 1;
     }
 
@@ -49,6 +50,17 @@ export function recordStudyAction(xpGained = 25) {
     else updated.level = 'Học Viên Chăm Chỉ 🎓';
 
     localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
+
+    // Tự động lưu vết thời gian theo Giờ Hà Nội khi đạt mốc học tập
+    if (xpGained >= 10) {
+      recordStudyTimeLog({
+        type: 'study',
+        title: activityTitle,
+        durationMinutes: Math.max(1, Math.round(xpGained / 2)),
+        xpGained: xpGained
+      });
+    }
+
     return updated;
   } catch (e) {
     return null;
@@ -143,7 +155,7 @@ const DEFAULT_QUESTS = [
 
 export function getDailyQuests() {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getHanoiDateString();
     const raw = localStorage.getItem(QUESTS_KEY);
     if (raw) {
       const data = JSON.parse(raw);
@@ -151,7 +163,7 @@ export function getDailyQuests() {
         return data.quests;
       }
     }
-    // New day reset
+    // New day reset in Hanoi Time
     const fresh = DEFAULT_QUESTS.map(q => ({ ...q, completed: q.id === 'checkin' ? false : false }));
     localStorage.setItem(QUESTS_KEY, JSON.stringify({ date: today, quests: fresh, bonusClaimed: false }));
     return fresh;
@@ -162,11 +174,11 @@ export function getDailyQuests() {
 
 export function completeDailyQuest(questId) {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getHanoiDateString();
     const quests = getDailyQuests();
     const updated = quests.map(q => {
       if (q.id === questId && !q.completed) {
-        recordStudyAction(q.xp);
+        recordStudyAction(q.xp, `Hoàn thành nhiệm vụ: ${q.title}`);
         return { ...q, completed: true };
       }
       return q;

@@ -254,6 +254,60 @@ async function runTests() {
     assert(Array.isArray(deck.previewCards) && deck.previewCards.length > 0, `Deck "${deck.id}" has previewCards (${deck.previewCards.length})`);
   });
 
+  // 7. HANOI TIME ENGINE & STUDY TRACE LOGS
+  console.log('\n--- 7. Testing Hanoi Time Synchronization & Study Trace Logs ---');
+  const hanoiModule = await import('./src/utils/hanoiTime.js');
+  const {
+    getHanoiDateString,
+    getHanoiTimeString,
+    formatHanoiDateTime,
+    getHanoiNowComponents,
+    recordStudyTimeLog,
+    getStudyTimeLogs,
+    clearStudyTimeLogs,
+    getTargetStudyClock,
+    saveTargetStudyClock,
+    calculateTargetClockProgress
+  } = hanoiModule;
+
+  const hanoiDate = getHanoiDateString();
+  assert(/^\d{4}-\d{2}-\d{2}$/.test(hanoiDate), `Hanoi date format is valid YYYY-MM-DD (${hanoiDate})`);
+
+  const hanoiTime = getHanoiTimeString();
+  assert(/^\d{2}:\d{2}:\d{2}$/.test(hanoiTime), `Hanoi time format is valid HH:mm:ss (${hanoiTime})`);
+
+  const fullDateTime = formatHanoiDateTime();
+  assert(fullDateTime.includes('Giờ Hà Nội'), `Full format includes Vietnamese label: "${fullDateTime}"`);
+
+  const nowComps = getHanoiNowComponents();
+  assert(nowComps.timezone.includes('Hà Nội'), 'Now components include Hanoi GMT+7 timezone metadata');
+
+  // Test Study Time History Trace
+  clearStudyTimeLogs();
+  assert(getStudyTimeLogs().length === 0, 'Logs cleared successfully');
+
+  const newLog = recordStudyTimeLog({
+    type: 'pomodoro',
+    title: 'Test Phiên Pomodoro 25p',
+    durationMinutes: 25,
+    xpGained: 50
+  });
+  assert(newLog && newLog.id.startsWith('trace_'), 'Created valid study trace log entry');
+  assert(newLog.hanoiDate === hanoiDate, `Trace log contains exact Hanoi date: ${newLog.hanoiDate}`);
+  assert(newLog.durationMinutes === 25, 'Trace log duration is 25 minutes');
+
+  const fetchedLogs = getStudyTimeLogs();
+  assert(fetchedLogs.length === 1 && fetchedLogs[0].title === 'Test Phiên Pomodoro 25p', 'Successfully retrieved study trace log');
+
+  // Test Target Study Clock & Goal
+  const targetConfig = saveTargetStudyClock({ dailyGoalMinutes: 90, targetEndTime: '23:30' });
+  assert(targetConfig.dailyGoalMinutes === 90, 'Saved daily study goal minutes (90m)');
+  assert(targetConfig.targetEndTime === '23:30', 'Saved target end time (23:30)');
+
+  const progressCalc = calculateTargetClockProgress();
+  assert(progressCalc.dailyGoalMinutes === 90, 'Progress calculator reflects daily goal');
+  assert(typeof progressCalc.percent === 'number' && progressCalc.percent >= 0, `Progress percentage is valid (${progressCalc.percent}%)`);
+
   // SUMMARY
   console.log('\n====================================================');
   console.log(`TOTAL TESTS: ${testsPassed + testsFailed}`);

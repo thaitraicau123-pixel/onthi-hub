@@ -39,6 +39,7 @@ export default function HomeView({
   onOpenMatchGame,
   onOpenLeaderboard,
   onOpenBlindBox,
+  onOpenTargetClock,
   allCourses
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -216,8 +217,8 @@ export default function HomeView({
         </form>
       </section>
 
-      {/* Countdown đếm ngược ngày thi thực chiến */}
-      <ExamCountdownBanner />
+      {/* Countdown đếm ngược ngày thi thực chiến (Đồng bộ Giờ Hà Nội) */}
+      <ExamCountdownBanner onOpenTargetModal={onOpenTargetClock} />
 
       {/* =========================================================
           4-CARD QUICK ACTION TILES (NOTION DATABASE ITEMS)

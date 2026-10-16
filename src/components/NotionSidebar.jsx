@@ -50,7 +50,8 @@ export default function NotionSidebar({
   onOpenSearch,
   onOpenAnalytics,
   currentTheme,
-  onOpenThemePicker
+  onOpenThemePicker,
+  onOpenTargetClock
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const userIsAdmin = isUserAdmin(user);
@@ -77,6 +78,15 @@ export default function NotionSidebar({
   ];
 
   const toolsNavItems = [
+    {
+      id: 'target-clock',
+      label: 'Đồng Hồ Mục Tiêu',
+      emoji: '⏰',
+      badge: 'Giờ HN',
+      badgeColor: 'notion-pill-green',
+      action: onOpenTargetClock,
+      desc: 'Giờ Hà Nội, đồng hồ mục tiêu & vết thời gian'
+    },
     {
       id: 'theme',
       label: 'Đổi Chủ Đề Nền',

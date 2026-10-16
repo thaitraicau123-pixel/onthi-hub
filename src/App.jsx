@@ -24,6 +24,7 @@ import ChangelogModal from './components/ChangelogModal';
 import CommandPaletteModal from './components/CommandPaletteModal';
 import AnalyticsModal from './components/AnalyticsModal';
 import ThemePickerModal from './components/ThemePickerModal';
+import TargetStudyClockModal from './components/TargetStudyClockModal';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import ThemeWeatherCanvas from './components/ThemeWeatherCanvas';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
@@ -84,6 +85,7 @@ export default function App() {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
+  const [isTargetClockOpen, setIsTargetClockOpen] = useState(false);
 
   // Sync initial state
   useEffect(() => {
@@ -244,6 +246,7 @@ export default function App() {
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         currentTheme={currentTheme}
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
+        onOpenTargetClock={() => setIsTargetClockOpen(true)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -270,6 +273,7 @@ export default function App() {
           onOpenThemePicker={() => setIsThemePickerOpen(true)}
           isWeatherEnabled={isWeatherEnabled}
           onToggleWeather={() => setWeatherEffectsEnabled(!isWeatherEnabled)}
+          onOpenTargetClock={() => setIsTargetClockOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -286,6 +290,7 @@ export default function App() {
               onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
               onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
               onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+              onOpenTargetClock={() => setIsTargetClockOpen(true)}
               allCourses={allAvailableCourses}
             />
           )}
@@ -579,6 +584,7 @@ export default function App() {
         }}
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
+        onOpenTargetClock={() => setIsTargetClockOpen(true)}
       />
 
       {/* 14. Learning Analytics & Mastery Dashboard */}
@@ -601,6 +607,20 @@ export default function App() {
         onSelectTheme={(theme) => {
           setCurrentTheme(theme);
           showToast(`🎨 Đã đổi sang giao diện: ${theme.name}`);
+        }}
+      />
+
+      {/* 17. Target Study Clock & Study Time History Trace Modal (Đồng bộ Giờ Hà Nội ICT GMT+7) */}
+      <TargetStudyClockModal
+        isOpen={isTargetClockOpen}
+        onClose={() => setIsTargetClockOpen(false)}
+        onOpenPomodoro={() => {
+          showToast('⏱️ Hãy bấm vào widget Pomodoro ở góc dưới màn hình để bắt đầu học!');
+        }}
+        onOpenQuiz={() => {
+          if (allAvailableCourses[0]) {
+            setActiveQuizCourse(allAvailableCourses[0]);
+          }
         }}
       />
 

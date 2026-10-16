@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Target, Edit3, X, Check, Flame } from 'lucide-react';
 import { playSound } from '../utils/storage';
+import { getHanoiDateString, getHanoiTimeString, getHanoiNowComponents } from '../utils/hanoiTime';
 
 const EXAM_NAME_KEY = 'onthi_target_exam_name';
 const EXAM_DATE_KEY = 'onthi_target_exam_date';
 
-// Default target: 45 days in future
+// Default target: 45 days in future from Hanoi today
 const getDefaultDate = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + 45);
-  return d.toISOString().split('T')[0];
+  const hanoiToday = getHanoiDateString();
+  const [y, m, d] = hanoiToday.split('-').map(Number);
+  const target = new Date(Date.UTC(y, m - 1, d + 45));
+  return target.toISOString().split('T')[0];
 };
 
-export default function ExamCountdownBanner({ onStartReview }) {
+export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }) {
   const [examName, setExamName] = useState(() => {
     return localStorage.getItem(EXAM_NAME_KEY) || 'Kỳ Thi Công Chức 2026 (Vòng 1 Kiến Thức Chung)';
   });
@@ -24,11 +26,13 @@ export default function ExamCountdownBanner({ onStartReview }) {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [inputName, setInputName] = useState(examName);
   const [inputDate, setInputDate] = useState(examDate);
+  const [hanoiClock, setHanoiClock] = useState(() => getHanoiTimeString(new Date(), true));
 
-  // Real-time ticking countdown
+  // Real-time ticking countdown synchronized with Hanoi Timezone (ICT UTC+7)
   useEffect(() => {
     const calculateTime = () => {
-      const targetTime = new Date(`${examDate}T08:00:00`).getTime();
+      // 08:00 AM on exam morning in Hanoi (GMT+7)
+      const targetTime = new Date(`${examDate}T08:00:00+07:00`).getTime();
       const now = Date.now();
       const diff = Math.max(0, targetTime - now);
 
@@ -38,6 +42,7 @@ export default function ExamCountdownBanner({ onStartReview }) {
       const seconds = Math.floor((diff / 1000) % 60);
 
       setTimeLeft({ days, hours, minutes, seconds });
+      setHanoiClock(getHanoiTimeString(new Date(), true));
     };
 
     calculateTime();
@@ -66,52 +71,58 @@ export default function ExamCountdownBanner({ onStartReview }) {
 
   return (
     <>
-      <div className="bg-[#fbfbfa] p-4 rounded-xl border border-[#e9e9e8] text-[#37352f] flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs">
+      <div className="bg-[#fbfbfa] dark:bg-slate-900/95 p-4 rounded-xl border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs transition-colors">
         
         {/* Left Info */}
         <div className="flex items-center space-x-3 w-full md:w-auto">
-          <div className="w-9 h-9 rounded-lg bg-white border border-[#e9e9e8] shadow-2xs text-[#37352f] flex items-center justify-center text-lg shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 shadow-2xs text-[#37352f] dark:text-white flex items-center justify-center text-lg shrink-0">
             ⏳
           </div>
           <div>
             <div className="flex items-center space-x-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#787774]">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 ĐỒNG HỒ ĐẾM NGƯỢC
               </span>
-              <span className="text-[10px] bg-[#faece3] text-[#cc782f] border border-[#f3d6c1] px-1.5 py-0.2 rounded font-semibold">
-                Mục tiêu thi
-              </span>
+              <button
+                type="button"
+                onClick={onOpenTargetModal}
+                className="text-[10px] bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 px-2 py-0.5 rounded font-extrabold flex items-center space-x-1 cursor-pointer transition-colors"
+                title="Bấm để mở Đồng hồ mục tiêu & xem vết thời gian"
+              >
+                <span>🇻🇳</span>
+                <span>Giờ Hà Nội: {hanoiClock}</span>
+              </button>
             </div>
-            <h4 className="text-xs sm:text-sm font-bold text-[#37352f] mt-0.5 line-clamp-1">
+            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mt-0.5 line-clamp-1">
               {examName}
             </h4>
-            <p className="text-[11px] text-[#787774] font-medium flex items-center space-x-1 mt-0.5">
-              <Calendar className="w-3 h-3 text-[#9b9a97]" />
-              <span>Ngày thi dự kiến: {examDate.split('-').reverse().join('/')}</span>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium flex items-center space-x-1 mt-0.5">
+              <Calendar className="w-3 h-3 text-slate-400 dark:text-slate-500" />
+              <span>Ngày thi dự kiến: {examDate.split('-').reverse().join('/')} (08:00 sáng Hà Nội)</span>
             </p>
           </div>
         </div>
 
         {/* Center: Live Timer Blocks */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 text-center shrink-0">
-          <div className="px-2.5 py-1 rounded-lg bg-white border border-[#e9e9e8] min-w-[50px] shadow-2xs">
-            <span className="text-base sm:text-lg font-bold text-[#37352f]">{timeLeft.days}</span>
-            <span className="block text-[8px] uppercase tracking-wider text-[#787774] font-semibold">Ngày</span>
+          <div className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 min-w-[50px] shadow-2xs">
+            <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{timeLeft.days}</span>
+            <span className="block text-[8px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Ngày</span>
           </div>
-          <span className="text-[#9b9a97] font-bold text-sm">:</span>
-          <div className="px-2.5 py-1 rounded-lg bg-white border border-[#e9e9e8] min-w-[50px] shadow-2xs">
-            <span className="text-base sm:text-lg font-bold text-[#37352f]">{timeLeft.hours}</span>
-            <span className="block text-[8px] uppercase tracking-wider text-[#787774] font-semibold">Giờ</span>
+          <span className="text-slate-400 dark:text-slate-500 font-bold text-sm">:</span>
+          <div className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 min-w-[50px] shadow-2xs">
+            <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{timeLeft.hours}</span>
+            <span className="block text-[8px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Giờ</span>
           </div>
-          <span className="text-[#9b9a97] font-bold text-sm">:</span>
-          <div className="px-2.5 py-1 rounded-lg bg-white border border-[#e9e9e8] min-w-[50px] shadow-2xs">
-            <span className="text-base sm:text-lg font-bold text-[#37352f]">{timeLeft.minutes}</span>
-            <span className="block text-[8px] uppercase tracking-wider text-[#787774] font-semibold">Phút</span>
+          <span className="text-slate-400 dark:text-slate-500 font-bold text-sm">:</span>
+          <div className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 min-w-[50px] shadow-2xs">
+            <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">{timeLeft.minutes}</span>
+            <span className="block text-[8px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Phút</span>
           </div>
-          <span className="text-[#9b9a97] font-bold text-sm">:</span>
-          <div className="px-2.5 py-1 rounded-lg bg-white border border-[#e9e9e8] min-w-[50px] shadow-2xs">
-            <span className="text-base sm:text-lg font-bold text-[#2383e2] font-mono">{String(timeLeft.seconds).padStart(2, '0')}</span>
-            <span className="block text-[8px] uppercase tracking-wider text-[#787774] font-semibold">Giây</span>
+          <span className="text-slate-400 dark:text-slate-500 font-bold text-sm">:</span>
+          <div className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 min-w-[50px] shadow-2xs">
+            <span className="text-base sm:text-lg font-bold text-[#2383e2] dark:text-sky-400 font-mono">{String(timeLeft.seconds).padStart(2, '0')}</span>
+            <span className="block text-[8px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Giây</span>
           </div>
         </div>
 
@@ -124,10 +135,10 @@ export default function ExamCountdownBanner({ onStartReview }) {
               setInputDate(examDate);
               setShowConfigModal(true);
             }}
-            className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#efefed] border border-[#e9e9e8] text-[#37352f] text-xs font-semibold transition-colors flex items-center space-x-1 shadow-2xs cursor-pointer"
+            className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors flex items-center space-x-1 shadow-2xs cursor-pointer"
             title="Tùy chỉnh ngày thi mục tiêu của bạn"
           >
-            <Edit3 className="w-3.5 h-3.5 text-[#787774]" />
+            <Edit3 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
             <span>Đổi Mục Tiêu</span>
           </button>
         </div>

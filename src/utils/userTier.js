@@ -1,4 +1,6 @@
 // Tier Limits & Quotas configuration (Admin can customize)
+import { getHanoiDateString, recordStudyTimeLog } from './hanoiTime.js';
+
 const TIER_LIMITS_KEY = 'onthi_tier_limits';
 const USER_TIER_KEY = 'onthi_user_tier';
 const USER_QUOTA_KEY = 'onthi_user_quota';
@@ -77,9 +79,9 @@ export function setUserTier(tier) {
   }
 }
 
-// Get Today String (YYYY-MM-DD)
+// Get Today String (YYYY-MM-DD theo múi giờ Hà Nội GMT+7)
 function getTodayString() {
-  return new Date().toISOString().split('T')[0];
+  return getHanoiDateString();
 }
 
 // Get user quota state
@@ -162,6 +164,14 @@ export function performDailyCheckIn() {
   quota.bonusEarned = (quota.bonusEarned || 0) + bonusAmount;
   quota.lastCheckInDate = today;
   localStorage.setItem(USER_QUOTA_KEY, JSON.stringify(quota));
+
+  // Lưu vết thời gian điểm danh vào hệ thống Giờ Hà Nội
+  recordStudyTimeLog({
+    type: 'checkin',
+    title: 'Điểm danh hàng ngày nhận thưởng lượt tạo thẻ',
+    durationMinutes: 1,
+    xpGained: 25
+  });
 
   return {
     success: true,
