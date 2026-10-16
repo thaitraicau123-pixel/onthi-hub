@@ -582,7 +582,7 @@ export default function ThemeAtmosphereBackground({ theme }) {
       {/* =========================================================================
           9. CLASSIC ACADEMIA: SCHOLAR OWL MASCOT & STACK OF KAWAII BOOKS
           ========================================================================= */}
-      {themeId === 'classic-academia' && (
+      {themeId === 'classic-academia' && !theme?.bgImageUrl && (
         <div className="absolute inset-0 opacity-[0.9] transition-opacity duration-700">
           <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>

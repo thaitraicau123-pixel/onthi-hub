@@ -85,7 +85,7 @@ async function runTests() {
 
   assert(Array.isArray(THEMES) && THEMES.length === 16, `Exactly 16 themes configured (found ${THEMES.length})`);
 
-  const required4kThemes = ['super-mario-3d', 'your-name-anime', 'cyberpunk-city-3d', 'alps-milkyway-4k', 'totoro-ghibli-4k'];
+  const required4kThemes = ['super-mario-3d', 'your-name-anime', 'cyberpunk-city-3d', 'alps-milkyway-4k', 'totoro-ghibli-4k', 'classic-academia'];
   required4kThemes.forEach(id => {
     const t = THEMES.find(item => item.id === id);
     assert(!!t, `Theme "${id}" exists`);
@@ -115,6 +115,18 @@ async function runTests() {
   const marioImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'mario-4k.png'));
   assert(marioImgStats.size > 200000, `Mario Toad 4K image is high-res (${marioImgStats.size} bytes)`);
 
+  // Verify Cyberpunk Porsche 4K wallpaper
+  const cyberpunkTheme = THEMES.find(t => t.id === 'cyberpunk-city-3d');
+  assert(cyberpunkTheme && cyberpunkTheme.subtitle.includes('Porsche 911 Turbo'), 'Cyberpunk theme subtitle features Porsche 911 Turbo');
+  const cyberpunkImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'cyberpunk-porsche-4k.png'));
+  assert(cyberpunkImgStats.size > 500000, `Cyberpunk Porsche 4K image is ultra high-res (${cyberpunkImgStats.size} bytes)`);
+
+  // Verify Classic Academia 4K wallpaper
+  const academiaTheme = THEMES.find(t => t.id === 'classic-academia');
+  assert(academiaTheme && academiaTheme.subtitle.includes('Lụa Đồng Hoàng Gia'), 'Classic Academia subtitle features Lụa Đồng Hoàng Gia 4K');
+  const academiaImgStats = fs.statSync(path.join(process.cwd(), 'public', 'wallpapers', 'classic-academia-4k.png'));
+  assert(academiaImgStats.size > 200000, `Classic Academia 4K image is high-res (${academiaImgStats.size} bytes)`);
+
   // Verify Sleep Mode (Chế độ ngủ) Engine & Day Mode Theme Allocation
   console.log('\n--- 2b. Testing Sleep Mode & Day Theme Allocation ---');
   const { getSleepMode, setSleepMode, toggleSleepMode, isDayTheme, DAY_THEMES, applyTheme } = themeModule;
@@ -132,7 +144,8 @@ async function runTests() {
 
   // Verify that 4K cinema & night themes are NOT day themes
   assert(isDayTheme('super-mario-3d') === false, 'Mario Toad 4K is strictly NOT a Day Theme');
-  assert(isDayTheme('cyberpunk-city-3d') === false, 'Cyberpunk 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('cyberpunk-city-3d') === false, 'Cyberpunk Porsche 4K is strictly NOT a Day Theme');
+  assert(isDayTheme('classic-academia') === false, 'Classic Academia 4K is strictly NOT a Day Theme');
   assert(isDayTheme('your-name-anime') === false, 'Your Name 4K is strictly NOT a Day Theme');
   assert(isDayTheme('alps-milkyway-4k') === false, 'Alps 4K is strictly NOT a Day Theme');
   assert(isDayTheme('totoro-ghibli-4k') === false, 'Totoro 4K is strictly NOT a Day Theme');
