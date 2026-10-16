@@ -30,9 +30,28 @@ import {
   Sparkles,
   Eye,
   EyeOff,
-  Lock
+  Lock,
+  MessageSquare,
+  Pin,
+  Clock,
+  Search,
+  Download,
+  ThumbsUp,
+  UserCheck
 } from 'lucide-react';
 import { isUserAdmin, getAdminEmail, maskApiKey, PRIMARY_ADMIN_EMAIL } from '../utils/adminGuard';
+import {
+  getCommunityPosts,
+  deleteCommunityPost,
+  togglePinCommunityPost,
+  deleteCommunityComment,
+  clearSpamCommunityPosts
+} from '../data/communityData';
+import {
+  formatHanoiDateTime,
+  getStudyTimeLogs,
+  getHanoiNowComponents
+} from '../utils/hanoiTime';
 import { BLIND_BOXES } from '../utils/blindBox';
 import {
   getTransactions,
@@ -115,6 +134,16 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
   const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
   const [approvingTxId, setApprovingTxId] = useState(null);
 
+  // Community Moderation State
+  const [communityPosts, setCommunityPosts] = useState(() => getCommunityPosts());
+  const [communityCategoryFilter, setCommunityCategoryFilter] = useState('all');
+  const [communitySearchQuery, setCommunitySearchQuery] = useState('');
+  const [expandedCommentsPostId, setExpandedCommentsPostId] = useState(null);
+  const [communityActionMsg, setCommunityActionMsg] = useState('');
+
+  // Hanoi Time & Study Trace Logs State
+  const [studyLogs, setStudyLogs] = useState(() => getStudyTimeLogs());
+
   const reloadData = async () => {
     setTransactions(getTransactions());
     setNotifications(getAdminNotifications());
@@ -123,6 +152,8 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
     setFirebaseConfig(getFirebaseConfig());
     setGeminiApiKey(getGeminiApiKey());
     setOpenaiApiKey(getOpenAIApiKey());
+    setCommunityPosts(getCommunityPosts());
+    setStudyLogs(getStudyTimeLogs());
     try {
       const freshTxs = await fetchFirestoreTransactions();
       if (freshTxs && freshTxs.length > 0) {
@@ -244,6 +275,64 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
       deleteMarketplaceDeck(deckId);
       playSound('flip');
       reloadData();
+    }
+  };
+
+  // Community Moderation Actions (Admin Control)
+  const handleAdminDeletePost = async (postId, author) => {
+    if (window.confirm(`[Admin] Bạn có chắc chắn muốn XÓA VĨNH VIỄN bài viết của "${author || 'người dùng'}" (#${postId}) không?\nBài viết sẽ bị xóa khỏi diễn đàn và đồng bộ trên tất cả thiết bị của học viên.`)) {
+      playSound('flip');
+      const updated = await deleteCommunityPost(postId);
+      setCommunityPosts(updated);
+      setCommunityActionMsg(`🗑️ Đã xóa vĩnh viễn bài viết #${postId} thành công!`);
+      setTimeout(() => setCommunityActionMsg(''), 4000);
+    }
+  };
+
+  const handleAdminTogglePin = async (postId) => {
+    playSound('flip');
+    const updated = await togglePinCommunityPost(postId);
+    setCommunityPosts(updated);
+  };
+
+  const handleAdminDeleteComment = async (postId, commentIndex) => {
+    if (window.confirm(`[Admin] Bạn có chắc muốn xóa bình luận này không?`)) {
+      playSound('flip');
+      const updated = await deleteCommunityComment(postId, commentIndex);
+      setCommunityPosts(updated);
+      setCommunityActionMsg(`💬 Đã xóa bình luận thành công!`);
+      setTimeout(() => setCommunityActionMsg(''), 4000);
+    }
+  };
+
+  const handleAdminClearSpam = () => {
+    if (window.confirm(`[Admin] Bạn có muốn dọn dẹp các bài viết spam / khôi phục danh sách diễn đàn mặc định?`)) {
+      playSound('flip');
+      const updated = clearSpamCommunityPosts(() => true);
+      setCommunityPosts(updated);
+      setCommunityActionMsg(`✨ Đã dọn dẹp và khôi phục diễn đàn về trạng thái sạch sẽ!`);
+      setTimeout(() => setCommunityActionMsg(''), 4000);
+    }
+  };
+
+  const handleExportCommunityJson = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(communityPosts, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `onthi_community_posts_${new Date().toISOString().slice(0, 10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    playSound('success');
+  };
+
+  const handleClearStudyLogs = () => {
+    if (window.confirm(`[Admin] Bạn có chắc muốn xóa toàn bộ vết thời gian học tập hệ thống không?`)) {
+      try {
+        localStorage.removeItem('onthi_study_time_logs_v1');
+        setStudyLogs([]);
+        playSound('flip');
+      } catch (e) {}
     }
   };
 
@@ -557,6 +646,21 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           </button>
 
           <button
+            onClick={() => setActiveTab('community')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors cursor-pointer ${
+              activeTab === 'community'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4 text-indigo-500" />
+            <span>Quản Lý Diễn Đàn & Xóa Bài</span>
+            <span className="px-1.5 py-0.2 bg-indigo-100 text-indigo-800 rounded-full text-[10px] font-bold">
+              {communityPosts.length}
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('tiers')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'tiers'
@@ -578,6 +682,18 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
           >
             <Store className="w-4 h-4 text-emerald-600" />
             <span>Quản Lý Sàn C2C ({marketDecks.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('system_logs')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors cursor-pointer ${
+              activeTab === 'system_logs'
+                ? 'border-[#2383e2] text-[#2383e2] bg-[#ffffff] font-black'
+                : 'border-transparent text-[#787774] hover:text-[#37352f]'
+            }`}
+          >
+            <Clock className="w-4 h-4 text-teal-600" />
+            <span>Vết Giờ Hà Nội & Nhật Ký ({studyLogs.length})</span>
           </button>
 
           <button
@@ -799,6 +915,327 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
               )}
             </div>
           )}
+
+          {/* TAB: QUẢN LÝ CỘNG ĐỒNG & XÓA BÀI (ADMIN MODERATION) */}
+          {activeTab === 'community' && (() => {
+            const catMap = {
+              'cong-chuc': '🏛️ Công Chức',
+              'it': '💻 IT & Tech',
+              'ngoai-ngu': '🌍 Ngoại Ngữ',
+              'meo-thi': '💡 Mẹo Ôn Thi'
+            };
+
+            const filteredPosts = communityPosts.filter((post) => {
+              const matchCat = communityCategoryFilter === 'all' || post.category === communityCategoryFilter;
+              const q = communitySearchQuery.toLowerCase().trim();
+              const matchSearch =
+                !q ||
+                (post.content || '').toLowerCase().includes(q) ||
+                (post.author || '').toLowerCase().includes(q) ||
+                String(post.id || '').toLowerCase().includes(q);
+              return matchCat && matchSearch;
+            });
+
+            const totalLikes = communityPosts.reduce((acc, p) => acc + (p.likes || 0), 0);
+            const totalComments = communityPosts.reduce((acc, p) => acc + (p.comments?.length || 0), 0);
+            const pinnedCount = communityPosts.filter((p) => p.isPinned).length;
+
+            return (
+              <div className="space-y-6">
+                {/* Status / Feedback Banner */}
+                {communityActionMsg && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-semibold flex items-center space-x-2 animate-fade-in shadow-xs">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{communityActionMsg}</span>
+                  </div>
+                )}
+
+                {/* Top Metrics Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
+                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                      <span className="text-xs font-semibold">Tổng Bài Viết</span>
+                      <MessageSquare className="w-4 h-4 text-indigo-500" />
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black text-[#37352f]">{communityPosts.length}</div>
+                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Đang hoạt động trên web</div>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
+                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                      <span className="text-xs font-semibold">Bài Ghim Đầu Trang</span>
+                      <Pin className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black text-amber-600">{pinnedCount}</div>
+                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Thông báo & hướng dẫn</div>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
+                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                      <span className="text-xs font-semibold">Tổng Bình Luận</span>
+                      <Users className="w-4 h-4 text-[#2383e2]" />
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black text-[#2383e2]">{totalComments}</div>
+                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Tương tác hỏi đáp</div>
+                  </div>
+
+                  <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] shadow-xs">
+                    <div className="flex items-center justify-between text-[#787774] mb-1">
+                      <span className="text-xs font-semibold">Lượt Thả Tim</span>
+                      <ThumbsUp className="w-4 h-4 text-rose-500" />
+                    </div>
+                    <div className="text-xl sm:text-2xl font-black text-rose-600">{totalLikes}</div>
+                    <div className="text-[11px] text-[#787774] mt-0.5 font-normal">Học viên ủng hộ</div>
+                  </div>
+                </div>
+
+                {/* Control & Filter Toolbar */}
+                <div className="bg-white p-4 rounded-xl border border-[#e9e9e8] shadow-xs space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h4 className="text-sm font-black text-[#37352f] flex items-center space-x-2">
+                        <span>🛡️ Bảng Điều Khiển Kiểm Duyệt Bài Viết Cộng Đồng</span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                          Admin Quyền Năng
+                        </span>
+                      </h4>
+                      <p className="text-xs text-[#787774] font-medium">
+                        Xóa ngay lập tức bài đăng spam, ghim bài hữu ích, và gỡ bình luận tiêu cực. Dữ liệu đồng bộ trực tiếp lên Firebase & Cloud Relay.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                      <button
+                        onClick={reloadData}
+                        className="px-3 py-1.5 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold border border-[#e9e9e8] flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        title="Tải lại toàn bộ bài viết mới nhất"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        <span>Đồng Bộ</span>
+                      </button>
+
+                      <button
+                        onClick={handleExportCommunityJson}
+                        className="px-3 py-1.5 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] rounded-lg text-xs font-semibold border border-[#e9e9e8] flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        title="Tải về file JSON sao lưu bài viết"
+                      >
+                        <Download className="w-3.5 h-3.5 text-[#2383e2]" />
+                        <span>Xuất Sao Lưu JSON</span>
+                      </button>
+
+                      <button
+                        onClick={handleAdminClearSpam}
+                        className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-semibold border border-rose-200 flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        title="Dọn dẹp bài spam và khôi phục bài viết mặc định"
+                      >
+                        <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+                        <span>Dọn Rác / Khôi Phục</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Search and Category Filter */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2 border-t border-[#f0efed]">
+                    <div className="relative flex-1 max-w-md">
+                      <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Tìm bài viết theo nội dung, tác giả, hoặc ID (#post_...)"
+                        value={communitySearchQuery}
+                        onChange={(e) => setCommunitySearchQuery(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] rounded-lg border border-[#e9e9e8] focus:border-[#2383e2] outline-none transition-all placeholder:text-[#9b9a97]"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1.5 overflow-x-auto text-xs pb-1 sm:pb-0">
+                      {[
+                        { id: 'all', label: 'Tất Cả' },
+                        { id: 'cong-chuc', label: '🏛️ Công Chức' },
+                        { id: 'it', label: '💻 IT & Tech' },
+                        { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ' },
+                        { id: 'meo-thi', label: '💡 Mẹo Ôn Thi' }
+                      ].map((cat) => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setCommunityCategoryFilter(cat.id)}
+                          className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors shrink-0 ${
+                            communityCategoryFilter === cat.id
+                              ? 'bg-[#37352f] text-white shadow-2xs'
+                              : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#5a5955] border border-[#e9e9e8]'
+                          }`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Posts List */}
+                {filteredPosts.length === 0 ? (
+                  <div className="text-center py-12 bg-white rounded-xl border border-[#e9e9e8] space-y-2">
+                    <MessageSquare className="w-10 h-10 text-slate-300 mx-auto" />
+                    <p className="text-sm font-bold text-[#37352f]">Không tìm thấy bài viết nào</p>
+                    <p className="text-xs text-[#787774]">
+                      {communitySearchQuery
+                        ? `Không có bài viết nào khớp với từ khóa "${communitySearchQuery}"`
+                        : 'Chưa có bài viết nào trong danh mục này'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {filteredPosts.map((post) => {
+                      const isExpanded = expandedCommentsPostId === post.id;
+                      return (
+                        <div
+                          key={post.id}
+                          className="bg-white rounded-xl p-4 sm:p-5 border border-[#e9e9e8] hover:border-[#c5c4c0] shadow-xs space-y-3 transition-colors"
+                        >
+                          {/* Post Header Row */}
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-[#f0efed]">
+                            <div className="flex items-center space-x-3">
+                              <img
+                                src={post.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
+                                alt={post.author}
+                                className="w-9 h-9 rounded-full object-cover border border-[#e9e9e8] shrink-0"
+                              />
+                              <div>
+                                <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                                  <h4 className="text-xs sm:text-sm font-bold text-[#37352f]">{post.author}</h4>
+                                  {post.isPinned && (
+                                    <span className="notion-tag notion-tag-yellow text-[10px] flex items-center space-x-0.5">
+                                      <Pin className="w-2.5 h-2.5" />
+                                      <span>Đang Ghim</span>
+                                    </span>
+                                  )}
+                                  <span className="notion-tag notion-tag-blue text-[10px]">
+                                    {post.categoryLabel || catMap[post.category] || post.category || 'Hỏi Đáp'}
+                                  </span>
+                                  <span className="text-[10px] font-mono text-[#9b9a97] bg-[#f7f6f5] px-1.5 py-0.5 rounded border border-[#e9e9e8]">
+                                    #{post.id}
+                                  </span>
+                                </div>
+                                <div className="text-[11px] text-[#787774] flex items-center space-x-2 mt-0.5">
+                                  <span>{post.role || 'Thành Viên'}</span>
+                                  <span>•</span>
+                                  <span>{formatHanoiDateTime(post.createdAt || new Date())}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Admin Action Buttons */}
+                            <div className="flex items-center space-x-2 self-end sm:self-center shrink-0">
+                              <button
+                                onClick={() => handleAdminTogglePin(post.id)}
+                                className={`px-2.5 py-1 rounded-md text-xs font-semibold flex items-center space-x-1 transition-colors border cursor-pointer ${
+                                  post.isPinned
+                                    ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                                    : 'bg-[#f7f6f5] text-[#5a5955] border-[#e9e9e8] hover:bg-[#e9e9e8]'
+                                }`}
+                                title={post.isPinned ? 'Bỏ ghim bài viết này' : 'Ghim bài viết này lên đầu diễn đàn'}
+                              >
+                                <Pin className="w-3.5 h-3.5" />
+                                <span>{post.isPinned ? 'Bỏ Ghim' : 'Ghim Bài'}</span>
+                              </button>
+
+                              <button
+                                onClick={() =>
+                                  setExpandedCommentsPostId(isExpanded ? null : post.id)
+                                }
+                                className="px-2.5 py-1 bg-[#f7f6f5] hover:bg-[#e9e9e8] text-[#37352f] border border-[#e9e9e8] rounded-md text-xs font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
+                                title="Xem và quản lý các bình luận dưới bài viết"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5 text-[#2383e2]" />
+                                <span>Bình luận ({post.comments?.length || 0})</span>
+                              </button>
+
+                              <button
+                                onClick={() => handleAdminDeletePost(post.id, post.author)}
+                                className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-md text-xs font-bold flex items-center space-x-1 transition-colors shadow-2xs cursor-pointer"
+                                title="XÓA VĨNH VIỄN bài viết này khỏi hệ thống"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                                <span>Xóa Bài</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Post Content */}
+                          <div className="p-3 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8] text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line font-normal">
+                            {post.content}
+                          </div>
+
+                          {/* Post Interactions */}
+                          <div className="flex items-center justify-between text-xs text-[#787774] pt-1">
+                            <div className="flex items-center space-x-4">
+                              <span className="flex items-center space-x-1">
+                                <ThumbsUp className="w-3.5 h-3.5 text-rose-500" />
+                                <span>{post.likes || 0} lượt thích</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                                <span>{post.comments?.length || 0} bình luận</span>
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-[#9b9a97]">
+                              Tình trạng: {post.isPinned ? '📌 Ưu tiên hiển thị' : 'Tiêu chuẩn'}
+                            </span>
+                          </div>
+
+                          {/* Expandable Comments Management Panel */}
+                          {isExpanded && (
+                            <div className="pt-3 border-t border-[#e9e9e8] space-y-2 animate-fade-in">
+                              <div className="flex items-center justify-between text-xs font-bold text-[#37352f]">
+                                <span>Danh Sách Bình Luận ({post.comments?.length || 0})</span>
+                                <span className="text-[11px] text-[#787774] font-normal">
+                                  Bấm vào biểu tượng thùng rác để xóa bình luận vi phạm
+                                </span>
+                              </div>
+
+                              {(!post.comments || post.comments.length === 0) ? (
+                                <p className="text-xs text-[#787774] italic py-2">
+                                  Chưa có bình luận nào dưới bài viết này.
+                                </p>
+                              ) : (
+                                <div className="space-y-1.5">
+                                  {post.comments.map((cm, cIdx) => (
+                                    <div
+                                      key={cIdx}
+                                      className="p-2.5 bg-[#f7f6f5] rounded-lg text-xs flex items-start justify-between gap-3 border border-[#e9e9e8]"
+                                    >
+                                      <div className="space-y-0.5">
+                                        <div className="font-bold text-[#37352f] flex items-center space-x-2">
+                                          <span>{cm.author}</span>
+                                          {cm.createdAt && (
+                                            <span className="text-[10px] text-[#9b9a97] font-normal">
+                                              {formatHanoiDateTime(cm.createdAt)}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <p className="text-[#5a5955] leading-relaxed font-normal">{cm.text}</p>
+                                      </div>
+
+                                      <button
+                                        onClick={() => handleAdminDeleteComment(post.id, cIdx)}
+                                        className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-100 transition-colors shrink-0"
+                                        title="Xóa bình luận này (Admin)"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* TAB 2: TÙY CHỈNH GIỚI HẠN GÓI */}
           {activeTab === 'tiers' && (
@@ -1099,6 +1536,101 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
                     ))}
                   </div>
                 )}
+              </div>
+            );
+          })()}
+
+          {/* TAB: VẾT GIỜ HÀ NỘI & NHẬT KÝ HỆ THỐNG */}
+          {activeTab === 'system_logs' && (() => {
+            const hanoiNow = getHanoiNowComponents();
+            return (
+              <div className="space-y-6">
+                {/* Hanoi Time Engine Status Banner */}
+                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 p-5 rounded-xl border border-teal-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-5 h-5 text-teal-600 animate-pulse" />
+                      <h4 className="text-sm font-black text-teal-900">
+                        Đồng Bộ Chuẩn Thời Gian Hà Nội (ICT - GMT+7)
+                      </h4>
+                      <span className="px-2 py-0.5 rounded-full bg-teal-200 text-teal-900 text-[10px] font-black">
+                        LIVE CLOCK
+                      </span>
+                    </div>
+                    <p className="text-xs text-teal-800 leading-relaxed font-medium">
+                      Thời gian hiện tại: <strong>{hanoiNow.dayName}, {hanoiNow.fullFormatted}</strong>.
+                      Tất cả các phiên làm bài thi thử, mục tiêu học tập hàng ngày và lịch sử giao dịch đều được ghi nhận chuẩn theo múi giờ Việt Nam.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleClearStudyLogs}
+                    className="px-3 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 rounded-lg text-xs font-semibold shrink-0 transition-colors cursor-pointer"
+                  >
+                    Xóa Nhật Ký Vết Thời Gian
+                  </button>
+                </div>
+
+                {/* Study Time Trace Logs Feed */}
+                <div className="bg-white rounded-xl border border-[#e9e9e8] overflow-hidden shadow-xs">
+                  <div className="p-4 border-b border-[#e9e9e8] bg-[#f7f6f5] flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-[#37352f]">
+                        Nhật Ký Vết Thời Gian Học Tập ({studyLogs.length})
+                      </h4>
+                      <p className="text-[11px] text-[#787774]">
+                        Lưu vết các phiên học, hoàn thành nhiệm vụ và bài thi theo chuẩn giờ Hà Nội
+                      </p>
+                    </div>
+                  </div>
+
+                  {studyLogs.length === 0 ? (
+                    <div className="text-center py-10 text-xs text-[#787774] font-medium">
+                      Chưa có vết thời gian học tập nào được ghi nhận.
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-[#f7f6f5] border-b border-[#e9e9e8] text-[#787774] font-bold">
+                          <tr>
+                            <th className="p-3">Thời Gian (Hà Nội)</th>
+                            <th className="p-3">Hoạt Động</th>
+                            <th className="p-3">Thời Lượng</th>
+                            <th className="p-3">XP Thưởng</th>
+                            <th className="p-3">Mã Vết</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#e9e9e8]">
+                          {studyLogs.map((log) => (
+                            <tr key={log.id} className="hover:bg-[#fbfbfa] transition-colors">
+                              <td className="p-3 font-mono font-medium text-[#37352f]">
+                                <div>{log.hanoiTime}</div>
+                                <span className="text-[10px] text-[#787774]">{log.hanoiDate}</span>
+                              </td>
+                              <td className="p-3">
+                                <div className="font-semibold text-[#37352f]">{log.title || 'Phiên học OnThiHub'}</div>
+                                <span className="text-[10px] text-[#787774] uppercase tracking-wider font-bold">
+                                  {log.type}
+                                </span>
+                              </td>
+                              <td className="p-3 font-bold text-[#37352f]">
+                                {log.durationMinutes} phút
+                              </td>
+                              <td className="p-3">
+                                <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-bold">
+                                  +{log.xpGained} XP
+                                </span>
+                              </td>
+                              <td className="p-3 font-mono text-[10px] text-[#9b9a97]">
+                                {log.id}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })()}

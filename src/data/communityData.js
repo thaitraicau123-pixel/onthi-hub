@@ -1,6 +1,7 @@
-import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs } from '../utils/firebaseConfig.js';
+import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs, deleteDoc } from '../utils/firebaseConfig.js';
 
 const COMMUNITY_STORAGE_KEY = 'onthi_community_posts_v2';
+export const DELETED_POSTS_STORAGE_KEY = 'onthi_deleted_community_posts_v1';
 const CLOUD_COMMUNITY_TOPIC = 'onthi_hub_community_v2';
 
 export const INITIAL_COMMUNITY_POSTS = [
@@ -70,22 +71,48 @@ function withTimeout(promise, ms = 2500) {
   ]);
 }
 
-// Get all posts from localStorage
+// Deleted post tombstone helpers
+export function getDeletedPostIds() {
+  try {
+    const raw = localStorage.getItem(DELETED_POSTS_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.map(String);
+    }
+  } catch (e) {}
+  return [];
+}
+
+export function saveDeletedPostId(postId) {
+  if (!postId) return;
+  const current = getDeletedPostIds();
+  const strId = String(postId);
+  if (!current.includes(strId)) {
+    const updated = [...current, strId];
+    try {
+      localStorage.setItem(DELETED_POSTS_STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {}
+  }
+}
+
+// Get all posts from localStorage (filtering out deleted tombstones)
 export function getCommunityPosts() {
+  const deletedSet = new Set(getDeletedPostIds());
   try {
     const raw = localStorage.getItem(COMMUNITY_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.filter(p => !deletedSet.has(String(p.id)));
       }
     }
   } catch (e) {}
 
+  const initialActive = INITIAL_COMMUNITY_POSTS.filter(p => !deletedSet.has(String(p.id)));
   try {
-    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(INITIAL_COMMUNITY_POSTS));
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(initialActive));
   } catch (e) {}
-  return INITIAL_COMMUNITY_POSTS;
+  return initialActive;
 }
 
 // Sync single post to Firebase Firestore
@@ -147,23 +174,43 @@ export async function fetchCloudRelayCommunityEvents() {
 
 // Merge remote posts and updates into local cache
 export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
+  const deletedSet = new Set(getDeletedPostIds());
   const current = getCommunityPosts();
   const map = new Map();
 
-  // 1. Initial posts
-  INITIAL_COMMUNITY_POSTS.forEach(p => map.set(String(p.id), { ...p }));
+  // 1. Initial posts (exclude deleted tombstones)
+  INITIAL_COMMUNITY_POSTS.forEach(p => {
+    if (!deletedSet.has(String(p.id))) {
+      map.set(String(p.id), { ...p });
+    }
+  });
 
-  // 2. Current local posts
-  current.forEach(p => map.set(String(p.id), { ...p }));
+  // 2. Current local posts (exclude deleted tombstones)
+  current.forEach(p => {
+    if (!deletedSet.has(String(p.id))) {
+      map.set(String(p.id), { ...p });
+    }
+  });
 
   // 3. Process remote items
   if (Array.isArray(remotePostsOrEvents)) {
     for (const item of remotePostsOrEvents) {
       if (!item) continue;
 
+      // Handle delete action event first
+      if (item.action === 'delete_post' && item.data?.postId) {
+        const delId = String(item.data.postId);
+        deletedSet.add(delId);
+        saveDeletedPostId(delId);
+        map.delete(delId);
+        continue;
+      }
+
       // Case A: Full post object (from Firestore)
       if (item.id && item.content) {
         const strId = String(item.id);
+        if (deletedSet.has(strId)) continue; // Never re-insert deleted post
+
         const existing = map.get(strId);
         if (!existing) {
           map.set(strId, item);
@@ -187,8 +234,27 @@ export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
       else if (item.action && item.data) {
         if (item.action === 'add_post' && item.data.id) {
           const strId = String(item.data.id);
-          if (!map.has(strId)) {
+          if (!deletedSet.has(strId) && !map.has(strId)) {
             map.set(strId, item.data);
+          }
+        } else if (item.action === 'pin_post' && item.data.postId) {
+          const strId = String(item.data.postId);
+          const target = map.get(strId);
+          if (target) {
+            target.isPinned = !!item.data.isPinned;
+            map.set(strId, target);
+          }
+        } else if (item.action === 'delete_comment' && item.data.postId && item.data.commentIndex !== undefined) {
+          const strId = String(item.data.postId);
+          const target = map.get(strId);
+          if (target && Array.isArray(target.comments)) {
+            const idx = Number(item.data.commentIndex);
+            if (idx >= 0 && idx < target.comments.length) {
+              const updatedComments = [...target.comments];
+              updatedComments.splice(idx, 1);
+              target.comments = updatedComments;
+              map.set(strId, target);
+            }
           }
         } else if (item.action === 'like_post' && item.data.postId) {
           const strId = String(item.data.postId);
@@ -293,6 +359,117 @@ export function addCommentToCommunityPost(postId, comment) {
 
   broadcastCommunityActionToCloud('comment_post', { postId, comment });
   return updated;
+}
+
+// Delete a community post permanently (Admin control)
+export async function deleteCommunityPost(postId) {
+  if (!postId) return getCommunityPosts();
+  const strId = String(postId);
+
+  // 1. Record tombstone so sync cycles do not resurrect it
+  saveDeletedPostId(strId);
+
+  // 2. Remove from local list
+  const current = getCommunityPosts().filter(p => String(p.id) !== strId);
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(current));
+  } catch (e) {}
+
+  // 3. Delete from Firebase Firestore if available
+  try {
+    const db = getFirestoreDb();
+    if (db) {
+      await withTimeout(deleteDoc(doc(db, 'community_posts', strId)), 2500);
+    }
+  } catch (e) {
+    // Graceful fallback if offline
+  }
+
+  // 4. Broadcast deletion to Cloud Relay
+  broadcastCommunityActionToCloud('delete_post', { postId: strId });
+
+  return current;
+}
+
+// Toggle Pin status of a post (Admin control)
+export async function togglePinCommunityPost(postId) {
+  if (!postId) return getCommunityPosts();
+  const strId = String(postId);
+  let updatedPost = null;
+
+  const current = getCommunityPosts().map(p => {
+    if (String(p.id) === strId) {
+      updatedPost = { ...p, isPinned: !p.isPinned };
+      return updatedPost;
+    }
+    return p;
+  });
+
+  // Sort pinned first
+  current.sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    const timeA = new Date(a.createdAt || 0).getTime() || 0;
+    const timeB = new Date(b.createdAt || 0).getTime() || 0;
+    return timeB - timeA;
+  });
+
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(current));
+  } catch (e) {}
+
+  if (updatedPost) {
+    syncPostToFirestore(updatedPost);
+    broadcastCommunityActionToCloud('pin_post', { postId: strId, isPinned: updatedPost.isPinned });
+  }
+
+  return current;
+}
+
+// Delete a specific comment from a post (Admin moderation)
+export async function deleteCommunityComment(postId, commentIndex) {
+  if (!postId || commentIndex === undefined || commentIndex < 0) return getCommunityPosts();
+  const strId = String(postId);
+  let updatedPost = null;
+
+  const current = getCommunityPosts().map(p => {
+    if (String(p.id) === strId && Array.isArray(p.comments)) {
+      const newComments = [...p.comments];
+      if (commentIndex < newComments.length) {
+        newComments.splice(commentIndex, 1);
+        updatedPost = { ...p, comments: newComments };
+        return updatedPost;
+      }
+    }
+    return p;
+  });
+
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(current));
+  } catch (e) {}
+
+  if (updatedPost) {
+    syncPostToFirestore(updatedPost);
+    broadcastCommunityActionToCloud('delete_comment', { postId: strId, commentIndex });
+  }
+
+  return current;
+}
+
+// Bulk delete or spam cleanup
+export function clearSpamCommunityPosts(filterFn) {
+  const current = getCommunityPosts();
+  const toDelete = typeof filterFn === 'function' ? current.filter(filterFn) : [];
+  toDelete.forEach(p => {
+    saveDeletedPostId(p.id);
+    broadcastCommunityActionToCloud('delete_post', { postId: String(p.id) });
+  });
+
+  const remaining = current.filter(p => !toDelete.some(d => String(d.id) === String(p.id)));
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(remaining));
+  } catch (e) {}
+  return remaining;
 }
 
 // Subscribe to real-time community posts

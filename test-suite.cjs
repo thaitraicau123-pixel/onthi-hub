@@ -308,6 +308,78 @@ async function runTests() {
   assert(progressCalc.dailyGoalMinutes === 90, 'Progress calculator reflects daily goal');
   assert(typeof progressCalc.percent === 'number' && progressCalc.percent >= 0, `Progress percentage is valid (${progressCalc.percent}%)`);
 
+  // 8. COMMUNITY MODERATION & POST DELETION INTEGRITY
+  console.log('\n--- 8. Testing Community Moderation, Post Deletion & Tombstone Persistence ---');
+  const communityModule = await import('./src/data/communityData.js');
+  const {
+    getCommunityPosts,
+    addCommunityPost,
+    togglePinCommunityPost,
+    deleteCommunityPost,
+    deleteCommunityComment,
+    clearSpamCommunityPosts,
+    getDeletedPostIds,
+    mergeAndSaveCommunityPosts,
+    DELETED_POSTS_STORAGE_KEY
+  } = communityModule;
+
+  const adminGuardModule = await import('./src/utils/adminGuard.js');
+  const { isUserAdmin, PRIMARY_ADMIN_EMAIL } = adminGuardModule;
+
+  // Verify Admin Guard
+  assert(isUserAdmin({ email: PRIMARY_ADMIN_EMAIL }), `Primary admin ${PRIMARY_ADMIN_EMAIL} is verified admin`);
+  assert(!isUserAdmin({ email: 'normal_student@gmail.com' }), 'Regular student email is NOT admin');
+
+  // Verify initial posts
+  const initialPosts = getCommunityPosts();
+  assert(Array.isArray(initialPosts) && initialPosts.length >= 3, `Community has initial posts (found ${initialPosts.length})`);
+
+  // Create a test post
+  const testPostId = 'test_post_' + Date.now();
+  const created = addCommunityPost({
+    id: testPostId,
+    author: 'Test User',
+    content: 'Nội dung test kiểm duyệt bài viết admin',
+    category: 'cong-chuc',
+    comments: [
+      { author: 'Spammer 1', text: 'Bình luận spam 1' },
+      { author: 'Spammer 2', text: 'Bình luận spam 2' }
+    ]
+  });
+  assert(created && created.id === testPostId, 'Successfully created test community post');
+
+  // Verify post is present
+  let activePosts = getCommunityPosts();
+  assert(activePosts.some(p => p.id === testPostId), 'Test post is in active community posts');
+
+  // Test Pin / Unpin
+  const pinnedList = await togglePinCommunityPost(testPostId);
+  const pinnedPost = pinnedList.find(p => p.id === testPostId);
+  assert(pinnedPost && pinnedPost.isPinned === true, 'Successfully pinned community post');
+
+  const unpinnedList = await togglePinCommunityPost(testPostId);
+  const unpinnedPost = unpinnedList.find(p => p.id === testPostId);
+  assert(unpinnedPost && unpinnedPost.isPinned === false, 'Successfully unpinned community post');
+
+  // Test Delete Comment
+  const afterCommentDelete = await deleteCommunityComment(testPostId, 0);
+  const targetPostAfterCm = afterCommentDelete.find(p => p.id === testPostId);
+  assert(targetPostAfterCm && targetPostAfterCm.comments.length === 1, 'Successfully deleted comment from post');
+  assert(targetPostAfterCm.comments[0].author === 'Spammer 2', 'Correct remaining comment verified');
+
+  // Test Delete Post Permanently
+  const afterPostDelete = await deleteCommunityPost(testPostId);
+  assert(!afterPostDelete.some(p => p.id === testPostId), 'Test post removed from active community posts');
+
+  // Verify tombstone is saved
+  const deletedIds = getDeletedPostIds();
+  assert(deletedIds.includes(testPostId), `Post ID recorded in tombstone blacklist (${DELETED_POSTS_STORAGE_KEY})`);
+
+  // Verify tombstone persistence against remote resurrection
+  const fakeRemoteList = [{ id: testPostId, content: 'Zombie post resurrection test', author: 'Zombie' }];
+  const mergedAfterResurrectionAttempt = mergeAndSaveCommunityPosts(fakeRemoteList);
+  assert(!mergedAfterResurrectionAttempt.some(p => p.id === testPostId), 'Tombstone correctly prevents deleted post resurrection during sync');
+
   // SUMMARY
   console.log('\n====================================================');
   console.log(`TOTAL TESTS: ${testsPassed + testsFailed}`);

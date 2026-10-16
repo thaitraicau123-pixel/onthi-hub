@@ -11,21 +11,28 @@ import {
   Pin,
   Search,
   Tag,
-  RotateCw
+  RotateCw,
+  Trash2,
+  Shield
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
+import { isUserAdmin } from '../utils/adminGuard';
 import {
   getCommunityPosts,
   addCommunityPost,
   toggleLikeCommunityPost,
   addCommentToCommunityPost,
-  subscribeToCommunityPosts
+  subscribeToCommunityPosts,
+  deleteCommunityPost,
+  togglePinCommunityPost,
+  deleteCommunityComment
 } from '../data/communityData';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
 export default function CommunityView({ user }) {
+  const isAdmin = isUserAdmin(user);
   const [posts, setPosts] = useState(() => getCommunityPosts());
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,6 +58,28 @@ export default function CommunityView({ user }) {
     navigator.clipboard.writeText(`${window.location.origin}/#post-${post.id}`);
     setCopiedPostId(post.id);
     setTimeout(() => setCopiedPostId(null), 2500);
+  };
+
+  const handleDeletePost = async (postId, author) => {
+    if (window.confirm(`[Admin] Bạn có chắc muốn XÓA VĨNH VIỄN bài viết của "${author || 'người dùng'}" không?\nBài viết sẽ bị xóa và đồng bộ trên tất cả thiết bị.`)) {
+      playSound('flip');
+      const updated = await deleteCommunityPost(postId);
+      setPosts(updated);
+    }
+  };
+
+  const handleTogglePin = async (postId) => {
+    playSound('flip');
+    const updated = await togglePinCommunityPost(postId);
+    setPosts(updated);
+  };
+
+  const handleDeleteComment = async (postId, commentIndex) => {
+    if (window.confirm(`[Admin] Bạn có chắc muốn xóa bình luận này không?`)) {
+      playSound('flip');
+      const updated = await deleteCommunityComment(postId, commentIndex);
+      setPosts(updated);
+    }
   };
 
   const handleLike = (postId) => {
@@ -261,17 +290,17 @@ export default function CommunityView({ user }) {
                 key={post.id}
                 className="bg-white rounded-xl p-4 sm:p-5 border border-[#e9e9e8] hover:border-[#c5c4c0] shadow-2xs space-y-3 transition-colors"
               >
-                {/* Post Author */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                {/* Post Author & Admin Controls */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center space-x-3 min-w-0">
                     <img
                       src={post.avatar}
                       alt={post.author}
-                      className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
+                      className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8] shrink-0"
                     />
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h4 className="text-xs sm:text-sm font-semibold text-[#37352f]">{post.author}</h4>
+                    <div className="min-w-0">
+                      <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                        <h4 className="text-xs sm:text-sm font-semibold text-[#37352f] truncate">{post.author}</h4>
                         {post.isPinned && (
                           <span className="notion-tag notion-tag-yellow text-[10px] flex items-center space-x-0.5">
                             <Pin className="w-2.5 h-2.5" />
@@ -291,6 +320,33 @@ export default function CommunityView({ user }) {
                       </div>
                     </div>
                   </div>
+
+                  {/* ADMIN DIRECT MODERATION TOOLBAR */}
+                  {isAdmin && (
+                    <div className="flex items-center space-x-1.5 shrink-0 bg-[#f7f6f5] p-1 rounded-lg border border-[#e9e9e8]">
+                      <button
+                        onClick={() => handleTogglePin(post.id)}
+                        className={`px-2 py-1 rounded text-[11px] font-semibold flex items-center space-x-1 transition-colors cursor-pointer ${
+                          post.isPinned
+                            ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                            : 'bg-white text-[#5a5955] hover:bg-[#e9e9e8]'
+                        }`}
+                        title={post.isPinned ? 'Bỏ ghim bài viết (Admin)' : 'Ghim bài lên đầu diễn đàn (Admin)'}
+                      >
+                        <Pin className="w-3 h-3" />
+                        <span className="hidden sm:inline">{post.isPinned ? 'Bỏ ghim' : 'Ghim'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleDeletePost(post.id, post.author)}
+                        className="px-2 py-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-rose-200/60 rounded text-[11px] font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
+                        title="Xóa vĩnh viễn bài viết này khỏi hệ thống (Admin)"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span className="hidden sm:inline">Xóa</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Post Content */}
@@ -339,8 +395,19 @@ export default function CommunityView({ user }) {
                 {post.comments.length > 0 && (
                   <div className="pt-2 space-y-2 border-t border-[#f0efed]">
                     {post.comments.map((cm, cIdx) => (
-                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] rounded-lg text-xs space-y-0.5 border border-[#e9e9e8]">
-                        <strong className="text-[#37352f] block font-medium">{cm.author}</strong>
+                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] rounded-lg text-xs space-y-0.5 border border-[#e9e9e8] group">
+                        <div className="flex items-center justify-between">
+                          <strong className="text-[#37352f] block font-medium">{cm.author}</strong>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleDeleteComment(post.id, cIdx)}
+                              className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors opacity-70 group-hover:opacity-100"
+                              title="Xóa bình luận spam này (Admin)"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
                         <p className="text-[#5a5955] font-normal">{cm.text}</p>
                       </div>
                     ))}
