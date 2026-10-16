@@ -398,6 +398,29 @@ async function runTests() {
   const mergedAfterResurrectionAttempt = mergeAndSaveCommunityPosts(fakeRemoteList);
   assert(!mergedAfterResurrectionAttempt.some(p => p.id === testPostId), 'Tombstone correctly prevents deleted post resurrection during sync');
 
+  // 9. MODAL DISMISS & ACCESSIBILITY TESTS
+  console.log('\n--- 9. Testing Modal Dismiss System (Escape Key & Backdrop Handlers) ---');
+  const modalHookModule = await import('./src/hooks/useModalDismiss.js');
+  assert(typeof modalHookModule.useModalDismiss === 'function', 'useModalDismiss hook is exported as function');
+
+  // Verify key modal components have Escape dismiss and backdrop click
+  const changelogCode = fs.readFileSync(path.join(__dirname, 'src/components/ChangelogModal.jsx'), 'utf-8');
+  assert(changelogCode.includes('useModalDismiss'), 'ChangelogModal integrates useModalDismiss hook');
+  assert(changelogCode.includes('fixed inset-0') && changelogCode.includes('onClick={handleClose}'), 'ChangelogModal has outer backdrop click layer');
+  assert(changelogCode.includes('stopPropagation'), 'ChangelogModal card stops click propagation');
+
+  const authModalCode = fs.readFileSync(path.join(__dirname, 'src/components/AuthModal.jsx'), 'utf-8');
+  assert(authModalCode.includes('useModalDismiss'), 'AuthModal integrates useModalDismiss hook');
+  assert(authModalCode.includes('stopPropagation'), 'AuthModal card stops click propagation');
+
+  const paymentModalCode = fs.readFileSync(path.join(__dirname, 'src/components/PaymentModal.jsx'), 'utf-8');
+  assert(paymentModalCode.includes('useModalDismiss'), 'PaymentModal integrates useModalDismiss hook');
+  assert(paymentModalCode.includes('stopPropagation'), 'PaymentModal card stops click propagation');
+
+  const blindBoxModalCode = fs.readFileSync(path.join(__dirname, 'src/components/BlindBoxModal.jsx'), 'utf-8');
+  assert(blindBoxModalCode.includes('useModalDismiss'), 'BlindBoxModal integrates useModalDismiss hook');
+  assert(blindBoxModalCode.includes('stopPropagation'), 'BlindBoxModal card stops click propagation');
+
   // SUMMARY
   console.log('\n====================================================');
   console.log(`TOTAL TESTS: ${testsPassed + testsFailed}`);

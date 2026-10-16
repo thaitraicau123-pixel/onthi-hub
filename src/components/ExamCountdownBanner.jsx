@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Target, Edit3, X, Check, Flame } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { getHanoiDateString, getHanoiTimeString, getHanoiNowComponents } from '../utils/hanoiTime';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 const EXAM_NAME_KEY = 'onthi_target_exam_name';
 const EXAM_DATE_KEY = 'onthi_target_exam_date';
@@ -27,6 +28,9 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
   const [inputName, setInputName] = useState(examName);
   const [inputDate, setInputDate] = useState(examDate);
   const [hanoiClock, setHanoiClock] = useState(() => getHanoiTimeString(new Date(), true));
+
+  // Close config modal on Escape key
+  useModalDismiss(() => setShowConfigModal(false), showConfigModal);
 
   // Real-time ticking countdown synchronized with Hanoi Timezone (ICT UTC+7)
   useEffect(() => {
@@ -147,8 +151,17 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
 
       {/* Target Config Modal */}
       {showConfigModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in text-[#37352f]">
-          <div className="relative w-full max-w-md bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl p-6 space-y-4">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowConfigModal(false);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-[#37352f] cursor-pointer"
+        >
+          <div className="fixed inset-0 -z-10" onClick={() => setShowConfigModal(false)} aria-hidden="true" />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl p-6 space-y-4 cursor-default"
+          >
             
             <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
               <div className="flex items-center space-x-2">
@@ -158,8 +171,11 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
               <button
                 type="button"
                 onClick={() => setShowConfigModal(false)}
-                className="p-1 text-[#787774] hover:text-[#37352f] hover:bg-[#efefed] rounded-lg"
+                className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors cursor-pointer"
+                title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
               >
+                <span>Đóng</span>
+                <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
                 <X className="w-4 h-4" />
               </button>
             </div>

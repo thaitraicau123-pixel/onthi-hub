@@ -5,6 +5,7 @@ import { getUserTier, setUserTier } from '../utils/userTier';
 import { getWalletBalance, deductWalletCoins } from '../utils/wallet';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function PricingModal({ onClose, onTierUpgraded, onPayVietQR }) {
   const currentTier = getUserTier();
@@ -42,18 +43,33 @@ export default function PricingModal({ onClose, onTierUpgraded, onPayVietQR }) {
     });
   };
 
+  // Close on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-sm overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200 cursor-default"
+      >
         
         {/* Header */}
         <div className="p-6 text-center bg-gradient-to-b from-indigo-50/80 to-white border-b border-slate-100">
           <div className="flex justify-end">
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg"
+              className="flex items-center space-x-1 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer border border-slate-200 bg-white shadow-2xs"
+              title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
             >
-              <X className="w-5 h-5" />
+              <span className="font-semibold">Đóng</span>
+              <kbd className="text-[10px] font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
+              <X className="w-4 h-4 ml-0.5" />
             </button>
           </div>
 

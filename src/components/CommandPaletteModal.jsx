@@ -260,7 +260,10 @@ export default function CommandPaletteModal({
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Spotlight Window */}
-      <div className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[80vh] z-10 text-[#37352f]">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-xl bg-white rounded-xl shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[80vh] z-10 text-[#37352f]"
+      >
         
         {/* Search Input Bar */}
         <div className="flex items-center px-4 py-3 border-b border-[#e9e9e8] bg-[#fbfbfa]">

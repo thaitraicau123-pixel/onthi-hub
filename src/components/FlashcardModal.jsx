@@ -347,13 +347,18 @@ export default function FlashcardModal({
   return (
     <div
       ref={modalContainerRef}
+      onClick={(e) => {
+        if (!isFullscreen && e.target === e.currentTarget) onClose();
+      }}
       className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-sm overflow-y-auto ${
-        isFullscreen ? '!p-0' : ''
+        isFullscreen ? '!p-0' : 'cursor-pointer'
       }`}
     >
+      {!isFullscreen && <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />}
       <div
+        onClick={(e) => e.stopPropagation()}
         className={`relative w-full ${
-          isFullscreen ? 'max-w-none h-full !rounded-none' : 'max-w-3xl rounded-3xl max-h-[92vh]'
+          isFullscreen ? 'max-w-none h-full !rounded-none' : 'max-w-3xl rounded-3xl max-h-[92vh] cursor-default'
         } bg-white shadow-2xl flex flex-col overflow-hidden border border-slate-200 animate-spring-3d`}
       >
         
@@ -488,9 +493,12 @@ export default function FlashcardModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center space-x-1 px-2.5 py-1 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+              title="Đóng cửa sổ học (hoặc nhấn Esc, bấm ra ngoài)"
             >
-              <X className="w-5 h-5" />
+              <span>Đóng</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>

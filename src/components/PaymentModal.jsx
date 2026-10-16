@@ -28,6 +28,7 @@ import {
   createDepositRequest
 } from '../utils/wallet';
 import { AVAILABLE_VOUCHERS, getClaimedVouchers } from '../utils/gamification';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function PaymentModal({
   item,
@@ -37,6 +38,9 @@ export default function PaymentModal({
   onOpenWallet,
   onGoToLibrary
 }) {
+  // Close modal on Escape key
+  useModalDismiss(onClose, !!item);
+
   const [walletBalance, setWalletBalance] = useState(() => getWalletBalance());
   const [isPurchasedSuccess, setIsPurchasedSuccess] = useState(false);
   const [isTopupOpen, setIsTopupOpen] = useState(false);
@@ -166,8 +170,17 @@ export default function PaymentModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/50 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto cursor-default"
+      >
         
         {/* Header */}
         <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8] shrink-0">
@@ -187,9 +200,12 @@ export default function PaymentModal({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span>Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+            <X className="w-4 h-4" />
           </button>
         </div>
 

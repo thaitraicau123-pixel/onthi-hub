@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { getAllDecksDueStats, buildDueCardsDeck } from '../utils/spacedRepetition';
 import { getStreakInfo } from '../utils/gamification';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function AnalyticsModal({
   isOpen,
@@ -24,6 +25,9 @@ export default function AnalyticsModal({
   purchasedCourses = [],
   onOpenDueCards
 }) {
+  // Close on Escape key
+  useModalDismiss(onClose, isOpen);
+
   if (!isOpen) return null;
 
   const isComboUser = purchasedCourses.includes('combo-all-access');
@@ -86,10 +90,13 @@ export default function AnalyticsModal({
   const maxForecast = Math.max(1, ...forecastData);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-2xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-2xs animate-fade-in cursor-pointer">
       <div className="fixed inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[90vh] z-10 text-[#37352f]">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[90vh] z-10 text-[#37352f] cursor-default"
+      >
         
         {/* Header */}
         <div className="px-6 py-4 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between">
@@ -106,8 +113,11 @@ export default function AnalyticsModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1ef] transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1ef] rounded-lg border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
+            <span>Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
             <X className="w-4 h-4" />
           </button>
         </div>

@@ -15,6 +15,7 @@ import {
   Save,
   Trash2
 } from 'lucide-react';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 import {
   getTransactions,
   fetchFirestoreTransactions,
@@ -92,9 +93,21 @@ export default function AdminModal({ onClose }) {
     reloadData();
   };
 
+  // Close on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-300">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-300 cursor-default"
+      >
         
         {/* Admin Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-slate-900 text-white">
@@ -122,16 +135,19 @@ export default function AdminModal({ onClose }) {
           <div className="flex items-center space-x-2">
             <button
               onClick={reloadData}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               title="Làm mới dữ liệu"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+              className="flex items-center space-x-1 px-3 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-700 bg-slate-800/60 transition-colors cursor-pointer"
+              title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
             >
-              <X className="w-5 h-5" />
+              <span className="font-semibold">Đóng</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-900 px-1 py-0.5 rounded text-slate-300">Esc</kbd>
+              <X className="w-4 h-4 ml-0.5" />
             </button>
           </div>
         </div>

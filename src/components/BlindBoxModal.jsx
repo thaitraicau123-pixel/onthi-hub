@@ -19,6 +19,7 @@ import {
   Trophy,
   ExternalLink
 } from 'lucide-react';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 import {
   BLIND_BOXES,
   openBlindBox,
@@ -190,9 +191,21 @@ export default function BlindBoxModal({
     setTimeout(() => setCopiedCode(''), 2500);
   };
 
+  // Close modal on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white border border-[#e9e9e8] rounded-xl shadow-2xl overflow-hidden my-4 sm:my-6 text-[#37352f] flex flex-col">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white border border-[#e9e9e8] rounded-xl shadow-2xl overflow-hidden my-4 sm:my-6 text-[#37352f] flex flex-col cursor-default"
+      >
         
         {/* 1. TOP TICKER: RECENT BIG WINNERS MARQUEE */}
         <div className="bg-[#fbfbfa] border-b border-[#e9e9e8] px-4 py-1.5 flex items-center justify-between text-[11px] overflow-hidden text-[#787774]">
@@ -206,7 +219,7 @@ export default function BlindBoxModal({
 
           <button
             onClick={() => setShowDropRates(!showDropRates)}
-            className="text-[10px] text-[#2383e2] hover:underline font-semibold flex items-center space-x-1 shrink-0 ml-2"
+            className="text-[10px] text-[#2383e2] hover:underline font-semibold flex items-center space-x-1 shrink-0 ml-2 cursor-pointer"
           >
             <Info className="w-3 h-3" />
             <span>Tỷ Lệ Rơi</span>
@@ -234,19 +247,22 @@ export default function BlindBoxModal({
             </div>
           </div>
 
-          <div className="flex items-center space-x-1.5">
+          <div className="flex items-center space-x-2">
             <button
               onClick={() => setIsMuted(!isMuted)}
-              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
+              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors cursor-pointer"
               title={isMuted ? 'Bật âm thanh' : 'Tắt âm thanh'}
             >
               {isMuted ? <VolumeX className="w-4 h-4 text-slate-400" /> : <Volume2 className="w-4 h-4 text-[#2383e2]" />}
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
+              className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+              title="Đóng túi mù (hoặc nhấn Esc, bấm ra ngoài)"
             >
-              <X className="w-5 h-5" />
+              <span>Đóng</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>

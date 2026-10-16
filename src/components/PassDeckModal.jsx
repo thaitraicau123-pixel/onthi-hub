@@ -14,6 +14,7 @@ import { passDeckToMarketplace } from '../data/marketplaceData';
 import { getUserTier, getTierLimits } from '../utils/userTier';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function PassDeckModal({
   course,
@@ -76,9 +77,21 @@ export default function PassDeckModal({
     }
   };
 
+  // Close on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in overflow-y-auto">
-      <div className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden my-6 text-[#37352f]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden my-6 text-[#37352f] cursor-default"
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between p-5 bg-[#fbfbfa] border-b border-[#e9e9e8] text-[#37352f]">
@@ -97,10 +110,14 @@ export default function PassDeckModal({
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span>Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+            <X className="w-4 h-4" />
           </button>
         </div>
 

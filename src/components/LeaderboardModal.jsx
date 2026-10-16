@@ -3,6 +3,7 @@ import { X, Trophy, Flame, Award, Sparkles, TrendingUp, Users, Target, CheckCirc
 import { getStreakInfo, LEADERBOARD_USERS, getDailyQuests } from '../utils/gamification';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function LeaderboardModal({ onClose }) {
   const [activeSubTab, setActiveSubTab] = useState('leaderboard'); // 'leaderboard' | 'quests'
@@ -11,9 +12,21 @@ export default function LeaderboardModal({ onClose }) {
 
   const completedCount = quests.filter(q => q.completed).length;
 
+  // Close on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-spring-3d">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-spring-3d cursor-default"
+      >
         
         {/* Header */}
         <div className="p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-between">
@@ -29,9 +42,12 @@ export default function LeaderboardModal({ onClose }) {
 
           <button
             onClick={onClose}
-            className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-xl"
+            className="flex items-center space-x-1 px-3 py-1.5 text-xs text-white bg-white/15 hover:bg-white/25 rounded-xl transition-colors cursor-pointer border border-white/20"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span className="font-semibold">Đóng</span>
+            <kbd className="text-[10px] font-mono bg-white/20 px-1 py-0.5 rounded text-white">Esc</kbd>
+            <X className="w-4 h-4" />
           </button>
         </div>
 

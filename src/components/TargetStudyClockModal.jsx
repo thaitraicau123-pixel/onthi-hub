@@ -16,6 +16,7 @@ import {
   BellRing,
   RotateCcw
 } from 'lucide-react';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 import {
   getHanoiDateString,
   getHanoiTimeString,
@@ -76,6 +77,9 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
       window.removeEventListener('onthi-target-clock-change', refreshLogs);
     };
   }, [isOpen, logsFilter]);
+
+  // Close on Escape key
+  useModalDismiss(onClose, isOpen);
 
   if (!isOpen) return null;
 
@@ -157,7 +161,10 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-[#37352f] dark:text-[#f8fafc]">
       <div className="fixed inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/15 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] z-10 transition-colors duration-300">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/15 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] z-10 transition-colors duration-300 cursor-default"
+      >
         
         {/* HEADER: LIVE HANOI CLOCK BADGE & CONTROLS */}
         <div className="px-5 py-4 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950/80 flex items-center justify-between gap-3">
@@ -184,9 +191,12 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 transition-colors cursor-pointer"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span>Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
+            <X className="w-4 h-4" />
           </button>
         </div>
 

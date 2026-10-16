@@ -3,6 +3,7 @@ import { X, Trophy, Timer, RotateCcw, Sparkles, CheckCircle2, Volume2, Flame, Aw
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function MatchGameModal({ course, onClose }) {
   const [tiles, setTiles] = useState([]);
@@ -162,9 +163,21 @@ export default function MatchGameModal({ course, onClose }) {
 
   const totalPairs = Math.min(course.previewCards?.length || 6, 6);
 
+  // Close on Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-[#e9e9e8] text-[#37352f]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-[#e9e9e8] text-[#37352f] cursor-default"
+      >
         
         {/* Game Header (Notion Minimalist) */}
         <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 bg-[#fbfbfa] text-[#37352f] border-b border-[#e9e9e8] shrink-0">
@@ -219,8 +232,11 @@ export default function MatchGameModal({ course, onClose }) {
             {/* Close Button */}
             <button
               onClick={onClose}
-              className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
+              className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+              title="Đóng game (hoặc nhấn Esc, bấm ra ngoài)"
             >
+              <span>Đóng</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
               <X className="w-4 h-4" />
             </button>
           </div>

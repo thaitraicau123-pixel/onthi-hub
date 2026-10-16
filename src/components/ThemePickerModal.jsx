@@ -3,6 +3,7 @@ import { X, Check, Palette, Sparkles, Wand2 } from 'lucide-react';
 import { THEMES, getSelectedThemeId, applyTheme, getSleepMode, setSleepMode as setGlobalSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThemeSelect, onSelectTheme }) {
   const currentThemeId = currentTheme?.id || getSelectedThemeId();
@@ -38,13 +39,19 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
     setLocalSleepMode(mode);
   };
 
+  // Close on Escape key
+  useModalDismiss(onClose, isOpen);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/50 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-xs animate-fade-in cursor-pointer">
       <div className="fixed inset-0" onClick={onClose} />
 
-      <div className="relative w-full max-w-3xl bg-white dark:bg-[#121626] rounded-2xl shadow-3d-floating border border-[#e9e9e8] dark:border-white/10 overflow-hidden flex flex-col max-h-[92vh] z-10 text-[#37352f] dark:text-white">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-3xl bg-white dark:bg-[#121626] rounded-2xl shadow-3d-floating border border-[#e9e9e8] dark:border-white/10 overflow-hidden flex flex-col max-h-[92vh] z-10 text-[#37352f] dark:text-white cursor-default"
+      >
         
         {/* Header (Messenger / Instagram Theme Picker Style) */}
         <div className="px-5 sm:px-6 py-4 border-b border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-[#181d33] flex items-center justify-between shrink-0">
@@ -70,8 +77,11 @@ export default function ThemePickerModal({ isOpen, onClose, currentTheme, onThem
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white hover:bg-[#f1f1ef] dark:hover:bg-white/10 transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white hover:bg-[#f1f1ef] dark:hover:bg-white/10 rounded-lg border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-white/5 transition-colors cursor-pointer"
+            title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
+            <span>Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] dark:bg-slate-800 px-1 py-0.5 rounded text-[#787774] dark:text-slate-300">Esc</kbd>
             <X className="w-4 h-4" />
           </button>
         </div>

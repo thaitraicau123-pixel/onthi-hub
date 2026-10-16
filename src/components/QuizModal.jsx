@@ -363,8 +363,17 @@ export default function QuizModal({
   }, [questions, selectedAnswers, flaggedQuestions, reviewFilter]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-slate-950/85 backdrop-blur-md overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200 dark:border-white/15 animate-spring-3d text-slate-900 dark:text-white">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-slate-950/85 backdrop-blur-md overflow-y-auto animate-fade-in cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200 dark:border-white/15 animate-spring-3d text-slate-900 dark:text-white cursor-default"
+      >
         
         {/* =========================================================
             TOPBAR: EXAM HEADER & REALTIME CLOCK & MODE SWITCHER
@@ -457,9 +466,12 @@ export default function QuizModal({
             {/* Close */}
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center space-x-1 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg border border-slate-300 dark:border-white/20 bg-white dark:bg-slate-800 transition-colors cursor-pointer"
+              title="Đóng phòng thi (hoặc nhấn Esc, bấm ra ngoài)"
             >
-              <X className="w-5 h-5" />
+              <span>Đóng</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded text-slate-600 dark:text-slate-300">Esc</kbd>
+              <X className="w-4 h-4" />
             </button>
           </div>
 

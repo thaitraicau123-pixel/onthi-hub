@@ -20,6 +20,7 @@ import {
   markChangelogAsRead
 } from '../data/changelogData';
 import { playSound } from '../utils/storage';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function ChangelogModal({
   onClose,
@@ -42,9 +43,32 @@ export default function ChangelogModal({
     onClose();
   };
 
+  // Close on Escape key
+  useModalDismiss(handleClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/50 backdrop-blur-xs overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-2xl bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto max-h-[92vh]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto animate-fade-in cursor-pointer"
+    >
+      {/* Background click layer */}
+      <div className="fixed inset-0 -z-10" onClick={handleClose} aria-hidden="true" />
+
+      {/* Floating hint to dismiss */}
+      <div className="fixed top-3 inset-x-0 flex justify-center pointer-events-none select-none z-60">
+        <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white/90 text-[11px] font-medium border border-white/20 shadow-md flex items-center space-x-1.5 animate-fade-in">
+          <span>💡 Bấm ra khoảng trống bên ngoài hoặc nhấn</span>
+          <kbd className="px-1.5 py-0.5 bg-white/20 rounded font-mono text-[10px] text-white">Esc</kbd>
+          <span>để đóng</span>
+        </span>
+      </div>
+
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto max-h-[92vh] cursor-default"
+      >
         
         {/* HEADER */}
         <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8] shrink-0">
@@ -69,10 +93,12 @@ export default function ChangelogModal({
 
           <button
             onClick={handleClose}
-            className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md transition-colors"
-            title="Đóng bảng tin"
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-lg border border-[#e9e9e8] bg-white transition-all cursor-pointer shadow-2xs group"
+            title="Đóng bảng tin (hoặc nhấn phím Esc, bấm ra khoảng trống bên ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span className="font-semibold">Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+            <X className="w-4 h-4 ml-0.5 group-hover:scale-110 transition-transform" />
           </button>
         </div>
 
@@ -227,13 +253,22 @@ export default function ChangelogModal({
             <span>Đã đọc, không tự động hiện lại bảng tin này</span>
           </label>
 
-          <button
-            onClick={handleClose}
-            className="w-full sm:w-auto px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center space-x-1.5"
-          >
-            <span>Đã Hiểu & Khám Phá Ngay</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#f0efed] hover:bg-[#e3e2e0] text-[#37352f] text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+            >
+              Đóng cửa sổ (Esc)
+            </button>
+            <button
+              onClick={handleClose}
+              className="w-full sm:w-auto px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+            >
+              <span>Đã Hiểu & Khám Phá Ngay</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
       </div>

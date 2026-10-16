@@ -38,6 +38,7 @@ import { getWalletBalance } from '../utils/wallet';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getStreakInfo } from '../utils/gamification';
 import { isUserAdmin } from '../utils/adminGuard';
+import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function AuthModal({
   user,
@@ -209,9 +210,21 @@ export default function AuthModal({
     }
   };
 
+  // Close modal with Escape key
+  useModalDismiss(onClose);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-md overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-[#ffffff] text-[#1e1e24] rounded-xl shadow-2xl overflow-hidden border border-[#e9e9e8] animate-spring-3d flex flex-col max-h-[92vh]">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/70 backdrop-blur-md overflow-y-auto cursor-pointer"
+    >
+      <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl bg-[#ffffff] text-[#1e1e24] rounded-xl shadow-2xl overflow-hidden border border-[#e9e9e8] animate-spring-3d flex flex-col max-h-[92vh] cursor-default"
+      >
         
         {/* =========================================================
             HEADER: QUẢN LÝ TÀI KHOẢN (Theo phong cách Image 1)
@@ -233,10 +246,12 @@ export default function AuthModal({
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
-            title="Đóng cửa sổ"
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer border border-slate-200/80 bg-white shadow-2xs group"
+            title="Đóng cửa sổ (hoặc nhấn phím Esc, bấm ra ngoài)"
           >
-            <X className="w-5 h-5" />
+            <span className="font-semibold">Đóng</span>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
+            <X className="w-4 h-4 ml-0.5 group-hover:scale-110 transition-transform" />
           </button>
         </div>
 
