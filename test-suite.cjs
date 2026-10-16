@@ -174,6 +174,14 @@ async function runTests() {
   const homeViewCode = fs.readFileSync(path.resolve(__dirname, 'src/views/HomeView.jsx'), 'utf8');
   assert(!homeViewCode.includes('slate-850'), 'HomeView has zero invalid slate-850 classes');
   assert(!homeViewCode.includes('slate-750'), 'HomeView has zero invalid slate-750 classes');
+  const themeManagerCode = fs.readFileSync(path.resolve(__dirname, 'src/utils/themeManager.js'), 'utf8');
+  assert(!themeManagerCode.includes('/92'), 'themeManager.js has zero invalid /92 Tailwind opacity modifiers');
+  THEMES.forEach(t => {
+    assert(t.sidebarBgClass && !t.sidebarBgClass.includes('/92'), `Theme "${t.id}" sidebarBgClass uses valid Tailwind opacity`);
+    if (DAY_THEMES.includes(t.id)) {
+      assert(t.sidebarBgClass.includes('dark:bg-'), `Day Theme "${t.id}" sidebarBgClass has explicit dark:bg- class for Sleep Mode`);
+    }
+  });
 
   // 3. BLIND BOX REWARDS (No useless vouchers, profitable for user & platform)
   console.log('\n--- 3. Testing Lucky Blind Box Utility & Rewards ---');

@@ -399,11 +399,15 @@ body {
 .dark .bg-\[\#f7f6f5\],
 .dark .bg-\[\#faf9f8\],
 .dark .bg-\[\#f1f1ef\],
+.dark .bg-slate-50,
+.dark .bg-slate-100,
 [data-sleep-mode="dark"] .bg-\[\#fbfbfa\],
 [data-sleep-mode="dark"] .bg-\[\#f7f6f5\],
 [data-sleep-mode="dark"] .bg-\[\#faf9f8\],
-[data-sleep-mode="dark"] .bg-\[\#f1f1ef\] {
-  background-color: rgba(26, 33, 52, 0.85) !important;
+[data-sleep-mode="dark"] .bg-\[\#f1f1ef\],
+[data-sleep-mode="dark"] .bg-slate-50,
+[data-sleep-mode="dark"] .bg-slate-100 {
+  background-color: rgba(20, 27, 45, 0.88) !important;
   backdrop-filter: blur(14px) !important;
   -webkit-backdrop-filter: blur(14px) !important;
   border-color: rgba(255, 255, 255, 0.12) !important;

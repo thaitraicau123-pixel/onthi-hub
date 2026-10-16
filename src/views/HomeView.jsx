@@ -103,24 +103,62 @@ export default function HomeView({
     <div className="space-y-6 animate-fade-in pb-16 text-[#37352f] dark:text-[#f8fafc]">
       
       {/* =========================================================
-          NOTION PAGE HEADER: EMOJI + TITLE + SUBTITLE + CALLOUT
+          HERO GLASS DASHBOARD CARD: HIGH-CONTRAST + 1-CLICK STUDY
           ========================================================= */}
-      <div className="space-y-3 pb-2 border-b border-[#e9e9e8] dark:border-white/10">
-        <div className="text-4xl select-none">🏠</div>
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight">
-            Kho Đề Thi & Bộ Thẻ Chuẩn Hóa
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-            Hệ thống tài liệu ôn thi trắc nghiệm công chức 2026, IT và ngoại ngữ ứng dụng thuật toán lặp lại ngắt quãng (Spaced Repetition).
-          </p>
+      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl p-5 sm:p-6 border border-[#e9e9e8] dark:border-white/15 shadow-3d-sm space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-500/40 text-[#1458a6] dark:text-sky-300 text-[11px] font-bold">
+              <span>🏠 KHÔNG GIAN ÔN LUYỆN THÔNG MINH 2026</span>
+              <span className="text-sky-400">•</span>
+              <span>{allCourses.reduce((sum, c) => sum + (c.cardsCount || (c.flashcards ? c.flashcards.length : 0)), 0).toLocaleString()}+ Thẻ Anki</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Kho Đề Thi & Bộ Thẻ Chuẩn Hóa
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+              Hệ thống tài liệu ôn thi trắc nghiệm công chức 2026, IT, Y khoa và ngoại ngữ ứng dụng thuật toán lặp lại ngắt quãng (Spaced Repetition SM-2).
+            </p>
+          </div>
+
+          {/* 1-Click Quick Study Action Buttons */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => allCourses[0] && onOpenFlashcards(allCourses[0])}
+              className="px-3.5 py-2 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-sm flex items-center space-x-1.5 transition-all cursor-pointer active:scale-95"
+            >
+              <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
+              <span>Ôn Nhanh 10 Thẻ Trọng Tâm</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => allCourses[0] && onOpenQuiz(allCourses[0])}
+              className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-sm flex items-center space-x-1.5 transition-all cursor-pointer active:scale-95"
+            >
+              <GraduationCap className="w-4 h-4" />
+              <span>Thi Thử Cấp Tốc</span>
+            </button>
+
+            {onOpenLeaderboard && (
+              <button
+                type="button"
+                onClick={onOpenLeaderboard}
+                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-white/15 font-bold text-xs flex items-center space-x-1.5 transition-all cursor-pointer"
+              >
+                <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                <span>Bảng Vàng</span>
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* Notion Callout Box */}
-        <div className="bg-[#f1f1ef] dark:bg-slate-800/80 border border-[#e9e9e8] dark:border-white/10 rounded-lg p-3 text-xs text-[#37352f] dark:text-slate-200 flex items-start space-x-2.5">
+        {/* High-Contrast Callout Box */}
+        <div className="bg-slate-50 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2.5">
           <span className="text-base leading-none">💡</span>
           <div className="leading-relaxed">
-            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-semibold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span> hoặc <span className="font-semibold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ.
+            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span> hoặc <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ, hoặc lưu mã giảm Xu ở thanh Giờ Vàng bên dưới.
           </div>
         </div>
       </div>
@@ -327,15 +365,19 @@ export default function HomeView({
           COURSES CATALOG (TINH GỌN & DỄ TIẾP CẬN)
           ========================================================= */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md px-4 py-3 rounded-xl border border-[#e9e9e8] dark:border-white/15 shadow-2xs">
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-[#37352f] dark:text-white tracking-tight">
-              Kho Bộ Đề & Flashcard Tiêu Chuẩn ({sortedAndFiltered.length})
+            <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
+              📚 Kho Bộ Đề & Flashcard Tiêu Chuẩn ({sortedAndFiltered.length} bộ đề)
             </h3>
-            <p className="text-xs text-[#787774] dark:text-slate-200 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
               Học thử lật thẻ 3D và thi trắc nghiệm tính giờ miễn phí trước khi mở khóa toàn bộ.
             </p>
           </div>
+          <span className="inline-flex items-center space-x-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 px-2.5 py-1 rounded-lg border border-emerald-200 dark:border-emerald-500/40 self-start sm:self-center">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Đã kiểm duyệt 2026</span>
+          </span>
         </div>
 
         {sortedAndFiltered.length === 0 ? (

@@ -101,7 +101,7 @@ export default function NotionTopbar({
   const currentBreadcrumb = breadcrumbMap[activeTab] || breadcrumbMap.home;
 
   return (
-    <header className={`sticky top-0 z-30 h-11 ${currentTheme?.topbarBgClass || 'bg-white/90 backdrop-blur-md'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8]'} flex items-center justify-between px-3 sm:px-5 select-none text-xs ${currentTheme?.textClass || 'text-[#37352f]'} transition-colors duration-500 relative`}>
+    <header className={`sticky top-0 z-30 h-12 ${currentTheme?.topbarBgClass || 'bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-xl'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8] dark:border-white/15'} flex items-center justify-between px-3 sm:px-5 select-none text-xs text-slate-900 dark:text-white transition-colors duration-500 relative`}>
       {/* Festive Snow Cap Drip on Header */}
       {currentTheme?.hasSnowCaps && (
         <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none overflow-hidden z-40">
@@ -138,7 +138,7 @@ export default function NotionTopbar({
             playSound('click');
             onToggleSidebar();
           }}
-          className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[rgba(55,53,47,0.08)] rounded-md transition-colors shrink-0"
+          className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors shrink-0 cursor-pointer"
           title={sidebarOpen ? "Thu gọn thanh bên" : "Mở rộng thanh bên (Ctrl + \\)"}
         >
           <PanelLeft className="w-4 h-4" />
@@ -148,12 +148,12 @@ export default function NotionTopbar({
         <nav aria-label="Breadcrumb" className="flex items-center space-x-1.5 truncate">
           <span
             onClick={() => onSelectTab('home')}
-            className="text-[#787774] hover:text-[#37352f] cursor-pointer transition-colors truncate"
+            className="text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white font-semibold cursor-pointer transition-colors truncate"
           >
             🎓 Ôn Thi Hub
           </span>
-          <span className="text-[#9b9a97]">/</span>
-          <span className="font-semibold text-[#37352f] flex items-center space-x-1 truncate">
+          <span className="text-slate-400 dark:text-slate-500">/</span>
+          <span className="font-extrabold text-slate-900 dark:text-white flex items-center space-x-1 truncate">
             <span className="text-sm shrink-0">{currentBreadcrumb.emoji}</span>
             <span className="truncate">{currentBreadcrumb.title}</span>
           </span>
@@ -170,12 +170,12 @@ export default function NotionTopbar({
             playSound('click');
             onOpenSearch?.();
           }}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-[#f7f6f5] hover:bg-[#efefed] text-[#787774] hover:text-[#37352f] border border-[#e9e9e8] text-xs transition-all cursor-pointer shadow-2xs"
+          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
           title="Mở thanh tìm kiếm & lệnh nhanh (Ctrl+K)"
         >
-          <Search className="w-3.5 h-3.5 text-[#9b9a97]" />
+          <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400" />
           <span>Tìm nhanh</span>
-          <kbd className="text-[9px] font-mono px-1 py-0.2 rounded bg-white text-[#9b9a97] border border-[#e3e2e0]">
+          <kbd className="text-[9px] font-mono font-bold px-1 py-0.2 rounded bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/15">
             Ctrl+K
           </kbd>
         </button>
@@ -187,10 +187,10 @@ export default function NotionTopbar({
             playSound('click');
             onOpenThemePicker?.();
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-gradient-to-r from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 text-purple-700 border border-purple-200/80 transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
           title="Đổi chủ đề không gian học & icon (16 Themes Messenger & 3D 4K)"
         >
-          <Palette className="w-3.5 h-3.5 text-purple-600" />
+          <Palette className="w-3.5 h-3.5 text-purple-700 dark:text-purple-300" />
           <span className="hidden sm:inline">Chủ Đề</span>
         </button>
 
@@ -203,10 +203,10 @@ export default function NotionTopbar({
               const nextMode = toggleSleepMode();
               setSleepMode(nextMode);
             }}
-            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
+            className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-bold shadow-2xs cursor-pointer touch-3d border ${
               sleepMode === 'dark'
-                ? 'bg-indigo-950/80 text-indigo-200 border-indigo-400/50 hover:bg-indigo-900/90 ring-1 ring-indigo-400/30'
-                : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100 ring-1 ring-amber-400/20'
+                ? 'bg-indigo-950/90 text-indigo-100 border-indigo-400/50 hover:bg-indigo-900'
+                : 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
             }`}
             title={
               sleepMode === 'dark'
@@ -221,7 +221,7 @@ export default function NotionTopbar({
           </button>
         ) : (
           <div
-            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-md bg-indigo-950/80 text-indigo-200 border border-indigo-400/40 shadow-2xs text-[11px] font-semibold"
+            className="hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-md bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs text-[11px] font-bold"
             title="Chủ đề 3D 4K này tự động chạy Chế độ ngủ chuẩn rạp chiếu phim để màu sắc hòa hợp và độ tương phản cao nhất."
           >
             <span className="text-xs">🌙</span>
@@ -232,22 +232,22 @@ export default function NotionTopbar({
         {/* Dynamic Weather & Atmosphere Particle Toggle Button (14 Bespoke Engines) */}
         {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
           const weatherInfoMap = {
-            'mario-stars': { icon: '🍄', label: 'Mario Stars', activeClass: 'bg-rose-500/20 text-rose-300 border-rose-400/40 hover:bg-rose-500/30 ring-1 ring-rose-400/30' },
-            'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat', activeClass: 'bg-pink-500/20 text-pink-300 border-pink-400/40 hover:bg-pink-500/30 ring-1 ring-pink-400/30' },
-            snow: { icon: '❄️', label: 'Tuyết Rơi', activeClass: 'bg-blue-500/15 text-blue-300 border-blue-400/40 hover:bg-blue-500/25 ring-1 ring-blue-400/30' },
-            halloween: { icon: '🎃', label: 'Halloween', activeClass: 'bg-orange-500/20 text-orange-300 border-orange-400/40 hover:bg-orange-500/30 ring-1 ring-orange-400/30' },
-            sakura: { icon: '🌸', label: 'Hoa Đào', activeClass: 'bg-pink-500/15 text-pink-300 border-pink-400/40 hover:bg-pink-500/25 ring-1 ring-pink-400/30' },
-            stars: { icon: '✨', label: 'Sao Băng', activeClass: 'bg-purple-500/15 text-purple-300 border-purple-400/40 hover:bg-purple-500/25 ring-1 ring-purple-400/30' },
-            fireflies: { icon: '🍃', label: 'Đom Đóm', activeClass: 'bg-lime-500/15 text-lime-300 border-lime-400/40 hover:bg-lime-500/25 ring-1 ring-lime-400/30' },
-            'coffee-steam': { icon: '☕', label: 'Hơi Cà Phê', activeClass: 'bg-amber-600/15 text-amber-300 border-amber-500/40 hover:bg-amber-600/25 ring-1 ring-amber-400/30' },
-            'digital-rain': { icon: '⚡', label: 'Ma Trận', activeClass: 'bg-cyan-500/15 text-cyan-300 border-cyan-400/40 hover:bg-cyan-500/25 ring-1 ring-cyan-400/30' },
-            'sunset-dust': { icon: '🌅', label: 'Bụi Nắng', activeClass: 'bg-rose-500/15 text-rose-300 border-rose-400/40 hover:bg-rose-500/25 ring-1 ring-rose-400/30' },
-            'fizzy-citrus': { icon: '🫧', label: 'Bọt Khí', activeClass: 'bg-yellow-500/15 text-yellow-300 border-yellow-400/40 hover:bg-yellow-500/25 ring-1 ring-yellow-400/30' },
-            'aurora-ice': { icon: '🌌', label: 'Cực Quang', activeClass: 'bg-teal-500/15 text-teal-300 border-teal-400/40 hover:bg-teal-500/25 ring-1 ring-teal-400/30' },
-            'autumn-leaves': { icon: '🍂', label: 'Lá Vàng', activeClass: 'bg-amber-500/15 text-amber-300 border-amber-400/40 hover:bg-amber-500/25 ring-1 ring-amber-400/30' },
-            'minimal-sparkles': { icon: '✨', label: 'Lấp Lánh', activeClass: 'bg-indigo-500/15 text-indigo-300 border-indigo-400/40 hover:bg-indigo-500/25 ring-1 ring-indigo-400/30' }
+            'mario-stars': { icon: '🍄', label: 'Mario Stars' },
+            'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat' },
+            snow: { icon: '❄️', label: 'Tuyết Rơi' },
+            halloween: { icon: '🎃', label: 'Halloween' },
+            sakura: { icon: '🌸', label: 'Hoa Đào' },
+            stars: { icon: '✨', label: 'Sao Băng' },
+            fireflies: { icon: '🍃', label: 'Đom Đóm' },
+            'coffee-steam': { icon: '☕', label: 'Hơi Cà Phê' },
+            'digital-rain': { icon: '⚡', label: 'Ma Trận' },
+            'sunset-dust': { icon: '🌅', label: 'Bụi Nắng' },
+            'fizzy-citrus': { icon: '🫧', label: 'Bọt Khí' },
+            'aurora-ice': { icon: '🌌', label: 'Cực Quang' },
+            'autumn-leaves': { icon: '🍂', label: 'Lá Vàng' },
+            'minimal-sparkles': { icon: '✨', label: 'Lấp Lánh' }
           };
-          const info = weatherInfoMap[currentTheme.weatherType] || { icon: '✨', label: 'Hiệu Ứng', activeClass: 'bg-purple-500/15 text-purple-300 border-purple-400/40' };
+          const info = weatherInfoMap[currentTheme.weatherType] || { icon: '✨', label: 'Hiệu Ứng' };
 
           return (
             <button
@@ -256,10 +256,10 @@ export default function NotionTopbar({
                 playSound('click');
                 onToggleWeather?.();
               }}
-              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-semibold shadow-2xs cursor-pointer touch-3d border ${
+              className={`flex items-center space-x-1 px-2.5 py-1 rounded-md transition-all font-bold shadow-2xs cursor-pointer touch-3d border ${
                 isWeatherEnabled
-                  ? info.activeClass
-                  : 'bg-stone-500/10 text-stone-400 border-stone-500/20 hover:bg-stone-500/20 opacity-70'
+                  ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-200 border-sky-300 dark:border-sky-500/40 hover:bg-sky-200 dark:hover:bg-sky-900'
+                  : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-white/10 opacity-75'
               }`}
               title={
                 isWeatherEnabled
@@ -282,10 +282,10 @@ export default function NotionTopbar({
             playSound('click');
             onOpenAnalytics?.();
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#f4f0f7] hover:bg-[#eae3f1] text-[#9065b0] border border-[#e3d7ec] transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
           title="Xem phân tích & tiến độ học tập SM-2"
         >
-          <BarChart2 className="w-3.5 h-3.5 text-[#9065b0]" />
+          <BarChart2 className="w-3.5 h-3.5 text-indigo-700 dark:text-indigo-300" />
           <span className="hidden sm:inline">Tiến Độ</span>
         </button>
 
@@ -296,10 +296,10 @@ export default function NotionTopbar({
             playSound('click');
             onSelectTab('wallet');
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-[#fbf3db] hover:bg-[#f8eed0] text-[#976d57] border border-[#f4e4b7] transition-all font-semibold shadow-2xs touch-3d cursor-pointer"
+          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 transition-all font-bold shadow-2xs touch-3d cursor-pointer"
           title="Bấm để mở Ví Xu & nạp tiền"
         >
-          <Coins className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
+          <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-500" />
           <span>{walletBalance} Xu</span>
         </button>
 
@@ -310,18 +310,18 @@ export default function NotionTopbar({
             playSound('flip');
             onOpenLeaderboard?.();
           }}
-          className="hidden sm:flex items-center space-x-1.5 px-2 py-1 rounded-md bg-[#faece3] hover:bg-[#f6dfd2] text-[#cc782f] border border-[#f3d6c1] transition-all font-semibold touch-3d cursor-pointer"
-          title={`Chuỗi học tập liên tục: ${streakInfo.currentStreak} ngày`}
+          className="hidden sm:flex items-center space-x-1.5 px-2 py-1 rounded-md bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 transition-all font-bold touch-3d cursor-pointer"
+          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày`}
         >
           <span className="text-xs select-none">{currentTheme?.icons?.streak || '🔥'}</span>
-          <span>{streakInfo.currentStreak} ngày</span>
+          <span>{streakInfo.streak} ngày</span>
         </button>
 
         {/* Daily Check-in Button */}
         <button
           type="button"
           onClick={handleCheckIn}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-[#edf3ec] hover:bg-[#e0ece0] text-[#448361] border border-[#d3e5d7] transition-all font-semibold shadow-2xs cursor-pointer touch-3d"
+          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
           title="Điểm danh mỗi ngày nhận Xu miễn phí"
         >
           <span className="text-xs select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
@@ -331,13 +331,13 @@ export default function NotionTopbar({
         {/* Audio Mute/Unmute */}
         <button
           onClick={handleToggleMute}
-          className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[rgba(55,53,47,0.08)] rounded-md transition-colors"
+          className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors cursor-pointer"
           title={isMuted ? "Bật âm thanh hiệu ứng" : "Tắt âm thanh"}
         >
           {isMuted ? (
             <VolumeX className="w-4 h-4 text-rose-500" />
           ) : (
-            <Volume2 className="w-4 h-4 text-[#787774]" />
+            <Volume2 className="w-4 h-4 text-slate-600 dark:text-slate-300" />
           )}
         </button>
 
@@ -345,36 +345,36 @@ export default function NotionTopbar({
         <div className="relative">
           <button
             onClick={handleOpenNotifications}
-            className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[rgba(55,53,47,0.08)] rounded-md transition-colors relative"
+            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors relative cursor-pointer"
             title="Thông báo"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#d44c47] ring-2 ring-white"></span>
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900"></span>
             )}
           </button>
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-white rounded-xl shadow-xl border border-[#e9e9e8] p-3 space-y-2 z-50 text-left">
-              <div className="flex items-center justify-between pb-2 border-b border-[#e9e9e8]">
-                <span className="font-bold text-xs text-[#37352f]">Thông Báo</span>
-                <span className="text-[10px] text-[#787774]">{notifications.length} tin</span>
+            <div className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-white/15 p-3 space-y-2 z-50 text-left">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
+                <span className="font-bold text-xs text-slate-900 dark:text-white">Thông Báo Hệ Thống</span>
+                <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-300">{notifications.length} tin</span>
               </div>
               <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
                 {notifications.length === 0 ? (
-                  <p className="text-center text-xs text-[#9b9a97] py-4">Chưa có thông báo nào</p>
+                  <p className="text-center text-xs text-slate-500 dark:text-slate-400 py-4">Chưa có thông báo nào</p>
                 ) : (
                   notifications.map((notif) => (
                     <div
                       key={notif.id}
-                      className="p-2 rounded-lg bg-[#f7f6f5] hover:bg-[#efefed] transition-colors text-xs space-y-1 border border-[#e9e9e8]"
+                      className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xs space-y-1 border border-slate-200/80 dark:border-white/10"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold text-[#37352f] line-clamp-1">{notif.title}</span>
-                        <span className="text-[9px] text-[#9b9a97]">{notif.time || 'Vừa xong'}</span>
+                        <span className="font-bold text-slate-900 dark:text-white line-clamp-1">{notif.title}</span>
+                        <span className="text-[9px] text-slate-500 dark:text-slate-400 shrink-0 ml-1">{notif.time || 'Vừa xong'}</span>
                       </div>
-                      <p className="text-[#787774] text-[11px] leading-relaxed">{notif.message}</p>
+                      <p className="text-slate-600 dark:text-slate-200 text-[11px] leading-relaxed">{notif.message}</p>
                     </div>
                   ))
                 )}
@@ -388,10 +388,10 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="flex items-center space-x-1.5 p-1 rounded-md hover:bg-[rgba(55,53,47,0.08)] transition-colors cursor-pointer"
+            className="flex items-center space-x-1.5 p-1 rounded-md hover:bg-slate-900/10 dark:hover:bg-white/10 transition-colors cursor-pointer"
             title="Tài khoản cá nhân"
           >
-            <div className="w-6 h-6 rounded-full bg-[#37352f] text-white flex items-center justify-center font-bold text-[11px]">
+            <div className="w-6 h-6 rounded-full bg-[#2383e2] dark:bg-indigo-600 text-white flex items-center justify-center font-bold text-[11px] shadow-2xs">
               {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : 'U'}
             </div>
           </button>
@@ -399,7 +399,7 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="px-2.5 py-1 rounded-md bg-[#2383e2] hover:bg-[#1d6fc2] text-white font-semibold text-xs shadow-2xs transition-colors"
+            className="px-2.5 py-1 rounded-md bg-[#2383e2] hover:bg-[#1d6fc2] text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer"
           >
             Đăng Nhập
           </button>
