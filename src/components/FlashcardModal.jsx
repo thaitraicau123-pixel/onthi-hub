@@ -21,7 +21,11 @@ import {
   Check,
   Play,
   Pause,
-  Star
+  Star,
+  Headphones,
+  SlidersHorizontal,
+  Bookmark,
+  BookmarkCheck
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
@@ -35,9 +39,32 @@ export default function FlashcardModal({
   onClose,
   onBuy
 }) {
-  const cards = course?.previewCards?.length
+  const allDeckCards = course?.previewCards?.length
     ? course.previewCards
     : (course?.cards?.length ? course.cards : (course?.sampleCards || []));
+
+  // Starred / Favorite Cards State
+  const starredKey = `onthi_starred_cards_${course?.id || 'default'}`;
+  const [starredCardIds, setStarredCardIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem(starredKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [onlyStarredMode, setOnlyStarredMode] = useState(false);
+
+  const starredCards = React.useMemo(() => {
+    return allDeckCards.filter((card, idx) => {
+      const cardId = card.id !== undefined ? card.id : idx;
+      return starredCardIds.includes(cardId);
+    });
+  }, [allDeckCards, starredCardIds]);
+
+  const cards = onlyStarredMode && starredCards.length > 0 ? starredCards : allDeckCards;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
@@ -50,20 +77,11 @@ export default function FlashcardModal({
   const [aiError, setAiError] = useState('');
   const [copiedAiText, setCopiedAiText] = useState(false);
 
-  // Auto-Play Hands-Free Runner State
+  // Audio Podcast / Auto-Play Hands-Free Runner State
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [autoPlaySeconds, setAutoPlaySeconds] = useState(3);
-
-  // Starred / Favorite Cards State
-  const starredKey = `onthi_starred_cards_${course?.id || 'default'}`;
-  const [starredCardIds, setStarredCardIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem(starredKey);
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      return [];
-    }
-  });
+  const [speechRate, setSpeechRate] = useState(1.0);
+  const [isSpeakingNow, setIsSpeakingNow] = useState(false);
 
   const toggleStarCurrentCard = (e) => {
     e?.stopPropagation?.();
@@ -276,26 +294,39 @@ export default function FlashcardModal({
   const handleSpeak = (text) => {
     if (!('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
+    if (!text) return;
+    
+    // Clean markdown / bullet icons for natural voice
+    const cleanText = text.replace(/📌|💡|✨|🎯|✅|❌|👉|⭐|#|\*/g, '').trim();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     
     // Auto detect language
-    if (course.id.includes('ielts') || course.id.includes('toeic')) {
+    if (course.id?.includes('ielts') || course.id?.includes('toeic')) {
       utterance.lang = 'en-US';
-    } else if (course.id.includes('jlpt')) {
+    } else if (course.id?.includes('jlpt')) {
       utterance.lang = 'ja-JP';
-    } else if (course.id.includes('hsk')) {
+    } else if (course.id?.includes('hsk')) {
       utterance.lang = 'zh-CN';
     } else {
       utterance.lang = 'vi-VN';
     }
 
-    utterance.rate = 0.9;
+    utterance.rate = speechRate || 1.0;
+    utterance.onstart = () => setIsSpeakingNow(true);
+    utterance.onend = () => setIsSpeakingNow(false);
+    utterance.onerror = () => setIsSpeakingNow(false);
     window.speechSynthesis.speak(utterance);
   };
 
-  // Auto-play hands-free runner effect
+  // Audio Podcast Hands-Free runner effect
   useEffect(() => {
-    if (!isAutoPlaying) return;
+    if (!isAutoPlaying) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      setIsSpeakingNow(false);
+      return;
+    }
 
     if (!isFlipped) {
       handleSpeak(currentCard.front);
@@ -307,11 +338,11 @@ export default function FlashcardModal({
       handleSpeak(currentCard.back);
       const nextTimer = setTimeout(() => {
         setIsFlipped(false);
-        setCurrentIndex((prev) => (prev + 1) % cards.length);
-      }, autoPlaySeconds * 1000);
+        setCurrentIndex((prev) => (prev + 1) % (cards.length || 1));
+      }, (autoPlaySeconds + 1) * 1000);
       return () => clearTimeout(nextTimer);
     }
-  }, [isAutoPlaying, currentIndex, isFlipped, autoPlaySeconds]);
+  }, [isAutoPlaying, currentIndex, isFlipped, autoPlaySeconds, speechRate, cards.length]);
 
   return (
     <div
@@ -353,94 +384,103 @@ export default function FlashcardModal({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
+            {/* 1. Podcast Hands-free Audio Button */}
             <button
               onClick={() => {
                 const next = !isAutoPlaying;
                 setIsAutoPlaying(next);
+                if (!next && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                  window.speechSynthesis.cancel();
+                  setIsSpeakingNow(false);
+                }
                 if (next) playSound('flip');
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-all ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
                 isAutoPlaying
-                  ? 'bg-rose-500 text-white border-rose-600 animate-pulse shadow-md'
+                  ? 'bg-gradient-to-r from-indigo-600 to-sky-600 text-white border-indigo-700 shadow-md ring-2 ring-sky-300'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
               }`}
-              title="Chế độ tự động lật & đọc thẻ rảnh tay"
+              title="Chế độ Podcast tự động đọc câu hỏi & đáp án rảnh tay"
             >
-              {isAutoPlaying ? <Pause className="w-3.5 h-3.5 fill-white" /> : <Play className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />}
-              <span className="hidden sm:inline">{isAutoPlaying ? 'Tạm Dừng' : '▶ Rảnh Tay'}</span>
+              <Headphones className={`w-3.5 h-3.5 ${isAutoPlaying ? 'animate-bounce text-white' : 'text-indigo-600'}`} />
+              <span className="hidden sm:inline">{isAutoPlaying ? 'Đang Phát' : '🎧 Podcast Thụ Động'}</span>
             </button>
 
+            {/* 2. Starred Cards Study Filter */}
+            <button
+              onClick={() => {
+                if (starredCardIds.length === 0) {
+                  alert('⭐ Bạn chưa đánh dấu sao thẻ nào! Hãy bấm biểu tượng ngôi sao ⭐ trên góc bất kỳ thẻ nào để ghim lại câu khó và ôn cấp tốc.');
+                  return;
+                }
+                const nextMode = !onlyStarredMode;
+                setOnlyStarredMode(nextMode);
+                setCurrentIndex(0);
+                setIsFlipped(false);
+                playSound('flip');
+              }}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
+                onlyStarredMode
+                  ? 'bg-amber-400 text-amber-950 border-amber-500 shadow-sm font-extrabold ring-2 ring-amber-300'
+                  : starredCardIds.length > 0
+                  ? 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100'
+                  : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+              }`}
+              title="Bật/Tắt chế độ chỉ ôn các thẻ quan trọng đã đánh dấu sao ⭐"
+            >
+              <Star className={`w-3.5 h-3.5 ${onlyStarredMode || starredCardIds.length > 0 ? 'fill-amber-400 text-amber-600' : 'text-slate-400'}`} />
+              <span className="hidden sm:inline">
+                {onlyStarredMode ? `Đang Ôn Sao (${cards.length})` : `Thẻ Sao (${starredCardIds.length})`}
+              </span>
+            </button>
+
+            {/* Auto-speak toggle */}
             <button
               onClick={() => setAutoSpeak(!autoSpeak)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors ${
+              className={`px-2 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors cursor-pointer ${
                 autoSpeak
                   ? 'bg-amber-100 text-amber-900 border-amber-300'
                   : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
               }`}
-              title="Tự động phát âm khi lật thẻ"
+              title="Tự động phát âm thanh mỗi khi lật thẻ"
             >
               <Volume2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{autoSpeak ? 'Tự Đọc: BẬT' : 'Tự Đọc: TẮT'}</span>
             </button>
 
             {isPurchased && (
               <>
                 <button
                   onClick={() => exportAnkiDeckFile(course.title, cards)}
-                  className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200"
+                  className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200"
                   title="Xuất file .txt nhập vào Anki"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  <span>Tải Anki</span>
+                  <span>Anki</span>
                 </button>
                 <button
                   onClick={() => printFlashcardCutoutSheet(course)}
-                  className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg border border-slate-200"
+                  className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg border border-slate-200"
                   title="In bảng cắt thẻ giấy A4"
                 >
                   <Scissors className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>In Thẻ Cắt A4</span>
-                </button>
-                <button
-                  onClick={() => printSummaryGuide(course)}
-                  className="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg border border-slate-200"
-                  title="In tài liệu hoặc xuất PDF"
-                >
-                  <Printer className="w-3.5 h-3.5" />
-                  <span>In / PDF</span>
+                  <span>In A4</span>
                 </button>
               </>
             )}
 
             <button
-              onClick={() => {
-                setTopicDrawerOpen(true);
-                setSelectedTagFilter(selectedTagFilter === 'STARRED' ? 'ALL' : 'STARRED');
-              }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors ${
-                starredCardIds.length > 0
-                  ? 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100'
-                  : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
-              }`}
-              title="Xem danh sách các thẻ đã đánh dấu sao quan trọng"
-            >
-              <Star className={`w-3.5 h-3.5 ${starredCardIds.length > 0 ? 'fill-amber-400 text-amber-500' : 'text-slate-400'}`} />
-              <span className="hidden sm:inline">Sao ({starredCardIds.length})</span>
-            </button>
-
-            <button
               onClick={() => setTopicDrawerOpen(true)}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors"
+              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors cursor-pointer"
               title="Mục lục các chủ đề và danh sách thẻ"
             >
               <Layers className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden sm:inline">Chủ Đề ({uniqueTags.length})</span>
+              <span className="hidden sm:inline">Mục Lục</span>
             </button>
 
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors hidden sm:inline-flex"
+              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors hidden sm:inline-flex cursor-pointer"
               title={isFullscreen ? 'Thoát toàn màn hình' : 'Học toàn màn hình (Focus Mode)'}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -448,36 +488,112 @@ export default function FlashcardModal({
 
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Hands-Free Auto-Play Active Notification Bar */}
-        {isAutoPlaying && (
-          <div className="px-5 py-2 bg-[#e7f3f8] border-b border-[#cbe3ed] text-[#2b7aa1] flex items-center justify-between text-xs font-medium animate-fade-in">
+        {/* Banner if in Starred-Only mode */}
+        {onlyStarredMode && (
+          <div className="px-5 py-1.5 bg-amber-50 border-b border-amber-200 text-amber-900 flex items-center justify-between text-xs font-semibold animate-fade-in">
             <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 rounded-full bg-[#2383e2] animate-ping"></span>
-              <span>🎧 Đang chạy Chế độ Rảnh Tay (Tự động lật & đọc thẻ sau {autoPlaySeconds}s)</span>
+              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-600" />
+              <span>Đang trong chế độ <strong>Ôn Cấp Tốc Các Thẻ Đã Ghim Sao ({cards.length} thẻ)</strong></span>
             </div>
-            <div className="flex items-center space-x-1.5 text-[11px]">
-              <span>Tốc độ:</span>
-              {[2, 3, 5].map((sec) => (
-                <button
-                  key={sec}
-                  onClick={() => setAutoPlaySeconds(sec)}
-                  className={`px-2 py-0.5 rounded-md font-medium transition-colors ${
-                    autoPlaySeconds === sec
-                      ? 'bg-[#2383e2] text-white font-semibold shadow-2xs'
-                      : 'text-[#2b7aa1] hover:bg-white/50'
-                  }`}
-                >
-                  {sec}s
-                </button>
-              ))}
+            <button
+              onClick={() => {
+                setOnlyStarredMode(false);
+                setCurrentIndex(0);
+                setIsFlipped(false);
+              }}
+              className="text-[11px] text-amber-800 underline hover:text-amber-950 font-bold cursor-pointer"
+            >
+              Quay lại toàn bộ ({allDeckCards.length} thẻ)
+            </button>
+          </div>
+        )}
+
+        {/* Enhanced Audio Podcast Mini-Player Strip */}
+        {isAutoPlaying && (
+          <div className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-b border-indigo-800/50 text-white flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner animate-fade-in">
+            
+            {/* Left: Waveform animation + State status */}
+            <div className="flex items-center space-x-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-indigo-500/30 border border-indigo-400/40 flex items-center justify-center shrink-0">
+                <Headphones className="w-4 h-4 text-sky-300 animate-pulse" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center space-x-2">
+                  <span className="font-bold text-sky-200 truncate">
+                    🎧 Podcast Học Thụ Động • Thẻ {currentIndex + 1}/{cards.length}
+                  </span>
+                  {/* Sound Wave Bars */}
+                  <div className="flex items-end space-x-0.5 h-3 shrink-0">
+                    <span className="w-1 bg-sky-400 rounded-full animate-bounce h-2"></span>
+                    <span className="w-1 bg-indigo-400 rounded-full animate-bounce h-3.5 delay-75"></span>
+                    <span className="w-1 bg-pink-400 rounded-full animate-bounce h-2.5 delay-150"></span>
+                    <span className="w-1 bg-sky-300 rounded-full animate-bounce h-3 delay-100"></span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-slate-300 truncate">
+                  {isFlipped ? '🔊 Đang đọc: Mặt sau (Đáp án & Căn cứ)' : '🔊 Đang đọc: Mặt trước (Câu hỏi)'}
+                </p>
+              </div>
             </div>
+
+            {/* Right: Controls (Play/Pause, Rate, Interval) */}
+            <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 ml-auto">
+              {/* Play / Pause Toggle */}
+              <button
+                onClick={() => {
+                  setIsAutoPlaying(false);
+                  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                  }
+                  setIsSpeakingNow(false);
+                }}
+                className="px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white font-semibold text-[11px] flex items-center space-x-1 cursor-pointer transition-colors"
+                title="Tạm dừng chế độ Podcast"
+              >
+                <Pause className="w-3 h-3 fill-white" />
+                <span>Dừng</span>
+              </button>
+
+              {/* Speed rate selector */}
+              <div className="flex items-center space-x-1 text-[11px] bg-black/30 px-2 py-0.5 rounded-md border border-white/10">
+                <span className="text-slate-400 text-[10px]">Tốc độ:</span>
+                {[0.8, 1.0, 1.25].map((rate) => (
+                  <button
+                    key={rate}
+                    onClick={() => setSpeechRate(rate)}
+                    className={`px-1.5 py-0.2 rounded font-bold transition-colors cursor-pointer ${
+                      speechRate === rate ? 'bg-sky-500 text-white' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    {rate}x
+                  </button>
+                ))}
+              </div>
+
+              {/* Delay timer selector */}
+              <div className="hidden sm:flex items-center space-x-1 text-[11px] bg-black/30 px-2 py-0.5 rounded-md border border-white/10">
+                <span className="text-slate-400 text-[10px]">Nghỉ:</span>
+                {[2, 3, 5].map((sec) => (
+                  <button
+                    key={sec}
+                    onClick={() => setAutoPlaySeconds(sec)}
+                    className={`px-1.5 py-0.2 rounded font-bold transition-colors cursor-pointer ${
+                      autoPlaySeconds === sec ? 'bg-indigo-500 text-white' : 'text-slate-300 hover:text-white'
+                    }`}
+                  >
+                    {sec}s
+                  </button>
+                ))}
+              </div>
+            </div>
+
           </div>
         )}
 
