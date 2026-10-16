@@ -353,12 +353,12 @@ export default function QuizModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-5 bg-slate-950/85 backdrop-blur-md overflow-y-auto animate-fade-in">
-      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200 dark:border-white/15 animate-spring-3d text-slate-800 dark:text-slate-100">
+      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-900 rounded-3xl shadow-2xl flex flex-col max-h-[94vh] overflow-hidden border border-slate-200 dark:border-white/15 animate-spring-3d text-slate-900 dark:text-white">
         
         {/* =========================================================
             TOPBAR: EXAM HEADER & REALTIME CLOCK & MODE SWITCHER
             ========================================================= */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-200 dark:border-white/10 bg-slate-50/95 dark:bg-slate-850 gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 sm:px-6 py-3.5 border-b border-slate-200 dark:border-white/15 bg-white dark:bg-slate-900 gap-3">
           
           {/* Left: Mode Badge & Title */}
           <div className="flex items-center space-x-3">
@@ -367,20 +367,20 @@ export default function QuizModal({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h4 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white line-clamp-1">
+                <h4 className="text-sm sm:text-base font-black text-slate-900 dark:text-white line-clamp-1">
                   {course.title}
                 </h4>
                 {examMode === 'official_60' ? (
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200 dark:border-purple-600/40">
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 text-purple-900 dark:bg-purple-900/90 dark:text-purple-100 border border-purple-300 dark:border-purple-500/50">
                     🏛️ Chuẩn NĐ 138/2020
                   </span>
                 ) : (
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-600/40">
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-900 dark:bg-amber-900/90 dark:text-amber-100 border border-amber-300 dark:border-amber-500/50">
                     ⚡ Cấp Tốc
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[11px] text-slate-700 dark:text-slate-200 font-semibold">
                 {examMode === 'official_60' ? '60 câu • 60 phút • Đúng ≥ 30 câu đỗ Vòng 1' : '10 câu trọng tâm • 10 phút'}
               </p>
             </div>
@@ -391,14 +391,14 @@ export default function QuizModal({
             
             {/* Mode Switcher Buttons */}
             {!isSubmitted && (
-              <div className="flex items-center bg-slate-200/80 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-300/60 dark:border-white/10 text-xs font-bold">
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-300 dark:border-white/20 text-xs font-bold">
                 <button
                   type="button"
                   onClick={() => handleSwitchMode('official_60')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold ${
                     examMode === 'official_60'
                       ? 'bg-purple-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                      : 'text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
                   }`}
                   title="Chế độ 60 câu / 60 phút mô phỏng kỳ thi tuyển công chức thật"
                 >
@@ -407,10 +407,10 @@ export default function QuizModal({
                 <button
                   type="button"
                   onClick={() => handleSwitchMode('quick_10')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer font-bold ${
                     examMode === 'quick_10'
                       ? 'bg-purple-600 text-white shadow-xs'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                      : 'text-slate-800 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white'
                   }`}
                   title="Chế độ thi thử ôn nhanh 10 câu trọng tâm"
                 >
@@ -422,20 +422,20 @@ export default function QuizModal({
             {/* Realtime Clock Countdown */}
             <div className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-black shadow-2xs border ${
               timeLeft <= 300
-                ? 'bg-rose-50 text-rose-700 border-rose-300 animate-pulse dark:bg-rose-950/70 dark:text-rose-300'
-                : 'bg-amber-50 text-amber-800 border-amber-300 dark:bg-amber-950/70 dark:text-amber-300'
+                ? 'bg-rose-100 text-rose-950 border-rose-400 dark:bg-rose-950/90 dark:text-rose-200 animate-pulse'
+                : 'bg-amber-100 text-amber-950 border-amber-400 dark:bg-amber-950/90 dark:text-amber-200 dark:border-amber-500/60'
             }`}>
               <Clock className="w-3.5 h-3.5" />
-              <span className="font-mono text-sm">{formatTime(timeLeft)}</span>
+              <span className="font-mono text-sm font-black">{formatTime(timeLeft)}</span>
             </div>
 
             {/* Bubble Sheet Matrix Trigger */}
             <button
               onClick={() => setIsBubbleSheetOpen(!isBubbleSheetOpen)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-all cursor-pointer ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-black flex items-center space-x-1 border transition-all cursor-pointer ${
                 isBubbleSheetOpen
                   ? 'bg-purple-600 text-white border-purple-700'
-                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/15 hover:bg-slate-100'
+                  : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-white/20 hover:bg-slate-100'
               }`}
               title="Mở phiếu trả lời trắc nghiệm (lưới câu hỏi)"
             >
@@ -446,7 +446,7 @@ export default function QuizModal({
             {/* Close */}
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+              className="p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -467,7 +467,7 @@ export default function QuizModal({
         {/* =========================================================
             MAIN EXAM WORKSPACE WITH OPTIONAL BUBBLE SHEET MATRIX
             ========================================================= */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex overflow-hidden bg-white dark:bg-slate-900">
           
           {/* Question Solving Column */}
           <div className="flex-1 p-5 sm:p-7 overflow-y-auto space-y-4">
@@ -481,8 +481,8 @@ export default function QuizModal({
                 {/* Result Hero Banner */}
                 <div className={`p-6 rounded-2xl border text-center space-y-3 ${
                   isPassed
-                    ? 'bg-emerald-50/90 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-600/40 text-emerald-950 dark:text-emerald-100'
-                    : 'bg-rose-50/90 dark:bg-rose-950/60 border-rose-300 dark:border-rose-600/40 text-rose-950 dark:text-rose-100'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/80 border-2 border-emerald-400 dark:border-emerald-600/60 text-emerald-950 dark:text-emerald-100'
+                    : 'bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-400 dark:border-rose-600/60 text-rose-950 dark:text-rose-100'
                 }`}>
                   <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto shadow-md ${
                     isPassed ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'
@@ -491,19 +491,19 @@ export default function QuizModal({
                   </div>
 
                   <div>
-                    <span className={`text-[11px] uppercase tracking-wider font-extrabold px-3 py-1 rounded-full border ${
+                    <span className={`text-[11px] uppercase tracking-wider font-black px-3 py-1 rounded-full border ${
                       isPassed
-                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-900/60 dark:text-emerald-200'
-                        : 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-900/60 dark:text-rose-200'
+                        ? 'bg-emerald-100 text-emerald-900 border-emerald-300 dark:bg-emerald-900/90 dark:text-emerald-100'
+                        : 'bg-rose-100 text-rose-900 border-rose-300 dark:bg-rose-900/90 dark:text-rose-100'
                     }`}>
                       {isPassed ? '🏆 ĐẠT TIÊU CHUẨN VÒNG 1 (ĐỦ ĐIỀU KIỆN VÀO VÒNG 2)' : '⚠️ CHƯA ĐẠT TIÊU CHUẨN VÒNG 1'}
                     </span>
 
-                    <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-2">
+                    <h3 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white mt-2">
                       {isPassed ? 'Chúc Mừng Bạn Đã Đỗ Kỳ Thi Thử!' : 'Cần Rèn Luyện Thêm Để Thi Đỗ!'}
                     </h3>
 
-                    <p className="text-sm mt-1 text-slate-600 dark:text-slate-300">
+                    <p className="text-sm mt-1 text-slate-800 dark:text-slate-200 font-semibold">
                       Theo <strong>Nghị định 138/2020/NĐ-CP</strong>, thí sinh cần trả lời đúng từ 50% số câu hỏi (≥ 30/60 câu) để vượt qua Vòng 1.
                     </p>
                   </div>
@@ -511,22 +511,22 @@ export default function QuizModal({
                   {/* Score Breakdown Pill */}
                   <div className="flex items-center justify-center space-x-6 pt-2">
                     <div>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Số câu đúng</span>
-                      <strong className={`text-2xl font-black ${isPassed ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                      <span className="text-[11px] text-slate-700 dark:text-slate-300 block font-bold">Số câu đúng</span>
+                      <strong className={`text-2xl font-black ${isPassed ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300'}`}>
                         {score} / {questions.length}
                       </strong>
                     </div>
-                    <div className="w-px h-8 bg-slate-300 dark:bg-white/10" />
+                    <div className="w-px h-8 bg-slate-300 dark:bg-white/20" />
                     <div>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Tỷ lệ đạt</span>
-                      <strong className="text-2xl font-black text-purple-600 dark:text-purple-400">
+                      <span className="text-[11px] text-slate-700 dark:text-slate-300 block font-bold">Tỷ lệ đạt</span>
+                      <strong className="text-2xl font-black text-purple-700 dark:text-purple-300">
                         {percentage}%
                       </strong>
                     </div>
-                    <div className="w-px h-8 bg-slate-300 dark:bg-white/10" />
+                    <div className="w-px h-8 bg-slate-300 dark:bg-white/20" />
                     <div>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block">Thời gian làm bài</span>
-                      <strong className="text-2xl font-black text-slate-800 dark:text-slate-100 font-mono">
+                      <span className="text-[11px] text-slate-700 dark:text-slate-300 block font-bold">Thời gian làm bài</span>
+                      <strong className="text-2xl font-black text-slate-900 dark:text-white font-mono">
                         {formatTime(totalDuration - timeLeft)}
                       </strong>
                     </div>
@@ -535,25 +535,25 @@ export default function QuizModal({
 
                 {/* OFFICIAL ELECTRONIC CERTIFICATE CARD */}
                 {isPassed && (
-                  <div className="relative p-6 sm:p-7 rounded-2xl bg-gradient-to-br from-amber-50 via-white to-amber-50/60 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 border-2 border-amber-300 dark:border-amber-500/50 shadow-md text-left space-y-4">
+                  <div className="relative p-6 sm:p-7 rounded-2xl bg-gradient-to-br from-amber-50 via-white to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border-2 border-amber-400 dark:border-amber-500 shadow-md text-left space-y-4">
                     {/* Top Certificate Header */}
-                    <div className="flex items-start justify-between border-b border-amber-200/80 dark:border-white/10 pb-4">
+                    <div className="flex items-start justify-between border-b border-amber-200 dark:border-white/10 pb-4">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-xs">
                           <Award className="w-6 h-6" />
                         </div>
                         <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-800 dark:text-amber-300">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-amber-900 dark:text-amber-300">
                             CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM • ONTHIHUB 2026
                           </span>
-                          <h4 className="text-base sm:text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight">
+                          <h4 className="text-base sm:text-lg font-black text-slate-950 dark:text-white uppercase tracking-tight">
                             GIẤY CHỨNG NHẬN ĐẠT CHUẨN VÒNG 1
                           </h4>
                         </div>
                       </div>
 
                       {/* Official Red Stamp Seal */}
-                      <div className="w-16 h-16 rounded-full border-2 border-dashed border-rose-600 text-rose-600 flex flex-col items-center justify-center rotate-12 shrink-0 select-none opacity-85">
+                      <div className="w-16 h-16 rounded-full border-2 border-dashed border-rose-600 text-rose-600 flex flex-col items-center justify-center rotate-12 shrink-0 select-none opacity-90 font-black">
                         <span className="text-[8px] font-black uppercase">ĐÃ ĐẠT</span>
                         <span className="text-[10px] font-black leading-none">2026</span>
                         <span className="text-[7px] font-bold">ONTHIHUB</span>
@@ -563,33 +563,33 @@ export default function QuizModal({
                     {/* Candidate Info Grid */}
                     <div className="grid grid-cols-2 gap-3 text-xs">
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Họ và tên thí sinh:</span>
-                        <strong className="text-sm font-bold text-slate-900 dark:text-white">{candidateName}</strong>
+                        <span className="text-slate-600 dark:text-slate-400 block text-[11px] font-bold">Họ và tên thí sinh:</span>
+                        <strong className="text-sm font-black text-slate-950 dark:text-white">{candidateName}</strong>
                       </div>
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Môn thi sát hạch:</span>
-                        <strong className="text-sm font-bold text-purple-700 dark:text-purple-300">{course.title}</strong>
+                        <span className="text-slate-600 dark:text-slate-400 block text-[11px] font-bold">Môn thi sát hạch:</span>
+                        <strong className="text-sm font-black text-purple-700 dark:text-purple-300">{course.title}</strong>
                       </div>
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Kết quả thẩm định:</span>
-                        <strong className="font-bold text-emerald-600 dark:text-emerald-400">ĐẠT ({score}/{questions.length} câu - {percentage}%)</strong>
+                        <span className="text-slate-600 dark:text-slate-400 block text-[11px] font-bold">Kết quả thẩm định:</span>
+                        <strong className="font-black text-emerald-700 dark:text-emerald-300">ĐẠT ({score}/{questions.length} câu - {percentage}%)</strong>
                       </div>
                       <div>
-                        <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Mã tra cứu điện tử:</span>
-                        <code className="font-mono font-bold text-amber-700 dark:text-amber-300">{certCode}</code>
+                        <span className="text-slate-600 dark:text-slate-400 block text-[11px] font-bold">Mã tra cứu điện tử:</span>
+                        <code className="font-mono font-black text-amber-800 dark:text-amber-300">{certCode}</code>
                       </div>
                     </div>
 
-                    <div className="pt-2 border-t border-amber-200/80 dark:border-white/10 flex items-center justify-between text-xs">
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center space-x-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    <div className="pt-2 border-t border-amber-200 dark:border-white/10 flex items-center justify-between text-xs">
+                      <span className="text-[11px] text-slate-700 dark:text-slate-300 flex items-center space-x-1 font-semibold">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span>Chứng chỉ được xác thực bởi Hệ thống Khảo thí OnThiHub</span>
                       </span>
 
                       <button
                         type="button"
                         onClick={handleCopyCertificate}
-                        className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer shadow-xs"
+                        className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-black text-xs flex items-center space-x-1.5 transition-colors cursor-pointer shadow-xs"
                       >
                         {copiedCert ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
                         <span>{copiedCert ? 'Đã Sao Chép!' : 'Chia Sẻ Chứng Nhận'}</span>
@@ -600,7 +600,7 @@ export default function QuizModal({
 
                 {/* Filter Controls for Reviewing Questions */}
                 <div className="flex items-center justify-between pt-2">
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  <h4 className="text-sm font-black text-slate-950 dark:text-white">
                     Xem Lại Toàn Bộ Câu Hỏi ({filteredReviewIndices.length}/{questions.length})
                   </h4>
 
@@ -614,10 +614,10 @@ export default function QuizModal({
                         key={f.id}
                         type="button"
                         onClick={() => setReviewFilter(f.id)}
-                        className={`px-2.5 py-1 rounded-md font-semibold text-xs transition-colors cursor-pointer ${
+                        className={`px-2.5 py-1 rounded-md font-black text-xs transition-colors cursor-pointer ${
                           reviewFilter === f.id
                             ? 'bg-purple-600 text-white shadow-2xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
                         }`}
                       >
                         {f.label}
@@ -639,27 +639,27 @@ export default function QuizModal({
                         key={idx}
                         className={`p-4 rounded-xl border transition-all ${
                           isCorrect
-                            ? 'bg-white dark:bg-slate-800/90 border-slate-200 dark:border-white/10'
-                            : 'bg-rose-50/40 dark:bg-rose-950/30 border-rose-200 dark:border-rose-900/50'
+                            ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-white/15'
+                            : 'bg-rose-50/60 dark:bg-rose-950/40 border-rose-300 dark:border-rose-900/60'
                         }`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start space-x-2">
                             {isCorrect ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                             ) : (
-                              <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                             )}
                             <div>
-                              <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                              <p className="text-xs sm:text-sm font-black text-slate-950 dark:text-white leading-relaxed">
                                 Câu {idx + 1}: {q.question}
                               </p>
                               <div className="mt-2 space-y-1 text-xs">
-                                <p className="text-emerald-700 dark:text-emerald-300 font-semibold">
+                                <p className="text-emerald-700 dark:text-emerald-300 font-black">
                                   ✅ Đáp án đúng: {q.options[q.correct]}
                                 </p>
                                 {!isCorrect && (
-                                  <p className="text-rose-700 dark:text-rose-300 font-medium">
+                                  <p className="text-rose-700 dark:text-rose-300 font-bold">
                                     ❌ Bạn đã chọn: {userAns !== undefined ? q.options[userAns] : '(Chưa chọn)'}
                                   </p>
                                 )}
@@ -668,20 +668,20 @@ export default function QuizModal({
                           </div>
 
                           {isFlag && (
-                            <span className="p-1 rounded bg-amber-100 text-amber-700 shrink-0" title="Câu đã cắm cờ">
+                            <span className="p-1 rounded bg-amber-100 text-amber-900 shrink-0" title="Câu đã cắm cờ">
                               <Flag className="w-3.5 h-3.5 fill-amber-500" />
                             </span>
                           )}
                         </div>
 
                         {/* Explanation Box */}
-                        <div className="mt-3 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                          💡 <strong>Căn cứ:</strong> {q.explanation}
+                        <div className="mt-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-white/15 text-xs text-slate-900 dark:text-slate-100 leading-relaxed font-medium">
+                          💡 <strong>Căn cứ lý giải:</strong> {q.explanation}
                         </div>
 
                         <button
                           onClick={() => handleAskAiTutor(idx)}
-                          className="mt-2.5 text-[11px] font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/70 hover:bg-sky-100 border border-sky-200 dark:border-sky-500/40 px-3 py-1 rounded-lg inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
+                          className="mt-2.5 text-[11px] font-black text-sky-800 dark:text-sky-200 bg-sky-100 dark:bg-sky-950/80 hover:bg-sky-200 border border-sky-300 dark:border-sky-500/50 px-3 py-1.5 rounded-lg inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
                         >
                           <Sparkles className="w-3.5 h-3.5 text-sky-500" />
                           <span>Hỏi AI Bóc Mẽ Bẫy Đề & Mẹo Khoanh 10 Giây</span>
@@ -695,7 +695,7 @@ export default function QuizModal({
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     onClick={handleReset}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 dark:border-white/15 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-white font-bold text-xs flex items-center justify-center space-x-2 transition-colors cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-300 dark:border-white/20 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-xs flex items-center justify-center space-x-2 transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-4 h-4" />
                     <span>Làm Lại Đề Này (Reset)</span>
@@ -707,7 +707,7 @@ export default function QuizModal({
                         onClose();
                         onBuy(course);
                       }}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm flex items-center justify-center space-x-2 transition-colors cursor-pointer"
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl font-black text-xs text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 shadow-sm flex items-center justify-center space-x-2 transition-colors cursor-pointer"
                     >
                       <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
                       <span>Mở Khóa Toàn Bộ Kho Đề ({course.priceXu || 25} Xu)</span>
@@ -719,18 +719,18 @@ export default function QuizModal({
               </div>
             ) : (
               /* =========================================================
-                 ACTIVE QUESTION SOLVING INTERFACE
+                 ACTIVE QUESTION SOLVING INTERFACE (HIGH CONTRAST)
                  ========================================================= */
               <div className="space-y-4 text-left">
                 
                 {/* Question Header & Flag Toggle */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center space-x-2">
-                    <span className="px-2.5 py-1 rounded-lg bg-purple-100 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-600/40 text-xs font-bold">
+                    <span className="px-3 py-1 rounded-lg bg-purple-600 text-white text-xs font-black shadow-xs">
                       Câu hỏi {currentIndex + 1} / {questions.length}
                     </span>
                     {currentQ.tag && (
-                      <span className="hidden sm:inline-block text-[11px] text-slate-500 dark:text-slate-400">
+                      <span className="hidden sm:inline-block text-xs font-bold text-slate-700 dark:text-slate-300">
                         • {currentQ.tag}
                       </span>
                     )}
@@ -740,10 +740,10 @@ export default function QuizModal({
                   <button
                     type="button"
                     onClick={() => handleToggleFlag()}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-black flex items-center space-x-1.5 border transition-all cursor-pointer ${
                       isFlagged
-                        ? 'bg-amber-400 text-amber-950 border-amber-500 font-black shadow-xs ring-2 ring-amber-300'
-                        : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-300 border-slate-200 dark:border-white/15 hover:bg-slate-50'
+                        ? 'bg-amber-400 text-slate-950 border-2 border-amber-600 font-black shadow-xs ring-2 ring-amber-300'
+                        : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white border border-slate-300 dark:border-white/20 hover:bg-slate-100 font-bold'
                     }`}
                     title="Cắm cờ câu này để xem lại trước khi nộp bài"
                   >
@@ -753,12 +753,12 @@ export default function QuizModal({
                 </div>
 
                 {/* Question Statement */}
-                <h3 className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-relaxed whitespace-pre-line pt-1">
+                <h3 className="text-base sm:text-lg font-black text-slate-950 dark:text-white leading-relaxed whitespace-pre-line pt-1">
                   {currentQ.question}
                 </h3>
 
-                {/* 4 Multiple Choice Options */}
-                <div className="space-y-2.5 pt-2">
+                {/* 4 Multiple Choice Options (High Contrast Solid Cards) */}
+                <div className="space-y-3 pt-2">
                   {currentQ.options?.map((opt, optIdx) => {
                     const isSelected = currentSelected === optIdx;
                     const optionLetters = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -768,47 +768,53 @@ export default function QuizModal({
                         key={optIdx}
                         type="button"
                         onClick={() => handleSelectOption(optIdx)}
-                        className={`w-full p-3.5 text-left rounded-xl text-xs sm:text-sm transition-all border flex items-center space-x-3 cursor-pointer ${
+                        className={`w-full p-4 text-left rounded-xl text-xs sm:text-sm transition-all border flex items-center space-x-3.5 cursor-pointer shadow-2xs ${
                           isSelected
-                            ? 'border-purple-600 bg-purple-50/90 dark:bg-purple-950/60 text-purple-950 dark:text-purple-100 font-bold ring-2 ring-purple-400/50 shadow-xs'
-                            : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/30 hover:bg-slate-50 dark:hover:bg-slate-800/60 text-slate-800 dark:text-slate-100'
+                            ? 'border-2 border-purple-600 dark:border-purple-400 bg-purple-50 dark:bg-purple-950/90 shadow-sm ring-2 ring-purple-400/40'
+                            : 'border border-slate-300 dark:border-white/20 bg-white dark:bg-slate-800 hover:border-slate-400 dark:hover:border-white/40 hover:bg-slate-50 dark:hover:bg-slate-750'
                         }`}
                       >
-                        <span className={`w-7 h-7 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 transition-colors ${
+                        <span className={`w-7 h-7 rounded-lg text-xs font-black flex items-center justify-center shrink-0 transition-colors ${
                           isSelected
-                            ? 'bg-purple-600 text-white shadow-2xs'
-                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/15'
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-300 dark:border-white/20'
                         }`}>
                           {optionLetters[optIdx] || optIdx + 1}
                         </span>
-                        <span className="flex-1 leading-relaxed">{opt}</span>
+                        <span className={`flex-1 leading-relaxed text-xs sm:text-sm ${
+                          isSelected
+                            ? 'text-purple-950 dark:text-purple-100 font-extrabold'
+                            : 'text-slate-900 dark:text-white font-semibold'
+                        }`}>
+                          {opt}
+                        </span>
                       </button>
                     );
                   })}
                 </div>
 
                 {/* Hotkeys Bar */}
-                <div className="pt-2 flex flex-wrap items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                <div className="pt-2 flex flex-wrap items-center justify-between text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
                   <span>⌨️ Phím tắt: <strong>1, 2, 3, 4</strong> (hoặc <strong>A, B, C, D</strong>) để chọn • <strong>F</strong> để cắm cờ</span>
                   <span>Phím <strong>← / →</strong> để chuyển câu</span>
                 </div>
 
                 {/* Instant Explanation Hint if Answered */}
                 {isAnswered && (
-                  <div className="p-3 bg-purple-50 dark:bg-purple-950/60 rounded-xl border border-purple-200 dark:border-purple-600/40 text-xs text-purple-900 dark:text-purple-200 space-y-1.5 animate-fade-in">
-                    <div className="flex items-center space-x-1.5 font-bold">
-                      <HelpCircle className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                  <div className="p-3.5 bg-purple-50 dark:bg-purple-950/80 rounded-xl border border-purple-300 dark:border-purple-600/50 text-xs space-y-2 animate-fade-in">
+                    <div className="flex items-center space-x-1.5 font-black text-purple-950 dark:text-purple-100">
+                      <HelpCircle className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                       <span>Căn cứ lý giải câu hỏi:</span>
                     </div>
-                    <p className="leading-relaxed text-slate-700 dark:text-slate-300">
+                    <p className="leading-relaxed text-slate-900 dark:text-slate-100 font-medium">
                       {currentQ.explanation}
                     </p>
                     <button
                       type="button"
                       onClick={() => handleAskAiTutor(currentIndex)}
-                      className="mt-1 text-[11px] font-bold text-sky-700 dark:text-sky-300 bg-white dark:bg-slate-800 hover:bg-sky-50 px-2.5 py-1 rounded-md border border-sky-300 dark:border-sky-500/40 inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
+                      className="mt-1 text-[11px] font-black text-sky-800 dark:text-sky-200 bg-white dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-sky-300 dark:border-sky-500/50 inline-flex items-center space-x-1.5 transition-colors cursor-pointer"
                     >
-                      <Sparkles className="w-3 h-3 text-sky-500" />
+                      <Sparkles className="w-3.5 h-3.5 text-sky-500" />
                       <span>✨ Bóc Mẽ Chiêu Trò Cài Bẫy & Mẹo 10s Bằng AI</span>
                     </button>
                   </div>
@@ -823,37 +829,37 @@ export default function QuizModal({
               COLLAPSIBLE BUBBLE SHEET QUESTION MATRIX (LƯỚI CÂU HỎI)
               ========================================================= */}
           {isBubbleSheetOpen && !isSubmitted && (
-            <div className="w-72 sm:w-80 border-l border-slate-200 dark:border-white/10 bg-slate-50/95 dark:bg-slate-850 p-4 flex flex-col justify-between overflow-y-auto animate-slide-left shrink-0">
+            <div className="w-72 sm:w-80 border-l border-slate-300 dark:border-white/15 bg-slate-100 dark:bg-slate-900 p-4 flex flex-col justify-between overflow-y-auto animate-slide-left shrink-0">
               <div className="space-y-3">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
-                  <span className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-1.5">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-300 dark:border-white/15">
+                  <span className="text-xs font-black text-slate-950 dark:text-white uppercase tracking-wider flex items-center space-x-1.5">
                     <LayoutGrid className="w-3.5 h-3.5 text-purple-600" />
                     <span>Phiếu Làm Bài ({questions.length} câu)</span>
                   </span>
                   <button
                     onClick={() => setIsBubbleSheetOpen(false)}
-                    className="text-slate-400 hover:text-slate-700 dark:hover:text-white text-xs font-bold"
+                    className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white text-xs font-black"
                   >
                     ✕
                   </button>
                 </div>
 
                 {/* Legend */}
-                <div className="grid grid-cols-2 gap-1.5 text-[10px] text-slate-600 dark:text-slate-300 pb-2 border-b border-slate-200 dark:border-white/10">
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2.5 h-2.5 rounded bg-emerald-500"></span>
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-900 dark:text-slate-100 font-bold pb-2 border-b border-slate-300 dark:border-white/15">
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-3 rounded bg-emerald-600"></span>
                     <span>Đã làm ({Object.keys(selectedAnswers).length})</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2.5 h-2.5 rounded bg-amber-400 ring-1 ring-amber-500"></span>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-3 rounded bg-amber-400 ring-1 ring-amber-600"></span>
                     <span>Cắm cờ 🚩 ({Object.keys(flaggedQuestions).length})</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2.5 h-2.5 rounded bg-white dark:bg-slate-700 border border-slate-300"></span>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-3 rounded bg-white dark:bg-slate-800 border border-slate-400"></span>
                     <span>Chưa làm ({questions.length - Object.keys(selectedAnswers).length})</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span className="w-2.5 h-2.5 rounded bg-purple-600"></span>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-3 h-3 rounded bg-purple-600"></span>
                     <span>Đang chọn</span>
                   </div>
                 </div>
@@ -872,14 +878,14 @@ export default function QuizModal({
                         onClick={() => {
                           setCurrentIndex(i);
                         }}
-                        className={`h-8 rounded-lg text-xs font-bold transition-all relative flex items-center justify-center cursor-pointer ${
+                        className={`h-8 rounded-lg text-xs font-black transition-all relative flex items-center justify-center cursor-pointer ${
                           isCurr
                             ? 'bg-purple-600 text-white ring-2 ring-purple-300 shadow-sm'
                             : isFlag
-                            ? 'bg-amber-400 text-amber-950 ring-1 ring-amber-500 font-black'
+                            ? 'bg-amber-400 text-slate-950 ring-1 ring-amber-600 font-black'
                             : isAns
-                            ? 'bg-emerald-500 text-white shadow-2xs'
-                            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 hover:bg-slate-100'
+                            ? 'bg-emerald-600 text-white shadow-2xs'
+                            : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-300 dark:border-white/20 hover:bg-slate-200'
                         }`}
                       >
                         <span>{i + 1}</span>
@@ -893,11 +899,11 @@ export default function QuizModal({
               </div>
 
               {/* Submit Button Inside Bubble Sheet Drawer */}
-              <div className="pt-3 border-t border-slate-200 dark:border-white/10">
+              <div className="pt-3 border-t border-slate-300 dark:border-white/15">
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                  className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Nộp Bài Ngay ({Object.keys(selectedAnswers).length}/{questions.length})</span>
@@ -912,11 +918,11 @@ export default function QuizModal({
             BOTTOM ACTIONS BAR
             ========================================================= */}
         {!isSubmitted && (
-          <div className="p-3.5 px-5 border-t border-slate-200 dark:border-white/10 bg-slate-50/95 dark:bg-slate-850 flex items-center justify-between">
+          <div className="p-3.5 px-5 border-t border-slate-200 dark:border-white/15 bg-white dark:bg-slate-900 flex items-center justify-between">
             <button
               disabled={currentIndex === 0}
               onClick={() => setCurrentIndex((prev) => prev - 1)}
-              className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/15 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 flex items-center space-x-1 cursor-pointer"
+              className="px-3.5 py-2 rounded-lg border border-slate-300 dark:border-white/20 text-xs font-bold text-slate-900 dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 flex items-center space-x-1 cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" />
               <span>Câu Trước</span>
@@ -926,7 +932,7 @@ export default function QuizModal({
               <button
                 type="button"
                 onClick={() => setIsBubbleSheetOpen(!isBubbleSheetOpen)}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/15 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-1 sm:hidden cursor-pointer"
+                className="px-3 py-2 rounded-lg border border-slate-300 dark:border-white/20 text-xs font-black text-slate-900 dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center space-x-1 sm:hidden cursor-pointer"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
                 <span>Phiếu</span>
@@ -935,7 +941,7 @@ export default function QuizModal({
               {currentIndex < questions.length - 1 ? (
                 <button
                   onClick={() => setCurrentIndex((prev) => prev + 1)}
-                  className="px-4 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold flex items-center space-x-1 transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-black flex items-center space-x-1 transition-colors cursor-pointer shadow-xs"
                 >
                   <span>Câu Tiếp Theo</span>
                   <ChevronRight className="w-4 h-4" />
@@ -943,7 +949,7 @@ export default function QuizModal({
               ) : (
                 <button
                   onClick={handleSubmit}
-                  className="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm flex items-center space-x-1.5 transition-colors cursor-pointer"
+                  className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm flex items-center space-x-1.5 transition-colors cursor-pointer"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>Nộp Bài & Chấm Điểm</span>
@@ -960,22 +966,22 @@ export default function QuizModal({
           ========================================================= */}
       {aiDrawerOpen && (
         <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="relative w-full max-w-xl max-h-[85vh] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/15 shadow-2xl overflow-hidden flex flex-col text-slate-800 dark:text-slate-100">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-white/15 shadow-2xl overflow-hidden flex flex-col text-slate-900 dark:text-white">
             
             {/* Header */}
-            <div className="px-5 py-3.5 bg-slate-50 dark:bg-slate-850 flex items-center justify-between border-b border-slate-200 dark:border-white/10">
+            <div className="px-5 py-3.5 bg-white dark:bg-slate-900 flex items-center justify-between border-b border-slate-200 dark:border-white/15">
               <div className="flex items-center space-x-2.5">
                 <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-950/70 text-sky-600 dark:text-sky-300 flex items-center justify-center">
                   <Bot className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold uppercase tracking-tight flex items-center space-x-1.5">
+                  <h4 className="text-sm font-black uppercase tracking-tight flex items-center space-x-1.5">
                     <span>Trợ Lý Giảng Viên AI OnThiHub</span>
                     <span className="notion-tag notion-tag-blue text-[10px]">
                       Pro Turbo
                     </span>
                   </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal">
+                  <p className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
                     Câu {activeAiQuestionIdx + 1} • Bóc mẽ bẫy đề thi & mẹo khoanh 10s
                   </p>
                 </div>
@@ -985,7 +991,7 @@ export default function QuizModal({
                 {aiExplanations[activeAiQuestionIdx] && (
                   <button
                     onClick={handleCopyAiText}
-                    className="p-1.5 text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                     title="Copy nội dung giải thích"
                   >
                     {copiedAiText ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
@@ -993,7 +999,7 @@ export default function QuizModal({
                 )}
                 <button
                   onClick={() => setAiDrawerOpen(false)}
-                  className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  className="p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -1003,20 +1009,20 @@ export default function QuizModal({
             {/* Content */}
             <div className="p-5 overflow-y-auto space-y-3.5 flex-1 text-xs sm:text-sm">
               {questions[activeAiQuestionIdx] && (
-                <div className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-white/10 space-y-2">
+                <div className="p-3.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-white/15 space-y-2">
                   <span className="notion-tag notion-tag-gray text-[10px]">
                     CÂU HỎI {activeAiQuestionIdx + 1}
                   </span>
-                  <p className="font-semibold text-slate-900 dark:text-white">
+                  <p className="font-black text-slate-950 dark:text-white text-xs sm:text-sm">
                     {questions[activeAiQuestionIdx].question}
                   </p>
                   
-                  <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex flex-wrap gap-2 text-xs">
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-600/40 font-bold text-[11px]">
+                  <div className="pt-2 border-t border-slate-300 dark:border-white/15 flex flex-wrap gap-2 text-xs">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 font-black text-[11px]">
                       ✅ Đáp án đúng: {questions[activeAiQuestionIdx].options?.[questions[activeAiQuestionIdx].correct]}
                     </span>
                     {selectedAnswers[activeAiQuestionIdx] !== undefined && selectedAnswers[activeAiQuestionIdx] !== questions[activeAiQuestionIdx].correct && (
-                      <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-600/40 font-bold text-[11px]">
+                      <span className="px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-200 border border-rose-300 dark:border-rose-600/50 font-black text-[11px]">
                         ❌ Bạn đã chọn: {questions[activeAiQuestionIdx].options?.[selectedAnswers[activeAiQuestionIdx]]}
                       </span>
                     )}
@@ -1027,33 +1033,33 @@ export default function QuizModal({
               {isAiLoading && (
                 <div className="py-10 flex flex-col items-center justify-center space-y-2.5">
                   <div className="w-8 h-8 border-3 border-purple-600 border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-xs text-slate-500 animate-pulse">
+                  <p className="text-xs text-slate-700 dark:text-slate-300 animate-pulse font-semibold">
                     Hệ thống AI đang soi bẫy thi & tổng hợp quy tắc khoanh nhanh 10 giây...
                   </p>
                 </div>
               )}
 
               {aiError && (
-                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+                <div className="p-3.5 rounded-xl bg-rose-100 border border-rose-300 text-rose-950 text-xs font-bold">
                   {aiError}
                 </div>
               )}
 
               {aiExplanations[activeAiQuestionIdx] && (
-                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-white/10 text-xs sm:text-sm text-slate-800 dark:text-slate-100 leading-relaxed whitespace-pre-line space-y-2">
+                <div className="p-4 bg-white dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-white/15 text-xs sm:text-sm text-slate-900 dark:text-white leading-relaxed whitespace-pre-line space-y-2 font-medium">
                   {aiExplanations[activeAiQuestionIdx]}
                 </div>
               )}
             </div>
 
             {/* Footer */}
-            <div className="px-5 py-3 bg-slate-50 dark:bg-slate-850 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            <div className="px-5 py-3 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-white/15 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-slate-700 dark:text-slate-300 font-semibold">
                 🎯 Luyện phản xạ nhận diện bẫy đề thi thật cùng OnThiHub
               </span>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold cursor-pointer"
+                className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white text-xs font-black cursor-pointer"
               >
                 Đóng lại
               </button>
