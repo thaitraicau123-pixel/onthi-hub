@@ -312,6 +312,10 @@ export default function App() {
           {activeTab === 'community' && (
             <CommunityView
               user={user}
+              onOpenPricing={() => {
+                setActiveTab('plans');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
           )}
 

@@ -1,5 +1,6 @@
 // Tier Limits & Quotas configuration (Admin can customize)
 import { getHanoiDateString, recordStudyTimeLog } from './hanoiTime.js';
+import { isUserAdmin } from './adminGuard.js';
 
 const TIER_LIMITS_KEY = 'onthi_tier_limits';
 const USER_TIER_KEY = 'onthi_user_tier';
@@ -77,6 +78,14 @@ export function setUserTier(tier) {
   } catch (e) {
     console.error('Failed to set user tier', e);
   }
+}
+
+// Check if user has permission to post threads or write comments in community forum
+// Admin is always allowed; regular students must have a paid tier ('plus', 'pro', 'ultra')
+export function canUserParticipateInCommunity(user) {
+  if (isUserAdmin(user)) return true;
+  const tier = (user?.tier || getUserTier() || 'free').toLowerCase();
+  return ['plus', 'pro', 'ultra'].includes(tier);
 }
 
 // Get Today String (YYYY-MM-DD theo múi giờ Hà Nội GMT+7)

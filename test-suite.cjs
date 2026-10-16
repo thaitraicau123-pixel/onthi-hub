@@ -330,6 +330,24 @@ async function runTests() {
   assert(isUserAdmin({ email: PRIMARY_ADMIN_EMAIL }), `Primary admin ${PRIMARY_ADMIN_EMAIL} is verified admin`);
   assert(!isUserAdmin({ email: 'normal_student@gmail.com' }), 'Regular student email is NOT admin');
 
+  // Verify Community Posting & Commenting Access by Tier (Free is restricted)
+  const userTierModule = await import('./src/utils/userTier.js');
+  const { canUserParticipateInCommunity, setUserTier } = userTierModule;
+
+  setUserTier('free');
+  assert(!canUserParticipateInCommunity({ tier: 'free', email: 'hocvien_free@gmail.com' }), 'Free tier user is BLOCKED from posting/commenting on community forum');
+  assert(!canUserParticipateInCommunity(null), 'Guest/Anonymous free user is BLOCKED from posting/commenting on community forum');
+  assert(canUserParticipateInCommunity({ tier: 'plus' }), 'Plus tier user is ALLOWED to post and comment on community forum');
+  assert(canUserParticipateInCommunity({ tier: 'pro' }), 'Pro tier user is ALLOWED to post and comment on community forum');
+  assert(canUserParticipateInCommunity({ tier: 'ultra' }), 'Ultra tier user is ALLOWED to post and comment on community forum');
+  assert(canUserParticipateInCommunity({ email: PRIMARY_ADMIN_EMAIL, tier: 'free' }), 'Admin is ALWAYS allowed to post and moderate community forum regardless of tier');
+
+  // Test local tier state update
+  setUserTier('plus');
+  assert(canUserParticipateInCommunity(null), 'User with local Plus tier is ALLOWED to post and comment');
+  setUserTier('free');
+  assert(!canUserParticipateInCommunity(null), 'User reverted to Free tier is BLOCKED again');
+
   // Verify initial posts
   const initialPosts = getCommunityPosts();
   assert(Array.isArray(initialPosts) && initialPosts.length >= 3, `Community has initial posts (found ${initialPosts.length})`);

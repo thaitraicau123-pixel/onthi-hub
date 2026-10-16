@@ -13,11 +13,14 @@ import {
   Tag,
   RotateCw,
   Trash2,
-  Shield
+  Lock,
+  Crown,
+  ArrowRight
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
-import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
+import { recordStudyAction } from '../utils/gamification';
 import { isUserAdmin } from '../utils/adminGuard';
+import { getUserTier, canUserParticipateInCommunity } from '../utils/userTier';
 import {
   getCommunityPosts,
   addCommunityPost,
@@ -31,8 +34,11 @@ import {
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
-export default function CommunityView({ user }) {
+export default function CommunityView({ user, onOpenPricing }) {
   const isAdmin = isUserAdmin(user);
+  const currentTier = (user?.tier || getUserTier() || 'free').toLowerCase();
+  const canParticipate = canUserParticipateInCommunity(user);
+  const isFreeUser = !canParticipate;
   const [posts, setPosts] = useState(() => getCommunityPosts());
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -94,6 +100,12 @@ export default function CommunityView({ user }) {
 
   const handleAddPost = (e) => {
     e.preventDefault();
+    if (isFreeUser) {
+      playSound('flip');
+      alert('🔒 Diễn đàn cộng đồng chỉ dành cho thành viên có gói Plus, Pro hoặc Ultra để bảo vệ cộng đồng khỏi tin nhắn rác & spam. Vui lòng nâng cấp gói để tham gia đăng bài!');
+      if (onOpenPricing) onOpenPricing();
+      return;
+    }
     if (!newPostText.trim()) return;
 
     const catMap = {
@@ -103,11 +115,17 @@ export default function CommunityView({ user }) {
       'meo-thi': '💡 Mẹo Ôn Thi'
     };
 
+    const tierLabels = {
+      plus: 'Học Viên PLUS ⭐',
+      pro: 'Chuyên Gia PRO 🚀',
+      ultra: 'Creator ULTRA 👑'
+    };
+
     const newPost = {
       id: 'post_' + Date.now(),
       author: user?.displayName || 'Người Học Ẩn Danh',
       avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-      role: user?.tier ? `Học Viên ${user.tier.toUpperCase()}` : 'Thành Viên Cộng Đồng',
+      role: isAdmin ? 'Quản Trị Viên (Admin) 🛡️' : (tierLabels[currentTier] || 'Học Viên VIP ⭐'),
       category: newPostCategory,
       categoryLabel: catMap[newPostCategory] || 'Hỏi Đáp',
       isPinned: false,
@@ -126,11 +144,24 @@ export default function CommunityView({ user }) {
   };
 
   const handleAddComment = (postId) => {
+    if (isFreeUser) {
+      playSound('flip');
+      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia bình luận trên diễn đàn!');
+      if (onOpenPricing) onOpenPricing();
+      return;
+    }
     const text = (commentInputs[postId] || '').trim();
     if (!text) return;
 
+    const tierBadges = {
+      plus: ' (PLUS ⭐)',
+      pro: ' (PRO 🚀)',
+      ultra: ' (ULTRA 👑)'
+    };
+    const authorBadge = isAdmin ? ' (Admin 🛡️)' : (tierBadges[currentTier] || '');
+
     const newComment = {
-      author: user?.displayName || 'Bạn Học',
+      author: (user?.displayName || 'Bạn Học') + authorBadge,
       text,
       createdAt: new Date().toISOString()
     };
@@ -210,50 +241,88 @@ export default function CommunityView({ user }) {
         </div>
       </div>
 
-      {/* CREATE POST INPUT BOX (Notion Block Card) */}
-      <form onSubmit={handleAddPost} className="bg-white rounded-xl p-4 border border-[#e9e9e8] shadow-2xs space-y-3">
-        <div className="flex items-center space-x-3">
-          <img
-            src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
-            alt="Avatar"
-            className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
-          />
-          <input
-            ref={postInputRef}
-            type="text"
-            placeholder="Bạn đang ôn kỳ thi nào? Đặt câu hỏi hoặc chia sẻ tài liệu..."
-            value={newPostText}
-            onChange={(e) => setNewPostText(e.target.value)}
-            className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
-          />
-        </div>
-
-        <div className="flex items-center justify-between pt-1">
-          {/* Post category selection */}
-          <div className="flex items-center space-x-2 text-xs">
-            <Tag className="w-3.5 h-3.5 text-[#787774]" />
-            <select
-              value={newPostCategory}
-              onChange={(e) => setNewPostCategory(e.target.value)}
-              className="text-xs bg-[#f7f6f5] border border-[#e9e9e8] rounded-md px-2 py-1 text-[#37352f] font-medium outline-none cursor-pointer hover:bg-[#f0efed]"
-            >
-              <option value="cong-chuc">🏛️ Công Chức</option>
-              <option value="it">💻 IT & Tech</option>
-              <option value="ngoai-ngu">🌍 Ngoại Ngữ</option>
-              <option value="meo-thi">💡 Mẹo Ôn Thi</option>
-            </select>
+      {/* CREATE POST INPUT BOX (OR VIP RESTRICTION FOR FREE TIER) */}
+      {isFreeUser ? (
+        <div className="bg-amber-50/80 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4 sm:p-5 shadow-2xs space-y-3">
+          <div className="flex items-start space-x-3.5">
+            <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700/60">
+              <Lock className="w-4 h-4" />
+            </div>
+            <div className="space-y-1 min-w-0 flex-1">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                <h3 className="text-sm font-bold text-[#37352f] dark:text-amber-100">
+                  Diễn đàn chỉ mở cho thành viên gói Plus, Pro & Ultra
+                </h3>
+                <span className="notion-tag notion-tag-yellow text-[10px] font-semibold">
+                  Tài khoản Free (Chỉ đọc)
+                </span>
+              </div>
+              <p className="text-xs text-[#5a5955] dark:text-slate-300 leading-relaxed">
+                Để bảo vệ cộng đồng học tập văn minh, chia sẻ kinh nghiệm chất lượng cao và ngăn chặn tin rác / spam, tính năng <strong>đăng bài thảo luận</strong> và <strong>bình luận</strong> được giới hạn riêng cho học viên có gói hội viên. Bạn vẫn có thể đọc toàn bộ bài viết và mẹo thi trên diễn đàn!
+              </p>
+            </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={!newPostText.trim()}
-            className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 text-white rounded-md text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>Đăng bài (+25 XP)</span>
-          </button>
+          <div className="pt-2 border-t border-amber-200/60 dark:border-amber-800/40 flex items-center justify-between flex-wrap gap-2">
+            <div className="text-[11px] text-[#787774] dark:text-slate-400 flex items-center space-x-1.5">
+              <span>💡 Gói Plus chỉ từ <strong>29.000đ / 29 Xu</strong> mở khóa full quyền đăng bài, hỏi đáp & tạo thẻ AI.</span>
+            </div>
+            <button
+              type="button"
+              onClick={onOpenPricing}
+              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-all transform hover:scale-[1.02] cursor-pointer"
+            >
+              <Crown className="w-3.5 h-3.5" />
+              <span>Nâng Cấp Gói Để Thảo Luận</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
-      </form>
+      ) : (
+        <form onSubmit={handleAddPost} className="bg-white rounded-xl p-4 border border-[#e9e9e8] shadow-2xs space-y-3">
+          <div className="flex items-center space-x-3">
+            <img
+              src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
+              alt="Avatar"
+              className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
+            />
+            <input
+              ref={postInputRef}
+              type="text"
+              placeholder="Bạn đang ôn kỳ thi nào? Đặt câu hỏi hoặc chia sẻ tài liệu..."
+              value={newPostText}
+              onChange={(e) => setNewPostText(e.target.value)}
+              className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
+            />
+          </div>
+
+          <div className="flex items-center justify-between pt-1">
+            {/* Post category selection */}
+            <div className="flex items-center space-x-2 text-xs">
+              <Tag className="w-3.5 h-3.5 text-[#787774]" />
+              <select
+                value={newPostCategory}
+                onChange={(e) => setNewPostCategory(e.target.value)}
+                className="text-xs bg-[#f7f6f5] border border-[#e9e9e8] rounded-md px-2 py-1 text-[#37352f] font-medium outline-none cursor-pointer hover:bg-[#f0efed]"
+              >
+                <option value="cong-chuc">🏛️ Công Chức</option>
+                <option value="it">💻 IT & Tech</option>
+                <option value="ngoai-ngu">🌍 Ngoại Ngữ</option>
+                <option value="meo-thi">💡 Mẹo Ôn Thi</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={!newPostText.trim()}
+              className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 text-white rounded-md text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Đăng bài (+25 XP)</span>
+            </button>
+          </div>
+        </form>
+      )}
 
       {/* POSTS FEED */}
       <div className="space-y-3">
@@ -264,14 +333,18 @@ export default function CommunityView({ user }) {
             title={searchQuery ? `Không tìm thấy bài viết nào khớp với "${searchQuery}"` : 'Chưa có bài viết nào trong chủ đề này'}
             description="Hãy là người đầu tiên đặt câu hỏi ôn thi hoặc chia sẻ tài liệu hữu ích cho cộng đồng bạn học!"
             primaryAction={{
-              label: 'Viết Bài / Đặt Câu Hỏi Ngay',
+              label: isFreeUser ? 'Nâng Cấp Gói Để Thảo Luận' : 'Viết Bài / Đặt Câu Hỏi Ngay',
               onClick: () => {
+                if (isFreeUser) {
+                  if (onOpenPricing) onOpenPricing();
+                  return;
+                }
                 if (postInputRef.current) {
                   postInputRef.current.focus();
                   postInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
               },
-              icon: Sparkles
+              icon: isFreeUser ? Crown : Sparkles
             }}
             secondaryAction={(activeCategory !== 'all' || searchQuery) ? {
               label: 'Xem Tất Cả Bài Viết',
@@ -414,23 +487,40 @@ export default function CommunityView({ user }) {
                   </div>
                 )}
 
-                {/* Add Comment Input */}
-                <div className="pt-1 flex items-center space-x-2">
-                  <input
-                    type="text"
-                    placeholder="Viết câu trả lời hoặc thảo luận..."
-                    value={commentInputs[post.id] || ''}
-                    onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                    className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-md outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
-                  />
-                  <button
-                    onClick={() => handleAddComment(post.id)}
-                    className="px-3 py-1.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-md text-xs font-medium transition-colors"
-                  >
-                    Gửi
-                  </button>
-                </div>
+                {/* Add Comment Input or VIP Notice */}
+                {isFreeUser ? (
+                  <div className="pt-2 flex items-center justify-between p-2.5 bg-[#fbfbfa] dark:bg-slate-800/40 border border-[#e9e9e8] dark:border-slate-700/60 rounded-lg text-xs text-[#787774] dark:text-slate-300">
+                    <div className="flex items-center space-x-2 min-w-0">
+                      <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <span className="truncate">Chỉ học viên gói <strong>Plus, Pro, Ultra</strong> mới có thể gửi bình luận.</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenPricing}
+                      className="text-xs font-semibold text-[#2383e2] dark:text-sky-400 hover:underline cursor-pointer flex items-center space-x-0.5 shrink-0 ml-2"
+                    >
+                      <span>Nâng cấp</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="pt-1 flex items-center space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Viết câu trả lời hoặc thảo luận..."
+                      value={commentInputs[post.id] || ''}
+                      onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                      className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-md outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
+                    />
+                    <button
+                      onClick={() => handleAddComment(post.id)}
+                      className="px-3 py-1.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-md text-xs font-medium transition-colors cursor-pointer"
+                    >
+                      Gửi
+                    </button>
+                  </div>
+                )}
 
               </div>
             );
