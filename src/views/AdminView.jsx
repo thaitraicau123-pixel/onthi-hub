@@ -40,7 +40,15 @@ import {
   UserCheck,
   Users
 } from 'lucide-react';
-import { isUserAdmin, getAdminEmail, maskApiKey, PRIMARY_ADMIN_EMAIL } from '../utils/adminGuard';
+import {
+  isUserAdmin,
+  getAdminEmail,
+  maskApiKey,
+  PRIMARY_ADMIN_EMAIL,
+  isAdminSessionAuthenticated,
+  verifyAdminPassword,
+  logoutAdminSession
+} from '../utils/adminGuard';
 import {
   getCommunityPosts,
   deleteCommunityPost,
@@ -93,8 +101,12 @@ import {
   API_KEY_LINKS
 } from '../utils/aiApiKey';
 
-export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
-  const isAdmin = isUserAdmin(user);
+export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }) {
+  const [adminAuthenticated, setAdminAuthenticated] = useState(() => isAdminSessionAuthenticated());
+  const [passwordInput, setPasswordInput] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isUnlocking, setIsUnlocking] = useState(false);
 
   const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
@@ -164,7 +176,15 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
   };
 
   useEffect(() => {
-    if (!isAdmin) return;
+    const handleAuthChange = (e) => {
+      setAdminAuthenticated(!!e.detail?.authenticated);
+    };
+    window.addEventListener('onthi-admin-auth-change', handleAuthChange);
+    return () => window.removeEventListener('onthi-admin-auth-change', handleAuthChange);
+  }, []);
+
+  useEffect(() => {
+    if (!adminAuthenticated) return;
     reloadData();
     // Real-time listener for Firestore & cross-device transactions
     const unsubscribe = subscribeToTransactions((latestTxs) => {
@@ -173,45 +193,104 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
-  }, [isAdmin]);
+  }, [adminAuthenticated]);
 
-  // STRICT ADMIN AUTHORIZATION CHECK: ONLY 1 AUTHORIZED ACCOUNT ALLOWED
-  if (!isAdmin) {
+  const handleUnlockAdmin = (e) => {
+    e?.preventDefault();
+    const trimmed = passwordInput.trim();
+    if (!trimmed) {
+      setPasswordError('Vui lòng nhập mật mã quản trị viên.');
+      return;
+    }
+    setIsUnlocking(true);
+    setTimeout(() => {
+      if (verifyAdminPassword(trimmed)) {
+        playSound('success');
+        setAdminAuthenticated(true);
+        setPasswordError('');
+        setPasswordInput('');
+        reloadData();
+      } else {
+        playSound('flip');
+        setPasswordError('❌ Mật mã quản trị không chính xác! Quyền truy cập bị từ chối.');
+        setPasswordInput('');
+      }
+      setIsUnlocking(false);
+    }, 120);
+  };
+
+  // STRICT SECRET GATEKEEPER: REQUIRE MASTER PASSWORD CAYPIECE123!
+  if (!adminAuthenticated) {
     return (
-      <div className="max-w-xl mx-auto my-12 p-6 sm:p-8 bg-white rounded-xl border border-rose-200 text-center text-[#37352f] shadow-lg">
-        <div className="w-16 h-16 rounded-3xl bg-rose-100 flex items-center justify-center mx-auto mb-4 border border-rose-300 shadow-sm">
-          <ShieldAlert className="w-9 h-9 text-rose-600 animate-pulse" />
+      <div className="max-w-md mx-auto my-14 p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 text-center text-slate-800 dark:text-slate-100 shadow-xl animate-fade-in">
+        <div className="w-14 h-14 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center mx-auto mb-4 border border-slate-700 shadow-md">
+          <Lock className="w-7 h-7 text-amber-400" />
         </div>
-        <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-rose-200/80 text-rose-900 rounded-full border border-rose-300">
-          CẢNH BÁO BẢO MẬT HỆ THỐNG
+
+        <span className="text-[10px] font-black tracking-widest uppercase px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full border border-slate-200 dark:border-slate-700">
+          HỆ THỐNG QUẢN TRỊ BẢO MẬT
         </span>
-        <h2 className="text-xl sm:text-2xl font-black text-[#37352f] uppercase tracking-tight mt-3 mb-2">
-          403 - KHÔNG CÓ QUYỀN TRUY CẬP
+
+        <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight mt-3 mb-1">
+          XÁC THỰC QUẢN TRỊ VIÊN
         </h2>
-        <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 font-medium">
-          Cửa sổ Quản Trị Viên (Secret Admin Portal) được bảo mật nghiêm ngặt và <strong>chỉ duy nhất 1 tài khoản Admin chính thức</strong> mới có quyền thao tác:
-          <br />
-          <span className="inline-block mt-2 px-3.5 py-1.5 rounded-xl bg-white border border-[#e9e9e8] font-mono font-bold text-[#2383e2] shadow-xs">
-            👑 {PRIMARY_ADMIN_EMAIL}
-          </span>
+
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium">
+          Khu vực giới hạn. Vui lòng nhập mã khóa bí mật để mở khóa bảng điều khiển.
         </p>
 
-        <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-[11px] text-amber-900 mb-6 text-left space-y-1">
-          <div className="flex items-center space-x-1.5 font-bold">
-            <Lock className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-            <span>Tài khoản hiện tại của bạn:</span>
+        <form onSubmit={handleUnlockAdmin} className="space-y-4 text-left">
+          <div className="space-y-1.5">
+            <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">
+              Mật Mã Quản Trị (Admin Passkey):
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                autoFocus
+                value={passwordInput}
+                onChange={(e) => {
+                  setPasswordInput(e.target.value);
+                  if (passwordError) setPasswordError('');
+                }}
+                placeholder="Nhập mật khẩu..."
+                className={`w-full px-3.5 py-2.5 pr-10 rounded-xl text-xs bg-slate-50 dark:bg-slate-950 border ${
+                  passwordError ? 'border-rose-500 ring-2 ring-rose-500/20' : 'border-slate-300 dark:border-slate-700'
+                } text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#2383e2] font-mono`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
+                title={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+            {passwordError && (
+              <p className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1 animate-shake">
+                {passwordError}
+              </p>
+            )}
           </div>
-          <p className="font-mono text-slate-800 font-bold pl-5">
-            {user?.email ? user.email : '(Chưa đăng nhập tài khoản nào)'}
-          </p>
-        </div>
 
-        <div className="flex items-center justify-center space-x-3">
           <button
-            onClick={onBackToHome}
-            className="px-6 py-2.5 rounded-2xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-md transition-all hover:scale-105 active:scale-95"
+            type="submit"
+            disabled={isUnlocking}
+            className="w-full py-2.5 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95"
           >
-            Quay Về Trang Chủ
+            <Key className="w-3.5 h-3.5" />
+            <span>{isUnlocking ? 'Đang xác thực...' : 'Xác Nhận & Mở Khóa'}</span>
+          </button>
+        </form>
+
+        <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button
+            type="button"
+            onClick={onBackToHome}
+            className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold transition-colors cursor-pointer"
+          >
+            ← Quay Về Trang Chủ
           </button>
         </div>
       </div>
@@ -615,6 +694,18 @@ export default function AdminView({ user, onBackToHome, onOpenChangelog }) {
             title="Làm mới dữ liệu"
           >
             <RefreshCw className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => {
+              logoutAdminSession();
+              setAdminAuthenticated(false);
+              playSound('flip');
+            }}
+            className="px-3.5 py-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/80 dark:hover:bg-rose-900/80 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition-colors cursor-pointer"
+            title="Khóa lại cửa sổ quản trị và đăng xuất phiên"
+          >
+            <Lock className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+            <span>Khóa Lại (Đăng Xuất)</span>
           </button>
           <button
             onClick={onBackToHome}

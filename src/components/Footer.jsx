@@ -1,7 +1,7 @@
 import React from 'react';
 import { BookOpen, ShieldCheck, Mail, Phone, Heart } from 'lucide-react';
 
-export default function Footer() {
+export default function Footer({ onOpenAdmin }) {
   return (
     <footer className="bg-[#f7f6f5] text-[#787774] py-10 border-t border-[#e9e9e8] text-xs">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,7 +60,20 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-[#e9e9e8] flex flex-col sm:flex-row items-center justify-between text-[#9b9a97] text-[11px] gap-2">
-          <p>© 2026 ÔnThiHub. Thiết kế theo tiêu chuẩn giao diện Notion tối giản & tập trung.</p>
+          <p className="flex items-center space-x-1.5">
+            <span>© 2026 ÔnThiHub. Thiết kế theo tiêu chuẩn giao diện Notion tối giản & tập trung.</span>
+            {onOpenAdmin && (
+              <button
+                type="button"
+                onClick={onOpenAdmin}
+                className="opacity-0 hover:opacity-100 transition-opacity p-0.5 text-[#9b9a97] hover:text-[#37352f] cursor-default focus:opacity-100"
+                title="Quản trị"
+                tabIndex={-1}
+              >
+                •
+              </button>
+            )}
+          </p>
           <p className="flex items-center space-x-1">
             <span>Xây dựng cho sĩ tử Việt Nam</span>
           </p>

@@ -225,17 +225,6 @@ export default function ChangelogModal({
                 <Scissors className="w-3.5 h-3.5" />
                 <span>In Thẻ Cắt Giấy A4</span>
               </button>
-
-              <button
-                onClick={() => {
-                  handleClose();
-                  onOpenAdmin?.();
-                }}
-                className="px-3 py-1.5 rounded-lg bg-[#37352f] hover:bg-[#201f1d] text-white font-medium text-xs flex items-center space-x-1.5 shadow-xs transition-colors"
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Quản Trị Admin</span>
-              </button>
             </div>
           </div>
 

@@ -95,22 +95,84 @@ export function saveDeletedPostId(postId) {
   }
 }
 
-// Get all posts from localStorage (filtering out deleted tombstones)
+// Test and censorship artifact detection
+export function isTestPost(post) {
+  if (!post) return false;
+  const idStr = String(post.id || '').toLowerCase();
+  const authorStr = String(post.author || '').toLowerCase();
+  const contentStr = String(post.content || '').toLowerCase();
+  if (idStr.startsWith('test_') || idStr.startsWith('temp_') || idStr.includes('test_post')) return true;
+  if (authorStr.includes('test user') || authorStr.includes('spammer') || authorStr.includes('zombie')) return true;
+  if (contentStr.includes('test kiểm duyệt') || contentStr.includes('kiểm duyệt bài viết') || contentStr.includes('resurrection test') || contentStr.includes('bình luận spam')) return true;
+  return false;
+}
+
+export function isTestComment(comment) {
+  if (!comment) return false;
+  const authorStr = String(comment.author || '').toLowerCase();
+  const textStr = String(comment.text || '').toLowerCase();
+  if (authorStr.includes('spammer') || authorStr.includes('test user')) return true;
+  if (textStr.includes('bình luận spam') || textStr.includes('test kiểm duyệt')) return true;
+  return false;
+}
+
+// Immediate purge of test/moderation artifacts from storage
+export function purgeTestCommunityData() {
+  const deletedSet = new Set(getDeletedPostIds());
+  try {
+    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(COMMUNITY_STORAGE_KEY) : null;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(p => {
+          if (isTestPost(p)) {
+            deletedSet.add(String(p.id));
+            saveDeletedPostId(p.id);
+          }
+        });
+        const cleanList = parsed
+          .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
+          .map(p => ({
+            ...p,
+            comments: (p.comments || []).filter(c => !isTestComment(c))
+          }));
+        localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(cleanList));
+      }
+    }
+  } catch (e) {}
+}
+
+// Auto-run cleanup on module initialization
+purgeTestCommunityData();
+
+// Get all posts from localStorage (filtering out deleted tombstones and test content)
 export function getCommunityPosts() {
   const deletedSet = new Set(getDeletedPostIds());
   try {
-    const raw = localStorage.getItem(COMMUNITY_STORAGE_KEY);
+    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(COMMUNITY_STORAGE_KEY) : null;
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed.filter(p => !deletedSet.has(String(p.id)));
+        return parsed
+          .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
+          .map(p => ({
+            ...p,
+            comments: (p.comments || []).filter(c => !isTestComment(c))
+          }));
       }
     }
   } catch (e) {}
 
-  const initialActive = INITIAL_COMMUNITY_POSTS.filter(p => !deletedSet.has(String(p.id)));
+  const initialActive = INITIAL_COMMUNITY_POSTS
+    .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
+    .map(p => ({
+      ...p,
+      comments: (p.comments || []).filter(c => !isTestComment(c))
+    }));
   try {
-    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(initialActive));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(initialActive));
+    }
   } catch (e) {}
   return initialActive;
 }
@@ -196,6 +258,17 @@ export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
   if (Array.isArray(remotePostsOrEvents)) {
     for (const item of remotePostsOrEvents) {
       if (!item) continue;
+
+      // Filter out and discard test/spam artifacts immediately
+      if (isTestPost(item) || isTestPost(item?.data)) {
+        const testId = item.id || item.data?.id || item.data?.postId;
+        if (testId) {
+          deletedSet.add(String(testId));
+          saveDeletedPostId(testId);
+          map.delete(String(testId));
+        }
+        continue;
+      }
 
       // Handle delete action event first
       if (item.action === 'delete_post' && item.data?.postId) {
@@ -311,9 +384,11 @@ export function addCommunityPost(post) {
     localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {}
 
-  // Sync to Firebase & Cloud Relay
-  syncPostToFirestore(newPost);
-  broadcastCommunityActionToCloud('add_post', newPost);
+  // Sync to Firebase & Cloud Relay (only for genuine user posts, NEVER broadcast test artifacts)
+  if (!isTestPost(newPost)) {
+    syncPostToFirestore(newPost);
+    broadcastCommunityActionToCloud('add_post', newPost);
+  }
 
   return newPost;
 }
@@ -456,16 +531,21 @@ export async function deleteCommunityComment(postId, commentIndex) {
   return current;
 }
 
-// Bulk delete or spam cleanup
+// Bulk delete or spam cleanup - purges test posts and spam, keeping authentic initial posts
 export function clearSpamCommunityPosts(filterFn) {
   const current = getCommunityPosts();
   const toDelete = typeof filterFn === 'function' ? current.filter(filterFn) : [];
   toDelete.forEach(p => {
     saveDeletedPostId(p.id);
-    broadcastCommunityActionToCloud('delete_post', { postId: String(p.id) });
+    if (!isTestPost(p)) {
+      broadcastCommunityActionToCloud('delete_post', { postId: String(p.id) });
+    }
   });
 
-  const remaining = current.filter(p => !toDelete.some(d => String(d.id) === String(p.id)));
+  let remaining = current.filter(p => !toDelete.some(d => String(d.id) === String(p.id)) && !isTestPost(p));
+  if (remaining.length === 0) {
+    remaining = [...INITIAL_COMMUNITY_POSTS];
+  }
   try {
     localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(remaining));
   } catch (e) {}

@@ -320,11 +320,28 @@ async function runTests() {
     clearSpamCommunityPosts,
     getDeletedPostIds,
     mergeAndSaveCommunityPosts,
-    DELETED_POSTS_STORAGE_KEY
+    DELETED_POSTS_STORAGE_KEY,
+    isTestPost,
+    purgeTestCommunityData
   } = communityModule;
 
   const adminGuardModule = await import('./src/utils/adminGuard.js');
-  const { isUserAdmin, PRIMARY_ADMIN_EMAIL } = adminGuardModule;
+  const {
+    isUserAdmin,
+    PRIMARY_ADMIN_EMAIL,
+    ADMIN_MASTER_PASSWORD,
+    verifyAdminPassword,
+    isAdminSessionAuthenticated,
+    logoutAdminSession
+  } = adminGuardModule;
+
+  // Verify Admin Master Password Gatekeeper
+  assert(ADMIN_MASTER_PASSWORD === 'Caypiece123!', 'Admin master password is set to Caypiece123!');
+  assert(verifyAdminPassword('wrong_pwd') === false, 'Wrong password rejected');
+  assert(verifyAdminPassword('Caypiece123!') === true, 'Correct password Caypiece123! accepted');
+  assert(isAdminSessionAuthenticated() === true, 'Admin session is authenticated');
+  logoutAdminSession();
+  assert(isAdminSessionAuthenticated() === false, 'Admin session logged out successfully');
 
   // Verify Admin Guard
   assert(isUserAdmin({ email: PRIMARY_ADMIN_EMAIL }), `Primary admin ${PRIMARY_ADMIN_EMAIL} is verified admin`);
@@ -352,51 +369,59 @@ async function runTests() {
   const initialPosts = getCommunityPosts();
   assert(Array.isArray(initialPosts) && initialPosts.length >= 3, `Community has initial posts (found ${initialPosts.length})`);
 
-  // Create a test post
-  const testPostId = 'test_post_' + Date.now();
+  // Create a sample community post for moderation lifecycle testing
+  const samplePostId = 'post_mod_sample_' + Date.now();
   const created = addCommunityPost({
-    id: testPostId,
-    author: 'Test User',
-    content: 'Nội dung test kiểm duyệt bài viết admin',
+    id: samplePostId,
+    author: 'Nguyễn Văn Nam',
+    content: 'Kinh nghiệm tổng hợp câu hỏi thi trắc nghiệm công chức chuyên ngành',
     category: 'cong-chuc',
     comments: [
-      { author: 'Spammer 1', text: 'Bình luận spam 1' },
-      { author: 'Spammer 2', text: 'Bình luận spam 2' }
+      { author: 'Trần Bình', text: 'Tài liệu rất chi tiết, cảm ơn bạn nhiều' },
+      { author: 'Lê Hoàng', text: 'Có bản PDF in ấn không bạn ơi?' }
     ]
   });
-  assert(created && created.id === testPostId, 'Successfully created test community post');
+  assert(created && created.id === samplePostId, 'Successfully created sample community post');
 
   // Verify post is present
   let activePosts = getCommunityPosts();
-  assert(activePosts.some(p => p.id === testPostId), 'Test post is in active community posts');
+  assert(activePosts.some(p => p.id === samplePostId), 'Sample post is in active community posts');
 
   // Test Pin / Unpin
-  const pinnedList = await togglePinCommunityPost(testPostId);
-  const pinnedPost = pinnedList.find(p => p.id === testPostId);
+  const pinnedList = await togglePinCommunityPost(samplePostId);
+  const pinnedPost = pinnedList.find(p => p.id === samplePostId);
   assert(pinnedPost && pinnedPost.isPinned === true, 'Successfully pinned community post');
 
-  const unpinnedList = await togglePinCommunityPost(testPostId);
-  const unpinnedPost = unpinnedList.find(p => p.id === testPostId);
+  const unpinnedList = await togglePinCommunityPost(samplePostId);
+  const unpinnedPost = unpinnedList.find(p => p.id === samplePostId);
   assert(unpinnedPost && unpinnedPost.isPinned === false, 'Successfully unpinned community post');
 
   // Test Delete Comment
-  const afterCommentDelete = await deleteCommunityComment(testPostId, 0);
-  const targetPostAfterCm = afterCommentDelete.find(p => p.id === testPostId);
+  const afterCommentDelete = await deleteCommunityComment(samplePostId, 0);
+  const targetPostAfterCm = afterCommentDelete.find(p => p.id === samplePostId);
   assert(targetPostAfterCm && targetPostAfterCm.comments.length === 1, 'Successfully deleted comment from post');
-  assert(targetPostAfterCm.comments[0].author === 'Spammer 2', 'Correct remaining comment verified');
+  assert(targetPostAfterCm.comments[0].author === 'Lê Hoàng', 'Correct remaining comment verified');
 
   // Test Delete Post Permanently
-  const afterPostDelete = await deleteCommunityPost(testPostId);
-  assert(!afterPostDelete.some(p => p.id === testPostId), 'Test post removed from active community posts');
+  const afterPostDelete = await deleteCommunityPost(samplePostId);
+  assert(!afterPostDelete.some(p => p.id === samplePostId), 'Sample post removed from active community posts');
 
   // Verify tombstone is saved
   const deletedIds = getDeletedPostIds();
-  assert(deletedIds.includes(testPostId), `Post ID recorded in tombstone blacklist (${DELETED_POSTS_STORAGE_KEY})`);
+  assert(deletedIds.includes(samplePostId), `Post ID recorded in tombstone blacklist (${DELETED_POSTS_STORAGE_KEY})`);
 
   // Verify tombstone persistence against remote resurrection
-  const fakeRemoteList = [{ id: testPostId, content: 'Zombie post resurrection test', author: 'Zombie' }];
+  const fakeRemoteList = [{ id: samplePostId, content: 'Zombie post resurrection test', author: 'Zombie' }];
   const mergedAfterResurrectionAttempt = mergeAndSaveCommunityPosts(fakeRemoteList);
-  assert(!mergedAfterResurrectionAttempt.some(p => p.id === testPostId), 'Tombstone correctly prevents deleted post resurrection during sync');
+  assert(!mergedAfterResurrectionAttempt.some(p => p.id === samplePostId), 'Tombstone correctly prevents deleted post resurrection during sync');
+
+  // Verify test moderation artifact identification & permanent purge
+  assert(isTestPost({ content: 'Nội dung test kiểm duyệt bài viết admin' }), 'Correctly identifies test moderation content');
+  assert(isTestPost({ id: 'test_post_999', author: 'Test User' }), 'Correctly identifies test post by id and author');
+  assert(!isTestPost({ id: 'post_init_1', author: 'Nguyễn Văn Hùng', content: 'Kinh nghiệm thi công chức' }), 'Authentic study post is not flagged as test');
+  purgeTestCommunityData();
+  const cleanedList = getCommunityPosts();
+  assert(!cleanedList.some(p => isTestPost(p)), 'All test and moderation content successfully purged');
 
   // 9. MODAL DISMISS & ACCESSIBILITY TESTS
   console.log('\n--- 9. Testing Modal Dismiss System (Escape Key & Backdrop Handlers) ---');

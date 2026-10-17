@@ -121,12 +121,6 @@ export default function App() {
         setIsCommandPaletteOpen((prev) => !prev);
       } else if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
-        const activeUser = getCurrentUser();
-        if (!isUserAdmin(activeUser)) {
-          playSound('flip');
-          showToast(`⛔ Từ chối truy cập: Cửa sổ quản trị chỉ dành riêng cho tài khoản Admin (${PRIMARY_ADMIN_EMAIL}).`);
-          return;
-        }
         setActiveTab((prev) => (prev === 'admin' ? 'home' : 'admin'));
       }
     };
@@ -381,7 +375,7 @@ export default function App() {
         </main>
 
         {/* Minimal Notion Footer */}
-        <Footer />
+        <Footer onOpenAdmin={() => setActiveTab('admin')} />
       </div>
 
       {/* OVERLAY MODALS FOR FOCUSED INTERACTION */}
