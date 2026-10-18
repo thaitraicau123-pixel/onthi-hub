@@ -96,6 +96,53 @@ export function formatHanoiDateTime(input = new Date(), includeLabel = true) {
 }
 
 /**
+ * Định dạng thời gian tương đối theo giờ Hà Nội (GMT+7)
+ * Ví dụ: "Vừa xong", "5 phút trước", "2 giờ trước", "3 ngày trước", "18/10/2026 14:30"
+ */
+export function formatHanoiRelativeTime(input) {
+  if (!input) return 'Vừa xong';
+  const date = toValidHanoiDate(input);
+  if (!date) return String(input);
+
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+
+  // If in the future or under 1 minute
+  if (diffMs < 60 * 1000) {
+    return 'Vừa xong';
+  }
+
+  const diffMinutes = Math.floor(diffMs / (60 * 1000));
+  if (diffMinutes < 60) {
+    return `${diffMinutes} phút trước`;
+  }
+
+  const diffHours = Math.floor(diffMs / (60 * 60 * 1000));
+  if (diffHours < 24) {
+    return `${diffHours} giờ trước`;
+  }
+
+  const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000));
+  if (diffDays < 7) {
+    return `${diffDays} ngày trước`;
+  }
+
+  // Older than 7 days: format DD/MM/YYYY HH:mm (Hanoi timezone)
+  try {
+    const dStr = new Intl.DateTimeFormat('vi-VN', {
+      timeZone: HANOI_TIMEZONE,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(date);
+    const tStr = getHanoiTimeString(date, false);
+    return `${dStr} ${tStr}`;
+  } catch (e) {
+    return `${getHanoiDateString(date)} ${getHanoiTimeString(date, false)}`;
+  }
+}
+
+/**
  * Lấy tên thứ trong tuần theo giờ Hà Nội (Thứ Hai, Thứ Ba...)
  */
 export function getHanoiDayOfWeekName(input = new Date()) {

@@ -21,6 +21,7 @@ import { playSound } from '../utils/storage';
 import { recordStudyAction } from '../utils/gamification';
 import { isUserAdmin } from '../utils/adminGuard';
 import { getUserTier, canUserParticipateInCommunity } from '../utils/userTier';
+import { formatHanoiDateTime, formatHanoiRelativeTime } from '../utils/hanoiTime';
 import {
   getCommunityPosts,
   addCommunityPost,
@@ -29,7 +30,10 @@ import {
   subscribeToCommunityPosts,
   deleteCommunityPost,
   togglePinCommunityPost,
-  deleteCommunityComment
+  deleteCommunityComment,
+  getLocalLikedPostIds,
+  saveLocalLikedPostIds,
+  getOrCreateCommunityClientId
 } from '../data/communityData';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
@@ -39,25 +43,52 @@ export default function CommunityView({ user, onOpenPricing }) {
   const currentTier = (user?.tier || getUserTier() || 'free').toLowerCase();
   const canParticipate = canUserParticipateInCommunity(user);
   const isFreeUser = !canParticipate;
+  const userIdentifier = user?.email || user?.uid || getOrCreateCommunityClientId();
+
   const [posts, setPosts] = useState(() => getCommunityPosts());
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [newPostText, setNewPostText] = useState('');
   const [newPostCategory, setNewPostCategory] = useState('cong-chuc');
-  const [likedPosts, setLikedPosts] = useState([1]);
+  const [likedPosts, setLikedPosts] = useState(() => {
+    const localLiked = getLocalLikedPostIds();
+    const currentPosts = getCommunityPosts();
+    const fromPosts = currentPosts
+      .filter(p => Array.isArray(p.likedBy) && p.likedBy.includes(userIdentifier))
+      .map(p => String(p.id));
+    return Array.from(new Set([...localLiked, ...fromPosts]));
+  });
   const [commentInputs, setCommentInputs] = useState({});
   const [copiedPostId, setCopiedPostId] = useState(null);
+  const [, setTimeTick] = useState(0);
   const postInputRef = useRef(null);
+
+  // Dynamic real-time relative time ticker (updates every 30 seconds)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeTick(t => t + 1);
+    }, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Real-time synchronization (Firebase Firestore + Cloud Relay)
   useEffect(() => {
     const unsubscribe = subscribeToCommunityPosts((updatedPosts) => {
       setPosts(updatedPosts);
+      // Synchronize liked state in real-time from server post likedBy
+      setLikedPosts(prevLiked => {
+        const fromPosts = updatedPosts
+          .filter(p => Array.isArray(p.likedBy) && p.likedBy.includes(userIdentifier))
+          .map(p => String(p.id));
+        const combined = Array.from(new Set([...prevLiked, ...fromPosts]));
+        saveLocalLikedPostIds(combined);
+        return combined;
+      });
     });
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
     };
-  }, []);
+  }, [userIdentifier]);
 
   const handleSharePost = (post) => {
     playSound('success');
@@ -90,11 +121,13 @@ export default function CommunityView({ user, onOpenPricing }) {
 
   const handleLike = (postId) => {
     playSound('flip');
-    const isLiked = likedPosts.includes(postId);
-    const updatedLiked = isLiked ? likedPosts.filter(id => id !== postId) : [...likedPosts, postId];
+    const strId = String(postId);
+    const isLiked = likedPosts.includes(strId);
+    const updatedLiked = isLiked ? likedPosts.filter(id => id !== strId) : [...likedPosts, strId];
     setLikedPosts(updatedLiked);
+    saveLocalLikedPostIds(updatedLiked);
 
-    const updated = toggleLikeCommunityPost(postId, !isLiked);
+    const updated = toggleLikeCommunityPost(strId, !isLiked, userIdentifier);
     setPosts(updated);
   };
 
@@ -121,22 +154,29 @@ export default function CommunityView({ user, onOpenPricing }) {
       ultra: 'Creator ULTRA 👑'
     };
 
+    const nowIso = new Date().toISOString();
     const newPost = {
       id: 'post_' + Date.now(),
-      author: user?.displayName || 'Người Học Ẩn Danh',
+      author: user?.displayName || 'Bạn Học OnThiHub',
       avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
       role: isAdmin ? 'Quản Trị Viên (Admin) 🛡️' : (tierLabels[currentTier] || 'Học Viên VIP ⭐'),
       category: newPostCategory,
       categoryLabel: catMap[newPostCategory] || 'Hỏi Đáp',
       isPinned: false,
       time: 'Vừa xong',
-      createdAt: new Date().toISOString(),
+      createdAt: nowIso,
       content: newPostText.trim(),
       likes: 1,
+      likedBy: [userIdentifier],
       comments: []
     };
 
     addCommunityPost(newPost);
+    setLikedPosts(prev => {
+      const next = Array.from(new Set([...prev, String(newPost.id)]));
+      saveLocalLikedPostIds(next);
+      return next;
+    });
     setNewPostText('');
     playSound('success');
     confetti({ particleCount: 50, spread: 60, origin: { y: 0.4 } });
@@ -357,7 +397,7 @@ export default function CommunityView({ user, onOpenPricing }) {
           />
         ) : (
           filteredPosts.map((post) => {
-            const isLiked = likedPosts.includes(post.id);
+            const isLiked = likedPosts.includes(String(post.id)) || (Array.isArray(post.likedBy) && post.likedBy.includes(userIdentifier));
             return (
               <div
                 key={post.id}
@@ -389,7 +429,9 @@ export default function CommunityView({ user, onOpenPricing }) {
                       <div className="flex items-center space-x-2 text-[11px] text-[#787774]">
                         <span>{post.role}</span>
                         <span>•</span>
-                        <span>{post.time}</span>
+                        <span title={formatHanoiDateTime(post.createdAt || post.time)}>
+                          {formatHanoiRelativeTime(post.createdAt || post.time)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -469,8 +511,15 @@ export default function CommunityView({ user, onOpenPricing }) {
                   <div className="pt-2 space-y-2 border-t border-[#f0efed]">
                     {post.comments.map((cm, cIdx) => (
                       <div key={cIdx} className="p-2.5 bg-[#fbfbfa] rounded-lg text-xs space-y-0.5 border border-[#e9e9e8] group">
-                        <div className="flex items-center justify-between">
-                          <strong className="text-[#37352f] block font-medium">{cm.author}</strong>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center space-x-2 min-w-0">
+                            <strong className="text-[#37352f] block font-medium truncate">{cm.author}</strong>
+                            {cm.createdAt && (
+                              <span className="text-[10px] text-[#9b9a97] shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
+                                • {formatHanoiRelativeTime(cm.createdAt)}
+                              </span>
+                            )}
+                          </div>
                           {isAdmin && (
                             <button
                               onClick={() => handleDeleteComment(post.id, cIdx)}

@@ -261,6 +261,7 @@ async function runTests() {
     getHanoiDateString,
     getHanoiTimeString,
     formatHanoiDateTime,
+    formatHanoiRelativeTime,
     getHanoiNowComponents,
     recordStudyTimeLog,
     getStudyTimeLogs,
@@ -278,6 +279,13 @@ async function runTests() {
 
   const fullDateTime = formatHanoiDateTime();
   assert(fullDateTime.includes('Giờ Hà Nội'), `Full format includes Vietnamese label: "${fullDateTime}"`);
+
+  // Test Real-time Dynamic Relative Time
+  assert(formatHanoiRelativeTime(new Date()) === 'Vừa xong', 'Relative time for now is "Vừa xong"');
+  assert(formatHanoiRelativeTime(new Date(Date.now() - 5 * 60 * 1000)) === '5 phút trước', 'Relative time for 5m ago is "5 phút trước"');
+  assert(formatHanoiRelativeTime(new Date(Date.now() - 3 * 3600 * 1000)) === '3 giờ trước', 'Relative time for 3h ago is "3 giờ trước"');
+  assert(formatHanoiRelativeTime(new Date(Date.now() - 2 * 86400 * 1000)) === '2 ngày trước', 'Relative time for 2d ago is "2 ngày trước"');
+  assert(formatHanoiRelativeTime('random-text') === 'random-text', 'Relative time gracefully falls back for non-date string');
 
   const nowComps = getHanoiNowComponents();
   assert(nowComps.timezone.includes('Hà Nội'), 'Now components include Hanoi GMT+7 timezone metadata');
@@ -322,7 +330,12 @@ async function runTests() {
     mergeAndSaveCommunityPosts,
     DELETED_POSTS_STORAGE_KEY,
     isTestPost,
-    purgeTestCommunityData
+    purgeTestCommunityData,
+    toggleLikeCommunityPost,
+    getLocalLikedPostIds,
+    saveLocalLikedPostIds,
+    getOrCreateCommunityClientId,
+    INITIAL_COMMUNITY_POSTS
   } = communityModule;
 
   const adminGuardModule = await import('./src/utils/adminGuard.js');
@@ -365,6 +378,12 @@ async function runTests() {
   setUserTier('free');
   assert(!canUserParticipateInCommunity(null), 'User reverted to Free tier is BLOCKED again');
 
+  // Verify authentic student posts without bot stats
+  assert(INITIAL_COMMUNITY_POSTS[0].likes <= 10, 'Initial post 1 has authentic student likes count (<= 10, no bot inflated numbers)');
+  assert(INITIAL_COMMUNITY_POSTS[0].role.includes('Học viên'), 'Initial post 1 has realistic student role');
+  assert(Array.isArray(INITIAL_COMMUNITY_POSTS[0].likedBy) && INITIAL_COMMUNITY_POSTS[0].likedBy.length === INITIAL_COMMUNITY_POSTS[0].likes, 'Initial post 1 likedBy matches like count');
+  assert(INITIAL_COMMUNITY_POSTS[0].comments[0].createdAt, 'Initial comments have valid createdAt timestamps');
+
   // Verify initial posts
   const initialPosts = getCommunityPosts();
   assert(Array.isArray(initialPosts) && initialPosts.length >= 3, `Community has initial posts (found ${initialPosts.length})`);
@@ -401,6 +420,26 @@ async function runTests() {
   const targetPostAfterCm = afterCommentDelete.find(p => p.id === samplePostId);
   assert(targetPostAfterCm && targetPostAfterCm.comments.length === 1, 'Successfully deleted comment from post');
   assert(targetPostAfterCm.comments[0].author === 'Lê Hoàng', 'Correct remaining comment verified');
+
+  // Test Real-time Like & Deduplication
+  const studentUser = 'sv_test_authenticity@gmail.com';
+  const initialLikesCount = targetPostAfterCm.likes || 1;
+  const likedState = toggleLikeCommunityPost(samplePostId, true, studentUser);
+  const targetPostLiked = likedState.find(p => p.id === samplePostId);
+  assert(targetPostLiked.likedBy.includes(studentUser), 'User identifier is recorded in post.likedBy');
+  assert(targetPostLiked.likes === (initialLikesCount + 1), 'Post like count increments by 1 for new user');
+
+  // Toggle unlike
+  const unlikedState = toggleLikeCommunityPost(samplePostId, false, studentUser);
+  const targetPostUnliked = unlikedState.find(p => p.id === samplePostId);
+  assert(!targetPostUnliked.likedBy.includes(studentUser), 'User identifier is removed from post.likedBy when unliked');
+  assert(targetPostUnliked.likes === initialLikesCount, 'Post like count returns to original when unliked');
+
+  // Verify local client liked post persistence
+  saveLocalLikedPostIds([samplePostId]);
+  assert(getLocalLikedPostIds().includes(samplePostId), 'Local liked post IDs successfully persisted in storage');
+  saveLocalLikedPostIds([]);
+  assert(!getLocalLikedPostIds().includes(samplePostId), 'Local liked post IDs successfully cleared');
 
   // Test Delete Post Permanently
   const afterPostDelete = await deleteCommunityPost(samplePostId);

@@ -2,6 +2,8 @@ import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs, de
 
 const COMMUNITY_STORAGE_KEY = 'onthi_community_posts_v2';
 export const DELETED_POSTS_STORAGE_KEY = 'onthi_deleted_community_posts_v1';
+export const COMMUNITY_LIKED_STORAGE_KEY = 'onthi_community_liked_posts_v1';
+export const COMMUNITY_CLIENT_ID_KEY = 'onthi_community_client_id_v1';
 const CLOUD_COMMUNITY_TOPIC = 'onthi_hub_community_v2';
 
 export const INITIAL_COMMUNITY_POSTS = [
@@ -9,50 +11,103 @@ export const INITIAL_COMMUNITY_POSTS = [
     id: 'post_init_1',
     author: 'Nguyễn Văn Hùng',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    role: 'Đỗ Thủ Khoa Khối Sở 2025',
+    role: 'Học viên Ôn thi Công chức • Khối Hành chính',
     category: 'cong-chuc',
     categoryLabel: '🏛️ Công Chức',
     isPinned: true,
     time: '2 giờ trước',
     createdAt: new Date(Date.now() - 7200000).toISOString(),
     content: 'Kinh nghiệm thi đỗ Vòng 1 Công Chức 54/60 câu: Tuyệt đối không học thuộc lòng từng từ trong Luật! Hãy dùng bộ thẻ Anki để nhớ các "con số then chốt": thời hạn kỷ luật 2 năm / 5 năm, thời gian tập sự 12 tháng, cơ cấu đại biểu Quốc hội. Nhìn đáp án là khoanh được ngay trong 3 giây. Ai cần file tóm tắt cứ comment mình gửi nhé!',
-    likes: 128,
+    likes: 5,
+    likedBy: ['sv_ngoai_thuong_99', 'thanh_hang_neu', 'tuan_anh_hvtc', 'minh_chau_luat', 'hong_anh_hvhc'],
     comments: [
-      { author: 'Trần Thảo', text: 'Cảm ơn anh nhiều ạ, em đang cày Luật Cán bộ công chức mà hay bị lú mấy con số thời hạn quá!' },
-      { author: 'Lê Minh', text: 'Cho em xin file tóm tắt qua email với ạ: leminh99@gmail.com' }
+      {
+        author: 'Trần Thảo',
+        text: 'Cảm ơn anh nhiều ạ, em đang cày Luật Cán bộ công chức mà hay bị lú mấy con số thời hạn quá!',
+        createdAt: new Date(Date.now() - 5400000).toISOString()
+      },
+      {
+        author: 'Lê Minh',
+        text: 'Cho em xin file tóm tắt qua email với ạ: leminh99@gmail.com',
+        createdAt: new Date(Date.now() - 2700000).toISOString()
+      }
     ]
   },
   {
     id: 'post_init_2',
     author: 'Trần Minh Tuấn',
     avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
-    role: 'Senior Dev tại FPT Software',
+    role: 'Sinh viên CNTT • Đang thực tập Software',
     category: 'it',
     categoryLabel: '💻 IT & Tech',
     isPinned: false,
     time: '5 giờ trước',
     createdAt: new Date(Date.now() - 18000000).toISOString(),
     content: 'Vừa hoàn thành vòng phỏng vấn Technical System Design chiều nay: Người ta hỏi rất sâu về Cache Stampede (Thundering herd) và Distributed Lock dùng Redis Redlock. May mà hôm trước vừa ôn trọn bộ thẻ Backend Master trên ÔnThiHub, trả lời mạch lạc nên được sếp khen ngay tại chỗ!',
-    likes: 94,
+    likes: 3,
+    likedBy: ['dev_bach_khoa', 'hoang_long_fpt', 'nguyen_anh_uit'],
     comments: [
-      { author: 'Hoàng Long', text: 'Phần Redis Redlock xử lý clock drift thế nào anh nhỉ?' }
+      {
+        author: 'Hoàng Long',
+        text: 'Phần Redis Redlock xử lý clock drift thế nào anh nhỉ?',
+        createdAt: new Date(Date.now() - 10800000).toISOString()
+      }
     ]
   },
   {
     id: 'post_init_3',
     author: 'Lê Thuỳ Linh',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
-    role: 'IELTS 8.0 Overall',
+    role: 'Sinh viên Ngoại thương • Tự học IELTS 8.0',
     category: 'ngoai-ngu',
     categoryLabel: '🌍 Ngoại Ngữ',
     isPinned: false,
     time: 'Hôm qua',
     createdAt: new Date(Date.now() - 86400000).toISOString(),
     content: 'Mẹo học từ vựng IELTS C1/C2 không bao giờ quên: Đừng học từ đơn lẻ! Luôn học cả cụm Collocation (ví dụ: "exacerbate the environmental crisis" thay vì chỉ học mỗi "exacerbate"). Bộ thẻ 1200 từ vựng trên web có sẵn âm thanh phát âm bản xứ, mình vừa chạy bộ vừa nghe ngấm cực kỳ tiện.',
-    likes: 76,
+    likes: 4,
+    likedBy: ['lan_anh_dav', 'ha_my_hanu', 'phuong_thao_ftu', 'duc_anh_vcu'],
     comments: []
   }
 ];
+
+// Client unique ID helper for anonymous/guest community participation
+export function getOrCreateCommunityClientId() {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      let id = localStorage.getItem(COMMUNITY_CLIENT_ID_KEY);
+      if (!id) {
+        id = 'client_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+        localStorage.setItem(COMMUNITY_CLIENT_ID_KEY, id);
+      }
+      return id;
+    }
+  } catch (e) {}
+  return 'client_student_' + Math.random().toString(36).substring(2, 8);
+}
+
+// Get user liked post IDs from local storage
+export function getLocalLikedPostIds() {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(COMMUNITY_LIKED_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed.map(String);
+      }
+    }
+  } catch (e) {}
+  return [];
+}
+
+// Save user liked post IDs to local storage
+export function saveLocalLikedPostIds(likedIds) {
+  try {
+    if (typeof localStorage !== 'undefined' && Array.isArray(likedIds)) {
+      localStorage.setItem(COMMUNITY_LIKED_STORAGE_KEY, JSON.stringify(Array.from(new Set(likedIds.map(String)))));
+    }
+  } catch (e) {}
+}
 
 // Helper to remove undefined fields for Firestore
 function sanitizeForFirestore(obj) {
@@ -132,10 +187,30 @@ export function purgeTestCommunityData() {
         });
         const cleanList = parsed
           .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
-          .map(p => ({
-            ...p,
-            comments: (p.comments || []).filter(c => !isTestComment(c))
-          }));
+          .map(p => {
+            // Normalize old bot-inflated likes on initial posts
+            if (p.id === 'post_init_1' && (p.likes > 20 || !p.likedBy)) {
+              p.likes = 5;
+              p.role = 'Học viên Ôn thi Công chức • Khối Hành chính';
+              p.likedBy = ['sv_ngoai_thuong_99', 'thanh_hang_neu', 'tuan_anh_hvtc', 'minh_chau_luat', 'hong_anh_hvhc'];
+            }
+            if (p.id === 'post_init_2' && (p.likes > 20 || !p.likedBy)) {
+              p.likes = 3;
+              p.role = 'Sinh viên CNTT • Đang thực tập Software';
+              p.likedBy = ['dev_bach_khoa', 'hoang_long_fpt', 'nguyen_anh_uit'];
+            }
+            if (p.id === 'post_init_3' && (p.likes > 20 || !p.likedBy)) {
+              p.likes = 4;
+              p.role = 'Sinh viên Ngoại thương • Tự học IELTS 8.0';
+              p.likedBy = ['lan_anh_dav', 'ha_my_hanu', 'phuong_thao_ftu', 'duc_anh_vcu'];
+            }
+            return {
+              ...p,
+              likedBy: Array.isArray(p.likedBy) ? p.likedBy : [],
+              likes: typeof p.likes === 'number' ? p.likes : (Array.isArray(p.likedBy) ? p.likedBy.length : 0),
+              comments: (p.comments || []).filter(c => !isTestComment(c))
+            };
+          });
         localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(cleanList));
       }
     }
@@ -157,6 +232,8 @@ export function getCommunityPosts() {
           .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
           .map(p => ({
             ...p,
+            likedBy: Array.isArray(p.likedBy) ? p.likedBy : [],
+            likes: typeof p.likes === 'number' ? p.likes : (Array.isArray(p.likedBy) ? p.likedBy.length : 0),
             comments: (p.comments || []).filter(c => !isTestComment(c))
           }));
       }
@@ -167,6 +244,8 @@ export function getCommunityPosts() {
     .filter(p => !deletedSet.has(String(p.id)) && !isTestPost(p))
     .map(p => ({
       ...p,
+      likedBy: Array.isArray(p.likedBy) ? p.likedBy : [],
+      likes: typeof p.likes === 'number' ? p.likes : (Array.isArray(p.likedBy) ? p.likedBy.length : 0),
       comments: (p.comments || []).filter(c => !isTestComment(c))
     }));
   try {
@@ -286,19 +365,35 @@ export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
 
         const existing = map.get(strId);
         if (!existing) {
-          map.set(strId, item);
+          const itemLikedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
+          const itemLikes = typeof item.likes === 'number' ? item.likes : itemLikedBy.length;
+          map.set(strId, {
+            ...item,
+            likedBy: itemLikedBy,
+            likes: itemLikes
+          });
         } else {
-          // Merge comments and likes keeping highest
+          // Merge comments
           const combinedComments = [...(existing.comments || [])];
           (item.comments || []).forEach(rc => {
             if (!combinedComments.some(c => c.text === rc.text && c.author === rc.author)) {
               combinedComments.push(rc);
             }
           });
+
+          // Merge likedBy union
+          const existingLikedBy = Array.isArray(existing.likedBy) ? existing.likedBy : [];
+          const itemLikedBy = Array.isArray(item.likedBy) ? item.likedBy : [];
+          const combinedLikedBy = Array.from(new Set([...existingLikedBy, ...itemLikedBy]));
+          const effectiveLikes = combinedLikedBy.length > 0
+            ? combinedLikedBy.length
+            : Math.max(existing.likes || 0, item.likes || 0);
+
           map.set(strId, {
             ...existing,
             ...item,
-            likes: Math.max(existing.likes || 0, item.likes || 0),
+            likedBy: combinedLikedBy,
+            likes: effectiveLikes,
             comments: combinedComments
           });
         }
@@ -333,8 +428,26 @@ export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
           const strId = String(item.data.postId);
           const target = map.get(strId);
           if (target) {
-            target.likes = (target.likes || 0) + (item.data.isLiked ? 1 : -1);
-            if (target.likes < 0) target.likes = 0;
+            target.likedBy = Array.isArray(target.likedBy) ? [...target.likedBy] : [];
+            const uid = item.data.userIdentifier;
+            if (uid) {
+              const hasUid = target.likedBy.includes(uid);
+              if (item.data.isLiked) {
+                if (!hasUid) {
+                  target.likedBy.push(uid);
+                  target.likes = (target.likes || 0) + 1;
+                }
+              } else {
+                if (hasUid) {
+                  target.likedBy = target.likedBy.filter(u => u !== uid);
+                  target.likes = Math.max(0, (target.likes || 0) - 1);
+                }
+              }
+            } else if (typeof item.data.likes === 'number') {
+              target.likes = item.data.likes;
+            } else {
+              target.likes = Math.max(0, (target.likes || 0) + (item.data.isLiked ? 1 : -1));
+            }
             map.set(strId, target);
           }
         } else if (item.action === 'comment_post' && item.data.postId && item.data.comment) {
@@ -375,8 +488,12 @@ export function addCommunityPost(post) {
     ...post,
     id: post.id || 'post_' + Date.now(),
     createdAt: post.createdAt || new Date().toISOString(),
-    likes: post.likes || 1,
-    comments: post.comments || []
+    likes: typeof post.likes === 'number' ? post.likes : (Array.isArray(post.likedBy) ? post.likedBy.length : 1),
+    likedBy: Array.isArray(post.likedBy) ? post.likedBy : [],
+    comments: (post.comments || []).map(c => ({
+      ...c,
+      createdAt: c.createdAt || new Date().toISOString()
+    }))
   };
 
   const updated = [newPost, ...current];
@@ -393,15 +510,40 @@ export function addCommunityPost(post) {
   return newPost;
 }
 
-// Like a post
-export function toggleLikeCommunityPost(postId, isLiked) {
+// Like or unlike a post with real-time user-level deduplication
+export function toggleLikeCommunityPost(postId, isLiked, userIdentifier = null) {
   const current = getCommunityPosts();
+  const uid = userIdentifier || getOrCreateCommunityClientId();
+  const strId = String(postId);
+  let updatedTargetPost = null;
+
   const updated = current.map(p => {
-    if (String(p.id) === String(postId)) {
-      const newLikes = isLiked ? (p.likes || 0) + 1 : Math.max(0, (p.likes || 0) - 1);
-      const updatedPost = { ...p, likes: newLikes };
-      syncPostToFirestore(updatedPost);
-      return updatedPost;
+    if (String(p.id) === strId) {
+      const existingLikedBy = Array.isArray(p.likedBy) ? [...p.likedBy] : [];
+      const hasLiked = existingLikedBy.includes(uid);
+      let nextLikedBy = existingLikedBy;
+      let nextLikes = typeof p.likes === 'number' ? p.likes : 0;
+
+      if (isLiked) {
+        if (!hasLiked) {
+          nextLikedBy = [...existingLikedBy, uid];
+          nextLikes = nextLikes + 1;
+        }
+      } else {
+        if (hasLiked) {
+          nextLikedBy = existingLikedBy.filter(u => u !== uid);
+          nextLikes = Math.max(0, nextLikes - 1);
+        } else if (nextLikes > 0 && !userIdentifier) {
+          nextLikes = Math.max(0, nextLikes - 1);
+        }
+      }
+
+      updatedTargetPost = {
+        ...p,
+        likes: nextLikes,
+        likedBy: nextLikedBy
+      };
+      return updatedTargetPost;
     }
     return p;
   });
@@ -410,7 +552,24 @@ export function toggleLikeCommunityPost(postId, isLiked) {
     localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {}
 
-  broadcastCommunityActionToCloud('like_post', { postId, isLiked });
+  // Update local user's liked post IDs
+  const localLiked = getLocalLikedPostIds();
+  const nextLocalLiked = isLiked
+    ? Array.from(new Set([...localLiked, strId]))
+    : localLiked.filter(id => id !== strId);
+  saveLocalLikedPostIds(nextLocalLiked);
+
+  if (updatedTargetPost) {
+    syncPostToFirestore(updatedTargetPost);
+    broadcastCommunityActionToCloud('like_post', {
+      postId: strId,
+      isLiked,
+      userIdentifier: uid,
+      likes: updatedTargetPost.likes,
+      likedBy: updatedTargetPost.likedBy
+    });
+  }
+
   return updated;
 }
 
