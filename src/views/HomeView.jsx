@@ -219,7 +219,7 @@ export default function HomeView({
         <div className="bg-slate-50 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2.5">
           <span className="text-base leading-none">💡</span>
           <div className="leading-relaxed">
-            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span>, <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> hoặc <span className="font-bold text-indigo-600 dark:text-indigo-400">"📄 Tóm Tắt"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ.
+            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Lật Thẻ"</span>, <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> hoặc <span className="font-bold text-emerald-600 dark:text-emerald-400">"Tóm Tắt"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ.
           </div>
         </div>
       </div>
@@ -311,7 +311,7 @@ export default function HomeView({
           </div>
           <div className="flex items-center space-x-1.5">
             <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">Chợ Thẻ C2C</h4>
-            <span className="text-[8px] font-bold px-1.5 py-0.2 rounded notion-pill-orange">HOT</span>
+            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-orange-100 dark:bg-orange-950/80 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-500/40">HOT</span>
           </div>
           <p className="text-[11px] text-[#787774] dark:text-slate-200 mt-0.5">Mua bán & Pass lại thẻ</p>
         </div>

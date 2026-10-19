@@ -87,7 +87,7 @@ export default function NotionSidebar({
       badge: '🟢 Live',
       badgeColor: 'notion-pill-green',
       action: onOpenStudyRoom,
-      desc: 'Học cùng 40+ sĩ tử toàn quốc & cổ vũ'
+      desc: 'Phòng tự học trực tuyến & cày thẻ tập trung'
     },
     {
       id: 'cheatsheet',
@@ -154,10 +154,10 @@ export default function NotionSidebar({
       id: 'changelog',
       label: `Bản Tin Cập Nhật`,
       emoji: icons.changelog || '✨',
-      badge: isChangelogUnread() ? 'NEW' : null,
+      badge: isChangelogUnread() ? 'NEW' : APP_VERSION,
       badgeColor: 'notion-pill-blue',
       action: onOpenChangelog,
-      desc: `Phiên bản v${APP_VERSION}`
+      desc: `Phiên bản ${APP_VERSION}`
     }
   ];
 
@@ -243,7 +243,7 @@ export default function NotionSidebar({
                 <ChevronsUpDown className="w-3.5 h-3.5 text-slate-500 dark:text-slate-300 shrink-0" />
               </div>
               <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
-                {user ? user.email || user.displayName : 'Khách vãng lai • Beta'}
+                {user ? user.email || user.displayName : 'Không gian ôn luyện 2026'}
               </span>
             </div>
           </div>
@@ -457,7 +457,7 @@ export default function NotionSidebar({
 
         {/* Bottom subtle label */}
         <div className="flex items-center justify-between px-2 text-[10px] font-medium text-slate-600 dark:text-slate-300">
-          <span>Ôn Thi Hub v{APP_VERSION}</span>
+          <span>Ôn Thi Hub {APP_VERSION}</span>
           <span className="text-slate-500 dark:text-slate-400 font-semibold">{currentTheme?.name?.split(' ')[0] || 'Notion'} UI</span>
         </div>
 

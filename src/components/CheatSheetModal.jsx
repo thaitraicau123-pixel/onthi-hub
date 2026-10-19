@@ -418,13 +418,31 @@ export function CheatSheetModal({ onClose, initialCourseId, allCourses = [] }) {
                         {item.front}
                       </div>
                       {item.hasNumber && (
-                        <span style={{
-                          flexShrink: 0, fontSize: '10px', padding: '2px 6px',
-                          borderRadius: '6px', background: 'rgba(245,158,11,0.18)',
-                          color: '#fbbf24', fontWeight: 800
-                        }}>
-                          🔢 Số liệu
-                        </span>
+                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', justifyContent: 'flex-end', flexShrink: 0 }}>
+                          {item.numberBadges && item.numberBadges.length > 0 ? (
+                            item.numberBadges.map((badgeText, bIdx) => (
+                              <span
+                                key={bIdx}
+                                style={{
+                                  fontSize: '10px', padding: '2px 6px',
+                                  borderRadius: '6px', background: 'rgba(245,158,11,0.2)',
+                                  border: '1px solid rgba(245,158,11,0.35)',
+                                  color: '#fbbf24', fontWeight: 800
+                                }}
+                              >
+                                🔢 {badgeText}
+                              </span>
+                            ))
+                          ) : (
+                            <span style={{
+                              fontSize: '10px', padding: '2px 6px',
+                              borderRadius: '6px', background: 'rgba(245,158,11,0.18)',
+                              color: '#fbbf24', fontWeight: 800
+                            }}>
+                              🔢 Số liệu
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
 

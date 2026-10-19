@@ -155,36 +155,36 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowConfigModal(false);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-[#37352f] cursor-pointer"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in text-[#37352f] dark:text-white cursor-pointer"
         >
           <div className="fixed inset-0 -z-10" onClick={() => setShowConfigModal(false)} aria-hidden="true" />
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl p-6 space-y-4 cursor-default"
+            className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-[#e9e9e8] dark:border-white/15 shadow-2xl p-6 space-y-4 cursor-default"
           >
             
-            <div className="flex items-center justify-between border-b border-[#e9e9e8] pb-3">
+            <div className="flex items-center justify-between border-b border-[#e9e9e8] dark:border-white/10 pb-3">
               <div className="flex items-center space-x-2">
-                <Target className="w-4 h-4 text-[#2383e2]" />
-                <h4 className="font-bold text-sm text-[#37352f]">Thiết Lập Kỳ Thi Mục Tiêu</h4>
+                <Target className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
+                <h4 className="font-bold text-sm text-[#37352f] dark:text-white">Thiết Lập Kỳ Thi Mục Tiêu</h4>
               </div>
               <button
                 type="button"
                 onClick={() => setShowConfigModal(false)}
-                className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-[#efefed] rounded-lg border border-[#e9e9e8] transition-colors cursor-pointer"
+                className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-[#efefed] dark:hover:bg-slate-800 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors cursor-pointer"
                 title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
               >
                 <span>Đóng</span>
-                <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+                <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] dark:bg-slate-800 px-1 py-0.5 rounded text-[#787774] dark:text-slate-400">Esc</kbd>
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveConfig} className="space-y-4 text-xs font-medium text-[#37352f]">
+            <form onSubmit={handleSaveConfig} className="space-y-4 text-xs font-medium text-[#37352f] dark:text-white">
               
               {/* Presets */}
               <div>
-                <label className="text-[#787774] block mb-1.5">Chọn nhanh kỳ thi phổ biến:</label>
+                <label className="text-[#787774] dark:text-slate-300 block mb-1.5">Chọn nhanh kỳ thi phổ biến:</label>
                 <div className="grid grid-cols-1 gap-1.5">
                   {PRESETS.map((p, idx) => (
                     <button
@@ -196,10 +196,12 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
                         setInputName(p.name);
                         setInputDate(targetD.toISOString().split('T')[0]);
                       }}
-                      className="p-2 text-left rounded-lg bg-[#fbfbfa] hover:bg-[#f7f6f5] border border-[#e9e9e8] text-[#37352f] text-xs transition-colors flex items-center justify-between cursor-pointer"
+                      className="p-2 text-left rounded-lg bg-[#fbfbfa] dark:bg-slate-800/80 hover:bg-[#f7f6f5] dark:hover:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 text-[#37352f] dark:text-slate-200 text-xs transition-colors flex items-center justify-between cursor-pointer"
                     >
-                      <span className="line-clamp-1">{p.name}</span>
-                      <span className="notion-tag notion-tag-blue text-[10px] shrink-0 ml-2">Còn ~{p.days}d</span>
+                      <span className="line-clamp-1 font-medium">{p.name}</span>
+                      <span className="px-2 py-0.5 rounded bg-sky-50 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-500/40 text-[10px] font-bold shrink-0 ml-2">
+                        Còn ~{p.days}d
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -207,41 +209,41 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
 
               {/* Name */}
               <div>
-                <label className="text-[#37352f] block mb-1 font-medium">Tên kỳ thi của bạn:</label>
+                <label className="text-[#37352f] dark:text-slate-200 block mb-1 font-semibold">Tên kỳ thi của bạn:</label>
                 <input
                   type="text"
                   value={inputName}
                   onChange={(e) => setInputName(e.target.value)}
                   placeholder="Ví dụ: Thi Công Chức 2026..."
-                  className="w-full p-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] outline-none focus:border-[#2383e2] transition-colors"
+                  className="w-full p-2 rounded-lg border border-[#e9e9e8] dark:border-white/15 bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors"
                   required
                 />
               </div>
 
               {/* Date */}
               <div>
-                <label className="text-[#37352f] block mb-1 font-medium">Ngày thi chính thức:</label>
+                <label className="text-[#37352f] dark:text-slate-200 block mb-1 font-semibold">Ngày thi chính thức:</label>
                 <input
                   type="date"
                   value={inputDate}
                   onChange={(e) => setInputDate(e.target.value)}
-                  className="w-full p-2 rounded-lg border border-[#e9e9e8] bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] outline-none focus:border-[#2383e2] transition-colors"
+                  className="w-full p-2 rounded-lg border border-[#e9e9e8] dark:border-white/15 bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors"
                   required
                 />
               </div>
 
               {/* Actions */}
-              <div className="pt-2 flex items-center justify-end space-x-2 border-t border-[#e9e9e8]">
+              <div className="pt-2 flex items-center justify-end space-x-2 border-t border-[#e9e9e8] dark:border-white/10">
                 <button
                   type="button"
                   onClick={() => setShowConfigModal(false)}
-                  className="px-3 py-1.5 rounded-lg bg-[#f7f6f5] hover:bg-[#f0efed] border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] text-xs transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white text-xs transition-colors cursor-pointer"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs transition-colors cursor-pointer"
+                  className="px-4 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer"
                 >
                   Lưu & Đếm Ngược
                 </button>

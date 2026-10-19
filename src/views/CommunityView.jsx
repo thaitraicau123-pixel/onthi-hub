@@ -221,38 +221,42 @@ export default function CommunityView({ user, onOpenPricing }) {
   });
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16">
+    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in pb-16 text-[#37352f] dark:text-[#f8fafc]">
       
       {/* NOTION PAGE HEADER */}
-      <div className="space-y-2 pb-2 border-b border-[#e9e9e8]">
-        <div className="text-4xl select-none">💬</div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#37352f] tracking-tight">
-          Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm
+      <div className="space-y-2 pb-3 border-b border-[#e9e9e8] dark:border-white/10">
+        <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>ĐỒNG BỘ THỜI GIAN THỰC • CỘNG ĐỒNG SĨ TỬ 2026</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight flex items-center gap-2.5">
+          <span>💬</span>
+          <span>Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm</span>
         </h1>
-        <p className="text-sm text-[#787774] font-normal">
-          Giao lưu, hỏi đáp câu hỏi khó, xin tài liệu và chia sẻ bí quyết đỗ kỳ thi tuyển dụng.
+        <p className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 font-normal">
+          Giao lưu, hỏi đáp câu hỏi khó, xin tài liệu và chia sẻ bí quyết đỗ kỳ thi tuyển dụng theo thời gian thực.
         </p>
       </div>
 
       {/* NOTION CALLOUT TIP */}
-      <div className="notion-callout flex items-start gap-3">
-        <span className="text-lg">💡</span>
-        <div className="text-xs text-[#37352f] leading-relaxed">
-          <strong>Mẹo cộng đồng:</strong> Tích cực đặt câu hỏi và giải đáp thắc mắc sẽ được tặng <strong>+25 XP</strong> kinh nghiệm và tăng uy tín học viên trong bảng xếp hạng.
+      <div className="bg-sky-50/90 dark:bg-slate-900/90 border border-sky-200/80 dark:border-white/10 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
+        <span className="text-lg leading-none">💡</span>
+        <div className="text-xs text-[#37352f] dark:text-slate-200 leading-relaxed">
+          <strong>Mẹo cộng đồng:</strong> Tích cực đặt câu hỏi và giải đáp thắc mắc sẽ được tặng <strong className="text-emerald-700 dark:text-emerald-400">+25 XP</strong> kinh nghiệm và tăng uy tín học viên trong bảng xếp hạng.
         </div>
       </div>
 
       {/* SEARCH & FILTER TABS (Notion Control Bar) */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-2.5 rounded-xl border border-[#e9e9e8]">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/90 p-2.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 shadow-2xs">
         {/* Search */}
         <div className="relative flex-1 max-w-sm">
-          <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-3.5 h-3.5 text-[#9b9a97] dark:text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Tìm kiếm câu hỏi, đề thi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] rounded-lg border border-[#e9e9e8] focus:border-[#2383e2] outline-none transition-all placeholder:text-[#9b9a97]"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white rounded-lg border border-[#e9e9e8] dark:border-white/15 focus:border-[#2383e2] dark:focus:border-sky-400 outline-none transition-all placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
           />
         </div>
 
@@ -268,10 +272,10 @@ export default function CommunityView({ user, onOpenPricing }) {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors shrink-0 flex items-center space-x-1 ${
+              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors shrink-0 flex items-center space-x-1 cursor-pointer ${
                 activeCategory === cat.id
-                  ? 'bg-[#37352f] text-white shadow-2xs'
-                  : 'bg-[#f7f6f5] hover:bg-[#f0efed] text-[#5a5955] border border-[#e9e9e8]'
+                  ? 'bg-[#2383e2] text-white shadow-2xs'
+                  : 'bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 text-[#5a5955] dark:text-slate-300 border border-[#e9e9e8] dark:border-white/10'
               }`}
             >
               <span>{cat.icon}</span>
@@ -283,9 +287,9 @@ export default function CommunityView({ user, onOpenPricing }) {
 
       {/* CREATE POST INPUT BOX (OR VIP RESTRICTION FOR FREE TIER) */}
       {isFreeUser ? (
-        <div className="bg-amber-50/80 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/60 rounded-xl p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 sm:p-5 shadow-2xs space-y-3">
           <div className="flex items-start space-x-3.5">
-            <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700/60">
+            <div className="w-9 h-9 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0 border border-amber-200 dark:border-amber-700/60">
               <Lock className="w-4 h-4" />
             </div>
             <div className="space-y-1 min-w-0 flex-1">
@@ -293,7 +297,7 @@ export default function CommunityView({ user, onOpenPricing }) {
                 <h3 className="text-sm font-bold text-[#37352f] dark:text-amber-100">
                   Diễn đàn chỉ mở cho thành viên gói Plus, Pro & Ultra
                 </h3>
-                <span className="notion-tag notion-tag-yellow text-[10px] font-semibold">
+                <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-600/50 text-[10px] font-bold">
                   Tài khoản Free (Chỉ đọc)
                 </span>
               </div>
@@ -304,13 +308,13 @@ export default function CommunityView({ user, onOpenPricing }) {
           </div>
 
           <div className="pt-2 border-t border-amber-200/60 dark:border-amber-800/40 flex items-center justify-between flex-wrap gap-2">
-            <div className="text-[11px] text-[#787774] dark:text-slate-400 flex items-center space-x-1.5">
+            <div className="text-[11px] text-[#787774] dark:text-slate-300 flex items-center space-x-1.5">
               <span>💡 Gói Plus chỉ từ <strong>29.000đ / 29 Xu</strong> mở khóa full quyền đăng bài, hỏi đáp & tạo thẻ AI.</span>
             </div>
             <button
               type="button"
               onClick={onOpenPricing}
-              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition-all transform hover:scale-[1.02] cursor-pointer"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-lg text-xs font-bold shadow-xs flex items-center space-x-1.5 transition-all transform hover:scale-[1.02] cursor-pointer"
             >
               <Crown className="w-3.5 h-3.5" />
               <span>Nâng Cấp Gói Để Thảo Luận</span>
@@ -319,12 +323,12 @@ export default function CommunityView({ user, onOpenPricing }) {
           </div>
         </div>
       ) : (
-        <form onSubmit={handleAddPost} className="bg-white rounded-xl p-4 border border-[#e9e9e8] shadow-2xs space-y-3">
+        <form onSubmit={handleAddPost} className="bg-white dark:bg-slate-900/90 rounded-xl p-4 border border-[#e9e9e8] dark:border-white/10 shadow-2xs space-y-3">
           <div className="flex items-center space-x-3">
             <img
               src={user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80'}
               alt="Avatar"
-              className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8]"
+              className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8] dark:border-white/15 shrink-0"
             />
             <input
               ref={postInputRef}
@@ -332,18 +336,18 @@ export default function CommunityView({ user, onOpenPricing }) {
               placeholder="Bạn đang ôn kỳ thi nào? Đặt câu hỏi hoặc chia sẻ tài liệu..."
               value={newPostText}
               onChange={(e) => setNewPostText(e.target.value)}
-              className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-lg outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
+              className="flex-1 px-3 py-2 text-xs sm:text-sm bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
             />
           </div>
 
           <div className="flex items-center justify-between pt-1">
             {/* Post category selection */}
             <div className="flex items-center space-x-2 text-xs">
-              <Tag className="w-3.5 h-3.5 text-[#787774]" />
+              <Tag className="w-3.5 h-3.5 text-[#787774] dark:text-slate-400" />
               <select
                 value={newPostCategory}
                 onChange={(e) => setNewPostCategory(e.target.value)}
-                className="text-xs bg-[#f7f6f5] border border-[#e9e9e8] rounded-md px-2 py-1 text-[#37352f] font-medium outline-none cursor-pointer hover:bg-[#f0efed]"
+                className="text-xs bg-[#f7f6f5] dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 rounded-md px-2.5 py-1 text-[#37352f] dark:text-white font-semibold outline-none cursor-pointer hover:bg-[#f0efed] dark:hover:bg-slate-700"
               >
                 <option value="cong-chuc">🏛️ Công Chức</option>
                 <option value="it">💻 IT & Tech</option>
@@ -355,7 +359,7 @@ export default function CommunityView({ user, onOpenPricing }) {
             <button
               type="submit"
               disabled={!newPostText.trim()}
-              className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 text-white rounded-md text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 text-white rounded-md text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Đăng bài (+25 XP)</span>
@@ -401,7 +405,7 @@ export default function CommunityView({ user, onOpenPricing }) {
             return (
               <div
                 key={post.id}
-                className="bg-white rounded-xl p-4 sm:p-5 border border-[#e9e9e8] hover:border-[#c5c4c0] shadow-2xs space-y-3 transition-colors"
+                className="bg-white dark:bg-slate-900/90 rounded-xl p-4 sm:p-5 border border-[#e9e9e8] dark:border-white/10 hover:border-[#c5c4c0] dark:hover:border-white/20 shadow-2xs space-y-3 transition-colors"
               >
                 {/* Post Author & Admin Controls */}
                 <div className="flex items-center justify-between gap-2">
@@ -409,24 +413,24 @@ export default function CommunityView({ user, onOpenPricing }) {
                     <img
                       src={post.avatar}
                       alt={post.author}
-                      className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8] shrink-0"
+                      className="w-8 h-8 rounded-full object-cover border border-[#e9e9e8] dark:border-white/15 shrink-0"
                     />
                     <div className="min-w-0">
                       <div className="flex items-center space-x-2 flex-wrap gap-y-1">
-                        <h4 className="text-xs sm:text-sm font-semibold text-[#37352f] truncate">{post.author}</h4>
+                        <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white truncate">{post.author}</h4>
                         {post.isPinned && (
-                          <span className="notion-tag notion-tag-yellow text-[10px] flex items-center space-x-0.5">
+                          <span className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/40 text-[10px] font-bold flex items-center space-x-0.5">
                             <Pin className="w-2.5 h-2.5" />
                             <span>Ghim</span>
                           </span>
                         )}
                         {post.categoryLabel && (
-                          <span className="notion-tag notion-tag-blue text-[10px]">
+                          <span className="px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/80 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-500/40 text-[10px] font-semibold">
                             {post.categoryLabel}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center space-x-2 text-[11px] text-[#787774]">
+                      <div className="flex items-center space-x-2 text-[11px] text-[#787774] dark:text-slate-400">
                         <span>{post.role}</span>
                         <span>•</span>
                         <span title={formatHanoiDateTime(post.createdAt || post.time)}>
@@ -438,13 +442,13 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                   {/* ADMIN DIRECT MODERATION TOOLBAR */}
                   {isAdmin && (
-                    <div className="flex items-center space-x-1.5 shrink-0 bg-[#f7f6f5] p-1 rounded-lg border border-[#e9e9e8]">
+                    <div className="flex items-center space-x-1.5 shrink-0 bg-[#f7f6f5] dark:bg-slate-800 p-1 rounded-lg border border-[#e9e9e8] dark:border-white/10">
                       <button
                         onClick={() => handleTogglePin(post.id)}
                         className={`px-2 py-1 rounded text-[11px] font-semibold flex items-center space-x-1 transition-colors cursor-pointer ${
                           post.isPinned
-                            ? 'bg-amber-100 text-amber-800 hover:bg-amber-200'
-                            : 'bg-white text-[#5a5955] hover:bg-[#e9e9e8]'
+                            ? 'bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 hover:bg-amber-200'
+                            : 'bg-white dark:bg-slate-700 text-[#5a5955] dark:text-slate-200 hover:bg-[#e9e9e8] dark:hover:bg-slate-600'
                         }`}
                         title={post.isPinned ? 'Bỏ ghim bài viết (Admin)' : 'Ghim bài lên đầu diễn đàn (Admin)'}
                       >
@@ -454,7 +458,7 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                       <button
                         onClick={() => handleDeletePost(post.id, post.author)}
-                        className="px-2 py-1 bg-white hover:bg-rose-50 text-rose-600 hover:text-rose-700 border border-rose-200/60 rounded text-[11px] font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
+                        className="px-2 py-1 bg-white dark:bg-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-600 dark:text-rose-400 hover:text-rose-700 border border-rose-200/60 dark:border-rose-500/30 rounded text-[11px] font-semibold flex items-center space-x-1 transition-colors cursor-pointer"
                         title="Xóa vĩnh viễn bài viết này khỏi hệ thống (Admin)"
                       >
                         <Trash2 className="w-3 h-3" />
@@ -465,17 +469,19 @@ export default function CommunityView({ user, onOpenPricing }) {
                 </div>
 
                 {/* Post Content */}
-                <p className="text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line font-normal">
+                <p className="text-xs sm:text-sm text-[#37352f] dark:text-slate-100 leading-relaxed whitespace-pre-line font-normal">
                   {post.content}
                 </p>
 
                 {/* Likes & Comments Count Bar */}
-                <div className="pt-2 border-t border-[#f0efed] flex items-center justify-between text-xs text-[#787774]">
+                <div className="pt-2 border-t border-[#f0efed] dark:border-white/10 flex items-center justify-between text-xs text-[#787774] dark:text-slate-400">
                   <div className="flex items-center space-x-3">
                     <button
                       onClick={() => handleLike(post.id)}
-                      className={`flex items-center space-x-1.5 px-2 py-1 rounded-md transition-colors ${
-                        isLiked ? 'text-rose-600 bg-rose-50' : 'hover:bg-[#f7f6f5] hover:text-[#37352f]'
+                      className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md transition-colors cursor-pointer font-semibold ${
+                        isLiked
+                          ? 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 border border-rose-200/70 dark:border-rose-500/30'
+                          : 'hover:bg-[#f7f6f5] dark:hover:bg-slate-800 hover:text-[#37352f] dark:hover:text-white'
                       }`}
                     >
                       <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : ''}`} />
@@ -490,12 +496,12 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                   <button
                     onClick={() => handleSharePost(post)}
-                    className="hover:bg-[#f7f6f5] hover:text-[#37352f] px-2 py-1 rounded-md flex items-center space-x-1 text-xs transition-colors"
+                    className="hover:bg-[#f7f6f5] dark:hover:bg-slate-800 hover:text-[#37352f] dark:hover:text-white px-2.5 py-1 rounded-md flex items-center space-x-1 text-xs transition-colors cursor-pointer"
                   >
                     {copiedPostId === post.id ? (
                       <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-600 font-medium">Đã sao chép link!</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Đã sao chép link!</span>
                       </>
                     ) : (
                       <>
@@ -508,14 +514,14 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                 {/* Comments Section */}
                 {post.comments.length > 0 && (
-                  <div className="pt-2 space-y-2 border-t border-[#f0efed]">
+                  <div className="pt-2 space-y-2 border-t border-[#f0efed] dark:border-white/10">
                     {post.comments.map((cm, cIdx) => (
-                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] rounded-lg text-xs space-y-0.5 border border-[#e9e9e8] group">
+                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] dark:bg-slate-800/70 rounded-lg text-xs space-y-0.5 border border-[#e9e9e8] dark:border-white/10 group">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center space-x-2 min-w-0">
-                            <strong className="text-[#37352f] block font-medium truncate">{cm.author}</strong>
+                            <strong className="text-[#37352f] dark:text-white block font-semibold truncate">{cm.author}</strong>
                             {cm.createdAt && (
-                              <span className="text-[10px] text-[#9b9a97] shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
+                              <span className="text-[10px] text-[#9b9a97] dark:text-slate-400 shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
                                 • {formatHanoiRelativeTime(cm.createdAt)}
                               </span>
                             )}
@@ -523,14 +529,14 @@ export default function CommunityView({ user, onOpenPricing }) {
                           {isAdmin && (
                             <button
                               onClick={() => handleDeleteComment(post.id, cIdx)}
-                              className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 transition-colors opacity-70 group-hover:opacity-100"
+                              className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors opacity-70 group-hover:opacity-100 cursor-pointer"
                               title="Xóa bình luận spam này (Admin)"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
                           )}
                         </div>
-                        <p className="text-[#5a5955] font-normal">{cm.text}</p>
+                        <p className="text-[#5a5955] dark:text-slate-200 font-normal">{cm.text}</p>
                       </div>
                     ))}
                   </div>
@@ -538,7 +544,7 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                 {/* Add Comment Input or VIP Notice */}
                 {isFreeUser ? (
-                  <div className="pt-2 flex items-center justify-between p-2.5 bg-[#fbfbfa] dark:bg-slate-800/40 border border-[#e9e9e8] dark:border-slate-700/60 rounded-lg text-xs text-[#787774] dark:text-slate-300">
+                  <div className="pt-2 flex items-center justify-between p-2.5 bg-[#fbfbfa] dark:bg-slate-800/50 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs text-[#787774] dark:text-slate-300">
                     <div className="flex items-center space-x-2 min-w-0">
                       <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                       <span className="truncate">Chỉ học viên gói <strong>Plus, Pro, Ultra</strong> mới có thể gửi bình luận.</span>
@@ -546,7 +552,7 @@ export default function CommunityView({ user, onOpenPricing }) {
                     <button
                       type="button"
                       onClick={onOpenPricing}
-                      className="text-xs font-semibold text-[#2383e2] dark:text-sky-400 hover:underline cursor-pointer flex items-center space-x-0.5 shrink-0 ml-2"
+                      className="text-xs font-bold text-[#2383e2] dark:text-sky-400 hover:underline cursor-pointer flex items-center space-x-0.5 shrink-0 ml-2"
                     >
                       <span>Nâng cấp</span>
                       <ArrowRight className="w-3 h-3" />
@@ -560,11 +566,11 @@ export default function CommunityView({ user, onOpenPricing }) {
                       value={commentInputs[post.id] || ''}
                       onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
                       onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                      className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] hover:bg-[#f0efed] focus:bg-white text-[#37352f] border border-[#e9e9e8] rounded-md outline-none focus:border-[#2383e2] transition-colors placeholder:text-[#9b9a97]"
+                      className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
                     />
                     <button
                       onClick={() => handleAddComment(post.id)}
-                      className="px-3 py-1.5 bg-[#37352f] hover:bg-[#201f1d] text-white rounded-md text-xs font-medium transition-colors cursor-pointer"
+                      className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer"
                     >
                       Gửi
                     </button>

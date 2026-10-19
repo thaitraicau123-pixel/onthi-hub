@@ -76,16 +76,16 @@ export default function CourseCard({
       <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">
         
         <div className="flex items-center justify-between gap-1.5 mb-2.5">
-          <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#e7f3f8] text-[#2b7aa1] border border-[#cbe3ed]">
+          <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#e7f3f8] dark:bg-sky-950/80 text-[#2b7aa1] dark:text-sky-300 border border-[#cbe3ed] dark:border-sky-500/40">
             {categoryLabel}
           </span>
-          <span className="inline-flex items-center text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[#faece3] text-[#cc782f] border border-[#f3d6c1]">
+          <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#faece3] dark:bg-amber-950/80 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-500/40">
             {badge}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white group-hover:text-[#2383e2] transition-colors line-clamp-2 leading-snug">
+        <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white group-hover:text-[#2383e2] dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug">
           {course.title}
         </h3>
 
