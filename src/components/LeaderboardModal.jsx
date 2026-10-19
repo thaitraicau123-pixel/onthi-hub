@@ -1,19 +1,85 @@
-import React, { useState } from 'react';
-import { X, Trophy, Flame, Award, Sparkles, TrendingUp, Users, Target, CheckCircle2, Gift, Play } from 'lucide-react';
-import { getStreakInfo, LEADERBOARD_USERS, getDailyQuests } from '../utils/gamification';
-import { playSound } from '../utils/storage';
-import confetti from 'canvas-confetti';
+import React, { useState, useEffect, useMemo } from 'react';
+import { X, Trophy, Flame, Target, CheckCircle2 } from 'lucide-react';
+import {
+  getStreakInfo,
+  getDailyQuests,
+  LEADERBOARD_CLOUD_TOPIC,
+  broadcastUserLeaderboardEntry
+} from '../utils/gamification';
+import { getCurrentUser } from '../utils/firebaseConfig';
 import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function LeaderboardModal({ onClose }) {
   const [activeSubTab, setActiveSubTab] = useState('leaderboard'); // 'leaderboard' | 'quests'
   const streakInfo = getStreakInfo();
-  const [quests, setQuests] = useState(() => getDailyQuests());
+  const [quests] = useState(() => getDailyQuests());
+  const [cloudEntriesMap, setCloudEntriesMap] = useState({});
 
   const completedCount = quests.filter(q => q.completed).length;
 
-  // Close on Escape key
   useModalDismiss(onClose);
+
+  // Sync real user leaderboard entries from Cloud Relay (no fake bots)
+  useEffect(() => {
+    let isMounted = true;
+    if (streakInfo.xp > 0) {
+      broadcastUserLeaderboardEntry(streakInfo);
+    }
+
+    fetch(`https://ntfy.sh/${LEADERBOARD_CLOUD_TOPIC}/json?poll=1&since=72h`)
+      .then(res => res.text())
+      .then(text => {
+        if (!isMounted || !text) return;
+        const lines = text.trim().split('\n');
+        const map = {};
+        lines.forEach(line => {
+          try {
+            const ev = JSON.parse(line);
+            if (ev.event === 'message' && ev.message) {
+              const data = JSON.parse(ev.message);
+              if (data.type === 'leaderboard_sync' && data.clientId && data.xp > 0) {
+                if (!map[data.clientId] || data.xp >= map[data.clientId].xp) {
+                  map[data.clientId] = data;
+                }
+              }
+            }
+          } catch {}
+        });
+        setCloudEntriesMap(map);
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const rankedUsers = useMemo(() => {
+    const currentUser = getCurrentUser();
+    const myId = currentUser?.uid || currentUser?.email || localStorage.getItem('onthi_studyroom_client_id_v3') || 'local_user';
+    const myName = currentUser?.displayName || (currentUser?.email ? currentUser.email.split('@')[0] : 'Bạn (Học viên)');
+    const myAvatar = currentUser?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(myName)}`;
+
+    const combined = { ...cloudEntriesMap };
+    if (streakInfo.xp > 0 || Object.keys(combined).length === 0) {
+      combined[myId] = {
+        clientId: myId,
+        name: `${myName} (Bạn)`,
+        avatar: myAvatar,
+        xp: streakInfo.xp || 0,
+        streak: streakInfo.streak || 0,
+        badge: streakInfo.level || 'Học Viên Mới 🌱',
+        goal: 'Chinh phục kỳ thi 2026',
+        isCurrentUser: true
+      };
+    }
+
+    return Object.values(combined)
+      .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+      .slice(0, 10)
+      .map((item, idx) => ({ ...item, rank: idx + 1 }));
+  }, [cloudEntriesMap, streakInfo]);
 
   return (
     <div
@@ -27,7 +93,6 @@ export default function LeaderboardModal({ onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-spring-3d cursor-default"
       >
-        
         {/* Header */}
         <div className="p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -35,8 +100,8 @@ export default function LeaderboardModal({ onClose }) {
               <Trophy className="w-5 h-5 text-yellow-200" />
             </div>
             <div>
-              <h4 className="text-base font-black">Bảng Vàng & Nhiệm Vụ</h4>
-              <p className="text-xs text-amber-100">Cạnh tranh XP & Duy trì chuỗi Streak mỗi ngày</p>
+              <h4 className="text-base font-black">Bảng Vàng & Nhiệm Vụ Thực Tế</h4>
+              <p className="text-xs text-amber-100">Xếp hạng học viên thật theo điểm XP & chuỗi Streak</p>
             </div>
           </div>
 
@@ -62,7 +127,7 @@ export default function LeaderboardModal({ onClose }) {
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
-            <span>Bảng Xếp Hạng Top 5</span>
+            <span>Bảng Xếp Hạng Thực Tế</span>
           </button>
 
           <button
@@ -99,27 +164,27 @@ export default function LeaderboardModal({ onClose }) {
             </div>
 
             <div className="text-right">
-              <span className="text-[10px] font-bold text-slate-400 block">Kỷ lục cao nhất:</span>
+              <span className="text-[10px] font-bold text-slate-400 block">Kỷ lục cá nhân:</span>
               <strong className="text-xs text-slate-800">{streakInfo.highestStreak} ngày liên tiếp</strong>
             </div>
           </div>
         </div>
 
-        {/* TAB 1: LEADERBOARD */}
+        {/* TAB 1: REAL LEADERBOARD */}
         {activeSubTab === 'leaderboard' && (
           <div className="p-5 overflow-y-auto flex-1 space-y-3">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block px-1">
-              Top 5 Học Bá Chăm Chỉ Nhất Tuần Này:
+              Bảng Xếp Hạng Học Viên Thực Tế (Không Bot):
             </span>
 
-            {LEADERBOARD_USERS.map((user) => {
-              const isTop1 = user.rank === 1;
-              const isTop2 = user.rank === 2;
-              const isTop3 = user.rank === 3;
+            {rankedUsers.map((u) => {
+              const isTop1 = u.rank === 1;
+              const isTop2 = u.rank === 2;
+              const isTop3 = u.rank === 3;
 
               return (
                 <div
-                  key={user.rank}
+                  key={u.clientId || u.rank}
                   className={`p-3 rounded-2xl border flex items-center space-x-3 transition-all ${
                     isTop1
                       ? 'bg-amber-50/70 border-amber-300 shadow-sm'
@@ -131,35 +196,35 @@ export default function LeaderboardModal({ onClose }) {
                   }`}
                 >
                   <div className="w-7 text-center font-black text-sm">
-                    {isTop1 ? '🥇' : isTop2 ? '🥈' : isTop3 ? '🥉' : `#${user.rank}`}
+                    {isTop1 ? '🥇' : isTop2 ? '🥈' : isTop3 ? '🥉' : `#${u.rank}`}
                   </div>
 
                   <img
-                    src={user.avatar}
-                    alt={user.name}
+                    src={u.avatar}
+                    alt={u.name}
                     className="w-10 h-10 rounded-full object-cover border border-slate-200"
                   />
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-1.5">
                       <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
-                        {user.name}
+                        {u.name}
                       </span>
                       <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700">
-                        {user.badge}
+                        {u.badge}
                       </span>
                     </div>
                     <span className="text-[11px] text-slate-400 block truncate">
-                      Mục tiêu: {user.goal}
+                      {u.goal || 'Đang ôn luyện trên ÔnThiHub'}
                     </span>
                   </div>
 
                   <div className="text-right shrink-0">
                     <strong className="text-xs sm:text-sm font-black text-amber-600 block">
-                      {user.xp.toLocaleString()} XP
+                      {(u.xp || 0).toLocaleString()} XP
                     </strong>
                     <span className="text-[10px] text-slate-400 font-medium">
-                      🔥 {user.streak} ngày
+                      🔥 {u.streak || 0} ngày
                     </span>
                   </div>
                 </div>
@@ -174,7 +239,7 @@ export default function LeaderboardModal({ onClose }) {
             <div className="p-3.5 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold text-indigo-900">Tiến Độ Hôm Nay:</span>
-                <p className="text-[11px] text-indigo-600">Hoàn thành 4/4 nhiệm vụ để nhận rương thưởng +10 Xu!</p>
+                <p className="text-[11px] text-indigo-600">Hoàn thành nhiệm vụ học tập thật để tích lũy XP!</p>
               </div>
               <span className="text-sm font-black text-indigo-700 bg-white px-3 py-1 rounded-xl shadow-xs border border-indigo-200">
                 {completedCount}/4 Đạt
@@ -217,11 +282,9 @@ export default function LeaderboardModal({ onClose }) {
 
         {/* Footer */}
         <div className="p-4 bg-slate-50 border-t border-slate-100 text-center text-xs text-slate-500">
-          Top 3 hàng tuần sẽ được thưởng <strong>+50 Xu</strong> vào ví vào 23:59 Chủ Nhật!
+          Điểm XP được tính trực tiếp từ số thẻ bạn đã lật, bài thi thử và thời gian học thực tế.
         </div>
-
       </div>
     </div>
   );
 }
-

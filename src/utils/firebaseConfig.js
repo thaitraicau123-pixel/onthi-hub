@@ -351,18 +351,10 @@ export async function loginWithGoogle() {
     }
   }
 
-  // Fallback Google User
-  const demoEmail = 'student.vietnam@gmail.com';
-  const user = {
-    uid: 'google_' + Date.now(),
-    email: demoEmail,
-    displayName: 'Nguyễn Văn Minh (Google Auth)',
-    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    provider: 'google.com',
-    isFirebaseReal: false
+  return {
+    success: false,
+    message: 'Không thể kết nối máy chủ xác thực Google. Vui lòng thử lại hoặc đăng nhập bằng Email & Mật khẩu.'
   };
-  setCurrentUser(user);
-  return { success: true, user, isReal: false };
 }
 
 // Password Reset Email
@@ -383,8 +375,8 @@ export async function sendPasswordReset(email) {
   }
 
   return {
-    success: true,
-    message: `[Mô phỏng] Đã gửi liên kết khôi phục mật khẩu về email ${email} thành công!`
+    success: false,
+    message: 'Không thể gửi email đặt lại mật khẩu lúc này. Vui lòng kiểm tra kết nối mạng.'
   };
 }
 

@@ -1,57 +1,85 @@
-// Gamification & Engagement Engine (Duolingo Streak, Quizizz Leaderboard, Shopee Vouchers & Notifications)
+// Gamification & Engagement Engine (Real Streak, Real-Time Leaderboard & Daily Quests — Zero Bots)
 import { getHanoiDateString, recordStudyTimeLog } from './hanoiTime.js';
+import { getCurrentUser } from './firebaseConfig.js';
 
-const STREAK_KEY = 'onthi_streak_data';
-const NOTIFICATIONS_KEY = 'onthi_user_notifications';
+const STREAK_KEY = 'onthi_streak_data_v3';
+const NOTIFICATIONS_KEY = 'onthi_user_notifications_v3';
 const CLAIMED_VOUCHERS_KEY = 'onthi_claimed_vouchers';
 const LIKES_KEY = 'onthi_deck_likes';
+export const LEADERBOARD_CLOUD_TOPIC = 'onthi_hub_leaderboard_v3';
 
-// 1. STREAK & XP ENGINE (Duolingo style - Đồng bộ chuẩn Giờ Hà Nội)
+// 1. STREAK & XP ENGINE (Đồng bộ chuẩn Giờ Hà Nội - 100% Dữ liệu thật)
 export function getStreakInfo() {
   try {
-    const today = getHanoiDateString();
     const raw = localStorage.getItem(STREAK_KEY);
-    const data = raw ? JSON.parse(raw) : {
-      streak: 3, // Default starting streak for engagement
-      lastDate: today,
-      highestStreak: 7,
-      xp: 450,
-      level: 'Chuyên Viên Ôn Thi 🎓'
-    };
+    const data = raw
+      ? JSON.parse(raw)
+      : {
+          streak: 0,
+          lastDate: '',
+          highestStreak: 0,
+          xp: 0,
+          level: 'Học Viên Mới 🌱'
+        };
     return data;
-  } catch (e) {
-    return { streak: 3, lastDate: '', highestStreak: 7, xp: 450, level: 'Chuyên Viên Ôn Thi 🎓' };
+  } catch {
+    return { streak: 0, lastDate: '', highestStreak: 0, xp: 0, level: 'Học Viên Mới 🌱' };
   }
+}
+
+export function broadcastUserLeaderboardEntry(streakData) {
+  try {
+    const u = getCurrentUser();
+    const clientId = u?.uid || u?.email || localStorage.getItem('onthi_studyroom_client_id_v3') || 'local_user';
+    const name = u?.displayName || (u?.email ? u.email.split('@')[0] : 'Học viên ÔnThiHub');
+    const avatar = u?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
+
+    const entry = {
+      type: 'leaderboard_sync',
+      clientId,
+      name,
+      avatar,
+      xp: streakData.xp || 0,
+      streak: streakData.streak || 0,
+      badge: streakData.level || 'Học Viên Chăm Chỉ 🎓',
+      goal: 'Chinh phục kỳ thi 2026',
+      updatedAt: Date.now()
+    };
+
+    fetch(`https://ntfy.sh/${LEADERBOARD_CLOUD_TOPIC}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify(entry)
+    }).catch(() => {});
+  } catch {}
 }
 
 export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên học tập ôn thi') {
   try {
     const today = getHanoiDateString();
     const current = getStreakInfo();
-    
+
     let newStreak = current.streak;
     if (current.lastDate !== today) {
-      // New day study action in Hanoi Time
-      newStreak += 1;
+      newStreak = (current.streak || 0) + 1;
     }
 
     const updated = {
       ...current,
       streak: newStreak,
       lastDate: today,
-      highestStreak: Math.max(newStreak, current.highestStreak),
-      xp: current.xp + xpGained
+      highestStreak: Math.max(newStreak, current.highestStreak || 0),
+      xp: (current.xp || 0) + xpGained
     };
 
-    // Calculate level
     if (updated.xp > 2000) updated.level = 'Học Bá Tối Cao 👑';
     else if (updated.xp > 1000) updated.level = 'Thủ Khoa Đề Thi 🏆';
     else if (updated.xp > 500) updated.level = 'Chuyên Viên Cấp Cao 🚀';
-    else updated.level = 'Học Viên Chăm Chỉ 🎓';
+    else if (updated.xp > 0) updated.level = 'Học Viên Chăm Chỉ 🎓';
+    else updated.level = 'Học Viên Mới 🌱';
 
     localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
 
-    // Tự động lưu vết thời gian theo Giờ Hà Nội khi đạt mốc học tập
     if (xpGained >= 10) {
       recordStudyTimeLog({
         type: 'study',
@@ -61,34 +89,24 @@ export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên học t
       });
     }
 
+    broadcastUserLeaderboardEntry(updated);
     return updated;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
-// 2. WEEKLY LEADERBOARD DATA (Quizizz & Duolingo style)
-export const LEADERBOARD_USERS = [
-  { rank: 1, name: 'Trần Hoàng Long', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80', xp: 3420, streak: 18, badge: 'Thủ Khoa Tuần 🏆', goal: 'Đỗ Chuyên viên Bộ Nội Vụ' },
-  { rank: 2, name: 'Lê Thuỳ Linh', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80', xp: 2980, streak: 14, badge: 'IELTS 8.5 🌟', goal: 'IELTS Writing 8.0' },
-  { rank: 3, name: 'Nguyễn Minh Tuấn', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80', xp: 2650, streak: 12, badge: 'Senior Dev 💻', goal: 'Pass FAANG/Tech Lead' },
-  { rank: 4, name: 'Phạm Quỳnh Anh', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80', xp: 2190, streak: 9, badge: 'Top 10 🔥', goal: 'JLPT N2 160/180' },
-  { rank: 5, name: 'Đặng Quốc Huy', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80', xp: 1840, streak: 7, badge: 'Top 10 🔥', goal: 'Công chức Thuế 2026' }
-];
+// 2. WEEKLY LEADERBOARD DATA (No static bots — dynamically populated from real users)
+export const LEADERBOARD_USERS = [];
 
-// 3. SHOPEE STYLE VOUCHERS HUB
-export const AVAILABLE_VOUCHERS = [
-  { id: 'VOUCHER_5XU', code: 'CHAO2026', discountText: 'Giảm 5 Xu', minOrder: 20, desc: 'Dành cho đơn mở khóa bộ thẻ từ 20 Xu', shortDesc: 'Đơn từ 20 Xu', expires: 'Còn 3 ngày' },
-  { id: 'VOUCHER_XU15', code: 'HOIXU15', discountText: 'Hoàn 15% Xu', minOrder: 0, desc: 'Hoàn Xu trực tiếp vào ví sau khi mở khóa', shortDesc: 'Mọi bộ thẻ', expires: 'Còn 5 ngày' },
-  { id: 'VOUCHER_VIP', code: 'VIPMEM', discountText: 'Giảm 15 Xu', minOrder: 50, desc: 'Áp dụng cho gói Combo VIP trọn đời', shortDesc: 'Gói Combo VIP', expires: 'Hôm nay' }
-];
+export const AVAILABLE_VOUCHERS = [];
 
 export function getClaimedVouchers() {
   try {
     const raw = localStorage.getItem(CLAIMED_VOUCHERS_KEY);
-    return raw ? JSON.parse(raw) : ['VOUCHER_5XU'];
-  } catch (e) {
-    return ['VOUCHER_5XU'];
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
   }
 }
 
@@ -102,18 +120,14 @@ export function claimVoucher(voucherId) {
   return false;
 }
 
-// 4. NOTIFICATION CENTER (Facebook / Shopee notifications)
-export const DEFAULT_NOTIFICATIONS = [
-  { id: 'notif_1', title: '🔥 Đố Vui Giờ Vàng!', message: 'Làm 1 bài trắc nghiệm hôm nay để duy trì chuỗi Streak 3 ngày nhé!', time: '10 phút trước', isRead: false, type: 'streak' },
-  { id: 'notif_2', title: '🎁 Quà Tặng Tân Thủ', message: 'Bạn được cộng sẵn 20 Xu vào ví để trải nghiệm mua sắm trên chợ C2C.', time: '1 giờ trước', isRead: false, type: 'wallet' },
-  { id: 'notif_3', title: '🏛️ Cập Nhật Đề Thi Công Chức 2026', message: 'Ban học thuật vừa thêm 45 câu hỏi mới theo Nghị định 138/2020/NĐ-CP.', time: 'Hôm qua', isRead: true, type: 'content' }
-];
+// 4. NOTIFICATION CENTER (Real system notifications only)
+export const DEFAULT_NOTIFICATIONS = [];
 
 export function getUserNotifications() {
   try {
     const raw = localStorage.getItem(NOTIFICATIONS_KEY);
     return raw ? JSON.parse(raw) : DEFAULT_NOTIFICATIONS;
-  } catch (e) {
+  } catch {
     return DEFAULT_NOTIFICATIONS;
   }
 }
@@ -122,15 +136,15 @@ export function markNotificationsAsRead() {
   try {
     const notifs = getUserNotifications().map(n => ({ ...n, isRead: true }));
     localStorage.setItem(NOTIFICATIONS_KEY, JSON.stringify(notifs));
-  } catch (e) {}
+  } catch {}
 }
 
 // 5. SOCIAL LIKES ❤️
 export function getLikedDeckIds() {
   try {
     const raw = localStorage.getItem(LIKES_KEY);
-    return raw ? JSON.parse(raw) : ['mkt_sat_vocab'];
-  } catch (e) {
+    return raw ? JSON.parse(raw) : [];
+  } catch {
     return [];
   }
 }
@@ -143,7 +157,7 @@ export function toggleLikeDeck(deckId) {
   return !exists;
 }
 
-// 6. DAILY QUESTS ENGINE (Duolingo Style)
+// 6. DAILY QUESTS ENGINE
 const QUESTS_KEY = 'onthi_daily_quests';
 
 const DEFAULT_QUESTS = [
@@ -163,11 +177,10 @@ export function getDailyQuests() {
         return data.quests;
       }
     }
-    // New day reset in Hanoi Time
-    const fresh = DEFAULT_QUESTS.map(q => ({ ...q, completed: q.id === 'checkin' ? false : false }));
+    const fresh = DEFAULT_QUESTS.map(q => ({ ...q, completed: false }));
     localStorage.setItem(QUESTS_KEY, JSON.stringify({ date: today, quests: fresh, bonusClaimed: false }));
     return fresh;
-  } catch (e) {
+  } catch {
     return DEFAULT_QUESTS.map(q => ({ ...q, completed: false }));
   }
 }
@@ -185,18 +198,13 @@ export function completeDailyQuest(questId) {
     });
     localStorage.setItem(QUESTS_KEY, JSON.stringify({ date: today, quests: updated, bonusClaimed: false }));
     return updated;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
 
-// 7. THEME MANAGER (Locked to pure Quizizz/Wayground aesthetic)
 export function getAppTheme() {
   return 'quizizz';
 }
 
-export function setAppTheme() {
-  // Pure Quizizz style locked universally
-}
-
-
+export function setAppTheme() {}

@@ -685,7 +685,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
               title="Xem bảng tin cập nhật tính năng mới nhất"
             >
               <Sparkles className="w-3.5 h-3.5 fill-white" />
-              <span>Bảng Tin Bản Mới (v2.6)</span>
+              <span>Bảng Tin Bản Mới (v3.0)</span>
             </button>
           )}
           <button
@@ -813,7 +813,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
               isRealFirebaseConfigured() ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
             }`}>
-              {isRealFirebaseConfigured() ? '🟢 Cloud Thật' : '🟡 Thử Nghiệm'}
+              {isRealFirebaseConfigured() ? '🟢 Cloud Thật' : '🟡 Chưa Cấu Hình'}
             </span>
           </button>
 
@@ -1757,38 +1757,22 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                       </span>
                     </div>
                   </div>
-
-                  <button
-                    type="button"
-                    disabled={isSendingTestEmail}
-                    onClick={handleSendTestEmail}
-                    className="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-black text-xs rounded-xl shadow-md flex items-center space-x-1.5 transition-all disabled:opacity-50"
-                  >
-                    <Send className={`w-3.5 h-3.5 ${isSendingTestEmail ? 'animate-pulse' : ''}`} />
-                    <span>{isSendingTestEmail ? 'Đang Gửi Email...' : 'Gửi Thử Email Đến Gmail Ngay'}</span>
-                  </button>
                 </div>
-
-                {emailTestMsg && (
-                  <div className="p-3 bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-700 rounded-xl font-bold text-amber-950 dark:text-amber-200 text-xs">
-                    {emailTestMsg}
-                  </div>
-                )}
 
                 <div className="p-3 bg-white/90 dark:bg-slate-900/90 rounded-xl border border-amber-200 dark:border-amber-800 text-slate-600 dark:text-slate-300 space-y-1.5 text-[11px] leading-relaxed">
                   <strong className="text-slate-900 dark:text-white font-black block">
                     ⚠️ Hướng dẫn kích hoạt nhận email lần đầu (Chỉ làm 1 lần duy nhất):
                   </strong>
                   <p>1. Mở hòm thư <strong>{ADMIN_EMAIL}</strong> (vui lòng kiểm tra cả thư mục <strong>Hộp thư đến</strong> và <strong>Thư rác / Spam</strong>).</p>
-                  <p>2. Tìm email do máy chủ <strong>FormSubmit</strong> gửi tới với tiêu đề <em>"FormSubmit - Confirm your email address"</em> hoặc <em>"Activate Form"</em>.</p>
-                  <p>3. Bấm vào nút <strong>"Activate Form"</strong> trong email đó.</p>
+                  <p>2. Tìm email do máy chủ <strong>FormSubmit</strong> gửi tới với tiêu đề <em>&ldquo;FormSubmit - Confirm your email address&rdquo;</em> hoặc <em>&ldquo;Activate Form&rdquo;</em>.</p>
+                  <p>3. Bấm vào nút <strong>&ldquo;Activate Form&rdquo;</strong> trong email đó.</p>
                   <p className="text-emerald-700 dark:text-emerald-400 font-bold">
                     ✅ Sau khi bấm, máy chủ FormSubmit sẽ kích hoạt vĩnh viễn. Mọi lệnh Nạp tiền và Rút tiền từ học viên trên web sẽ tự động gửi thẳng email chi tiết về Gmail của anh!
                   </p>
                 </div>
               </div>
 
-                {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
+              {/* CARD 2: PUSH CHUÔNG BÁO ĐIỆN THOẠI QUA NTFY.SH */}
               <div className="p-5 sm:p-6 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 text-xs">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center space-x-2.5">
@@ -1806,15 +1790,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                   </div>
 
                   <div className="flex items-center space-x-2 shrink-0">
-                    <button
-                      type="button"
-                      disabled={isSendingNtfyTest}
-                      onClick={handleSendTestNtfy}
-                      className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-all disabled:opacity-50"
-                    >
-                      <BellRing className={`w-3.5 h-3.5 ${isSendingNtfyTest ? 'animate-bounce' : ''}`} />
-                      <span>{isSendingNtfyTest ? 'Đang Bắn Chuông...' : '🔔 Bấm Thử Rung Chuông Điện Thoại'}</span>
-                    </button>
                     <a
                       href={ADMIN_NTFY_TOPIC}
                       target="_blank"
@@ -1822,17 +1797,10 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                       className="px-3.5 py-2 bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-900 dark:text-purple-300 border border-purple-300 dark:border-purple-800 font-black text-xs rounded-xl shadow-xs flex items-center space-x-1.5 transition-colors"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
-                      <span>Mở Trang ntfy.sh</span>
+                      <span>Mở Kênh ntfy.sh</span>
                     </a>
                   </div>
                 </div>
-
-                {ntfyTestMsg && (
-                  <div className="p-3.5 bg-purple-50 border border-purple-200 text-purple-950 font-bold rounded-xl text-xs animate-fade-in flex items-center space-x-2">
-                    <CheckCircle2 className="w-4 h-4 text-purple-600 shrink-0" />
-                    <span>{ntfyTestMsg}</span>
-                  </div>
-                )}
 
                 {/* Giới thiệu cơ chế không cần đăng nhập */}
                 <div className="p-4 bg-purple-50/70 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-2xl space-y-3">
@@ -1918,7 +1886,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                   <div className="flex items-center space-x-2">
                     <Send className="w-4 h-4 text-[#0068ff]" />
                     <h5 className="text-xs font-black uppercase text-slate-900 dark:text-white tracking-wider">
-                      Tùy Chọn: Bắn Tin Nhắn Tức Thì Qua Telegram Bot (Tin Nhắn Riêng)
+                      Tùy Chọn: Bắn Tin Nhắn Tức Thì Qua Telegram (Tin Nhắn Riêng)
                     </h5>
                   </div>
                   <label className="flex items-center space-x-1.5 cursor-pointer font-bold text-xs text-slate-900 dark:text-white">
@@ -1940,7 +1908,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Bot Token (từ @BotFather):</label>
+                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Token:</label>
                     <input
                       type="text"
                       placeholder="VD: 123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
@@ -1950,7 +1918,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Chat ID của anh (từ @userinfobot):</label>
+                    <label className="font-bold text-slate-600 dark:text-slate-400 block mb-1">Telegram Chat ID của anh:</label>
                     <input
                       type="text"
                       placeholder="VD: 987654321"
@@ -1962,14 +1930,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                 </div>
 
                 <div className="flex items-center justify-end space-x-2 pt-1">
-                  <button
-                    type="button"
-                    disabled={isSendingTelegramTest || !telegramConfig.botToken || !telegramConfig.chatId}
-                    onClick={handleTestTelegram}
-                    className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl flex items-center space-x-1 disabled:opacity-40 transition-colors"
-                  >
-                    <span>{isSendingTelegramTest ? 'Đang gửi...' : 'Gửi Thử Telegram'}</span>
-                  </button>
                   <button
                     type="submit"
                     className="px-4 py-2 bg-[#0068ff] hover:bg-[#0052cc] text-white font-black text-xs rounded-xl shadow-xs flex items-center space-x-1 transition-colors"
@@ -2054,7 +2014,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                     className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-black rounded-xl shadow-xs flex items-center space-x-1.5 transition-all disabled:opacity-50"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${testingConnection ? 'animate-spin' : ''}`} />
-                    <span>{testingConnection ? 'Đang Kiểm Tra...' : 'Kiểm Tra Kết Nối (Ping)'}</span>
+                    <span>{testingConnection ? 'Đang Kiểm Tra...' : 'Kiểm Tra Kết Nối'}</span>
                   </button>
 
                   <button
@@ -2068,7 +2028,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                 </div>
               </div>
 
-              {/* Status Message / Test Result Banner */}
+              {/* Status Message Banner */}
               {firebaseSaveMsg && (
                 <div className="p-3.5 text-xs font-bold bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl flex items-center space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -2134,13 +2094,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                       Chi Tiết Khóa API & Thông Số Firebase
                     </h5>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleResetToDemo}
-                    className="text-[11px] font-bold text-rose-600 hover:text-rose-800 hover:underline"
-                  >
-                    Đặt lại về Demo mặc định
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
