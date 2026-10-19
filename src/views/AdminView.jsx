@@ -2382,7 +2382,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-900 dark:text-white">
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
                     <strong className="text-emerald-700 dark:text-emerald-400 font-bold block">1. Chủ Sàn Luôn Thắng (House Edge 80%)</strong>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Phần lớn kết quả (90%+) rơi vào voucher hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Phần lớn kết quả (90%+) rơi vào vé AI Studio hoặc hoàn xu an ủi (ít hơn tiền mở), đảm bảo chủ sàn luôn thu lãi ròng áp đảo.</p>
                   </div>
 
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
@@ -2391,8 +2391,8 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                   </div>
 
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
-                    <strong className="text-purple-700 dark:text-purple-400 font-bold block">3. Ép Khách Nạp Thêm Tiền Thật</strong>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Voucher thưởng (10K - 20%) luôn đi kèm điều kiện đơn hàng tối thiểu (89K - 199K), biến người chơi túi mù thành người nạp tiền mua đề.</p>
+                    <strong className="text-purple-700 dark:text-purple-400 font-bold block">3. Giữ Chân Học Viên Bằng Phần Thưởng Thực</strong>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-400">Thưởng trực tiếp Xu, vé AI Studio hoặc VIP trọn gói, loại bỏ hoàn toàn các loại voucher ảo khó dùng để tăng độ tin cậy.</p>
                   </div>
                 </div>
               </div>

@@ -27,7 +27,6 @@ import {
   addWalletCoins,
   createDepositRequest
 } from '../utils/wallet';
-import { AVAILABLE_VOUCHERS, getClaimedVouchers } from '../utils/gamification';
 import { useModalDismiss } from '../hooks/useModalDismiss';
 
 export default function PaymentModal({
@@ -46,7 +45,6 @@ export default function PaymentModal({
   const [isTopupOpen, setIsTopupOpen] = useState(false);
   const [copiedMemo, setCopiedMemo] = useState(false);
   const [isSimulatingTopup, setIsSimulatingTopup] = useState(false);
-  const [claimedVouchers] = useState(() => getClaimedVouchers());
 
   // Calculate base price
   const basePriceXu = item
@@ -57,34 +55,7 @@ export default function PaymentModal({
       : 25
     : 25;
 
-  // Determine best eligible claimed voucher automatically
-  const bestVoucher = React.useMemo(() => {
-    if (claimedVouchers.includes('VOUCHER_VIP') && (isCombo || basePriceXu >= 50)) {
-      return AVAILABLE_VOUCHERS.find((v) => v.id === 'VOUCHER_VIP');
-    }
-    if (claimedVouchers.includes('VOUCHER_5XU') && basePriceXu >= 20) {
-      return AVAILABLE_VOUCHERS.find((v) => v.id === 'VOUCHER_5XU');
-    }
-    if (claimedVouchers.includes('VOUCHER_XU15')) {
-      return AVAILABLE_VOUCHERS.find((v) => v.id === 'VOUCHER_XU15');
-    }
-    return null;
-  }, [claimedVouchers, isCombo, basePriceXu]);
-
-  const voucherDiscountXu = bestVoucher
-    ? bestVoucher.id === 'VOUCHER_VIP'
-      ? 15
-      : bestVoucher.id === 'VOUCHER_5XU'
-      ? 5
-      : 0
-    : 0;
-
-  const cashbackXu =
-    bestVoucher && bestVoucher.id === 'VOUCHER_XU15'
-      ? Math.max(1, Math.round(basePriceXu * 0.15))
-      : 0;
-
-  const priceXu = Math.max(1, basePriceXu - voucherDiscountXu);
+  const priceXu = Math.max(1, basePriceXu);
 
   const [topupAmount, setTopupAmount] = useState(() => {
     if (!item) return 50;
@@ -122,9 +93,6 @@ export default function PaymentModal({
 
     const deducted = deductWalletCoins(priceXu);
     if (deducted) {
-      if (cashbackXu > 0) {
-        addWalletCoins(cashbackXu);
-      }
       savePurchasedCourse(item.id);
       const nextBal = getWalletBalance();
       setWalletBalance(nextBal);
@@ -303,20 +271,6 @@ export default function PaymentModal({
                     )}
                   </div>
                 </div>
-
-                {/* Applied Voucher Banner */}
-                {bestVoucher && (
-                  <div className="pt-1.5 flex items-center justify-between text-[11px] bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-600/40 rounded-md px-2.5 py-1.5 text-emerald-800 dark:text-emerald-300">
-                    <span className="font-semibold">
-                      🎟️ Đã áp mã <strong>{bestVoucher.code}</strong> ({bestVoucher.discountText})
-                    </span>
-                    <span className="font-bold">
-                      {voucherDiscountXu > 0
-                        ? `-${voucherDiscountXu} Xu`
-                        : `+${cashbackXu} Xu hoàn ví`}
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Wallet Balance Box */}

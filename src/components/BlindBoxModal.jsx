@@ -185,12 +185,6 @@ export default function BlindBoxModal({
     setRevealRewards([]);
   };
 
-  const handleCopyVoucher = (code) => {
-    navigator.clipboard?.writeText(code);
-    setCopiedCode(code);
-    setTimeout(() => setCopiedCode(''), 2500);
-  };
-
   // Close modal on Escape key
   useModalDismiss(onClose);
 

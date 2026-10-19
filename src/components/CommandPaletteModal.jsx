@@ -163,7 +163,7 @@ export default function CommandPaletteModal({
     {
       id: 'action-blindbox',
       title: 'Túi Mù Tri Thức (Blind Box)',
-      desc: '100% có quà: voucher VIP, Xu hoàn lại và bộ thẻ hiếm',
+      desc: '100% có quà: Xu hoàn lại, vé AI Studio và bộ thẻ hiếm',
       icon: Gift,
       category: 'Minigame',
       onSelect: () => {

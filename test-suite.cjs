@@ -485,6 +485,60 @@ async function runTests() {
   assert(blindBoxModalCode.includes('useModalDismiss'), 'BlindBoxModal integrates useModalDismiss hook');
   assert(blindBoxModalCode.includes('stopPropagation'), 'BlindBoxModal card stops click propagation');
 
+  // 10. VOUCHER REMOVAL & PROGRESSIVE WEB APP (PWA) INTEGRITY
+  console.log('\n--- 10. Testing Voucher Cleanup & Mobile PWA Engine ---');
+  
+  // Verify Voucher Removal
+  const homeViewContent = fs.readFileSync(path.join(__dirname, 'src/views/HomeView.jsx'), 'utf-8');
+  assert(!homeViewContent.includes('VoucherBar'), 'HomeView has zero VoucherBar imports or components');
+
+  const paymentModalSource = fs.readFileSync(path.join(__dirname, 'src/components/PaymentModal.jsx'), 'utf-8');
+  assert(!paymentModalSource.includes('AVAILABLE_VOUCHERS'), 'PaymentModal does not import AVAILABLE_VOUCHERS');
+  assert(!paymentModalSource.includes('getClaimedVouchers'), 'PaymentModal does not import getClaimedVouchers');
+  assert(!paymentModalSource.includes('voucherDiscountXu'), 'PaymentModal has zero voucher discount deductions');
+
+  // Verify PWA Manifest
+  const manifestPath = path.join(__dirname, 'public/manifest.json');
+  assert(fs.existsSync(manifestPath), 'PWA web manifest exists at public/manifest.json');
+  const manifestContent = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+  assert(manifestContent.display === 'standalone', 'PWA display mode is standalone for native mobile experience');
+  assert(manifestContent.start_url.includes('/'), 'PWA start_url is valid');
+  assert(manifestContent.theme_color === '#2383e2', 'PWA theme_color matches OnThiHub brand');
+  assert(Array.isArray(manifestContent.icons) && manifestContent.icons.length >= 4, `PWA manifest has at least 4 icon formats (found ${manifestContent.icons.length})`);
+
+  // Verify PWA Icons
+  const icon192Path = path.join(__dirname, 'public/icons/icon-192x192.png');
+  const icon512Path = path.join(__dirname, 'public/icons/icon-512x512.png');
+  const appleIconPath = path.join(__dirname, 'public/icons/apple-touch-icon.png');
+  assert(fs.existsSync(icon192Path) && fs.statSync(icon192Path).size > 500, 'PWA 192x192 icon exists with valid byte size');
+  assert(fs.existsSync(icon512Path) && fs.statSync(icon512Path).size > 500, 'PWA 512x512 icon exists with valid byte size');
+  assert(fs.existsSync(appleIconPath) && fs.statSync(appleIconPath).size > 500, 'PWA Apple Touch icon exists with valid byte size');
+
+  const icon192Buffer = fs.readFileSync(icon192Path);
+  assert(icon192Buffer[0] === 0x89 && icon192Buffer[1] === 0x50 && icon192Buffer[2] === 0x4E && icon192Buffer[3] === 0x47, 'PWA 192 icon has valid PNG magic byte signature');
+
+  // Verify Service Worker
+  const swPath = path.join(__dirname, 'public/sw.js');
+  assert(fs.existsSync(swPath), 'PWA Service Worker exists at public/sw.js');
+  const swCode = fs.readFileSync(swPath, 'utf-8');
+  assert(swCode.includes("addEventListener('install'"), 'Service worker has install event listener');
+  assert(swCode.includes("addEventListener('activate'"), 'Service worker has activate event listener');
+  assert(swCode.includes("addEventListener('fetch'"), 'Service worker has fetch event listener');
+  assert(swCode.includes("req.mode === 'navigate'"), 'Service worker handles offline navigation caching');
+
+  // Verify HTML Meta Tags & App Mount
+  const indexHtmlCode = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf-8');
+  assert(indexHtmlCode.includes('rel="manifest"'), 'index.html links to manifest.json');
+  assert(indexHtmlCode.includes('apple-mobile-web-app-capable'), 'index.html enables apple-mobile-web-app-capable');
+  assert(indexHtmlCode.includes('mobile-web-app-capable'), 'index.html enables mobile-web-app-capable');
+  assert(indexHtmlCode.includes('apple-touch-icon'), 'index.html defines apple-touch-icon');
+
+  const mainJsxCode = fs.readFileSync(path.join(__dirname, 'src/main.jsx'), 'utf-8');
+  assert(mainJsxCode.includes("navigator.serviceWorker.register('/sw.js')"), 'main.jsx registers Service Worker');
+
+  const appJsxCode = fs.readFileSync(path.join(__dirname, 'src/App.jsx'), 'utf-8');
+  assert(appJsxCode.includes('PwaInstallPrompt'), 'App.jsx mounts PwaInstallPrompt component');
+
   // SUMMARY
   console.log('\n====================================================');
   console.log(`TOTAL TESTS: ${testsPassed + testsFailed}`);

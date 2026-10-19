@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import CourseCard from '../components/CourseCard';
 import ComboBanner from '../components/ComboBanner';
 import TestimonialsFaq from '../components/TestimonialsFaq';
-import VoucherBar from '../components/VoucherBar';
 import ExamCountdownBanner from '../components/ExamCountdownBanner';
 import { CATEGORIES, COURSES_DATA, COMBO_PACKAGE } from '../data/coursesData';
 import { isCoursePurchased } from '../utils/storage';
@@ -159,7 +158,7 @@ export default function HomeView({
         <div className="bg-slate-50 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2.5">
           <span className="text-base leading-none">💡</span>
           <div className="leading-relaxed">
-            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span> hoặc <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ, hoặc lưu mã giảm Xu ở thanh Giờ Vàng bên dưới.
+            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span> hoặc <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> trên từng bộ tài liệu để kiểm tra kiến thức và trải nghiệm thuật toán Anki SM-2 trước khi mở khóa trọn bộ.
           </div>
         </div>
       </div>
@@ -281,9 +280,6 @@ export default function HomeView({
         </div>
 
       </section>
-
-      {/* FLASH SALE VOUCHERS STRIP */}
-      <VoucherBar />
 
       {/* =========================================================
           CATEGORY FILTER & SEARCH CONTROLS (NOTION DATABASE TABS)

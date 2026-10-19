@@ -28,6 +28,7 @@ import TargetStudyClockModal from './components/TargetStudyClockModal';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import ThemeWeatherCanvas from './components/ThemeWeatherCanvas';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
+import PwaInstallPrompt from './components/PwaInstallPrompt';
 import Footer from './components/Footer';
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
@@ -621,6 +622,9 @@ export default function App() {
           }
         }}
       />
+
+      {/* 18. Mobile PWA Install Prompt Banner */}
+      <PwaInstallPrompt />
 
     </div>
   );
