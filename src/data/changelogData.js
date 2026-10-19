@@ -1,5 +1,5 @@
 // Changelog & What's New Data for OnThiHub
-export const APP_VERSION = 'v2.9';
+export const APP_VERSION = 'v3.0';
 export const LAST_SEEN_VERSION_KEY = 'onthi_last_seen_changelog_version';
 
 export function isChangelogUnread() {
@@ -19,9 +19,45 @@ export function markChangelogAsRead() {
 
 export const CHANGELOG_DATA = [
   {
+    version: 'v3.0',
+    date: 'Tháng 10/2026 (Đại Tu Toàn Diện v3.0)',
+    badge: 'SIÊU CẬP NHẬT v3.0 🚀',
+    badgeColor: 'bg-gradient-to-r from-emerald-500 to-sky-600 text-white',
+    title: 'Đại Tu Toàn Diện OnThiHub v3.0: Phòng Tự Học Ảo Live 24/7, Phao Cứu Sinh 1 Trang In A4 & Lộ Trình 30 Ngày 🎓',
+    summary: 'Phiên bản v3.0 khắc phục triệt để lỗi đóng/mở Modal, nâng cấp PWA Network-First chống kẹt cache cũ, tích hợp bàn cày thẻ trực tiếp trong Phòng Tự Học Ảo kèm sóng não Alpha, chế độ Che Đáp Án tự kiểm tra và Xuất PDF A4 độc lập.',
+    highlights: [
+      {
+        category: '👥 Phòng Tự Học Ảo v3.0 (Study With Me + Cày Thẻ Trực Tiếp)',
+        color: 'emerald',
+        items: [
+          '⚡ Bàn Cày Thẻ Trực Tiếp Trong Phòng: Vừa bật Pomodoro và âm thanh nền vừa lật thẻ Anki, đổi môn và bấm "Đã Nhớ (+10 XP)" ngay trong phòng mà không làm ngắt tiếng mưa.',
+          '🎧 Bộ Tạo Âm Thanh Web Audio API 3 Chế Độ: Tiếng mưa rơi thư giãn, quán Cafe đêm và Sóng não Alpha 10Hz giúp tập trung sâu kèm thanh chỉnh âm lượng trực tiếp.',
+          '💬 Chat Cổ Vũ Thời Gian Thực (Cloud Relay): Gửi lời chúc và thả tim động viên đồng bộ trực tiếp với các sỹ tử đang thức ôn bài.'
+        ]
+      },
+      {
+        category: '📄 Phao Cứu Sinh 1 Trang v3.0 (Active Recall + In A4 Chuẩn)',
+        color: 'indigo',
+        items: [
+          '🧠 Chế Độ Che Đáp Án Tự Kiểm Tra (Active Recall): Làm mờ toàn bộ đáp án để tự nhẩm trong đầu, chạm vào thẻ nào mở đáp án thẻ đó.',
+          '🖨️ Cửa Sổ Xuất PDF / In A4 Độc Lập: Tách riêng trang in A4 2 cột sắc nét, không bị vướng khung giao diện web.',
+          '🔊 Đọc Tóm Tắt Giọng Nói Tự Động (TTS): Nghe đọc liền mạch các mốc số liệu, thời hạn và điều khoản trọng tâm.'
+        ]
+      },
+      {
+        category: '🗺️ Lộ Trình Đích 30 Ngày & Máy Tính Chia Lịch Tự Động',
+        color: 'amber',
+        items: [
+          '🧮 Máy Tính Chia Lịch Cày Thẻ: Nhập tổng số thẻ và số ngày còn lại trước kỳ thi để hệ thống tự tính số thẻ mới và thẻ ôn SM-2 mỗi ngày.',
+          '⚡ Nút Hành Động Trực Tiếp Trên Từng Chặng: Bấm "Học Thẻ →", "Vào Phòng →", "Thi Thử →", "In A4 →" ngay tại từng mục tiêu lộ trình.'
+        ]
+      }
+    ]
+  },
+  {
     version: 'v2.9',
-    date: 'Tháng 10/2026 (Bản Mới Nhất)',
-    badge: 'MỚI NHẤT 🔥',
+    date: 'Tháng 10/2026',
+    badge: 'ĐÃ CẬP NHẬT',
     badgeColor: 'bg-[#2383e2] text-white',
     title: 'Nâng Cấp Toàn Diện Động Cơ AI Tạo Thẻ Flashcard 🤖 & Hỗ Trợ Đa Mô Hình Gemini/OpenAI ⚡',
     summary: 'Sửa triệt để lỗi tạo thẻ AI bằng việc tích hợp các mô hình Gemini thế hệ mới (3.5-Flash, 3.6-Flash, 3-Flash-Preview), tự động failover đa tầng, tích hợp OpenAI Platform (GPT-4o-mini) và bộ bóc tách ngữ nghĩa thông minh ngoại tuyến.',

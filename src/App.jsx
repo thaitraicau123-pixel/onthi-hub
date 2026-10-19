@@ -294,6 +294,7 @@ export default function App() {
               onOpenBlindBox={() => setIsBlindBoxOpen(true)}
               onOpenTargetClock={() => setIsTargetClockOpen(true)}
               onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
+              onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
               allCourses={allAvailableCourses}
             />
           )}
@@ -633,31 +634,32 @@ export default function App() {
             setActiveQuizCourse(allAvailableCourses[0]);
           }
         }}
+        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+        onOpenCheatSheet={() => setActiveCheatSheetCourse(allAvailableCourses[0] || COURSES_DATA[0])}
+        onOpenFlashcards={() => setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0])}
       />
 
       {/* 18. Mobile PWA Install Prompt Banner */}
       <PwaInstallPrompt />
 
-      {/* 19. 1-Page High-Yield Cheat Sheet Modal */}
+      {/* 19. 1-Page High-Yield Cheat Sheet Modal v3.0 */}
       {activeCheatSheetCourse && (
         <CheatSheetModal
-          course={activeCheatSheetCourse}
+          initialCourseId={typeof activeCheatSheetCourse === 'string' ? activeCheatSheetCourse : activeCheatSheetCourse?.id}
+          allCourses={allAvailableCourses}
           onClose={() => setActiveCheatSheetCourse(null)}
-          onOpenFlashcards={(c) => {
-            setActiveCheatSheetCourse(null);
-            setActiveFlashcardCourse(c);
-          }}
         />
       )}
 
-      {/* 20. Virtual Study Room (Study With Me) Modal */}
+      {/* 20. Virtual Study Room v3.0 (Study With Me + Live Flashcards + Web Audio) Modal */}
       {isStudyRoomOpen && (
         <VirtualStudyRoomModal
           user={user}
+          allCourses={allAvailableCourses}
           onClose={() => setIsStudyRoomOpen(false)}
-          onOpenFlashcards={() => {
+          onOpenCheatSheet={(courseId) => {
             setIsStudyRoomOpen(false);
-            setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0]);
+            setActiveCheatSheetCourse(courseId || allAvailableCourses[0]?.id || 'pldc');
           }}
         />
       )}

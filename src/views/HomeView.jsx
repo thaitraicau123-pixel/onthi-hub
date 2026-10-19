@@ -40,6 +40,7 @@ export default function HomeView({
   onOpenBlindBox,
   onOpenTargetClock,
   onOpenCheatSheet,
+  onOpenStudyRoom,
   allCourses
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -110,7 +111,7 @@ export default function HomeView({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="space-y-1.5">
             <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-500/40 text-[#1458a6] dark:text-sky-300 text-[11px] font-bold">
-              <span>🏠 KHÔNG GIAN ÔN LUYỆN THÔNG MINH 2026</span>
+              <span>🚀 ONTHIHUB v3.0 • KHÔNG GIAN ÔN LUYỆN THÔNG MINH 2026</span>
               <span className="text-sky-400">•</span>
               <span>{allCourses.reduce((sum, c) => sum + (c.cardsCount || (c.flashcards ? c.flashcards.length : 0)), 0).toLocaleString()}+ Thẻ Anki</span>
             </div>
@@ -155,11 +156,70 @@ export default function HomeView({
           </div>
         </div>
 
+        {/* =========================================================
+            TRUNG TÂM TĂNG TỐC v3.0 (3 TÍNH NĂNG ĐỘT PHÁ MỚI)
+            ========================================================= */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+          <button
+            type="button"
+            onClick={() => onOpenStudyRoom && onOpenStudyRoom()}
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-sky-500/10 dark:from-emerald-950/60 dark:to-slate-900 border border-emerald-300/70 dark:border-emerald-500/40 hover:border-emerald-500 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-extrabold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+                <span>👥 Phòng Tự Học Ảo v3.0</span>
+              </span>
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-500 text-white animate-pulse">
+                LIVE 24/7
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+              Vừa bật tiếng mưa/sóng não Alpha + Pomodoro vừa lật thẻ Anki trực tiếp trong phòng cùng sỹ tử.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenCheatSheet && onOpenCheatSheet(allCourses[0]?.id || 'pldc')}
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-sky-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/60 dark:to-slate-900 border border-sky-300/70 dark:border-sky-500/40 hover:border-sky-500 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-extrabold text-sky-900 dark:text-sky-300 flex items-center gap-1.5">
+                <span>📄 Phao Cứu Sinh 1 Trang</span>
+              </span>
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-sky-600 text-white">
+                IN A4 + CHE ĐÁP ÁN
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+              Tóm tắt toàn bộ mốc số liệu, thời hạn dễ nhầm • Chế độ làm mờ tự kiểm tra & Xuất PDF in 1 trang.
+            </p>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenTargetClock && onOpenTargetClock()}
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-rose-500/10 dark:from-amber-950/60 dark:to-slate-900 border border-amber-300/70 dark:border-amber-500/40 hover:border-amber-500 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-extrabold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                <span>🗺️ Lộ Trình Đích 30 Ngày</span>
+              </span>
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-amber-500 text-white">
+                MÁY TÍNH CHIA LỊCH
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+              Tự động chia số thẻ cần học mỗi ngày trước kỳ thi & lưu vết thời gian học theo Giờ Hà Nội.
+            </p>
+          </button>
+        </div>
+
         {/* High-Contrast Callout Box */}
         <div className="bg-slate-50 dark:bg-slate-800/90 border border-slate-200/80 dark:border-white/10 rounded-xl p-3 text-xs text-slate-700 dark:text-slate-200 flex items-start space-x-2.5">
           <span className="text-base leading-none">💡</span>
           <div className="leading-relaxed">
-            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span> hoặc <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> trên từng bộ tài liệu để kiểm tra kiến thức và trải nghiệm thuật toán Anki SM-2 trước khi mở khóa trọn bộ.
+            <strong>Mẹo ôn thi hiệu quả:</strong> Bạn có thể bấm <span className="font-bold text-[#2383e2] dark:text-sky-400">"Xem Thẻ"</span>, <span className="font-bold text-[#cc782f] dark:text-amber-400">"Thi Thử"</span> hoặc <span className="font-bold text-indigo-600 dark:text-indigo-400">"📄 Tóm Tắt"</span> trên từng bộ tài liệu để kiểm tra kiến thức trước khi mở khóa trọn bộ.
           </div>
         </div>
       </div>

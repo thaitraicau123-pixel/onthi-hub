@@ -33,8 +33,16 @@ import {
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
 
-export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro, onOpenQuiz }) {
-  const [activeTab, setActiveTab] = useState('target'); // 'target' | 'logs'
+export default function TargetStudyClockModal({
+  isOpen,
+  onClose,
+  onOpenPomodoro,
+  onOpenQuiz,
+  onOpenStudyRoom,
+  onOpenCheatSheet,
+  onOpenFlashcards
+}) {
+  const [activeTab, setActiveTab] = useState('target'); // 'target' | 'logs' | 'roadmap'
   const [hanoiNow, setHanoiNow] = useState(() => getHanoiNowComponents());
   const [targetClock, setTargetClock] = useState(() => getTargetStudyClock());
   const [progress, setProgress] = useState(() => calculateTargetClockProgress());
@@ -43,6 +51,8 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
   const [inputMinutes, setInputMinutes] = useState(targetClock.dailyGoalMinutes || 60);
   const [inputEndTime, setInputEndTime] = useState(targetClock.targetEndTime || '23:00');
   const [toastMsg, setToastMsg] = useState('');
+  const [calcTotalCards, setCalcTotalCards] = useState(180);
+  const [calcDaysLeft, setCalcDaysLeft] = useState(15);
   const [completedRoadmapTasks, setCompletedRoadmapTasks] = useState(() => {
     try {
       const saved = localStorage.getItem('onthi_roadmap_milestones_v1');
@@ -568,7 +578,7 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
             </div>
           )}
 
-          {/* TAB 3: LỘ TRÌNH ĐÍCH ĐẾN 30 NGÀY (ROADMAP MILESTONES) */}
+          {/* TAB 3: LỘ TRÌNH ĐÍCH ĐẾN 30 NGÀY (ROADMAP MILESTONES v3.0) */}
           {activeTab === 'roadmap' && (() => {
             const allRoadmapTaskIds = [
               'p1_t1', 'p1_t2', 'p1_t3',
@@ -578,6 +588,11 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
             ];
             const completedCount = allRoadmapTaskIds.filter(id => completedRoadmapTasks.includes(id)).length;
             const percent = Math.round((completedCount / allRoadmapTaskIds.length) * 100);
+            const safeDays = Math.max(1, Number(calcDaysLeft) || 1);
+            const safeCards = Math.max(10, Number(calcTotalCards) || 10);
+            const newCardsPerDay = Math.ceil(safeCards / safeDays);
+            const reviewCardsPerDay = Math.ceil(newCardsPerDay * 1.8);
+            const estMinutesPerDay = Math.max(15, Math.ceil((newCardsPerDay + reviewCardsPerDay) * 0.6));
 
             const PHASES = [
               {
@@ -587,8 +602,8 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                 badgeColor: 'bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border-sky-200',
                 desc: 'Làm quen nhịp học, nắm tổng quan đề thi và tích lũy 100 thẻ đầu tiên.',
                 tasks: [
-                  { id: 'p1_t1', label: 'Lật học thử ít nhất 30 thẻ Flashcard Anki trọng tâm' },
-                  { id: 'p1_t2', label: 'Đánh dấu sao ⭐ ít nhất 5 câu khó để ôn cấp tốc' },
+                  { id: 'p1_t1', label: 'Lật học thử ít nhất 30 thẻ Flashcard Anki trọng tâm', actionLabel: 'Học Thẻ →', onAction: () => { onClose(); onOpenFlashcards?.(); } },
+                  { id: 'p1_t2', label: 'Đánh dấu sao ⭐ ít nhất 5 câu khó để ôn cấp tốc', actionLabel: 'Mở Thẻ →', onAction: () => { onClose(); onOpenFlashcards?.(); } },
                   { id: 'p1_t3', label: 'Điểm danh hàng ngày nhận Xu và duy trì chuỗi Streak' }
                 ]
               },
@@ -599,9 +614,9 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                 badgeColor: 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border-indigo-200',
                 desc: 'Củng cố trí nhớ dài hạn, ôn toàn bộ thẻ đến hạn (Due) đúng lịch chu kỳ.',
                 tasks: [
-                  { id: 'p2_t1', label: 'Hoàn thành 100% số thẻ đến hạn (Due Cards) mỗi ngày' },
+                  { id: 'p2_t1', label: 'Hoàn thành 100% số thẻ đến hạn (Due Cards) mỗi ngày', actionLabel: 'Ôn Ngay →', onAction: () => { onClose(); onOpenFlashcards?.(); } },
                   { id: 'p2_t2', label: 'Trải nghiệm chế độ Podcast 🎧 đọc tự động rảnh tay khi đi bộ/nấu ăn' },
-                  { id: 'p2_t3', label: 'Vào Phòng Tự Học Ảo hoàn thành 1 phiên Pomodoro 25 phút' }
+                  { id: 'p2_t3', label: 'Vào Phòng Tự Học Ảo v3.0 hoàn thành 1 phiên Pomodoro 25 phút', actionLabel: 'Vào Phòng →', onAction: () => { onClose(); onOpenStudyRoom?.(); } }
                 ]
               },
               {
@@ -611,7 +626,7 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                 badgeColor: 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-200',
                 desc: 'Rèn luyện phản xạ áp lực phòng thi, làm chủ tốc độ 3 giây/câu.',
                 tasks: [
-                  { id: 'p3_t1', label: 'Làm bài thi thử trắc nghiệm 10 câu có bấm giờ và đạt kết quả "ĐỖ"' },
+                  { id: 'p3_t1', label: 'Làm bài thi thử trắc nghiệm 10 câu có bấm giờ và đạt kết quả "ĐỖ"', actionLabel: 'Thi Thử →', onAction: () => { onClose(); onOpenQuiz?.(); } },
                   { id: 'p3_t2', label: 'Mở Sổ Tay Câu Sai để cày lại toàn bộ các câu bị đề thi lừa' },
                   { id: 'p3_t3', label: 'Chơi Game Ghép Thẻ (Match Game) để tăng tốc độ phản xạ trí não' }
                 ]
@@ -623,8 +638,8 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                 badgeColor: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-200',
                 desc: 'Tập trung vào các con số thời hạn vàng, giữ tâm lý tự tin tuyệt đối.',
                 tasks: [
-                  { id: 'p4_t1', label: 'Đọc Bảng Cheatsheet Cứu Sinh 1 Trang trước ngày thi' },
-                  { id: 'p4_t2', label: 'Bấm nút "In 1 Trang / Lưu PDF" để kẹp vào sổ tay mang đi thi' },
+                  { id: 'p4_t1', label: 'Đọc Bảng Cheatsheet Cứu Sinh 1 Trang & bật chế độ Che Đáp Án tự kiểm tra', actionLabel: 'Mở Tóm Tắt →', onAction: () => { onClose(); onOpenCheatSheet?.(); } },
+                  { id: 'p4_t2', label: 'Bấm nút "Xuất PDF / In A4" để kẹp vào sổ tay mang đi thi', actionLabel: 'In A4 →', onAction: () => { onClose(); onOpenCheatSheet?.(); } },
                   { id: 'p4_t3', label: 'Ngủ đủ giấc, uống đủ nước và sẵn sàng thi đỗ điểm cao!' }
                 ]
               }
@@ -637,7 +652,7 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-wider text-sky-200 block">
-                        TIẾN ĐỘ LỘ TRÌNH 30 NGÀY
+                        TIẾN ĐỘ LỘ TRÌNH 30 NGÀY (v3.0)
                       </span>
                       <h4 className="text-base sm:text-lg font-black tracking-tight text-white mt-0.5">
                         {percent === 100 ? '🎉 CHÚC MỪNG BẠN ĐÃ SẴN SÀNG 100% ĐI THI!' : `Bạn đã hoàn thành ${completedCount}/${allRoadmapTaskIds.length} mục tiêu lộ trình`}
@@ -653,6 +668,54 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                       className="bg-white h-full rounded-full transition-all duration-500"
                       style={{ width: `${percent}%` }}
                     />
+                  </div>
+                </div>
+
+                {/* Smart Daily Card Calculator v3.0 */}
+                <div className="p-4 rounded-2xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 space-y-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <h5 className="font-extrabold text-xs sm:text-sm text-indigo-950 dark:text-indigo-200">
+                      🧮 Máy Tính Chia Lịch Cày Thẻ Tự Động Trước Ngày Thi
+                    </h5>
+                    <button
+                      type="button"
+                      onClick={() => handleSaveGoal(estMinutesPerDay)}
+                      className="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] cursor-pointer"
+                    >
+                      Áp dụng mục tiêu {estMinutesPerDay}p/ngày
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
+                    <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-indigo-200/70 dark:border-indigo-800/50">
+                      <label className="block text-[10px] font-bold text-slate-500">TỔNG SỐ THẺ CẦN THUỘC</label>
+                      <input
+                        type="number"
+                        min="10"
+                        max="2000"
+                        value={calcTotalCards}
+                        onChange={e => setCalcTotalCards(e.target.value)}
+                        className="w-full mt-1 font-extrabold text-sm text-slate-900 dark:text-white bg-transparent outline-none"
+                      />
+                    </div>
+                    <div className="bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-indigo-200/70 dark:border-indigo-800/50">
+                      <label className="block text-[10px] font-bold text-slate-500">SỐ NGÀY CÒN LẠI</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="180"
+                        value={calcDaysLeft}
+                        onChange={e => setCalcDaysLeft(e.target.value)}
+                        className="w-full mt-1 font-extrabold text-sm text-slate-900 dark:text-white bg-transparent outline-none"
+                      />
+                    </div>
+                    <div className="bg-emerald-50 dark:bg-emerald-950/60 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800/50 text-center">
+                      <span className="block text-[10px] font-bold text-emerald-700 dark:text-emerald-300">THẺ MỚI / NGÀY</span>
+                      <strong className="text-base font-black text-emerald-700 dark:text-emerald-300">{newCardsPerDay} thẻ</strong>
+                    </div>
+                    <div className="bg-amber-50 dark:bg-amber-950/60 p-2.5 rounded-xl border border-amber-200 dark:border-amber-800/50 text-center">
+                      <span className="block text-[10px] font-bold text-amber-700 dark:text-amber-300">ÔN LẠI SM-2 / NGÀY</span>
+                      <strong className="text-base font-black text-amber-700 dark:text-amber-300">~{reviewCardsPerDay} thẻ</strong>
+                    </div>
                   </div>
                 </div>
 
@@ -683,24 +746,35 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
                         {phase.tasks.map((task) => {
                           const isDone = completedRoadmapTasks.includes(task.id);
                           return (
-                            <label
+                            <div
                               key={task.id}
-                              className={`flex items-start space-x-2.5 p-2 rounded-xl transition-colors cursor-pointer select-none ${
+                              className={`flex items-center justify-between gap-2 p-2 rounded-xl transition-colors ${
                                 isDone
                                   ? 'bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200'
                                   : 'bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-800 dark:text-slate-200'
                               } border ${isDone ? 'border-emerald-200 dark:border-emerald-800' : 'border-slate-200/80 dark:border-slate-800'}`}
                             >
-                              <input
-                                type="checkbox"
-                                checked={isDone}
-                                onChange={() => toggleRoadmapTask(task.id)}
-                                className="mt-0.5 w-4 h-4 rounded text-[#2383e2] accent-[#2383e2] cursor-pointer"
-                              />
-                              <span className={`text-xs ${isDone ? 'line-through opacity-80' : 'font-medium'}`}>
-                                {task.label}
-                              </span>
-                            </label>
+                              <label className="flex items-start space-x-2.5 cursor-pointer select-none flex-1">
+                                <input
+                                  type="checkbox"
+                                  checked={isDone}
+                                  onChange={() => toggleRoadmapTask(task.id)}
+                                  className="mt-0.5 w-4 h-4 rounded text-[#2383e2] accent-[#2383e2] cursor-pointer"
+                                />
+                                <span className={`text-xs ${isDone ? 'line-through opacity-80' : 'font-medium'}`}>
+                                  {task.label}
+                                </span>
+                              </label>
+                              {task.actionLabel && task.onAction && (
+                                <button
+                                  type="button"
+                                  onClick={task.onAction}
+                                  className="px-2.5 py-1 rounded-lg bg-sky-100 hover:bg-sky-200 dark:bg-sky-950 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-300 font-extrabold text-[10px] shrink-0 cursor-pointer"
+                                >
+                                  {task.actionLabel}
+                                </button>
+                              )}
+                            </div>
                           );
                         })}
                       </div>

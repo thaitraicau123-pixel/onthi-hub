@@ -1,10 +1,10 @@
 // =========================================================================
-// ONTHIHUB PWA SERVICE WORKER (v1)
+// ONTHIHUB PWA SERVICE WORKER (v3.0)
 // Cung cấp trải nghiệm ứng dụng di động nguyên bản (Native-like Mobile App)
-// Hỗ trợ lưu trữ offline, mở thẻ nhanh không cần mạng & cài đặt lên màn hình chính
+// Luôn ưu tiên bản mới nhất từ mạng (Network-First) và tự động dự phòng Offline
 // =========================================================================
 
-const CACHE_NAME = 'onthi-pwa-v1';
+const CACHE_NAME = 'onthi-pwa-v3';
 
 const STATIC_PRECACHE = [
   '/',
@@ -18,18 +18,17 @@ const STATIC_PRECACHE = [
   '/icons/apple-touch-icon.png'
 ];
 
-// 1. Install Event: Cache app shell
+// 1. Install Event: Cache app shell & activate immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_PRECACHE);
-    }).then(() => {
-      return self.skipWaiting();
+      return cache.addAll(STATIC_PRECACHE).catch(() => {});
     })
   );
 });
 
-// 2. Activate Event: Clean up outdated caches
+// 2. Activate Event: Purge all legacy caches (v1, v2) immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -46,82 +45,49 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. Fetch Event: Smart routing (Network first for navigation & API, Cache first for assets)
+// Listen for SKIP_WAITING messages
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+// 3. Fetch Event: Network-First for HTML/JS/CSS so updates are instant; Cache fallback for offline
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
 
   const url = new URL(req.url);
 
-  // Skip Firebase, Cloud Relay, Analytics and external dynamic APIs
+  // Skip external dynamic APIs (Firebase, Cloud Relay, VietQR, AI APIs)
   if (
+    url.origin !== self.location.origin ||
     url.hostname.includes('firestore.googleapis.com') ||
     url.hostname.includes('firebaseio.com') ||
     url.hostname.includes('identitytoolkit') ||
     url.hostname.includes('ntfy.sh') ||
-    url.hostname.includes('vietqr.io') ||
-    url.hostname.includes('api.vietqr.io')
+    url.hostname.includes('vietqr.io')
   ) {
     return;
   }
 
-  // A. Navigation requests (HTML pages) -> Network First with Offline Fallback
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((networkRes) => {
-          if (networkRes && networkRes.status === 200) {
-            const resClone = networkRes.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          }
-          return networkRes;
-        })
-        .catch(async () => {
-          const cached = await caches.match(req);
-          if (cached) return cached;
-          return caches.match('/index.html') || caches.match('/');
-        })
-    );
-    return;
-  }
-
-  // B. Static Assets (CSS, JS, Fonts, Images, Audio, Wallpapers) -> Stale While Revalidate
-  const isStaticAsset =
-    url.pathname.startsWith('/assets/') ||
-    url.pathname.startsWith('/icons/') ||
-    url.pathname.startsWith('/wallpapers/') ||
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.css') ||
-    url.pathname.endsWith('.png') ||
-    url.pathname.endsWith('.svg') ||
-    url.pathname.endsWith('.jpg') ||
-    url.pathname.endsWith('.webp') ||
-    url.pathname.endsWith('.woff2');
-
-  if (isStaticAsset) {
-    event.respondWith(
-      caches.match(req).then((cachedRes) => {
-        const fetchPromise = fetch(req).then((networkRes) => {
-          if (networkRes && networkRes.status === 200) {
-            const resClone = networkRes.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          }
-          return networkRes;
-        }).catch(() => {
-          // If offline and not in cache, fallback safely
-          return cachedRes;
-        });
-
-        return cachedRes || fetchPromise;
-      })
-    );
-    return;
-  }
-
-  // C. Default fetch
+  // Network-First strategy for navigation, JS, CSS, and JSON to ensure latest v3 deployment
   event.respondWith(
-    caches.match(req).then((cached) => {
-      return cached || fetch(req);
-    })
+    fetch(req)
+      .then((networkRes) => {
+        if (networkRes && networkRes.status === 200) {
+          const resClone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
+        }
+        return networkRes;
+      })
+      .catch(async () => {
+        const cached = await caches.match(req);
+        if (cached) return cached;
+        if (req.mode === 'navigate') {
+          return caches.match('/index.html') || caches.match('/');
+        }
+        return new Response('Offline', { status: 503, statusText: 'Offline' });
+      })
   );
 });
