@@ -77,7 +77,7 @@ export default function PwaInstallPrompt() {
   if (isInstalled || !showPrompt) return null;
 
   return (
-    <aside aria-label="Cài đặt ứng dụng di động" className="fixed bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 z-40 max-w-md bg-white dark:bg-slate-900 border border-[#2383e2]/30 dark:border-sky-500/30 rounded-2xl p-3.5 shadow-xl shadow-blue-500/10 animate-fade-in text-[#37352f] dark:text-white">
+    <aside aria-label="Cài đặt ứng dụng di động" className="fixed bottom-20 left-3 right-3 sm:left-6 sm:right-auto sm:bottom-6 z-40 max-w-sm bg-white dark:bg-slate-900 border border-[#2383e2]/30 dark:border-sky-500/30 rounded-2xl p-3.5 shadow-xl shadow-blue-500/10 animate-fade-in text-[#37352f] dark:text-white">
       <div className="flex items-start space-x-3">
         {/* App Icon */}
         <img
