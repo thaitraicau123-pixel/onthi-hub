@@ -19,7 +19,9 @@ import {
   CornerDownLeft,
   Command,
   Palette,
-  Clock
+  Clock,
+  Users,
+  FileText
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 
@@ -38,7 +40,9 @@ export default function CommandPaletteModal({
   onOpenWallet,
   onOpenAnalytics,
   onOpenThemePicker,
-  onOpenTargetClock
+  onOpenTargetClock,
+  onOpenStudyRoom,
+  onOpenCheatSheet
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -63,6 +67,30 @@ export default function CommandPaletteModal({
       badge: 'Giờ Hà Nội',
       onSelect: () => {
         onOpenTargetClock?.();
+        onClose();
+      }
+    },
+    {
+      id: 'action-study-room',
+      title: 'Phòng Tự Học Chung Ảo (Study With Me)',
+      desc: 'Cày đề cùng 40+ sĩ tử toàn quốc, bấm chuông Pomodoro và gửi lời cổ vũ',
+      icon: Users,
+      category: 'Cộng đồng',
+      badge: '🟢 Live',
+      onSelect: () => {
+        onOpenStudyRoom?.();
+        onClose();
+      }
+    },
+    {
+      id: 'action-cheatsheet',
+      title: 'Bảng Cheatsheet Cứu Sinh 1 Trang (High-Yield Summary)',
+      desc: 'Tóm tắt các con số thời hạn vàng, mốc năm và bẫy đề thi trước giờ thi',
+      icon: FileText,
+      category: 'Ôn tập cấp tốc',
+      badge: '1 Trang',
+      onSelect: () => {
+        onOpenCheatSheet?.();
         onClose();
       }
     },

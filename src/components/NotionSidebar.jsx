@@ -51,7 +51,9 @@ export default function NotionSidebar({
   onOpenAnalytics,
   currentTheme,
   onOpenThemePicker,
-  onOpenTargetClock
+  onOpenTargetClock,
+  onOpenStudyRoom,
+  onOpenCheatSheet
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const userIsAdmin = isUserAdmin(user);
@@ -78,6 +80,24 @@ export default function NotionSidebar({
   ];
 
   const toolsNavItems = [
+    {
+      id: 'study-room',
+      label: 'Phòng Tự Học Ảo',
+      emoji: '👥',
+      badge: '🟢 Live',
+      badgeColor: 'notion-pill-green',
+      action: onOpenStudyRoom,
+      desc: 'Học cùng 40+ sĩ tử toàn quốc & cổ vũ'
+    },
+    {
+      id: 'cheatsheet',
+      label: 'Cheatsheet Cứu Sinh',
+      emoji: '📄',
+      badge: '1 Trang',
+      badgeColor: 'notion-pill-blue',
+      action: onOpenCheatSheet,
+      desc: 'Tóm tắt trọng tâm & in 1 trang trước giờ thi'
+    },
     {
       id: 'target-clock',
       label: 'Đồng Hồ Mục Tiêu',

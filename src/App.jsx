@@ -29,6 +29,8 @@ import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import ThemeWeatherCanvas from './components/ThemeWeatherCanvas';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
+import CheatSheetModal from './components/CheatSheetModal';
+import VirtualStudyRoomModal from './components/VirtualStudyRoomModal';
 import Footer from './components/Footer';
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
@@ -87,6 +89,8 @@ export default function App() {
   const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [isTargetClockOpen, setIsTargetClockOpen] = useState(false);
+  const [activeCheatSheetCourse, setActiveCheatSheetCourse] = useState(null);
+  const [isStudyRoomOpen, setIsStudyRoomOpen] = useState(false);
 
   // Sync initial state
   useEffect(() => {
@@ -242,6 +246,8 @@ export default function App() {
         currentTheme={currentTheme}
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
         onOpenTargetClock={() => setIsTargetClockOpen(true)}
+        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+        onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -269,6 +275,7 @@ export default function App() {
           isWeatherEnabled={isWeatherEnabled}
           onToggleWeather={() => setWeatherEffectsEnabled(!isWeatherEnabled)}
           onOpenTargetClock={() => setIsTargetClockOpen(true)}
+          onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -286,6 +293,7 @@ export default function App() {
               onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
               onOpenBlindBox={() => setIsBlindBoxOpen(true)}
               onOpenTargetClock={() => setIsTargetClockOpen(true)}
+              onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
               allCourses={allAvailableCourses}
             />
           )}
@@ -335,6 +343,7 @@ export default function App() {
               onOpenPassDeck={(course) => setActivePassCourse(course)}
               onOpenSellDeck={(course) => setActiveSellCourse(course)}
               onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+              onOpenCheatSheet={(course) => setActiveCheatSheetCourse(course)}
               onSwitchTab={setActiveTab}
             />
           )}
@@ -387,6 +396,7 @@ export default function App() {
           course={activeFlashcardCourse}
           isPurchased={isCoursePurchased(activeFlashcardCourse.id)}
           onClose={() => setActiveFlashcardCourse(null)}
+          onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c)}
           onBuy={(c) => setActivePaymentItem(c)}
         />
       )}
@@ -584,6 +594,8 @@ export default function App() {
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
         onOpenTargetClock={() => setIsTargetClockOpen(true)}
+        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+        onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
       />
 
       {/* 14. Learning Analytics & Mastery Dashboard */}
@@ -625,6 +637,30 @@ export default function App() {
 
       {/* 18. Mobile PWA Install Prompt Banner */}
       <PwaInstallPrompt />
+
+      {/* 19. 1-Page High-Yield Cheat Sheet Modal */}
+      {activeCheatSheetCourse && (
+        <CheatSheetModal
+          course={activeCheatSheetCourse}
+          onClose={() => setActiveCheatSheetCourse(null)}
+          onOpenFlashcards={(c) => {
+            setActiveCheatSheetCourse(null);
+            setActiveFlashcardCourse(c);
+          }}
+        />
+      )}
+
+      {/* 20. Virtual Study Room (Study With Me) Modal */}
+      {isStudyRoomOpen && (
+        <VirtualStudyRoomModal
+          user={user}
+          onClose={() => setIsStudyRoomOpen(false)}
+          onOpenFlashcards={() => {
+            setIsStudyRoomOpen(false);
+            setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0]);
+          }}
+        />
+      )}
 
     </div>
   );

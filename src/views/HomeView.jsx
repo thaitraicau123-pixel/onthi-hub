@@ -39,6 +39,7 @@ export default function HomeView({
   onOpenLeaderboard,
   onOpenBlindBox,
   onOpenTargetClock,
+  onOpenCheatSheet,
   allCourses
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -406,6 +407,7 @@ export default function HomeView({
                 isPurchased={isCoursePurchased(course.id)}
                 onOpenFlashcards={onOpenFlashcards}
                 onOpenQuiz={onOpenQuiz}
+                onOpenCheatSheet={onOpenCheatSheet}
                 onBuy={onBuyCourse}
               />
             ))}

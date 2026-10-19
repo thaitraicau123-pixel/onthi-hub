@@ -42,7 +42,8 @@ export default function NotionTopbar({
   onOpenThemePicker,
   isWeatherEnabled = true,
   onToggleWeather,
-  onOpenTargetClock
+  onOpenTargetClock,
+  onOpenStudyRoom
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
@@ -189,6 +190,21 @@ export default function NotionTopbar({
           <kbd className="text-[9px] font-mono font-bold px-1 py-0.2 rounded bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/15">
             Ctrl+K
           </kbd>
+        </button>
+
+        {/* Live Virtual Study Room Button */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenStudyRoom?.();
+          }}
+          className="flex items-center space-x-1 px-2 sm:px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
+          title="Vào phòng tự học chung ảo cùng 40+ sĩ tử toàn quốc"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+          <span className="hidden md:inline">Phòng Học</span>
+          <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 text-emerald-950 dark:text-emerald-100 px-1 py-0.2 rounded font-black">Live</span>
         </button>
 
         {/* Theme Picker Button (Messenger / Instagram Theme Style) */}

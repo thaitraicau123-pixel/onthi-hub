@@ -43,6 +43,32 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
   const [inputMinutes, setInputMinutes] = useState(targetClock.dailyGoalMinutes || 60);
   const [inputEndTime, setInputEndTime] = useState(targetClock.targetEndTime || '23:00');
   const [toastMsg, setToastMsg] = useState('');
+  const [completedRoadmapTasks, setCompletedRoadmapTasks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('onthi_roadmap_milestones_v1');
+      return saved ? JSON.parse(saved) : ['p1_t1', 'p1_t2'];
+    } catch (e) {
+      return ['p1_t1', 'p1_t2'];
+    }
+  });
+
+  const toggleRoadmapTask = (taskId) => {
+    setCompletedRoadmapTasks(prev => {
+      const isDone = prev.includes(taskId);
+      const next = isDone ? prev.filter(id => id !== taskId) : [...prev, taskId];
+      try {
+        localStorage.setItem('onthi_roadmap_milestones_v1', JSON.stringify(next));
+      } catch (e) {}
+      if (!isDone) {
+        playSound('success');
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+        showToast('🎯 Hoàn thành cột mốc lộ trình! +25 XP');
+      } else {
+        playSound('flip');
+      }
+      return next;
+    });
+  };
 
   // 1-second live clock ticker for Hanoi time & target countdown
   useEffect(() => {
@@ -225,7 +251,20 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
             }`}
           >
             <History className="w-4 h-4" />
-            <span>📜 Vết Thời Gian Học Tập ({logs.length})</span>
+            <span>📜 Vết Thời Gian ({logs.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('roadmap')}
+            className={`pb-2.5 flex items-center space-x-1.5 border-b-2 transition-all cursor-pointer ${
+              activeTab === 'roadmap'
+                ? 'border-[#2383e2] text-[#1458a6] dark:text-sky-400 font-extrabold'
+                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Award className="w-4 h-4 text-amber-500" />
+            <span>🗺️ Lộ Trình 30 Ngày</span>
           </button>
         </div>
 
@@ -528,6 +567,149 @@ export default function TargetStudyClockModal({ isOpen, onClose, onOpenPomodoro,
 
             </div>
           )}
+
+          {/* TAB 3: LỘ TRÌNH ĐÍCH ĐẾN 30 NGÀY (ROADMAP MILESTONES) */}
+          {activeTab === 'roadmap' && (() => {
+            const allRoadmapTaskIds = [
+              'p1_t1', 'p1_t2', 'p1_t3',
+              'p2_t1', 'p2_t2', 'p2_t3',
+              'p3_t1', 'p3_t2', 'p3_t3',
+              'p4_t1', 'p4_t2', 'p4_t3'
+            ];
+            const completedCount = allRoadmapTaskIds.filter(id => completedRoadmapTasks.includes(id)).length;
+            const percent = Math.round((completedCount / allRoadmapTaskIds.length) * 100);
+
+            const PHASES = [
+              {
+                id: 'p1',
+                title: 'Chặng 1: Xây Nền Kiến Thức & Khai Phá (Ngày 1 - 7)',
+                badge: 'GIAI ĐOẠN 1',
+                badgeColor: 'bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border-sky-200',
+                desc: 'Làm quen nhịp học, nắm tổng quan đề thi và tích lũy 100 thẻ đầu tiên.',
+                tasks: [
+                  { id: 'p1_t1', label: 'Lật học thử ít nhất 30 thẻ Flashcard Anki trọng tâm' },
+                  { id: 'p1_t2', label: 'Đánh dấu sao ⭐ ít nhất 5 câu khó để ôn cấp tốc' },
+                  { id: 'p1_t3', label: 'Điểm danh hàng ngày nhận Xu và duy trì chuỗi Streak' }
+                ]
+              },
+              {
+                id: 'p2',
+                title: 'Chặng 2: Khắc Sâu Spaced Repetition SM-2 (Ngày 8 - 18)',
+                badge: 'GIAI ĐOẠN 2',
+                badgeColor: 'bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300 border-indigo-200',
+                desc: 'Củng cố trí nhớ dài hạn, ôn toàn bộ thẻ đến hạn (Due) đúng lịch chu kỳ.',
+                tasks: [
+                  { id: 'p2_t1', label: 'Hoàn thành 100% số thẻ đến hạn (Due Cards) mỗi ngày' },
+                  { id: 'p2_t2', label: 'Trải nghiệm chế độ Podcast 🎧 đọc tự động rảnh tay khi đi bộ/nấu ăn' },
+                  { id: 'p2_t3', label: 'Vào Phòng Tự Học Ảo hoàn thành 1 phiên Pomodoro 25 phút' }
+                ]
+              },
+              {
+                id: 'p3',
+                title: 'Chặng 3: Thi Thử Trắc Nghiệm Bấm Giờ & Sổ Tay Câu Sai (Ngày 19 - 25)',
+                badge: 'GIAI ĐOẠN 3',
+                badgeColor: 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border-amber-200',
+                desc: 'Rèn luyện phản xạ áp lực phòng thi, làm chủ tốc độ 3 giây/câu.',
+                tasks: [
+                  { id: 'p3_t1', label: 'Làm bài thi thử trắc nghiệm 10 câu có bấm giờ và đạt kết quả "ĐỖ"' },
+                  { id: 'p3_t2', label: 'Mở Sổ Tay Câu Sai để cày lại toàn bộ các câu bị đề thi lừa' },
+                  { id: 'p3_t3', label: 'Chơi Game Ghép Thẻ (Match Game) để tăng tốc độ phản xạ trí não' }
+                ]
+              },
+              {
+                id: 'p4',
+                title: 'Chặng 4: Đọc Cheatsheet 1 Trang & Sẵn Sàng Đi Thi (Ngày 26 - 30)',
+                badge: 'VỀ ĐÍCH',
+                badgeColor: 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border-emerald-200',
+                desc: 'Tập trung vào các con số thời hạn vàng, giữ tâm lý tự tin tuyệt đối.',
+                tasks: [
+                  { id: 'p4_t1', label: 'Đọc Bảng Cheatsheet Cứu Sinh 1 Trang trước ngày thi' },
+                  { id: 'p4_t2', label: 'Bấm nút "In 1 Trang / Lưu PDF" để kẹp vào sổ tay mang đi thi' },
+                  { id: 'p4_t3', label: 'Ngủ đủ giấc, uống đủ nước và sẵn sàng thi đỗ điểm cao!' }
+                ]
+              }
+            ];
+
+            return (
+              <div className="space-y-5 animate-fade-in text-xs">
+                {/* Overall Progress Banner */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-500 via-indigo-600 to-purple-600 text-white shadow-md space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-sky-200 block">
+                        TIẾN ĐỘ LỘ TRÌNH 30 NGÀY
+                      </span>
+                      <h4 className="text-base sm:text-lg font-black tracking-tight text-white mt-0.5">
+                        {percent === 100 ? '🎉 CHÚC MỪNG BẠN ĐÃ SẴN SÀNG 100% ĐI THI!' : `Bạn đã hoàn thành ${completedCount}/${allRoadmapTaskIds.length} mục tiêu lộ trình`}
+                      </h4>
+                    </div>
+                    <div className="text-2xl sm:text-3xl font-black font-mono">
+                      {percent}%
+                    </div>
+                  </div>
+
+                  <div className="w-full bg-black/25 h-2.5 rounded-full overflow-hidden p-0.5">
+                    <div
+                      className="bg-white h-full rounded-full transition-all duration-500"
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Phases List */}
+                <div className="space-y-4">
+                  {PHASES.map((phase) => (
+                    <div
+                      key={phase.id}
+                      className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-800 space-y-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <span className={`text-[10px] font-bold px-2 py-0.2 rounded-full border ${phase.badgeColor}`}>
+                              {phase.badge}
+                            </span>
+                            <h5 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                              {phase.title}
+                            </h5>
+                          </div>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                            {phase.desc}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
+                        {phase.tasks.map((task) => {
+                          const isDone = completedRoadmapTasks.includes(task.id);
+                          return (
+                            <label
+                              key={task.id}
+                              className={`flex items-start space-x-2.5 p-2 rounded-xl transition-colors cursor-pointer select-none ${
+                                isDone
+                                  ? 'bg-emerald-50/80 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200'
+                                  : 'bg-white dark:bg-slate-900 hover:bg-slate-100 text-slate-800 dark:text-slate-200'
+                              } border ${isDone ? 'border-emerald-200 dark:border-emerald-800' : 'border-slate-200/80 dark:border-slate-800'}`}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isDone}
+                                onChange={() => toggleRoadmapTask(task.id)}
+                                className="mt-0.5 w-4 h-4 rounded text-[#2383e2] accent-[#2383e2] cursor-pointer"
+                              />
+                              <span className={`text-xs ${isDone ? 'line-through opacity-80' : 'font-medium'}`}>
+                                {task.label}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
         </div>
 

@@ -46,6 +46,7 @@ export default function LibraryView({
   onOpenPassDeck,
   onOpenSellDeck,
   onOpenMistakes,
+  onOpenCheatSheet,
   onSwitchTab
 }) {
   const [searchLibrary, setSearchLibrary] = useState('');
@@ -447,6 +448,17 @@ export default function LibraryView({
                                   >
                                     <FileText className="w-3.5 h-3.5 text-[#9065b0]" />
                                     <span>📝 Xuất Markdown Notion (.md)</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setOpenMenuDeckId(null);
+                                      onOpenCheatSheet?.(course);
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] flex items-center space-x-2 cursor-pointer transition-colors text-emerald-800 font-semibold"
+                                  >
+                                    <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                                    <span>📄 Xem Cheatsheet 1 Trang</span>
                                   </button>
                                   <button
                                     type="button"

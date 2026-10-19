@@ -7,6 +7,7 @@ export default function CourseCard({
   isPurchased,
   onOpenFlashcards,
   onOpenQuiz,
+  onOpenCheatSheet,
   onBuy
 }) {
   const [hasSnowCaps, setHasSnowCaps] = useState(() => !!getSelectedTheme()?.hasSnowCaps);
@@ -165,23 +166,35 @@ export default function CourseCard({
         </div>
 
         {/* Interactive Preview Buttons */}
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-3 gap-1">
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
+            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
+            title="Xem trước thẻ Anki"
           >
             <Layers className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
-            <span>Xem Thẻ</span>
+            <span>Lật Thẻ</span>
           </button>
 
           <button
             type="button"
             onClick={() => onOpenQuiz(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-2 text-xs font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
+            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
+            title="Thi thử trắc nghiệm 10 câu bấm giờ"
           >
             <PlayCircle className="w-3 h-3 text-[#cc782f] dark:text-amber-400" />
             <span>Thi Thử</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onOpenCheatSheet && onOpenCheatSheet(course)}
+            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 rounded-lg border border-emerald-200 dark:border-emerald-700/60 transition-colors shadow-2xs touch-3d cursor-pointer"
+            title="Bảng Cheatsheet tóm tắt 1 trang & In tài liệu cứu sinh"
+          >
+            <FileText className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+            <span>Tóm Tắt</span>
           </button>
         </div>
 

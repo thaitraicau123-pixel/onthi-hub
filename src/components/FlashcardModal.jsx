@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Download,
   Printer,
+  FileText,
   Sparkles,
   Lock,
   CheckCircle2,
@@ -37,6 +38,7 @@ export default function FlashcardModal({
   course,
   isPurchased,
   onClose,
+  onOpenCheatSheet,
   onBuy
 }) {
   const allDeckCards = course?.previewCards?.length
@@ -472,6 +474,17 @@ export default function FlashcardModal({
                   <span>In A4</span>
                 </button>
               </>
+            )}
+
+            {onOpenCheatSheet && (
+              <button
+                onClick={() => onOpenCheatSheet(course)}
+                className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
+                title="Xem bảng Cheatsheet tóm tắt 1 trang & In tài liệu cứu sinh"
+              >
+                <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Tóm Tắt 1 Trang</span>
+              </button>
             )}
 
             <button
