@@ -46,7 +46,13 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   History,
-  Filter
+  Filter,
+  ChevronUp,
+  ChevronDown,
+  TrendingUp,
+  TrendingDown,
+  ShieldCheck,
+  Unlock
 } from 'lucide-react';
 import {
   isUserAdmin,
@@ -90,7 +96,11 @@ import {
   adminDirectAdjustUserBalance,
   getUserBalanceForEmail,
   adminDeleteUser,
-  purgeAllTestAccounts
+  purgeAllTestAccounts,
+  adminUpdateUserStatusAndTier,
+  promoteUserTier,
+  demoteUserTier,
+  toggleUserSuspension
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck, deleteMarketplaceDeck } from '../data/marketplaceData';
@@ -145,6 +155,16 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
   const [isAdjusting, setIsAdjusting] = useState(false);
   const [adjustToast, setAdjustToast] = useState('');
   const [copiedUserEmail, setCopiedUserEmail] = useState('');
+
+  // Status & Tier Modal State
+  const [statusModal, setStatusModal] = useState({
+    isOpen: false,
+    user: null,
+    tier: 'free',
+    role: 'student',
+    status: 'active'
+  });
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   // Firebase Config State
   const [firebaseConfig, setFirebaseConfig] = useState(() => getFirebaseConfig());
@@ -393,6 +413,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
     if (userFilter === 'pending') return u.hasPending;
     if (userFilter === 'balance') return (u.currentBalance || 0) > 0;
     if (userFilter === 'vip') return u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator';
+    if (userFilter === 'locked') return u.status === 'suspended';
     return true;
   });
 
@@ -472,6 +493,75 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
       setAdjustToast(`🧹 Đã dọn dẹp ${count} tài khoản test thành công!`);
       await reloadData();
       setTimeout(() => setAdjustToast(''), 4000);
+    }
+  };
+
+  const handleQuickPromote = async (u) => {
+    playSound('flip');
+    const res = await promoteUserTier(u.email);
+    if (res.success) {
+      playSound('success');
+      setAdjustToast(`🚀 Đã TĂNG CẤP thành công cho ${u.displayName || u.email} lên gói ${res.tier.toUpperCase()}!`);
+      await reloadData();
+      setTimeout(() => setAdjustToast(''), 4000);
+    } else {
+      alert(res.message || 'Không thể tăng cấp');
+    }
+  };
+
+  const handleQuickDemote = async (u) => {
+    playSound('flip');
+    const res = await demoteUserTier(u.email);
+    if (res.success) {
+      playSound('success');
+      setAdjustToast(`🔻 Đã GIÁNG CẤP cho ${u.displayName || u.email} xuống gói ${res.tier.toUpperCase()}!`);
+      await reloadData();
+      setTimeout(() => setAdjustToast(''), 4000);
+    } else {
+      alert(res.message || 'Không thể giáng cấp');
+    }
+  };
+
+  const handleQuickToggleSuspension = async (u) => {
+    playSound('flip');
+    const res = await toggleUserSuspension(u.email);
+    if (res.success) {
+      playSound('success');
+      const isLocked = res.status === 'suspended';
+      setAdjustToast(
+        isLocked
+          ? `🔒 Đã KHÓA / ĐÌNH CHỈ tài khoản ${u.email}!`
+          : `🔓 Đã MỞ KHÓA tài khoản ${u.email} hoạt động bình thường!`
+      );
+      await reloadData();
+      setTimeout(() => setAdjustToast(''), 4000);
+    } else {
+      alert(res.message || 'Không thể thay đổi trạng thái');
+    }
+  };
+
+  const handleSaveStatusModal = async (e) => {
+    e?.preventDefault();
+    if (!statusModal.user) return;
+    setIsUpdatingStatus(true);
+    try {
+      const res = await adminUpdateUserStatusAndTier({
+        email: statusModal.user.email,
+        tier: statusModal.tier,
+        role: statusModal.role,
+        status: statusModal.status
+      });
+      if (res.success) {
+        playSound('success');
+        setAdjustToast(`✅ Đã cập nhật Cấp Bậc (${res.tier.toUpperCase()}) & Trạng Thái (${res.status}) cho ${statusModal.user.email}!`);
+        setStatusModal({ isOpen: false, user: null, tier: 'free', role: 'student', status: 'active' });
+        await reloadData();
+        setTimeout(() => setAdjustToast(''), 4000);
+      } else {
+        alert(res.message || 'Không thể cập nhật trạng thái');
+      }
+    } finally {
+      setIsUpdatingStatus(false);
     }
   };
 
@@ -1170,6 +1260,19 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                     >
                       VIP / Creator ({userBalancesList.filter(u => u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator').length})
                     </button>
+                    <button
+                      onClick={() => setUserFilter('locked')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all flex items-center space-x-1 ${
+                        userFilter === 'locked'
+                          ? 'bg-rose-600 text-white shadow-xs'
+                          : 'text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                      }`}
+                    >
+                      <span>🔒 Bị Khóa</span>
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-100 text-rose-900 dark:bg-rose-900 dark:text-rose-200">
+                        {userBalancesList.filter((u) => u.status === 'suspended').length}
+                      </span>
+                    </button>
                   </div>
 
                   <button
@@ -1266,20 +1369,66 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                             </div>
                           </div>
 
-                          {/* Badges */}
-                          <div className="flex flex-col items-end space-y-1 shrink-0">
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                              u.role === 'admin'
-                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
-                                : u.role === 'creator'
-                                ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
-                                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
-                            }`}>
-                              {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : '👨‍🎓 Học Viên'}
-                            </span>
-                            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-sky-300 border border-blue-200 dark:border-blue-900 uppercase">
-                              Gói: {u.tier || 'free'}
-                            </span>
+                          {/* Badges & Inline Promote/Demote */}
+                          <div className="flex flex-col items-end space-y-1.5 shrink-0">
+                            {/* Role & Status */}
+                            <div className="flex items-center space-x-1">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                                u.role === 'admin'
+                                  ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                                  : u.role === 'creator'
+                                  ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                                  : u.role === 'vip'
+                                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                                  : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                              }`}>
+                                {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : u.role === 'vip' ? '💎 VIP' : '👨‍🎓 Học Viên'}
+                              </span>
+
+                              {u.status === 'suspended' ? (
+                                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800 animate-pulse">
+                                  🔒 Đã Khóa
+                                </span>
+                              ) : u.status === 'verified' ? (
+                                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
+                                  🔵 Tích Xanh
+                                </span>
+                              ) : null}
+                            </div>
+
+                            {/* Tier Badge with Inline Promote / Demote Controls */}
+                            <div className="flex items-center space-x-1">
+                              <button
+                                type="button"
+                                onClick={() => setStatusModal({ isOpen: true, user: u, tier: u.tier || 'free', role: u.role || 'student', status: u.status || 'active' })}
+                                className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/80 dark:hover:bg-blue-900/80 text-blue-700 dark:text-sky-300 border border-blue-200 dark:border-blue-900 uppercase transition-colors"
+                                title="Bấm để mở trình quản lý cấp bậc & status"
+                              >
+                                Gói: {u.tier || 'free'}
+                              </button>
+
+                              {/* 1-Click Promote / Demote arrows */}
+                              <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5 border border-slate-200 dark:border-slate-700">
+                                <button
+                                  type="button"
+                                  onClick={() => handleQuickPromote(u)}
+                                  disabled={u.tier === 'ultra'}
+                                  className="p-1 rounded hover:bg-emerald-100 dark:hover:bg-emerald-950 text-slate-500 hover:text-emerald-600 disabled:opacity-20 transition-colors"
+                                  title="Tăng 1 cấp bậc (Promote tier: Free -> Plus -> Pro -> Ultra)"
+                                >
+                                  <ChevronUp className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleQuickDemote(u)}
+                                  disabled={u.tier === 'free'}
+                                  className="p-1 rounded hover:bg-rose-100 dark:hover:bg-rose-950 text-slate-500 hover:text-rose-600 disabled:opacity-20 transition-colors"
+                                  title="Giáng 1 cấp bậc (Demote tier: Ultra -> Pro -> Plus -> Free)"
+                                >
+                                  <ChevronDown className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -1439,7 +1588,16 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                           </button>
                         </div>
 
-                        <div className="flex items-center space-x-1.5">
+                        <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                          <button
+                            onClick={() => setStatusModal({ isOpen: true, user: u, tier: u.tier || 'free', role: u.role || 'student', status: u.status || 'active' })}
+                            className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/70 dark:hover:bg-blue-900/90 text-[#2383e2] dark:text-sky-300 border border-blue-200 dark:border-blue-800 font-black text-xs flex items-center space-x-1 transition-colors"
+                            title="Tùy chỉnh tăng/giáng cấp bậc gói (Free/Plus/Pro/Ultra), vai trò và trạng thái"
+                          >
+                            <TrendingUp className="w-3.5 h-3.5" />
+                            <span>Cấp Bậc & Status</span>
+                          </button>
+
                           <button
                             onClick={() => setSelectedUserHistory(u)}
                             className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center space-x-1 transition-colors"
@@ -1448,6 +1606,20 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                             <History className="w-3.5 h-3.5" />
                             <span>Lịch Sử GD</span>
                           </button>
+
+                          {u.email !== PRIMARY_ADMIN_EMAIL && (
+                            <button
+                              onClick={() => handleQuickToggleSuspension(u)}
+                              className={`p-1.5 rounded-lg border transition-colors ${
+                                u.status === 'suspended'
+                                  ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-amber-600'
+                              }`}
+                              title={u.status === 'suspended' ? 'Mở khóa tài khoản' : 'Khóa tài khoản'}
+                            >
+                              {u.status === 'suspended' ? <Unlock className="w-3.5 h-3.5 text-amber-600" /> : <Lock className="w-3.5 h-3.5" />}
+                            </button>
+                          )}
 
                           {u.email !== PRIMARY_ADMIN_EMAIL && (
                             <button
@@ -3471,6 +3643,216 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                 Đóng
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: STATUS & TIER MANAGEMENT (TĂNG CẤP / GIÁNG CẤP / TRẠNG THÁI) */}
+      {statusModal.isOpen && statusModal.user && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-7 relative overflow-hidden max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 rounded-2xl bg-blue-100 dark:bg-blue-950 text-[#2383e2] dark:text-sky-400">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900 dark:text-white">
+                    Tăng / Giáng Cấp & Status Tài Khoản
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Phân quyền, nâng hạ gói dịch vụ và kiểm soát truy cập
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setStatusModal({ ...statusModal, isOpen: false })}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Target User Info */}
+            <div className="my-4 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 flex items-center justify-between shrink-0">
+              <div className="min-w-0 pr-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Học Viên</span>
+                <span className="font-black text-xs text-slate-900 dark:text-white block truncate">{statusModal.user.displayName || statusModal.user.email}</span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">{statusModal.user.email}</span>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Số Dư Ví</span>
+                <span className="font-black text-sm text-amber-600 dark:text-amber-400">
+                  {getUserBalanceForEmail(statusModal.user.email).toLocaleString()} Xu
+                </span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSaveStatusModal} className="overflow-y-auto space-y-4 pr-1 flex-1">
+              {/* SECTION 1: CẤP BẬC GÓI (TIER) */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+                    <span>👑 Cấp Bậc Gói Dịch Vụ:</span>
+                  </label>
+                  {/* Quick promote & demote buttons */}
+                  <div className="flex items-center space-x-1">
+                    <button
+                      type="button"
+                      disabled={statusModal.tier === 'ultra'}
+                      onClick={() => {
+                        const tiers = ['free', 'plus', 'pro', 'ultra'];
+                        const idx = tiers.indexOf(statusModal.tier);
+                        if (idx < tiers.length - 1) setStatusModal({ ...statusModal, tier: tiers[idx + 1] });
+                      }}
+                      className="px-2 py-0.5 rounded-md bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-300 text-[10px] font-black disabled:opacity-30 transition-colors flex items-center space-x-0.5"
+                    >
+                      <ChevronUp className="w-3 h-3" />
+                      <span>Tăng 1 Cấp</span>
+                    </button>
+                    <button
+                      type="button"
+                      disabled={statusModal.tier === 'free'}
+                      onClick={() => {
+                        const tiers = ['free', 'plus', 'pro', 'ultra'];
+                        const idx = tiers.indexOf(statusModal.tier);
+                        if (idx > 0) setStatusModal({ ...statusModal, tier: tiers[idx - 1] });
+                      }}
+                      className="px-2 py-0.5 rounded-md bg-rose-100 hover:bg-rose-200 dark:bg-rose-950 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-300 text-[10px] font-black disabled:opacity-30 transition-colors flex items-center space-x-0.5"
+                    >
+                      <ChevronDown className="w-3 h-3" />
+                      <span>Giáng 1 Cấp</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { key: 'free', name: 'Free', desc: '3 lượt AI/ngày • Phí 15%' },
+                    { key: 'plus', name: 'Plus ⭐', desc: '20 lượt AI/ngày • Phí 10%' },
+                    { key: 'pro', name: 'Pro 🚀', desc: '50 lượt AI/ngày • Phí 7%' },
+                    { key: 'ultra', name: 'Ultra VIP 👑', desc: 'Không giới hạn • Phí 3%' }
+                  ].map((t) => (
+                    <button
+                      key={t.key}
+                      type="button"
+                      onClick={() => setStatusModal({ ...statusModal, tier: t.key })}
+                      className={`p-2.5 rounded-xl border text-left transition-all ${
+                        statusModal.tier === t.key
+                          ? 'bg-[#2383e2]/10 border-[#2383e2] ring-2 ring-[#2383e2]/30 shadow-xs'
+                          : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs font-black ${statusModal.tier === t.key ? 'text-[#2383e2] dark:text-sky-400' : 'text-slate-800 dark:text-slate-200'}`}>
+                          {t.name}
+                        </span>
+                        {statusModal.tier === t.key && <Check className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />}
+                      </div>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">{t.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SECTION 2: VAI TRÒ (ROLE) */}
+              <div>
+                <label className="block text-xs font-black text-slate-800 dark:text-slate-200 mb-2">
+                  🎓 Vai Trò Tài Khoản (Role):
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { key: 'student', label: '👨‍🎓 Học Viên', desc: 'Người học cơ bản' },
+                    { key: 'creator', label: '🎓 Creator', desc: 'Tác giả tạo và bán bộ thẻ' },
+                    { key: 'vip', label: '💎 Khách VIP', desc: 'Thành viên ưu tiên' },
+                    { key: 'admin', label: '🛡️ Quản Trị Viên', desc: 'Toàn quyền kiểm soát' }
+                  ].map((r) => (
+                    <button
+                      key={r.key}
+                      type="button"
+                      onClick={() => setStatusModal({ ...statusModal, role: r.key })}
+                      className={`p-2.5 rounded-xl border text-left transition-all ${
+                        statusModal.role === r.key
+                          ? 'bg-purple-50 dark:bg-purple-950/40 border-purple-400 dark:border-purple-600 ring-2 ring-purple-400/30'
+                          : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-xs font-black ${statusModal.role === r.key ? 'text-purple-700 dark:text-purple-300' : 'text-slate-800 dark:text-slate-200'}`}>
+                          {r.label}
+                        </span>
+                        {statusModal.role === r.key && <Check className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />}
+                      </div>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">{r.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SECTION 3: TRẠNG THÁI HOẠT ĐỘNG (STATUS) */}
+              <div>
+                <label className="block text-xs font-black text-slate-800 dark:text-slate-200 mb-2">
+                  ⚡ Trạng Thái Hoạt Động (Account Status):
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { key: 'active', label: '🟢 Hoạt Động', desc: 'Truy cập bình thường' },
+                    { key: 'verified', label: '🔵 Tích Xanh', desc: 'Đã xác thực uy tín' },
+                    { key: 'suspended', label: '🔴 Khóa / Đình Chỉ', desc: 'Chặn quyền truy cập' }
+                  ].map((s) => (
+                    <button
+                      key={s.key}
+                      type="button"
+                      onClick={() => setStatusModal({ ...statusModal, status: s.key })}
+                      className={`p-2.5 rounded-xl border text-left transition-all ${
+                        statusModal.status === s.key
+                          ? s.key === 'suspended'
+                            ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-500 ring-2 ring-rose-400/30'
+                            : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-500 ring-2 ring-emerald-400/30'
+                          : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-black text-slate-800 dark:text-slate-200 truncate">
+                          {s.label}
+                        </span>
+                        {statusModal.status === s.key && <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />}
+                      </div>
+                      <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-0.5">{s.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setStatusModal({ ...statusModal, isOpen: false })}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdatingStatus}
+                  className="px-5 py-2.5 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-black text-xs shadow-md flex items-center space-x-1.5 transition-all disabled:opacity-50"
+                >
+                  {isUpdatingStatus ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Đang Lưu...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Lưu Cấp Bậc & Status</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

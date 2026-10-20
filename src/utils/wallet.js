@@ -14,6 +14,7 @@ import {
   getCurrentUser,
   logoutUser
 } from './firebaseConfig.js';
+import { setUserTier } from './userTier.js';
 
 const WALLET_BALANCE_KEY = 'onthi_wallet_balance';
 const TRANSACTIONS_KEY = 'onthi_wallet_transactions';
@@ -1000,6 +1001,170 @@ export async function adminDeleteUser(email) {
   } catch (err) {
     return { success: false, message: err.message };
   }
+}
+
+// Admin updates user status, tier (cấp bậc), and role
+export async function adminUpdateUserStatusAndTier({ email, tier, role, status }) {
+  if (!email) return { success: false, message: 'Email không hợp lệ' };
+  const normalized = email.toLowerCase().trim();
+
+  try {
+    // 1. Update in USERS_REGISTRY_KEY
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    const registry = raw ? JSON.parse(raw) : [];
+    const existingIndex = registry.findIndex((u) => (u.email || '').toLowerCase().trim() === normalized);
+
+    const oldRecord = existingIndex >= 0 ? registry[existingIndex] : {};
+    const newTier = tier !== undefined ? tier : (oldRecord.tier || 'free');
+    const newRole = role !== undefined ? role : (oldRecord.role || 'student');
+    const newStatus = status !== undefined ? status : (oldRecord.status || 'active');
+
+    const updatedRecord = {
+      ...oldRecord,
+      email,
+      displayName: oldRecord.displayName || email.split('@')[0],
+      photoURL: oldRecord.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      tier: newTier,
+      role: newRole,
+      status: newStatus,
+      updatedAt: new Date().toISOString()
+    };
+
+    if (existingIndex >= 0) {
+      registry[existingIndex] = updatedRecord;
+    } else {
+      registry.push(updatedRecord);
+    }
+    localStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(registry));
+
+    // 2. Dual-write to Firebase Firestore
+    const db = getFirestoreDb();
+    if (db) {
+      try {
+        await withFirestoreTimeout(
+          setDoc(
+            doc(db, 'users', normalized),
+            {
+              email,
+              tier: newTier,
+              role: newRole,
+              status: newStatus,
+              updatedAt: new Date().toISOString()
+            },
+            { merge: true }
+          ),
+          2000
+        );
+      } catch (err) {}
+    }
+
+    // 3. If target user is current active session, apply locally
+    const cur = getCurrentUser();
+    if (cur?.email && cur.email.toLowerCase().trim() === normalized) {
+      setUserTier(newTier);
+      const updatedProfile = {
+        ...cur,
+        tier: newTier,
+        role: newRole,
+        status: newStatus
+      };
+      try {
+        localStorage.setItem('onthi_user_profile', JSON.stringify(updatedProfile));
+      } catch (e) {}
+    }
+
+    // 4. Broadcast events
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('onthi-user-tier-updated', {
+          detail: { email: normalized, tier: newTier, role: newRole, status: newStatus }
+        })
+      );
+      window.dispatchEvent(new CustomEvent('onthi-user-balance-updated'));
+    }
+
+    return {
+      success: true,
+      tier: newTier,
+      role: newRole,
+      status: newStatus,
+      user: updatedRecord
+    };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
+
+// Quick helper: Promote user tier by 1 level (Tăng 1 cấp bậc)
+export async function promoteUserTier(email) {
+  if (!email) return { success: false };
+  const normalized = email.toLowerCase().trim();
+  const tiers = ['free', 'plus', 'pro', 'ultra'];
+
+  let curTier = 'free';
+  const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+  if (raw) {
+    try {
+      const reg = JSON.parse(raw);
+      const found = reg.find((u) => (u.email || '').toLowerCase().trim() === normalized);
+      if (found?.tier) curTier = found.tier;
+    } catch (e) {}
+  }
+
+  const curIdx = tiers.indexOf(curTier);
+  if (curIdx >= tiers.length - 1) {
+    return { success: false, message: 'Tài khoản đã ở cấp bậc cao nhất (Ultra VIP)!' };
+  }
+  const nextTier = tiers[curIdx + 1];
+
+  return adminUpdateUserStatusAndTier({ email: normalized, tier: nextTier });
+}
+
+// Quick helper: Demote user tier by 1 level (Giáng 1 cấp bậc)
+export async function demoteUserTier(email) {
+  if (!email) return { success: false };
+  const normalized = email.toLowerCase().trim();
+  const tiers = ['free', 'plus', 'pro', 'ultra'];
+
+  let curTier = 'free';
+  const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+  if (raw) {
+    try {
+      const reg = JSON.parse(raw);
+      const found = reg.find((u) => (u.email || '').toLowerCase().trim() === normalized);
+      if (found?.tier) curTier = found.tier;
+    } catch (e) {}
+  }
+
+  const curIdx = tiers.indexOf(curTier);
+  if (curIdx <= 0) {
+    return { success: false, message: 'Tài khoản đã ở cấp bậc thấp nhất (Free)!' };
+  }
+  const prevTier = tiers[curIdx - 1];
+
+  return adminUpdateUserStatusAndTier({ email: normalized, tier: prevTier });
+}
+
+// Quick helper: Toggle account suspension / locked status (Khóa / Mở khóa tài khoản)
+export async function toggleUserSuspension(email) {
+  if (!email) return { success: false };
+  const normalized = email.toLowerCase().trim();
+  if (normalized === 'thaitraicau123@gmail.com') {
+    return { success: false, message: 'Không thể khóa tài khoản Quản trị viên tối cao!' };
+  }
+
+  let curStatus = 'active';
+  const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+  if (raw) {
+    try {
+      const reg = JSON.parse(raw);
+      const found = reg.find((u) => (u.email || '').toLowerCase().trim() === normalized);
+      if (found?.status) curStatus = found.status;
+    } catch (e) {}
+  }
+
+  const nextStatus = curStatus === 'suspended' ? 'active' : 'suspended';
+  return adminUpdateUserStatusAndTier({ email: normalized, status: nextStatus });
 }
 
 // Register a user profile into the registry
