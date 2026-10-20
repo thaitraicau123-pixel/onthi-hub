@@ -195,68 +195,40 @@ export default function GameQuestDock({
           {/* Center Graphic: Authentic Cartoon Sword */}
           <div className="my-auto relative flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
             <svg
-              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]"
+              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_6px_rgba(0,0,0,0.45)]"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* White Cartoon Steel Blade pointing up-right at 45° */}
-              <path
-                d="M48 10L54 16L28 42L22 36L48 10Z"
-                fill="#ffffff"
-                stroke="#141416"
-                strokeWidth="3"
-                strokeLinejoin="round"
-              />
-              {/* Blade Center Ridge / Subtle Shading */}
-              <path d="M48 10L24 38L22 36L48 10Z" fill="#cbd5e1" />
-              <path d="M48 10L24 38" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" />
+              <g transform="rotate(45, 32, 32)">
+                {/* Blade Right Half (Shaded) */}
+                <path d="M32 6 L38 14 L38 36 L32 36 Z" fill="#cbd5e1" />
+                {/* Blade Left Half (Highlight) */}
+                <path d="M32 6 L26 14 L26 36 L32 36 Z" fill="#ffffff" />
+                {/* Center Spine line */}
+                <line x1="32" y1="7" x2="32" y2="36" stroke="#94a3b8" strokeWidth="1.5" />
+                {/* Blade Outer Outline */}
+                <path d="M32 6 L38 14 L38 36 L26 36 L26 14 Z" stroke="#141416" strokeWidth="3" strokeLinejoin="round" />
 
-              {/* Golden-Yellow Oval Crossguard */}
-              <ellipse
-                cx="24"
-                cy="40"
-                rx="12"
-                ry="4"
-                transform="rotate(-45 24 40)"
-                fill="#fbbf24"
-                stroke="#141416"
-                strokeWidth="3"
-              />
+                {/* Crossguard (Perpendicular Golden Rounded Bar) */}
+                <rect x="16" y="35" width="32" height="7" rx="3.5" fill="#fbbf24" stroke="#141416" strokeWidth="3" />
+                {/* Crossguard Highlight */}
+                <line x1="20" y1="37" x2="44" y2="37" stroke="#fef08a" strokeWidth="1.5" strokeLinecap="round" />
 
-              {/* Purple Cylindrical Handle */}
-              <path
-                d="M21 43L15 49"
-                stroke="#8b5cf6"
-                strokeWidth="6"
-                strokeLinecap="round"
-              />
-              <path
-                d="M21 43L15 49"
-                stroke="#141416"
-                strokeWidth="8"
-                strokeLinecap="round"
-                style={{ zIndex: -1 }}
-              />
-              <path
-                d="M21 43L15 49"
-                stroke="#8b5cf6"
-                strokeWidth="5"
-                strokeLinecap="round"
-              />
+                {/* Grip (Purple Handle) */}
+                <rect x="28.5" y="42" width="7" height="11" rx="2" fill="#8b5cf6" stroke="#141416" strokeWidth="2.8" />
+                {/* Grip Wraps */}
+                <line x1="29.5" y1="46" x2="34.5" y2="46" stroke="#6d28d9" strokeWidth="1.5" />
+                <line x1="29.5" y1="49.5" x2="34.5" y2="49.5" stroke="#6d28d9" strokeWidth="1.5" />
 
-              {/* Golden-Yellow Pommel Ball */}
-              <circle
-                cx="14"
-                cy="50"
-                r="4.5"
-                fill="#fbbf24"
-                stroke="#141416"
-                strokeWidth="2.8"
-              />
+                {/* Pommel (Golden Round Ball) */}
+                <circle cx="32" cy="56" r="5" fill="#fbbf24" stroke="#141416" strokeWidth="2.8" />
+                {/* Pommel Specular Highlight */}
+                <circle cx="30.5" cy="54.5" r="1.2" fill="#ffffff" />
+              </g>
 
-              {/* Star Sparkle at Blade Tip */}
-              <circle cx="50" cy="14" r="1.5" fill="#ffffff" />
+              {/* Sparkle Star near tip */}
+              <text x="46" y="14" fill="#ffffff" fontSize="12" fontWeight="bold">✦</text>
             </svg>
           </div>
 
