@@ -3,7 +3,6 @@ import CourseCard from '../components/CourseCard';
 import ComboBanner from '../components/ComboBanner';
 import TestimonialsFaq from '../components/TestimonialsFaq';
 import ExamCountdownBanner from '../components/ExamCountdownBanner';
-import GameQuestDock from '../components/GameQuestDock';
 import { CATEGORIES, COURSES_DATA, COMBO_PACKAGE } from '../data/coursesData';
 import { isCoursePurchased } from '../utils/storage';
 import {
@@ -43,9 +42,7 @@ export default function HomeView({
   onOpenCheatSheet,
   onOpenStudyRoom,
   allCourses,
-  onShowToast,
-  walletBalance = 100,
-  onOpenWallet
+  onShowToast
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchHome, setSearchHome] = useState('');
@@ -110,18 +107,6 @@ export default function HomeView({
   return (
     <div className="space-y-6 animate-fade-in pb-16 text-[#37352f] dark:text-[#f8fafc]">
       
-      {/* =========================================================
-          3D CARTOON GAME QUEST DOCK (ARCADE 3D STYLE)
-          ========================================================= */}
-      <GameQuestDock
-        walletBalance={walletBalance}
-        onOpenFlashcards={() => allCourses[0] && onOpenFlashcards(allCourses[0])}
-        onOpenQuiz={() => allCourses[0] && onOpenQuiz(allCourses[0])}
-        onOpenStudyRoom={onOpenStudyRoom}
-        onOpenShop={() => onSwitchTab('marketplace')}
-        onOpenWallet={onOpenWallet || (() => onSwitchTab('wallet'))}
-      />
-
       {/* =========================================================
           HERO GLASS DASHBOARD CARD: HIGH-CONTRAST + 1-CLICK STUDY
           ========================================================= */}

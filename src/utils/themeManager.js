@@ -3,60 +3,6 @@
 
 export const THEMES = [
   // =========================================================================
-  // 0. CARTOON QUEST 3D (BRAWL STARS & ARCADE 3D UI)
-  // =========================================================================
-  {
-    id: 'game-quest-3d',
-    name: 'Cartoon Quest 3D',
-    subtitle: 'Đấu Trường Học Tập • Arcade 3D',
-    description: 'Giao diện phong cách 3D Game Brawl Stars & Duolingo với nút bấm 3D xúc giác, kim cương tím và các biểu tượng rực rỡ.',
-    category: '3D Game UI',
-    artDetail: '⚔️ Đấu Trường Cartoon Quest 3D & Kim Cương Tím',
-    weatherType: 'mario-stars',
-    isDark: true,
-    previewGradient: 'from-blue-500 via-pink-500 to-amber-500',
-    primaryColor: '#7c35d4',
-    primaryHover: '#6a2cb8',
-    primaryText: '#ffffff',
-    bgClass: 'bg-[#120824]',
-    canvasBgClass: 'bg-[#120824]',
-    sidebarBgClass: 'bg-[#1b0c36]/95 backdrop-blur-xl',
-    topbarBgClass: 'bg-[#120824]/95 backdrop-blur-xl',
-    cardBgClass: 'bg-[#200e40]/95 backdrop-blur-md',
-    cardAltBgClass: 'bg-[#2a1354]',
-    textClass: 'text-white font-medium',
-    subtextClass: 'text-purple-200',
-    borderClass: 'border-purple-500/35',
-    accentPillClass: 'bg-[#7c35d4] text-white font-bold shadow-purple-500/25',
-    accentTagClass: 'bg-purple-950/70 text-purple-300 border-purple-700/50',
-    wallpaperGlow: 'radial-gradient(ellipse at 80% 0%, rgba(124, 53, 212, 0.3) 0%, transparent 60%)',
-    icons: {
-      logo: '💎',
-      workspace: '⚔️',
-      home: '🏠',
-      library: '📦',
-      create: '✨',
-      marketplace: '🪙',
-      community: '🚩',
-      analytics: '📊',
-      mistakes: '🍬',
-      leaderboard: '🏆',
-      blindbox: '🎁',
-      changelog: '💎',
-      wallet: '💎',
-      due: '⏰',
-      mastered: '⭐',
-      newCard: '✨',
-      streak: '🔥',
-      checkin: '💎',
-      sparkle: '✦',
-      study3D: '🎮',
-      quiz: '🎯',
-      match: '⚔️'
-    }
-  },
-
-  // =========================================================================
   // 1. SUPER MARIO 3D CINEMA (3D 4K WALLPAPER - AS REQUESTED)
   // =========================================================================
   {
