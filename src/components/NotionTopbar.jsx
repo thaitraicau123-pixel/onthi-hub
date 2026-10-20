@@ -17,7 +17,7 @@ import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '..
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import { getHanoiTimeString } from '../utils/hanoiTime';
-import { getUnreadDirectMessagesCount, subscribeToDirectMessages } from '../utils/directMessaging';
+import { getUnreadDirectMessagesCount, subscribeToDirectMessages, getCurrentUserParticipant } from '../utils/directMessaging';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -49,11 +49,12 @@ export default function NotionTopbar({
   const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
 
   useEffect(() => {
+    const curParticipant = getCurrentUserParticipant(user);
     const updateDmCount = () => {
-      setUnreadDmCount(getUnreadDirectMessagesCount(user?.uid || user?.email));
+      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant.id));
     };
     updateDmCount();
-    const unsubDm = subscribeToDirectMessages(user?.uid || user?.email, updateDmCount);
+    const unsubDm = subscribeToDirectMessages(curParticipant.id, updateDmCount);
     return () => {
       if (typeof unsubDm === 'function') unsubDm();
     };

@@ -54,7 +54,8 @@ import {
   ShieldCheck,
   Unlock,
   LayoutGrid,
-  List
+  List,
+  MessageCircle
 } from 'lucide-react';
 import {
   isUserAdmin,
@@ -95,6 +96,7 @@ import {
   saveTelegramConfig,
   sendTelegramNotification,
   getAllUsersWithBalances,
+  getLocalUsersWithBalances,
   adminDirectAdjustUserBalance,
   getUserBalanceForEmail,
   adminDeleteUser,
@@ -126,7 +128,7 @@ import {
   API_KEY_LINKS
 } from '../utils/aiApiKey';
 
-export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }) {
+export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, onOpenDirectChat }) {
   const [adminAuthenticated, setAdminAuthenticated] = useState(() => isAdminSessionAuthenticated());
   const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState('');
@@ -141,8 +143,8 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
   const [marketFilter, setMarketFilter] = useState('all'); // 'all' | 'duplicates' | 'pass' | 'clean'
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
 
-  // User Balances & Approvals State
-  const [userBalancesList, setUserBalancesList] = useState([]);
+  // User Balances & Approvals State (Synchronously initialized with local/cached data for 0ms delay)
+  const [userBalancesList, setUserBalancesList] = useState(() => getLocalUsersWithBalances());
   const [isLoadingUserBalances, setIsLoadingUserBalances] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userFilter, setUserFilter] = useState('all'); // 'all' | 'active' | 'locked' | 'vip' | 'pending' | 'balance'
@@ -1689,6 +1691,22 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                                     <TrendingUp className="w-3.5 h-3.5" />
                                   </button>
 
+                                  {onOpenDirectChat && (
+                                    <button
+                                      onClick={() => onOpenDirectChat({
+                                        id: u.email,
+                                        name: u.displayName || u.email.split('@')[0],
+                                        avatar: u.photoURL,
+                                        role: u.role,
+                                        tier: u.tier
+                                      })}
+                                      className="p-1 rounded-lg bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/70 dark:hover:bg-sky-900/90 text-[#2383e2] dark:text-sky-300 border border-sky-200 dark:border-sky-800 transition-colors"
+                                      title={`Nhắn tin trực tiếp với ${u.displayName || u.email}`}
+                                    >
+                                      <MessageCircle className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+
                                   <button
                                     onClick={() => setSelectedUserHistory(u)}
                                     className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors"
@@ -1999,6 +2017,23 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                             <TrendingUp className="w-3.5 h-3.5" />
                             <span>Cấp Bậc & Status</span>
                           </button>
+
+                          {onOpenDirectChat && (
+                            <button
+                              onClick={() => onOpenDirectChat({
+                                id: u.email,
+                                name: u.displayName || u.email.split('@')[0],
+                                avatar: u.photoURL,
+                                role: u.role,
+                                tier: u.tier
+                              })}
+                              className="px-2.5 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/70 dark:hover:bg-sky-900/90 text-[#2383e2] dark:text-sky-300 border border-sky-200 dark:border-sky-800 font-bold text-xs flex items-center space-x-1 transition-colors cursor-pointer"
+                              title={`Nhắn tin trực tiếp với ${u.displayName || u.email}`}
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                              <span>Nhắn Tin</span>
+                            </button>
+                          )}
 
                           <button
                             onClick={() => setSelectedUserHistory(u)}

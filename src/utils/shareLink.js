@@ -106,19 +106,42 @@ export function parseUrlParameters() {
   }
 
   try {
-    const params = new URLSearchParams(window.location.search);
-    const deckId = params.get('deck') || params.get('flashcard') || params.get('deckId') || null;
-    const rawCard = params.get('card');
+    const searchParams = new URLSearchParams(window.location.search);
+    let hashParams = new URLSearchParams();
+    if (window.location.hash) {
+      const qIndex = window.location.hash.indexOf('?');
+      if (qIndex !== -1) {
+        hashParams = new URLSearchParams(window.location.hash.substring(qIndex + 1));
+      } else if (window.location.hash.includes('=')) {
+        hashParams = new URLSearchParams(window.location.hash.replace(/^#\/?/, ''));
+      }
+    }
+
+    const deckId =
+      searchParams.get('deck') ||
+      searchParams.get('flashcard') ||
+      searchParams.get('deckId') ||
+      hashParams.get('deck') ||
+      hashParams.get('flashcard') ||
+      hashParams.get('deckId') ||
+      null;
+
+    const rawCard = searchParams.get('card') || hashParams.get('card');
     let cardIndex = null;
     if (rawCard && !isNaN(Number(rawCard))) {
       cardIndex = Math.max(0, Number(rawCard) - 1); // Đổi 1-based về 0-based
     }
 
-    const tab = params.get('tab') || null;
-    const chatWith = params.get('chat') || params.get('chatWith') || null;
+    const tab = searchParams.get('tab') || hashParams.get('tab') || null;
+    const chatWith =
+      searchParams.get('chat') ||
+      searchParams.get('chatWith') ||
+      hashParams.get('chat') ||
+      hashParams.get('chatWith') ||
+      null;
 
     return { deckId, cardIndex, tab, chatWith };
-  } catch (e) {
+  } catch (_e) {
     return { deckId: null, cardIndex: null, tab: null, chatWith: null };
   }
 }
@@ -147,7 +170,7 @@ export function syncUrlWithDeck(deckId, cardIndex = null) {
       url.searchParams.delete('card');
     }
     window.history.replaceState({}, '', url.toString());
-  } catch (e) {}
+  } catch (_e) {}
 }
 
 /**

@@ -852,32 +852,48 @@ export function getUserBalanceForEmail(email) {
   if (!email) return 20;
   const normalized = email.toLowerCase().trim();
 
-  // 1. Check if current active user
+  // 1. Check if current active user on this device
   const cur = getCurrentUser();
   if (cur?.email && cur.email.toLowerCase().trim() === normalized) {
     return getWalletBalance();
   }
 
-  // 2. Check if explicitly overridden by admin
+  // 2. Check explicit admin override
   const overrides = getUserBalanceOverrides();
   if (typeof overrides[normalized] === 'number') {
     return overrides[normalized];
   }
 
-  // 3. Compute from transactions
+  // 3. Check starting balance
+  let baseBalance = 20;
+  if (normalized === 'thaitraicau123@gmail.com') {
+    baseBalance = 9999;
+  } else {
+    try {
+      const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+      if (raw) {
+        const registry = JSON.parse(raw);
+        const found = registry.find((u) => (u.email || '').toLowerCase().trim() === normalized);
+        if (typeof found?.balance === 'number') baseBalance = found.balance;
+        else if (typeof found?.initialBalance === 'number') baseBalance = found.initialBalance;
+      }
+    } catch (e) {}
+  }
+
+  // 4. Compute from transactions (approved deposits - approved/pending withdrawals)
   const txs = getTransactions().filter((t) => (t.userEmail || '').toLowerCase().trim() === normalized);
-  let balance = 20; // Chào mừng tân thủ 20 Xu
+  let totalDepositedXu = 0;
+  let totalWithdrawnXu = 0;
   for (const t of txs) {
     const amt = Number(t.xuAmount) || 0;
     if (t.type === 'deposit' && t.status === 'approved') {
-      balance += amt;
+      totalDepositedXu += amt;
     } else if (t.type === 'withdraw' && (t.status === 'approved' || t.status === 'pending')) {
-      // Pending or approved withdrawals deduct from balance
-      balance = Math.max(0, balance - amt);
+      totalWithdrawnXu += amt;
     }
   }
 
-  return Math.max(0, balance);
+  return Math.max(0, baseBalance + totalDepositedXu - totalWithdrawnXu);
 }
 
 // Seed accounts (empty by default - no fake or test accounts)
@@ -1196,11 +1212,137 @@ export function registerUserInRegistry(userProfile) {
   } catch (e) {}
 }
 
-// Get all users with comprehensive balance details, pending actions, and stats
+// Helper to compute user balance and stats consistently
+function computeUsersBalancesAndStats(usersMap, allTxs) {
+  const result = [];
+
+  for (const [emailKey, u] of usersMap.entries()) {
+    const userTxs = allTxs.filter((t) => (t.userEmail || '').toLowerCase().trim() === emailKey);
+
+    let totalDepositedXu = 0;
+    let totalWithdrawnXu = 0;
+    const pendingDeposits = [];
+    const pendingWithdrawals = [];
+
+    for (const t of userTxs) {
+      const amt = Number(t.xuAmount) || 0;
+      if (t.type === 'deposit') {
+        if (t.status === 'approved') {
+          totalDepositedXu += amt;
+        } else if (t.status === 'pending') {
+          pendingDeposits.push(t);
+        }
+      } else if (t.type === 'withdraw') {
+        if (t.status === 'approved') {
+          totalWithdrawnXu += amt;
+        } else if (t.status === 'pending') {
+          pendingWithdrawals.push(t);
+        }
+      }
+    }
+
+    const currentBalance = getUserBalanceForEmail(emailKey);
+
+    result.push({
+      ...u,
+      role: u.role || 'student',
+      tier: u.tier || 'free',
+      status: u.status || 'active',
+      currentBalance,
+      totalDepositedXu,
+      totalWithdrawnXu,
+      pendingDeposits,
+      pendingWithdrawals,
+      hasPending: pendingDeposits.length > 0 || pendingWithdrawals.length > 0,
+      transactionCount: userTxs.length,
+      userTxs
+    });
+  }
+
+  // Sort: users with pending requests first, then by balance desc
+  return result.sort((a, b) => {
+    if (a.hasPending && !b.hasPending) return -1;
+    if (!a.hasPending && b.hasPending) return 1;
+    return b.currentBalance - a.currentBalance;
+  });
+}
+
+// Get all users from local cache/registry synchronously for instantaneous UI rendering
+export function getLocalUsersWithBalances() {
+  const usersMap = new Map();
+
+  // 1. Purge any leftover test accounts
+  purgeAllTestAccounts();
+
+  // 2. Ensure Primary Super Admin always exists
+  usersMap.set('thaitraicau123@gmail.com', {
+    email: 'thaitraicau123@gmail.com',
+    displayName: 'Thái Trai Cầu (Super Admin)',
+    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+    role: 'admin',
+    tier: 'ultra',
+    status: 'verified',
+    initialBalance: 9999,
+    phone: '0986019623',
+    lastActive: new Date().toISOString()
+  });
+
+  // 3. Local Registry (genuine users)
+  try {
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    const registry = raw ? JSON.parse(raw) : [];
+    for (const u of registry) {
+      if (u?.email && !isTestEmail(u.email)) {
+        const key = u.email.toLowerCase().trim();
+        usersMap.set(key, { ...(usersMap.get(key) || {}), ...u, status: u.status || 'active' });
+      }
+    }
+  } catch (e) {}
+
+  // 4. Current Logged In User
+  const cur = getCurrentUser();
+  if (cur?.email && !isTestEmail(cur.email)) {
+    const key = cur.email.toLowerCase().trim();
+    usersMap.set(key, {
+      ...(usersMap.get(key) || {}),
+      email: cur.email,
+      displayName: cur.displayName || cur.email.split('@')[0],
+      photoURL: cur.photoURL,
+      tier: cur.tier || (usersMap.get(key)?.tier) || 'free',
+      role: cur.role || (usersMap.get(key)?.role) || 'student',
+      status: cur.status || (usersMap.get(key)?.status) || 'active',
+      lastActive: new Date().toISOString(),
+      isCurrentDeviceUser: true
+    });
+  }
+
+  // 5. Discover from transactions
+  const allTxs = getTransactions();
+  for (const tx of allTxs) {
+    if (tx?.userEmail && !isTestEmail(tx.userEmail)) {
+      const key = tx.userEmail.toLowerCase().trim();
+      if (!usersMap.has(key)) {
+        usersMap.set(key, {
+          email: tx.userEmail,
+          displayName: tx.userEmail.split('@')[0],
+          photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${tx.userEmail}`,
+          role: 'student',
+          tier: 'free',
+          status: 'active',
+          lastActive: tx.createdAt || new Date().toISOString()
+        });
+      }
+    }
+  }
+
+  return computeUsersBalancesAndStats(usersMap, allTxs);
+}
+
+// Get all users with comprehensive balance details, pending actions, and stats (including async Firestore users)
 export async function getAllUsersWithBalances() {
   const usersMap = new Map();
 
-  // 1. Purge any leftover test accounts from storage
+  // 1. Purge any leftover test accounts
   purgeAllTestAccounts();
 
   // 2. Ensure Primary Super Admin always exists
@@ -1275,71 +1417,7 @@ export async function getAllUsersWithBalances() {
     }
   }
 
-  // 7. Compute detailed balance & stats for each user
-  const result = [];
-  const overrides = getUserBalanceOverrides();
-
-  for (const [emailKey, u] of usersMap.entries()) {
-    const userTxs = allTxs.filter((t) => (t.userEmail || '').toLowerCase().trim() === emailKey);
-
-    let totalDepositedXu = 0;
-    let totalWithdrawnXu = 0;
-    const pendingDeposits = [];
-    const pendingWithdrawals = [];
-
-    for (const t of userTxs) {
-      const amt = Number(t.xuAmount) || 0;
-      if (t.type === 'deposit') {
-        if (t.status === 'approved') {
-          totalDepositedXu += amt;
-        } else if (t.status === 'pending') {
-          pendingDeposits.push(t);
-        }
-      } else if (t.type === 'withdraw') {
-        if (t.status === 'approved') {
-          totalWithdrawnXu += amt;
-        } else if (t.status === 'pending') {
-          pendingWithdrawals.push(t);
-        }
-      }
-    }
-
-    // Determine balance
-    let currentBalance;
-    if (u.isCurrentDeviceUser) {
-      currentBalance = getWalletBalance();
-    } else if (typeof overrides[emailKey] === 'number') {
-      currentBalance = overrides[emailKey];
-    } else if (typeof u.initialBalance === 'number') {
-      currentBalance = u.initialBalance + totalDepositedXu - totalWithdrawnXu;
-    } else {
-      currentBalance = 20 + totalDepositedXu - totalWithdrawnXu;
-    }
-
-    currentBalance = Math.max(0, currentBalance);
-
-    result.push({
-      ...u,
-      role: u.role || 'student',
-      tier: u.tier || 'free',
-      status: u.status || 'active',
-      currentBalance,
-      totalDepositedXu,
-      totalWithdrawnXu,
-      pendingDeposits,
-      pendingWithdrawals,
-      hasPending: pendingDeposits.length > 0 || pendingWithdrawals.length > 0,
-      transactionCount: userTxs.length,
-      userTxs
-    });
-  }
-
-  // Sort: users with pending requests first, then by balance desc
-  return result.sort((a, b) => {
-    if (a.hasPending && !b.hasPending) return -1;
-    if (!a.hasPending && b.hasPending) return 1;
-    return b.currentBalance - a.currentBalance;
-  });
+  return computeUsersBalancesAndStats(usersMap, allTxs);
 }
 
 // Admin directly deposits or withdraws coins for any user

@@ -401,6 +401,7 @@ export default function App() {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                 onOpenDirectChat={handleOpenDirectChat}
+                onShowToast={showToast}
               />
             )}
 
@@ -463,6 +464,7 @@ export default function App() {
                 user={user}
                 onBackToHome={() => setActiveTab('home')}
                 onOpenChangelog={() => setIsChangelogOpen(true)}
+                onOpenDirectChat={handleOpenDirectChat}
               />
             )}
           </Suspense>

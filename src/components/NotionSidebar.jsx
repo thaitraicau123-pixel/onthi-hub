@@ -32,7 +32,7 @@ import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { getStreakInfo, getDailyQuests } from '../utils/gamification';
 import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
 import { playSound } from '../utils/storage';
-import { getUnreadDirectMessagesCount, subscribeToDirectMessages } from '../utils/directMessaging';
+import { getUnreadDirectMessagesCount, subscribeToDirectMessages, getCurrentUserParticipant } from '../utils/directMessaging';
 import BrandLogo from './BrandLogo';
 
 function NotionSidebar({
@@ -58,18 +58,19 @@ function NotionSidebar({
   onOpenDirectChat
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
-  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
+  const curParticipant = getCurrentUserParticipant(user);
+  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(curParticipant.id));
 
   useEffect(() => {
     const updateDm = () => {
-      setUnreadDmCount(getUnreadDirectMessagesCount(user?.uid || user?.email));
+      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant.id));
     };
     updateDm();
-    const unsub = subscribeToDirectMessages(user?.uid || user?.email, updateDm);
+    const unsub = subscribeToDirectMessages(curParticipant.id, updateDm);
     return () => {
       if (typeof unsub === 'function') unsub();
     };
-  }, [user]);
+  }, [curParticipant.id]);
 
   const userIsAdmin = isUserAdmin(user);
   const currentTier = getUserTier();

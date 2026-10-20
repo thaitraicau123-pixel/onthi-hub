@@ -89,10 +89,14 @@ export default function FlashcardModal({
     if (course?.id) {
       syncUrlWithDeck(course.id, currentIndex);
     }
+  }, [course?.id, currentIndex]);
+
+  // Clear deck url params only when Flashcard modal unmounts
+  useEffect(() => {
     return () => {
       clearUrlDeckParams();
     };
-  }, [course?.id, currentIndex]);
+  }, []);
 
   // AI Tutor State
   const [isAiLoading, setIsAiLoading] = useState(false);
