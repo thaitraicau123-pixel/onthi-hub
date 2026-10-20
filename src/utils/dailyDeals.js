@@ -1,29 +1,23 @@
 // Daily Flash Deals Generator (Sale Theo Ngày 24h)
-// Generates date-based rotating discounts with countdown to 23:59:59
+// Generates date-based rotating discounts with countdown to 23:59:59 Giờ Hà Nội (UTC+7)
 
 import { COURSES_DATA } from '../data/coursesData';
 import { getMarketplaceDecks } from '../data/marketplaceData';
+import { getHanoiMidnightTimestamp, getHanoiDateString } from './hanoiTime';
 
 /**
- * Returns today's featured flash sale items and time remaining until midnight
+ * Returns today's featured flash sale items and time remaining until midnight (Hanoi ICT UTC+7)
  */
 export function getDailyDeals() {
-  const now = new Date();
-  
-  // Calculate seconds until midnight 23:59:59
-  const midnight = new Date(now);
-  midnight.setHours(23, 59, 59, 999);
-  const secondsLeft = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000));
+  const now = Date.now();
+  const midnightTs = getHanoiMidnightTimestamp();
+  const secondsLeft = Math.max(0, Math.floor((midnightTs - now) / 1000));
 
-  // Today's date formatted
-  const dateStr = now.toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
+  // Today's date formatted in Hanoi
+  const dateStr = getHanoiDateString().split('-').reverse().join('/');
 
-  // Pick deterministic items based on day of month
-  const dayOfMonth = now.getDate();
+  // Pick deterministic items based on day of month in Hanoi
+  const [y, m, dayOfMonth] = getHanoiDateString().split('-').map(Number);
   const allCourses = COURSES_DATA;
   
   // Rotate 3 featured deals for today

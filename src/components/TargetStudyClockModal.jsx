@@ -28,7 +28,10 @@ import {
   clearStudyTimeLogs,
   getTargetStudyClock,
   saveTargetStudyClock,
-  calculateTargetClockProgress
+  calculateTargetClockProgress,
+  getStoredExamTarget,
+  parseHanoiTargetTimestamp,
+  calculateHanoiCountdown
 } from '../utils/hanoiTime';
 import { playSound } from '../utils/storage';
 import confetti from 'canvas-confetti';
@@ -53,6 +56,11 @@ export default function TargetStudyClockModal({
   const [toastMsg, setToastMsg] = useState('');
   const [calcTotalCards, setCalcTotalCards] = useState(180);
   const [calcDaysLeft, setCalcDaysLeft] = useState(15);
+  const [examTarget, setExamTarget] = useState(() => getStoredExamTarget());
+  const [examTimeLeft, setExamTimeLeft] = useState(() => {
+    const cur = getStoredExamTarget();
+    return calculateHanoiCountdown(parseHanoiTargetTimestamp(cur.date, cur.time));
+  });
   const [completedRoadmapTasks, setCompletedRoadmapTasks] = useState(() => {
     try {
       const saved = localStorage.getItem('onthi_roadmap_milestones_v1');
@@ -84,12 +92,30 @@ export default function TargetStudyClockModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    const interval = setInterval(() => {
+    const tick = () => {
       setHanoiNow(getHanoiNowComponents());
       setProgress(calculateTargetClockProgress());
-    }, 1000);
+      const cur = getStoredExamTarget();
+      setExamTarget(cur);
+      setExamTimeLeft(calculateHanoiCountdown(parseHanoiTargetTimestamp(cur.date, cur.time)));
+    };
 
-    return () => clearInterval(interval);
+    tick();
+    const interval = setInterval(tick, 1000);
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        tick();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', tick);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', tick);
+    };
   }, [isOpen]);
 
   // Sync logs when open or on log event
@@ -323,6 +349,46 @@ export default function TargetStudyClockModal({
 
                 {/* Subtle Decorative Glow Background */}
                 <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-sky-500/20 rounded-full blur-2xl pointer-events-none" />
+              </div>
+
+              {/* EXAM COUNTDOWN REAL-TIME SYNC CARD */}
+              <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-slate-800 dark:to-indigo-950/60 border border-sky-200 dark:border-indigo-800/50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center space-x-2.5">
+                  <span className="text-xl shrink-0">⏳</span>
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-sky-700 dark:text-sky-300 block">
+                      KỲ THI MỤC TIÊU CỦA BẠN (THỜI GIAN THỰC)
+                    </span>
+                    <strong className="text-slate-900 dark:text-white font-extrabold text-xs sm:text-sm line-clamp-1">
+                      {examTarget.name}
+                    </strong>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">
+                      Ngày {examTarget.date.split('-').reverse().join('/')} lúc {examTarget.time} (Giờ Hà Nội)
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-1 font-mono font-black text-center shrink-0">
+                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-sky-200 dark:border-white/10 min-w-[42px] shadow-2xs">
+                    <span className="text-sm sm:text-base text-slate-900 dark:text-white">{examTimeLeft.days}</span>
+                    <span className="block text-[7px] uppercase text-slate-500 font-semibold">Ngày</span>
+                  </div>
+                  <span className="text-slate-400 font-bold">:</span>
+                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-sky-200 dark:border-white/10 min-w-[42px] shadow-2xs">
+                    <span className="text-sm sm:text-base text-slate-900 dark:text-white">{String(examTimeLeft.hours).padStart(2, '0')}</span>
+                    <span className="block text-[7px] uppercase text-slate-500 font-semibold">Giờ</span>
+                  </div>
+                  <span className="text-slate-400 font-bold">:</span>
+                  <div className="px-2 py-1 rounded-lg bg-white dark:bg-slate-900 border border-sky-200 dark:border-white/10 min-w-[42px] shadow-2xs">
+                    <span className="text-sm sm:text-base text-slate-900 dark:text-white">{String(examTimeLeft.minutes).padStart(2, '0')}</span>
+                    <span className="block text-[7px] uppercase text-slate-500 font-semibold">Phút</span>
+                  </div>
+                  <span className="text-slate-400 font-bold">:</span>
+                  <div className="px-2 py-1 rounded-lg bg-sky-100/80 dark:bg-sky-950/80 border border-sky-300 dark:border-sky-500/40 min-w-[42px] shadow-2xs">
+                    <span className="text-sm sm:text-base text-[#2383e2] dark:text-sky-400">{String(examTimeLeft.seconds).padStart(2, '0')}</span>
+                    <span className="block text-[7px] uppercase text-sky-700 dark:text-sky-300 font-bold">Giây</span>
+                  </div>
+                </div>
               </div>
 
               {/* TODAY PROGRESS GOAL CARD */}

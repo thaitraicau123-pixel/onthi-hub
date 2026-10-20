@@ -277,6 +277,7 @@ export function getTodayTotalStudyMinutes() {
 }
 
 // =========================================================================
+// =========================================================================
 // TARGET STUDY CLOCK & GOAL SETTINGS (ĐỒNG HỒ MỤC TIÊU HỌC TẬP)
 // =========================================================================
 
@@ -342,4 +343,145 @@ export function calculateTargetClockProgress() {
     isGoalAchieved,
     targetEndTime: target.targetEndTime || '23:00'
   };
+}
+
+// =========================================================================
+// REAL-TIME EXAM COUNTDOWN ENGINE (ĐỒNG HỒ ĐẾM NGƯỢC THỜI GIAN THỰC)
+// =========================================================================
+
+export const EXAM_NAME_KEY = 'onthi_target_exam_name';
+export const EXAM_DATE_KEY = 'onthi_target_exam_date';
+export const EXAM_TIME_KEY = 'onthi_target_exam_time';
+
+export const DEFAULT_EXAM_NAME = 'Kỳ Thi Công Chức 2026 (Vòng 1 Kiến Thức Chung)';
+export const DEFAULT_EXAM_TIME = '08:00';
+
+/**
+ * Lấy ngày thi mặc định an toàn cách ngày hiện tại một số ngày nhất định theo giờ Hà Nội
+ */
+export function getUpcomingDefaultExamDate(offsetDays = 45) {
+  const hanoiToday = getHanoiDateString();
+  const [y, m, d] = hanoiToday.split('-').map(Number);
+  const target = new Date(Date.UTC(y, m - 1, d + offsetDays));
+  const ty = target.getUTCFullYear();
+  const tm = String(target.getUTCMonth() + 1).padStart(2, '0');
+  const td = String(target.getUTCDate()).padStart(2, '0');
+  return `${ty}-${tm}-${td}`;
+}
+
+/**
+ * Chuyển đổi an toàn ngày YYYY-MM-DD và giờ HH:mm thành timestamp UTC chuẩn theo Giờ Hà Nội (UTC+7)
+ */
+export function parseHanoiTargetTimestamp(dateStr, timeStr = '08:00') {
+  if (!dateStr || typeof dateStr !== 'string') return null;
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length < 3 || isNaN(parts[0]) || isNaN(parts[1]) || isNaN(parts[2])) {
+    return null;
+  }
+  const [y, m, d] = parts;
+
+  let hours = 8;
+  let mins = 0;
+  let secs = 0;
+  if (timeStr && typeof timeStr === 'string') {
+    const tParts = timeStr.split(':').map(Number);
+    if (tParts.length >= 1 && !isNaN(tParts[0])) hours = tParts[0];
+    if (tParts.length >= 2 && !isNaN(tParts[1])) mins = tParts[1];
+    if (tParts.length >= 3 && !isNaN(tParts[2])) secs = tParts[2];
+  }
+
+  // Giờ Hà Nội là UTC+7 -> Giờ UTC tương ứng = hours - 7
+  return Date.UTC(y, m - 1, d, hours - 7, mins, secs);
+}
+
+/**
+ * Tính toán chênh lệch thời gian thực tế đến thời điểm đích (ms & các đơn vị ngày, giờ, phút, giây)
+ */
+export function calculateHanoiCountdown(targetTimestamp) {
+  if (!targetTimestamp || isNaN(targetTimestamp)) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, totalSeconds: 0, isExpired: true };
+  }
+  const now = Date.now();
+  const diffMs = targetTimestamp - now;
+  if (diffMs <= 0) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, totalSeconds: 0, isExpired: true };
+  }
+
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return { days, hours, minutes, seconds, totalSeconds, isExpired: false };
+}
+
+/**
+ * Lấy timestamp UTC của nửa đêm hôm nay (23:59:59.999) theo Giờ Hà Nội (UTC+7)
+ */
+export function getHanoiMidnightTimestamp() {
+  const hanoiToday = getHanoiDateString();
+  const [y, m, d] = hanoiToday.split('-').map(Number);
+  // 23:59:59.999 tại Hà Nội (UTC+7) tương ứng 16:59:59.999 UTC
+  return Date.UTC(y, m - 1, d, 16, 59, 59, 999);
+}
+
+/**
+ * Lấy cấu hình kỳ thi mục tiêu hiện tại (tự động phát hiện và gia hạn nếu ngày đã qua)
+ */
+export function getStoredExamTarget() {
+  try {
+    let name = localStorage.getItem(EXAM_NAME_KEY) || DEFAULT_EXAM_NAME;
+    let date = localStorage.getItem(EXAM_DATE_KEY);
+    let time = localStorage.getItem(EXAM_TIME_KEY) || DEFAULT_EXAM_TIME;
+
+    if (!date) {
+      date = getUpcomingDefaultExamDate(45);
+      localStorage.setItem(EXAM_DATE_KEY, date);
+    } else {
+      const targetTs = parseHanoiTargetTimestamp(date, time);
+      // Nếu ngày lưu trong quá khứ, tự động cập nhật sang kỳ thi chu kỳ mới để đồng hồ không bị đứng ở 0
+      if (!targetTs || targetTs <= Date.now()) {
+        date = getUpcomingDefaultExamDate(45);
+        localStorage.setItem(EXAM_DATE_KEY, date);
+      }
+    }
+
+    return { name, date, time };
+  } catch (e) {
+    return {
+      name: DEFAULT_EXAM_NAME,
+      date: getUpcomingDefaultExamDate(45),
+      time: DEFAULT_EXAM_TIME
+    };
+  }
+}
+
+/**
+ * Lưu cấu hình kỳ thi mục tiêu và phát sự kiện đồng bộ toàn hệ thống
+ */
+export function saveStoredExamTarget({ name, date, time }) {
+  try {
+    if (name) localStorage.setItem(EXAM_NAME_KEY, name.trim());
+    if (date) localStorage.setItem(EXAM_DATE_KEY, date);
+    if (time) localStorage.setItem(EXAM_TIME_KEY, time);
+
+    const updated = {
+      name: (name || DEFAULT_EXAM_NAME).trim(),
+      date: date || getUpcomingDefaultExamDate(45),
+      time: time || DEFAULT_EXAM_TIME
+    };
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('onthi-target-exam-changed', { detail: updated }));
+    }
+
+    return updated;
+  } catch (e) {
+    return {
+      name: name || DEFAULT_EXAM_NAME,
+      date: date || getUpcomingDefaultExamDate(45),
+      time: time || DEFAULT_EXAM_TIME
+    };
+  }
 }

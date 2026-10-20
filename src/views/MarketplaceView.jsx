@@ -110,17 +110,30 @@ export default function MarketplaceView({
   const [secondsRemaining, setSecondsRemaining] = useState(() => getDailyDeals().secondsLeft);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setSecondsRemaining((prev) => {
-        if (prev <= 1) {
-          const fresh = getDailyDeals();
-          setDailyData(fresh);
-          return fresh.secondsLeft;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
+    const updateCountdown = () => {
+      const fresh = getDailyDeals();
+      setSecondsRemaining(fresh.secondsLeft);
+      if (fresh.secondsLeft <= 1) {
+        setDailyData(fresh);
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        updateCountdown();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', updateCountdown);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', updateCountdown);
+    };
   }, []);
 
   const formatCountdown = (totalSec) => {
