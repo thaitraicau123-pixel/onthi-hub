@@ -9,13 +9,15 @@ import {
   BarChart2,
   Palette,
   Clock,
-  User
+  User,
+  MessageCircle
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import { getHanoiTimeString } from '../utils/hanoiTime';
+import { getUnreadDirectMessagesCount, subscribeToDirectMessages } from '../utils/directMessaging';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -36,13 +38,26 @@ export default function NotionTopbar({
   isWeatherEnabled = true,
   onToggleWeather,
   onOpenTargetClock,
-  onOpenStudyRoom
+  onOpenStudyRoom,
+  onOpenDirectChat
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
   const [isMuted, setIsMuted] = useState(() => isSoundMuted());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [hanoiTime, setHanoiTime] = useState(() => getHanoiTimeString(new Date(), false));
+  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
+
+  useEffect(() => {
+    const updateDmCount = () => {
+      setUnreadDmCount(getUnreadDirectMessagesCount(user?.uid || user?.email));
+    };
+    updateDmCount();
+    const unsubDm = subscribeToDirectMessages(user?.uid || user?.email, updateDmCount);
+    return () => {
+      if (typeof unsubDm === 'function') unsubDm();
+    };
+  }, [user]);
   const streakInfo = getStreakInfo();
 
   useEffect(() => {
@@ -383,6 +398,23 @@ export default function NotionTopbar({
             <VolumeX className="w-4 h-4 text-rose-500" />
           ) : (
             <Volume2 className="w-4 h-4 text-slate-600 dark:text-slate-300" />
+          )}
+        </button>
+
+        {/* Direct Messages Button (Icon Only with Live Unread Dot) */}
+        <button
+          type="button"
+          onClick={() => {
+            playSound('click');
+            onOpenDirectChat?.();
+          }}
+          className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer"
+          title={`Tin nhắn trực tiếp & Hỏi đáp 1-1${unreadDmCount > 0 ? ` (${unreadDmCount} tin mới)` : ''}`}
+          aria-label="Tin nhắn trực tiếp"
+        >
+          <MessageCircle className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
+          {unreadDmCount > 0 && (
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse" />
           )}
         </button>
 

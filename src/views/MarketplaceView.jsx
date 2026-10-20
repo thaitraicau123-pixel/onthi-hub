@@ -19,7 +19,9 @@ import {
   Flame,
   BadgePercent,
   RefreshCw,
-  Trash2
+  Trash2,
+  MessageCircle,
+  Share2
 } from 'lucide-react';
 import {
   getMarketplaceDecks,
@@ -34,6 +36,7 @@ import { isCoursePurchased } from '../utils/storage';
 import { playSound } from '../utils/storage';
 import { getLikedDeckIds, toggleLikeDeck } from '../utils/gamification';
 import { getDailyDeals } from '../utils/dailyDeals';
+import { copyFlashcardShareLink } from '../utils/shareLink';
 import { CardGridSkeleton } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
@@ -44,7 +47,9 @@ export default function MarketplaceView({
   onOpenFlashcardSample,
   onBalanceUpdated,
   onOpenWallet,
-  onOpenBlindBox
+  onOpenBlindBox,
+  onOpenDirectChat,
+  onShowToast
 }) {
   const [decks, setDecks] = useState(() => getMarketplaceDecks().filter(d => d.isApproved !== false));
   const [activeCategory, setActiveCategory] = useState('all');
@@ -448,6 +453,43 @@ export default function MarketplaceView({
 
                     <div className="flex items-center space-x-1.5">
                       <button
+                        type="button"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const res = await copyFlashcardShareLink({
+                            deckId: pDeck.id,
+                            deckTitle: pDeck.title,
+                            useNativeShare: true
+                          });
+                          if (res.success) {
+                            playSound('success');
+                            onShowToast?.(res.message);
+                          }
+                        }}
+                        className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        title="Chia sẻ đường dẫn bộ thẻ này"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {onOpenDirectChat && pDeck.passSellerName && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOpenDirectChat({
+                              id: pDeck.passSellerEmail || pDeck.passSellerName,
+                              name: pDeck.passSellerName,
+                              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(pDeck.passSellerName)}`
+                            }, pDeck);
+                          }}
+                          className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors cursor-pointer"
+                          title={`Hỏi người bán (${pDeck.passSellerName})`}
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
+                      <button
                         onClick={() => onOpenFlashcardSample(pDeck)}
                         className="px-2 py-1 rounded-md bg-white dark:bg-slate-700 hover:bg-[#f0efed] dark:hover:bg-slate-600 border border-[#e9e9e8] dark:border-white/10 text-[10px] font-semibold text-[#37352f] dark:text-white cursor-pointer"
                       >
@@ -728,6 +770,43 @@ export default function MarketplaceView({
                     </div>
 
                     <div className="flex items-center space-x-1.5">
+                      <button
+                        type="button"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          const res = await copyFlashcardShareLink({
+                            deckId: deck.id,
+                            deckTitle: deck.title,
+                            useNativeShare: true
+                          });
+                          if (res.success) {
+                            playSound('success');
+                            onShowToast?.(res.message);
+                          }
+                        }}
+                        className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        title="Chia sẻ đường dẫn bộ thẻ này"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      {onOpenDirectChat && deck.authorName && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOpenDirectChat({
+                              id: deck.authorEmail || deck.authorName,
+                              name: deck.authorName,
+                              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(deck.authorName)}`
+                            }, deck);
+                          }}
+                          className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors cursor-pointer"
+                          title={`Nhắn tin hỏi tác giả (${deck.authorName})`}
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+
                       {((deck.previewCards && deck.previewCards.length > 0) || (deck.sampleCards && deck.sampleCards.length > 0)) && (
                         <button
                           onClick={() => onOpenFlashcardSample({

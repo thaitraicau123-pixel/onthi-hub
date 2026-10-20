@@ -23,15 +23,19 @@ import {
   MoreHorizontal,
   ChevronDown,
   FileSpreadsheet,
-  FileText
+  FileText,
+  Share2,
+  MessageCircle
 } from 'lucide-react';
 import {
   exportAnkiDeckFile,
   exportCsvFile,
   exportMarkdownFile,
   printSummaryGuide,
-  printFlashcardCutoutSheet
+  printFlashcardCutoutSheet,
+  playSound
 } from '../utils/storage';
+import { copyFlashcardShareLink } from '../utils/shareLink';
 import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../utils/spacedRepetition';
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
@@ -47,7 +51,9 @@ export default function LibraryView({
   onOpenSellDeck,
   onOpenMistakes,
   onOpenCheatSheet,
-  onSwitchTab
+  onSwitchTab,
+  onOpenDirectChat,
+  onShowToast
 }) {
   const [searchLibrary, setSearchLibrary] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -373,8 +379,27 @@ export default function LibraryView({
                           )}
                         </div>
 
-                        {/* More Actions Dropdown */}
-                        <div className="relative">
+                        {/* More Actions Dropdown & Share Link */}
+                        <div className="flex items-center space-x-1 relative">
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              const res = await copyFlashcardShareLink({
+                                deckId: course.id,
+                                deckTitle: course.title,
+                                useNativeShare: true
+                              });
+                              if (res.success) {
+                                playSound('success');
+                                onShowToast?.(res.message);
+                              }
+                            }}
+                            className="p-1 rounded-md hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#2383e2] transition-colors cursor-pointer"
+                            title="Sao chép đường dẫn chia sẻ bộ thẻ này"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
+
                           <button
                             type="button"
                             onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
@@ -391,6 +416,40 @@ export default function LibraryView({
                                 onClick={() => setOpenMenuDeckId(null)}
                               />
                               <div className="absolute right-0 top-7 z-40 w-56 bg-white dark:bg-slate-800 rounded-xl border border-[#e9e9e8] dark:border-white/15 shadow-lg py-1.5 text-xs text-[#37352f] dark:text-white animate-fade-in divide-y divide-[#f1f1ef] dark:divide-white/10">
+                                <div className="py-1">
+                                  <button
+                                    type="button"
+                                    onClick={async () => {
+                                      setOpenMenuDeckId(null);
+                                      const res = await copyFlashcardShareLink({
+                                        deckId: course.id,
+                                        deckTitle: course.title,
+                                        useNativeShare: true
+                                      });
+                                      if (res.success) {
+                                        playSound('success');
+                                        onShowToast?.(res.message);
+                                      }
+                                    }}
+                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
+                                  >
+                                    <Share2 className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
+                                    <span>🔗 Sao Chép Link Chia Sẻ</span>
+                                  </button>
+                                  {onOpenDirectChat && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setOpenMenuDeckId(null);
+                                        onOpenDirectChat(null, course);
+                                      }}
+                                      className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
+                                    >
+                                      <MessageCircle className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                                      <span>💬 Gửi Qua Tin Nhắn</span>
+                                    </button>
+                                  )}
+                                </div>
                                 <div className="py-1">
                                   <button
                                     type="button"

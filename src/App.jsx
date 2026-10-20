@@ -35,6 +35,7 @@ const ThemePickerModal = lazy(() => import('./components/ThemePickerModal'));
 const TargetStudyClockModal = lazy(() => import('./components/TargetStudyClockModal'));
 const CheatSheetModal = lazy(() => import('./components/CheatSheetModal'));
 const VirtualStudyRoomModal = lazy(() => import('./components/VirtualStudyRoomModal'));
+const DirectChatModal = lazy(() => import('./components/DirectChatModal'));
 
 function ViewLoadingFallback() {
   return (
@@ -78,6 +79,7 @@ import {
   getSleepMode,
   subscribeToSleepMode
 } from './utils/themeManager';
+import { parseUrlParameters } from './utils/shareLink';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -114,6 +116,16 @@ export default function App() {
   const [isTargetClockOpen, setIsTargetClockOpen] = useState(false);
   const [activeCheatSheetCourse, setActiveCheatSheetCourse] = useState(null);
   const [isStudyRoomOpen, setIsStudyRoomOpen] = useState(false);
+  const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
+  const [directChatPartner, setDirectChatPartner] = useState(null);
+  const [directChatAttachDeck, setDirectChatAttachDeck] = useState(null);
+  const [initialCardIndex, setInitialCardIndex] = useState(null);
+
+  const handleOpenDirectChat = (partner = null, attachDeck = null) => {
+    setDirectChatPartner(partner);
+    setDirectChatAttachDeck(attachDeck);
+    setIsDirectChatOpen(true);
+  };
 
   // Sync initial state
   useEffect(() => {
@@ -205,6 +217,46 @@ export default function App() {
 
   const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
 
+  // Tự động nhận diện đường dẫn chia sẻ bộ thẻ Flashcard (?deck=...&card=...&tab=...)
+  useEffect(() => {
+    const { deckId, cardIndex, tab, chatWith } = parseUrlParameters();
+
+    if (tab && ['home', 'marketplace', 'community', 'create', 'library', 'wallet', 'plans', 'admin'].includes(tab)) {
+      setActiveTab(tab);
+    }
+
+    if (deckId) {
+      const allDecks = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
+      const targetDeck = allDecks.find((c) => String(c.id) === String(deckId));
+      if (targetDeck) {
+        setInitialCardIndex(cardIndex);
+        setActiveFlashcardCourse(targetDeck);
+        playSound('flip');
+        showToast(`🔗 Đang mở bộ thẻ được chia sẻ: ${targetDeck.title}`);
+      }
+    }
+
+    if (chatWith) {
+      setIsDirectChatOpen(true);
+    }
+
+    const handlePopState = () => {
+      const { deckId: popDeckId, cardIndex: popCardIndex } = parseUrlParameters();
+      if (popDeckId) {
+        const allDecks = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
+        const targetDeck = allDecks.find((c) => String(c.id) === String(popDeckId));
+        if (targetDeck) {
+          setInitialCardIndex(popCardIndex);
+          setActiveFlashcardCourse(targetDeck);
+        }
+      } else {
+        setActiveFlashcardCourse(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [marketplaceDecks.length, customDecks.length]);
+
   return (
     <div 
       className={`min-h-screen ${currentTheme.bgClass} ${currentTheme.textClass} flex flex-col md:flex-row antialiased selection:bg-[#cce5ff] selection:text-[#37352f] transition-colors duration-500 relative`}
@@ -271,6 +323,7 @@ export default function App() {
         onOpenTargetClock={() => setIsTargetClockOpen(true)}
         onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
         onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
+        onOpenDirectChat={() => handleOpenDirectChat()}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -299,6 +352,7 @@ export default function App() {
           onToggleWeather={() => setWeatherEffectsEnabled(!isWeatherEnabled)}
           onOpenTargetClock={() => setIsTargetClockOpen(true)}
           onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+          onOpenDirectChat={() => handleOpenDirectChat()}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -319,6 +373,7 @@ export default function App() {
                 onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
                 onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
                 allCourses={allAvailableCourses}
+                onShowToast={showToast}
               />
             )}
 
@@ -332,6 +387,8 @@ export default function App() {
                 onBalanceUpdated={refreshState}
                 onOpenWallet={() => setActiveTab('wallet')}
                 onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+                onOpenDirectChat={handleOpenDirectChat}
+                onShowToast={showToast}
               />
             )}
 
@@ -343,6 +400,7 @@ export default function App() {
                   setActiveTab('plans');
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
+                onOpenDirectChat={handleOpenDirectChat}
               />
             )}
 
@@ -369,6 +427,8 @@ export default function App() {
                 onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
                 onOpenCheatSheet={(course) => setActiveCheatSheetCourse(course)}
                 onSwitchTab={setActiveTab}
+                onOpenDirectChat={handleOpenDirectChat}
+                onShowToast={showToast}
               />
             )}
 
@@ -419,9 +479,14 @@ export default function App() {
           <FlashcardModal
             course={activeFlashcardCourse}
             isPurchased={isCoursePurchased(activeFlashcardCourse.id)}
-            onClose={() => setActiveFlashcardCourse(null)}
+            onClose={() => {
+              setActiveFlashcardCourse(null);
+              setInitialCardIndex(null);
+            }}
             onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c)}
             onBuy={(c) => setActivePaymentItem(c)}
+            initialCardIndex={initialCardIndex}
+            onOpenDirectChat={handleOpenDirectChat}
           />
         )}
 
@@ -621,6 +686,7 @@ export default function App() {
             onOpenTargetClock={() => setIsTargetClockOpen(true)}
             onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
             onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
+            onOpenDirectChat={() => handleOpenDirectChat()}
           />
         )}
 
@@ -686,6 +752,27 @@ export default function App() {
               setIsStudyRoomOpen(false);
               setActiveCheatSheetCourse(courseId || allAvailableCourses[0]?.id || 'pldc');
             }}
+          />
+        )}
+
+        {/* 21. Direct Messages & 1-on-1 Peer Chat Modal */}
+        {isDirectChatOpen && (
+          <DirectChatModal
+            isOpen={isDirectChatOpen}
+            onClose={() => {
+              setIsDirectChatOpen(false);
+              setDirectChatPartner(null);
+              setDirectChatAttachDeck(null);
+            }}
+            currentUser={user}
+            targetPartner={directChatPartner}
+            initialAttachedDeck={directChatAttachDeck}
+            allCourses={allAvailableCourses}
+            onOpenFlashcards={(deck) => {
+              setIsDirectChatOpen(false);
+              setActiveFlashcardCourse(deck);
+            }}
+            onShowToast={showToast}
           />
         )}
       </Suspense>

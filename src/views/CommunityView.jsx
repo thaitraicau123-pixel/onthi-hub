@@ -17,7 +17,8 @@ import {
   Crown,
   ArrowRight,
   CornerDownRight,
-  X
+  X,
+  MessageCircle
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction } from '../utils/gamification';
@@ -42,7 +43,7 @@ import {
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import confetti from 'canvas-confetti';
 
-export default function CommunityView({ user, onOpenPricing }) {
+export default function CommunityView({ user, onOpenPricing, onOpenDirectChat }) {
   const isAdmin = isUserAdmin(user);
   const currentTier = (user?.tier || getUserTier() || 'free').toLowerCase();
   const canParticipate = canUserParticipateInCommunity(user);
@@ -470,6 +471,21 @@ export default function CommunityView({ user, onOpenPricing }) {
                             {post.categoryLabel}
                           </span>
                         )}
+                        {onOpenDirectChat && (
+                          <button
+                            type="button"
+                            onClick={() => onOpenDirectChat({
+                              id: post.authorEmail || post.author,
+                              name: post.author,
+                              avatar: post.avatar,
+                              role: post.role || 'student'
+                            })}
+                            className="p-1 rounded text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                            title={`Nhắn tin riêng với ${post.author}`}
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                          </button>
+                        )}
                       </div>
                       <div className="flex items-center space-x-2 text-[11px] text-[#787774] dark:text-slate-400">
                         <span>{post.role}</span>
@@ -589,6 +605,21 @@ export default function CommunityView({ user, onOpenPricing }) {
                                 <CornerDownRight className="w-3 h-3" />
                                 <span>Trả lời</span>
                               </button>
+
+                              {onOpenDirectChat && (
+                                <button
+                                  type="button"
+                                  onClick={() => onOpenDirectChat({
+                                    id: cm.author,
+                                    name: cm.author.replace(/[\(\[].*?[\)\]]/g, '').trim(),
+                                    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(cm.author)}`
+                                  })}
+                                  className="px-1.5 py-0.5 rounded text-[11px] font-medium text-slate-500 hover:text-[#2383e2] hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors flex items-center space-x-0.5 cursor-pointer"
+                                  title={`Nhắn tin riêng với ${cm.author}`}
+                                >
+                                  <MessageCircle className="w-3 h-3" />
+                                </button>
+                              )}
 
                               {isAdmin && (
                                 <button

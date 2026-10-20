@@ -26,20 +26,26 @@ import {
   Headphones,
   SlidersHorizontal,
   Bookmark,
-  BookmarkCheck
+  BookmarkCheck,
+  Share2,
+  MessageCircle
 } from 'lucide-react';
 import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
 import { explainFlashcardWithAi } from '../utils/aiTutor';
 import { recordCardReview, getNextIntervalPreview, getCardSrs } from '../utils/spacedRepetition';
 import { recordMistake, markMistakeMastered } from '../utils/mistakeTracker';
+import { copyFlashcardShareLink, syncUrlWithDeck, clearUrlDeckParams } from '../utils/shareLink';
+import confetti from 'canvas-confetti';
 
 export default function FlashcardModal({
   course,
   isPurchased,
   onClose,
   onOpenCheatSheet,
-  onBuy
+  onBuy,
+  initialCardIndex = null,
+  onOpenDirectChat
 }) {
   const allDeckCards = course?.previewCards?.length
     ? course.previewCards
@@ -67,10 +73,26 @@ export default function FlashcardModal({
 
   const cards = onlyStarredMode && starredCards.length > 0 ? starredCards : allDeckCards;
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(() => {
+    if (initialCardIndex !== null && initialCardIndex !== undefined && !isNaN(initialCardIndex)) {
+      return Math.min(Math.max(0, Number(initialCardIndex)), Math.max(0, allDeckCards.length - 1));
+    }
+    return 0;
+  });
   const [isFlipped, setIsFlipped] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
   const [reviewedStats, setReviewedStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
+  const [shareToast, setShareToast] = useState('');
+
+  // Sync shareable URL with current deck and card index
+  useEffect(() => {
+    if (course?.id) {
+      syncUrlWithDeck(course.id, currentIndex);
+    }
+    return () => {
+      clearUrlDeckParams();
+    };
+  }, [course?.id, currentIndex]);
 
   // AI Tutor State
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -496,6 +518,47 @@ export default function FlashcardModal({
               <span className="hidden sm:inline">Mục Lục</span>
             </button>
 
+            {/* Chia Sẻ Link Bộ Thẻ Trực Tiếp */}
+            <button
+              type="button"
+              onClick={async () => {
+                const res = await copyFlashcardShareLink({
+                  deckId: course.id,
+                  deckTitle: course.title,
+                  cardIndex: currentIndex,
+                  useNativeShare: true
+                });
+                if (res.success) {
+                  playSound('success');
+                  try {
+                    confetti({ particleCount: 40, spread: 50, origin: { y: 0.2 } });
+                  } catch (e) {}
+                  setShareToast('🔗 ' + res.message);
+                  setTimeout(() => setShareToast(''), 3500);
+                }
+              }}
+              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900 transition-colors cursor-pointer shadow-2xs"
+              title="Sao chép đường dẫn trực tiếp tới bộ thẻ và vị trí thẻ hiện tại để gửi cho bạn bè"
+            >
+              <Share2 className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
+              <span className="hidden sm:inline">Chia Sẻ Link</span>
+            </button>
+
+            {onOpenDirectChat && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onOpenDirectChat(null, course);
+                }}
+                className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-500/40 transition-colors cursor-pointer"
+                title="Gửi bộ thẻ này qua tin nhắn trực tiếp"
+              >
+                <MessageCircle className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                <span>Nhắn Tin</span>
+              </button>
+            )}
+
             <button
               onClick={toggleFullscreen}
               className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors hidden sm:inline-flex cursor-pointer"
@@ -515,6 +578,21 @@ export default function FlashcardModal({
             </button>
           </div>
         </div>
+
+        {/* Share Link Toast Banner */}
+        {shareToast && (
+          <div className="bg-sky-50 dark:bg-sky-950/90 border-b border-sky-200 dark:border-sky-500/40 px-4 py-2 flex items-center justify-between text-xs text-[#2383e2] dark:text-sky-300 font-bold animate-fade-in">
+            <span className="flex items-center space-x-1.5 truncate">
+              <span>{shareToast}</span>
+            </span>
+            <button
+              onClick={() => setShareToast('')}
+              className="text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer ml-2"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Banner if in Starred-Only mode */}
         {onlyStarredMode && (

@@ -32,6 +32,7 @@ import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { getStreakInfo, getDailyQuests } from '../utils/gamification';
 import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
 import { playSound } from '../utils/storage';
+import { getUnreadDirectMessagesCount, subscribeToDirectMessages } from '../utils/directMessaging';
 import BrandLogo from './BrandLogo';
 
 function NotionSidebar({
@@ -53,9 +54,23 @@ function NotionSidebar({
   onOpenThemePicker,
   onOpenTargetClock,
   onOpenStudyRoom,
-  onOpenCheatSheet
+  onOpenCheatSheet,
+  onOpenDirectChat
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
+  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
+
+  useEffect(() => {
+    const updateDm = () => {
+      setUnreadDmCount(getUnreadDirectMessagesCount(user?.uid || user?.email));
+    };
+    updateDm();
+    const unsub = subscribeToDirectMessages(user?.uid || user?.email, updateDm);
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [user]);
+
   const userIsAdmin = isUserAdmin(user);
   const currentTier = getUserTier();
   const unmasteredMistakesCount = getUnmasteredMistakesCount();
@@ -80,6 +95,15 @@ function NotionSidebar({
   ];
 
   const toolsNavItems = [
+    {
+      id: 'direct-messages',
+      label: 'Tin Nhắn Trực Tiếp',
+      emoji: '💬',
+      badge: unreadDmCount > 0 ? `${unreadDmCount} tin mới` : 'Chat 1-1',
+      badgeColor: unreadDmCount > 0 ? 'notion-pill-red' : 'notion-pill-blue',
+      action: onOpenDirectChat,
+      desc: 'Nhắn tin riêng & chia sẻ bộ thẻ giữa học viên'
+    },
     {
       id: 'study-room',
       label: 'Phòng Tự Học Ảo',

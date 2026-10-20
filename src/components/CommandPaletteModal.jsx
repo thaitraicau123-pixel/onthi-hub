@@ -21,7 +21,9 @@ import {
   Palette,
   Clock,
   Users,
-  FileText
+  FileText,
+  MessageCircle,
+  Share2
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 
@@ -42,7 +44,8 @@ export default function CommandPaletteModal({
   onOpenThemePicker,
   onOpenTargetClock,
   onOpenStudyRoom,
-  onOpenCheatSheet
+  onOpenCheatSheet,
+  onOpenDirectChat
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -58,6 +61,18 @@ export default function CommandPaletteModal({
   }, [isOpen]);
 
   const quickActions = [
+    {
+      id: 'action-direct-chat',
+      title: 'Tin Nhắn Trực Tiếp & Hỏi Đáp 1-1',
+      desc: 'Nhắn tin riêng giữa các bạn học, trao đổi với tác giả bộ thẻ hoặc Trợ lý AI',
+      icon: MessageCircle,
+      category: 'Giao tiếp & Cộng đồng',
+      badge: 'Chat 1-1',
+      onSelect: () => {
+        onOpenDirectChat?.();
+        onClose();
+      }
+    },
     {
       id: 'action-target-clock',
       title: 'Đồng Hồ Mục Tiêu & Vết Thời Gian (Giờ Hà Nội)',

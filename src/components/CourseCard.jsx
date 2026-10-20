@@ -1,6 +1,8 @@
-import React, { memo } from 'react';
-import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins } from 'lucide-react';
+import React, { memo, useState } from 'react';
+import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins, Share2 } from 'lucide-react';
 import { getSelectedTheme } from '../utils/themeManager';
+import { copyFlashcardShareLink } from '../utils/shareLink';
+import { playSound } from '../utils/storage';
 
 function CourseCard({
   course,
@@ -8,8 +10,10 @@ function CourseCard({
   onOpenFlashcards,
   onOpenQuiz,
   onOpenCheatSheet,
-  onBuy
+  onBuy,
+  onShowToast
 }) {
+  const [copiedLink, setCopiedLink] = useState(false);
   const hasSnowCaps = !!getSelectedTheme()?.hasSnowCaps;
 
   if (!course) return null;
@@ -70,9 +74,36 @@ function CourseCard({
           <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#e7f3f8] dark:bg-sky-950/80 text-[#2b7aa1] dark:text-sky-300 border border-[#cbe3ed] dark:border-sky-500/40">
             {categoryLabel}
           </span>
-          <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#faece3] dark:bg-amber-950/80 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-500/40">
-            {badge}
-          </span>
+          <div className="flex items-center space-x-1.5">
+            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#faece3] dark:bg-amber-950/80 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-500/40">
+              {badge}
+            </span>
+            <button
+              type="button"
+              onClick={async (e) => {
+                e.stopPropagation();
+                const res = await copyFlashcardShareLink({
+                  deckId: course.id,
+                  deckTitle: course.title,
+                  useNativeShare: true
+                });
+                if (res.success) {
+                  playSound('success');
+                  setCopiedLink(true);
+                  setTimeout(() => setCopiedLink(false), 2500);
+                  onShowToast?.(res.message);
+                }
+              }}
+              className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              title="Sao chép đường dẫn chia sẻ bộ thẻ này"
+            >
+              {copiedLink ? (
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <Share2 className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Title */}
