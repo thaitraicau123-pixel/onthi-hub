@@ -50,14 +50,27 @@ export default function NotionTopbar({
       setSleepMode(mode);
     });
 
-    const timer = setInterval(() => {
+    const updateTime = () => {
       const nextTime = getHanoiTimeString(new Date(), false);
       setHanoiTime((prev) => (prev !== nextTime ? nextTime : prev));
-    }, 10000);
+    };
+
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+
+    const handleFocus = () => {
+      if (document.visibilityState === 'visible') {
+        updateTime();
+      }
+    };
+    document.addEventListener('visibilitychange', handleFocus);
+    window.addEventListener('focus', handleFocus);
 
     return () => {
       if (typeof unsub === 'function') unsub();
       clearInterval(timer);
+      document.removeEventListener('visibilitychange', handleFocus);
+      window.removeEventListener('focus', handleFocus);
     };
   }, []);
 

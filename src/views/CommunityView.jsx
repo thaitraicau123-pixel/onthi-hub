@@ -190,12 +190,6 @@ export default function CommunityView({ user, onOpenPricing }) {
   };
 
   const handleAddComment = (postId) => {
-    if (isFreeUser) {
-      playSound('flip');
-      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia bình luận trên diễn đàn!');
-      if (onOpenPricing) onOpenPricing();
-      return;
-    }
     const text = (commentInputs[postId] || '').trim();
     if (!text) return;
 
@@ -349,7 +343,7 @@ export default function CommunityView({ user, onOpenPricing }) {
                 </span>
               </div>
               <p className="text-xs text-[#5a5955] dark:text-slate-300 leading-relaxed">
-                Để bảo vệ cộng đồng học tập văn minh, chia sẻ kinh nghiệm chất lượng cao và ngăn chặn tin rác / spam, tính năng <strong>đăng bài thảo luận</strong> và <strong>bình luận</strong> được giới hạn riêng cho học viên có gói hội viên. Bạn vẫn có thể đọc toàn bộ bài viết và mẹo thi trên diễn đàn!
+                Để bảo vệ cộng đồng học tập văn minh, chia sẻ kinh nghiệm chất lượng cao và ngăn chặn tin rác / spam, tính năng <strong>đăng chủ đề thảo luận mới</strong> được dành riêng cho học viên có gói hội viên. Bạn vẫn có thể đọc toàn bộ bài viết và tự do <strong>bình luận, trả lời thảo luận</strong> trên diễn đàn!
               </p>
             </div>
           </div>
@@ -574,6 +568,9 @@ export default function CommunityView({ user, onOpenPricing }) {
                           {/* Main Comment Row */}
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center space-x-2 min-w-0">
+                              <div className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center text-[10px] font-bold shrink-0">
+                                {cm.author ? cm.author.replace(/[\(\[].*?[\)\]]/g, '').trim().charAt(0).toUpperCase() || 'H' : 'H'}
+                              </div>
                               <strong className="text-[#37352f] dark:text-white block font-semibold truncate">{cm.author}</strong>
                               {cm.createdAt && (
                                 <span className="text-[10px] text-[#9b9a97] dark:text-slate-400 shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
@@ -606,11 +603,11 @@ export default function CommunityView({ user, onOpenPricing }) {
                             </div>
                           </div>
 
-                          <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line">{cm.text}</p>
+                          <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line pl-7">{cm.text}</p>
 
                           {/* Inline Reply Input Box (when replying to this comment) */}
                           {isReplying && (
-                            <div className="pt-2 pl-3 border-l-2 border-[#2383e2] dark:border-sky-400 space-y-1.5 animate-fade-in">
+                            <div className="pt-2 pl-3 ml-7 border-l-2 border-[#2383e2] dark:border-sky-400 space-y-1.5 animate-fade-in">
                               <div className="flex items-center justify-between text-[11px] text-[#787774] dark:text-slate-300">
                                 <span className="flex items-center space-x-1">
                                   <CornerDownRight className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
@@ -656,11 +653,14 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                           {/* Nested Replies List (Threaded) */}
                           {replies.length > 0 && (
-                            <div className="pt-2 pl-3 sm:pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-2 mt-1">
+                            <div className="pt-2 pl-3 sm:pl-4 ml-3 border-l-2 border-slate-200 dark:border-slate-700 space-y-2 mt-1">
                               {replies.map((rep, rIdx) => (
-                                <div key={rep.id || rIdx} className="p-2 bg-white/90 dark:bg-slate-900/90 rounded-lg text-xs space-y-0.5 border border-[#e9e9e8]/80 dark:border-white/10 group/rep">
+                                <div key={rep.id || rIdx} className="p-2 bg-white/90 dark:bg-slate-900/90 rounded-lg text-xs space-y-1 border border-[#e9e9e8]/80 dark:border-white/10 group/rep">
                                   <div className="flex items-center justify-between gap-2">
                                     <div className="flex items-center space-x-1.5 min-w-0 flex-wrap">
+                                      <div className="w-4 h-4 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 flex items-center justify-center text-[9px] font-bold shrink-0">
+                                        {rep.author ? rep.author.replace(/[\(\[].*?[\)\]]/g, '').trim().charAt(0).toUpperCase() || 'H' : 'H'}
+                                      </div>
                                       <strong className="text-[#37352f] dark:text-white font-semibold truncate">{rep.author}</strong>
                                       {rep.replyTo && (
                                         <span className="text-[10px] text-[#2383e2] dark:text-sky-400 font-medium">
@@ -697,7 +697,7 @@ export default function CommunityView({ user, onOpenPricing }) {
                                     </div>
                                   </div>
 
-                                  <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line">{rep.text}</p>
+                                  <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line pl-5">{rep.text}</p>
                                 </div>
                               ))}
                             </div>
@@ -709,40 +709,23 @@ export default function CommunityView({ user, onOpenPricing }) {
                   </div>
                 )}
 
-                {/* Add Comment Input or VIP Notice */}
-                {isFreeUser ? (
-                  <div className="pt-2 flex items-center justify-between p-2.5 bg-[#fbfbfa] dark:bg-slate-800/50 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs text-[#787774] dark:text-slate-300">
-                    <div className="flex items-center space-x-2 min-w-0">
-                      <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                      <span className="truncate">Chỉ học viên gói <strong>Plus, Pro, Ultra</strong> mới có thể gửi bình luận.</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={onOpenPricing}
-                      className="text-xs font-bold text-[#2383e2] dark:text-sky-400 hover:underline cursor-pointer flex items-center space-x-0.5 shrink-0 ml-2"
-                    >
-                      <span>Nâng cấp</span>
-                      <ArrowRight className="w-3 h-3" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="pt-1 flex items-center space-x-2">
-                    <input
-                      type="text"
-                      placeholder="Viết câu trả lời hoặc thảo luận..."
-                      value={commentInputs[post.id] || ''}
-                      onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
-                      onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                      className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
-                    />
-                    <button
-                      onClick={() => handleAddComment(post.id)}
-                      className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer"
-                    >
-                      Gửi
-                    </button>
-                  </div>
-                )}
+                {/* Add Comment Input (Always accessible for discussion) */}
+                <div className="pt-2 flex items-center space-x-2">
+                  <input
+                    type="text"
+                    placeholder="Viết bình luận hoặc trả lời thảo luận..."
+                    value={commentInputs[post.id] || ''}
+                    onChange={(e) => setCommentInputs({ ...commentInputs, [post.id]: e.target.value })}
+                    onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                    className="flex-1 px-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
+                  />
+                  <button
+                    onClick={() => handleAddComment(post.id)}
+                    className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer shrink-0"
+                  >
+                    Gửi
+                  </button>
+                </div>
 
               </div>
             );
