@@ -38,7 +38,15 @@ import {
   Download,
   ThumbsUp,
   UserCheck,
-  Users
+  Users,
+  User,
+  PlusCircle,
+  MinusCircle,
+  WalletCards,
+  ArrowUpRight,
+  ArrowDownLeft,
+  History,
+  Filter
 } from 'lucide-react';
 import {
   isUserAdmin,
@@ -77,7 +85,10 @@ import {
   sendNtfyNotification,
   getTelegramConfig,
   saveTelegramConfig,
-  sendTelegramNotification
+  sendTelegramNotification,
+  getAllUsersWithBalances,
+  adminDirectAdjustUserBalance,
+  getUserBalanceForEmail
 } from '../utils/wallet';
 import { getTierLimits, saveTierLimits } from '../utils/userTier';
 import { getMarketplaceDecks, adminUpdateMarketplaceDeck, deleteMarketplaceDeck } from '../data/marketplaceData';
@@ -108,13 +119,30 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
   const [showPassword, setShowPassword] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
 
-  const [activeTab, setActiveTab] = useState('transactions'); // 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
+  const [activeTab, setActiveTab] = useState('user_balances'); // 'user_balances' | 'transactions' | 'tiers' | 'marketplace' | 'notifications' | 'firebase' | 'ai_api'
   const [transactions, setTransactions] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [tierLimits, setTierLimits] = useState({});
   const [marketDecks, setMarketDecks] = useState([]);
   const [marketFilter, setMarketFilter] = useState('all'); // 'all' | 'duplicates' | 'pass' | 'clean'
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
+
+  // User Balances & Approvals State
+  const [userBalancesList, setUserBalancesList] = useState([]);
+  const [isLoadingUserBalances, setIsLoadingUserBalances] = useState(false);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userFilter, setUserFilter] = useState('all'); // 'all' | 'pending' | 'balance' | 'vip'
+  const [selectedUserHistory, setSelectedUserHistory] = useState(null);
+  const [adjustModal, setAdjustModal] = useState({
+    isOpen: false,
+    user: null,
+    type: 'deposit', // 'deposit' | 'withdraw'
+    amount: 50,
+    reason: ''
+  });
+  const [isAdjusting, setIsAdjusting] = useState(false);
+  const [adjustToast, setAdjustToast] = useState('');
+  const [copiedUserEmail, setCopiedUserEmail] = useState('');
 
   // Firebase Config State
   const [firebaseConfig, setFirebaseConfig] = useState(() => getFirebaseConfig());
@@ -168,9 +196,15 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
     setCommunityPosts(getCommunityPosts());
     setStudyLogs(getStudyTimeLogs());
     try {
-      const freshTxs = await fetchFirestoreTransactions();
+      const [freshTxs, users] = await Promise.all([
+        fetchFirestoreTransactions().catch(() => []),
+        getAllUsersWithBalances().catch(() => [])
+      ]);
       if (freshTxs && freshTxs.length > 0) {
         setTransactions(freshTxs);
+      }
+      if (users && users.length > 0) {
+        setUserBalancesList(users);
       }
     } catch (e) {}
   };
@@ -179,8 +213,15 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
     const handleAuthChange = (e) => {
       setAdminAuthenticated(!!e.detail?.authenticated);
     };
+    const handleBalanceChange = () => {
+      getAllUsersWithBalances().then(setUserBalancesList).catch(() => {});
+    };
     window.addEventListener('onthi-admin-auth-change', handleAuthChange);
-    return () => window.removeEventListener('onthi-admin-auth-change', handleAuthChange);
+    window.addEventListener('onthi-user-balance-updated', handleBalanceChange);
+    return () => {
+      window.removeEventListener('onthi-admin-auth-change', handleAuthChange);
+      window.removeEventListener('onthi-user-balance-updated', handleBalanceChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -189,6 +230,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
     // Real-time listener for Firestore & cross-device transactions
     const unsubscribe = subscribeToTransactions((latestTxs) => {
       setTransactions(latestTxs);
+      getAllUsersWithBalances().then(setUserBalancesList).catch(() => {});
     });
     return () => {
       if (typeof unsubscribe === 'function') unsubscribe();
@@ -333,6 +375,70 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
       } finally {
         setApprovingTxId(null);
       }
+    }
+  };
+
+  const filteredUsers = userBalancesList.filter((u) => {
+    const q = userSearchQuery.trim().toLowerCase();
+    const matchesSearch =
+      !q ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.displayName || '').toLowerCase().includes(q) ||
+      (u.role || '').toLowerCase().includes(q);
+
+    if (!matchesSearch) return false;
+
+    if (userFilter === 'pending') return u.hasPending;
+    if (userFilter === 'balance') return (u.currentBalance || 0) > 0;
+    if (userFilter === 'vip') return u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator';
+    return true;
+  });
+
+  const totalCirculatingXu = userBalancesList.reduce((acc, u) => acc + (u.currentBalance || 0), 0);
+  const totalDepositedXuAll = userBalancesList.reduce((acc, u) => acc + (u.totalDepositedXu || 0), 0);
+  const totalWithdrawnXuAll = userBalancesList.reduce((acc, u) => acc + (u.totalWithdrawnXu || 0), 0);
+  const totalPendingUsersCount = userBalancesList.filter((u) => u.hasPending).length;
+  const totalPendingRequestsCount = userBalancesList.reduce(
+    (acc, u) => acc + (u.pendingDeposits?.length || 0) + (u.pendingWithdrawals?.length || 0),
+    0
+  );
+
+  const reloadUserBalances = async () => {
+    setIsLoadingUserBalances(true);
+    try {
+      const [freshTxs, users] = await Promise.all([
+        fetchFirestoreTransactions().catch(() => []),
+        getAllUsersWithBalances().catch(() => [])
+      ]);
+      if (freshTxs && freshTxs.length > 0) setTransactions(freshTxs);
+      if (users && users.length > 0) setUserBalancesList(users);
+    } finally {
+      setIsLoadingUserBalances(false);
+    }
+  };
+
+  const handleDirectAdjustSubmit = async (e) => {
+    e.preventDefault();
+    if (!adjustModal.user || !adjustModal.amount) return;
+    setIsAdjusting(true);
+    try {
+      const res = await adminDirectAdjustUserBalance({
+        email: adjustModal.user.email,
+        amountChange: adjustModal.amount,
+        type: adjustModal.type,
+        reason: adjustModal.reason || (adjustModal.type === 'deposit' ? 'Admin cộng Xu trực tiếp' : 'Admin trừ Xu trực tiếp')
+      });
+      if (res.success) {
+        playSound('success');
+        setAdjustToast(`✅ Đã ${adjustModal.type === 'deposit' ? 'cộng' : 'trừ'} ${adjustModal.amount} Xu cho ${adjustModal.user.email}!`);
+        setAdjustModal({ isOpen: false, user: null, type: 'deposit', amount: 50, reason: '' });
+        await reloadData();
+        setTimeout(() => setAdjustToast(''), 4000);
+      } else {
+        alert(res.message || 'Lỗi khi xử lý số dư');
+      }
+    } finally {
+      setIsAdjusting(false);
     }
   };
 
@@ -721,6 +827,27 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
       <div className="bg-white dark:bg-slate-900/95 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden text-slate-900 dark:text-slate-100">
         <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/80 text-xs sm:text-sm font-semibold overflow-x-auto">
           <button
+            onClick={() => setActiveTab('user_balances')}
+            className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors cursor-pointer ${
+              activeTab === 'user_balances'
+                ? 'border-[#2383e2] text-[#2383e2] dark:text-sky-400 bg-white dark:bg-slate-800/90 font-black shadow-xs'
+                : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5 font-semibold'
+            }`}
+          >
+            <Users className="w-4 h-4 text-emerald-500" />
+            <span>Chi Tiết Số Dư Học Viên & Duyệt Nạp/Rút</span>
+            {totalPendingUsersCount > 0 ? (
+              <span className="px-2 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-black animate-pulse">
+                {totalPendingUsersCount} chờ duyệt
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-full text-[10px] font-bold">
+                {userBalancesList.length}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setActiveTab('transactions')}
             className={`py-3.5 px-5 border-b-2 flex items-center space-x-2 whitespace-nowrap transition-colors ${
               activeTab === 'transactions'
@@ -853,6 +980,439 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
         {/* TAB CONTENTS */}
         <div className="p-6 sm:p-8">
           
+          {/* TAB 0: CHI TIẾT SỐ DƯ HỌC VIÊN & DUYỆT NẠP/RÚT */}
+          {activeTab === 'user_balances' && (
+            <div className="space-y-6">
+              {/* TOP STATS METRICS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {/* 1. Tổng Xu Lưu Hành */}
+                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-900/40">
+                    <WalletCards className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Tổng Xu Lưu Hành
+                    </span>
+                    <strong className="text-lg font-black text-amber-600 dark:text-amber-400 block truncate">
+                      {totalCirculatingXu.toLocaleString()} Xu
+                    </strong>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                      ~{(totalCirculatingXu * COIN_RATE_VND).toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2. Tổng Tiền Đã Nạp */}
+                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-900/40">
+                    <ArrowDownLeft className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Tổng Đã Nạp Sàn
+                    </span>
+                    <strong className="text-lg font-black text-emerald-600 dark:text-emerald-400 block truncate">
+                      +{totalDepositedXuAll.toLocaleString()} Xu
+                    </strong>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                      ~{(totalDepositedXuAll * COIN_RATE_VND).toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3. Tổng Tiền Đã Rút */}
+                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-200/60 dark:border-rose-900/40">
+                    <ArrowUpRight className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Tổng Đã Rút Sàn
+                    </span>
+                    <strong className="text-lg font-black text-rose-600 dark:text-rose-400 block truncate">
+                      -{totalWithdrawnXuAll.toLocaleString()} Xu
+                    </strong>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                      ~{(totalWithdrawnXuAll * COIN_RATE_VND).toLocaleString()} VNĐ
+                    </span>
+                  </div>
+                </div>
+
+                {/* 4. Yêu Cầu Chờ Duyệt */}
+                <div className={`p-4 rounded-2xl border shadow-xs flex items-center space-x-3.5 transition-all ${
+                  totalPendingRequestsCount > 0
+                    ? 'bg-amber-500/10 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/80'
+                    : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800'
+                }`}>
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
+                    totalPendingRequestsCount > 0
+                      ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                  }`}>
+                    <AlertTriangle className="w-5 h-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                      Lệnh Chờ Duyệt
+                    </span>
+                    <strong className={`text-lg font-black block truncate ${
+                      totalPendingRequestsCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'
+                    }`}>
+                      {totalPendingRequestsCount} lệnh
+                    </strong>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                      {totalPendingUsersCount} học viên có lệnh chờ
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CONTROLS BAR: SEARCH, FILTERS & RELOAD */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <div className="flex items-center space-x-2 flex-1 max-w-md">
+                  <div className="relative w-full">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      placeholder="Tìm kiếm theo tên, email, vai trò..."
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-8 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-900 dark:text-white outline-none focus:border-[#2383e2] transition-colors"
+                    />
+                    {userSearchQuery && (
+                      <button
+                        onClick={() => setUserSearchQuery('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs"
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Filters */}
+                <div className="flex items-center space-x-1.5 flex-wrap gap-y-1.5">
+                  <div className="flex items-center space-x-1 bg-white dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                    <button
+                      onClick={() => setUserFilter('all')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all ${
+                        userFilter === 'all'
+                          ? 'bg-[#2383e2] text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Tất Cả ({userBalancesList.length})
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('pending')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all flex items-center space-x-1 ${
+                        userFilter === 'pending'
+                          ? 'bg-amber-500 text-white shadow-xs'
+                          : 'text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40'
+                      }`}
+                    >
+                      <span>⚠️ Chờ Duyệt</span>
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-900 dark:bg-amber-900 dark:text-amber-200">
+                        {totalPendingUsersCount}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('balance')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all ${
+                        userFilter === 'balance'
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Số Dư &gt; 0 ({userBalancesList.filter(u => (u.currentBalance || 0) > 0).length})
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('vip')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all ${
+                        userFilter === 'vip'
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      VIP / Creator ({userBalancesList.filter(u => u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator').length})
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={reloadUserBalances}
+                    disabled={isLoadingUserBalances}
+                    className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-black text-slate-800 dark:text-slate-200 shadow-xs transition-colors shrink-0"
+                    title="Đồng bộ lại danh sách và số dư mới nhất từ Firebase & thiết bị"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 text-[#2383e2] ${isLoadingUserBalances ? 'animate-spin' : ''}`} />
+                    <span>{isLoadingUserBalances ? 'Đang Tải...' : 'Làm Mới'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* USER CARDS / BOXES ("mỗi ô đấy có cái duyệt rút, nạp ở bên cạnh") */}
+              {isLoadingUserBalances ? (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  {[1, 2, 3, 4].map((n) => (
+                    <div key={n} className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 animate-pulse space-y-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-200 dark:bg-slate-800"></div>
+                        <div className="space-y-1.5 flex-1">
+                          <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/3"></div>
+                          <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/2"></div>
+                        </div>
+                      </div>
+                      <div className="h-20 bg-slate-100 dark:bg-slate-800/60 rounded-xl"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : filteredUsers.length === 0 ? (
+                <div className="text-center py-16 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800">
+                  <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                  <p className="text-sm font-black text-slate-700 dark:text-slate-300">Không tìm thấy học viên nào phù hợp bộ lọc.</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc chọn bộ lọc "Tất Cả".</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  {filteredUsers.map((u) => (
+                    <div
+                      key={u.email}
+                      className={`p-5 rounded-2xl border transition-all flex flex-col justify-between ${
+                        u.hasPending
+                          ? 'bg-amber-50/70 dark:bg-amber-950/20 border-amber-300 dark:border-amber-800 shadow-md ring-2 ring-amber-400/30'
+                          : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs'
+                      }`}
+                    >
+                      <div>
+                        {/* Card Header: Avatar, Name, Email, Badges */}
+                        <div className="flex items-start justify-between gap-3 mb-3.5">
+                          <div className="flex items-center space-x-3 min-w-0">
+                            <img
+                              src={u.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`}
+                              alt={u.displayName}
+                              className="w-12 h-12 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
+                              onError={(e) => {
+                                e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`;
+                              }}
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center space-x-2 flex-wrap gap-y-0.5">
+                                <h4 className="font-black text-sm text-slate-900 dark:text-white truncate">
+                                  {u.displayName || u.email?.split('@')[0]}
+                                </h4>
+                                {u.isCurrentDeviceUser && (
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                    Thiết bị này
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                <span className="truncate max-w-[160px] sm:max-w-xs">{u.email}</span>
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard?.writeText(u.email);
+                                    setCopiedUserEmail(u.email);
+                                    setTimeout(() => setCopiedUserEmail(''), 2000);
+                                  }}
+                                  title="Sao chép email"
+                                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                >
+                                  {copiedUserEmail === u.email ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Badges */}
+                          <div className="flex flex-col items-end space-y-1 shrink-0">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                              u.role === 'admin'
+                                ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                                : u.role === 'creator'
+                                ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                            }`}>
+                              {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : '👨‍🎓 Học Viên'}
+                            </span>
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-950/80 dark:text-sky-300 border border-blue-200 dark:border-blue-900 uppercase">
+                              Gói: {u.tier || 'free'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Balance Display Box */}
+                        <div className="p-3.5 bg-slate-50 dark:bg-slate-800/70 rounded-xl border border-slate-200 dark:border-slate-700/80 mb-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold text-slate-600 dark:text-slate-400 flex items-center space-x-1.5">
+                              <Coins className="w-4 h-4 text-amber-500" />
+                              <span>Số dư ví khả dụng:</span>
+                            </span>
+                            <div className="text-right">
+                              <span className="text-xl font-black text-amber-600 dark:text-amber-400">
+                                {u.currentBalance.toLocaleString()} Xu
+                              </span>
+                              <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                                ~{(u.currentBalance * COIN_RATE_VND).toLocaleString()}đ
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Financial Sub-metrics */}
+                          <div className="grid grid-cols-3 gap-2 pt-2 mt-2 border-t border-slate-200 dark:border-slate-700 text-center text-[11px]">
+                            <div>
+                              <span className="text-slate-400 dark:text-slate-500 block text-[10px]">Tổng Đã Nạp</span>
+                              <strong className="text-emerald-600 dark:text-emerald-400 font-black">
+                                +{(u.totalDepositedXu || 0).toLocaleString()} Xu
+                              </strong>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 dark:text-slate-500 block text-[10px]">Tổng Đã Rút</span>
+                              <strong className="text-rose-600 dark:text-rose-400 font-black">
+                                -{(u.totalWithdrawnXu || 0).toLocaleString()} Xu
+                              </strong>
+                            </div>
+                            <div>
+                              <span className="text-slate-400 dark:text-slate-500 block text-[10px]">Số Lệnh GD</span>
+                              <strong className="text-slate-700 dark:text-slate-300 font-black">
+                                {u.transactionCount || 0} lệnh
+                              </strong>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* PENDING REQUESTS SECTION & INLINE APPROVAL BUTTONS */}
+                        {u.hasPending && (
+                          <div className="space-y-2 mb-3 p-3 bg-amber-100/70 dark:bg-amber-950/50 rounded-xl border border-amber-300 dark:border-amber-800">
+                            <div className="flex items-center justify-between text-xs font-black text-amber-900 dark:text-amber-200">
+                              <span className="flex items-center space-x-1">
+                                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                                <span>Lệnh chờ duyệt của học viên này:</span>
+                              </span>
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200">
+                                {(u.pendingDeposits?.length || 0) + (u.pendingWithdrawals?.length || 0)} lệnh
+                              </span>
+                            </div>
+
+                            {/* Pending Deposits */}
+                            {u.pendingDeposits?.map((tx) => (
+                              <div key={tx.id} className="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-amber-200 dark:border-amber-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xs">
+                                <div>
+                                  <div className="flex items-center space-x-1.5 flex-wrap">
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                      NẠP XU
+                                    </span>
+                                    <strong className="font-mono text-slate-800 dark:text-slate-200">#{tx.id}</strong>
+                                    <span className="text-slate-400 text-[10px]">• {formatHanoiDateTime(tx.createdAt)}</span>
+                                  </div>
+                                  <div className="mt-0.5 font-black text-emerald-600 dark:text-emerald-400">
+                                    +{tx.xuAmount} Xu <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">(~{(tx.amountVnd || tx.xuAmount * COIN_RATE_VND).toLocaleString()}đ)</span>
+                                  </div>
+                                </div>
+                                <div className="flex items-center space-x-1.5 shrink-0">
+                                  <button
+                                    onClick={() => handleApprove(tx.id)}
+                                    disabled={approvingTxId === tx.id}
+                                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-black text-xs shadow-xs flex items-center space-x-1 transition-all"
+                                  >
+                                    {approvingTxId === tx.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                    <span>Duyệt Nạp</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(tx.id)}
+                                    disabled={approvingTxId === tx.id}
+                                    className="px-2.5 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/80 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-black text-xs border border-rose-300 dark:border-rose-800 transition-all"
+                                  >
+                                    <XCircle className="w-3.5 h-3.5" />
+                                    <span>Từ Chối</span>
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+
+                            {/* Pending Withdrawals */}
+                            {u.pendingWithdrawals?.map((tx) => (
+                              <div key={tx.id} className="p-2.5 bg-white dark:bg-slate-900 rounded-lg border border-amber-200 dark:border-amber-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs shadow-xs">
+                                <div>
+                                  <div className="flex items-center space-x-1.5 flex-wrap">
+                                    <span className="px-1.5 py-0.5 rounded text-[10px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300">
+                                      RÚT TIỀN
+                                    </span>
+                                    <strong className="font-mono text-slate-800 dark:text-slate-200">#{tx.id}</strong>
+                                    <span className="text-slate-400 text-[10px]">• {formatHanoiDateTime(tx.createdAt)}</span>
+                                  </div>
+                                  <div className="mt-0.5 font-black text-rose-600 dark:text-rose-400">
+                                    -{tx.xuAmount} Xu <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">(~{(tx.amountVnd || tx.xuAmount * COIN_RATE_VND).toLocaleString()}đ)</span>
+                                  </div>
+                                  {tx.details && (
+                                    <div className="text-[10px] text-slate-600 dark:text-slate-400 mt-0.5">
+                                      {tx.details.bankName} • STK: <span className="font-mono font-bold text-[#2383e2]">{tx.details.accountNo}</span> ({tx.details.accountName})
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex items-center space-x-1.5 shrink-0">
+                                  <button
+                                    onClick={() => handleApprove(tx.id)}
+                                    disabled={approvingTxId === tx.id}
+                                    className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-black text-xs shadow-xs flex items-center space-x-1 transition-all"
+                                  >
+                                    {approvingTxId === tx.id ? <RefreshCw className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                                    <span>Duyệt Rút</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(tx.id)}
+                                    disabled={approvingTxId === tx.id}
+                                    className="px-2.5 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 dark:bg-rose-950/80 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-black text-xs border border-rose-300 dark:border-rose-800 transition-all"
+                                  >
+                                    <XCircle className="w-3.5 h-3.5" />
+                                    <span>Từ Chối</span>
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* QUICK ACTION BUTTONS ON EACH BOX ("ở bên cạnh / dưới mỗi ô") */}
+                      <div className="flex items-center justify-between gap-2 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 mt-auto">
+                        <div className="flex items-center space-x-1.5">
+                          <button
+                            onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'deposit', amount: 50, reason: '' })}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/90 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-black text-xs flex items-center space-x-1 transition-colors"
+                            title="Admin cộng Xu trực tiếp cho học viên này"
+                          >
+                            <PlusCircle className="w-3.5 h-3.5" />
+                            <span>+ Nạp Xu</span>
+                          </button>
+
+                          <button
+                            onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'withdraw', amount: Math.min(u.currentBalance, 50), reason: '' })}
+                            disabled={u.currentBalance <= 0}
+                            className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900/90 disabled:opacity-40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-black text-xs flex items-center space-x-1 transition-colors"
+                            title="Admin trừ Xu trực tiếp từ học viên này"
+                          >
+                            <MinusCircle className="w-3.5 h-3.5" />
+                            <span>- Trừ Xu</span>
+                          </button>
+                        </div>
+
+                        <button
+                          onClick={() => setSelectedUserHistory(u)}
+                          className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center space-x-1 transition-colors"
+                          title="Xem lịch sử biến động số dư và giao dịch"
+                        >
+                          <History className="w-3.5 h-3.5" />
+                          <span>Lịch Sử GD</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* TAB 1: DUYỆT NẠP & RÚT */}
           {activeTab === 'transactions' && (
             <div className="space-y-4">
@@ -947,6 +1507,12 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                           </td>
                           <td className="p-3 max-w-xs">
                             <div className="text-slate-900 dark:text-slate-100 font-black truncate">{tx.userEmail}</div>
+                            <div className="flex items-center space-x-1.5 mt-0.5 text-[11px]">
+                              <span className="text-slate-500 dark:text-slate-400 font-medium">Số dư:</span>
+                              <span className="font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200/80 dark:border-amber-900/60">
+                                {getUserBalanceForEmail(tx.userEmail).toLocaleString()} Xu
+                              </span>
+                            </div>
                             {tx.type === 'withdraw' && tx.details && (
                               <div className="text-[11px] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/90 p-2 rounded-xl mt-1 border border-slate-200 dark:border-slate-700">
                                 <span className="font-black text-slate-900 dark:text-white">{tx.details.bankName}</span> • STK: <span className="font-mono font-black text-[#2383e2] dark:text-sky-400">{tx.details.accountNo}</span>
@@ -2587,6 +3153,281 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
         </div>
 
       </div>
+
+      {/* MODAL 1: ADMIN DIRECT BALANCE ADJUSTMENT (+ NẠP XU / - TRỪ XU) */}
+      {adjustModal.isOpen && adjustModal.user && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-7 relative overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center space-x-2.5">
+                <div className={`p-2 rounded-2xl ${
+                  adjustModal.type === 'deposit'
+                    ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400'
+                }`}>
+                  {adjustModal.type === 'deposit' ? <PlusCircle className="w-5 h-5" /> : <MinusCircle className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h3 className="font-black text-base text-slate-900 dark:text-white">
+                    {adjustModal.type === 'deposit' ? 'Cộng Xu Cho Học Viên' : 'Trừ Xu Học Viên'}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Admin điều chỉnh số dư trực tiếp</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setAdjustModal({ ...adjustModal, isOpen: false })}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Target User Info */}
+            <div className="my-4 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 flex items-center justify-between">
+              <div className="min-w-0 pr-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Tài Khoản Thụ Hưởng</span>
+                <span className="font-black text-xs text-slate-900 dark:text-white block truncate">{adjustModal.user.displayName || adjustModal.user.email}</span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">{adjustModal.user.email}</span>
+              </div>
+              <div className="text-right shrink-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Số Dư Hiện Tại</span>
+                <span className="font-black text-sm text-amber-600 dark:text-amber-400">
+                  {getUserBalanceForEmail(adjustModal.user.email).toLocaleString()} Xu
+                </span>
+              </div>
+            </div>
+
+            {/* Type selector toggle */}
+            <div className="grid grid-cols-2 gap-2 mb-4 bg-slate-100 dark:bg-slate-800 p-1 rounded-2xl">
+              <button
+                type="button"
+                onClick={() => setAdjustModal({ ...adjustModal, type: 'deposit' })}
+                className={`py-2 rounded-xl text-xs font-black transition-all ${
+                  adjustModal.type === 'deposit'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                + Cộng Xu (Nạp)
+              </button>
+              <button
+                type="button"
+                onClick={() => setAdjustModal({ ...adjustModal, type: 'withdraw' })}
+                className={`py-2 rounded-xl text-xs font-black transition-all ${
+                  adjustModal.type === 'withdraw'
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                - Trừ Xu (Rút / Phạt)
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleDirectAdjustSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">
+                  Số Lượng Xu Cần {adjustModal.type === 'deposit' ? 'Cộng' : 'Trừ'}:
+                </label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="1"
+                    max={adjustModal.type === 'withdraw' ? getUserBalanceForEmail(adjustModal.user.email) : 100000}
+                    value={adjustModal.amount}
+                    onChange={(e) => setAdjustModal({ ...adjustModal, amount: Math.max(1, parseInt(e.target.value) || 0) })}
+                    className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-black text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
+                    required
+                  />
+                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-black text-amber-500">
+                    Xu (~{((adjustModal.amount || 0) * COIN_RATE_VND).toLocaleString()}đ)
+                  </span>
+                </div>
+
+                {/* Quick amount chips */}
+                <div className="flex items-center space-x-1.5 mt-2 flex-wrap gap-y-1">
+                  {[20, 50, 100, 200, 500].map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => setAdjustModal({ ...adjustModal, amount: amt })}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-black border transition-colors ${
+                        adjustModal.amount === amt
+                          ? 'bg-[#2383e2] text-white border-[#2383e2]'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      +{amt} Xu
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-black text-slate-700 dark:text-slate-300 mb-1.5">
+                  Lý Do / Ghi Chú:
+                </label>
+                <input
+                  type="text"
+                  placeholder={adjustModal.type === 'deposit' ? 'VD: Duyệt chuyển khoản ngoài Momo / Thưởng nhiệm vụ' : 'VD: Duyệt rút tiền mặt / Hoàn hủy giao dịch'}
+                  value={adjustModal.reason}
+                  onChange={(e) => setAdjustModal({ ...adjustModal, reason: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white outline-none focus:border-[#2383e2]"
+                />
+              </div>
+
+              {/* Balance Simulation */}
+              <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 text-xs">
+                <span className="text-amber-900 dark:text-amber-200 font-bold block">
+                  Số dư sau khi thực hiện:
+                </span>
+                <span className="text-base font-black text-amber-600 dark:text-amber-400">
+                  {Math.max(
+                    0,
+                    getUserBalanceForEmail(adjustModal.user.email) +
+                      (adjustModal.type === 'deposit' ? adjustModal.amount : -adjustModal.amount)
+                  ).toLocaleString()}{' '}
+                  Xu
+                </span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end space-x-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setAdjustModal({ ...adjustModal, isOpen: false })}
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAdjusting || (adjustModal.type === 'withdraw' && getUserBalanceForEmail(adjustModal.user.email) < adjustModal.amount)}
+                  className={`px-5 py-2.5 rounded-xl text-white font-black text-xs shadow-md flex items-center space-x-1.5 transition-all ${
+                    adjustModal.type === 'deposit'
+                      ? 'bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50'
+                      : 'bg-rose-600 hover:bg-rose-700 disabled:opacity-50'
+                  }`}
+                >
+                  {isAdjusting ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>Đang Xử Lý...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{adjustModal.type === 'deposit' ? 'Xác Nhận Nạp Xu' : 'Xác Nhận Trừ Xu'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: USER TRANSACTION HISTORY */}
+      {selectedUserHistory && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 sm:p-7 relative max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="flex items-center space-x-3">
+                <img
+                  src={selectedUserHistory.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(selectedUserHistory.email)}`}
+                  alt={selectedUserHistory.displayName}
+                  className="w-10 h-10 rounded-2xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+                />
+                <div>
+                  <h3 className="font-black text-base text-slate-900 dark:text-white">
+                    Lịch Sử Giao Dịch: {selectedUserHistory.displayName || selectedUserHistory.email}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Số dư hiện tại: <strong className="text-amber-600 dark:text-amber-400 font-black">{getUserBalanceForEmail(selectedUserHistory.email).toLocaleString()} Xu</strong>
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedUserHistory(null)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* List */}
+            <div className="overflow-y-auto flex-1 my-4 space-y-2.5 pr-1">
+              {(!selectedUserHistory.userTxs || selectedUserHistory.userTxs.length === 0) ? (
+                <div className="text-center py-12 text-slate-400 text-xs font-bold">
+                  Học viên này chưa có phát sinh giao dịch nào.
+                </div>
+              ) : (
+                selectedUserHistory.userTxs.map((t) => (
+                  <div
+                    key={t.id}
+                    className="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-3 text-xs"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
+                          t.type === 'deposit'
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                            : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                        }`}>
+                          {t.type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'}
+                        </span>
+                        <span className="font-mono font-bold text-slate-700 dark:text-slate-300">#{t.id}</span>
+                        <span className="text-[10px] text-slate-400">{formatHanoiDateTime(t.createdAt)}</span>
+                      </div>
+                      <div className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 truncate">
+                        {t.details?.note || t.details?.method || (t.details?.bankName ? `${t.details.bankName} - ${t.details.accountNo}` : 'Giao dịch hệ thống')}
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className={`font-black text-sm ${t.type === 'deposit' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+                        {t.type === 'deposit' ? '+' : '-'}{t.xuAmount} Xu
+                      </div>
+                      <span className={`inline-block px-2 py-0.2 rounded-full text-[9px] font-black mt-0.5 ${
+                        t.status === 'approved'
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                          : t.status === 'pending'
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 animate-pulse'
+                          : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                      }`}>
+                        {t.status === 'approved' ? 'Đã Duyệt ✅' : t.status === 'pending' ? 'Chờ Duyệt' : 'Từ Chối ❌'}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <span className="text-xs text-slate-500 font-medium">
+                Tổng cộng {selectedUserHistory.userTxs?.length || 0} giao dịch
+              </span>
+              <button
+                onClick={() => setSelectedUserHistory(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition-colors"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TOAST NOTIFICATION FOR ADJUSTMENTS */}
+      {adjustToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl border border-slate-700 text-xs font-black flex items-center space-x-2 animate-in slide-in-from-bottom">
+          <Sparkles className="w-4 h-4 text-emerald-400" />
+          <span>{adjustToast}</span>
+        </div>
+      )}
 
     </div>
   );

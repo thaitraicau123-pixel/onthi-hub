@@ -391,6 +391,23 @@ export async function logoutUser() {
   setCurrentUser(null);
 }
 
+// Fetch all registered users from Firestore (For Admin Management)
+export async function fetchAllFirestoreUsers() {
+  try {
+    const { db } = initFirebase();
+    if (!db) return [];
+    const q = collection(db, 'users');
+    const snap = await getDocs(q);
+    const users = [];
+    snap.forEach((d) => {
+      users.push(d.data());
+    });
+    return users;
+  } catch (e) {
+    return [];
+  }
+}
+
 // Listen to auth changes
 export function listenToAuth(callback) {
   try {

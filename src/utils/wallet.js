@@ -8,7 +8,9 @@ import {
   onSnapshot,
   updateDoc,
   query,
-  orderBy
+  orderBy,
+  fetchAllFirestoreUsers,
+  getCurrentUser
 } from './firebaseConfig.js';
 
 const WALLET_BALANCE_KEY = 'onthi_wallet_balance';
@@ -803,4 +805,343 @@ export async function adminRejectTransaction(txId, reason = 'Thông tin chưa ch
   });
 
   return true;
+}
+
+// ----------------------------------------------------------------------
+// USER BALANCES & ADMIN DIRECT APPROVAL ENGINE
+// ----------------------------------------------------------------------
+
+export const USERS_REGISTRY_KEY = 'onthi_all_users_registry_v1';
+export const USER_BALANCE_OVERRIDES_KEY = 'onthi_user_balance_overrides_v1';
+
+export function getUserBalanceOverrides() {
+  try {
+    const raw = localStorage.getItem(USER_BALANCE_OVERRIDES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+export function setUserBalanceOverride(email, newBalance) {
+  if (!email) return false;
+  try {
+    const overrides = getUserBalanceOverrides();
+    overrides[email.toLowerCase().trim()] = Math.max(0, Math.round(newBalance));
+    localStorage.setItem(USER_BALANCE_OVERRIDES_KEY, JSON.stringify(overrides));
+
+    // If this is the active user on this browser, also update active balance
+    const cur = getCurrentUser();
+    if (cur?.email && cur.email.toLowerCase().trim() === email.toLowerCase().trim()) {
+      setWalletBalance(Math.max(0, Math.round(newBalance)));
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('onthi-user-balance-updated', { detail: { email, newBalance } }));
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export function getUserBalanceForEmail(email) {
+  if (!email) return 20;
+  const normalized = email.toLowerCase().trim();
+
+  // 1. Check if current active user
+  const cur = getCurrentUser();
+  if (cur?.email && cur.email.toLowerCase().trim() === normalized) {
+    return getWalletBalance();
+  }
+
+  // 2. Check if explicitly overridden by admin
+  const overrides = getUserBalanceOverrides();
+  if (typeof overrides[normalized] === 'number') {
+    return overrides[normalized];
+  }
+
+  // 3. Compute from transactions
+  const txs = getTransactions().filter((t) => (t.userEmail || '').toLowerCase().trim() === normalized);
+  let balance = 20; // Chào mừng tân thủ 20 Xu
+  for (const t of txs) {
+    const amt = Number(t.xuAmount) || 0;
+    if (t.type === 'deposit' && t.status === 'approved') {
+      balance += amt;
+    } else if (t.type === 'withdraw' && (t.status === 'approved' || t.status === 'pending')) {
+      // Pending or approved withdrawals deduct from balance
+      balance = Math.max(0, balance - amt);
+    }
+  }
+
+  return Math.max(0, balance);
+}
+
+// Default Seed Accounts for rich display
+export const SEED_ACCOUNTS = [
+  {
+    email: 'thaitraicau123@gmail.com',
+    displayName: 'Thái Trai Cầu (Super Admin)',
+    role: 'admin',
+    tier: 'ultra',
+    initialBalance: 9999,
+    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+    phone: '0986019623'
+  },
+  {
+    email: 'hocvien.top1@onthihub.vn',
+    displayName: 'Nguyễn Văn Hùng (Thủ Khoa 2025)',
+    role: 'vip',
+    tier: 'ultra',
+    initialBalance: 350,
+    photoURL: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    email: 'creator.anki@onthihub.vn',
+    displayName: 'Trần Minh Tuấn (Senior Creator)',
+    role: 'creator',
+    tier: 'pro',
+    initialBalance: 180,
+    photoURL: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    email: 'lethithuy@gmail.com',
+    displayName: 'Lê Thùy Linh (IELTS 8.0)',
+    role: 'student',
+    tier: 'plus',
+    initialBalance: 65,
+    photoURL: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    email: 'nguyenvana@gmail.com',
+    displayName: 'Nguyễn Văn An (Công Chức)',
+    role: 'student',
+    tier: 'free',
+    initialBalance: 40,
+    photoURL: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+  }
+];
+
+// Register a user profile into the registry
+export function registerUserInRegistry(userProfile) {
+  if (!userProfile || !userProfile.email) return;
+  try {
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    const registry = raw ? JSON.parse(raw) : [];
+    const normalized = userProfile.email.toLowerCase().trim();
+    const existingIndex = registry.findIndex((u) => u.email.toLowerCase().trim() === normalized);
+
+    const record = {
+      email: userProfile.email,
+      displayName: userProfile.displayName || userProfile.email.split('@')[0],
+      photoURL: userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`,
+      tier: userProfile.tier || 'free',
+      role: userProfile.role || 'student',
+      lastActive: new Date().toISOString()
+    };
+
+    if (existingIndex >= 0) {
+      registry[existingIndex] = { ...registry[existingIndex], ...record };
+    } else {
+      registry.push(record);
+    }
+
+    localStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(registry));
+  } catch (e) {}
+}
+
+// Get all users with comprehensive balance details, pending actions, and stats
+export async function getAllUsersWithBalances() {
+  const usersMap = new Map();
+
+  // 1. Seed Accounts
+  for (const acc of SEED_ACCOUNTS) {
+    usersMap.set(acc.email.toLowerCase().trim(), {
+      email: acc.email,
+      displayName: acc.displayName,
+      photoURL: acc.photoURL,
+      role: acc.role || 'student',
+      tier: acc.tier || 'free',
+      lastActive: new Date(Date.now() - 3600000 * 2).toISOString(),
+      isSeed: true
+    });
+  }
+
+  // 2. Local Registry
+  try {
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    const registry = raw ? JSON.parse(raw) : [];
+    for (const u of registry) {
+      if (u?.email) {
+        const key = u.email.toLowerCase().trim();
+        usersMap.set(key, { ...(usersMap.get(key) || {}), ...u });
+      }
+    }
+  } catch (e) {}
+
+  // 3. Firestore Users
+  try {
+    const fsUsers = await fetchAllFirestoreUsers();
+    for (const fu of fsUsers) {
+      if (fu?.email) {
+        const key = fu.email.toLowerCase().trim();
+        usersMap.set(key, { ...(usersMap.get(key) || {}), ...fu });
+      }
+    }
+  } catch (e) {}
+
+  // 4. Current Logged In User
+  const cur = getCurrentUser();
+  if (cur?.email) {
+    const key = cur.email.toLowerCase().trim();
+    usersMap.set(key, {
+      ...(usersMap.get(key) || {}),
+      email: cur.email,
+      displayName: cur.displayName || cur.email.split('@')[0],
+      photoURL: cur.photoURL,
+      tier: cur.tier || 'free',
+      lastActive: new Date().toISOString(),
+      isCurrentDeviceUser: true
+    });
+  }
+
+  // 5. Discover from transactions
+  const allTxs = getTransactions();
+  for (const tx of allTxs) {
+    if (tx?.userEmail) {
+      const key = tx.userEmail.toLowerCase().trim();
+      if (!usersMap.has(key)) {
+        usersMap.set(key, {
+          email: tx.userEmail,
+          displayName: tx.userEmail.split('@')[0],
+          photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${tx.userEmail}`,
+          role: 'student',
+          tier: 'free',
+          lastActive: tx.createdAt || new Date().toISOString()
+        });
+      }
+    }
+  }
+
+  // 6. Compute detailed balance & stats for each user
+  const result = [];
+  const overrides = getUserBalanceOverrides();
+
+  for (const [emailKey, u] of usersMap.entries()) {
+    const userTxs = allTxs.filter((t) => (t.userEmail || '').toLowerCase().trim() === emailKey);
+
+    let totalDepositedXu = 0;
+    let totalWithdrawnXu = 0;
+    const pendingDeposits = [];
+    const pendingWithdrawals = [];
+
+    for (const t of userTxs) {
+      const amt = Number(t.xuAmount) || 0;
+      if (t.type === 'deposit') {
+        if (t.status === 'approved') {
+          totalDepositedXu += amt;
+        } else if (t.status === 'pending') {
+          pendingDeposits.push(t);
+        }
+      } else if (t.type === 'withdraw') {
+        if (t.status === 'approved') {
+          totalWithdrawnXu += amt;
+        } else if (t.status === 'pending') {
+          pendingWithdrawals.push(t);
+        }
+      }
+    }
+
+    // Determine balance
+    let currentBalance;
+    if (u.isCurrentDeviceUser) {
+      currentBalance = getWalletBalance();
+    } else if (typeof overrides[emailKey] === 'number') {
+      currentBalance = overrides[emailKey];
+    } else if (typeof u.initialBalance === 'number') {
+      currentBalance = u.initialBalance + totalDepositedXu - totalWithdrawnXu;
+    } else {
+      currentBalance = 20 + totalDepositedXu - totalWithdrawnXu;
+    }
+
+    currentBalance = Math.max(0, currentBalance);
+
+    result.push({
+      ...u,
+      currentBalance,
+      totalDepositedXu,
+      totalWithdrawnXu,
+      pendingDeposits,
+      pendingWithdrawals,
+      hasPending: pendingDeposits.length > 0 || pendingWithdrawals.length > 0,
+      transactionCount: userTxs.length,
+      userTxs
+    });
+  }
+
+  // Sort: users with pending requests first, then by balance desc
+  return result.sort((a, b) => {
+    if (a.hasPending && !b.hasPending) return -1;
+    if (!a.hasPending && b.hasPending) return 1;
+    return b.currentBalance - a.currentBalance;
+  });
+}
+
+// Admin directly deposits or withdraws coins for any user
+export async function adminDirectAdjustUserBalance({ email, amountChange, type = 'deposit', reason = 'Admin duyệt nạp' }) {
+  if (!email || !amountChange) return { success: false, message: 'Dữ liệu không hợp lệ' };
+  const absAmount = Math.abs(Number(amountChange));
+  if (isNaN(absAmount) || absAmount <= 0) return { success: false, message: 'Số Xu phải lớn hơn 0' };
+
+  const normalized = email.toLowerCase().trim();
+  const currentBal = getUserBalanceForEmail(normalized);
+  let newBalance = currentBal;
+
+  if (type === 'deposit') {
+    newBalance = currentBal + absAmount;
+  } else {
+    if (currentBal < absAmount) {
+      return { success: false, message: `Số dư học viên chỉ còn ${currentBal} Xu, không đủ để trừ ${absAmount} Xu!` };
+    }
+    newBalance = Math.max(0, currentBal - absAmount);
+  }
+
+  // 1. Update override
+  setUserBalanceOverride(normalized, newBalance);
+
+  // 2. Create transaction record
+  const code = (type === 'deposit' ? 'NAP_ADMIN_' : 'RUT_ADMIN_') + Math.floor(100000 + Math.random() * 900000);
+  const tx = {
+    id: code,
+    type: type === 'deposit' ? 'deposit' : 'withdraw',
+    status: 'approved',
+    xuAmount: absAmount,
+    amountVnd: absAmount * COIN_RATE_VND,
+    userEmail: email,
+    createdAt: new Date().toISOString(),
+    reviewedAt: new Date().toISOString(),
+    details: {
+      method: 'Admin Trực Tiếp Duyệt',
+      note: reason || (type === 'deposit' ? 'Admin cộng Xu trực tiếp' : 'Admin trừ Xu trực tiếp')
+    }
+  };
+
+  const list = getTransactions();
+  list.unshift(tx);
+  localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(list));
+
+  // 3. Dual-write to Firebase Firestore
+  saveTransactionToFirestore(tx);
+
+  // 4. Broadcast to Cloud Relay
+  await broadcastTransactionToCloud('status_update', {
+    txId: code,
+    status: 'approved',
+    reviewedAt: tx.reviewedAt,
+    userEmail: email,
+    xuAmount: absAmount,
+    type: tx.type
+  });
+
+  return { success: true, newBalance, tx };
 }
