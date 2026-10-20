@@ -11,17 +11,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('firebase')) {
+          const normalized = id.replace(/\\/g, '/');
+          if (normalized.includes('node_modules')) {
+            if (normalized.includes('/firebase/')) {
               return 'vendor-firebase';
             }
-            if (id.includes('react') || id.includes('react-dom')) {
+            if (normalized.includes('/react/') || normalized.includes('/react-dom/')) {
               return 'vendor-react';
             }
-            if (id.includes('lucide-react')) {
+            if (normalized.includes('/lucide-react/')) {
               return 'vendor-icons';
             }
-            if (id.includes('canvas-confetti')) {
+            if (normalized.includes('/canvas-confetti/')) {
               return 'vendor-confetti';
             }
             return 'vendor-libs';

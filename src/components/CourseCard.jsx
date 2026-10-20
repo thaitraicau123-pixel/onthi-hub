@@ -194,7 +194,7 @@ function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-[#448361] bg-[#edf3ec] hover:bg-[#e0ece0] border border-[#d3e5d7] rounded-lg transition-colors cursor-pointer touch-3d"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-[#448361] dark:text-emerald-300 bg-[#edf3ec] dark:bg-emerald-950/70 hover:bg-[#e0ece0] dark:hover:bg-emerald-900/80 border border-[#d3e5d7] dark:border-emerald-700/50 rounded-lg transition-colors cursor-pointer touch-3d"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Vào Học Bộ Thẻ</span>
@@ -203,7 +203,7 @@ function CourseCard({
           <button
             type="button"
             onClick={() => onBuy(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-semibold text-white bg-[#2e2e2e] hover:bg-[#1a1a1a] rounded-lg shadow-2xs transition-all active:scale-[0.98] cursor-pointer touch-3d btn-3d"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-[#2383e2] dark:hover:bg-[#1a73e8] rounded-lg shadow-sm transition-all active:scale-[0.98] cursor-pointer touch-3d"
           >
             <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
             <span>Mở Khóa ({priceXu} Xu)</span>

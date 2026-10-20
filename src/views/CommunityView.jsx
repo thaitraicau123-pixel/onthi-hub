@@ -220,24 +220,12 @@ export default function CommunityView({ user, onOpenPricing }) {
   };
 
   const handleStartReply = (postId, commentIndex, commentId, authorName) => {
-    if (isFreeUser) {
-      playSound('flip');
-      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia trả lời bình luận trên diễn đàn!');
-      if (onOpenPricing) onOpenPricing();
-      return;
-    }
     playSound('click');
     const key = `${postId}_${commentIndex}`;
     setActiveReplyTarget(activeReplyTarget?.key === key ? null : { key, postId, commentIndex, commentId, authorName });
   };
 
   const handleAddReply = (postId, commentIndex, commentId, authorName) => {
-    if (isFreeUser) {
-      playSound('flip');
-      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia trả lời bình luận trên diễn đàn!');
-      if (onOpenPricing) onOpenPricing();
-      return;
-    }
     const key = `${postId}_${commentIndex}`;
     const text = (replyInputs[key] || '').trim();
     if (!text) return;
