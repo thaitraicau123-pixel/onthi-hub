@@ -52,7 +52,9 @@ import {
   TrendingUp,
   TrendingDown,
   ShieldCheck,
-  Unlock
+  Unlock,
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import {
   isUserAdmin,
@@ -143,7 +145,8 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
   const [userBalancesList, setUserBalancesList] = useState([]);
   const [isLoadingUserBalances, setIsLoadingUserBalances] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
-  const [userFilter, setUserFilter] = useState('all'); // 'all' | 'pending' | 'balance' | 'vip'
+  const [userFilter, setUserFilter] = useState('all'); // 'all' | 'active' | 'locked' | 'vip' | 'pending' | 'balance'
+  const [userViewMode, setUserViewMode] = useState('table'); // 'table' | 'cards'
   const [selectedUserHistory, setSelectedUserHistory] = useState(null);
   const [adjustModal, setAdjustModal] = useState({
     isOpen: false,
@@ -406,17 +409,26 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
       !q ||
       (u.email || '').toLowerCase().includes(q) ||
       (u.displayName || '').toLowerCase().includes(q) ||
-      (u.role || '').toLowerCase().includes(q);
+      (u.role || '').toLowerCase().includes(q) ||
+      (u.tier || '').toLowerCase().includes(q) ||
+      (u.status || '').toLowerCase().includes(q);
 
     if (!matchesSearch) return false;
 
     if (userFilter === 'pending') return u.hasPending;
     if (userFilter === 'balance') return (u.currentBalance || 0) > 0;
     if (userFilter === 'vip') return u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator';
+    if (userFilter === 'active') return u.status !== 'suspended';
     if (userFilter === 'locked') return u.status === 'suspended';
     return true;
   });
 
+  const totalUsersCount = userBalancesList.length;
+  const activeUsersCount = userBalancesList.filter((u) => u.status !== 'suspended').length;
+  const suspendedUsersCount = userBalancesList.filter((u) => u.status === 'suspended').length;
+  const verifiedUsersCount = userBalancesList.filter((u) => u.status === 'verified').length;
+  const vipUsersCount = userBalancesList.filter((u) => u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator').length;
+  const usersWithBalanceCount = userBalancesList.filter((u) => (u.currentBalance || 0) > 0).length;
   const totalCirculatingXu = userBalancesList.reduce((acc, u) => acc + (u.currentBalance || 0), 0);
   const totalDepositedXuAll = userBalancesList.reduce((acc, u) => acc + (u.totalDepositedXu || 0), 0);
   const totalWithdrawnXuAll = userBalancesList.reduce((acc, u) => acc + (u.totalWithdrawnXu || 0), 0);
@@ -958,7 +970,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
             }`}
           >
             <Users className="w-4 h-4 text-emerald-500" />
-            <span>Chi Tiết Số Dư Học Viên & Duyệt Nạp/Rút</span>
+            <span>Bảng Trạng Thái & Quản Lý Học Viên</span>
             {totalPendingUsersCount > 0 ? (
               <span className="px-2 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-black animate-pulse">
                 {totalPendingUsersCount} chờ duyệt
@@ -1106,99 +1118,161 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
           {/* TAB 0: CHI TIẾT SỐ DƯ HỌC VIÊN & DUYỆT NẠP/RÚT */}
           {activeTab === 'user_balances' && (
             <div className="space-y-6">
-              {/* TOP STATS METRICS */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-                {/* 1. Tổng Xu Lưu Hành */}
-                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-900/40">
-                    <WalletCards className="w-5 h-5" />
+              {/* BẢNG TRẠNG THÁI & CHỈ SỐ HỆ THỐNG (STATUS DASHBOARD) */}
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                      Bảng Trạng Thái & Thống Kê Học Viên
+                    </h3>
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                      Tổng Xu Lưu Hành
-                    </span>
-                    <strong className="text-lg font-black text-amber-600 dark:text-amber-400 block truncate">
-                      {totalCirculatingXu.toLocaleString()} Xu
-                    </strong>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
-                      ~{(totalCirculatingXu * COIN_RATE_VND).toLocaleString()} VNĐ
-                    </span>
+                  <div className="hidden sm:flex items-center space-x-2 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                    <span className="text-emerald-600 dark:text-emerald-400 font-black">+{totalDepositedXuAll.toLocaleString()} Xu đã nạp</span>
+                    <span>•</span>
+                    <span className="text-rose-600 dark:text-rose-400 font-black">-{totalWithdrawnXuAll.toLocaleString()} Xu đã rút</span>
                   </div>
                 </div>
 
-                {/* 2. Tổng Tiền Đã Nạp */}
-                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-900/40">
-                    <ArrowDownLeft className="w-5 h-5" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {/* 1. Tổng Học Viên */}
+                  <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-[#2383e2] dark:text-sky-400 flex items-center justify-center shrink-0 border border-blue-200/60 dark:border-blue-900/40">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Tổng Học Viên
+                      </span>
+                      <strong className="text-base font-black text-slate-900 dark:text-white block truncate">
+                        {totalUsersCount} nick
+                      </strong>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                        {verifiedUsersCount > 0 ? `${verifiedUsersCount} nick tích xanh` : 'Hệ thống ghi nhận'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                      Tổng Đã Nạp Sàn
-                    </span>
-                    <strong className="text-lg font-black text-emerald-600 dark:text-emerald-400 block truncate">
-                      +{totalDepositedXuAll.toLocaleString()} Xu
-                    </strong>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
-                      ~{(totalDepositedXuAll * COIN_RATE_VND).toLocaleString()} VNĐ
-                    </span>
-                  </div>
-                </div>
 
-                {/* 3. Tổng Tiền Đã Rút */}
-                <div className="p-4 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3.5">
-                  <div className="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-200/60 dark:border-rose-900/40">
-                    <ArrowUpRight className="w-5 h-5" />
+                  {/* 2. Đang Hoạt Động */}
+                  <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 border border-emerald-200/60 dark:border-emerald-900/40">
+                      <CheckCircle2 className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Đang Hoạt Động
+                      </span>
+                      <strong className="text-base font-black text-emerald-600 dark:text-emerald-400 block truncate">
+                        {activeUsersCount} nick
+                      </strong>
+                      <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold block">
+                        {((activeUsersCount / (totalUsersCount || 1)) * 100).toFixed(0)}% bình thường
+                      </span>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                      Tổng Đã Rút Sàn
-                    </span>
-                    <strong className="text-lg font-black text-rose-600 dark:text-rose-400 block truncate">
-                      -{totalWithdrawnXuAll.toLocaleString()} Xu
-                    </strong>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
-                      ~{(totalWithdrawnXuAll * COIN_RATE_VND).toLocaleString()} VNĐ
-                    </span>
-                  </div>
-                </div>
 
-                {/* 4. Yêu Cầu Chờ Duyệt */}
-                <div className={`p-4 rounded-2xl border shadow-xs flex items-center space-x-3.5 transition-all ${
-                  totalPendingRequestsCount > 0
-                    ? 'bg-amber-500/10 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/80'
-                    : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800'
-                }`}>
-                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
-                    totalPendingRequestsCount > 0
-                      ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                  {/* 3. Bị Khóa / Đình Chỉ */}
+                  <div className={`p-3.5 rounded-2xl border shadow-xs flex items-center space-x-3 transition-colors ${
+                    suspendedUsersCount > 0
+                      ? 'bg-rose-50/70 dark:bg-rose-950/30 border-rose-300 dark:border-rose-900'
+                      : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800'
                   }`}>
-                    <AlertTriangle className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                      Lệnh Chờ Duyệt
-                    </span>
-                    <strong className={`text-lg font-black block truncate ${
-                      totalPendingRequestsCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                      suspendedUsersCount > 0
+                        ? 'bg-rose-500 text-white border-rose-400'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700'
                     }`}>
-                      {totalPendingRequestsCount} lệnh
-                    </strong>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
-                      {totalPendingUsersCount} học viên có lệnh chờ
-                    </span>
+                      <Lock className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Đã Bị Khóa
+                      </span>
+                      <strong className={`text-base font-black block truncate ${
+                        suspendedUsersCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-800 dark:text-slate-200'
+                      }`}>
+                        {suspendedUsersCount} nick
+                      </strong>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block">
+                        {suspendedUsersCount > 0 ? 'Đình chỉ truy cập' : 'Không có vi phạm'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 4. Cấp Bậc VIP / Ultra */}
+                  <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 border border-purple-200/60 dark:border-purple-900/40">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Gói VIP / Pro
+                      </span>
+                      <strong className="text-base font-black text-purple-600 dark:text-purple-400 block truncate">
+                        {vipUsersCount} nick
+                      </strong>
+                      <span className="text-[10px] text-purple-700 dark:text-purple-400 font-semibold block">
+                        Ultra / Pro / VIP
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 5. Lệnh Chờ Duyệt */}
+                  <div className={`p-3.5 rounded-2xl border shadow-xs flex items-center space-x-3 transition-all ${
+                    totalPendingRequestsCount > 0
+                      ? 'bg-amber-500/10 dark:bg-amber-950/40 border-amber-300 dark:border-amber-700/80'
+                      : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800'
+                  }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                      totalPendingRequestsCount > 0
+                        ? 'bg-amber-500 text-white border-amber-400 animate-pulse'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+                    }`}>
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Chờ Duyệt
+                      </span>
+                      <strong className={`text-base font-black block truncate ${
+                        totalPendingRequestsCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-800 dark:text-slate-200'
+                      }`}>
+                        {totalPendingRequestsCount} lệnh
+                      </strong>
+                      <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold block truncate">
+                        {totalPendingUsersCount} người yêu cầu
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 6. Tổng Xu Lưu Hành */}
+                  <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 border border-amber-200/60 dark:border-amber-900/40">
+                      <Coins className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                        Tổng Xu Ví
+                      </span>
+                      <strong className="text-base font-black text-amber-600 dark:text-amber-400 block truncate">
+                        {totalCirculatingXu.toLocaleString()} Xu
+                      </strong>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold block truncate">
+                        ~{(totalCirculatingXu * COIN_RATE_VND).toLocaleString()}đ
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* CONTROLS BAR: SEARCH, FILTERS & RELOAD */}
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800">
+              {/* CONTROLS BAR: SEARCH, FILTERS, VIEW MODE & ACTIONS */}
+              <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800">
                 <div className="flex items-center space-x-2 flex-1 max-w-md">
                   <div className="relative w-full">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
-                      placeholder="Tìm kiếm theo tên, email, vai trò..."
+                      placeholder="Tìm theo tên, email, vai trò, cấp bậc, trạng thái..."
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       className="w-full pl-10 pr-8 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold text-slate-900 dark:text-white outline-none focus:border-[#2383e2] transition-colors"
@@ -1214,9 +1288,9 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                   </div>
                 </div>
 
-                {/* Filters */}
+                {/* Filters & View Mode Switcher */}
                 <div className="flex items-center space-x-1.5 flex-wrap gap-y-1.5">
-                  <div className="flex items-center space-x-1 bg-white dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+                  <div className="flex items-center space-x-1 bg-white dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs overflow-x-auto">
                     <button
                       onClick={() => setUserFilter('all')}
                       className={`px-3 py-1.5 rounded-lg font-black transition-all ${
@@ -1225,7 +1299,43 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      Tất Cả ({userBalancesList.length})
+                      Tất Cả ({totalUsersCount})
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('active')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all flex items-center space-x-1 ${
+                        userFilter === 'active'
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
+                      }`}
+                    >
+                      <span>🟢 Hoạt Động</span>
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-100 text-emerald-900 dark:bg-emerald-900 dark:text-emerald-200">
+                        {activeUsersCount}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('locked')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all flex items-center space-x-1 ${
+                        userFilter === 'locked'
+                          ? 'bg-rose-600 text-white shadow-xs'
+                          : 'text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                      }`}
+                    >
+                      <span>🔒 Bị Khóa</span>
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-100 text-rose-900 dark:bg-rose-900 dark:text-rose-200">
+                        {suspendedUsersCount}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setUserFilter('vip')}
+                      className={`px-3 py-1.5 rounded-lg font-black transition-all ${
+                        userFilter === 'vip'
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      VIP ({vipUsersCount})
                     </button>
                     <button
                       onClick={() => setUserFilter('pending')}
@@ -1244,34 +1354,39 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                       onClick={() => setUserFilter('balance')}
                       className={`px-3 py-1.5 rounded-lg font-black transition-all ${
                         userFilter === 'balance'
-                          ? 'bg-emerald-600 text-white shadow-xs'
+                          ? 'bg-amber-600 text-white shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
                     >
-                      Số Dư &gt; 0 ({userBalancesList.filter(u => (u.currentBalance || 0) > 0).length})
+                      Có Số Dư ({usersWithBalanceCount})
                     </button>
+                  </div>
+
+                  {/* View Mode Toggle: Table View vs Card View */}
+                  <div className="flex items-center bg-white dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
                     <button
-                      onClick={() => setUserFilter('vip')}
-                      className={`px-3 py-1.5 rounded-lg font-black transition-all ${
-                        userFilter === 'vip'
-                          ? 'bg-purple-600 text-white shadow-xs'
+                      onClick={() => setUserViewMode('table')}
+                      className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-lg font-black transition-all ${
+                        userViewMode === 'table'
+                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
                           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
+                      title="Hiển thị dạng Bảng Trạng Thái (Table)"
                     >
-                      VIP / Creator ({userBalancesList.filter(u => u.tier === 'pro' || u.tier === 'ultra' || u.role === 'admin' || u.role === 'creator').length})
+                      <List className="w-3.5 h-3.5" />
+                      <span>Dạng Bảng</span>
                     </button>
                     <button
-                      onClick={() => setUserFilter('locked')}
-                      className={`px-3 py-1.5 rounded-lg font-black transition-all flex items-center space-x-1 ${
-                        userFilter === 'locked'
-                          ? 'bg-rose-600 text-white shadow-xs'
-                          : 'text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                      onClick={() => setUserViewMode('cards')}
+                      className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-lg font-black transition-all ${
+                        userViewMode === 'cards'
+                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                       }`}
+                      title="Hiển thị dạng Ô Thẻ (Cards)"
                     >
-                      <span>🔒 Bị Khóa</span>
-                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-100 text-rose-900 dark:bg-rose-900 dark:text-rose-200">
-                        {userBalancesList.filter((u) => u.status === 'suspended').length}
-                      </span>
+                      <LayoutGrid className="w-3.5 h-3.5" />
+                      <span>Dạng Thẻ</span>
                     </button>
                   </div>
 
@@ -1296,7 +1411,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                 </div>
               </div>
 
-              {/* USER CARDS / BOXES ("mỗi ô đấy có cái duyệt rút, nạp ở bên cạnh") */}
+              {/* USER LIST: TABLE VIEW OR CARDS VIEW */}
               {isLoadingUserBalances ? (
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                   {[1, 2, 3, 4].map((n) => (
@@ -1318,7 +1433,290 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                   <p className="text-sm font-black text-slate-700 dark:text-slate-300">Không tìm thấy học viên nào phù hợp bộ lọc.</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc chọn bộ lọc "Tất Cả".</p>
                 </div>
+              ) : userViewMode === 'table' ? (
+                /* BẢNG TRẠNG THÁI & CẤP BẬC TÀI KHOẢN (FULL TABLE VIEW) */
+                <div className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs border-collapse">
+                      <thead className="bg-slate-100 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase tracking-wider font-black">
+                        <tr>
+                          <th className="p-3.5 whitespace-nowrap">Học Viên</th>
+                          <th className="p-3.5 whitespace-nowrap">Email</th>
+                          <th className="p-3.5 whitespace-nowrap">Số Dư Ví</th>
+                          <th className="p-3.5 whitespace-nowrap">Cấp Bậc (Tier)</th>
+                          <th className="p-3.5 whitespace-nowrap">Vai Trò (Role)</th>
+                          <th className="p-3.5 whitespace-nowrap">Trạng Thái (Status)</th>
+                          <th className="p-3.5 whitespace-nowrap">Yêu Cầu Chờ</th>
+                          <th className="p-3.5 whitespace-nowrap text-right">Thao Tác Quản Trị</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800">
+                        {filteredUsers.map((u) => {
+                          const isLocked = u.status === 'suspended';
+                          return (
+                            <tr
+                              key={u.email}
+                              className={`hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors ${
+                                u.hasPending ? 'bg-amber-50/50 dark:bg-amber-950/20' : ''
+                              }`}
+                            >
+                              {/* Cột 1: Học Viên */}
+                              <td className="p-3.5">
+                                <div className="flex items-center space-x-2.5">
+                                  <img
+                                    src={u.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`}
+                                    alt={u.displayName}
+                                    className="w-9 h-9 rounded-xl object-cover bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0"
+                                    onError={(e) => {
+                                      e.target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`;
+                                    }}
+                                  />
+                                  <div className="min-w-0">
+                                    <div className="flex items-center space-x-1.5 flex-wrap">
+                                      <span className="font-black text-slate-900 dark:text-white truncate max-w-[130px] block">
+                                        {u.displayName || u.email.split('@')[0]}
+                                      </span>
+                                      {u.isCurrentDeviceUser && (
+                                        <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+                                          Thiết bị này
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-normal block">
+                                      {u.transactionCount || 0} lệnh GD
+                                    </span>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Cột 2: Email */}
+                              <td className="p-3.5">
+                                <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+                                  <span className="truncate max-w-[140px] sm:max-w-xs">{u.email}</span>
+                                  <button
+                                    onClick={() => {
+                                      navigator.clipboard?.writeText(u.email);
+                                      setCopiedUserEmail(u.email);
+                                      setTimeout(() => setCopiedUserEmail(''), 2000);
+                                    }}
+                                    title="Sao chép email"
+                                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 shrink-0"
+                                  >
+                                    {copiedUserEmail === u.email ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                                  </button>
+                                </div>
+                              </td>
+
+                              {/* Cột 3: Số Dư Ví */}
+                              <td className="p-3.5">
+                                <strong className="text-amber-600 dark:text-amber-400 font-black text-sm block">
+                                  {u.currentBalance.toLocaleString()} Xu
+                                </strong>
+                                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium block">
+                                  ~{(u.currentBalance * COIN_RATE_VND).toLocaleString()}đ
+                                </span>
+                              </td>
+
+                              {/* Cột 4: Cấp Bậc (Tier) */}
+                              <td className="p-3.5">
+                                <div className="flex items-center space-x-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setStatusModal({ isOpen: true, user: u, tier: u.tier || 'free', role: u.role || 'student', status: u.status || 'active' })}
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase border transition-colors ${
+                                      u.tier === 'ultra'
+                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border-amber-300 dark:border-amber-700'
+                                        : u.tier === 'pro'
+                                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border-purple-300 dark:border-purple-800'
+                                        : u.tier === 'plus'
+                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-sky-300 border-blue-300 dark:border-blue-800'
+                                        : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                                    }`}
+                                    title="Bấm để mở trình tùy chỉnh cấp bậc & status"
+                                  >
+                                    {u.tier === 'ultra' ? '👑 ULTRA' : u.tier === 'pro' ? '🚀 PRO' : u.tier === 'plus' ? '⭐ PLUS' : 'FREE'}
+                                  </button>
+
+                                  {/* Inline Promote / Demote */}
+                                  <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded p-0.5 border border-slate-200 dark:border-slate-700 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleQuickPromote(u)}
+                                      disabled={u.tier === 'ultra'}
+                                      className="p-0.5 rounded hover:bg-emerald-100 dark:hover:bg-emerald-950 text-slate-500 hover:text-emerald-600 disabled:opacity-20 transition-colors"
+                                      title="Tăng 1 cấp bậc (Promote tier: Free -> Plus -> Pro -> Ultra)"
+                                    >
+                                      <ChevronUp className="w-3 h-3" />
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleQuickDemote(u)}
+                                      disabled={u.tier === 'free'}
+                                      className="p-0.5 rounded hover:bg-rose-100 dark:hover:bg-rose-950 text-slate-500 hover:text-rose-600 disabled:opacity-20 transition-colors"
+                                      title="Giáng 1 cấp bậc (Demote tier: Ultra -> Pro -> Plus -> Free)"
+                                    >
+                                      <ChevronDown className="w-3 h-3" />
+                                    </button>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Cột 5: Vai Trò (Role) */}
+                              <td className="p-3.5">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                                  u.role === 'admin'
+                                    ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-200 dark:border-purple-800'
+                                    : u.role === 'creator'
+                                    ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'
+                                    : u.role === 'vip'
+                                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
+                                    : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                                }`}>
+                                  {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : u.role === 'vip' ? '💎 VIP' : '👨‍🎓 Học Viên'}
+                                </span>
+                              </td>
+
+                              {/* Cột 6: Trạng Thái (Status) */}
+                              <td className="p-3.5">
+                                <div className="flex items-center space-x-1.5">
+                                  {isLocked ? (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800 animate-pulse">
+                                      🔒 Đã Khóa
+                                    </span>
+                                  ) : u.status === 'verified' ? (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
+                                      🔵 Tích Xanh
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                      🟢 Hoạt Động
+                                    </span>
+                                  )}
+
+                                  {u.email !== PRIMARY_ADMIN_EMAIL && (
+                                    <button
+                                      onClick={() => handleQuickToggleSuspension(u)}
+                                      className={`p-1 rounded-md border transition-colors ${
+                                        isLocked
+                                          ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800'
+                                          : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:text-rose-600'
+                                      }`}
+                                      title={isLocked ? 'Mở khóa tài khoản này' : 'Khóa / Đình chỉ tài khoản này'}
+                                    >
+                                      {isLocked ? <Unlock className="w-3 h-3 text-amber-600" /> : <Lock className="w-3 h-3" />}
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+
+                              {/* Cột 7: Yêu Cầu Chờ (Duyệt Nhanh 1-Click) */}
+                              <td className="p-3.5">
+                                {u.hasPending ? (
+                                  <div className="space-y-1">
+                                    {u.pendingDeposits?.map((tx) => (
+                                      <div key={tx.id} className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                                        <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 shrink-0">
+                                          NẠP +{tx.xuAmount} Xu
+                                        </span>
+                                        <button
+                                          onClick={() => handleApprove(tx.id)}
+                                          disabled={approvingTxId === tx.id}
+                                          className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] shadow-xs transition-colors shrink-0"
+                                        >
+                                          {approvingTxId === tx.id ? '...' : 'Duyệt'}
+                                        </button>
+                                        <button
+                                          onClick={() => handleReject(tx.id)}
+                                          disabled={approvingTxId === tx.id}
+                                          className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 text-[10px] font-black border border-rose-300 shrink-0"
+                                        >
+                                          Từ chối
+                                        </button>
+                                      </div>
+                                    ))}
+                                    {u.pendingWithdrawals?.map((tx) => (
+                                      <div key={tx.id} className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                                        <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 shrink-0">
+                                          RÚT -{tx.xuAmount} Xu
+                                        </span>
+                                        <button
+                                          onClick={() => handleApprove(tx.id)}
+                                          disabled={approvingTxId === tx.id}
+                                          className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[10px] shadow-xs transition-colors shrink-0"
+                                        >
+                                          {approvingTxId === tx.id ? '...' : 'Duyệt'}
+                                        </button>
+                                        <button
+                                          onClick={() => handleReject(tx.id)}
+                                          disabled={approvingTxId === tx.id}
+                                          className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 hover:bg-rose-200 text-[10px] font-black border border-rose-300 shrink-0"
+                                        >
+                                          Từ chối
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="text-slate-400 dark:text-slate-500 text-[11px] italic font-medium">Không có</span>
+                                )}
+                              </td>
+
+                              {/* Cột 8: Thao Tác Quản Trị */}
+                              <td className="p-3.5 text-right">
+                                <div className="flex items-center justify-end space-x-1 flex-wrap gap-y-1">
+                                  <button
+                                    onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'deposit', amount: 50, reason: '' })}
+                                    className="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/90 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-black text-[11px] transition-colors"
+                                    title="Cộng Xu trực tiếp cho học viên"
+                                  >
+                                    + Nạp
+                                  </button>
+
+                                  <button
+                                    onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'withdraw', amount: Math.min(u.currentBalance, 50), reason: '' })}
+                                    disabled={u.currentBalance <= 0}
+                                    className="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900/90 disabled:opacity-30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-black text-[11px] transition-colors"
+                                    title="Trừ Xu trực tiếp"
+                                  >
+                                    - Trừ
+                                  </button>
+
+                                  <button
+                                    onClick={() => setStatusModal({ isOpen: true, user: u, tier: u.tier || 'free', role: u.role || 'student', status: u.status || 'active' })}
+                                    className="p-1 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/70 dark:hover:bg-blue-900/90 text-[#2383e2] dark:text-sky-300 border border-blue-200 dark:border-blue-800 transition-colors"
+                                    title="Tùy chỉnh Cấp Bậc & Status tài khoản"
+                                  >
+                                    <TrendingUp className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  <button
+                                    onClick={() => setSelectedUserHistory(u)}
+                                    className="p-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 transition-colors"
+                                    title="Xem lịch sử giao dịch"
+                                  >
+                                    <History className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {u.email !== PRIMARY_ADMIN_EMAIL && (
+                                    <button
+                                      onClick={() => handleDeleteUser(u)}
+                                      className="p-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 transition-colors"
+                                      title={`Xóa vĩnh viễn tài khoản ${u.email}`}
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               ) : (
+                /* DẠNG THẺ (CARD VIEW) */
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                   {filteredUsers.map((u) => (
                     <div
@@ -1393,7 +1791,11 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                                 <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
                                   🔵 Tích Xanh
                                 </span>
-                              ) : null}
+                              ) : (
+                                <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                  🟢 Hoạt Động
+                                </span>
+                              )}
                             </div>
 
                             {/* Tier Badge with Inline Promote / Demote Controls */}
@@ -1732,7 +2134,29 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog }
                             </span>
                           </td>
                           <td className="p-3 max-w-xs">
-                            <div className="text-slate-900 dark:text-slate-100 font-black truncate">{tx.userEmail}</div>
+                            <div className="flex items-center space-x-1.5 flex-wrap">
+                              <span className="text-slate-900 dark:text-slate-100 font-black truncate max-w-[160px]">{tx.userEmail}</span>
+                              {(() => {
+                                const customer = userBalancesList.find((u) => (u.email || '').toLowerCase().trim() === (tx.userEmail || '').toLowerCase().trim());
+                                const isSuspended = customer?.status === 'suspended';
+                                return (
+                                  <>
+                                    <span className={`px-1.5 py-0.2 rounded text-[9px] font-black ${
+                                      isSuspended
+                                        ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                    }`}>
+                                      {isSuspended ? '🔒 Khóa' : '🟢 Active'}
+                                    </span>
+                                    {customer?.tier && customer.tier !== 'free' && (
+                                      <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-sky-300 uppercase">
+                                        {customer.tier}
+                                      </span>
+                                    )}
+                                  </>
+                                );
+                              })()}
+                            </div>
                             <div className="flex items-center space-x-1.5 mt-0.5 text-[11px]">
                               <span className="text-slate-500 dark:text-slate-400 font-medium">Số dư:</span>
                               <span className="font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200/80 dark:border-amber-900/60">

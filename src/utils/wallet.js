@@ -1182,6 +1182,7 @@ export function registerUserInRegistry(userProfile) {
       photoURL: userProfile.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.email}`,
       tier: userProfile.tier || 'free',
       role: userProfile.role || 'student',
+      status: userProfile.status || 'active',
       lastActive: new Date().toISOString()
     };
 
@@ -1209,6 +1210,7 @@ export async function getAllUsersWithBalances() {
     photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
     role: 'admin',
     tier: 'ultra',
+    status: 'verified',
     initialBalance: 9999,
     phone: '0986019623',
     lastActive: new Date().toISOString()
@@ -1221,7 +1223,7 @@ export async function getAllUsersWithBalances() {
     for (const u of registry) {
       if (u?.email && !isTestEmail(u.email)) {
         const key = u.email.toLowerCase().trim();
-        usersMap.set(key, { ...(usersMap.get(key) || {}), ...u });
+        usersMap.set(key, { ...(usersMap.get(key) || {}), ...u, status: u.status || 'active' });
       }
     }
   } catch (e) {}
@@ -1232,7 +1234,7 @@ export async function getAllUsersWithBalances() {
     for (const fu of fsUsers) {
       if (fu?.email && !isTestEmail(fu.email)) {
         const key = fu.email.toLowerCase().trim();
-        usersMap.set(key, { ...(usersMap.get(key) || {}), ...fu });
+        usersMap.set(key, { ...(usersMap.get(key) || {}), ...fu, status: fu.status || 'active' });
       }
     }
   } catch (e) {}
@@ -1246,7 +1248,9 @@ export async function getAllUsersWithBalances() {
       email: cur.email,
       displayName: cur.displayName || cur.email.split('@')[0],
       photoURL: cur.photoURL,
-      tier: cur.tier || 'free',
+      tier: cur.tier || (usersMap.get(key)?.tier) || 'free',
+      role: cur.role || (usersMap.get(key)?.role) || 'student',
+      status: cur.status || (usersMap.get(key)?.status) || 'active',
       lastActive: new Date().toISOString(),
       isCurrentDeviceUser: true
     });
@@ -1264,13 +1268,14 @@ export async function getAllUsersWithBalances() {
           photoURL: `https://api.dicebear.com/7.x/avataaars/svg?seed=${tx.userEmail}`,
           role: 'student',
           tier: 'free',
+          status: 'active',
           lastActive: tx.createdAt || new Date().toISOString()
         });
       }
     }
   }
 
-  // 6. Compute detailed balance & stats for each user
+  // 7. Compute detailed balance & stats for each user
   const result = [];
   const overrides = getUserBalanceOverrides();
 
@@ -1315,6 +1320,9 @@ export async function getAllUsersWithBalances() {
 
     result.push({
       ...u,
+      role: u.role || 'student',
+      tier: u.tier || 'free',
+      status: u.status || 'active',
       currentBalance,
       totalDepositedXu,
       totalWithdrawnXu,
