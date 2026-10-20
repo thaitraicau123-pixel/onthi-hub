@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   X,
   RotateCw,
@@ -6,37 +6,44 @@ import {
   ChevronLeft,
   ChevronRight,
   Download,
-  Printer,
+  Scissors,
   FileText,
   Sparkles,
   Lock,
-  CheckCircle2,
-  HelpCircle,
   Maximize2,
   Minimize2,
   Layers,
   Search,
-  Scissors,
   Bot,
   Copy,
   Check,
-  Play,
   Pause,
   Star,
   Headphones,
-  SlidersHorizontal,
-  Bookmark,
-  BookmarkCheck,
   Share2,
-  MessageCircle
+  MessageCircle,
+  MoreHorizontal
 } from 'lucide-react';
-import { exportAnkiDeckFile, printSummaryGuide, printFlashcardCutoutSheet, playSound } from '../utils/storage';
+import { exportAnkiDeckFile, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
 import { explainFlashcardWithAi } from '../utils/aiTutor';
 import { recordCardReview, getNextIntervalPreview, getCardSrs } from '../utils/spacedRepetition';
 import { recordMistake, markMistakeMastered } from '../utils/mistakeTracker';
-import { copyFlashcardShareLink, syncUrlWithDeck, clearUrlDeckParams } from '../utils/shareLink';
+import { copyFlashcardShareLink } from '../utils/shareLink';
 import confetti from 'canvas-confetti';
+
+/**
+ * Helper to parse bracket tags from front card text
+ * e.g. "[Logistics] Công thức là gì?" -> { tag: "Logistics", cleanQuestion: "Công thức là gì?" }
+ */
+function parseFrontText(text, fallbackTag) {
+  if (!text) return { tag: fallbackTag || 'Anki', cleanQuestion: '' };
+  const match = text.match(/^\[(.*?)\]\s*(.*)$/s);
+  if (match) {
+    return { tag: match[1], cleanQuestion: match[2] };
+  }
+  return { tag: fallbackTag || 'Anki', cleanQuestion: text };
+}
 
 export default function FlashcardModal({
   course,
@@ -64,7 +71,7 @@ export default function FlashcardModal({
 
   const [onlyStarredMode, setOnlyStarredMode] = useState(false);
 
-  const starredCards = React.useMemo(() => {
+  const starredCards = useMemo(() => {
     return allDeckCards.filter((card, idx) => {
       const cardId = card.id !== undefined ? card.id : idx;
       return starredCardIds.includes(cardId);
@@ -79,123 +86,98 @@ export default function FlashcardModal({
     }
     return 0;
   });
+
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(false);
-  const [reviewedStats, setReviewedStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
+  const [topicDrawerOpen, setTopicDrawerOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+  const [topicSearchTerm, setTopicSearchTerm] = useState('');
+  const [selectedTagFilter, setSelectedTagFilter] = useState('ALL');
   const [shareToast, setShareToast] = useState('');
 
-  // Sync shareable URL with current deck and card index
-  useEffect(() => {
-    if (course?.id) {
-      syncUrlWithDeck(course.id, currentIndex);
-    }
-  }, [course?.id, currentIndex]);
-
-  // Clear deck url params only when Flashcard modal unmounts
-  useEffect(() => {
-    return () => {
-      clearUrlDeckParams();
-    };
-  }, []);
-
-  // AI Tutor State
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
-  const [aiExplanations, setAiExplanations] = useState({});
-  const [aiError, setAiError] = useState('');
-  const [copiedAiText, setCopiedAiText] = useState(false);
-
-  // Audio Podcast / Auto-Play Hands-Free Runner State
+  // Audio Podcast State
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [autoPlaySeconds, setAutoPlaySeconds] = useState(3);
   const [speechRate, setSpeechRate] = useState(1.0);
-  const [isSpeakingNow, setIsSpeakingNow] = useState(false);
+  const [_isSpeakingNow, setIsSpeakingNow] = useState(false);
 
-  const toggleStarCurrentCard = (e) => {
-    e?.stopPropagation?.();
-    const currentCard = cards[currentIndex] || {};
-    const cardId = currentCard.id !== undefined ? currentCard.id : currentIndex;
+  // AI Tutor State
+  const [aiExplanations, setAiExplanations] = useState({});
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+  const [copiedAiText, setCopiedAiText] = useState(false);
+
+  // SRS Stats
+  const [_reviewedStats, setReviewedStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
+
+  const modalContainerRef = useRef(null);
+  const moreMenuRef = useRef(null);
+
+  // Close more menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (moreMenuRef.current && !moreMenuRef.current.contains(e.target)) {
+        setIsMoreMenuOpen(false);
+      }
+    };
+    if (isMoreMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMoreMenuOpen]);
+
+  // Current Card Data
+  const currentCard = cards[currentIndex] || { front: '', back: '', tag: '' };
+  const currentCardId = currentCard.id !== undefined ? currentCard.id : currentIndex;
+  const isCurrentCardStarred = starredCardIds.includes(currentCardId);
+
+  // Parsed Front
+  const parsedFront = useMemo(() => {
+    return parseFrontText(currentCard.front, currentCard.tag);
+  }, [currentCard.front, currentCard.tag]);
+
+  const toggleStarCurrentCard = () => {
+    playSound('flip');
     setStarredCardIds((prev) => {
-      const isStarred = prev.includes(cardId);
-      const next = isStarred ? prev.filter((id) => id !== cardId) : [...prev, cardId];
+      const exists = prev.includes(currentCardId);
+      const next = exists ? prev.filter((id) => id !== currentCardId) : [...prev, currentCardId];
       try {
         localStorage.setItem(starredKey, JSON.stringify(next));
-      } catch (err) {}
-      playSound('click');
+      } catch (e) {}
       return next;
     });
   };
 
-  // Topic Drawer, Search, and Fullscreen State
-  const [topicDrawerOpen, setTopicDrawerOpen] = useState(false);
-  const [topicSearchTerm, setTopicSearchTerm] = useState('');
-  const [selectedTagFilter, setSelectedTagFilter] = useState('ALL');
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const modalContainerRef = React.useRef(null);
+  // Safe Speech Synthesis with Vietnamese Voice Fallback
+  const handleSpeak = (text) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const cleanText = text.replace(/\[.*?\]/g, '').replace(/[•*#_`]/g, '').trim();
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.rate = speechRate;
 
-  // Calculate unique tags & count
-  const tagCounts = React.useMemo(() => {
-    const counts = {};
-    cards.forEach((c) => {
-      const tag = (c.tag || 'Khác').trim();
-      counts[tag] = (counts[tag] || 0) + 1;
-    });
-    return counts;
-  }, [cards]);
+      const voices = window.speechSynthesis.getVoices();
+      const viVoice = voices.find((v) => v.lang.includes('vi') || v.lang.includes('VIE'));
+      if (viVoice) {
+        utterance.voice = viVoice;
+      }
+      utterance.lang = 'vi-VN';
 
-  const uniqueTags = React.useMemo(() => Object.keys(tagCounts), [tagCounts]);
+      utterance.onstart = () => setIsSpeakingNow(true);
+      utterance.onend = () => setIsSpeakingNow(false);
+      utterance.onerror = () => setIsSpeakingNow(false);
 
-  const filteredCardItems = React.useMemo(() => {
-    return cards
-      .map((card, idx) => ({ card, idx }))
-      .filter(({ card, idx }) => {
-        const cardId = card.id !== undefined ? card.id : idx;
-        if (selectedTagFilter === 'STARRED') {
-          return starredCardIds.includes(cardId);
-        }
-        const tag = (card.tag || 'Khác').trim();
-        if (selectedTagFilter !== 'ALL' && tag !== selectedTagFilter) {
-          return false;
-        }
-        if (!topicSearchTerm.trim()) return true;
-        const q = topicSearchTerm.toLowerCase();
-        return (
-          (card.front || '').toLowerCase().includes(q) ||
-          (card.back || '').toLowerCase().includes(q) ||
-          tag.toLowerCase().includes(q)
-        );
-      });
-  }, [cards, selectedTagFilter, topicSearchTerm, starredCardIds]);
-
-  const handleJumpToCard = (targetIdx) => {
-    playSound('flip');
-    setCurrentIndex(targetIdx);
-    setIsFlipped(false);
-    setTopicDrawerOpen(false);
-  };
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      modalContainerRef.current?.requestFullscreen?.().catch(() => {});
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen?.().catch(() => {});
-      setIsFullscreen(false);
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      setIsSpeakingNow(false);
     }
   };
 
-  useEffect(() => {
-    const handleFsChange = () => {
-      setIsFullscreen(Boolean(document.fullscreenElement));
-    };
-    document.addEventListener('fullscreenchange', handleFsChange);
-    return () => document.removeEventListener('fullscreenchange', handleFsChange);
-  }, []);
-
-  const currentCard = cards[currentIndex] || {};
-  const currentCardId = currentCard.id !== undefined ? currentCard.id : currentIndex;
-  const isCurrentCardStarred = starredCardIds.includes(currentCardId);
-  const targetDeckId = currentCard.originalDeckId || course.id;
+  // Target Deck & Card Index for SRS
+  const targetDeckId = currentCard.originalDeckId || course?.id || 'default';
   const targetCardIndex = currentCard.originalCardIndex !== undefined ? currentCard.originalCardIndex : currentIndex;
   const currentSrs = getCardSrs(targetDeckId, targetCardIndex);
 
@@ -204,7 +186,7 @@ export default function FlashcardModal({
   const goodInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'good');
   const easyInterval = getNextIntervalPreview(targetDeckId, targetCardIndex, 'easy');
 
-  // Reset flip when navigating
+  // Navigation handlers
   const goToNext = () => {
     if (!cards || cards.length === 0) return;
     setIsFlipped(false);
@@ -230,9 +212,7 @@ export default function FlashcardModal({
     setAiDrawerOpen(true);
     setAiError('');
 
-    if (aiExplanations[currentIndex]) {
-      return;
-    }
+    if (aiExplanations[currentIndex]) return;
 
     setIsAiLoading(true);
     try {
@@ -307,46 +287,32 @@ export default function FlashcardModal({
         handleRate('good');
       } else if (e.key === '4') {
         handleRate('easy');
-      } else if (e.key === 's' || e.key === 'S') {
-        toggleStarCurrentCard();
+      } else if (e.key === 'f' || e.key === 'F') {
+        setIsFullscreen((prev) => !prev);
       } else if (e.key === 'Escape') {
-        onClose();
+        if (aiDrawerOpen) setAiDrawerOpen(false);
+        else if (topicDrawerOpen) setTopicDrawerOpen(false);
+        else if (isMoreMenuOpen) setIsMoreMenuOpen(false);
+        else onClose();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, cards.length, isFlipped, currentCardId, starredCardIds]);
+  }, [currentIndex, isFlipped, cards.length, aiDrawerOpen, topicDrawerOpen, isMoreMenuOpen]);
 
-  // Audio pronunciation using native Web Speech Synthesis
-  const handleSpeak = (text) => {
-    if (!('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel();
-    if (!text) return;
-    
-    // Clean markdown / bullet icons for natural voice
-    const cleanText = text.replace(/📌|💡|✨|🎯|✅|❌|👉|⭐|#|\*/g, '').trim();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    
-    // Auto detect language
-    if (course.id?.includes('ielts') || course.id?.includes('toeic')) {
-      utterance.lang = 'en-US';
-    } else if (course.id?.includes('jlpt')) {
-      utterance.lang = 'ja-JP';
-    } else if (course.id?.includes('hsk')) {
-      utterance.lang = 'zh-CN';
+  // Fullscreen toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      modalContainerRef.current?.requestFullscreen().catch(() => {});
+      setIsFullscreen(true);
     } else {
-      utterance.lang = 'vi-VN';
+      document.exitFullscreen().catch(() => {});
+      setIsFullscreen(false);
     }
-
-    utterance.rate = speechRate || 1.0;
-    utterance.onstart = () => setIsSpeakingNow(true);
-    utterance.onend = () => setIsSpeakingNow(false);
-    utterance.onerror = () => setIsSpeakingNow(false);
-    window.speechSynthesis.speak(utterance);
   };
 
-  // Audio Podcast Hands-Free runner effect
+  // Auto-play podcast mode loop
   useEffect(() => {
     if (!isAutoPlaying) {
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -372,53 +338,117 @@ export default function FlashcardModal({
     }
   }, [isAutoPlaying, currentIndex, isFlipped, autoPlaySeconds, speechRate, cards.length]);
 
+  // Topic drawer filtering
+  const uniqueTags = useMemo(() => {
+    const set = new Set();
+    cards.forEach((c) => {
+      if (c.tag) set.add(c.tag);
+    });
+    return Array.from(set);
+  }, [cards]);
+
+  const tagCounts = useMemo(() => {
+    const counts = {};
+    cards.forEach((c) => {
+      if (c.tag) counts[c.tag] = (counts[c.tag] || 0) + 1;
+    });
+    return counts;
+  }, [cards]);
+
+  const filteredCardItems = useMemo(() => {
+    return cards
+      .map((card, idx) => ({ card, idx }))
+      .filter(({ card, idx }) => {
+        const cardId = card.id !== undefined ? card.id : idx;
+        if (selectedTagFilter === 'STARRED') {
+          return starredCardIds.includes(cardId);
+        }
+        if (selectedTagFilter !== 'ALL') {
+          return card.tag === selectedTagFilter;
+        }
+        return true;
+      })
+      .filter(({ card }) => {
+        if (!topicSearchTerm.trim()) return true;
+        const term = topicSearchTerm.toLowerCase();
+        return (
+          (card.front && card.front.toLowerCase().includes(term)) ||
+          (card.back && card.back.toLowerCase().includes(term)) ||
+          (card.tag && card.tag.toLowerCase().includes(term))
+        );
+      });
+  }, [cards, selectedTagFilter, topicSearchTerm, starredCardIds]);
+
+  const handleJumpToCard = (targetIdx) => {
+    setCurrentIndex(targetIdx);
+    setIsFlipped(false);
+    setTopicDrawerOpen(false);
+    playSound('flip');
+  };
+
+  // Progress percentage
+  const progressPercent = Math.round(((currentIndex + 1) / (cards.length || 1)) * 100);
+
   return (
     <div
       ref={modalContainerRef}
       onClick={(e) => {
         if (!isFullscreen && e.target === e.currentTarget) onClose();
       }}
-      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/80 backdrop-blur-sm overflow-y-auto ${
+      className={`fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md overflow-y-auto ${
         isFullscreen ? '!p-0' : 'cursor-pointer'
       }`}
     >
       {!isFullscreen && <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />}
+      
+      {/* =========================================================================
+          MAIN MODAL CONTAINER (PREMIUM OBSIDIAN GLASS THEME)
+          ========================================================================= */}
       <div
         onClick={(e) => e.stopPropagation()}
         className={`relative w-full ${
-          isFullscreen ? 'max-w-none h-full !rounded-none' : 'max-w-3xl rounded-3xl max-h-[92vh] cursor-default'
-        } bg-white shadow-2xl flex flex-col overflow-hidden border border-slate-200 animate-spring-3d`}
+          isFullscreen ? 'max-w-none h-full !rounded-none' : 'max-w-3xl rounded-3xl max-h-[94vh] cursor-default'
+        } bg-[#111827] text-slate-100 shadow-[0_25px_60px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden border border-slate-700/80 animate-spring-3d`}
       >
         
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-slate-50/70">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
-              {currentIndex + 1}/{cards.length}
+        {/* =========================================================================
+            HEADER: CLEAN, SPACIOUS, UNIFIED TOOLBAR
+            ========================================================================= */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-800 bg-[#162032] shrink-0">
+          
+          {/* Left Side: Index Pill + Title + SRS badge */}
+          <div className="flex items-center space-x-3 min-w-0">
+            {/* Progress Counter Pill */}
+            <div className="px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/40 text-indigo-300 font-bold text-xs tracking-wider shrink-0 font-mono">
+              {currentIndex + 1} / {cards.length}
             </div>
-            <div>
+
+            <div className="min-w-0">
               <div className="flex items-center space-x-2">
-                <h4 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">
+                <h4 className="text-sm sm:text-base font-extrabold text-white truncate max-w-[200px] sm:max-w-xs">
                   {course.title}
                 </h4>
-                {currentSrs.totalReviews > 0 ? (
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700 border border-purple-200 shrink-0">
-                    🧠 SM-2: Đã ôn {currentSrs.totalReviews} lần • Chu kỳ {currentSrs.intervalDays}d
+                {onlyStarredMode ? (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 shrink-0">
+                    ⭐ Đang ôn sao
+                  </span>
+                ) : currentSrs.totalReviews > 0 ? (
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 shrink-0">
+                    🧠 SM-2: {currentSrs.intervalDays}d
                   </span>
                 ) : (
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200 shrink-0">
+                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/40 shrink-0">
                     ✨ Thẻ Mới
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500">
-                {currentCard.tag || 'Thẻ Flashcard Anki'} • Dùng phím Space để lật thẻ
-              </p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-1.5 sm:space-x-2">
-            {/* 1. Podcast Hands-free Audio Button */}
+          {/* Right Side: Action Cluster */}
+          <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+            
+            {/* 1. Podcast Hands-Free Mode */}
             <button
               onClick={() => {
                 const next = !isAutoPlaying;
@@ -429,22 +459,22 @@ export default function FlashcardModal({
                 }
                 if (next) playSound('flip');
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
                 isAutoPlaying
-                  ? 'bg-gradient-to-r from-indigo-600 to-sky-600 text-white border-indigo-700 shadow-md ring-2 ring-sky-300'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-gradient-to-r from-indigo-600 to-sky-600 text-white border-indigo-500 shadow-md ring-2 ring-sky-400'
+                  : 'bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border-slate-700'
               }`}
               title="Chế độ Podcast tự động đọc câu hỏi & đáp án rảnh tay"
             >
-              <Headphones className={`w-3.5 h-3.5 ${isAutoPlaying ? 'animate-bounce text-white' : 'text-indigo-600'}`} />
-              <span className="hidden sm:inline">{isAutoPlaying ? 'Đang Phát' : '🎧 Podcast Thụ Động'}</span>
+              <Headphones className={`w-3.5 h-3.5 ${isAutoPlaying ? 'animate-bounce text-white' : 'text-indigo-400'}`} />
+              <span className="hidden sm:inline">{isAutoPlaying ? 'Đang Phát' : 'Podcast'}</span>
             </button>
 
-            {/* 2. Starred Cards Study Filter */}
+            {/* 2. Starred Filter Toggle */}
             <button
               onClick={() => {
                 if (starredCardIds.length === 0) {
-                  alert('⭐ Bạn chưa đánh dấu sao thẻ nào! Hãy bấm biểu tượng ngôi sao ⭐ trên góc bất kỳ thẻ nào để ghim lại câu khó và ôn cấp tốc.');
+                  alert('⭐ Bạn chưa đánh dấu sao thẻ nào! Hãy bấm biểu tượng ngôi sao ⭐ trên góc thẻ để ghim lại câu khó và ôn cấp tốc.');
                   return;
                 }
                 const nextMode = !onlyStarredMode;
@@ -453,146 +483,185 @@ export default function FlashcardModal({
                 setIsFlipped(false);
                 playSound('flip');
               }}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
+              className={`p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 border transition-all cursor-pointer ${
                 onlyStarredMode
-                  ? 'bg-amber-400 text-amber-950 border-amber-500 shadow-sm font-extrabold ring-2 ring-amber-300'
+                  ? 'bg-amber-400 text-slate-950 border-amber-300 shadow-sm font-black ring-2 ring-amber-300'
                   : starredCardIds.length > 0
-                  ? 'border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100'
-                  : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+                  ? 'border-amber-500/50 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25'
+                  : 'border-slate-700 bg-slate-800/80 text-slate-400 hover:bg-slate-700'
               }`}
-              title="Bật/Tắt chế độ chỉ ôn các thẻ quan trọng đã đánh dấu sao ⭐"
+              title="Bật/Tắt chế độ chỉ ôn các thẻ đã đánh dấu sao ⭐"
             >
-              <Star className={`w-3.5 h-3.5 ${onlyStarredMode || starredCardIds.length > 0 ? 'fill-amber-400 text-amber-600' : 'text-slate-400'}`} />
-              <span className="hidden sm:inline">
-                {onlyStarredMode ? `Đang Ôn Sao (${cards.length})` : `Thẻ Sao (${starredCardIds.length})`}
-              </span>
+              <Star className={`w-3.5 h-3.5 ${onlyStarredMode || starredCardIds.length > 0 ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
+              <span className="hidden sm:inline">({starredCardIds.length})</span>
             </button>
 
-            {/* Auto-speak toggle */}
+            {/* 3. Auto-speak Audio Toggle */}
             <button
-              onClick={() => setAutoSpeak(!autoSpeak)}
-              className={`px-2 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border transition-colors cursor-pointer ${
+              onClick={() => {
+                setAutoSpeak(!autoSpeak);
+                playSound('click');
+              }}
+              className={`p-2 rounded-xl text-xs font-bold flex items-center border transition-colors cursor-pointer ${
                 autoSpeak
-                  ? 'bg-amber-100 text-amber-900 border-amber-300'
-                  : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                  : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:bg-slate-700'
               }`}
-              title="Tự động phát âm thanh mỗi khi lật thẻ"
+              title={autoSpeak ? "Tự động phát âm khi lật thẻ: Đang Bật" : "Tự động phát âm khi lật thẻ: Đang Tắt"}
             >
               <Volume2 className="w-3.5 h-3.5" />
             </button>
 
-            {isPurchased && (
-              <>
-                <button
-                  onClick={() => exportAnkiDeckFile(course.title, cards)}
-                  className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200"
-                  title="Xuất file .txt nhập vào Anki"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Anki</span>
-                </button>
-                <button
-                  onClick={() => printFlashcardCutoutSheet(course)}
-                  className="hidden md:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-100 rounded-lg border border-slate-200"
-                  title="In bảng cắt thẻ giấy A4"
-                >
-                  <Scissors className="w-3.5 h-3.5 text-indigo-600" />
-                  <span>In A4</span>
-                </button>
-              </>
-            )}
-
-            {onOpenCheatSheet && (
+            {/* 4. More Options Dropdown (Cleans up 6 buttons into a sleek popover) */}
+            <div className="relative" ref={moreMenuRef}>
               <button
-                onClick={() => onOpenCheatSheet(course)}
-                className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                title="Xem bảng Cheatsheet tóm tắt 1 trang & In tài liệu cứu sinh"
+                onClick={() => setIsMoreMenuOpen((prev) => !prev)}
+                className={`p-2 rounded-xl text-xs font-bold flex items-center border transition-colors cursor-pointer ${
+                  isMoreMenuOpen
+                    ? 'bg-indigo-600 text-white border-indigo-500'
+                    : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700'
+                }`}
+                title="Các công cụ & tùy chọn bổ sung"
               >
-                <FileText className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Tóm Tắt 1 Trang</span>
+                <MoreHorizontal className="w-4 h-4" />
               </button>
-            )}
 
-            <button
-              onClick={() => setTopicDrawerOpen(true)}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors cursor-pointer"
-              title="Mục lục các chủ đề và danh sách thẻ"
-            >
-              <Layers className="w-3.5 h-3.5 text-indigo-600" />
-              <span className="hidden sm:inline">Mục Lục</span>
-            </button>
+              {/* Popover Menu */}
+              {isMoreMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 rounded-2xl bg-[#1a2336] border border-slate-700/80 shadow-2xl p-2 z-50 text-xs space-y-1 animate-scale-up">
+                  
+                  {/* Mục Lục */}
+                  <button
+                    onClick={() => {
+                      setIsMoreMenuOpen(false);
+                      setTopicDrawerOpen(true);
+                    }}
+                    className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                  >
+                    <Layers className="w-4 h-4 text-indigo-400 shrink-0" />
+                    <span>Mục Lục Thẻ ({cards.length})</span>
+                  </button>
 
-            {/* Chia Sẻ Link Bộ Thẻ Trực Tiếp */}
-            <button
-              type="button"
-              onClick={async () => {
-                const res = await copyFlashcardShareLink({
-                  deckId: course.id,
-                  deckTitle: course.title,
-                  cardIndex: currentIndex,
-                  useNativeShare: true
-                });
-                if (res.success) {
-                  playSound('success');
-                  try {
-                    confetti({ particleCount: 40, spread: 50, origin: { y: 0.2 } });
-                  } catch (e) {}
-                  setShareToast('🔗 ' + res.message);
-                  setTimeout(() => setShareToast(''), 3500);
-                }
-              }}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1 border border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900 transition-colors cursor-pointer shadow-2xs"
-              title="Sao chép đường dẫn trực tiếp tới bộ thẻ và vị trí thẻ hiện tại để gửi cho bạn bè"
-            >
-              <Share2 className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
-              <span className="hidden sm:inline">Chia Sẻ Link</span>
-            </button>
+                  {/* Cheatsheet */}
+                  {onOpenCheatSheet && (
+                    <button
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onOpenCheatSheet(course);
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                    >
+                      <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Tóm Tắt 1 Trang (Cheatsheet)</span>
+                    </button>
+                  )}
 
-            {onOpenDirectChat && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onOpenDirectChat(null, course);
-                }}
-                className="hidden sm:inline-flex items-center space-x-1 px-2.5 py-1.5 text-xs font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 hover:bg-indigo-100 dark:hover:bg-indigo-900 rounded-lg border border-indigo-200 dark:border-indigo-500/40 transition-colors cursor-pointer"
-                title="Gửi bộ thẻ này qua tin nhắn trực tiếp"
-              >
-                <MessageCircle className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                <span>Nhắn Tin</span>
-              </button>
-            )}
+                  {/* Chia Sẻ Link */}
+                  <button
+                    onClick={async () => {
+                      setIsMoreMenuOpen(false);
+                      const res = await copyFlashcardShareLink({
+                        deckId: course.id,
+                        deckTitle: course.title,
+                        cardIndex: currentIndex,
+                        useNativeShare: true
+                      });
+                      if (res.success) {
+                        playSound('success');
+                        try {
+                          confetti({ particleCount: 35, spread: 40, origin: { y: 0.2 } });
+                        } catch (e) {}
+                        setShareToast('🔗 ' + res.message);
+                        setTimeout(() => setShareToast(''), 3500);
+                      }
+                    }}
+                    className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                  >
+                    <Share2 className="w-4 h-4 text-sky-400 shrink-0" />
+                    <span>Sao Chép Link Thẻ Này</span>
+                  </button>
 
+                  {/* Nhắn Tin Trực Tiếp */}
+                  {onOpenDirectChat && (
+                    <button
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        onClose();
+                        onOpenDirectChat(null, course);
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                    >
+                      <MessageCircle className="w-4 h-4 text-purple-400 shrink-0" />
+                      <span>Gửi Qua Tin Nhắn Chat</span>
+                    </button>
+                  )}
+
+                  <div className="border-t border-slate-700/60 my-1" />
+
+                  {/* Anki Export */}
+                  {isPurchased && (
+                    <button
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        exportAnkiDeckFile(course.title, cards);
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                    >
+                      <Download className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Xuất File .txt Nhập Anki</span>
+                    </button>
+                  )}
+
+                  {/* In Thẻ Giấy A4 */}
+                  {isPurchased && (
+                    <button
+                      onClick={() => {
+                        setIsMoreMenuOpen(false);
+                        printFlashcardCutoutSheet(course);
+                      }}
+                      className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
+                    >
+                      <Scissors className="w-4 h-4 text-rose-400 shrink-0" />
+                      <span>In Bảng Cắt Thẻ Giấy A4</span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* 5. Fullscreen Toggle */}
             <button
               onClick={toggleFullscreen}
-              className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors hidden sm:inline-flex cursor-pointer"
+              className="p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-slate-700 rounded-xl border border-slate-700 transition-colors hidden sm:inline-flex cursor-pointer"
               title={isFullscreen ? 'Thoát toàn màn hình' : 'Học toàn màn hình (Focus Mode)'}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
 
+            {/* 6. Close Button */}
             <button
               onClick={onClose}
-              className="flex items-center space-x-1 px-2.5 py-1 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors cursor-pointer"
-              title="Đóng cửa sổ học (hoặc nhấn Esc, bấm ra ngoài)"
+              className="p-2 text-slate-400 hover:text-white bg-slate-800/80 hover:bg-rose-500/80 hover:border-rose-500 rounded-xl border border-slate-700 transition-colors cursor-pointer"
+              title="Đóng (Esc)"
             >
-              <span>Đóng</span>
-              <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
               <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        {/* Hairline Animated Progress Bar */}
+        <div className="w-full h-1 bg-slate-800/90 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-500 transition-all duration-300 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+
         {/* Share Link Toast Banner */}
         {shareToast && (
-          <div className="bg-sky-50 dark:bg-sky-950/90 border-b border-sky-200 dark:border-sky-500/40 px-4 py-2 flex items-center justify-between text-xs text-[#2383e2] dark:text-sky-300 font-bold animate-fade-in">
-            <span className="flex items-center space-x-1.5 truncate">
-              <span>{shareToast}</span>
-            </span>
-            <button
-              onClick={() => setShareToast('')}
-              className="text-slate-400 hover:text-slate-600 p-0.5 cursor-pointer ml-2"
-            >
+          <div className="bg-sky-500/20 border-b border-sky-500/40 px-4 py-2 flex items-center justify-between text-xs text-sky-200 font-bold animate-fade-in">
+            <span>{shareToast}</span>
+            <button onClick={() => setShareToast('')} className="text-slate-400 hover:text-white p-0.5 cursor-pointer ml-2">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -600,10 +669,10 @@ export default function FlashcardModal({
 
         {/* Banner if in Starred-Only mode */}
         {onlyStarredMode && (
-          <div className="px-5 py-1.5 bg-amber-50 border-b border-amber-200 text-amber-900 flex items-center justify-between text-xs font-semibold animate-fade-in">
+          <div className="px-5 py-2 bg-amber-500/15 border-b border-amber-500/30 text-amber-200 flex items-center justify-between text-xs font-semibold animate-fade-in">
             <div className="flex items-center space-x-2">
-              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-600" />
-              <span>Đang trong chế độ <strong>Ôn Cấp Tốc Các Thẻ Đã Ghim Sao ({cards.length} thẻ)</strong></span>
+              <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+              <span>Đang trong chế độ <strong>Ôn Cấp Tốc Các Thẻ Ghim Sao ({cards.length} thẻ)</strong></span>
             </div>
             <button
               onClick={() => {
@@ -611,18 +680,16 @@ export default function FlashcardModal({
                 setCurrentIndex(0);
                 setIsFlipped(false);
               }}
-              className="text-[11px] text-amber-800 underline hover:text-amber-950 font-bold cursor-pointer"
+              className="text-[11px] text-amber-300 underline hover:text-amber-100 font-bold cursor-pointer"
             >
               Quay lại toàn bộ ({allDeckCards.length} thẻ)
             </button>
           </div>
         )}
 
-        {/* Enhanced Audio Podcast Mini-Player Strip */}
+        {/* Audio Podcast Mini-Player Strip */}
         {isAutoPlaying && (
           <div className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-b border-indigo-800/50 text-white flex flex-wrap items-center justify-between gap-3 text-xs shadow-inner animate-fade-in">
-            
-            {/* Left: Waveform animation + State status */}
             <div className="flex items-center space-x-2.5 min-w-0">
               <div className="w-7 h-7 rounded-lg bg-indigo-500/30 border border-indigo-400/40 flex items-center justify-center shrink-0">
                 <Headphones className="w-4 h-4 text-sky-300 animate-pulse" />
@@ -632,12 +699,11 @@ export default function FlashcardModal({
                   <span className="font-bold text-sky-200 truncate">
                     🎧 Podcast Học Thụ Động • Thẻ {currentIndex + 1}/{cards.length}
                   </span>
-                  {/* Sound Wave Bars */}
                   <div className="flex items-end space-x-0.5 h-3 shrink-0">
-                    <span className="w-1 bg-sky-400 rounded-full animate-bounce h-2"></span>
-                    <span className="w-1 bg-indigo-400 rounded-full animate-bounce h-3.5 delay-75"></span>
-                    <span className="w-1 bg-pink-400 rounded-full animate-bounce h-2.5 delay-150"></span>
-                    <span className="w-1 bg-sky-300 rounded-full animate-bounce h-3 delay-100"></span>
+                    <span className="w-1 bg-sky-400 rounded-full animate-bounce h-2" />
+                    <span className="w-1 bg-indigo-400 rounded-full animate-bounce h-3.5 delay-75" />
+                    <span className="w-1 bg-pink-400 rounded-full animate-bounce h-2.5 delay-150" />
+                    <span className="w-1 bg-sky-300 rounded-full animate-bounce h-3 delay-100" />
                   </div>
                 </div>
                 <p className="text-[11px] text-slate-300 truncate">
@@ -646,9 +712,7 @@ export default function FlashcardModal({
               </div>
             </div>
 
-            {/* Right: Controls (Play/Pause, Rate, Interval) */}
             <div className="flex items-center space-x-2 sm:space-x-3 shrink-0 ml-auto">
-              {/* Play / Pause Toggle */}
               <button
                 onClick={() => {
                   setIsAutoPlaying(false);
@@ -658,14 +722,13 @@ export default function FlashcardModal({
                   setIsSpeakingNow(false);
                 }}
                 className="px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white font-semibold text-[11px] flex items-center space-x-1 cursor-pointer transition-colors"
-                title="Tạm dừng chế độ Podcast"
+                title="Tạm dừng Podcast"
               >
                 <Pause className="w-3 h-3 fill-white" />
                 <span>Dừng</span>
               </button>
 
-              {/* Speed rate selector */}
-              <div className="flex items-center space-x-1 text-[11px] bg-black/30 px-2 py-0.5 rounded-md border border-white/10">
+              <div className="flex items-center space-x-1 text-[11px] bg-black/40 px-2 py-0.5 rounded-md border border-white/10">
                 <span className="text-slate-400 text-[10px]">Tốc độ:</span>
                 {[0.8, 1.0, 1.25].map((rate) => (
                   <button
@@ -680,8 +743,7 @@ export default function FlashcardModal({
                 ))}
               </div>
 
-              {/* Delay timer selector */}
-              <div className="hidden sm:flex items-center space-x-1 text-[11px] bg-black/30 px-2 py-0.5 rounded-md border border-white/10">
+              <div className="hidden sm:flex items-center space-x-1 text-[11px] bg-black/40 px-2 py-0.5 rounded-md border border-white/10">
                 <span className="text-slate-400 text-[10px]">Nghỉ:</span>
                 {[2, 3, 5].map((sec) => (
                   <button
@@ -696,17 +758,16 @@ export default function FlashcardModal({
                 ))}
               </div>
             </div>
-
           </div>
         )}
 
-        {/* Preview Notice Bar for Non-purchased */}
+        {/* Preview Notice Bar for Non-Purchased Courses */}
         {!isPurchased && (
-          <div className="px-5 py-2 bg-[#fbf3db] border-b border-[#f4e4b7] flex items-center justify-between gap-3 text-xs text-[#976d57]">
-            <div className="flex items-center space-x-2">
-              <Lock className="w-4 h-4 text-[#cc782f] shrink-0" />
-              <span>
-                Đang xem thử <strong>{cards.length} thẻ mẫu</strong>. Trọn bộ gồm <strong>350+ thẻ</strong> và file tải về.
+          <div className="px-5 py-2.5 bg-gradient-to-r from-amber-500/20 via-orange-500/15 to-amber-500/20 border-b border-amber-500/30 flex items-center justify-between gap-3 text-xs text-amber-200">
+            <div className="flex items-center space-x-2 min-w-0">
+              <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+              <span className="truncate">
+                Đang học thử <strong>{cards.length} thẻ mẫu</strong> • Mở khóa toàn bộ <strong>350+ thẻ & tài liệu</strong>.
               </span>
             </div>
             <button
@@ -714,19 +775,21 @@ export default function FlashcardModal({
                 onClose();
                 onBuy(course);
               }}
-              className="px-3 py-1 font-medium text-white bg-[#cc782f] hover:bg-[#b56722] rounded-md shrink-0 shadow-2xs cursor-pointer"
+              className="px-3.5 py-1 font-bold text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-lg shrink-0 shadow-md active:scale-95 transition-all cursor-pointer"
             >
               Mở Khóa Toàn Bộ ({course.priceXu || 25} Xu)
             </button>
           </div>
         )}
 
-        {/* Card Body - 3D Flip Area */}
-        <div className="p-4 sm:p-8 flex-1 flex flex-col items-center justify-center bg-[#fbfbfa] min-h-[340px] sm:min-h-[400px]">
+        {/* =========================================================================
+            CARD BODY: FLOATING TACTILE 3D CARD
+            ========================================================================= */}
+        <div className="p-4 sm:p-7 flex-1 flex flex-col items-center justify-center bg-gradient-to-b from-[#0e1626] to-[#0a0f1d] min-h-[360px] sm:min-h-[420px]">
           
           <div
             onClick={toggleFlip}
-            className="w-full max-w-xl h-72 sm:h-80 cursor-pointer perspective-1000 select-none group focus:outline-none"
+            className="w-full max-w-xl h-72 sm:h-84 cursor-pointer perspective-1000 select-none group focus:outline-none"
             role="button"
             tabIndex={0}
             aria-label={isFlipped ? "Đang xem mặt sau, bấm để lật lại" : "Đang xem mặt trước, bấm để lật xem đáp án"}
@@ -743,16 +806,18 @@ export default function FlashcardModal({
               }`}
             >
               
-              {/* Front Side */}
+              {/* ================= FRONT SIDE ================= */}
               <div
-                className={`absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-white border border-[#e9e9e8] shadow-xs transition-opacity duration-200 ${
+                className={`absolute inset-0 backface-hidden p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-[#1e293b]/95 border border-slate-700/80 shadow-[0_16px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-opacity duration-200 ${
                   isFlipped ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
                 }`}
               >
-                <div className="flex items-center justify-between text-xs text-[#787774] font-medium uppercase tracking-wider">
-                  <span className="notion-tag notion-tag-gray text-[10px]">
-                    Mặt trước (Câu hỏi / Từ khóa)
+                {/* Top Row: Tag Badge + Action Buttons */}
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 tracking-wide uppercase">
+                    {parsedFront.tag || 'Câu Hỏi'}
                   </span>
+                  
                   <div className="flex items-center space-x-1.5">
                     <button
                       type="button"
@@ -760,10 +825,10 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         toggleStarCurrentCard();
                       }}
-                      className="p-1.5 hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
-                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
+                      className="p-2 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
+                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này'}
                     >
-                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-[#9b9a97] hover:text-amber-400'}`} />
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-400' : 'text-slate-400 hover:text-amber-400'}`} />
                     </button>
                     <button
                       type="button"
@@ -771,36 +836,40 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         handleSpeak(currentCard.front);
                       }}
-                      className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
-                      title="Phát âm thanh"
+                      className="p-2 text-slate-400 hover:text-sky-300 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
+                      title="Đọc câu hỏi"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="my-auto text-center px-3 py-2 max-h-[170px] overflow-y-auto">
-                  <p className="text-lg sm:text-2xl font-bold text-[#37352f] leading-snug whitespace-pre-line">
-                    {currentCard.front || (cards.length === 0 ? 'Bộ thẻ chưa có nội dung' : 'Thẻ trống')}
+                {/* Question Text (Large, crisp, legible) */}
+                <div className="my-auto text-center px-4 py-3 max-h-[190px] overflow-y-auto">
+                  <p className="text-xl sm:text-2xl font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
+                    {parsedFront.cleanQuestion || (cards.length === 0 ? 'Bộ thẻ chưa có nội dung' : 'Thẻ trống')}
                   </p>
                 </div>
 
-                <div className="text-center text-xs text-[#787774] flex items-center justify-center space-x-1.5 font-normal">
-                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-[#2383e2]" />
+                {/* Flip Hint */}
+                <div className="text-center text-xs text-sky-400/90 flex items-center justify-center space-x-2 font-medium">
+                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-sky-400" />
                   <span>Chạm hoặc bấm [Phím Cách] để lật đáp án</span>
                 </div>
               </div>
 
-              {/* Back Side */}
+              {/* ================= BACK SIDE ================= */}
               <div
-                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-2xl bg-white border-2 border-[#2383e2]/40 shadow-xs transition-opacity duration-200 ${
+                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-[#1e293b]/95 border-2 border-indigo-500/60 shadow-[0_16px_40px_rgba(99,102,241,0.25)] backdrop-blur-xl transition-opacity duration-200 ${
                   isFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
               >
-                <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wider">
-                  <span className="notion-tag notion-tag-blue text-[10px]">
-                    Mặt sau (Giải thích / Đáp án)
+                {/* Top Row: Answer Badge + Action Buttons */}
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tracking-wide uppercase">
+                    ✨ Đáp Án & Căn Cứ
                   </span>
+
                   <div className="flex items-center space-x-1.5">
                     <button
                       type="button"
@@ -808,10 +877,10 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         toggleStarCurrentCard();
                       }}
-                      className="p-1.5 hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
-                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này (quan trọng)'}
+                      className="p-2 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
+                      title={isCurrentCardStarred ? 'Bỏ đánh dấu sao' : 'Đánh dấu sao thẻ này'}
                     >
-                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-500' : 'text-[#9b9a97] hover:text-amber-400'}`} />
+                      <Star className={`w-4 h-4 ${isCurrentCardStarred ? 'fill-amber-400 text-amber-400' : 'text-slate-400 hover:text-amber-400'}`} />
                     </button>
                     <button
                       type="button"
@@ -819,44 +888,46 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         handleSpeak(currentCard.back);
                       }}
-                      className="p-1.5 text-[#2383e2] hover:bg-[#f7f6f5] rounded-lg transition-colors cursor-pointer"
-                      title="Phát âm"
+                      className="p-2 text-indigo-400 hover:text-indigo-300 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
+                      title="Đọc đáp án"
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="my-auto py-2 max-h-[170px] overflow-y-auto pr-1">
-                  <div className="text-sm sm:text-base text-[#37352f] leading-relaxed whitespace-pre-line font-normal text-left sm:text-center">
+                {/* Answer Text */}
+                <div className="my-auto py-3 max-h-[190px] overflow-y-auto px-2">
+                  <div className="text-base sm:text-lg text-slate-100 leading-relaxed whitespace-pre-line font-medium text-left sm:text-center">
                     {currentCard.back || (cards.length === 0 ? 'Chưa có đáp án' : 'Trống')}
                   </div>
                 </div>
 
-                <div className="text-center sm:text-right text-[11px] text-[#2383e2] font-medium flex items-center justify-center sm:justify-end space-x-1">
-                  <RotateCw className="w-3 h-3 text-[#2383e2]" />
-                  <span>Chạm để lật lại mặt trước</span>
+                {/* Flip Back Hint */}
+                <div className="text-center sm:text-right text-xs text-indigo-400 font-medium flex items-center justify-center sm:justify-end space-x-1.5">
+                  <RotateCw className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>Chạm để lật lại câu hỏi</span>
                 </div>
               </div>
 
             </div>
           </div>
 
-          {/* Navigation Arrows */}
-          <div className="mt-4 flex items-center space-x-4">
+          {/* Navigation Controls: Prev / Next buttons */}
+          <div className="mt-4 sm:mt-5 flex items-center space-x-5">
             <button
               onClick={goToPrev}
-              className="p-2 rounded-full bg-white border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] transition-colors shadow-2xs cursor-pointer"
+              className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
               title="Thẻ trước [Phím Mũi tên trái]"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="text-xs font-medium text-[#787774]">
+            <span className="text-xs font-bold text-slate-400 font-mono tracking-wider">
               {cards.length > 0 ? `${currentIndex + 1} / ${cards.length}` : '0 / 0'}
             </span>
             <button
               onClick={goToNext}
-              className="p-2 rounded-full bg-white border border-[#e9e9e8] text-[#787774] hover:text-[#37352f] hover:bg-[#f7f6f5] transition-colors shadow-2xs cursor-pointer"
+              className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition-all shadow-md active:scale-95 cursor-pointer"
               title="Thẻ tiếp theo [Phím Mũi tên phải]"
             >
               <ChevronRight className="w-5 h-5" />
@@ -864,58 +935,64 @@ export default function FlashcardModal({
           </div>
 
           {/* Ask AI Tutor Button */}
-          <div className="mt-3 flex items-center space-x-2">
+          <div className="mt-3.5">
             <button
               onClick={handleAskAiTutor}
-              className="px-3.5 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-medium shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-indigo-500/25 flex items-center space-x-2 transition-all cursor-pointer active:scale-95"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <Sparkles className="w-4 h-4 text-amber-300 animate-spin" style={{ animationDuration: '4s' }} />
               <span>Hỏi Trợ Lý AI Chuyên Gia (Bản Chất & Mẹo Nhớ)</span>
             </button>
           </div>
 
         </div>
 
-        {/* Footer: Spaced Repetition Buttons */}
-        <div className="p-4 sm:p-5 border-t border-slate-100 bg-white">
-          <div className="text-center mb-2.5">
-            <span className="text-xs text-slate-400 font-medium">
+        {/* =========================================================================
+            FOOTER: 4 SRS SPACED REPETITION RATING BUTTONS (CLEAN TACTILE CARDS)
+            ========================================================================= */}
+        <div className="px-5 py-4 border-t border-slate-800 bg-[#162032] shrink-0">
+          <div className="text-center mb-3">
+            <span className="text-xs text-slate-400 font-semibold">
               Đánh giá mức độ ghi nhớ (Spaced Repetition):
             </span>
           </div>
 
           <div className="grid grid-cols-4 gap-2 sm:gap-3 max-w-xl mx-auto">
             
+            {/* 1. Học Lại (Again) */}
             <button
               onClick={() => handleRate('again')}
-              className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 transition-colors"
+              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-300 hover:text-rose-200 transition-all cursor-pointer active:scale-95 group"
             >
-              <span className="text-xs sm:text-sm font-bold">Học Lại</span>
-              <span className="text-[10px] text-rose-500 font-bold hidden sm:inline">(Phím 1 • {againInterval})</span>
+              <span className="text-xs sm:text-sm font-black group-hover:scale-105 transition-transform">Học Lại</span>
+              <span className="text-[10px] text-rose-400/90 font-bold hidden sm:inline">(Phím 1 • {againInterval})</span>
             </button>
 
+            {/* 2. Khó (Hard) */}
             <button
               onClick={() => handleRate('hard')}
-              className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-700 transition-colors"
+              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-amber-200 transition-all cursor-pointer active:scale-95 group"
             >
-              <span className="text-xs sm:text-sm font-bold">Khó</span>
-              <span className="text-[10px] text-amber-500 font-bold hidden sm:inline">(Phím 2 • {hardInterval})</span>
+              <span className="text-xs sm:text-sm font-black group-hover:scale-105 transition-transform">Khó</span>
+              <span className="text-[10px] text-amber-400/90 font-bold hidden sm:inline">(Phím 2 • {hardInterval})</span>
             </button>
 
+            {/* 3. Tốt (Good) */}
             <button
               onClick={() => handleRate('good')}
-              className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 transition-colors"
+              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/40 text-sky-300 hover:text-sky-200 transition-all cursor-pointer active:scale-95 group"
             >
-              <span className="text-xs sm:text-sm font-bold">Tốt</span>
-              <span className="text-[10px] text-blue-500 font-bold hidden sm:inline">(Phím 3 • {goodInterval})</span>
+              <span className="text-xs sm:text-sm font-black group-hover:scale-105 transition-transform">Tốt</span>
+              <span className="text-[10px] text-sky-400/90 font-bold hidden sm:inline">(Phím 3 • {goodInterval})</span>
             </button>
 
+            {/* 4. Dễ Nhớ (Easy) */}
             <button
               onClick={() => handleRate('easy')}
-              className="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 transition-colors"
+              className="flex flex-col items-center justify-center py-2.5 px-1 rounded-2xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-300 hover:text-emerald-200 transition-all cursor-pointer active:scale-95 group"
             >
-              <span className="text-xs sm:text-sm font-bold">Dễ Nhớ</span>
-              <span className="text-[10px] text-emerald-600 font-bold hidden sm:inline">(Phím 4 • {easyInterval})</span>
+              <span className="text-xs sm:text-sm font-black group-hover:scale-105 transition-transform">Dễ Nhớ</span>
+              <span className="text-[10px] text-emerald-400/90 font-bold hidden sm:inline">(Phím 4 • {easyInterval})</span>
             </button>
 
           </div>
@@ -923,25 +1000,27 @@ export default function FlashcardModal({
 
       </div>
 
-      {/* AI Tutor Slide-over Drawer / Modal */}
+      {/* =========================================================================
+          AI TUTOR DRAWER
+          ========================================================================= */}
       {aiDrawerOpen && (
-        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="relative w-full max-w-xl max-h-[85vh] bg-white rounded-2xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f]">
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+          <div className="relative w-full max-w-xl max-h-[85vh] bg-[#1e293b] rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col text-slate-100">
             
             {/* Drawer Header */}
-            <div className="px-5 py-3.5 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8]">
+            <div className="px-5 py-3.5 bg-[#162032] text-white flex items-center justify-between border-b border-slate-700">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center">
                   <Bot className="w-4 h-4" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold uppercase tracking-tight flex items-center space-x-1.5">
                     <span>Trợ Lý Gia Sư AI OnThiHub</span>
-                    <span className="notion-tag notion-tag-blue text-[10px]">
+                    <span className="px-2 py-0.2 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
                       Pro Turbo
                     </span>
                   </h4>
-                  <p className="text-[11px] text-[#787774] font-normal">
+                  <p className="text-[11px] text-slate-400 font-normal">
                     Phân tích bản chất, mẹo nhớ siêu tốc & bẫy đề thi
                   </p>
                 </div>
@@ -951,15 +1030,15 @@ export default function FlashcardModal({
                 {aiExplanations[currentIndex] && (
                   <button
                     onClick={handleCopyAiText}
-                    className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                     title="Copy nội dung giải thích"
                   >
-                    {copiedAiText ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                    {copiedAiText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
                   </button>
                 )}
                 <button
                   onClick={() => setAiDrawerOpen(false)}
-                  className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
+                  className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -968,53 +1047,51 @@ export default function FlashcardModal({
 
             {/* Drawer Content */}
             <div className="p-5 overflow-y-auto space-y-3.5 flex-1 text-xs sm:text-sm">
-              
-              {/* Card Context Recap */}
-              <div className="p-3 bg-[#fbfbfa] rounded-xl border border-[#e9e9e8]">
-                <span className="notion-tag notion-tag-gray text-[10px]">
+              <div className="p-3.5 bg-slate-900/80 rounded-2xl border border-slate-800">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 uppercase tracking-wider">
                   NỘI DUNG THẺ ĐANG HỌC
                 </span>
-                <p className="mt-1 font-semibold text-[#37352f]">
+                <p className="mt-2 font-bold text-white text-sm">
                   {currentCard.front}
                 </p>
-                <div className="mt-1 text-xs text-[#787774] whitespace-pre-line border-t border-[#f0efed] pt-1">
+                <div className="mt-1.5 text-xs text-slate-300 whitespace-pre-line border-t border-slate-800 pt-2">
                   {currentCard.back}
                 </div>
               </div>
 
-              {/* AI Content Loading State */}
+              {/* Loading indicator */}
               {isAiLoading && (
                 <div className="py-10 flex flex-col items-center justify-center space-y-2.5">
-                  <div className="w-8 h-8 border-3 border-[#2383e2] border-t-transparent rounded-full animate-spin"></div>
-                  <p className="text-xs text-[#787774] animate-pulse">
+                  <div className="w-8 h-8 border-3 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                  <p className="text-xs text-slate-400 animate-pulse">
                     Đang kết nối hệ thống AI OnThiHub phân tích bẫy thi & sáng tác mẹo nhớ...
                   </p>
                 </div>
               )}
 
-              {/* AI Error */}
+              {/* Error */}
               {aiError && (
-                <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+                <div className="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs">
                   {aiError}
                 </div>
               )}
 
-              {/* AI Explanation Formatted Result */}
+              {/* Explanation */}
               {aiExplanations[currentIndex] && (
-                <div className="p-4 bg-white rounded-xl border border-[#e9e9e8] text-xs sm:text-sm text-[#37352f] leading-relaxed whitespace-pre-line space-y-2">
+                <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line space-y-2">
                   {aiExplanations[currentIndex]}
                 </div>
               )}
             </div>
 
             {/* Drawer Footer */}
-            <div className="px-5 py-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#787774]">
-                💡 Nhớ nhanh theo phương pháp Spaced Repetition (Lặp lại ngắt quãng)
+            <div className="px-5 py-3 bg-[#162032] border-t border-slate-700 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-slate-400">
+                💡 Nhớ nhanh theo phương pháp Spaced Repetition
               </span>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="px-3 py-1.5 rounded-lg bg-[#37352f] hover:bg-[#201f1d] text-white text-xs font-medium cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold cursor-pointer"
               >
                 Đóng lại
               </button>
@@ -1024,48 +1101,49 @@ export default function FlashcardModal({
         </div>
       )}
 
-      {/* Topic & Concept Explorer Drawer */}
+      {/* =========================================================================
+          TOPIC & CONCEPT EXPLORER DRAWER
+          ========================================================================= */}
       {topicDrawerOpen && (
-        <div className="fixed inset-0 z-60 bg-black/40 backdrop-blur-xs flex justify-end animate-fade-in">
-          <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-slide-left border-l border-[#e9e9e8] text-[#37352f]">
+        <div className="fixed inset-0 z-60 bg-black/60 backdrop-blur-xs flex justify-end animate-fade-in">
+          <div className="w-full max-w-md bg-[#162032] h-full shadow-2xl flex flex-col animate-slide-left border-l border-slate-700 text-slate-100">
             
             {/* Drawer Header */}
-            <div className="px-5 py-3.5 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between">
+            <div className="px-5 py-3.5 border-b border-slate-700 bg-[#111827] flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] text-[#2b7aa1] flex items-center justify-center">
+                <div className="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center">
                   <Layers className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#37352f]">Mục Lục & Sơ Đồ Chủ Đề</h4>
-                  <p className="text-[11px] text-[#787774]">
+                  <h4 className="text-sm font-bold text-white">Mục Lục & Sơ Đồ Chủ Đề</h4>
+                  <p className="text-[11px] text-slate-400">
                     Tổng cộng {cards.length} thẻ ghi nhớ
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setTopicDrawerOpen(false)}
-                className="p-1.5 text-[#787774] hover:text-[#37352f] hover:bg-[#f0efed] rounded-lg transition-colors cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Filter & Search Bar */}
-            <div className="p-3.5 bg-[#fbfbfa] border-b border-[#e9e9e8] space-y-2.5">
-              {/* Search input */}
+            <div className="p-3.5 bg-[#111827] border-b border-slate-800 space-y-2.5">
               <div className="relative">
-                <Search className="w-3.5 h-3.5 text-[#9b9a97] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={topicSearchTerm}
                   onChange={(e) => setTopicSearchTerm(e.target.value)}
                   placeholder="Tìm từ khóa câu hỏi, khái niệm..."
-                  className="w-full pl-8 pr-7 py-1.5 bg-white border border-[#e9e9e8] rounded-lg text-xs text-[#37352f] placeholder-[#9b9a97] focus:outline-none focus:border-[#2383e2] transition-colors"
+                  className="w-full pl-8 pr-7 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
                 />
                 {topicSearchTerm && (
                   <button
                     onClick={() => setTopicSearchTerm('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9b9a97] hover:text-[#37352f] text-xs font-bold cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
                   >
                     ✕
                   </button>
@@ -1076,33 +1154,33 @@ export default function FlashcardModal({
               <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
                 <button
                   onClick={() => setSelectedTagFilter('ALL')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors cursor-pointer ${
                     selectedTagFilter === 'ALL'
-                      ? 'bg-[#37352f] text-white shadow-2xs'
-                      : 'bg-white text-[#5a5751] border border-[#e9e9e8] hover:bg-[#f0efed]'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700'
                   }`}
                 >
                   Tất cả ({cards.length})
                 </button>
                 <button
                   onClick={() => setSelectedTagFilter(selectedTagFilter === 'STARRED' ? 'ALL' : 'STARRED')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors flex items-center space-x-1 cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors flex items-center space-x-1 cursor-pointer ${
                     selectedTagFilter === 'STARRED'
-                      ? 'bg-[#fbf3db] text-[#976d57] border border-[#f4e4b7] font-semibold'
-                      : 'bg-white text-[#787774] border border-[#e9e9e8] hover:bg-[#f0efed]'
+                      ? 'bg-amber-400 text-slate-950 font-black'
+                      : 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700'
                   }`}
                 >
-                  <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
+                  <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                   <span>Đã Đánh Dấu ({starredCardIds.length})</span>
                 </button>
                 {uniqueTags.map((t) => (
                   <button
                     key={t}
                     onClick={() => setSelectedTagFilter(t)}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-colors cursor-pointer ${
                       selectedTagFilter === t
-                        ? 'bg-[#2383e2] text-white shadow-2xs'
-                        : 'bg-white text-[#5a5751] border border-[#e9e9e8] hover:bg-[#f0efed]'
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700'
                     }`}
                   >
                     {t} ({tagCounts[t] || 0})
@@ -1112,11 +1190,11 @@ export default function FlashcardModal({
             </div>
 
             {/* Cards List */}
-            <div className="flex-1 overflow-y-auto p-3.5 space-y-2 bg-[#ffffff]">
+            <div className="flex-1 overflow-y-auto p-3.5 space-y-2 bg-[#162032]">
               {filteredCardItems.length === 0 ? (
-                <div className="py-12 text-center text-[#9b9a97] text-xs font-normal">
+                <div className="py-12 text-center text-slate-400 text-xs">
                   {selectedTagFilter === 'STARRED'
-                    ? 'Bạn chưa đánh dấu sao thẻ nào. Hãy bấm biểu tượng ngôi sao trên thẻ để lưu lại thẻ quan trọng!'
+                    ? 'Bạn chưa đánh dấu sao thẻ nào. Hãy bấm biểu tượng ngôi sao trên thẻ để lưu lại!'
                     : 'Không tìm thấy thẻ nào phù hợp từ khóa.'}
                 </div>
               ) : (
@@ -1131,34 +1209,32 @@ export default function FlashcardModal({
                     <div
                       key={idx}
                       onClick={() => handleJumpToCard(idx)}
-                      className={`p-3 rounded-xl border text-left cursor-pointer transition-all ${
+                      className={`p-3 rounded-2xl border text-left cursor-pointer transition-all ${
                         isCurrent
-                          ? 'bg-[#e7f3f8] border-[#2383e2] ring-1 ring-[#2383e2]'
-                          : 'bg-white border-[#e9e9e8] hover:border-[#c5c4c0] hover:bg-[#fbfbfa]'
+                          ? 'bg-indigo-600/20 border-indigo-500 ring-1 ring-indigo-500 shadow-md'
+                          : 'bg-slate-800/80 border-slate-700/80 hover:border-slate-600 hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center justify-between text-[10px] mb-1">
-                        <span className="text-[#787774] flex items-center space-x-1">
-                          {isStarred && (
-                            <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
-                          )}
+                        <span className="text-slate-400 flex items-center space-x-1">
+                          {isStarred && <Star className="w-3 h-3 fill-amber-400 text-amber-400" />}
                           <span>#{idx + 1} {card.tag ? `• ${card.tag}` : ''}</span>
                         </span>
                         {isCurrent ? (
-                          <span className="notion-tag notion-tag-blue text-[10px]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                             Đang xem
                           </span>
                         ) : srs.totalReviews > 0 ? (
-                          <span className="notion-tag notion-tag-purple text-[10px]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
                             Đã ôn {srs.totalReviews} lần
                           </span>
                         ) : (
-                          <span className="notion-tag notion-tag-yellow text-[10px]">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
                             Thẻ mới
                           </span>
                         )}
                       </div>
-                      <p className="text-xs font-semibold text-[#37352f] line-clamp-2 leading-relaxed">
+                      <p className="text-xs font-bold text-white line-clamp-2 leading-relaxed">
                         {card.front}
                       </p>
                     </div>
@@ -1168,13 +1244,13 @@ export default function FlashcardModal({
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-3 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between text-xs">
-              <span className="text-[11px] text-[#787774]">
+            <div className="p-3 bg-[#111827] border-t border-slate-700 flex items-center justify-between text-xs">
+              <span className="text-[11px] text-slate-400">
                 Hiển thị {filteredCardItems.length}/{cards.length} thẻ
               </span>
               <button
                 onClick={() => setTopicDrawerOpen(false)}
-                className="px-3 py-1.5 rounded-lg bg-[#37352f] text-white font-medium text-xs hover:bg-[#201f1d] transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-700 text-white font-bold text-xs hover:bg-slate-600 transition-colors cursor-pointer"
               >
                 Đóng
               </button>

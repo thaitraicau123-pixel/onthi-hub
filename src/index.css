@@ -776,6 +776,45 @@ body {
   letter-spacing: 0.5px;
 }
 
+/* Authentic Cartoon Game Elements */
+.game-cartoon-title {
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Black', -apple-system, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  -webkit-text-stroke: 2.2px #141416;
+  text-shadow: 0 3px 0 #141416, 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.game-cartoon-pill-title {
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Black', -apple-system, sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  -webkit-text-stroke: 2.4px #140526;
+  text-shadow: 0 3px 0 #140526, 0 5px 8px rgba(0, 0, 0, 0.45);
+}
+
+.game-keycap {
+  background: #ffffff;
+  border: 2.8px solid #141416;
+  border-radius: 12px;
+  box-shadow: 0 3.5px 0 #141416, 0 5px 8px rgba(0, 0, 0, 0.35);
+  color: #141416;
+  font-family: 'Fredoka', 'Nunito', 'Segoe UI Black', -apple-system, sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.game-inner-cushion {
+  position: absolute;
+  inset: 5px;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+}
+
 
 
 
