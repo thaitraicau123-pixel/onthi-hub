@@ -374,6 +374,8 @@ export default function App() {
                 onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
                 allCourses={allAvailableCourses}
                 onShowToast={showToast}
+                walletBalance={walletBalance}
+                onOpenWallet={() => setActiveTab('wallet')}
               />
             )}
 

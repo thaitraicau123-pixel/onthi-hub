@@ -16,6 +16,63 @@ export default function ThemeAtmosphereBackground({ theme }) {
       className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 transition-opacity duration-700 ease-in-out"
     >
       {/* =========================================================================
+          0. CARTOON QUEST 3D (BRAWL STARS & ARCADE 3D FANTASY MEADOW)
+          ========================================================================= */}
+      {themeId === 'game-quest-3d' && (
+        <div className="absolute inset-0 opacity-[0.95] transition-opacity duration-700">
+          <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="gq-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#1e1b4b" />
+                <stop offset="35%" stopColor="#2e1065" />
+                <stop offset="70%" stopColor="#1d4ed8" />
+                <stop offset="100%" stopColor="#38bdf8" />
+              </linearGradient>
+              <linearGradient id="gq-hill-back" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#15803d" />
+                <stop offset="100%" stopColor="#052e16" />
+              </linearGradient>
+              <linearGradient id="gq-hill-front" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#22c55e" />
+                <stop offset="100%" stopColor="#14532d" />
+              </linearGradient>
+            </defs>
+
+            {/* Vibrant Fantasy Sky */}
+            <rect width="100%" height="100%" fill="url(#gq-sky)" opacity="0.32" />
+
+            {/* Floating Cartoon Clouds */}
+            <g fill="#ffffff" fillOpacity="0.22" filter="blur(1px)">
+              <ellipse cx="15%" cy="14%" rx="80" ry="24" />
+              <ellipse cx="18%" cy="11%" rx="50" ry="28" />
+              <ellipse cx="82%" cy="18%" rx="110" ry="28" />
+              <ellipse cx="78%" cy="15%" rx="65" ry="35" />
+            </g>
+
+            {/* Rolling Green Cartoon Hills */}
+            <path
+              d="M0 650 Q 360 560 720 630 T 1440 610 T 1920 660 L 1920 1080 L 0 1080 Z"
+              fill="url(#gq-hill-back)"
+              opacity="0.3"
+            />
+            <path
+              d="M0 760 Q 450 680 900 750 T 1800 720 T 1920 780 L 1920 1080 L 0 1080 Z"
+              fill="url(#gq-hill-front)"
+              opacity="0.25"
+            />
+
+            {/* Floating Sparkles in the air */}
+            <g fill="#fde047" opacity="0.6">
+              <circle cx="20%" cy="40%" r="2" />
+              <circle cx="85%" cy="35%" r="2.5" />
+              <circle cx="50%" cy="25%" r="1.5" />
+              <circle cx="70%" cy="55%" r="2" />
+            </g>
+          </svg>
+        </div>
+      )}
+
+      {/* =========================================================================
           1. BOTANICAL GARDEN / AVOCADO THEME (EXACT MATCH TO MESSENGER AVOCADO CHAT)
           ========================================================================= */}
       {themeId === 'botanical-garden' && (
