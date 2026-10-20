@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
   PanelLeft,
-  Flame,
-  Gift,
   Bell,
   Volume2,
   VolumeX,
   Coins,
-  Check,
-  ExternalLink,
-  ChevronRight,
-  ShieldCheck,
   Search,
-  Sparkles,
   BarChart2,
   Palette,
   Clock,
-  Target
+  User
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
@@ -173,56 +166,56 @@ export default function NotionTopbar({
         </nav>
       </div>
 
-      {/* RIGHT: COMPACT NOTION UTILITY BADGES */}
-      <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+      {/* RIGHT: ICON-ONLY COLLAPSED TOOLBAR */}
+      <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
         
-        {/* Quick Command Palette Search Button */}
+        {/* Quick Command Palette Search Button (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenSearch?.();
           }}
-          className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200/80 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
-          title="Mở thanh tìm kiếm & lệnh nhanh (Ctrl+K)"
+          className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 flex items-center justify-center transition-all cursor-pointer shadow-2xs"
+          title="Tìm nhanh & lệnh (Ctrl+K)"
+          aria-label="Tìm nhanh (Ctrl+K)"
         >
-          <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400" />
-          <span>Tìm nhanh</span>
-          <kbd className="text-[9px] font-mono font-bold px-1 py-0.2 rounded bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/15">
-            Ctrl+K
-          </kbd>
+          <Search className="w-3.5 h-3.5 text-slate-600 dark:text-sky-400" />
         </button>
 
-        {/* Live Virtual Study Room Button */}
+        {/* Live Virtual Study Room Button (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenStudyRoom?.();
           }}
-          className="flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
-          title="Vào phòng tự học chung ảo trực tuyến (Live 24/7)"
+          className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 flex items-center justify-center transition-all shadow-2xs cursor-pointer relative"
+          title="Phòng tự học chung ảo trực tuyến (Live 24/7)"
+          aria-label="Phòng tự học ảo Live"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
-          <span className="hidden lg:inline">Phòng Học</span>
-          <span className="text-[10px] bg-emerald-200 dark:bg-emerald-800 text-emerald-950 dark:text-emerald-100 px-1 py-0.2 rounded font-black">Live</span>
+          <span className="relative flex items-center justify-center">
+            <span className="text-sm select-none">🎧</span>
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500" />
+          </span>
         </button>
 
-        {/* Theme Picker Button */}
+        {/* Theme Picker Button (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenThemePicker?.();
           }}
-          className="flex items-center space-x-1 px-2 py-1 rounded-md bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
-          title="Đổi chủ đề không gian học & icon (16 Themes Messenger & 3D 4K)"
+          className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          title="Đổi chủ đề không gian học & icon (16 Themes 3D 4K)"
+          aria-label="Đổi chủ đề"
         >
           <Palette className="w-3.5 h-3.5 text-purple-700 dark:text-purple-300" />
-          <span className="hidden xl:inline">Chủ Đề</span>
         </button>
 
-        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Controls */}
+        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Controls (Icon Only) */}
         {isDayTheme(currentTheme?.id) ? (
           <button
             type="button"
@@ -231,33 +224,30 @@ export default function NotionTopbar({
               const nextMode = toggleSleepMode();
               setSleepMode(nextMode);
             }}
-            className={`flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-bold shadow-2xs cursor-pointer touch-3d border ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all shadow-2xs cursor-pointer border ${
               sleepMode === 'dark'
                 ? 'bg-indigo-950/90 text-indigo-100 border-indigo-400/50 hover:bg-indigo-900'
                 : 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
             }`}
             title={
               sleepMode === 'dark'
-                ? 'Đang bật Chế độ ngủ (Dịu mắt ban đêm). Bấm để chuyển sang Ban ngày ☀️'
-                : 'Đang bật Chế độ ban ngày (Sáng rõ, tươi tắn). Bấm để chuyển sang Chế độ ngủ 🌙'
+                ? 'Chế độ Ban đêm. Bấm chuyển sang Ban ngày ☀️'
+                : 'Chế độ Ban ngày. Bấm chuyển sang Ban đêm 🌙'
             }
+            aria-label="Chế độ Ban đêm / Ban ngày"
           >
-            <span className="text-xs">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
-            <span className="hidden 2xl:inline text-[11px]">
-              {sleepMode === 'dark' ? 'Ban Đêm' : 'Ban Ngày'}
-            </span>
+            <span className="text-sm select-none">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
           </button>
         ) : (
           <div
-            className="hidden xl:flex items-center space-x-1 px-2 py-1 rounded-md bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs text-[11px] font-bold"
-            title="Chủ đề 3D 4K này tự động chạy Chế độ ngủ chuẩn rạp chiếu phim để màu sắc hòa hợp và độ tương phản cao nhất."
+            className="w-8 h-8 rounded-lg bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs flex items-center justify-center text-sm"
+            title="Chủ đề 3D 4K chạy Chế độ tối cinema."
           >
-            <span className="text-xs">🌙</span>
-            <span className="hidden 2xl:inline">4K Dark</span>
+            🌙
           </div>
         )}
 
-        {/* Dynamic Weather & Atmosphere Particle Toggle Button */}
+        {/* Dynamic Weather & Atmosphere Particle Toggle Button (Icon Only) */}
         {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
           const weatherInfoMap = {
             'mario-stars': { icon: '🍄', label: 'Mario Stars' },
@@ -284,98 +274,97 @@ export default function NotionTopbar({
                 playSound('click');
                 onToggleWeather?.();
               }}
-              className={`hidden sm:flex items-center space-x-1 px-2 py-1 rounded-md transition-all font-bold shadow-2xs cursor-pointer touch-3d border ${
+              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all shadow-2xs cursor-pointer border ${
                 isWeatherEnabled
                   ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-200 border-sky-300 dark:border-sky-500/40 hover:bg-sky-200 dark:hover:bg-sky-900'
-                  : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-white/10 opacity-75'
+                  : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-white/10 opacity-60'
               }`}
               title={
                 isWeatherEnabled
-                  ? `Tắt hiệu ứng động: ${info.label}`
-                  : `Bật hiệu ứng động: ${info.label}`
+                  ? `Hiệu ứng: ${info.label} (Bấm để tắt)`
+                  : `Hiệu ứng: ${info.label} (Bấm để bật)`
               }
+              aria-label="Hiệu ứng thời tiết"
             >
-              <span className="text-xs">{info.icon}</span>
-              <span className="hidden 2xl:inline text-[11px]">
-                {isWeatherEnabled ? info.label : 'Tắt'}
-              </span>
+              <span className="text-sm select-none">{info.icon}</span>
             </button>
           );
         })()}
 
-        {/* Live Hanoi Clock & Target Study Goal Pill */}
+        {/* Live Hanoi Clock & Target Study Goal (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenTargetClock?.();
           }}
-          className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 font-bold text-xs shadow-2xs cursor-pointer touch-3d"
-          title="Đồng hồ chuẩn Giờ Hà Nội & Thiết lập mục tiêu học tập hôm nay"
+          className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 flex items-center justify-center shadow-2xs cursor-pointer"
+          title={`Giờ Hà Nội: ${hanoiTime} • Bấm mở Đồng hồ mục tiêu & Vết thời gian`}
+          aria-label="Đồng hồ Giờ Hà Nội"
         >
           <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-          <span className="font-mono">{hanoiTime}</span>
-          <span className="hidden xl:inline text-[10px] text-emerald-700 dark:text-emerald-300 font-extrabold">• HN</span>
         </button>
 
-        {/* Analytics Dashboard Button */}
+        {/* Analytics Dashboard Button (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenAnalytics?.();
           }}
-          className="hidden md:flex items-center space-x-1 px-2 py-1 rounded-md bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
+          className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
           title="Xem phân tích & tiến độ học tập SM-2"
+          aria-label="Tiến độ học tập"
         >
           <BarChart2 className="w-3.5 h-3.5 text-indigo-700 dark:text-indigo-300" />
-          <span className="hidden xl:inline">Tiến Độ</span>
         </button>
 
-        {/* Wallet Balance Pill */}
+        {/* Wallet Balance Pill (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onSelectTab('wallet');
           }}
-          className="flex items-center space-x-1 px-2.5 py-1 rounded-md bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 transition-all font-bold shadow-2xs touch-3d cursor-pointer"
-          title="Bấm để mở Ví Xu & nạp tiền"
+          className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          title={`Ví Xu: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
+          aria-label="Ví Xu"
         >
           <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-500" />
-          <span>{walletBalance} Xu</span>
         </button>
 
-        {/* Streak Pill */}
+        {/* Streak Pill (Icon Only) */}
         <button
           type="button"
           onClick={() => {
             playSound('flip');
             onOpenLeaderboard?.();
           }}
-          className="hidden sm:flex items-center space-x-1 px-2 py-1 rounded-md bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 transition-all font-bold touch-3d cursor-pointer"
-          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Xếp Hạng)`}
+          className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
+          aria-label="Chuỗi học tập"
         >
-          <span className="text-xs select-none">{currentTheme?.icons?.streak || '🔥'}</span>
-          <span>{streakInfo.streak}</span>
+          <span className="text-sm select-none">{currentTheme?.icons?.streak || '🔥'}</span>
         </button>
 
-        {/* Daily Check-in Button */}
+        {/* Daily Check-in Button (Icon Only) */}
         <button
           type="button"
           onClick={handleCheckIn}
-          className="hidden lg:flex items-center space-x-1 px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 transition-all font-bold shadow-2xs cursor-pointer touch-3d"
+          className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
           title="Điểm danh mỗi ngày nhận Xu miễn phí"
+          aria-label="Điểm danh nhận Xu"
         >
-          <span className="text-xs select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
-          <span className="hidden xl:inline">Điểm Danh</span>
+          <span className="text-sm select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
         </button>
 
-        {/* Audio Mute/Unmute */}
+        {/* Audio Mute/Unmute (Icon Only) */}
         <button
+          type="button"
           onClick={handleToggleMute}
-          className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors cursor-pointer"
+          className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
           title={isMuted ? "Bật âm thanh hiệu ứng" : "Tắt âm thanh"}
+          aria-label="Bật/Tắt âm thanh"
         >
           {isMuted ? (
             <VolumeX className="w-4 h-4 text-rose-500" />
@@ -384,16 +373,18 @@ export default function NotionTopbar({
           )}
         </button>
 
-        {/* Notification Bell */}
+        {/* Notification Bell (Icon Only) */}
         <div className="relative">
           <button
+            type="button"
             onClick={handleOpenNotifications}
-            className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors relative cursor-pointer"
-            title="Thông báo"
+            className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors relative cursor-pointer"
+            title="Thông báo hệ thống"
+            aria-label="Thông báo"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900"></span>
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
             )}
           </button>
 
@@ -426,13 +417,14 @@ export default function NotionTopbar({
           )}
         </div>
 
-        {/* User Profile / Auth Button */}
+        {/* User Profile / Auth Button (Icon Only) */}
         {user ? (
           <button
             type="button"
             onClick={onOpenAuth}
-            className="flex items-center space-x-1.5 p-1 rounded-md hover:bg-slate-900/10 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            title="Tài khoản cá nhân"
+            className="w-8 h-8 rounded-lg hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
+            title={`Tài khoản: ${user.displayName || user.email}`}
+            aria-label="Tài khoản cá nhân"
           >
             <div className="w-6 h-6 rounded-full bg-[#2383e2] dark:bg-indigo-600 text-white flex items-center justify-center font-bold text-[11px] shadow-2xs">
               {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : 'U'}
@@ -442,9 +434,11 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="px-2.5 py-1 rounded-md bg-[#2383e2] hover:bg-[#1d6fc2] text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[#2383e2] hover:bg-[#1d6fc2] text-white flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+            title="Đăng Nhập / Quản lý Tài Khoản"
+            aria-label="Đăng Nhập"
           >
-            Đăng Nhập
+            <User className="w-4 h-4" />
           </button>
         )}
 

@@ -262,6 +262,7 @@ export default function HomeView({
                         : 'bg-[#f7f6f5] dark:bg-slate-800/80 text-[#5a5955] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/10'
                     }`}
                   >
+                    {getCategoryIcon(cat.icon, active)}
                     <span>{cat.name}</span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded font-bold ${
                       active
