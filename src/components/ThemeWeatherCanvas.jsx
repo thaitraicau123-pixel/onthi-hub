@@ -55,9 +55,13 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
     let nextBatTime = Date.now() + 3000;
     let auroraTime = 0;
 
+    let isPaused = false;
     let lastTime = performance.now();
 
     const render = (now) => {
+      if (isPaused || document.hidden) {
+        return;
+      }
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
       auroraTime += dt * 0.8;
@@ -703,10 +707,28 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
       animFrameId.current = requestAnimationFrame(render);
     };
 
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isPaused = true;
+        if (animFrameId.current) {
+          cancelAnimationFrame(animFrameId.current);
+          animFrameId.current = null;
+        }
+      } else {
+        isPaused = false;
+        lastTime = performance.now();
+        if (!animFrameId.current) {
+          animFrameId.current = requestAnimationFrame(render);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     animFrameId.current = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (animFrameId.current) {
         cancelAnimationFrame(animFrameId.current);
       }
@@ -727,38 +749,45 @@ export default function ThemeWeatherCanvas({ weatherType = 'none', isEnabled = t
 }
 
 function getParticleCount(type) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const prefersReduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) return 0;
+  const scale = isMobile ? 0.6 : 1;
+  let base = 30;
+
   switch (type) {
     case 'snow':
-      return 70;
+      base = 70; break;
     case 'halloween':
-      return 45;
+      base = 45; break;
     case 'sakura':
-      return 38;
+      base = 38; break;
     case 'stars':
-      return 55;
+      base = 55; break;
     case 'fireflies':
-      return 35;
+      base = 35; break;
     case 'coffee-steam':
-      return 32;
+      base = 32; break;
     case 'digital-rain':
-      return 45;
+      base = 45; break;
     case 'sunset-dust':
-      return 40;
+      base = 40; break;
     case 'fizzy-citrus':
-      return 35;
+      base = 35; break;
     case 'aurora-ice':
-      return 40;
+      base = 40; break;
     case 'autumn-leaves':
-      return 32;
+      base = 32; break;
     case 'minimal-sparkles':
-      return 26;
+      base = 26; break;
     case 'mario-stars':
-      return 35;
+      base = 35; break;
     case 'anime-comet':
-      return 45;
+      base = 45; break;
     default:
-      return 30;
+      base = 30; break;
   }
+  return Math.max(12, Math.floor(base * scale));
 }
 
 function createParticle(type, width, height, randomY = true) {

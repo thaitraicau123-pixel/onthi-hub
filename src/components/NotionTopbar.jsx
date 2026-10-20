@@ -58,8 +58,9 @@ export default function NotionTopbar({
     });
 
     const timer = setInterval(() => {
-      setHanoiTime(getHanoiTimeString(new Date(), false));
-    }, 1000);
+      const nextTime = getHanoiTimeString(new Date(), false);
+      setHanoiTime((prev) => (prev !== nextTime ? nextTime : prev));
+    }, 10000);
 
     return () => {
       if (typeof unsub === 'function') unsub();

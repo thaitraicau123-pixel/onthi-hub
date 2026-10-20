@@ -34,7 +34,7 @@ import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
 import { playSound } from '../utils/storage';
 import BrandLogo from './BrandLogo';
 
-export default function NotionSidebar({
+function NotionSidebar({
   isOpen,
   onToggle,
   activeTab,
@@ -465,3 +465,5 @@ export default function NotionSidebar({
     </aside>
   );
 }
+
+export default React.memo(NotionSidebar);

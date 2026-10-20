@@ -1,37 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import NotionSidebar from './components/NotionSidebar';
 import NotionTopbar from './components/NotionTopbar';
 import HomeView from './views/HomeView';
-import MarketplaceView from './views/MarketplaceView';
-import CommunityView from './views/CommunityView';
-import CreateStudioView from './views/CreateStudioView';
-import LibraryView from './views/LibraryView';
-import WalletView from './views/WalletView';
-import PlansView from './views/PlansView';
-import AdminView from './views/AdminView';
-
-import FlashcardModal from './components/FlashcardModal';
-import QuizModal from './components/QuizModal';
-import MatchGameModal from './components/MatchGameModal';
-import LeaderboardModal from './components/LeaderboardModal';
-import PaymentModal from './components/PaymentModal';
-import AuthModal from './components/AuthModal';
-import BlindBoxModal from './components/BlindBoxModal';
-import PassDeckModal from './components/PassDeckModal';
-import SellDeckModal from './components/SellDeckModal';
-import MistakeNotebookModal from './components/MistakeNotebookModal';
-import ChangelogModal from './components/ChangelogModal';
-import CommandPaletteModal from './components/CommandPaletteModal';
-import AnalyticsModal from './components/AnalyticsModal';
-import ThemePickerModal from './components/ThemePickerModal';
-import TargetStudyClockModal from './components/TargetStudyClockModal';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import ThemeWeatherCanvas from './components/ThemeWeatherCanvas';
 import PomodoroTimerWidget from './components/PomodoroTimerWidget';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
-import CheatSheetModal from './components/CheatSheetModal';
-import VirtualStudyRoomModal from './components/VirtualStudyRoomModal';
 import Footer from './components/Footer';
+
+// Lazy loaded views (Zero initial bundle cost)
+const MarketplaceView = lazy(() => import('./views/MarketplaceView'));
+const CommunityView = lazy(() => import('./views/CommunityView'));
+const CreateStudioView = lazy(() => import('./views/CreateStudioView'));
+const LibraryView = lazy(() => import('./views/LibraryView'));
+const WalletView = lazy(() => import('./views/WalletView'));
+const PlansView = lazy(() => import('./views/PlansView'));
+const AdminView = lazy(() => import('./views/AdminView'));
+
+// Lazy loaded interactive modals (Loaded on-demand only when opened)
+const FlashcardModal = lazy(() => import('./components/FlashcardModal'));
+const QuizModal = lazy(() => import('./components/QuizModal'));
+const MatchGameModal = lazy(() => import('./components/MatchGameModal'));
+const LeaderboardModal = lazy(() => import('./components/LeaderboardModal'));
+const PaymentModal = lazy(() => import('./components/PaymentModal'));
+const AuthModal = lazy(() => import('./components/AuthModal'));
+const BlindBoxModal = lazy(() => import('./components/BlindBoxModal'));
+const PassDeckModal = lazy(() => import('./components/PassDeckModal'));
+const SellDeckModal = lazy(() => import('./components/SellDeckModal'));
+const MistakeNotebookModal = lazy(() => import('./components/MistakeNotebookModal'));
+const ChangelogModal = lazy(() => import('./components/ChangelogModal'));
+const CommandPaletteModal = lazy(() => import('./components/CommandPaletteModal'));
+const AnalyticsModal = lazy(() => import('./components/AnalyticsModal'));
+const ThemePickerModal = lazy(() => import('./components/ThemePickerModal'));
+const TargetStudyClockModal = lazy(() => import('./components/TargetStudyClockModal'));
+const CheatSheetModal = lazy(() => import('./components/CheatSheetModal'));
+const VirtualStudyRoomModal = lazy(() => import('./components/VirtualStudyRoomModal'));
+
+function ViewLoadingFallback() {
+  return (
+    <div className="py-24 flex flex-col items-center justify-center space-y-3 animate-fade-in text-center">
+      <div className="w-8 h-8 rounded-full border-2 border-[#2383e2]/30 border-t-[#2383e2] animate-spin"></div>
+      <p className="text-xs text-[#787774] dark:text-slate-400 font-medium">Đang tải...</p>
+    </div>
+  );
+}
+
+function ModalLoadingFallback() {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center animate-fade-in">
+      <div className="bg-white dark:bg-slate-900 px-6 py-4 rounded-2xl shadow-xl flex items-center space-x-3 border border-[#e9e9e8] dark:border-white/10">
+        <div className="w-5 h-5 rounded-full border-2 border-[#2383e2]/30 border-t-[#2383e2] animate-spin"></div>
+        <span className="text-xs font-semibold text-[#37352f] dark:text-white">Đang mở...</span>
+      </div>
+    </div>
+  );
+}
 
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
 import { getMarketplaceDecks, subscribeToMarketplaceDecks } from './data/marketplaceData';
@@ -280,109 +303,109 @@ export default function App() {
 
         {/* MAIN NOTION PAGE CANVAS */}
         <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
-          
-          {/* TAB 1: TRANG CHỦ / ĐỀ THI CHÍNH QUY */}
-          {activeTab === 'home' && (
-            <HomeView
-              onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-              onOpenQuiz={(c) => setActiveQuizCourse(c)}
-              onBuyCourse={(c) => setActivePaymentItem(c)}
-              onBuyCombo={(combo) => setActivePaymentItem(combo)}
-              onSwitchTab={setActiveTab}
-              onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
-              onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
-              onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-              onOpenTargetClock={() => setIsTargetClockOpen(true)}
-              onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
-              onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-              allCourses={allAvailableCourses}
-            />
-          )}
+          <Suspense fallback={<ViewLoadingFallback />}>
+            {/* TAB 1: TRANG CHỦ / ĐỀ THI CHÍNH QUY */}
+            {activeTab === 'home' && (
+              <HomeView
+                onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+                onOpenQuiz={(c) => setActiveQuizCourse(c)}
+                onBuyCourse={(c) => setActivePaymentItem(c)}
+                onBuyCombo={(combo) => setActivePaymentItem(combo)}
+                onSwitchTab={setActiveTab}
+                onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
+                onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+                onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+                onOpenTargetClock={() => setIsTargetClockOpen(true)}
+                onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
+                onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+                allCourses={allAvailableCourses}
+              />
+            )}
 
-          {/* TAB 2: SÀN MUA BÁN C2C */}
-          {activeTab === 'marketplace' && (
-            <MarketplaceView
-              user={user}
-              marketplaceDecks={marketplaceDecks}
-              onOpenCreateDeck={() => setActiveTab('create')}
-              onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}
-              onBalanceUpdated={refreshState}
-              onOpenWallet={() => setActiveTab('wallet')}
-              onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-            />
-          )}
+            {/* TAB 2: SÀN MUA BÁN C2C */}
+            {activeTab === 'marketplace' && (
+              <MarketplaceView
+                user={user}
+                marketplaceDecks={marketplaceDecks}
+                onOpenCreateDeck={() => setActiveTab('create')}
+                onOpenFlashcardSample={(sampleDeck) => setActiveFlashcardCourse(sampleDeck)}
+                onBalanceUpdated={refreshState}
+                onOpenWallet={() => setActiveTab('wallet')}
+                onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+              />
+            )}
 
-          {/* TAB 3: DIỄN ĐÀN THẢO LUẬN & HỎI ĐÁP CỘNG ĐỒNG */}
-          {activeTab === 'community' && (
-            <CommunityView
-              user={user}
-              onOpenPricing={() => {
-                setActiveTab('plans');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            />
-          )}
+            {/* TAB 3: DIỄN ĐÀN THẢO LUẬN & HỎI ĐÁP CỘNG ĐỒNG */}
+            {activeTab === 'community' && (
+              <CommunityView
+                user={user}
+                onOpenPricing={() => {
+                  setActiveTab('plans');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
 
-          {/* TAB 4: STUDIO TẠO THẺ AI & THỦ CÔNG */}
-          {activeTab === 'create' && (
-            <CreateStudioView
-              user={user}
-              onDeckCreated={handleDeckCreated}
-              onOpenPricing={() => setActiveTab('plans')}
-              onSwitchTab={setActiveTab}
-            />
-          )}
+            {/* TAB 4: STUDIO TẠO THẺ AI & THỦ CÔNG */}
+            {activeTab === 'create' && (
+              <CreateStudioView
+                user={user}
+                onDeckCreated={handleDeckCreated}
+                onOpenPricing={() => setActiveTab('plans')}
+                onSwitchTab={setActiveTab}
+              />
+            )}
 
-          {/* TAB 5: TỦ THẺ CỦA TÔI */}
-          {activeTab === 'library' && (
-            <LibraryView
-              purchasedCourses={purchasedCourses}
-              allCourses={allAvailableCourses}
-              onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-              onOpenQuiz={(c) => setActiveQuizCourse(c)}
-              onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
-              onOpenPassDeck={(course) => setActivePassCourse(course)}
-              onOpenSellDeck={(course) => setActiveSellCourse(course)}
-              onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
-              onOpenCheatSheet={(course) => setActiveCheatSheetCourse(course)}
-              onSwitchTab={setActiveTab}
-            />
-          )}
+            {/* TAB 5: TỦ THẺ CỦA TÔI */}
+            {activeTab === 'library' && (
+              <LibraryView
+                purchasedCourses={purchasedCourses}
+                allCourses={allAvailableCourses}
+                onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+                onOpenQuiz={(c) => setActiveQuizCourse(c)}
+                onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
+                onOpenPassDeck={(course) => setActivePassCourse(course)}
+                onOpenSellDeck={(course) => setActiveSellCourse(course)}
+                onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+                onOpenCheatSheet={(course) => setActiveCheatSheetCourse(course)}
+                onSwitchTab={setActiveTab}
+              />
+            )}
 
-          {/* TAB 6: VÍ XU & NẠP/RÚT TIỀN */}
-          {activeTab === 'wallet' && (
-            <WalletView
-              user={user}
-              onBalanceUpdated={refreshState}
-            />
-          )}
+            {/* TAB 6: VÍ XU & NẠP/RÚT TIỀN */}
+            {activeTab === 'wallet' && (
+              <WalletView
+                user={user}
+                onBalanceUpdated={refreshState}
+              />
+            )}
 
-          {/* TAB 7: GÓI HỘI VIÊN PLUS / PRO / ULTRA */}
-          {activeTab === 'plans' && (
-            <PlansView
-              onTierUpgraded={() => {
-                refreshState();
-                showToast('🎉 Nâng cấp gói thành viên thành công!');
-              }}
-              onPayVietQR={(planItem) => {
-                setActivePaymentItem(planItem);
-              }}
-              onOpenWallet={() => {
-                setActiveTab('wallet');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-            />
-          )}
+            {/* TAB 7: GÓI HỘI VIÊN PLUS / PRO / ULTRA */}
+            {activeTab === 'plans' && (
+              <PlansView
+                onTierUpgraded={() => {
+                  refreshState();
+                  showToast('🎉 Nâng cấp gói thành viên thành công!');
+                }}
+                onPayVietQR={(planItem) => {
+                  setActivePaymentItem(planItem);
+                }}
+                onOpenWallet={() => {
+                  setActiveTab('wallet');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            )}
 
-          {/* TAB 8: SECRET ADMIN PORTAL (PROTECTED) */}
-          {activeTab === 'admin' && (
-            <AdminView
-              user={user}
-              onBackToHome={() => setActiveTab('home')}
-              onOpenChangelog={() => setIsChangelogOpen(true)}
-            />
-          )}
-
+            {/* TAB 8: SECRET ADMIN PORTAL (PROTECTED) */}
+            {activeTab === 'admin' && (
+              <AdminView
+                user={user}
+                onBackToHome={() => setActiveTab('home')}
+                onOpenChangelog={() => setIsChangelogOpen(true)}
+              />
+            )}
+          </Suspense>
         </main>
 
         {/* Minimal Notion Footer */}
@@ -390,279 +413,288 @@ export default function App() {
       </div>
 
       {/* OVERLAY MODALS FOR FOCUSED INTERACTION */}
-      
-      {/* 1. 3D Flashcard Player */}
-      {activeFlashcardCourse && (
-        <FlashcardModal
-          course={activeFlashcardCourse}
-          isPurchased={isCoursePurchased(activeFlashcardCourse.id)}
-          onClose={() => setActiveFlashcardCourse(null)}
-          onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c)}
-          onBuy={(c) => setActivePaymentItem(c)}
-        />
-      )}
+      <Suspense fallback={<ModalLoadingFallback />}>
+        {/* 1. 3D Flashcard Player */}
+        {activeFlashcardCourse && (
+          <FlashcardModal
+            course={activeFlashcardCourse}
+            isPurchased={isCoursePurchased(activeFlashcardCourse.id)}
+            onClose={() => setActiveFlashcardCourse(null)}
+            onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c)}
+            onBuy={(c) => setActivePaymentItem(c)}
+          />
+        )}
 
-      {/* 2. Timed Quiz Mock Exam */}
-      {activeQuizCourse && (
-        <QuizModal
-          course={activeQuizCourse}
-          isPurchased={isCoursePurchased(activeQuizCourse.id)}
-          onClose={() => setActiveQuizCourse(null)}
-          onBuy={(c) => setActivePaymentItem(c)}
-        />
-      )}
+        {/* 2. Timed Quiz Mock Exam */}
+        {activeQuizCourse && (
+          <QuizModal
+            course={activeQuizCourse}
+            isPurchased={isCoursePurchased(activeQuizCourse.id)}
+            onClose={() => setActiveQuizCourse(null)}
+            onBuy={(c) => setActivePaymentItem(c)}
+          />
+        )}
 
-      {/* 3. Viral Match Game (Ghép thẻ siêu tốc kiểu Quizlet) */}
-      {activeMatchGameCourse && (
-        <MatchGameModal
-          course={activeMatchGameCourse}
-          onClose={() => setActiveMatchGameCourse(null)}
-        />
-      )}
+        {/* 3. Viral Match Game (Ghép thẻ siêu tốc kiểu Quizlet) */}
+        {activeMatchGameCourse && (
+          <MatchGameModal
+            course={activeMatchGameCourse}
+            onClose={() => setActiveMatchGameCourse(null)}
+          />
+        )}
 
-      {/* 4. Duolingo Leaderboard & Streak Modal */}
-      {isLeaderboardOpen && (
-        <LeaderboardModal
-          onClose={() => setIsLeaderboardOpen(false)}
-        />
-      )}
+        {/* 4. Duolingo Leaderboard & Streak Modal */}
+        {isLeaderboardOpen && (
+          <LeaderboardModal
+            onClose={() => setIsLeaderboardOpen(false)}
+          />
+        )}
 
-      {/* 5. Coin Purchase Modal */}
-      {activePaymentItem && (
-        <PaymentModal
-          item={activePaymentItem}
-          isCombo={activePaymentItem.id === COMBO_PACKAGE.id}
-          onClose={() => setActivePaymentItem(null)}
-          onPaymentSuccess={handlePaymentSuccess}
-          onOpenWallet={() => {
-            setActivePaymentItem(null);
-            setActiveTab('wallet');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onGoToLibrary={() => {
-            setActivePaymentItem(null);
-            setActiveTab('library');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 5. Coin Purchase Modal */}
+        {activePaymentItem && (
+          <PaymentModal
+            item={activePaymentItem}
+            isCombo={activePaymentItem.id === COMBO_PACKAGE.id}
+            onClose={() => setActivePaymentItem(null)}
+            onPaymentSuccess={handlePaymentSuccess}
+            onOpenWallet={() => {
+              setActivePaymentItem(null);
+              setActiveTab('wallet');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoToLibrary={() => {
+              setActivePaymentItem(null);
+              setActiveTab('library');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 6. Firebase Auth Modal */}
-      {isAuthOpen && (
-        <AuthModal
-          user={user}
-          onAuthChange={(u) => {
-            setUser(u);
-            refreshState();
-          }}
-          onClose={() => setIsAuthOpen(false)}
-          onOpenPricing={() => {
-            setIsAuthOpen(false);
-            setActiveTab('plans');
-          }}
-          onOpenWallet={() => {
-            setIsAuthOpen(false);
-            setActiveTab('wallet');
-          }}
-          onOpenAdmin={() => {
-            setIsAuthOpen(false);
-            setActiveTab('admin');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 6. Firebase Auth Modal */}
+        {isAuthOpen && (
+          <AuthModal
+            user={user}
+            onAuthChange={(u) => {
+              setUser(u);
+              refreshState();
+            }}
+            onClose={() => setIsAuthOpen(false)}
+            onOpenPricing={() => {
+              setIsAuthOpen(false);
+              setActiveTab('plans');
+            }}
+            onOpenWallet={() => {
+              setIsAuthOpen(false);
+              setActiveTab('wallet');
+            }}
+            onOpenAdmin={() => {
+              setIsAuthOpen(false);
+              setActiveTab('admin');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 8. Blind Box (Hộp Mù / Túi Mù Tri Thức) */}
-      {isBlindBoxOpen && (
-        <BlindBoxModal
-          onClose={() => setIsBlindBoxOpen(false)}
-          onRewardClaimed={() => {
-            refreshState();
-            showToast('🎉 Mở túi mù thành công! Phần thưởng đã được cập nhật.');
-          }}
-          onOpenWallet={() => {
-            setIsBlindBoxOpen(false);
-            setActiveTab('wallet');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onGoToLibrary={() => {
-            setIsBlindBoxOpen(false);
-            setActiveTab('library');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onGoToStudio={() => {
-            setIsBlindBoxOpen(false);
-            setActiveTab('create');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onGoToPlans={() => {
-            setIsBlindBoxOpen(false);
-            setActiveTab('plans');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 8. Blind Box (Hộp Mù / Túi Mù Tri Thức) */}
+        {isBlindBoxOpen && (
+          <BlindBoxModal
+            onClose={() => setIsBlindBoxOpen(false)}
+            onRewardClaimed={() => {
+              refreshState();
+              showToast('🎉 Mở túi mù thành công! Phần thưởng đã được cập nhật.');
+            }}
+            onOpenWallet={() => {
+              setIsBlindBoxOpen(false);
+              setActiveTab('wallet');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoToLibrary={() => {
+              setIsBlindBoxOpen(false);
+              setActiveTab('library');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoToStudio={() => {
+              setIsBlindBoxOpen(false);
+              setActiveTab('create');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onGoToPlans={() => {
+              setIsBlindBoxOpen(false);
+              setActiveTab('plans');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 9. Pass Lại Bộ Thẻ (C2C Resale) */}
-      {activePassCourse && (
-        <PassDeckModal
-          course={activePassCourse}
-          user={user}
-          onClose={() => setActivePassCourse(null)}
-          onPassSuccess={(res) => {
-            refreshState();
-            setActiveTab('marketplace');
-            showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 9. Pass Lại Bộ Thẻ (C2C Resale) */}
+        {activePassCourse && (
+          <PassDeckModal
+            course={activePassCourse}
+            user={user}
+            onClose={() => setActivePassCourse(null)}
+            onPassSuccess={(res) => {
+              refreshState();
+              setActiveTab('marketplace');
+              showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 10. Bán Thẻ Trực Tiếp Từ Tủ (C2C Direct Sell) */}
-      {activeSellCourse && (
-        <SellDeckModal
-          course={activeSellCourse}
-          user={user}
-          onClose={() => setActiveSellCourse(null)}
-          onSellSuccess={(res) => {
-            refreshState();
-            setActiveTab('marketplace');
-            showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 10. Bán Thẻ Trực Tiếp Từ Tủ (C2C Direct Sell) */}
+        {activeSellCourse && (
+          <SellDeckModal
+            course={activeSellCourse}
+            user={user}
+            onClose={() => setActiveSellCourse(null)}
+            onSellSuccess={(res) => {
+              refreshState();
+              setActiveTab('marketplace');
+              showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 11. Sổ Tay Câu Sai & Điểm Yếu (Mistake Notebook) */}
-      {isMistakesNotebookOpen && (
-        <MistakeNotebookModal
-          onClose={() => setIsMistakesNotebookOpen(false)}
-          onStartFlashcardPractice={(deck) => setActiveFlashcardCourse(deck)}
-          onStartQuizPractice={(deck) => setActiveQuizCourse(deck)}
-        />
-      )}
+        {/* 11. Sổ Tay Câu Sai & Điểm Yếu (Mistake Notebook) */}
+        {isMistakesNotebookOpen && (
+          <MistakeNotebookModal
+            onClose={() => setIsMistakesNotebookOpen(false)}
+            onStartFlashcardPractice={(deck) => setActiveFlashcardCourse(deck)}
+            onStartQuizPractice={(deck) => setActiveQuizCourse(deck)}
+          />
+        )}
 
-      {/* 12. Bảng Tin Cập Nhật Tính Năng Mới (What's New / Changelog) */}
-      {isChangelogOpen && (
-        <ChangelogModal
-          onClose={() => setIsChangelogOpen(false)}
-          onOpenWallet={() => {
-            setIsChangelogOpen(false);
-            setActiveTab('wallet');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenBlindBox={() => {
-            setIsChangelogOpen(false);
-            setIsBlindBoxOpen(true);
-          }}
-          onOpenAdmin={() => {
-            setIsChangelogOpen(false);
-            setActiveTab('admin');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          onOpenMatchGame={(c) => {
-            setIsChangelogOpen(false);
-            setActiveMatchGameCourse(c || allAvailableCourses[0]);
-          }}
-          onOpenLibrary={() => {
-            setIsChangelogOpen(false);
-            setActiveTab('library');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
-      )}
+        {/* 12. Bảng Tin Cập Nhật Tính Năng Mới (What's New / Changelog) */}
+        {isChangelogOpen && (
+          <ChangelogModal
+            onClose={() => setIsChangelogOpen(false)}
+            onOpenWallet={() => {
+              setIsChangelogOpen(false);
+              setActiveTab('wallet');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenBlindBox={() => {
+              setIsChangelogOpen(false);
+              setIsBlindBoxOpen(true);
+            }}
+            onOpenAdmin={() => {
+              setIsChangelogOpen(false);
+              setActiveTab('admin');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenMatchGame={(c) => {
+              setIsChangelogOpen(false);
+              setActiveMatchGameCourse(c || allAvailableCourses[0]);
+            }}
+            onOpenLibrary={() => {
+              setIsChangelogOpen(false);
+              setActiveTab('library');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
 
-      {/* 13. Notion Spotlight Command Palette (Ctrl+K) */}
-      <CommandPaletteModal
-        isOpen={isCommandPaletteOpen}
-        onClose={() => setIsCommandPaletteOpen(false)}
-        allCourses={allAvailableCourses}
-        purchasedCourses={purchasedCourses}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-        onOpenQuiz={(c) => setActiveQuizCourse(c)}
-        onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
-        onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
-        onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
-        onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-        onOpenWallet={() => {
-          setActiveTab('wallet');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-        onOpenAnalytics={() => setIsAnalyticsOpen(true)}
-        onOpenThemePicker={() => setIsThemePickerOpen(true)}
-        onOpenTargetClock={() => setIsTargetClockOpen(true)}
-        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-        onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
-      />
+        {/* 13. Notion Spotlight Command Palette (Ctrl+K) */}
+        {isCommandPaletteOpen && (
+          <CommandPaletteModal
+            isOpen={isCommandPaletteOpen}
+            onClose={() => setIsCommandPaletteOpen(false)}
+            allCourses={allAvailableCourses}
+            purchasedCourses={purchasedCourses}
+            onSelectTab={(tab) => {
+              setActiveTab(tab);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
+            onOpenQuiz={(c) => setActiveQuizCourse(c)}
+            onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
+            onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
+            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+            onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+            onOpenWallet={() => {
+              setActiveTab('wallet');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+            onOpenThemePicker={() => setIsThemePickerOpen(true)}
+            onOpenTargetClock={() => setIsTargetClockOpen(true)}
+            onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+            onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
+          />
+        )}
 
-      {/* 14. Learning Analytics & Mastery Dashboard */}
-      <AnalyticsModal
-        isOpen={isAnalyticsOpen}
-        onClose={() => setIsAnalyticsOpen(false)}
-        allCourses={allAvailableCourses}
-        purchasedCourses={purchasedCourses}
-        onOpenDueCards={(deck) => setActiveFlashcardCourse(deck)}
-      />
+        {/* 14. Learning Analytics & Mastery Dashboard */}
+        {isAnalyticsOpen && (
+          <AnalyticsModal
+            isOpen={isAnalyticsOpen}
+            onClose={() => setIsAnalyticsOpen(false)}
+            allCourses={allAvailableCourses}
+            purchasedCourses={purchasedCourses}
+            onOpenDueCards={(deck) => setActiveFlashcardCourse(deck)}
+          />
+        )}
+
+        {/* 16. Messenger / Instagram Style Theme & Atmospheric Background Picker */}
+        {isThemePickerOpen && (
+          <ThemePickerModal
+            isOpen={isThemePickerOpen}
+            onClose={() => setIsThemePickerOpen(false)}
+            currentTheme={currentTheme}
+            onSelectTheme={(theme) => {
+              setCurrentTheme(theme);
+              showToast(`🎨 Đã đổi sang giao diện: ${theme.name}`);
+            }}
+          />
+        )}
+
+        {/* 17. Target Study Clock & Study Time History Trace Modal (Đồng bộ Giờ Hà Nội ICT GMT+7) */}
+        {isTargetClockOpen && (
+          <TargetStudyClockModal
+            isOpen={isTargetClockOpen}
+            onClose={() => setIsTargetClockOpen(false)}
+            onOpenPomodoro={() => {
+              showToast('⏱️ Hãy bấm vào widget Pomodoro ở góc dưới màn hình để bắt đầu học!');
+            }}
+            onOpenQuiz={() => {
+              if (allAvailableCourses[0]) {
+                setActiveQuizCourse(allAvailableCourses[0]);
+              }
+            }}
+            onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
+            onOpenCheatSheet={() => setActiveCheatSheetCourse(allAvailableCourses[0] || COURSES_DATA[0])}
+            onOpenFlashcards={() => setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0])}
+          />
+        )}
+
+        {/* 19. 1-Page High-Yield Cheat Sheet Modal v3.0 */}
+        {activeCheatSheetCourse && (
+          <CheatSheetModal
+            initialCourseId={typeof activeCheatSheetCourse === 'string' ? activeCheatSheetCourse : activeCheatSheetCourse?.id}
+            allCourses={allAvailableCourses}
+            onClose={() => setActiveCheatSheetCourse(null)}
+          />
+        )}
+
+        {/* 20. Virtual Study Room v3.0 (Study With Me + Live Flashcards + Web Audio) Modal */}
+        {isStudyRoomOpen && (
+          <VirtualStudyRoomModal
+            user={user}
+            allCourses={allAvailableCourses}
+            onClose={() => setIsStudyRoomOpen(false)}
+            onOpenCheatSheet={(courseId) => {
+              setIsStudyRoomOpen(false);
+              setActiveCheatSheetCourse(courseId || allAvailableCourses[0]?.id || 'pldc');
+            }}
+          />
+        )}
+      </Suspense>
 
       {/* 15. Floating Pomodoro Focus Timer Widget */}
       <PomodoroTimerWidget onBonusReward={refreshState} />
 
-      {/* 16. Messenger / Instagram Style Theme & Atmospheric Background Picker */}
-      <ThemePickerModal
-        isOpen={isThemePickerOpen}
-        onClose={() => setIsThemePickerOpen(false)}
-        currentTheme={currentTheme}
-        onSelectTheme={(theme) => {
-          setCurrentTheme(theme);
-          showToast(`🎨 Đã đổi sang giao diện: ${theme.name}`);
-        }}
-      />
-
-      {/* 17. Target Study Clock & Study Time History Trace Modal (Đồng bộ Giờ Hà Nội ICT GMT+7) */}
-      <TargetStudyClockModal
-        isOpen={isTargetClockOpen}
-        onClose={() => setIsTargetClockOpen(false)}
-        onOpenPomodoro={() => {
-          showToast('⏱️ Hãy bấm vào widget Pomodoro ở góc dưới màn hình để bắt đầu học!');
-        }}
-        onOpenQuiz={() => {
-          if (allAvailableCourses[0]) {
-            setActiveQuizCourse(allAvailableCourses[0]);
-          }
-        }}
-        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-        onOpenCheatSheet={() => setActiveCheatSheetCourse(allAvailableCourses[0] || COURSES_DATA[0])}
-        onOpenFlashcards={() => setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0])}
-      />
-
       {/* 18. Mobile PWA Install Prompt Banner */}
       <PwaInstallPrompt />
-
-      {/* 19. 1-Page High-Yield Cheat Sheet Modal v3.0 */}
-      {activeCheatSheetCourse && (
-        <CheatSheetModal
-          initialCourseId={typeof activeCheatSheetCourse === 'string' ? activeCheatSheetCourse : activeCheatSheetCourse?.id}
-          allCourses={allAvailableCourses}
-          onClose={() => setActiveCheatSheetCourse(null)}
-        />
-      )}
-
-      {/* 20. Virtual Study Room v3.0 (Study With Me + Live Flashcards + Web Audio) Modal */}
-      {isStudyRoomOpen && (
-        <VirtualStudyRoomModal
-          user={user}
-          allCourses={allAvailableCourses}
-          onClose={() => setIsStudyRoomOpen(false)}
-          onOpenCheatSheet={(courseId) => {
-            setIsStudyRoomOpen(false);
-            setActiveCheatSheetCourse(courseId || allAvailableCourses[0]?.id || 'pldc');
-          }}
-        />
-      )}
 
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import CourseCard from '../components/CourseCard';
 import ComboBanner from '../components/ComboBanner';
 import TestimonialsFaq from '../components/TestimonialsFaq';
@@ -49,32 +49,34 @@ export default function HomeView({
   const [quickPrompt, setQuickPrompt] = useState('60 câu hỏi trọng tâm Luật Cán bộ, công chức 2026 và Nghị định 138');
   const [quickSubject, setQuickSubject] = useState('cong-chuc');
 
-  const filtered = allCourses.filter((c) => {
-    const matchCat = selectedCategory === 'all' || c.category === selectedCategory;
+  const sortedAndFiltered = useMemo(() => {
     const term = searchHome.toLowerCase().trim();
-    const matchTerm =
-      !term ||
-      c.title.toLowerCase().includes(term) ||
-      (c.subtitle && c.subtitle.toLowerCase().includes(term)) ||
-      (c.categoryLabel && c.categoryLabel.toLowerCase().includes(term));
-    return matchCat && matchTerm;
-  });
+    const filtered = allCourses.filter((c) => {
+      const matchCat = selectedCategory === 'all' || c.category === selectedCategory;
+      const matchTerm =
+        !term ||
+        c.title.toLowerCase().includes(term) ||
+        (c.subtitle && c.subtitle.toLowerCase().includes(term)) ||
+        (c.categoryLabel && c.categoryLabel.toLowerCase().includes(term));
+      return matchCat && matchTerm;
+    });
 
-  const sortedAndFiltered = [...filtered].sort((a, b) => {
-    if (sortBy === 'popular') {
-      return (b.studentsCount || b.salesCount || 0) - (a.studentsCount || a.salesCount || 0);
-    }
-    if (sortBy === 'rating') {
-      return (b.rating || 0) - (a.rating || 0);
-    }
-    if (sortBy === 'price_asc') {
-      return (a.priceXu || 0) - (b.priceXu || 0);
-    }
-    if (sortBy === 'price_desc') {
-      return (b.priceXu || 0) - (a.priceXu || 0);
-    }
-    return 0;
-  });
+    return [...filtered].sort((a, b) => {
+      if (sortBy === 'popular') {
+        return (b.studentsCount || b.salesCount || 0) - (a.studentsCount || a.salesCount || 0);
+      }
+      if (sortBy === 'rating') {
+        return (b.rating || 0) - (a.rating || 0);
+      }
+      if (sortBy === 'price_asc') {
+        return (a.priceXu || 0) - (b.priceXu || 0);
+      }
+      if (sortBy === 'price_desc') {
+        return (b.priceXu || 0) - (a.priceXu || 0);
+      }
+      return 0;
+    });
+  }, [allCourses, selectedCategory, searchHome, sortBy]);
 
   const getCategoryIcon = (iconName, active) => {
     const iconColor = active ? 'text-white' : 'text-[#787774]';

@@ -277,13 +277,27 @@ export function printFlashcardCutoutSheet(course) {
   printWindow.document.close();
 }
 
-// Synthetic Sound Effects via Web Audio API (Zero dependencies)
+// Synthetic Sound Effects via Web Audio API (Zero dependencies - Singleton AudioContext)
+let _sharedAudioCtx = null;
+
+function getSharedSoundAudioContext() {
+  if (!_sharedAudioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      _sharedAudioCtx = new AudioContextClass();
+    }
+  }
+  if (_sharedAudioCtx && _sharedAudioCtx.state === 'suspended') {
+    _sharedAudioCtx.resume().catch(() => {});
+  }
+  return _sharedAudioCtx;
+}
+
 export function playSound(type = 'click') {
   if (isSoundMuted()) return;
   try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
+    const ctx = getSharedSoundAudioContext();
+    if (!ctx) return;
 
     if (type === 'flip') {
       const osc = ctx.createOscillator();

@@ -3,7 +3,7 @@ import { ShieldCheck, Mail, Phone } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import { APP_VERSION } from '../data/changelogData';
 
-export default function Footer({ onOpenAdmin }) {
+function Footer({ onOpenAdmin }) {
   const scrollToCatalog = (e) => {
     e.preventDefault();
     const el = document.getElementById('catalog-section');
@@ -118,3 +118,5 @@ export default function Footer({ onOpenAdmin }) {
     </footer>
   );
 }
+
+export default React.memo(Footer);

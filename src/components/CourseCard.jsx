@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { memo } from 'react';
 import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins } from 'lucide-react';
-import { getSelectedTheme, subscribeToTheme } from '../utils/themeManager';
+import { getSelectedTheme } from '../utils/themeManager';
 
-export default function CourseCard({
+function CourseCard({
   course,
   isPurchased,
   onOpenFlashcards,
@@ -10,16 +10,7 @@ export default function CourseCard({
   onOpenCheatSheet,
   onBuy
 }) {
-  const [hasSnowCaps, setHasSnowCaps] = useState(() => !!getSelectedTheme()?.hasSnowCaps);
-
-  useEffect(() => {
-    const unsub = subscribeToTheme((theme) => {
-      setHasSnowCaps(!!theme?.hasSnowCaps);
-    });
-    return () => {
-      if (typeof unsub === 'function') unsub();
-    };
-  }, []);
+  const hasSnowCaps = !!getSelectedTheme()?.hasSnowCaps;
 
   if (!course) return null;
 
@@ -224,3 +215,5 @@ export default function CourseCard({
     </div>
   );
 }
+
+export default memo(CourseCard);
