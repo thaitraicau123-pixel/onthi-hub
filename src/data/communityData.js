@@ -172,7 +172,10 @@ export function getCommunityPosts() {
             ...p,
             likedBy: Array.isArray(p.likedBy) ? p.likedBy : [],
             likes: typeof p.likes === 'number' ? p.likes : (Array.isArray(p.likedBy) ? p.likedBy.length : 0),
-            comments: (p.comments || []).filter(c => !isTestComment(c))
+            comments: (p.comments || []).filter(c => !isTestComment(c)).map(c => ({
+              ...c,
+              replies: Array.isArray(c.replies) ? c.replies.filter(r => !isTestComment(r)) : []
+            }))
           }));
       }
     }
@@ -184,7 +187,10 @@ export function getCommunityPosts() {
       ...p,
       likedBy: Array.isArray(p.likedBy) ? p.likedBy : [],
       likes: typeof p.likes === 'number' ? p.likes : (Array.isArray(p.likedBy) ? p.likedBy.length : 0),
-      comments: (p.comments || []).filter(c => !isTestComment(c))
+      comments: (p.comments || []).filter(c => !isTestComment(c)).map(c => ({
+        ...c,
+        replies: Array.isArray(c.replies) ? c.replies.filter(r => !isTestComment(r)) : []
+      }))
     }));
   try {
     if (typeof localStorage !== 'undefined') {
@@ -398,6 +404,35 @@ export function mergeAndSaveCommunityPosts(remotePostsOrEvents) {
             }
             map.set(strId, target);
           }
+        } else if (item.action === 'reply_comment' && item.data.postId && item.data.reply) {
+          const strId = String(item.data.postId);
+          const target = map.get(strId);
+          if (target && Array.isArray(target.comments)) {
+            let targetComment = null;
+            if (item.data.commentId) {
+              targetComment = target.comments.find(c => c.id === item.data.commentId);
+            }
+            if (!targetComment && item.data.commentIndex !== undefined && target.comments[item.data.commentIndex]) {
+              targetComment = target.comments[item.data.commentIndex];
+            }
+            if (targetComment) {
+              targetComment.replies = targetComment.replies || [];
+              if (!targetComment.replies.some(r => (r.id && r.id === item.data.reply.id) || (r.text === item.data.reply.text && r.author === item.data.reply.author))) {
+                targetComment.replies.push(item.data.reply);
+              }
+              map.set(strId, target);
+            }
+          }
+        } else if (item.action === 'delete_reply' && item.data.postId && item.data.commentIndex !== undefined && item.data.replyIndex !== undefined) {
+          const strId = String(item.data.postId);
+          const target = map.get(strId);
+          if (target && Array.isArray(target.comments) && target.comments[item.data.commentIndex]) {
+            const targetComment = target.comments[item.data.commentIndex];
+            if (Array.isArray(targetComment.replies) && targetComment.replies[item.data.replyIndex]) {
+              targetComment.replies.splice(item.data.replyIndex, 1);
+              map.set(strId, target);
+            }
+          }
         }
       }
     }
@@ -515,9 +550,15 @@ export function toggleLikeCommunityPost(postId, isLiked, userIdentifier = null) 
 export function addCommentToCommunityPost(postId, comment) {
   const current = getCommunityPosts();
   let updatedPost = null;
+  const newComment = {
+    id: comment.id || 'cm_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+    ...comment,
+    replies: Array.isArray(comment.replies) ? comment.replies : []
+  };
+
   const updated = current.map(p => {
     if (String(p.id) === String(postId)) {
-      const comments = [...(p.comments || []), comment];
+      const comments = [...(p.comments || []), newComment];
       updatedPost = { ...p, comments };
       syncPostToFirestore(updatedPost);
       return updatedPost;
@@ -529,8 +570,84 @@ export function addCommentToCommunityPost(postId, comment) {
     localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {}
 
-  broadcastCommunityActionToCloud('comment_post', { postId, comment });
+  broadcastCommunityActionToCloud('comment_post', { postId, comment: newComment });
   return updated;
+}
+
+// Add reply to a comment (Threaded replies)
+export function addReplyToCommunityComment(postId, commentIndexOrId, reply) {
+  const current = getCommunityPosts();
+  let updatedPost = null;
+  const newReply = {
+    id: reply.id || 'rep_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+    author: reply.author,
+    text: reply.text,
+    createdAt: reply.createdAt || new Date().toISOString(),
+    replyTo: reply.replyTo || null
+  };
+
+  const updated = current.map(p => {
+    if (String(p.id) === String(postId) && Array.isArray(p.comments)) {
+      const newComments = p.comments.map((cm, idx) => {
+        const isMatch = (cm.id && cm.id === commentIndexOrId) || idx === Number(commentIndexOrId);
+        if (isMatch) {
+          const replies = [...(cm.replies || []), newReply];
+          return { ...cm, replies };
+        }
+        return cm;
+      });
+      updatedPost = { ...p, comments: newComments };
+      syncPostToFirestore(updatedPost);
+      return updatedPost;
+    }
+    return p;
+  });
+
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(updated));
+  } catch (e) {}
+
+  broadcastCommunityActionToCloud('reply_comment', {
+    postId: String(postId),
+    commentIndex: typeof commentIndexOrId === 'number' ? commentIndexOrId : undefined,
+    commentId: typeof commentIndexOrId === 'string' ? commentIndexOrId : undefined,
+    reply: newReply
+  });
+  return updated;
+}
+
+// Delete a specific reply from a comment (Admin / Author control)
+export async function deleteCommunityCommentReply(postId, commentIndex, replyIndex) {
+  if (!postId || commentIndex === undefined || replyIndex === undefined) return getCommunityPosts();
+  const strId = String(postId);
+  let updatedPost = null;
+
+  const current = getCommunityPosts().map(p => {
+    if (String(p.id) === strId && Array.isArray(p.comments) && p.comments[commentIndex]) {
+      const newComments = [...p.comments];
+      const targetCm = { ...newComments[commentIndex] };
+      if (Array.isArray(targetCm.replies) && targetCm.replies[replyIndex]) {
+        const newReplies = [...targetCm.replies];
+        newReplies.splice(replyIndex, 1);
+        targetCm.replies = newReplies;
+        newComments[commentIndex] = targetCm;
+        updatedPost = { ...p, comments: newComments };
+        return updatedPost;
+      }
+    }
+    return p;
+  });
+
+  try {
+    localStorage.setItem(COMMUNITY_STORAGE_KEY, JSON.stringify(current));
+  } catch (e) {}
+
+  if (updatedPost) {
+    syncPostToFirestore(updatedPost);
+    broadcastCommunityActionToCloud('delete_reply', { postId: strId, commentIndex, replyIndex });
+  }
+
+  return current;
 }
 
 // Delete a community post permanently (Admin control)

@@ -15,7 +15,9 @@ import {
   Trash2,
   Lock,
   Crown,
-  ArrowRight
+  ArrowRight,
+  CornerDownRight,
+  X
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction } from '../utils/gamification';
@@ -27,6 +29,8 @@ import {
   addCommunityPost,
   toggleLikeCommunityPost,
   addCommentToCommunityPost,
+  addReplyToCommunityComment,
+  deleteCommunityCommentReply,
   subscribeToCommunityPosts,
   deleteCommunityPost,
   togglePinCommunityPost,
@@ -59,6 +63,8 @@ export default function CommunityView({ user, onOpenPricing }) {
     return Array.from(new Set([...localLiked, ...fromPosts]));
   });
   const [commentInputs, setCommentInputs] = useState({});
+  const [replyInputs, setReplyInputs] = useState({});
+  const [activeReplyTarget, setActiveReplyTarget] = useState(null);
   const [copiedPostId, setCopiedPostId] = useState(null);
   const [, setTimeTick] = useState(0);
   const postInputRef = useRef(null);
@@ -211,6 +217,59 @@ export default function CommunityView({ user, onOpenPricing }) {
     setCommentInputs({ ...commentInputs, [postId]: '' });
     playSound('flip');
     recordStudyAction(15);
+  };
+
+  const handleStartReply = (postId, commentIndex, commentId, authorName) => {
+    if (isFreeUser) {
+      playSound('flip');
+      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia trả lời bình luận trên diễn đàn!');
+      if (onOpenPricing) onOpenPricing();
+      return;
+    }
+    playSound('click');
+    const key = `${postId}_${commentIndex}`;
+    setActiveReplyTarget(activeReplyTarget?.key === key ? null : { key, postId, commentIndex, commentId, authorName });
+  };
+
+  const handleAddReply = (postId, commentIndex, commentId, authorName) => {
+    if (isFreeUser) {
+      playSound('flip');
+      alert('🔒 Bạn cần nâng cấp lên gói Plus, Pro hoặc Ultra để tham gia trả lời bình luận trên diễn đàn!');
+      if (onOpenPricing) onOpenPricing();
+      return;
+    }
+    const key = `${postId}_${commentIndex}`;
+    const text = (replyInputs[key] || '').trim();
+    if (!text) return;
+
+    const tierBadges = {
+      plus: ' (PLUS ⭐)',
+      pro: ' (PRO 🚀)',
+      ultra: ' (ULTRA 👑)'
+    };
+    const authorBadge = isAdmin ? ' (Admin 🛡️)' : (tierBadges[currentTier] || '');
+
+    const newReply = {
+      author: (user?.displayName || 'Bạn Học') + authorBadge,
+      text,
+      createdAt: new Date().toISOString(),
+      replyTo: authorName || null
+    };
+
+    const updated = addReplyToCommunityComment(postId, commentId || commentIndex, newReply);
+    setPosts(updated);
+    setReplyInputs({ ...replyInputs, [key]: '' });
+    setActiveReplyTarget(null);
+    playSound('flip');
+    recordStudyAction(10);
+  };
+
+  const handleDeleteReply = async (postId, commentIndex, replyIndex) => {
+    if (window.confirm(`[Admin] Bạn có chắc muốn xóa câu trả lời này không?`)) {
+      playSound('flip');
+      const updated = await deleteCommunityCommentReply(postId, commentIndex, replyIndex);
+      setPosts(updated);
+    }
   };
 
   const filteredPosts = posts.filter(p => {
@@ -490,7 +549,9 @@ export default function CommunityView({ user, onOpenPricing }) {
 
                     <div className="flex items-center space-x-1.5 px-2 py-1">
                       <MessageSquare className="w-3.5 h-3.5" />
-                      <span>{post.comments.length} Bình luận</span>
+                      <span>
+                        {(post.comments || []).reduce((acc, c) => acc + 1 + (Array.isArray(c.replies) ? c.replies.length : 0), 0)} Thảo luận
+                      </span>
                     </div>
                   </div>
 
@@ -512,33 +573,151 @@ export default function CommunityView({ user, onOpenPricing }) {
                   </button>
                 </div>
 
-                {/* Comments Section */}
+                {/* Comments & Replies Section */}
                 {post.comments.length > 0 && (
-                  <div className="pt-2 space-y-2 border-t border-[#f0efed] dark:border-white/10">
-                    {post.comments.map((cm, cIdx) => (
-                      <div key={cIdx} className="p-2.5 bg-[#fbfbfa] dark:bg-slate-800/70 rounded-lg text-xs space-y-0.5 border border-[#e9e9e8] dark:border-white/10 group">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center space-x-2 min-w-0">
-                            <strong className="text-[#37352f] dark:text-white block font-semibold truncate">{cm.author}</strong>
-                            {cm.createdAt && (
-                              <span className="text-[10px] text-[#9b9a97] dark:text-slate-400 shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
-                                • {formatHanoiRelativeTime(cm.createdAt)}
-                              </span>
-                            )}
+                  <div className="pt-2 space-y-2.5 border-t border-[#f0efed] dark:border-white/10">
+                    {post.comments.map((cm, cIdx) => {
+                      const replyKey = `${post.id}_${cIdx}`;
+                      const isReplying = activeReplyTarget?.key === replyKey;
+                      const replies = Array.isArray(cm.replies) ? cm.replies : [];
+
+                      return (
+                        <div key={cm.id || cIdx} className="p-3 bg-[#fbfbfa] dark:bg-slate-800/70 rounded-xl text-xs space-y-2 border border-[#e9e9e8] dark:border-white/10 group">
+                          {/* Main Comment Row */}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center space-x-2 min-w-0">
+                              <strong className="text-[#37352f] dark:text-white block font-semibold truncate">{cm.author}</strong>
+                              {cm.createdAt && (
+                                <span className="text-[10px] text-[#9b9a97] dark:text-slate-400 shrink-0" title={formatHanoiDateTime(cm.createdAt)}>
+                                  • {formatHanoiRelativeTime(cm.createdAt)}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center space-x-1">
+                              <button
+                                type="button"
+                                onClick={() => handleStartReply(post.id, cIdx, cm.id, cm.author)}
+                                className="px-2 py-0.5 rounded text-[11px] font-medium text-[#2383e2] dark:text-sky-400 hover:bg-blue-50 dark:hover:bg-sky-950/50 transition-colors flex items-center space-x-1 cursor-pointer"
+                                title="Trả lời bình luận này"
+                              >
+                                <CornerDownRight className="w-3 h-3" />
+                                <span>Trả lời</span>
+                              </button>
+
+                              {isAdmin && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteComment(post.id, cIdx)}
+                                  className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors opacity-70 group-hover:opacity-100 cursor-pointer"
+                                  title="Xóa bình luận này (Admin)"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              )}
+                            </div>
                           </div>
-                          {isAdmin && (
-                            <button
-                              onClick={() => handleDeleteComment(post.id, cIdx)}
-                              className="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors opacity-70 group-hover:opacity-100 cursor-pointer"
-                              title="Xóa bình luận spam này (Admin)"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
+
+                          <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line">{cm.text}</p>
+
+                          {/* Inline Reply Input Box (when replying to this comment) */}
+                          {isReplying && (
+                            <div className="pt-2 pl-3 border-l-2 border-[#2383e2] dark:border-sky-400 space-y-1.5 animate-fade-in">
+                              <div className="flex items-center justify-between text-[11px] text-[#787774] dark:text-slate-300">
+                                <span className="flex items-center space-x-1">
+                                  <CornerDownRight className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
+                                  <span>Đang trả lời <strong className="text-[#37352f] dark:text-white">@{cm.author}</strong></span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveReplyTarget(null)}
+                                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 cursor-pointer"
+                                  title="Hủy trả lời"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+
+                              <div className="flex items-center space-x-2">
+                                <input
+                                  type="text"
+                                  placeholder={`Viết câu trả lời cho @${cm.author}...`}
+                                  value={replyInputs[replyKey] || ''}
+                                  onChange={(e) => setReplyInputs({ ...replyInputs, [replyKey]: e.target.value })}
+                                  onKeyDown={(e) => e.key === 'Enter' && handleAddReply(post.id, cIdx, cm.id, cm.author)}
+                                  className="flex-1 px-3 py-1.5 text-xs bg-white dark:bg-slate-900 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-md outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
+                                  autoFocus
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddReply(post.id, cIdx, cm.id, cm.author)}
+                                  className="px-3 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer shrink-0"
+                                >
+                                  Gửi
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveReplyTarget(null)}
+                                  className="px-2 py-1.5 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 rounded-md text-xs font-medium transition-colors cursor-pointer shrink-0"
+                                >
+                                  Hủy
+                                </button>
+                              </div>
+                            </div>
                           )}
+
+                          {/* Nested Replies List (Threaded) */}
+                          {replies.length > 0 && (
+                            <div className="pt-2 pl-3 sm:pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-2 mt-1">
+                              {replies.map((rep, rIdx) => (
+                                <div key={rep.id || rIdx} className="p-2 bg-white/90 dark:bg-slate-900/90 rounded-lg text-xs space-y-0.5 border border-[#e9e9e8]/80 dark:border-white/10 group/rep">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="flex items-center space-x-1.5 min-w-0 flex-wrap">
+                                      <strong className="text-[#37352f] dark:text-white font-semibold truncate">{rep.author}</strong>
+                                      {rep.replyTo && (
+                                        <span className="text-[10px] text-[#2383e2] dark:text-sky-400 font-medium">
+                                          phản hồi @{rep.replyTo}
+                                        </span>
+                                      )}
+                                      {rep.createdAt && (
+                                        <span className="text-[10px] text-[#9b9a97] dark:text-slate-400 shrink-0" title={formatHanoiDateTime(rep.createdAt)}>
+                                          • {formatHanoiRelativeTime(rep.createdAt)}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <div className="flex items-center space-x-1">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleStartReply(post.id, cIdx, cm.id, rep.author)}
+                                        className="text-[10px] text-[#2383e2] dark:text-sky-400 hover:underline px-1 py-0.5 cursor-pointer"
+                                        title={`Trả lời ${rep.author}`}
+                                      >
+                                        Trả lời
+                                      </button>
+
+                                      {isAdmin && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteReply(post.id, cIdx, rIdx)}
+                                          className="text-rose-500 hover:text-rose-700 p-0.5 rounded opacity-60 group-hover/rep:opacity-100 transition-opacity cursor-pointer"
+                                          title="Xóa phản hồi này (Admin)"
+                                        >
+                                          <Trash2 className="w-2.5 h-2.5" />
+                                        </button>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  <p className="text-[#5a5955] dark:text-slate-200 font-normal leading-relaxed whitespace-pre-line">{rep.text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
                         </div>
-                        <p className="text-[#5a5955] dark:text-slate-200 font-normal">{cm.text}</p>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
 
