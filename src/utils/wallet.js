@@ -7,10 +7,12 @@ import {
   collection,
   onSnapshot,
   updateDoc,
+  deleteDoc,
   query,
   orderBy,
   fetchAllFirestoreUsers,
-  getCurrentUser
+  getCurrentUser,
+  logoutUser
 } from './firebaseConfig.js';
 
 const WALLET_BALANCE_KEY = 'onthi_wallet_balance';
@@ -877,54 +879,132 @@ export function getUserBalanceForEmail(email) {
   return Math.max(0, balance);
 }
 
-// Default Seed Accounts for rich display
-export const SEED_ACCOUNTS = [
-  {
-    email: 'thaitraicau123@gmail.com',
-    displayName: 'Thái Trai Cầu (Super Admin)',
-    role: 'admin',
-    tier: 'ultra',
-    initialBalance: 9999,
-    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-    phone: '0986019623'
-  },
-  {
-    email: 'hocvien.top1@onthihub.vn',
-    displayName: 'Nguyễn Văn Hùng (Thủ Khoa 2025)',
-    role: 'vip',
-    tier: 'ultra',
-    initialBalance: 350,
-    photoURL: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80'
-  },
-  {
-    email: 'creator.anki@onthihub.vn',
-    displayName: 'Trần Minh Tuấn (Senior Creator)',
-    role: 'creator',
-    tier: 'pro',
-    initialBalance: 180,
-    photoURL: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'
-  },
-  {
-    email: 'lethithuy@gmail.com',
-    displayName: 'Lê Thùy Linh (IELTS 8.0)',
-    role: 'student',
-    tier: 'plus',
-    initialBalance: 65,
-    photoURL: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80'
-  },
-  {
-    email: 'nguyenvana@gmail.com',
-    displayName: 'Nguyễn Văn An (Công Chức)',
-    role: 'student',
-    tier: 'free',
-    initialBalance: 40,
-    photoURL: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80'
+// Seed accounts (empty by default - no fake or test accounts)
+export const SEED_ACCOUNTS = [];
+
+// Detect test or fake emails to purge from display and storage
+export function isTestEmail(email) {
+  if (!email) return false;
+  const lower = email.toLowerCase().trim();
+  const testPatterns = [
+    'hocvien.top1@onthihub.vn',
+    'creator.anki@onthihub.vn',
+    'lethithuy@gmail.com',
+    'nguyenvana@gmail.com',
+    'khach_nap@onthihub.vn',
+    'user_nap_the@onthihub.vn',
+    'creator@onthihub.vn',
+    'user@onthihub.vn',
+    'hocvien_test@onthihub.vn',
+    'test@',
+    'demo@',
+    'dummy@',
+    'fake@'
+  ];
+  return testPatterns.some(
+    (pattern) => lower === pattern || lower.startsWith(pattern) || lower.includes('test_') || lower.includes('bot_')
+  );
+}
+
+// Purge all test accounts from local registry, overrides, and transactions
+export function purgeAllTestAccounts() {
+  let count = 0;
+  try {
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    if (raw) {
+      const registry = JSON.parse(raw);
+      const filtered = registry.filter((u) => {
+        if (isTestEmail(u.email)) {
+          count++;
+          return false;
+        }
+        return true;
+      });
+      localStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(filtered));
+    }
+
+    const overrides = getUserBalanceOverrides();
+    let overrideChanged = false;
+    for (const key of Object.keys(overrides)) {
+      if (isTestEmail(key)) {
+        delete overrides[key];
+        overrideChanged = true;
+      }
+    }
+    if (overrideChanged) {
+      localStorage.setItem(USER_BALANCE_OVERRIDES_KEY, JSON.stringify(overrides));
+    }
+
+    const txs = getTransactions();
+    const remainingTxs = txs.filter((t) => !isTestEmail(t.userEmail));
+    if (remainingTxs.length !== txs.length) {
+      localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(remainingTxs));
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('onthi-user-balance-updated'));
+    }
+  } catch (e) {}
+  return count;
+}
+
+// Admin deletes a specific user account completely
+export async function adminDeleteUser(email) {
+  if (!email) return { success: false, message: 'Email không hợp lệ' };
+  const normalized = email.toLowerCase().trim();
+
+  if (normalized === 'thaitraicau123@gmail.com') {
+    return { success: false, message: 'Không thể xóa tài khoản Quản trị viên tối cao (Super Admin)!' };
   }
-];
+
+  try {
+    // 1. Remove from USERS_REGISTRY_KEY
+    const raw = localStorage.getItem(USERS_REGISTRY_KEY);
+    if (raw) {
+      const registry = JSON.parse(raw);
+      const filtered = registry.filter((u) => (u.email || '').toLowerCase().trim() !== normalized);
+      localStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(filtered));
+    }
+
+    // 2. Remove from USER_BALANCE_OVERRIDES_KEY
+    const overrides = getUserBalanceOverrides();
+    if (overrides[normalized] !== undefined) {
+      delete overrides[normalized];
+      localStorage.setItem(USER_BALANCE_OVERRIDES_KEY, JSON.stringify(overrides));
+    }
+
+    // 3. Remove transactions of this user from local storage
+    const txs = getTransactions();
+    const remainingTxs = txs.filter((t) => (t.userEmail || '').toLowerCase().trim() !== normalized);
+    localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(remainingTxs));
+
+    // 4. If Firestore DB available, delete from 'users' collection
+    const db = getFirestoreDb();
+    if (db) {
+      try {
+        await withFirestoreTimeout(deleteDoc(doc(db, 'users', normalized)), 2000);
+      } catch (e) {}
+    }
+
+    // 5. If this was the current user on this device, logout
+    const cur = getCurrentUser();
+    if (cur?.email && cur.email.toLowerCase().trim() === normalized) {
+      logoutUser();
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('onthi-user-balance-updated', { detail: { email, deleted: true } }));
+    }
+
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: err.message };
+  }
+}
 
 // Register a user profile into the registry
 export function registerUserInRegistry(userProfile) {
-  if (!userProfile || !userProfile.email) return;
+  if (!userProfile || !userProfile.email || isTestEmail(userProfile.email)) return;
   try {
     const raw = localStorage.getItem(USERS_REGISTRY_KEY);
     const registry = raw ? JSON.parse(raw) : [];
@@ -954,45 +1034,47 @@ export function registerUserInRegistry(userProfile) {
 export async function getAllUsersWithBalances() {
   const usersMap = new Map();
 
-  // 1. Seed Accounts
-  for (const acc of SEED_ACCOUNTS) {
-    usersMap.set(acc.email.toLowerCase().trim(), {
-      email: acc.email,
-      displayName: acc.displayName,
-      photoURL: acc.photoURL,
-      role: acc.role || 'student',
-      tier: acc.tier || 'free',
-      lastActive: new Date(Date.now() - 3600000 * 2).toISOString(),
-      isSeed: true
-    });
-  }
+  // 1. Purge any leftover test accounts from storage
+  purgeAllTestAccounts();
 
-  // 2. Local Registry
+  // 2. Ensure Primary Super Admin always exists
+  usersMap.set('thaitraicau123@gmail.com', {
+    email: 'thaitraicau123@gmail.com',
+    displayName: 'Thái Trai Cầu (Super Admin)',
+    photoURL: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+    role: 'admin',
+    tier: 'ultra',
+    initialBalance: 9999,
+    phone: '0986019623',
+    lastActive: new Date().toISOString()
+  });
+
+  // 3. Local Registry (genuine users)
   try {
     const raw = localStorage.getItem(USERS_REGISTRY_KEY);
     const registry = raw ? JSON.parse(raw) : [];
     for (const u of registry) {
-      if (u?.email) {
+      if (u?.email && !isTestEmail(u.email)) {
         const key = u.email.toLowerCase().trim();
         usersMap.set(key, { ...(usersMap.get(key) || {}), ...u });
       }
     }
   } catch (e) {}
 
-  // 3. Firestore Users
+  // 4. Firestore Users (genuine users)
   try {
     const fsUsers = await fetchAllFirestoreUsers();
     for (const fu of fsUsers) {
-      if (fu?.email) {
+      if (fu?.email && !isTestEmail(fu.email)) {
         const key = fu.email.toLowerCase().trim();
         usersMap.set(key, { ...(usersMap.get(key) || {}), ...fu });
       }
     }
   } catch (e) {}
 
-  // 4. Current Logged In User
+  // 5. Current Logged In User
   const cur = getCurrentUser();
-  if (cur?.email) {
+  if (cur?.email && !isTestEmail(cur.email)) {
     const key = cur.email.toLowerCase().trim();
     usersMap.set(key, {
       ...(usersMap.get(key) || {}),
@@ -1005,10 +1087,10 @@ export async function getAllUsersWithBalances() {
     });
   }
 
-  // 5. Discover from transactions
+  // 6. Discover from transactions (genuine transactions only)
   const allTxs = getTransactions();
   for (const tx of allTxs) {
-    if (tx?.userEmail) {
+    if (tx?.userEmail && !isTestEmail(tx.userEmail)) {
       const key = tx.userEmail.toLowerCase().trim();
       if (!usersMap.has(key)) {
         usersMap.set(key, {
