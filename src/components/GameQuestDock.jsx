@@ -266,59 +266,95 @@ export default function GameQuestDock({
           {/* Center Graphic: Authentic Cartoon Peppermint Candy */}
           <div className="my-auto relative flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
             <svg
-              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]"
+              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_6px_rgba(0,0,0,0.45)]"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Left Candy Wrapper Frill */}
-              <path
-                d="M20 32L8 23V41L20 32Z"
-                fill="#f472b6"
-                stroke="#141416"
-                strokeWidth="2.8"
-                strokeLinejoin="round"
-              />
-              <path d="M12 28L17 32L12 36" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+              <defs>
+                <clipPath id="candy-disc-clip">
+                  <circle cx="32" cy="32" r="15.5" />
+                </clipPath>
+              </defs>
 
-              {/* Right Candy Wrapper Frill */}
-              <path
-                d="M44 32L56 23V41L44 32Z"
-                fill="#f472b6"
-                stroke="#141416"
-                strokeWidth="2.8"
-                strokeLinejoin="round"
-              />
-              <path d="M52 28L47 32L52 36" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
+              <g transform="rotate(-6, 32, 32)">
+                {/* Left Wrapper Frill */}
+                <path
+                  d="M19 32 L7 20 C8.5 24 7 28 8.5 32 C7 36 8.5 40 7 44 L19 32 Z"
+                  fill="#f472b6"
+                  stroke="#141416"
+                  strokeWidth="2.8"
+                  strokeLinejoin="round"
+                />
+                <path d="M10 24 L17 31" stroke="#db2777" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M10 40 L17 33" stroke="#db2777" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M8.5 32 L18 32" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
 
-              {/* Central Round Candy Disc */}
-              <circle
-                cx="32"
-                cy="32"
-                r="16"
-                fill="#ffffff"
-                stroke="#141416"
-                strokeWidth="3"
-              />
+                {/* Right Wrapper Frill */}
+                <path
+                  d="M45 32 L57 20 C55.5 24 57 28 55.5 32 C57 36 55.5 40 57 44 L45 32 Z"
+                  fill="#f472b6"
+                  stroke="#141416"
+                  strokeWidth="2.8"
+                  strokeLinejoin="round"
+                />
+                <path d="M54 24 L47 31" stroke="#db2777" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M54 40 L47 33" stroke="#db2777" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M55.5 32 L46 32" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
 
-              {/* Curved Red Spiral Swirl */}
-              <path
-                d="M32 16C36 20 37 25 32 32C27 39 28 44 32 48C23.1634 48 16 40.8366 16 32C16 23.1634 23.1634 16 32 16Z"
-                fill="#e11d48"
-              />
-              <path
-                d="M48 32C44 36 39 37 32 32C25 27 20 28 16 32C16 23.1634 23.1634 16 32 16C40.8366 16 48 23.1634 48 32Z"
-                fill="#e11d48"
-                fillOpacity="0.45"
-              />
+                {/* Central Round Candy Disc Base */}
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="15.5"
+                  fill="#ffffff"
+                  stroke="#141416"
+                  strokeWidth="3.2"
+                />
 
-              {/* Gloss Highlight */}
-              <path
-                d="M24 22C26 20 30 19 34 20"
-                stroke="#ffffff"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-              />
+                {/* Clipped Peppermint Spiral Swirls */}
+                <g clipPath="url(#candy-disc-clip)">
+                  <path
+                    d="M32 32 C35 24, 30 18, 32 16 C37 16, 43 20, 43 26 C43 30, 37 32, 32 32 Z"
+                    fill="#e11d48"
+                  />
+                  <path
+                    d="M32 32 C29 40, 34 46, 32 48 C27 48, 21 44, 21 38 C21 34, 27 32, 32 32 Z"
+                    fill="#e11d48"
+                  />
+                  <path
+                    d="M32 32 C24 29, 18 34, 16 32 C16 27, 20 21, 26 21 C30 21, 32 27, 32 32 Z"
+                    fill="#e11d48"
+                  />
+                  <path
+                    d="M32 32 C40 35, 46 30, 48 32 C48 37, 44 43, 38 43 C34 43, 32 37, 32 32 Z"
+                    fill="#e11d48"
+                  />
+                  <circle cx="32" cy="32" r="3" fill="#e11d48" />
+
+                  {/* Gloss Highlight Arc */}
+                  <path
+                    d="M22 22 A 12 12 0 0 1 36 17"
+                    stroke="#ffffff"
+                    strokeWidth="2.8"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="21" cy="24" r="1.5" fill="#ffffff" />
+                </g>
+
+                {/* Re-stroke outer disc for crisp border */}
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="15.5"
+                  stroke="#141416"
+                  strokeWidth="3.2"
+                  fill="none"
+                />
+              </g>
+
+              {/* Sparkle Star near Candy */}
+              <text x="47" y="16" fill="#ffffff" fontSize="12" fontWeight="bold">✦</text>
             </svg>
           </div>
 
@@ -356,57 +392,71 @@ export default function GameQuestDock({
           {/* Center Graphic: Authentic Cartoon Pink Waving Flag on Candy-Striped Pole */}
           <div className="my-auto relative flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
             <svg
-              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]"
+              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_6px_rgba(0,0,0,0.45)]"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Flagpole Base: Red & White Striped */}
               <defs>
-                <pattern id="candy-stripe" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                  <rect width="4" height="8" fill="#ef4444" />
-                  <rect x="4" width="4" height="8" fill="#ffffff" />
-                </pattern>
+                <clipPath id="pole-clip">
+                  <rect x="18" y="12" width="6" height="42" rx="3" />
+                </clipPath>
               </defs>
 
-              {/* Striped Vertical Pole */}
-              <rect
-                x="20"
-                y="14"
-                width="6"
-                height="38"
-                rx="3"
-                fill="url(#candy-stripe)"
-                stroke="#141416"
-                strokeWidth="2.8"
-              />
+              {/* Grassy Ground Mound at Base */}
+              <ellipse cx="21" cy="54" rx="10" ry="4" fill="#15803d" stroke="#141416" strokeWidth="2.5" />
+              <ellipse cx="21" cy="53" rx="7" ry="2" fill="#22c55e" />
+
+              {/* Diagonal Candy-Striped Flagpole */}
+              <rect x="18" y="12" width="6" height="42" rx="3" fill="#ffffff" stroke="#141416" strokeWidth="2.8" />
+              <g clipPath="url(#pole-clip)">
+                <line x1="12" y1="18" x2="30" y2="10" stroke="#ef4444" strokeWidth="4" />
+                <line x1="12" y1="26" x2="30" y2="18" stroke="#ef4444" strokeWidth="4" />
+                <line x1="12" y1="34" x2="30" y2="26" stroke="#ef4444" strokeWidth="4" />
+                <line x1="12" y1="42" x2="30" y2="34" stroke="#ef4444" strokeWidth="4" />
+                <line x1="12" y1="50" x2="30" y2="42" stroke="#ef4444" strokeWidth="4" />
+                <line x1="12" y1="58" x2="30" y2="50" stroke="#ef4444" strokeWidth="4" />
+              </g>
+              {/* Outer re-stroke for clean outline */}
+              <rect x="18" y="12" width="6" height="42" rx="3" stroke="#141416" strokeWidth="2.8" fill="none" />
 
               {/* Golden Finial Ball at Top */}
-              <circle
-                cx="23"
-                cy="14"
-                r="4.5"
-                fill="#fbbf24"
-                stroke="#141416"
-                strokeWidth="2.6"
-              />
+              <circle cx="21" cy="11" r="5" fill="#fbbf24" stroke="#141416" strokeWidth="2.8" />
+              <circle cx="19.5" cy="9.5" r="1.3" fill="#ffffff" />
 
               {/* Hot Pink Waving Flag fluttering to the right */}
+              {/* Flag Back shadow / depth fold */}
               <path
-                d="M25 16 C33 14, 40 20, 50 17 C52 23, 49 28, 51 34 C42 36, 34 30, 25 33 Z"
+                d="M23 15 C32 13, 38 18, 48 16 C53 19, 51 26, 54 31 C44 33, 38 27, 23 33 Z"
+                fill="#db2777"
+              />
+              {/* Main Flag Body with Billowing Wave */}
+              <path
+                d="M23 14 C33 11, 39 17, 50 14 C52 20, 50 25, 52 31 C43 33, 35 26, 23 31 Z"
                 fill="#f472b6"
                 stroke="#141416"
                 strokeWidth="2.8"
                 strokeLinejoin="round"
               />
-              {/* Flag Inner Highlight Curve */}
+              {/* Top Crest Gloss Highlight */}
               <path
-                d="M27 20 C34 18, 41 23, 48 20"
+                d="M25 16 C34 13, 40 18, 48 15"
                 stroke="#ffffff"
                 strokeWidth="2"
                 strokeLinecap="round"
                 fill="none"
               />
+              {/* Bottom ripple highlight */}
+              <path
+                d="M26 28 C34 25, 41 30, 48 29"
+                stroke="#fbcfe8"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                fill="none"
+              />
+
+              {/* Sparkle Star near Flag Tip */}
+              <text x="49" y="12" fill="#ffffff" fontSize="12" fontWeight="bold">✦</text>
             </svg>
           </div>
 
@@ -451,58 +501,75 @@ export default function GameQuestDock({
           {/* Center Graphic: Authentic Cartoon Diamond Pyramid Hoard */}
           <div className="my-auto relative flex items-center justify-center group-hover:scale-105 transition-transform duration-150">
             <svg
-              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]"
+              className="w-16 h-16 sm:w-18 sm:h-18 drop-shadow-[0_4px_6px_rgba(0,0,0,0.45)]"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Bottom Row Diamonds */}
-              {/* Diamond 1 (Bottom Left) */}
-              <g transform="translate(8, 30) scale(0.65)">
-                <path d="M8 12L16 4L24 12L16 28L8 12Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
-                <path d="M16 4L8 12H16V4Z" fill="#38bdf8" />
-                <path d="M16 4L24 12H16V4Z" fill="#7dd3fc" />
-                <path d="M8 12L16 28V12H8Z" fill="#0369a1" />
+              {/* Golden Coins at Base */}
+              <ellipse cx="20" cy="47" rx="8" ry="4" fill="#fbbf24" stroke="#141416" strokeWidth="2.4" />
+              <ellipse cx="44" cy="47" rx="8" ry="4" fill="#fbbf24" stroke="#141416" strokeWidth="2.4" />
+              <ellipse cx="32" cy="50" rx="10" ry="4.5" fill="#f59e0b" stroke="#141416" strokeWidth="2.4" />
+              <ellipse cx="32" cy="49" rx="8" ry="3.5" fill="#fef08a" />
+
+              {/* Bottom Row Diamonds (Left & Right) */}
+              {/* Bottom Left Diamond */}
+              <g transform="translate(13, 31) rotate(-8 10 12) scale(0.72)">
+                <path d="M4 10 L10 2 L18 2 L24 10 L14 26 Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
+                <path d="M10 2 L18 2 L20 10 L8 10 Z" fill="#bae6fd" />
+                <path d="M4 10 L10 2 L8 10 Z" fill="#38bdf8" />
+                <path d="M18 2 L24 10 L20 10 Z" fill="#38bdf8" />
+                <path d="M8 10 L14 26 L20 10 Z" fill="#0369a1" />
+                <path d="M4 10 L14 26 L8 10 Z" fill="#075985" />
               </g>
 
-              {/* Diamond 2 (Bottom Right) */}
-              <g transform="translate(36, 30) scale(0.65)">
-                <path d="M8 12L16 4L24 12L16 28L8 12Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
-                <path d="M16 4L8 12H16V4Z" fill="#38bdf8" />
-                <path d="M16 4L24 12H16V4Z" fill="#7dd3fc" />
-                <path d="M8 12L16 28V12H8Z" fill="#0369a1" />
+              {/* Bottom Right Diamond */}
+              <g transform="translate(34, 31) rotate(8 10 12) scale(0.72)">
+                <path d="M4 10 L10 2 L18 2 L24 10 L14 26 Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
+                <path d="M10 2 L18 2 L20 10 L8 10 Z" fill="#bae6fd" />
+                <path d="M4 10 L10 2 L8 10 Z" fill="#38bdf8" />
+                <path d="M18 2 L24 10 L20 10 Z" fill="#38bdf8" />
+                <path d="M8 10 L14 26 L20 10 Z" fill="#0369a1" />
+                <path d="M20 10 L14 26 L24 10 Z" fill="#075985" />
               </g>
 
               {/* Middle Row Diamonds */}
-              {/* Diamond 3 (Mid Left) */}
-              <g transform="translate(14, 20) scale(0.75)">
-                <path d="M8 12L16 4L24 12L16 28L8 12Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
-                <path d="M16 4L8 12H16V4Z" fill="#38bdf8" />
-                <path d="M16 4L24 12H16V4Z" fill="#7dd3fc" />
-                <path d="M8 12L16 28V12H8Z" fill="#0369a1" />
+              {/* Mid Left Diamond */}
+              <g transform="translate(17, 21) rotate(-4 11 13) scale(0.8)">
+                <path d="M4 10 L10 2 L18 2 L24 10 L14 26 Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
+                <path d="M10 2 L18 2 L20 10 L8 10 Z" fill="#bae6fd" />
+                <path d="M4 10 L10 2 L8 10 Z" fill="#38bdf8" />
+                <path d="M18 2 L24 10 L20 10 Z" fill="#38bdf8" />
+                <path d="M8 10 L14 26 L20 10 Z" fill="#0369a1" />
+                <circle cx="14" cy="6" r="1.2" fill="#ffffff" />
               </g>
 
-              {/* Diamond 4 (Mid Right) */}
-              <g transform="translate(30, 20) scale(0.75)">
-                <path d="M8 12L16 4L24 12L16 28L8 12Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
-                <path d="M16 4L8 12H16V4Z" fill="#38bdf8" />
-                <path d="M16 4L24 12H16V4Z" fill="#7dd3fc" />
-                <path d="M8 12L16 28V12H8Z" fill="#0369a1" />
+              {/* Mid Right Diamond */}
+              <g transform="translate(30, 21) rotate(4 11 13) scale(0.8)">
+                <path d="M4 10 L10 2 L18 2 L24 10 L14 26 Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
+                <path d="M10 2 L18 2 L20 10 L8 10 Z" fill="#bae6fd" />
+                <path d="M4 10 L10 2 L8 10 Z" fill="#38bdf8" />
+                <path d="M18 2 L24 10 L20 10 Z" fill="#38bdf8" />
+                <path d="M8 10 L14 26 L20 10 Z" fill="#0369a1" />
+                <circle cx="14" cy="6" r="1.2" fill="#ffffff" />
               </g>
 
-              {/* Peak Diamond (Top Center) */}
-              <g transform="translate(20, 10) scale(0.85)">
-                <path d="M8 12L16 4L24 12L16 28L8 12Z" fill="#0284c7" stroke="#141416" strokeWidth="2.8" strokeLinejoin="round" />
-                <path d="M16 4L8 12H16V4Z" fill="#38bdf8" />
-                <path d="M16 4L24 12H16V4Z" fill="#bae6fd" />
-                <path d="M8 12L16 28V12H8Z" fill="#0369a1" />
-                {/* Specular White Shine */}
-                <circle cx="16" cy="8" r="1.5" fill="#ffffff" />
+              {/* Grand Top Peak Diamond */}
+              <g transform="translate(23.5, 9) scale(0.92)">
+                <path d="M4 10 L10 2 L18 2 L24 10 L14 27 Z" fill="#0284c7" stroke="#141416" strokeWidth="3" strokeLinejoin="round" />
+                <path d="M10 2 L18 2 L20 10 L8 10 Z" fill="#e0f2fe" />
+                <path d="M4 10 L10 2 L8 10 Z" fill="#7dd3fc" />
+                <path d="M18 2 L24 10 L20 10 Z" fill="#38bdf8" />
+                <path d="M8 10 L14 27 L20 10 Z" fill="#0284c7" />
+                <path d="M4 10 L14 27 L8 10 Z" fill="#0369a1" />
+                <path d="M20 10 L14 27 L24 10 Z" fill="#075985" />
+                <circle cx="14" cy="5" r="1.6" fill="#ffffff" />
+                <circle cx="9" cy="9" r="1" fill="#ffffff" />
               </g>
 
-              {/* Star Sparkles above diamonds */}
-              <text x="14" y="16" fill="#ffffff" fontSize="11" fontWeight="bold">✦</text>
-              <text x="44" y="20" fill="#ffffff" fontSize="10" fontWeight="bold">✦</text>
+              {/* Sparkle Stars floating above the hoard */}
+              <text x="13" y="15" fill="#ffffff" fontSize="13" fontWeight="bold">✦</text>
+              <text x="47" y="18" fill="#ffffff" fontSize="11" fontWeight="bold">✦</text>
             </svg>
           </div>
 
