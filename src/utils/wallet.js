@@ -913,13 +913,19 @@ export function isTestEmail(email) {
     'creator@onthihub.vn',
     'user@onthihub.vn',
     'hocvien_test@onthihub.vn',
+    'minh.nguyen@onthihub.vn',
+    'lan.anh.thue@onthihub.vn',
+    'tuan.kiet.edu@onthihub.vn',
+    'student_minh_nguyen',
+    'student_lan_anh',
+    'student_tuan_kiet',
     'test@',
     'demo@',
     'dummy@',
     'fake@'
   ];
   return testPatterns.some(
-    (pattern) => lower === pattern || lower.startsWith(pattern) || lower.includes('test_') || lower.includes('bot_')
+    (pattern) => lower === pattern || lower.startsWith(pattern) || lower.includes('test_') || lower.includes('bot_') || lower.includes('student_')
   );
 }
 

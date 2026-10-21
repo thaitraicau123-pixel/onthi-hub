@@ -5,7 +5,7 @@
 // =========================================================================
 
 import { ADMIN_EMAIL } from './wallet';
-import { DEFAULT_STUDENT_PEERS, ADMIN_PARTICIPANT } from './directMessaging';
+import { ADMIN_PARTICIPANT } from './directMessaging';
 
 export const FRIENDS_STORAGE_KEY = 'onthi_friends_v2';
 export const FRIEND_REQUESTS_STORAGE_KEY = 'onthi_friend_requests_v2';
@@ -22,32 +22,32 @@ export function getFriendPairKey(idA, idB) {
 }
 
 /**
- * Đọc tất cả các cặp bạn bè đã kết nối
+ * Đọc tất cả các cặp bạn bè đã kết nối (Đã loại bỏ dữ liệu test/mẫu)
  */
 export function getAllFriendPairs() {
   try {
     const raw = localStorage.getItem(FRIENDS_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // Lọc sạch bất kỳ cặp bạn bè test/mẫu nào
+        const cleaned = parsed.filter(
+          (p) =>
+            p &&
+            !String(p.userAId || '').startsWith('student_') &&
+            !String(p.userBId || '').startsWith('student_') &&
+            !String(p.userAId || '').includes('test') &&
+            !String(p.userBId || '').includes('test')
+        );
+        if (cleaned.length !== parsed.length) {
+          saveAllFriendPairs(cleaned);
+        }
+        return cleaned;
+      }
     }
   } catch (e) {}
 
-  // Dữ liệu mẫu ban đầu: Bạn học "Trần Lan Anh" đã là bạn bè sẵn sàng trao đổi
-  const initialPairs = [
-    {
-      key: getFriendPairKey('student_lan_anh', 'default_user'),
-      userAId: 'student_lan_anh',
-      userBId: 'default_user',
-      createdAt: new Date(Date.now() - 86400000).toISOString()
-    }
-  ];
-
-  try {
-    localStorage.setItem(FRIENDS_STORAGE_KEY, JSON.stringify(initialPairs));
-  } catch (e) {}
-
-  return initialPairs;
+  return [];
 }
 
 /**
@@ -60,49 +60,32 @@ function saveAllFriendPairs(pairs) {
 }
 
 /**
- * Đọc tất cả lời mời kết bạn (Friend Requests)
+ * Đọc tất cả lời mời kết bạn (Đã loại bỏ dữ liệu test/mẫu)
  */
 export function getAllFriendRequests() {
   try {
     const raw = localStorage.getItem(FRIEND_REQUESTS_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // Lọc sạch lời mời kết bạn test/mẫu
+        const cleaned = parsed.filter(
+          (r) =>
+            r &&
+            !String(r.id || '').includes('init') &&
+            !String(r.senderId || '').startsWith('student_') &&
+            !String(r.receiverId || '').startsWith('student_') &&
+            !String(r.sender?.email || '').includes('test')
+        );
+        if (cleaned.length !== parsed.length) {
+          saveAllFriendRequests(cleaned);
+        }
+        return cleaned;
+      }
     }
   } catch (e) {}
 
-  // Lời mời kết bạn mẫu ban đầu từ "Nguyễn Văn Minh"
-  const initialRequests = [
-    {
-      id: 'freq_init_minh_1',
-      senderId: 'student_minh_nguyen',
-      sender: {
-        id: 'student_minh_nguyen',
-        name: 'Nguyễn Văn Minh',
-        email: 'minh.nguyen@onthihub.vn',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhNguyen99',
-        role: 'student',
-        tier: 'pro',
-        badge: '🎓 Học Viên PRO',
-        studyGoal: 'Ôn thi Công chức Vòng 1 • Khối Hành chính'
-      },
-      receiverId: 'default_user',
-      receiver: {
-        id: 'default_user',
-        name: 'Bạn',
-        role: 'student'
-      },
-      message: 'Chào bạn! Mình cũng đang ôn thi Công chức Vòng 1, kết bạn để cùng thảo luận đề và chia sẻ bộ thẻ nhé! 📚',
-      createdAt: new Date(Date.now() - 7200000).toISOString(),
-      status: 'pending'
-    }
-  ];
-
-  try {
-    localStorage.setItem(FRIEND_REQUESTS_STORAGE_KEY, JSON.stringify(initialRequests));
-  } catch (e) {}
-
-  return initialRequests;
+  return [];
 }
 
 /**
@@ -377,18 +360,11 @@ export function getFriendsList(currentUserId, allDirectoryUsers = []) {
     }
   });
 
-  // Nếu người dùng có ID khác 'default_user', vẫn kết nối với bạn mẫu nếu đã có pair default_user
-  if (curId !== 'default_user' && pairs.some((p) => p.userBId === 'default_user' && p.userAId === 'student_lan_anh')) {
-    friendIds.add('student_lan_anh');
-  }
-
-  // Khớp với thông tin người dùng trong danh bạ
+  // Khớp với thông tin người dùng trong danh bạ thực tế
   const result = [];
-  const combinedDirectory = [...allDirectoryUsers, ...DEFAULT_STUDENT_PEERS];
-
   friendIds.forEach((fId) => {
     if (fId === curId || fId === 'admin_onthi') return;
-    const found = combinedDirectory.find((u) => u.id === fId || u.email === fId);
+    const found = allDirectoryUsers.find((u) => u.id === fId || u.email === fId);
     if (found) {
       if (!result.some((r) => r.id === found.id)) {
         result.push(found);
@@ -428,10 +404,9 @@ export function getIncomingRequestsCount(currentUserId) {
 export function getSuggestedFriends(currentUserId, allDirectoryUsers = []) {
   if (!currentUserId) return [];
   const curId = String(currentUserId);
-  const combined = [...allDirectoryUsers, ...DEFAULT_STUDENT_PEERS];
   const uniqueMap = new Map();
 
-  combined.forEach((u) => {
+  allDirectoryUsers.forEach((u) => {
     if (!u || !u.id || u.id === curId || u.id === 'admin_onthi' || u.role === 'admin') return;
     const status = getFriendshipStatus(curId, u.id);
     if (status === 'none') {

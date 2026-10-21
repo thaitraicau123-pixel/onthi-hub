@@ -24,42 +24,8 @@ export const ADMIN_PARTICIPANT = {
   badge: '🛡️ Ban Quản Trị'
 };
 
-// Danh sách bạn học mẫu uy tín ban đầu khi người dùng mới mở danh bạ
-export const DEFAULT_STUDENT_PEERS = [
-  {
-    id: 'student_minh_nguyen',
-    name: 'Nguyễn Văn Minh',
-    email: 'minh.nguyen@onthihub.vn',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhNguyen99',
-    role: 'student',
-    tier: 'pro',
-    badge: '🎓 Học Viên PRO',
-    studyGoal: 'Ôn thi Công chức Vòng 1 • Khối Hành chính',
-    isOnline: true
-  },
-  {
-    id: 'student_lan_anh',
-    name: 'Trần Lan Anh',
-    email: 'lan.anh.thue@onthihub.vn',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LanAnhThue',
-    role: 'student',
-    tier: 'ultra',
-    badge: '👑 Học Viên ULTRA',
-    studyGoal: 'Ôn thi Công chức Thuế 2026',
-    isOnline: true
-  },
-  {
-    id: 'student_tuan_kiet',
-    name: 'Lê Tuấn Kiệt',
-    email: 'tuan.kiet.edu@onthihub.vn',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TuanKietEdu',
-    role: 'student',
-    tier: 'free',
-    badge: '🎓 Học Viên',
-    studyGoal: 'Ôn thi Viên chức Ngành GD & Y tế',
-    isOnline: false
-  }
-];
+// Danh sách bạn học mẫu (đã xóa toàn bộ tài khoản test/giả lập)
+export const DEFAULT_STUDENT_PEERS = [];
 
 /**
  * Kiểm tra xem người dùng có phải là Admin hay không
@@ -169,18 +135,11 @@ export function getStudentDirectory(currentUserId) {
     }
   } catch (e) {}
 
-  // 3. Bổ sung các bạn học tiêu biểu nếu danh bạ trống
-  DEFAULT_STUDENT_PEERS.forEach((peer) => {
-    if (peer.id !== currentUserId && !directoryMap.has(peer.id)) {
-      directoryMap.set(peer.id, peer);
-    }
-  });
-
   return Array.from(directoryMap.values());
 }
 
 /**
- * Đọc tất cả tin nhắn từ LocalStorage (Đã loại bỏ hoàn toàn AI bot messages)
+ * Đọc tất cả tin nhắn từ LocalStorage (Đã loại bỏ hoàn toàn AI bot messages và tài khoản test)
  */
 export function getAllMessages() {
   try {
@@ -188,14 +147,18 @@ export function getAllMessages() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        // Lọc sạch mọi tin nhắn từ/gửi cho AI tutor cũ nếu còn sót lại trong cache
+        // Lọc sạch mọi tin nhắn từ/gửi cho AI tutor cũ hoặc nick test nếu còn sót lại trong cache
         const cleaned = parsed.filter(
           (m) =>
             m &&
             m.sender?.id !== 'assistant_onthi' &&
             m.receiverId !== 'assistant_onthi' &&
             m.receiver?.id !== 'assistant_onthi' &&
-            !m.id?.includes('welcome_ai')
+            !m.id?.includes('welcome_ai') &&
+            !m.id?.includes('test') &&
+            !String(m.sender?.id || '').startsWith('student_') &&
+            !String(m.receiverId || '').startsWith('student_') &&
+            !String(m.sender?.email || '').includes('test')
         );
 
         if (cleaned.length > 0) return cleaned;

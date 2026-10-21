@@ -90,11 +90,8 @@ import {
   ADMIN_PHONE,
   ADMIN_NTFY_TOPIC,
   COIN_RATE_VND,
-  sendRealEmailToAdmin,
-  sendNtfyNotification,
   getTelegramConfig,
   saveTelegramConfig,
-  sendTelegramNotification,
   getAllUsersWithBalances,
   getLocalUsersWithBalances,
   adminDirectAdjustUserBalance,
@@ -114,8 +111,7 @@ import {
   getFirebaseConfig,
   saveFirebaseConfig,
   testFirebaseConnection,
-  isRealFirebaseConfigured,
-  DEFAULT_FIREBASE_CONFIG
+  isRealFirebaseConfigured
 } from '../utils/firebaseConfig';
 import {
   getGeminiApiKey,
@@ -190,14 +186,9 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
   const [showGeminiKey, setShowGeminiKey] = useState(false);
   const [showOpenaiKey, setShowOpenaiKey] = useState(false);
 
-  // Telegram & Real Email State
+  // Telegram Config State
   const [telegramConfig, setTelegramConfig] = useState(() => getTelegramConfig());
-  const [telegramTestMsg, setTelegramTestMsg] = useState('');
-  const [emailTestMsg, setEmailTestMsg] = useState('');
-  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
-  const [isSendingTelegramTest, setIsSendingTelegramTest] = useState(false);
-  const [ntfyTestMsg, setNtfyTestMsg] = useState('');
-  const [isSendingNtfyTest, setIsSendingNtfyTest] = useState(false);
+  const [telegramSaveMsg, setTelegramSaveMsg] = useState('');
   const [copiedNtfyTopic, setCopiedNtfyTopic] = useState(false);
   const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
   const [approvingTxId, setApprovingTxId] = useState(null);
@@ -223,6 +214,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     setCommunityPosts(getCommunityPosts());
     setStudyLogs(getStudyTimeLogs());
     try {
+      purgeAllTestAccounts();
       const [freshTxs, users] = await Promise.all([
         fetchFirestoreTransactions().catch(() => []),
         getAllUsersWithBalances().catch(() => [])
@@ -500,15 +492,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     }
   };
 
-  const handlePurgeTestAccounts = async () => {
-    if (window.confirm('Bạn có muốn dọn dẹp và xóa sạch tất cả tài khoản test/thử nghiệm khỏi hệ thống không?')) {
-      const count = purgeAllTestAccounts();
-      playSound('flip');
-      setAdjustToast(`🧹 Đã dọn dẹp ${count} tài khoản test thành công!`);
-      await reloadData();
-      setTimeout(() => setAdjustToast(''), 4000);
-    }
-  };
 
   const handleQuickPromote = async (u) => {
     playSound('flip');
@@ -731,17 +714,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     setTimeout(() => setFirebaseSaveMsg(''), 4000);
   };
 
-  // Reset to Demo
-  const handleResetToDemo = () => {
-    if (confirm('Bạn có chắc muốn đặt lại cấu hình Firebase về chế độ Thử Nghiệm mặc định?')) {
-      saveFirebaseConfig(DEFAULT_FIREBASE_CONFIG);
-      setFirebaseConfig(DEFAULT_FIREBASE_CONFIG);
-      setRawSnippet('');
-      setTestResult(null);
-      setFirebaseSaveMsg('Đã đặt lại về chế độ Thử Nghiệm mặc định.');
-      setTimeout(() => setFirebaseSaveMsg(''), 3000);
-    }
-  };
 
   // Copy for Vercel .env format
   const handleCopyVercelEnv = () => {
@@ -819,77 +791,13 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     setTimeout(() => setCopiedAiEnv(false), 3000);
   };
 
-  // Test Real Email Delivery to thaitraicau123@gmail.com
-  const handleSendTestEmail = async () => {
-    setIsSendingTestEmail(true);
-    setEmailTestMsg('');
-    const res = await sendRealEmailToAdmin({
-      type: 'deposit',
-      code: 'TEST' + Math.floor(100000 + Math.random() * 900000),
-      amountXu: 50,
-      amountVnd: 50000,
-      userEmail: 'hocvien_test@onthihub.vn',
-      details: {
-        note: 'Email kiểm tra hệ thống thông báo nạp/rút tự động gửi trực tiếp về thaitraicau123@gmail.com'
-      }
-    });
-    setIsSendingTestEmail(false);
-    if (res.success) {
-      playSound('success');
-      setEmailTestMsg('🎉 ĐÃ GỬI THÀNH CÔNG! Hãy mở Gmail thaitraicau123@gmail.com để kiểm tra hòm thư (kể cả mục Thư rác/Spam).');
-    } else {
-      const msg = res.data?.message || res.error || 'Vui lòng kiểm tra lại kết nối mạng';
-      setEmailTestMsg(`ℹ️ Phản hồi từ máy chủ FormSubmit: "${msg}". Nếu đây là lần đầu tiên, FormSubmit đã gửi email có nút "Activate Form" đến thaitraicau123@gmail.com, bạn chỉ cần bấm kích hoạt 1 lần duy nhất.`);
-    }
-  };
-
-  // Test Real-time Phone Notification via ntfy.sh
-  const handleSendTestNtfy = async () => {
-    setIsSendingNtfyTest(true);
-    setNtfyTestMsg('');
-    const res = await sendNtfyNotification({
-      title: '🔔 [ÔnThiHub] Chuông Báo Điện Thoại Thử Nghiệm!',
-      message: '✅ Kết nối thành công! Khi có khách nạp hoặc rút tiền, thông báo sẽ reo chuông màn hình khóa điện thoại của bạn như thế này.',
-      priority: 5,
-      tags: ['tada', 'bell']
-    });
-    setIsSendingNtfyTest(false);
-    if (res.success) {
-      playSound('success');
-      setNtfyTestMsg('🎉 ĐÃ BẮN CHUÔNG THÀNH CÔNG! Hãy kiểm tra màn hình khóa hoặc mở app ntfy trên điện thoại của bạn.');
-    } else {
-      setNtfyTestMsg('❌ Không thể gửi chuông báo: ' + (res.error || 'Vui lòng kiểm tra kết nối mạng'));
-    }
-    setTimeout(() => setNtfyTestMsg(''), 10000);
-  };
-
-  // Save & Test Telegram Config
+  // Save Telegram Config
   const handleSaveTelegram = (e) => {
     e.preventDefault();
     saveTelegramConfig(telegramConfig);
     playSound('success');
-    setTelegramTestMsg('✅ Đã lưu cấu hình Telegram Bot thành công!');
-    setTimeout(() => setTelegramTestMsg(''), 4000);
-  };
-
-  const handleTestTelegram = async () => {
-    setIsSendingTelegramTest(true);
-    setTelegramTestMsg('');
-    const res = await sendTelegramNotification({
-      type: 'deposit',
-      code: 'TELEGRAM' + Math.floor(1000 + Math.random() * 9000),
-      amountXu: 100,
-      amountVnd: 100000,
-      userEmail: 'creator@onthihub.vn',
-      details: { note: 'Thử nghiệm thông báo Telegram Bot OnThiHub' }
-    });
-    setIsSendingTelegramTest(false);
-    if (res.success) {
-      playSound('success');
-      setTelegramTestMsg('🚀 Đã gửi tin nhắn Telegram thành công tới điện thoại của bạn!');
-    } else {
-      setTelegramTestMsg('❌ Gửi thất bại: ' + (res.data?.description || res.error || 'Vui lòng kiểm tra lại Bot Token và Chat ID'));
-    }
+    setTelegramSaveMsg('✅ Đã lưu cấu hình Telegram Bot thành công!');
+    setTimeout(() => setTelegramSaveMsg(''), 4000);
   };
 
   return (
@@ -1400,15 +1308,6 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   >
                     <RefreshCw className={`w-3.5 h-3.5 text-[#2383e2] ${isLoadingUserBalances ? 'animate-spin' : ''}`} />
                     <span>{isLoadingUserBalances ? 'Đang Tải...' : 'Làm Mới'}</span>
-                  </button>
-
-                  <button
-                    onClick={handlePurgeTestAccounts}
-                    className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/80 border border-rose-200 dark:border-rose-800 text-xs font-black text-rose-700 dark:text-rose-300 shadow-xs transition-colors shrink-0"
-                    title="Quét và xóa sạch tất cả tài khoản test / thử nghiệm khỏi hệ thống"
-                  >
-                    <Trash2 className="w-3.5 h-3.5 text-rose-500" />
-                    <span>Dọn Nick Test</span>
                   </button>
                 </div>
               </div>
@@ -3151,9 +3050,9 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   </label>
                 </div>
 
-                {telegramTestMsg && (
+                {telegramSaveMsg && (
                   <div className="p-3 bg-blue-50 dark:bg-blue-950/80 border border-blue-200 dark:border-blue-800 text-blue-950 dark:text-blue-200 font-bold rounded-xl text-xs">
-                    {telegramTestMsg}
+                    {telegramSaveMsg}
                   </div>
                 )}
 

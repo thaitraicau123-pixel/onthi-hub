@@ -748,7 +748,12 @@ export default function DirectChatModal({
                   Gợi Ý Bạn Học Ôn Thi ({filteredSuggestions.length})
                 </span>
 
-                {filteredSuggestions.map((suggested) => {
+                {filteredSuggestions.length === 0 ? (
+                  <div className="p-4 text-center text-xs text-slate-400 leading-relaxed">
+                    Chưa có bạn học mới trong danh bạ. Bạn có thể bấm kết bạn trực tiếp với các tác giả bài viết tại <strong>Diễn Đàn Cộng Đồng</strong> nhé!
+                  </div>
+                ) : (
+                  filteredSuggestions.map((suggested) => {
                   const status = getFriendshipStatus(currentParticipant.id, suggested.id);
                   return (
                     <div
@@ -803,7 +808,7 @@ export default function DirectChatModal({
                       )}
                     </div>
                   );
-                })}
+                }))}
               </div>
             </div>
           )}
