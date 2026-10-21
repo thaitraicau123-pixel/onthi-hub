@@ -1,39 +1,75 @@
 // =========================================================================
 // ONTHIHUB DIRECT MESSAGING & REAL-TIME PEER-TO-PEER CHAT ENGINE
-// Hỗ trợ nhắn tin riêng 1-1 giữa các học viên, tác giả bộ thẻ và Admin
-// Kèm tính năng đính kèm & chia sẻ bộ thẻ Flashcard trực tiếp trong tin nhắn
+// Hỗ trợ nhắn tin riêng 1-1 giữa các học viên với nhau và kênh riêng với Admin
+// Tích hợp chia sẻ đường dẫn bộ thẻ Flashcard trực tiếp trong hội thoại
+// (Hoàn toàn KHÔNG sử dụng AI Tutor - chỉ tài khoản học viên thật & Ban Quản Trị)
 // =========================================================================
 
-import { getHanoiTimeString, formatHanoiDateTime, formatHanoiRelativeTime } from './hanoiTime';
 import { getOrCreateCommunityClientId } from '../data/communityData';
+import { getLocalUsersWithBalances, ADMIN_EMAIL } from './wallet';
 
 export const DM_STORAGE_KEY = 'onthi_direct_messages_v2';
 export const DM_BROADCAST_CHANNEL = 'onthi_hub_direct_chat_v2';
 export const DM_CLOUD_RELAY_TOPIC = 'onthi_hub_dm_relay_v2';
 
-// Trợ lý học tập ảo mặc định luôn sẵn sàng hỗ trợ
-export const ASSISTANT_PARTICIPANT = {
-  id: 'assistant_onthi',
-  name: 'Trợ Lý Học Tập OnThiHub',
-  email: 'troly@onthihub.vn',
-  avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=OnThiTutor',
-  role: 'bot',
-  tier: 'ultra',
-  isOnline: true,
-  badge: '🤖 AI Tutor'
-};
-
-// Ban quản trị hỗ trợ
+// Ban Quản Trị hỗ trợ chính thức
 export const ADMIN_PARTICIPANT = {
   id: 'admin_onthi',
   name: 'Ban Quản Trị OnThiHub',
-  email: 'hotro@onthihub.vn',
-  avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=AdminSupport',
+  email: ADMIN_EMAIL || 'thaitraicau123@gmail.com',
+  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
   role: 'admin',
   tier: 'ultra',
   isOnline: true,
-  badge: '🛡️ Admin'
+  badge: '🛡️ Ban Quản Trị'
 };
+
+// Danh sách bạn học mẫu uy tín ban đầu khi người dùng mới mở danh bạ
+export const DEFAULT_STUDENT_PEERS = [
+  {
+    id: 'student_minh_nguyen',
+    name: 'Nguyễn Văn Minh',
+    email: 'minh.nguyen@onthihub.vn',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhNguyen99',
+    role: 'student',
+    tier: 'pro',
+    badge: '🎓 Học Viên PRO',
+    studyGoal: 'Ôn thi Công chức Vòng 1 • Khối Hành chính',
+    isOnline: true
+  },
+  {
+    id: 'student_lan_anh',
+    name: 'Trần Lan Anh',
+    email: 'lan.anh.thue@onthihub.vn',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LanAnhThue',
+    role: 'student',
+    tier: 'ultra',
+    badge: '👑 Học Viên ULTRA',
+    studyGoal: 'Ôn thi Công chức Thuế 2026',
+    isOnline: true
+  },
+  {
+    id: 'student_tuan_kiet',
+    name: 'Lê Tuấn Kiệt',
+    email: 'tuan.kiet.edu@onthihub.vn',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=TuanKietEdu',
+    role: 'student',
+    tier: 'free',
+    badge: '🎓 Học Viên',
+    studyGoal: 'Ôn thi Viên chức Ngành GD & Y tế',
+    isOnline: false
+  }
+];
+
+/**
+ * Kiểm tra xem người dùng có phải là Admin hay không
+ */
+export function isUserAdmin(user) {
+  if (!user) return false;
+  const email = (user.email || '').toLowerCase().trim();
+  const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
+  return email === adminEmail || user.role === 'admin' || user.id === 'admin_onthi';
+}
 
 /**
  * Lấy đối tượng thông tin người tham gia từ user hiện tại
@@ -42,13 +78,28 @@ export function getCurrentUserParticipant(user) {
   if (user && (user.email || user.displayName || user.uid)) {
     const email = user.email || `${user.uid || 'guest'}@onthihub.vn`;
     const name = user.displayName || email.split('@')[0];
+    const isAdmin = isUserAdmin(user);
+
+    if (isAdmin) {
+      return {
+        id: 'admin_onthi',
+        email: email || ADMIN_EMAIL,
+        name: user.displayName || 'Ban Quản Trị OnThiHub',
+        avatar: user.photoURL || ADMIN_PARTICIPANT.avatar,
+        role: 'admin',
+        tier: 'ultra',
+        badge: '🛡️ Ban Quản Trị'
+      };
+    }
+
     return {
       id: user.uid || email,
       email,
       name,
       avatar: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-      role: user.role || 'student',
-      tier: user.tier || 'free'
+      role: 'student',
+      tier: user.tier || 'free',
+      badge: user.tier === 'ultra' ? '👑 Học Viên ULTRA' : user.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên'
     };
   }
 
@@ -61,12 +112,13 @@ export function getCurrentUserParticipant(user) {
     name: `Bạn Học #${shortCode}`,
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(clientId)}`,
     role: 'student',
-    tier: 'free'
+    tier: 'free',
+    badge: '🎓 Học Viên'
   };
 }
 
 /**
- * Tạo ID cuộc hội thoại duy nhất giữa 2 người tham gia (luôn đồng nhất bất kể ai bắt đầu trước)
+ * Tạo ID cuộc hội thoại duy nhất giữa 2 người tham gia
  */
 export function getConversationId(idA, idB) {
   if (!idA || !idB) return 'conv_default';
@@ -75,25 +127,91 @@ export function getConversationId(idA, idB) {
 }
 
 /**
- * Đọc tất cả tin nhắn từ LocalStorage
+ * Lấy danh bạ toàn bộ học viên và Admin trong hệ thống
+ * Phục vụ tính năng tìm kiếm bạn học và bắt đầu trò chuyện trực tiếp
+ */
+export function getStudentDirectory(currentUserId) {
+  const directoryMap = new Map();
+
+  // 1. Luôn thêm Ban Quản Trị (nếu người đang xem không phải là admin)
+  if (currentUserId !== 'admin_onthi') {
+    directoryMap.set(ADMIN_PARTICIPANT.id, ADMIN_PARTICIPANT);
+  }
+
+  // 2. Thêm các tài khoản từ danh bạ ví / người dùng thật trong LocalStorage
+  try {
+    const localUsers = getLocalUsersWithBalances();
+    for (const u of localUsers) {
+      if (!u || !u.email) continue;
+      const isAdmin = (u.email || '').toLowerCase() === (ADMIN_EMAIL || '').toLowerCase() || u.role === 'admin';
+      const uid = isAdmin ? 'admin_onthi' : (u.uid || u.email);
+
+      // Bỏ qua tài khoản của chính mình
+      if (uid === currentUserId || u.email === currentUserId) continue;
+
+      if (isAdmin) {
+        if (currentUserId !== 'admin_onthi') {
+          directoryMap.set('admin_onthi', ADMIN_PARTICIPANT);
+        }
+      } else {
+        directoryMap.set(uid, {
+          id: uid,
+          name: u.displayName || u.email.split('@')[0],
+          email: u.email,
+          avatar: u.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`,
+          role: 'student',
+          tier: u.tier || 'free',
+          badge: u.tier === 'ultra' ? '👑 Học Viên ULTRA' : u.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên',
+          studyGoal: u.studyGoal || 'Học viên OnThiHub',
+          isOnline: true
+        });
+      }
+    }
+  } catch (e) {}
+
+  // 3. Bổ sung các bạn học tiêu biểu nếu danh bạ trống
+  DEFAULT_STUDENT_PEERS.forEach((peer) => {
+    if (peer.id !== currentUserId && !directoryMap.has(peer.id)) {
+      directoryMap.set(peer.id, peer);
+    }
+  });
+
+  return Array.from(directoryMap.values());
+}
+
+/**
+ * Đọc tất cả tin nhắn từ LocalStorage (Đã loại bỏ hoàn toàn AI bot messages)
  */
 export function getAllMessages() {
   try {
     const raw = localStorage.getItem(DM_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // Lọc sạch mọi tin nhắn từ/gửi cho AI tutor cũ nếu còn sót lại trong cache
+        const cleaned = parsed.filter(
+          (m) =>
+            m &&
+            m.sender?.id !== 'assistant_onthi' &&
+            m.receiverId !== 'assistant_onthi' &&
+            m.receiver?.id !== 'assistant_onthi' &&
+            !m.id?.includes('welcome_ai')
+        );
+
+        if (cleaned.length > 0) return cleaned;
+      }
     }
   } catch (e) {}
 
-  // Tin nhắn mẫu chào mừng khởi tạo lần đầu nếu chưa có tin nào
+  // Tin nhắn chào mừng ban đầu CHÍNH THỨC TỪ BAN QUẢN TRỊ (Không phải AI)
   const initialMessages = [
     {
-      id: 'msg_welcome_ai_1',
-      conversationId: getConversationId('assistant_onthi', 'default_user'),
-      sender: ASSISTANT_PARTICIPANT,
+      id: 'msg_welcome_admin_1',
+      conversationId: getConversationId('admin_onthi', 'default_user'),
+      sender: ADMIN_PARTICIPANT,
+      receiver: { id: 'default_user', name: 'Học Viên Mới', role: 'student' },
       receiverId: 'default_user',
-      text: 'Chào bạn! Mình là Trợ lý Học tập ÔnThiHub 🚀. Bạn có thể nhắn tin hỏi về kiến thức ôn thi, chia sẻ kinh nghiệm học tập hoặc bấm nút "Chia sẻ bộ thẻ" bên dưới để trao đổi tài liệu trực tiếp nhé!',
+      text: 'Chào bạn! Đây là kênh liên hệ và hỗ trợ học viên chính thức từ Ban Quản Trị OnThiHub 🛡️.\n\nBạn có thể nhắn tin hỏi đáp hỗ trợ, báo lỗi hoặc kết nối với các bạn học viên khác trong danh bạ để cùng trao đổi tài liệu và bộ thẻ Flashcard nhé!',
       sharedDeck: {
         id: 'cbcc-2026',
         title: 'Bộ Thẻ Trọng Tâm Luật Cán Bộ, Công Chức 2026',
@@ -119,7 +237,11 @@ export function getAllMessages() {
  */
 function saveAllMessages(messages) {
   try {
-    localStorage.setItem(DM_STORAGE_KEY, JSON.stringify(messages.slice(-500))); // Giữ 500 tin nhắn gần nhất
+    // Luôn lọc bỏ tin nhắn AI tutor trước khi lưu
+    const filtered = messages
+      .filter((m) => m && m.sender?.id !== 'assistant_onthi' && m.receiverId !== 'assistant_onthi')
+      .slice(-500);
+    localStorage.setItem(DM_STORAGE_KEY, JSON.stringify(filtered));
   } catch (e) {}
 }
 
@@ -132,32 +254,29 @@ export function getUserConversations(currentUser) {
   const current = getCurrentUserParticipant(currentUser);
   const allMsgs = getAllMessages();
   const convMap = new Map();
+  const isAdmin = current.role === 'admin' || current.id === 'admin_onthi';
 
-  // Luôn đảm bảo có cuộc hội thoại với Trợ lý AI và Ban Quản Trị
-  const assistantConvId = getConversationId(current.id, ASSISTANT_PARTICIPANT.id);
+  // 1. Đối với học viên: Luôn luôn có kênh riêng với Ban Quản Trị OnThiHub
   const adminConvId = getConversationId(current.id, ADMIN_PARTICIPANT.id);
+  if (!isAdmin) {
+    convMap.set(adminConvId, {
+      conversationId: adminConvId,
+      partner: ADMIN_PARTICIPANT,
+      lastMessage: null,
+      unreadCount: 0,
+      updatedAt: 0
+    });
+  }
 
-  convMap.set(assistantConvId, {
-    conversationId: assistantConvId,
-    partner: ASSISTANT_PARTICIPANT,
-    lastMessage: null,
-    unreadCount: 0,
-    updatedAt: 0
-  });
-
-  convMap.set(adminConvId, {
-    conversationId: adminConvId,
-    partner: ADMIN_PARTICIPANT,
-    lastMessage: null,
-    unreadCount: 0,
-    updatedAt: 0
-  });
-
+  // 2. Quét qua lịch sử tin nhắn để tổng hợp các cuộc trò chuyện thực tế
   allMsgs.forEach((msg) => {
-    // Kiểm tra tin nhắn thuộc về người dùng hiện tại
     const isSender = msg.sender?.id === current.id;
-    const isReceiver = msg.receiverId === current.id || (msg.receiver && msg.receiver.id === current.id);
-    const isUniversalWelcome = msg.receiverId === 'default_user';
+    const isReceiver =
+      msg.receiverId === current.id ||
+      (msg.receiver && msg.receiver.id === current.id) ||
+      (isAdmin && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi'));
+
+    const isUniversalWelcome = !isAdmin && msg.receiverId === 'default_user';
 
     if (!isSender && !isReceiver && !isUniversalWelcome) return;
 
@@ -165,11 +284,16 @@ export function getUserConversations(currentUser) {
     let partner = isSender ? msg.receiver : msg.sender;
 
     if (isUniversalWelcome) {
-      convId = assistantConvId;
-      partner = ASSISTANT_PARTICIPANT;
+      convId = adminConvId;
+      partner = ADMIN_PARTICIPANT;
     }
 
-    if (!partner) return;
+    if (!partner || partner.id === current.id) return;
+
+    // Chuẩn hóa partner nếu là Admin
+    if (partner.id === 'admin_onthi' || partner.role === 'admin') {
+      partner = ADMIN_PARTICIPANT;
+    }
 
     const existing = convMap.get(convId) || {
       conversationId: convId,
@@ -203,19 +327,21 @@ export function getUserConversations(currentUser) {
 export function getConversationMessages(conversationId, currentUserId) {
   if (!conversationId) return [];
   const allMsgs = getAllMessages();
-  
-  return allMsgs.filter((msg) => {
-    if (msg.conversationId === conversationId) return true;
-    // Cho phép hiển thị tin nhắn chào mừng mẫu nếu đang ở cuộc trò chuyện với bot
-    if (conversationId.includes('assistant_onthi') && msg.conversationId === 'conv_assistant_onthi__default_user') {
-      return true;
-    }
-    return false;
-  }).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+  return allMsgs
+    .filter((msg) => {
+      if (msg.conversationId === conversationId) return true;
+      // Hiển thị tin chào mừng mặc định của Admin cho người dùng mới
+      if (conversationId.includes('admin_onthi') && msg.conversationId === 'conv_admin_onthi__default_user') {
+        return true;
+      }
+      return false;
+    })
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 }
 
 /**
- * Gửi tin nhắn trực tiếp
+ * Gửi tin nhắn trực tiếp giữa 2 tài khoản (Học viên - Học viên hoặc Học viên - Admin)
  * @param {Object} params
  * @param {Object} params.sender - Thông tin người gửi
  * @param {Object} params.receiver - Thông tin người nhận
@@ -240,7 +366,8 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
       email: sender.email,
       avatar: sender.avatar,
       role: sender.role || 'student',
-      tier: sender.tier || 'free'
+      tier: sender.tier || 'free',
+      badge: sender.badge || (sender.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
     },
     receiver: {
       id: receiver.id,
@@ -248,18 +375,23 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
       email: receiver.email,
       avatar: receiver.avatar,
       role: receiver.role || 'student',
-      tier: receiver.tier || 'free'
+      tier: receiver.tier || 'free',
+      badge: receiver.badge || (receiver.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
     },
     receiverId: receiver.id,
     text: (text || '').trim(),
-    sharedDeck: sharedDeck ? {
-      id: sharedDeck.id,
-      title: sharedDeck.title,
-      cardsCount: sharedDeck.cardsCount || (sharedDeck.cards ? sharedDeck.cards.length : (sharedDeck.previewCards ? sharedDeck.previewCards.length : 0)),
-      categoryLabel: sharedDeck.categoryLabel || 'Kiến Thức',
-      icon: sharedDeck.icon || '📚',
-      priceXu: sharedDeck.priceXu !== undefined ? sharedDeck.priceXu : 0
-    } : null,
+    sharedDeck: sharedDeck
+      ? {
+          id: sharedDeck.id,
+          title: sharedDeck.title,
+          cardsCount:
+            sharedDeck.cardsCount ||
+            (sharedDeck.cards ? sharedDeck.cards.length : sharedDeck.previewCards ? sharedDeck.previewCards.length : 0),
+          categoryLabel: sharedDeck.categoryLabel || 'Kiến Thức',
+          icon: sharedDeck.icon || '📚',
+          priceXu: sharedDeck.priceXu !== undefined ? sharedDeck.priceXu : 0
+        }
+      : null,
     createdAt: nowIso,
     isRead: false
   };
@@ -269,7 +401,7 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
   const updatedMsgs = [...allMsgs, newMsg];
   saveAllMessages(updatedMsgs);
 
-  // 2. Phát sự kiện BroadcastChannel để đồng bộ tab khác trên cùng máy
+  // 2. Phát sự kiện BroadcastChannel để đồng bộ tức thì các tab khác
   if (typeof BroadcastChannel !== 'undefined') {
     try {
       const bc = new BroadcastChannel(DM_BROADCAST_CHANNEL);
@@ -284,7 +416,7 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
   }
 
   // 4. Đồng bộ Cloud Relay (ntfy) nếu gửi cho người dùng khác
-  if (receiver.id !== 'assistant_onthi' && receiver.id !== sender.id) {
+  if (receiver.id !== sender.id) {
     try {
       fetch(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}`, {
         method: 'POST',
@@ -294,53 +426,7 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
     } catch (e) {}
   }
 
-  // 5. Nếu gửi tin cho Trợ lý AI (assistant_onthi), tự động phản hồi thông minh sau 800ms
-  if (receiver.id === 'assistant_onthi') {
-    setTimeout(() => {
-      triggerAssistantAutoReply(sender, text, sharedDeck);
-    }, 800);
-  }
-
   return newMsg;
-}
-
-/**
- * Phản hồi tự động thông minh của Trợ lý AI Ôn Thi
- */
-function triggerAssistantAutoReply(userSender, userText, userSharedDeck) {
-  let replyText = 'Cảm ơn bạn đã nhắn tin! Bạn có thể luyện tập thẻ Anki hoặc thi thử trắc nghiệm 60 câu Vòng 1 bất cứ lúc nào nhé!';
-  const lower = (userText || '').toLowerCase();
-
-  if (userSharedDeck) {
-    replyText = `Cảm ơn bạn đã chia sẻ bộ thẻ "${userSharedDeck.title}"! Bộ thẻ này rất hữu ích cho các bạn học viên cùng phòng ôn luyện. Chúc bạn học tốt và nhớ sâu nhé! 🌟`;
-  } else if (lower.includes('chào') || lower.includes('hello') || lower.includes('hi')) {
-    replyText = `Chào ${userSender.name}! Mình có thể giúp gì cho lộ trình ôn thi của bạn hôm nay? Bạn có thể mở mục "Trang Chủ" để thi thử hoặc vào "Phòng Tự Học Ảo" để cày bài cùng mọi người nhé!`;
-  } else if (lower.includes('công chức') || lower.includes('luật') || lower.includes('vòng 1')) {
-    replyText = `Về kỳ thi Công chức 2026 Vòng 1 Kiến thức chung, bạn nên tập trung vào: Luật Cán bộ, công chức (sửa đổi 2019), Luật Tổ chức Chính phủ, Nghị định 138/2020 và Hiến pháp 2013 nhé! Bạn có thể vào "Phao Cứu Sinh 1 Trang" để xem các mốc thời hạn và số liệu dễ nhầm. 📄`;
-  } else if (lower.includes('xu') || lower.includes('nạp') || lower.includes('rút') || lower.includes('tiền')) {
-    replyText = `Tỷ giá nạp là 1 Xu = 1.000đ. Bạn có thể bấm vào biểu tượng [🪙 Ví Xu] trên thanh menu trên cùng để tạo lệnh nạp hoặc rút tiền. Hệ thống duyệt tự động chỉ sau 1-2 phút!`;
-  } else if (lower.includes('pass') || lower.includes('chợ') || lower.includes('bán')) {
-    replyText = `Sau khi học xong một bộ thẻ, bạn có thể vào "Chợ Thẻ C2C" hoặc "Tủ Của Tôi" để Pass lại bộ thẻ nhận Xu về ví, giúp tiết kiệm chi phí cho các bạn học viên khóa sau! 🔁`;
-  }
-
-  const botMsg = {
-    id: `dm_bot_${Date.now()}`,
-    conversationId: getConversationId(userSender.id, ASSISTANT_PARTICIPANT.id),
-    sender: ASSISTANT_PARTICIPANT,
-    receiver: userSender,
-    receiverId: userSender.id,
-    text: replyText,
-    sharedDeck: null,
-    createdAt: new Date().toISOString(),
-    isRead: false
-  };
-
-  const allMsgs = getAllMessages();
-  saveAllMessages([...allMsgs, botMsg]);
-
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent('onthi-dm-message-sent', { detail: botMsg }));
-  }
 }
 
 /**
@@ -352,12 +438,20 @@ export function markConversationAsRead(conversationId, currentUserId) {
   let changed = false;
 
   const updated = allMsgs.map((msg) => {
-    if (msg.conversationId === conversationId || (conversationId.includes('assistant_onthi') && msg.conversationId === 'conv_assistant_onthi__default_user')) {
-      if (msg.receiverId === currentUserId || msg.receiverId === 'default_user' || (msg.receiver && msg.receiver.id === currentUserId)) {
-        if (!msg.isRead) {
-          changed = true;
-          return { ...msg, isRead: true };
-        }
+    const isMatchingConv =
+      msg.conversationId === conversationId ||
+      (conversationId.includes('admin_onthi') && msg.conversationId === 'conv_admin_onthi__default_user');
+
+    if (isMatchingConv) {
+      const isTargetReceiver =
+        msg.receiverId === currentUserId ||
+        msg.receiverId === 'default_user' ||
+        (msg.receiver && msg.receiver.id === currentUserId) ||
+        (currentUserId === 'admin_onthi' && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi'));
+
+      if (isTargetReceiver && !msg.isRead) {
+        changed = true;
+        return { ...msg, isRead: true };
       }
     }
     return msg;
@@ -377,8 +471,15 @@ export function markConversationAsRead(conversationId, currentUserId) {
 export function getUnreadDirectMessagesCount(currentUserId) {
   if (!currentUserId) return 0;
   const allMsgs = getAllMessages();
+  const isAdmin = currentUserId === 'admin_onthi';
+
   return allMsgs.filter((msg) => {
-    const isReceiver = msg.receiverId === currentUserId || (msg.receiver && msg.receiver.id === currentUserId) || msg.receiverId === 'default_user';
+    const isReceiver =
+      msg.receiverId === currentUserId ||
+      (msg.receiver && msg.receiver.id === currentUserId) ||
+      (!isAdmin && msg.receiverId === 'default_user') ||
+      (isAdmin && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi'));
+
     return isReceiver && !msg.isRead;
   }).length;
 }
@@ -387,6 +488,8 @@ export function getUnreadDirectMessagesCount(currentUserId) {
  * Đăng ký lắng nghe tin nhắn mới theo thời gian thực (Tab Sync + Cloud SSE Relay)
  */
 export function subscribeToDirectMessages(currentUserId, onNewMessage) {
+  const isAdmin = currentUserId === 'admin_onthi';
+
   // 1. Lắng nghe CustomEvent cục bộ
   const handleLocal = (e) => {
     if (e.detail && typeof onNewMessage === 'function') {
@@ -420,8 +523,11 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
           const dm = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
           if (dm?.type === 'direct_message' && dm.message) {
             const incoming = dm.message;
-            // Chỉ nhận nếu tin nhắn gửi cho mình
-            if (incoming.receiverId === currentUserId && incoming.sender?.id !== currentUserId) {
+            const isMeReceiver =
+              incoming.receiverId === currentUserId ||
+              (isAdmin && incoming.receiverId === 'admin_onthi');
+
+            if (isMeReceiver && incoming.sender?.id !== currentUserId) {
               const allMsgs = getAllMessages();
               if (!allMsgs.some((m) => m.id === incoming.id)) {
                 saveAllMessages([...allMsgs, incoming]);
