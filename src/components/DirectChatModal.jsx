@@ -15,7 +15,13 @@ import {
   GraduationCap,
   Sparkles,
   UserCheck,
-  MessageSquarePlus
+  UserPlus,
+  UserX,
+  Clock,
+  Heart,
+  MessageSquarePlus,
+  HelpCircle,
+  Bell
 } from 'lucide-react';
 import { useModalDismiss } from '../hooks/useModalDismiss';
 import {
@@ -29,14 +35,27 @@ import {
   getStudentDirectory,
   ADMIN_PARTICIPANT
 } from '../utils/directMessaging';
+import {
+  getFriendshipStatus,
+  sendFriendRequest,
+  acceptFriendRequest,
+  declineFriendRequest,
+  cancelFriendRequest,
+  getFriendsList,
+  getIncomingFriendRequests,
+  getIncomingRequestsCount,
+  getSuggestedFriends,
+  subscribeToFriendEvents
+} from '../utils/friendSystem';
 import { formatHanoiRelativeTime, formatHanoiDateTime } from '../utils/hanoiTime';
 import { copyFlashcardShareLink } from '../utils/shareLink';
 import { playSound } from '../utils/storage';
+import confetti from 'canvas-confetti';
 
 const STUDENT_PROMPTS = [
   '👋 Chào bạn!',
   '📚 Bạn đang ôn kỳ thi nào thế?',
-  '💡 Cùng thảo luận và giải đề nhé!',
+  '💡 Cùng kết bạn trao đổi đề thi nhé!',
   '📇 Bạn có bộ thẻ Flashcard này không?',
   '🔥 Chúc bạn ôn thi đạt điểm cao!'
 ];
@@ -62,10 +81,16 @@ export default function DirectChatModal({
   const currentParticipant = useMemo(() => getCurrentUserParticipant(currentUser), [currentUser]);
   const isAdmin = currentParticipant.role === 'admin' || currentParticipant.id === 'admin_onthi';
 
-  const [sidebarTab, setSidebarTab] = useState('conversations'); // 'conversations' | 'directory'
+  // Tabs: 'conversations' (Hội thoại) | 'friends' (Bạn bè) | 'requests' (Kết bạn & Lời mời)
+  const [sidebarTab, setSidebarTab] = useState('conversations');
   const [conversations, setConversations] = useState(() => getUserConversations(currentUser));
   const [directory, setDirectory] = useState(() => getStudentDirectory(currentParticipant.id));
   
+  // Bạn bè & Lời mời
+  const [friends, setFriends] = useState(() => getFriendsList(currentParticipant.id, directory));
+  const [incomingRequests, setIncomingRequests] = useState(() => getIncomingFriendRequests(currentParticipant.id));
+  const [suggestedFriends, setSuggestedFriends] = useState(() => getSuggestedFriends(currentParticipant.id, directory));
+
   const [activePartner, setActivePartner] = useState(() => {
     if (targetPartner) return targetPartner;
     const list = getUserConversations(currentUser);
@@ -85,6 +110,12 @@ export default function DirectChatModal({
 
   const messagesEndRef = useRef(null);
 
+  // Quan hệ bạn bè giữa người dùng hiện tại và activePartner
+  const friendshipStatus = useMemo(() => {
+    if (!activePartner) return 'none';
+    return getFriendshipStatus(currentParticipant.id, activePartner.id);
+  }, [currentParticipant.id, activePartner, friends, incomingRequests]);
+
   // Cập nhật khi targetPartner hoặc initialAttachedDeck từ ngoài truyền vào
   useEffect(() => {
     if (targetPartner) {
@@ -100,11 +131,15 @@ export default function DirectChatModal({
     }
   }, [initialAttachedDeck]);
 
-  // Làm mới danh sách hội thoại và danh bạ học viên
-  const refreshData = () => {
+  // Làm mới tất cả dữ liệu hội thoại, bạn bè và lời mời
+  const refreshAllData = () => {
     const convs = getUserConversations(currentUser);
+    const dir = getStudentDirectory(currentParticipant.id);
     setConversations(convs);
-    setDirectory(getStudentDirectory(currentParticipant.id));
+    setDirectory(dir);
+    setFriends(getFriendsList(currentParticipant.id, dir));
+    setIncomingRequests(getIncomingFriendRequests(currentParticipant.id));
+    setSuggestedFriends(getSuggestedFriends(currentParticipant.id, dir));
   };
 
   // Tải tin nhắn của cuộc hội thoại đang chọn
@@ -114,7 +149,7 @@ export default function DirectChatModal({
     const msgs = getConversationMessages(convId, currentParticipant.id);
     setMessages(msgs);
     markConversationAsRead(convId, currentParticipant.id);
-    refreshData();
+    refreshAllData();
   }, [isOpen, activePartner, currentParticipant.id]);
 
   // Tự động cuộn xuống tin nhắn mới nhất
@@ -122,11 +157,11 @@ export default function DirectChatModal({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Đăng ký lắng nghe tin nhắn thời gian thực
+  // Lắng nghe sự kiện tin nhắn thời gian thực
   useEffect(() => {
     if (!isOpen) return;
-    const unsub = subscribeToDirectMessages(currentParticipant.id, (newMsg) => {
-      refreshData();
+    const unsubMessages = subscribeToDirectMessages(currentParticipant.id, (newMsg) => {
+      refreshAllData();
       if (activePartner && newMsg) {
         const curConvId = getConversationId(currentParticipant.id, activePartner.id);
         if (newMsg.conversationId === curConvId) {
@@ -140,8 +175,13 @@ export default function DirectChatModal({
       }
     });
 
+    const unsubFriends = subscribeToFriendEvents(currentParticipant.id, () => {
+      refreshAllData();
+    });
+
     return () => {
-      if (typeof unsub === 'function') unsub();
+      if (typeof unsubMessages === 'function') unsubMessages();
+      if (typeof unsubFriends === 'function') unsubFriends();
     };
   }, [isOpen, activePartner, currentParticipant.id]);
 
@@ -152,6 +192,16 @@ export default function DirectChatModal({
     if (!activePartner) return;
 
     playSound('click');
+
+    // Nếu chưa kết bạn và không phải Admin, gửi kèm lời mời kết bạn tự động để kết nối MXH mượt mà
+    if (friendshipStatus === 'none') {
+      sendFriendRequest({
+        sender: currentParticipant,
+        receiver: activePartner,
+        message: inputText.trim() || 'Chào bạn, kết bạn cùng ôn thi nhé!'
+      });
+    }
+
     const sent = sendDirectMessage({
       sender: currentParticipant,
       receiver: activePartner,
@@ -163,16 +213,66 @@ export default function DirectChatModal({
       setMessages((prev) => [...prev, sent]);
       setInputText('');
       setAttachedDeck(null);
-      refreshData();
+      refreshAllData();
     }
   };
 
-  // Chọn bạn học từ danh bạ để bắt đầu cuộc trò chuyện
+  // Chọn đối tác trò chuyện
   const handleSelectPartner = (partner) => {
     setActivePartner(partner);
     setMobileShowChat(true);
     setSidebarTab('conversations');
     playSound('click');
+  };
+
+  // Xử lý gửi lời mời kết bạn từ nút bấm
+  const handleSendFriendRequest = (targetUser, introMsg = '') => {
+    playSound('click');
+    const res = sendFriendRequest({
+      sender: currentParticipant,
+      receiver: targetUser,
+      message: introMsg || `Chào ${targetUser.name}! Mình muốn kết bạn cùng ôn thi trên OnThiHub 📚`
+    });
+    if (res.success) {
+      refreshAllData();
+      onShowToast?.(`Đã gửi lời mời kết bạn tới ${targetUser.name}!`);
+    }
+  };
+
+  // Xử lý chấp nhận lời mời kết bạn
+  const handleAcceptRequest = (requester) => {
+    playSound('success');
+    try {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.6 }
+      });
+    } catch (e) {}
+
+    const res = acceptFriendRequest(currentParticipant.id, requester.id);
+    if (res.success) {
+      // Gửi một tin nhắn chào mừng bạn mới tự động
+      sendDirectMessage({
+        sender: currentParticipant,
+        receiver: requester,
+        text: '🤝 Chúng ta đã trở thành bạn bè trên OnThiHub! Rất vui được cùng bạn ôn tập và chia sẻ tài liệu nhé! 🎉'
+      });
+
+      refreshAllData();
+      setActivePartner(requester);
+      setMobileShowChat(true);
+      setSidebarTab('conversations');
+      onShowToast?.(`Đã trở thành bạn bè với ${requester.name}! 🎉`);
+    }
+  };
+
+  // Xử lý từ chối lời mời
+  const handleDeclineRequest = (requester) => {
+    playSound('click');
+    declineFriendRequest(currentParticipant.id, requester.id);
+    refreshAllData();
+    onShowToast?.(`Đã bỏ qua lời mời kết bạn từ ${requester.name}.`);
   };
 
   // Chọn bộ thẻ đính kèm
@@ -197,7 +297,7 @@ export default function DirectChatModal({
     }
   };
 
-  // Lọc hội thoại theo từ khóa tìm kiếm
+  // Lọc hội thoại
   const filteredConversations = useMemo(() => {
     const term = searchQuery.toLowerCase().trim();
     if (!term) return conversations;
@@ -209,24 +309,36 @@ export default function DirectChatModal({
     );
   }, [conversations, searchQuery]);
 
-  // Lọc danh bạ bạn học theo từ khóa tìm kiếm
-  const filteredDirectory = useMemo(() => {
+  // Lọc bạn bè
+  const filteredFriends = useMemo(() => {
     const term = searchQuery.toLowerCase().trim();
-    if (!term) return directory;
-    return directory.filter(
-      (p) =>
-        p.name?.toLowerCase().includes(term) ||
-        p.email?.toLowerCase().includes(term) ||
-        p.studyGoal?.toLowerCase().includes(term)
+    if (!term) return friends;
+    return friends.filter(
+      (f) =>
+        f.name?.toLowerCase().includes(term) ||
+        f.email?.toLowerCase().includes(term) ||
+        f.studyGoal?.toLowerCase().includes(term)
     );
-  }, [directory, searchQuery]);
+  }, [friends, searchQuery]);
 
-  // Tính tổng số tin nhắn chưa đọc
+  // Lọc gợi ý kết bạn
+  const filteredSuggestions = useMemo(() => {
+    const term = searchQuery.toLowerCase().trim();
+    if (!term) return suggestedFriends;
+    return suggestedFriends.filter(
+      (s) =>
+        s.name?.toLowerCase().includes(term) ||
+        s.email?.toLowerCase().includes(term) ||
+        s.studyGoal?.toLowerCase().includes(term)
+    );
+  }, [suggestedFriends, searchQuery]);
+
+  // Tổng số tin nhắn chưa đọc
   const totalUnread = useMemo(() => {
     return conversations.reduce((acc, c) => acc + (c.unreadCount || 0), 0);
   }, [conversations]);
 
-  // Chọn gợi ý câu hỏi nhanh phù hợp với đối tác trò chuyện
+  const incomingCount = incomingRequests.length;
   const quickPrompts = activePartner?.role === 'admin' ? ADMIN_PROMPTS : STUDENT_PROMPTS;
 
   if (!isOpen) return null;
@@ -238,10 +350,10 @@ export default function DirectChatModal({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-4xl h-[92vh] sm:h-[82vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 flex overflow-hidden text-slate-900 dark:text-white"
+        className="w-full max-w-4xl h-[92vh] sm:h-[84vh] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 flex overflow-hidden text-slate-900 dark:text-white"
       >
         {/* =========================================================
-            LEFT COLUMN: CONVERSATION LIST & STUDENT DIRECTORY
+            LEFT COLUMN: CONVERSATIONS, FRIENDS & FRIEND REQUESTS
             ========================================================= */}
         <aside
           className={`w-full sm:w-80 border-r border-slate-200 dark:border-white/10 flex flex-col bg-slate-50/90 dark:bg-slate-950/70 shrink-0 ${
@@ -256,7 +368,7 @@ export default function DirectChatModal({
               </div>
               <div>
                 <h2 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>Tin Nhắn Trực Tiếp</span>
+                  <span>Tin Nhắn & Bạn Học</span>
                 </h2>
                 <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
                   <span className="truncate max-w-[130px] font-medium">{currentParticipant.name}</span>
@@ -275,24 +387,24 @@ export default function DirectChatModal({
             </button>
           </div>
 
-          {/* Tab Switcher: Hội Thoại vs Bạn Học & Admin */}
-          <div className="p-2 border-b border-slate-200 dark:border-white/10 grid grid-cols-2 gap-1.5 bg-slate-100/60 dark:bg-slate-900/60">
+          {/* Tab Switcher: 3 Tabs (Hội Thoại / Bạn Bè / Kết Bạn) */}
+          <div className="p-1.5 border-b border-slate-200 dark:border-white/10 grid grid-cols-3 gap-1 bg-slate-100/60 dark:bg-slate-900/60">
             <button
               type="button"
               onClick={() => {
                 setSidebarTab('conversations');
                 playSound('click');
               }}
-              className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
+              className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center space-x-1 cursor-pointer ${
                 sidebarTab === 'conversations'
                   ? 'bg-white dark:bg-slate-800 text-[#2383e2] dark:text-sky-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <MessageCircle className="w-3.5 h-3.5" />
+              <MessageCircle className="w-3.5 h-3.5 shrink-0" />
               <span>Hội Thoại</span>
               {totalUnread > 0 && (
-                <span className="px-1.5 py-0.2 rounded-full bg-[#2383e2] text-white text-[9px] font-black ml-1">
+                <span className="px-1 py-0.1 rounded-full bg-[#2383e2] text-white text-[9px] font-black shrink-0">
                   {totalUnread}
                 </span>
               )}
@@ -301,22 +413,44 @@ export default function DirectChatModal({
             <button
               type="button"
               onClick={() => {
-                setSidebarTab('directory');
+                setSidebarTab('friends');
                 playSound('click');
               }}
-              className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center space-x-1.5 cursor-pointer ${
-                sidebarTab === 'directory'
+              className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center space-x-1 cursor-pointer ${
+                sidebarTab === 'friends'
                   ? 'bg-white dark:bg-slate-800 text-[#2383e2] dark:text-sky-400 shadow-xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <Users className="w-3.5 h-3.5" />
-              <span>Bạn Học & Admin</span>
+              <UserCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>Bạn Bè</span>
+              <span className="text-[10px] opacity-70">({friends.length})</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSidebarTab('requests');
+                playSound('click');
+              }}
+              className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all flex items-center justify-center space-x-1 cursor-pointer relative ${
+                sidebarTab === 'requests'
+                  ? 'bg-white dark:bg-slate-800 text-[#2383e2] dark:text-sky-400 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <UserPlus className="w-3.5 h-3.5 shrink-0" />
+              <span>Kết Bạn</span>
+              {incomingCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[9px] font-black shrink-0 animate-pulse">
+                  {incomingCount}
+                </span>
+              )}
             </button>
           </div>
 
           {/* Search Box */}
-          <div className="p-2.5 border-b border-slate-200 dark:border-white/10">
+          <div className="p-2 border-b border-slate-200 dark:border-white/10">
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
               <input
@@ -324,7 +458,9 @@ export default function DirectChatModal({
                 placeholder={
                   sidebarTab === 'conversations'
                     ? 'Tìm tin nhắn, người gửi...'
-                    : 'Tìm tên hoặc email bạn học...'
+                    : sidebarTab === 'friends'
+                    ? 'Tìm trong danh sách bạn bè...'
+                    : 'Tìm bạn học theo tên, email...'
                 }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -333,7 +469,7 @@ export default function DirectChatModal({
             </div>
           </div>
 
-          {/* Content Area: TAB 1 - Hội Thoại Gần Đây */}
+          {/* TAB 1: DANH SÁCH HỘI THOẠI GẦN ĐÂY */}
           {sidebarTab === 'conversations' && (
             <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
               {filteredConversations.length === 0 ? (
@@ -346,16 +482,16 @@ export default function DirectChatModal({
                       Chưa có cuộc trò chuyện nào
                     </p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      Bấm vào danh bạ để kết nối nhắn tin với các bạn học khác!
+                      Kết bạn cùng các bạn học viên để bắt đầu trao đổi bộ thẻ!
                     </p>
                   </div>
                   <button
                     type="button"
-                    onClick={() => setSidebarTab('directory')}
+                    onClick={() => setSidebarTab('requests')}
                     className="px-3 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold transition-all shadow-xs cursor-pointer inline-flex items-center gap-1.5"
                   >
-                    <Users className="w-3.5 h-3.5" />
-                    <span>Tìm Bạn Học Ngay</span>
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Tìm & Kết Bạn Ngay</span>
                   </button>
                 </div>
               ) : (
@@ -363,6 +499,7 @@ export default function DirectChatModal({
                   const isActive = activePartner?.id === conv.partner?.id;
                   const hasUnread = conv.unreadCount > 0;
                   const isPartnerAdmin = conv.partner?.role === 'admin' || conv.partner?.id === 'admin_onthi';
+                  const partnerStatus = getFriendshipStatus(currentParticipant.id, conv.partner?.id);
 
                   return (
                     <button
@@ -390,11 +527,15 @@ export default function DirectChatModal({
                             <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                               {conv.partner?.name}
                             </span>
-                            {isPartnerAdmin && (
+                            {isPartnerAdmin ? (
                               <span className="px-1 py-0.2 rounded text-[8px] font-black bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 shrink-0">
                                 ADMIN
                               </span>
-                            )}
+                            ) : partnerStatus === 'friends' ? (
+                              <span className="px-1 py-0.2 rounded text-[8px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 shrink-0">
+                                BẠN BÈ
+                              </span>
+                            ) : null}
                           </div>
                           {conv.lastMessage?.createdAt && (
                             <span className="text-[10px] text-slate-400 shrink-0">
@@ -436,10 +577,10 @@ export default function DirectChatModal({
             </div>
           )}
 
-          {/* Content Area: TAB 2 - Danh Bạ Bạn Học & Admin */}
-          {sidebarTab === 'directory' && (
+          {/* TAB 2: DANH SÁCH BẠN BÈ ĐÃ KẾT NỐI */}
+          {sidebarTab === 'friends' && (
             <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 p-2 space-y-1.5">
-              {/* Pinned Card: Ban Quản Trị OnThiHub */}
+              {/* Kênh hỗ trợ chính thức Ban Quản Trị OnThiHub */}
               {!isAdmin && (
                 <div
                   onClick={() => handleSelectPartner(ADMIN_PARTICIPANT)}
@@ -462,7 +603,7 @@ export default function DirectChatModal({
                         <ShieldCheck className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
                       </div>
                       <span className="text-[10px] text-rose-700/80 dark:text-rose-300/80 block truncate">
-                        Kênh hỗ trợ chính thức & duyệt lệnh
+                        Kênh hỗ trợ chính thức 24/7
                       </span>
                     </div>
                   </div>
@@ -472,84 +613,211 @@ export default function DirectChatModal({
                 </div>
               )}
 
-              {/* Danh sách bạn học khác */}
               <div className="pt-1">
                 <span className="text-[10px] font-black uppercase text-slate-400 px-2 tracking-wider">
-                  Bạn Học Trong Hệ Thống ({filteredDirectory.filter((p) => p.id !== 'admin_onthi').length})
+                  Bạn Bè Cùng Học ({filteredFriends.length})
                 </span>
               </div>
 
-              {filteredDirectory
-                .filter((p) => p.id !== 'admin_onthi')
-                .map((peer) => {
-                  const isCurrentActive = activePartner?.id === peer.id;
-                  return (
-                    <div
-                      key={peer.id}
-                      onClick={() => handleSelectPartner(peer)}
-                      className={`p-2 rounded-xl transition-all flex items-center justify-between gap-2 cursor-pointer ${
-                        isCurrentActive
-                          ? 'bg-[#2383e2]/10 dark:bg-sky-950/60 border border-[#2383e2]/30 dark:border-sky-500/40'
-                          : 'hover:bg-slate-100 dark:hover:bg-slate-900/60 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2.5 min-w-0">
-                        <div className="relative shrink-0">
-                          <img
-                            src={peer.avatar}
-                            alt={peer.name}
-                            className="w-9 h-9 rounded-full object-cover bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-white/10"
-                          />
-                          <span
-                            className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-900 ${
-                              peer.isOnline !== false ? 'bg-emerald-500' : 'bg-slate-400'
-                            }`}
-                          />
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center space-x-1">
-                            <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                              {peer.name}
+              {filteredFriends.length === 0 ? (
+                <div className="p-4 text-center space-y-2">
+                  <p className="text-xs text-slate-400">Chưa có bạn bè nào trong danh sách</p>
+                  <button
+                    type="button"
+                    onClick={() => setSidebarTab('requests')}
+                    className="text-xs font-bold text-[#2383e2] hover:underline cursor-pointer"
+                  >
+                    + Khám phá & kết bạn với các bạn học viên khác
+                  </button>
+                </div>
+              ) : (
+                filteredFriends.map((friend) => (
+                  <div
+                    key={friend.id}
+                    onClick={() => handleSelectPartner(friend)}
+                    className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all flex items-center justify-between gap-2 cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                  >
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <div className="relative shrink-0">
+                        <img
+                          src={friend.avatar}
+                          alt={friend.name}
+                          className="w-9 h-9 rounded-full object-cover bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-white/10"
+                        />
+                        <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                            {friend.name}
+                          </span>
+                          {friend.tier === 'ultra' && (
+                            <span className="px-1 py-0.2 rounded text-[8px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                              👑 ULTRA
                             </span>
-                            {peer.tier === 'ultra' && (
-                              <span className="px-1 py-0.2 rounded text-[8px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
-                                👑 ULTRA
-                              </span>
-                            )}
-                            {peer.tier === 'pro' && (
-                              <span className="px-1 py-0.2 rounded text-[8px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
-                                🚀 PRO
-                              </span>
-                            )}
-                          </div>
+                          )}
+                          {friend.tier === 'pro' && (
+                            <span className="px-1 py-0.2 rounded text-[8px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                              🚀 PRO
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
+                          {friend.studyGoal || friend.email}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 hover:bg-[#2383e2] hover:text-white dark:hover:bg-sky-600 transition-colors shrink-0 cursor-pointer shadow-2xs"
+                    >
+                      Nhắn tin
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+
+          {/* TAB 3: LỜI MỜI KẾT BẠN & GỢI Ý BẠN HỌC */}
+          {sidebarTab === 'requests' && (
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 p-2 space-y-3">
+              {/* PHẦN 1: LỜI MỜI KẾT BẠN ĐANG CHỜ PHÊ DUYỆT */}
+              {incomingRequests.length > 0 && (
+                <div className="space-y-2 pb-2">
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-[10px] font-black uppercase text-rose-500 flex items-center gap-1 tracking-wider">
+                      <Bell className="w-3 h-3" />
+                      <span>Lời Mời Kết Bạn ({incomingRequests.length})</span>
+                    </span>
+                  </div>
+
+                  {incomingRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      className="p-2.5 rounded-xl bg-gradient-to-br from-amber-50/80 to-rose-50/50 dark:from-amber-950/30 dark:to-rose-950/20 border border-amber-200 dark:border-amber-800/40 space-y-2 animate-fade-in"
+                    >
+                      <div className="flex items-center space-x-2.5">
+                        <img
+                          src={req.sender?.avatar}
+                          alt={req.sender?.name}
+                          className="w-10 h-10 rounded-full object-cover bg-slate-200 border border-amber-300"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white block truncate">
+                            {req.sender?.name}
+                          </span>
                           <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                            {peer.studyGoal || peer.email}
+                            {req.sender?.studyGoal || 'Học viên OnThiHub'}
                           </span>
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        className="px-2 py-1 rounded-lg text-[10px] font-bold text-[#2383e2] hover:bg-[#2383e2]/10 dark:text-sky-400 dark:hover:bg-sky-950 transition-colors shrink-0 cursor-pointer"
-                      >
-                        Trò chuyện
-                      </button>
+                      {req.message && (
+                        <p className="text-[11px] text-slate-700 dark:text-slate-300 bg-white/70 dark:bg-slate-900/70 p-2 rounded-lg border border-amber-100 dark:border-white/5 italic">
+                          "{req.message}"
+                        </p>
+                      )}
+
+                      <div className="flex items-center space-x-1.5 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => handleAcceptRequest(req.sender)}
+                          className="flex-1 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center space-x-1 cursor-pointer active:scale-95"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Đồng ý</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeclineRequest(req.sender)}
+                          className="py-1.5 px-3 rounded-lg bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
+                        >
+                          <span>Bỏ qua</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* PHẦN 2: GỢI Ý BẠN HỌC ÔN THI */}
+              <div className="space-y-2 pt-2">
+                <span className="text-[10px] font-black uppercase text-slate-400 px-1 tracking-wider block">
+                  Gợi Ý Bạn Học Ôn Thi ({filteredSuggestions.length})
+                </span>
+
+                {filteredSuggestions.map((suggested) => {
+                  const status = getFriendshipStatus(currentParticipant.id, suggested.id);
+                  return (
+                    <div
+                      key={suggested.id}
+                      className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900/60 transition-all flex items-center justify-between gap-2 border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                    >
+                      <div className="flex items-center space-x-2.5 min-w-0">
+                        <img
+                          src={suggested.avatar}
+                          alt={suggested.name}
+                          className="w-9 h-9 rounded-full object-cover bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-white/10 shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <div className="flex items-center space-x-1">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                              {suggested.name}
+                            </span>
+                            {suggested.tier === 'ultra' && (
+                              <span className="px-1 py-0.2 rounded text-[8px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                                ULTRA
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
+                            {suggested.studyGoal || suggested.email}
+                          </span>
+                        </div>
+                      </div>
+
+                      {status === 'sent' ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            cancelFriendRequest(currentParticipant.id, suggested.id);
+                            refreshAllData();
+                            playSound('click');
+                          }}
+                          className="px-2 py-1 rounded-lg text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 cursor-pointer shrink-0 transition-colors"
+                          title="Hủy lời mời"
+                        >
+                          Đã gửi • Hủy
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleSendFriendRequest(suggested)}
+                          className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#2383e2] hover:bg-[#1a73e8] text-white shadow-xs transition-all flex items-center space-x-1 cursor-pointer shrink-0 active:scale-95"
+                        >
+                          <UserPlus className="w-3 h-3" />
+                          <span>Kết bạn</span>
+                        </button>
+                      )}
                     </div>
                   );
                 })}
+              </div>
             </div>
           )}
         </aside>
 
         {/* =========================================================
-            RIGHT COLUMN: ACTIVE CHAT WINDOW (1-ON-1 WITH REAL PARTNER)
+            RIGHT COLUMN: ACTIVE CHAT WINDOW
             ========================================================= */}
         <main
           className={`flex-1 flex flex-col bg-white dark:bg-slate-900 min-w-0 ${
             !mobileShowChat ? 'hidden sm:flex' : 'flex'
           }`}
         >
-          {/* Active Chat Header */}
+          {/* Header */}
           <header className="p-3 sm:px-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between bg-white/95 dark:bg-slate-900/95 backdrop-blur-sm z-10">
             <div className="flex items-center space-x-2.5 min-w-0">
               <button
@@ -581,31 +849,74 @@ export default function DirectChatModal({
                       <ShieldCheck className="w-3 h-3 text-rose-600 dark:text-rose-400" />
                       <span>Ban Quản Trị</span>
                     </span>
+                  ) : friendshipStatus === 'friends' ? (
+                    <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 flex items-center gap-1">
+                      <UserCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                      <span>Bạn Bè</span>
+                    </span>
                   ) : (
-                    <span className="px-1.5 py-0.2 rounded text-[10px] font-black bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center gap-1">
-                      <GraduationCap className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
+                    <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-white/10 flex items-center gap-1">
+                      <GraduationCap className="w-3 h-3 text-slate-400" />
                       <span>Học Viên</span>
                     </span>
                   )}
+                </div>
 
-                  {activePartner?.tier === 'ultra' && activePartner?.role !== 'admin' && (
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
-                      👑 ULTRA
+                <div className="flex items-center space-x-2 text-[10px]">
+                  {activePartner?.role === 'admin' ? (
+                    <span className="text-rose-600 dark:text-rose-400 font-semibold">
+                      🛡️ Kênh hỗ trợ chính thức • Duyệt lệnh & giải đáp
                     </span>
-                  )}
-                  {activePartner?.tier === 'pro' && activePartner?.role !== 'admin' && (
-                    <span className="px-1.5 py-0.2 rounded text-[9px] font-black bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300 border border-purple-300">
-                      🚀 PRO
+                  ) : friendshipStatus === 'friends' ? (
+                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+                      🟢 Bạn bè • Đang hoạt động
+                    </span>
+                  ) : friendshipStatus === 'sent' ? (
+                    <span className="text-blue-600 dark:text-blue-400 font-medium">
+                      ⏳ Đang chờ đối phương chấp nhận kết bạn
+                    </span>
+                  ) : friendshipStatus === 'received' ? (
+                    <span className="text-amber-600 dark:text-amber-400 font-medium">
+                      📩 Đã gửi lời mời kết bạn cho bạn
+                    </span>
+                  ) : (
+                    <span className="text-slate-400 font-normal">
+                      Chưa kết bạn • Có thể gửi lời mời kết bạn
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block">
-                  🟢 Trực tuyến • Sẵn sàng trao đổi
-                </span>
               </div>
             </div>
 
             <div className="flex items-center space-x-1.5 shrink-0">
+              {/* Nút Kết Bạn nhanh trên header nếu chưa là bạn bè */}
+              {activePartner?.role !== 'admin' && activePartner?.id !== 'admin_onthi' && (
+                <>
+                  {friendshipStatus === 'none' && (
+                    <button
+                      type="button"
+                      onClick={() => handleSendFriendRequest(activePartner)}
+                      className="px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-300 text-xs font-bold flex items-center space-x-1 cursor-pointer transition-colors shadow-2xs"
+                      title="Gửi lời mời kết bạn"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Kết Bạn</span>
+                    </button>
+                  )}
+                  {friendshipStatus === 'received' && (
+                    <button
+                      type="button"
+                      onClick={() => handleAcceptRequest(activePartner)}
+                      className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center space-x-1 cursor-pointer transition-colors shadow-xs animate-bounce"
+                      title="Chấp nhận kết bạn"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Đồng Ý Kết Bạn</span>
+                    </button>
+                  )}
+                </>
+              )}
+
               {/* Quick Attach / Share Deck Button */}
               <button
                 type="button"
@@ -628,6 +939,74 @@ export default function DirectChatModal({
             </div>
           </header>
 
+          {/* BANNER NGỮ CẢNH: TRẠNG THÁI KẾT BẠN */}
+          {activePartner?.role !== 'admin' && activePartner?.id !== 'admin_onthi' && (
+            <>
+              {friendshipStatus === 'received' && (
+                <div className="px-4 py-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/40 border-b border-amber-200 dark:border-amber-900/60 flex items-center justify-between text-xs animate-fade-in">
+                  <div className="flex items-center space-x-2 min-w-0">
+                    <Bell className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span className="text-amber-900 dark:text-amber-200 truncate font-medium">
+                      <strong>{activePartner?.name}</strong> đã gửi lời mời kết bạn cho bạn!
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleAcceptRequest(activePartner)}
+                      className="px-2.5 py-1 rounded-md bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-[11px] shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <Check className="w-3 h-3" />
+                      <span>Đồng ý</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeclineRequest(activePartner)}
+                      className="px-2 py-1 rounded-md bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] cursor-pointer"
+                    >
+                      Bỏ qua
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {friendshipStatus === 'sent' && (
+                <div className="px-4 py-1.5 bg-blue-50/70 dark:bg-blue-950/40 border-b border-blue-200/60 dark:border-blue-900/40 flex items-center justify-between text-xs">
+                  <span className="text-blue-800 dark:text-blue-200 text-[11px]">
+                    ⏳ Đã gửi lời mời kết bạn tới <strong>{activePartner?.name}</strong>. Tin nhắn của bạn sẽ được hiển thị ngay.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      cancelFriendRequest(currentParticipant.id, activePartner.id);
+                      refreshAllData();
+                      playSound('click');
+                    }}
+                    className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                  >
+                    Thu hồi lời mời
+                  </button>
+                </div>
+              )}
+
+              {friendshipStatus === 'none' && (
+                <div className="px-4 py-1.5 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between text-xs">
+                  <span className="text-slate-600 dark:text-slate-400 text-[11px]">
+                    💡 Hai bạn chưa kết bạn với nhau.
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleSendFriendRequest(activePartner)}
+                    className="text-[11px] font-bold text-[#2383e2] dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <UserPlus className="w-3 h-3" />
+                    <span>Gửi lời mời kết bạn</span>
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
           {/* Deck Picker Dropdown Popup */}
           {showDeckPicker && (
             <div className="p-3 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-white/10 animate-fade-in text-xs space-y-2">
@@ -639,7 +1018,7 @@ export default function DirectChatModal({
                 <button
                   type="button"
                   onClick={() => setShowDeckPicker(false)}
-                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5"
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -687,7 +1066,9 @@ export default function DirectChatModal({
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
                     {activePartner?.role === 'admin'
                       ? 'Gửi câu hỏi hoặc yêu cầu hỗ trợ trực tiếp tới Ban Quản Trị OnThiHub để được giải đáp nhanh chóng.'
-                      : 'Gửi lời chào hoặc bấm vào các câu gợi ý nhanh bên dưới để cùng bạn học trao đổi kinh nghiệm ôn thi nhé!'}
+                      : friendshipStatus === 'friends'
+                      ? 'Hai bạn đã là bạn bè! Hãy cùng chia sẻ kinh nghiệm học và đính kèm bộ thẻ flashcard nhé!'
+                      : 'Gửi lời chào làm quen! Tin nhắn đầu tiên sẽ gửi kèm lời mời kết bạn để hai bạn dễ dàng kết nối.'}
                   </p>
                 </div>
               </div>
@@ -898,7 +1279,9 @@ export default function DirectChatModal({
               placeholder={
                 activePartner?.role === 'admin'
                   ? 'Nhắn tin hỏi đáp với Ban Quản Trị OnThiHub...'
-                  : `Nhắn tin cho ${activePartner?.name || 'bạn học'}...`
+                  : friendshipStatus === 'friends'
+                  ? `Nhắn tin cho bạn ${activePartner?.name || 'học'}...`
+                  : `Gửi lời chào làm quen tới ${activePartner?.name || 'bạn học'}...`
               }
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}

@@ -18,7 +18,9 @@ import {
   ArrowRight,
   CornerDownRight,
   X,
-  MessageCircle
+  MessageCircle,
+  UserPlus,
+  UserCheck
 } from 'lucide-react';
 import { playSound } from '../utils/storage';
 import { recordStudyAction } from '../utils/gamification';
@@ -41,9 +43,10 @@ import {
   getOrCreateCommunityClientId
 } from '../data/communityData';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
+import { getFriendshipStatus, sendFriendRequest, subscribeToFriendEvents } from '../utils/friendSystem';
 import confetti from 'canvas-confetti';
 
-export default function CommunityView({ user, onOpenPricing, onOpenDirectChat }) {
+export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, onShowToast }) {
   const isAdmin = isUserAdmin(user);
   const currentTier = (user?.tier || getUserTier() || 'free').toLowerCase();
   const canParticipate = canUserParticipateInCommunity(user);
@@ -68,7 +71,17 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat })
   const [activeReplyTarget, setActiveReplyTarget] = useState(null);
   const [copiedPostId, setCopiedPostId] = useState(null);
   const [, setTimeTick] = useState(0);
+  const [, setFriendVersion] = useState(0);
   const postInputRef = useRef(null);
+
+  useEffect(() => {
+    const unsub = subscribeToFriendEvents(userIdentifier, () => {
+      setFriendVersion(v => v + 1);
+    });
+    return () => {
+      if (typeof unsub === 'function') unsub();
+    };
+  }, [userIdentifier]);
 
   // Dynamic real-time relative time ticker (updates every 30 seconds)
   useEffect(() => {
@@ -481,11 +494,66 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat })
                               role: post.role || 'student'
                             })}
                             className="p-1 rounded text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                            title={`Nhắn tin riêng với ${post.author}`}
+                            title={`Nhắn tin & Kết bạn với ${post.author}`}
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                           </button>
                         )}
+
+                        {(() => {
+                          const authorId = post.authorEmail || post.author;
+                          if (!userIdentifier || authorId === userIdentifier || authorId === 'admin_onthi') return null;
+                          const fStatus = getFriendshipStatus(userIdentifier, authorId);
+                          if (fStatus === 'friends') {
+                            return (
+                              <span className="px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300 text-[10px] font-bold flex items-center gap-1" title="Hai bạn đã là bạn bè">
+                                <UserCheck className="w-3 h-3" />
+                                <span className="hidden sm:inline">Bạn bè</span>
+                              </span>
+                            );
+                          }
+                          if (fStatus === 'sent') {
+                            return (
+                              <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-medium" title="Đã gửi lời mời">
+                                Đã gửi lời mời
+                              </span>
+                            );
+                          }
+                          if (fStatus === 'none') {
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  playSound('click');
+                                  const res = sendFriendRequest({
+                                    sender: {
+                                      id: userIdentifier,
+                                      name: user?.displayName || userIdentifier.split('@')[0],
+                                      email: user?.email || `${userIdentifier}@onthihub.vn`,
+                                      avatar: user?.photoURL
+                                    },
+                                    receiver: {
+                                      id: authorId,
+                                      name: post.author,
+                                      email: post.authorEmail || `${authorId}@onthihub.vn`,
+                                      avatar: post.avatar
+                                    }
+                                  });
+                                  if (res.success) {
+                                    setFriendVersion(v => v + 1);
+                                    onShowToast?.(`Đã gửi lời mời kết bạn tới ${post.author}!`);
+                                  }
+                                }}
+                                className="px-1.5 py-0.5 rounded bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 hover:bg-[#2383e2] hover:text-white border border-sky-200 dark:border-sky-800 text-[10px] font-bold flex items-center gap-1 transition-colors cursor-pointer"
+                                title={`Kết bạn với ${post.author}`}
+                              >
+                                <UserPlus className="w-3 h-3" />
+                                <span className="hidden sm:inline">Kết bạn</span>
+                              </button>
+                            );
+                          }
+                          return null;
+                        })()}
                       </div>
                       <div className="flex items-center space-x-2 text-[11px] text-[#787774] dark:text-slate-400">
                         <span>{post.role}</span>

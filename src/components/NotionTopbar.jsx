@@ -18,6 +18,7 @@ import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
 import { getHanoiTimeString } from '../utils/hanoiTime';
 import { getUnreadDirectMessagesCount, subscribeToDirectMessages, getCurrentUserParticipant } from '../utils/directMessaging';
+import { getIncomingRequestsCount, subscribeToFriendEvents } from '../utils/friendSystem';
 import confetti from 'canvas-confetti';
 
 export default function NotionTopbar({
@@ -47,16 +48,20 @@ export default function NotionTopbar({
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [hanoiTime, setHanoiTime] = useState(() => getHanoiTimeString(new Date(), false));
   const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(() => getIncomingRequestsCount(user?.uid || user?.email));
 
   useEffect(() => {
     const curParticipant = getCurrentUserParticipant(user);
-    const updateDmCount = () => {
+    const updateCounts = () => {
       setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant.id));
+      setPendingRequestsCount(getIncomingRequestsCount(curParticipant.id));
     };
-    updateDmCount();
-    const unsubDm = subscribeToDirectMessages(curParticipant.id, updateDmCount);
+    updateCounts();
+    const unsubDm = subscribeToDirectMessages(curParticipant.id, updateCounts);
+    const unsubFriends = subscribeToFriendEvents(curParticipant.id, updateCounts);
     return () => {
       if (typeof unsubDm === 'function') unsubDm();
+      if (typeof unsubFriends === 'function') unsubFriends();
     };
   }, [user]);
   const streakInfo = getStreakInfo();
@@ -402,22 +407,29 @@ export default function NotionTopbar({
           )}
         </button>
 
-        {/* Direct Messages Button (Icon Only with Live Unread Dot) */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('click');
-            onOpenDirectChat?.();
-          }}
-          className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer"
-          title={`Tin nhắn trực tiếp & Hỏi đáp 1-1${unreadDmCount > 0 ? ` (${unreadDmCount} tin mới)` : ''}`}
-          aria-label="Tin nhắn trực tiếp"
-        >
-          <MessageCircle className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
-          {unreadDmCount > 0 && (
-            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900 animate-pulse" />
-          )}
-        </button>
+        {/* Direct Messages & Friends Button (Icon Only with Live Badge) */}
+        {(() => {
+          const totalSocialBadge = (unreadDmCount || 0) + (pendingRequestsCount || 0);
+          return (
+            <button
+              type="button"
+              onClick={() => {
+                playSound('click');
+                onOpenDirectChat?.();
+              }}
+              className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer"
+              title={`Tin nhắn & Bạn học${totalSocialBadge > 0 ? ` (${totalSocialBadge} thông báo mới)` : ''}`}
+              aria-label="Tin nhắn và Bạn bè"
+            >
+              <MessageCircle className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
+              {totalSocialBadge > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black ring-2 ring-white dark:ring-slate-900 flex items-center justify-center animate-pulse">
+                  {totalSocialBadge > 9 ? '9+' : totalSocialBadge}
+                </span>
+              )}
+            </button>
+          );
+        })()}
 
         {/* Notification Bell (Icon Only) */}
         <div className="relative">
