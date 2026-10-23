@@ -18,7 +18,8 @@ import {
   createWithdrawalRequest,
   getTransactions,
   ADMIN_EMAIL,
-  COIN_RATE_VND
+  COIN_RATE_VND,
+  MIN_WITHDRAW_XU
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 import { useModalDismiss } from '../hooks/useModalDismiss';
@@ -32,7 +33,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
   const [depositResult, setDepositResult] = useState(null);
 
   // Withdraw state
-  const [withdrawXu, setWithdrawXu] = useState(20);
+  const [withdrawXu, setWithdrawXu] = useState(50);
   const [bankName, setBankName] = useState('MB Bank');
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -59,13 +60,18 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
       setWithdrawMsg({ text: 'Vui lòng điền đầy đủ số tài khoản và tên chủ thẻ!', isError: true });
       return;
     }
-    if (withdrawXu < 10) {
-      setWithdrawMsg({ text: 'Số lượng rút tối thiểu là 10 Xu (10.000 VNĐ)!', isError: true });
+    const amount = parseInt(withdrawXu, 10);
+    if (isNaN(amount) || amount < MIN_WITHDRAW_XU) {
+      setWithdrawMsg({ text: `Số lượng rút tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
+      return;
+    }
+    if (balance < amount) {
+      setWithdrawMsg({ text: `Số dư ví không đủ! Bạn hiện có ${balance} Xu, cần tối thiểu ${amount} Xu để rút.`, isError: true });
       return;
     }
 
     const res = await createWithdrawalRequest({
-      xuAmount: parseInt(withdrawXu, 10),
+      xuAmount: amount,
       bankName,
       accountNo: accountNo.trim(),
       accountName: accountName.trim().toUpperCase(),
@@ -76,9 +82,9 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
     if (res.success) {
       playSound('success');
       setBalance(getWalletBalance());
-      onBalanceUpdated();
+      if (typeof onBalanceUpdated === 'function') onBalanceUpdated();
       setWithdrawMsg({
-        text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Mã: ${res.tx.id}. Thông báo đã được gửi tự động đến Admin để xử lý chuyển tiền.`,
+        text: `🎉 Lệnh rút ${amount} Xu (${(amount * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Mã: ${res.tx.id}. Thông báo đã được gửi tự động đến Admin để xử lý chuyển tiền.`,
         isError: false
       });
       setAccountNo('');
@@ -302,23 +308,74 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
                 </div>
               )}
 
+              {/* POLICY NOTE */}
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 space-y-1">
+                <p className="font-bold">⚡ Quy định rút tiền về ngân hàng:</p>
+                <p>• Hạn mức rút tối thiểu: <strong>{MIN_WITHDRAW_XU} Xu</strong> (= {(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()}đ).</p>
+                <p>• Phí rút tiền: <strong>0đ (Miễn phí 100%)</strong> • Chuyển khoản 24/7 qua NAPAS.</p>
+              </div>
+
+              {balance < MIN_WITHDRAW_XU && (
+                <div className="p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-[11px] text-slate-600">
+                  Số dư hiện tại của bạn là <strong>{balance} Xu</strong>. Bạn cần đạt tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> để thực hiện rút tiền.
+                </div>
+              )}
+
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">
-                  Số lượng Xu muốn rút (Khả dụng: {balance} Xu):
-                </label>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between mb-1">
+                  <label className="font-semibold text-slate-700">
+                    Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} Xu):
+                  </label>
+                  <span className="text-[11px] text-slate-500">
+                    Khả dụng: <strong className="text-amber-700 font-bold">{balance} Xu</strong>
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-2 mb-2">
                   <input
                     type="number"
-                    min="10"
+                    min={MIN_WITHDRAW_XU}
                     max={balance}
                     value={withdrawXu}
                     onChange={(e) => setWithdrawXu(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-amber-500 font-bold"
                     required
                   />
-                  <span className="font-bold text-slate-500 shrink-0">
-                    = {(withdrawXu * COIN_RATE_VND).toLocaleString()} VNĐ
+                  <span className="font-bold text-slate-500 shrink-0 text-xs">
+                    = {((Number(withdrawXu) || 0) * COIN_RATE_VND).toLocaleString()} VNĐ
                   </span>
+                </div>
+
+                {/* Quick pills */}
+                <div className="flex flex-wrap gap-1.5">
+                  {[50, 100, 200, 500].map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => setWithdrawXu(amt)}
+                      disabled={balance < amt}
+                      className={`px-2 py-0.5 rounded text-[10px] font-semibold border transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
+                        Number(withdrawXu) === amt
+                          ? 'bg-amber-600 text-white border-amber-600'
+                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {amt} Xu ({amt}k)
+                    </button>
+                  ))}
+                  {balance >= MIN_WITHDRAW_XU && (
+                    <button
+                      type="button"
+                      onClick={() => setWithdrawXu(balance)}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
+                        Number(withdrawXu) === balance
+                          ? 'bg-amber-600 text-white border-amber-600'
+                          : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
+                      }`}
+                    >
+                      Rút Hết ({balance} Xu)
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -367,16 +424,16 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={balance < 10}
+                  disabled={balance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU}
                   className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 disabled:opacity-50"
                 >
                   <ArrowUpRight className="w-4 h-4" />
-                  <span>Xác Nhận Rút Tiền Về Tài Khoản</span>
+                  <span>Xác Nhận Rút {Number(withdrawXu) || 0} Xu ({(Number(withdrawXu || 0) * COIN_RATE_VND).toLocaleString()}đ)</span>
                 </button>
               </div>
 
               <p className="text-[11px] text-slate-400 text-center">
-                Lệnh rút sẽ gửi thông báo đến <strong>{ADMIN_EMAIL}</strong> để Admin chuyển khoản và duyệt chay trong vòng 1-4 giờ.
+                Lệnh rút tối thiểu 50 Xu. Hệ thống gửi thông báo đến Admin duyệt và chuyển khoản 24/7.
               </p>
             </form>
           )}

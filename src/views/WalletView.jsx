@@ -24,7 +24,8 @@ import {
   checkAndApplyApprovedTransactions,
   ADMIN_EMAIL,
   ADMIN_PHONE,
-  COIN_RATE_VND
+  COIN_RATE_VND,
+  MIN_WITHDRAW_XU
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
@@ -42,7 +43,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
   const [isDepositing, setIsDepositing] = useState(false);
 
   // Withdraw state
-  const [withdrawXu, setWithdrawXu] = useState(20);
+  const [withdrawXu, setWithdrawXu] = useState(50);
   const [bankName, setBankName] = useState('MB Bank');
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -92,15 +93,20 @@ export default function WalletView({ user, onBalanceUpdated }) {
       setWithdrawMsg({ text: 'Vui lòng điền đầy đủ số tài khoản và tên chủ thẻ!', isError: true });
       return;
     }
-    if (withdrawXu < 10) {
-      setWithdrawMsg({ text: 'Số lượng rút tối thiểu là 10 Xu (10.000 VNĐ)!', isError: true });
+    const amount = parseInt(withdrawXu, 10);
+    if (isNaN(amount) || amount < MIN_WITHDRAW_XU) {
+      setWithdrawMsg({ text: `Số lượng rút tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
+      return;
+    }
+    if (balance < amount) {
+      setWithdrawMsg({ text: `Số dư ví không đủ! Bạn hiện có ${balance} Xu, cần tối thiểu ${amount} Xu để rút.`, isError: true });
       return;
     }
 
     setIsWithdrawing(true);
     try {
       const res = await createWithdrawalRequest({
-        xuAmount: parseInt(withdrawXu, 10),
+        xuAmount: amount,
         bankName,
         accountNo: accountNo.trim(),
         accountName: accountName.trim().toUpperCase(),
@@ -114,7 +120,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
         if (onBalanceUpdated) onBalanceUpdated();
         setLastWithdrawTx(res);
         setWithdrawMsg({
-          text: `🎉 Lệnh rút ${withdrawXu} Xu (${(withdrawXu * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
+          text: `🎉 Lệnh rút ${amount} Xu (${(amount * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
           isError: false
         });
         setAccountNo('');
@@ -374,6 +380,28 @@ export default function WalletView({ user, onBalanceUpdated }) {
           {/* TAB 2: RÚT TIỀN */}
           {activeTab === 'withdraw' && (
             <div className="space-y-4">
+              {/* POLICY BANNER */}
+              <div className="p-3.5 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-500/30 rounded-xl text-xs space-y-1 text-left">
+                <div className="flex items-center space-x-2 font-bold text-amber-900 dark:text-amber-200">
+                  <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                  <span>Quy Định Rút Tiền Về Ngân Hàng</span>
+                </div>
+                <ul className="text-amber-800 dark:text-amber-300 text-[11px] list-disc list-inside space-y-0.5 pt-0.5">
+                  <li>Hạn mức rút tối thiểu: <strong className="font-bold underline text-amber-900 dark:text-white">50 Xu</strong> (= 50.000 VNĐ).</li>
+                  <li>Tỷ lệ quy đổi: <strong>1 Xu = 1.000 VNĐ</strong> • Phí rút tiền: <strong>0đ (Miễn phí 100%)</strong>.</li>
+                  <li>Xử lý chuyển khoản ngân hàng 24/7 qua NAPAS trong vòng 5 - 30 phút.</li>
+                </ul>
+              </div>
+
+              {balance < MIN_WITHDRAW_XU && (
+                <div className="p-3 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-600 dark:text-slate-300 flex items-start space-x-2">
+                  <Coins className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                  <span>
+                    Số dư hiện tại của bạn là <strong>{balance} Xu</strong>. Bạn cần tích lũy tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> để tạo lệnh rút về ngân hàng. Hãy tích lũy thêm Xu từ bán bộ thẻ hoặc nhận thưởng học tập!
+                  </span>
+                </div>
+              )}
+
               {lastWithdrawTx && (
                 <div className="p-3.5 bg-[#edf3ec] dark:bg-emerald-950/50 border border-[#d3e5d2] dark:border-emerald-500/40 rounded-xl text-xs space-y-1.5 text-left">
                   <div className="flex items-center justify-between">
@@ -408,13 +436,19 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 )}
 
                 <div>
-                  <label className="font-semibold text-[#37352f] dark:text-slate-200 block mb-1">
-                    Số lượng Xu muốn rút (Khả dụng: {balance} Xu):
-                  </label>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-[#37352f] dark:text-slate-200">
+                      Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} Xu):
+                    </label>
+                    <span className="text-[11px] text-[#787774] dark:text-slate-400">
+                      Khả dụng: <strong className="text-amber-600 dark:text-amber-400 font-bold">{balance} Xu</strong>
+                    </span>
+                  </div>
+
+                  <div className="flex items-center space-x-2 mb-2">
                     <input
                       type="number"
-                      min="10"
+                      min={MIN_WITHDRAW_XU}
                       max={balance}
                       value={withdrawXu}
                       onChange={(e) => setWithdrawXu(e.target.value)}
@@ -422,8 +456,40 @@ export default function WalletView({ user, onBalanceUpdated }) {
                       required
                     />
                     <span className="text-[#787774] dark:text-slate-300 shrink-0 text-xs font-semibold">
-                      = {(withdrawXu * COIN_RATE_VND).toLocaleString()} VNĐ
+                      = {((Number(withdrawXu) || 0) * COIN_RATE_VND).toLocaleString()} VNĐ
                     </span>
+                  </div>
+
+                  {/* QUICK SELECT PILLS */}
+                  <div className="flex flex-wrap gap-1.5 pt-0.5">
+                    {[50, 100, 200, 500].map((amt) => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => setWithdrawXu(amt)}
+                        disabled={balance < amt}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
+                          Number(withdrawXu) === amt
+                            ? 'bg-[#2383e2] text-white border-[#2383e2]'
+                            : 'bg-[#f7f6f5] dark:bg-slate-800 text-[#37352f] dark:text-slate-200 border-[#e9e9e8] dark:border-white/10 hover:bg-[#ebeae8] dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        {amt} Xu ({amt}k)
+                      </button>
+                    ))}
+                    {balance >= MIN_WITHDRAW_XU && (
+                      <button
+                        type="button"
+                        onClick={() => setWithdrawXu(balance)}
+                        className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition-colors cursor-pointer ${
+                          Number(withdrawXu) === balance
+                            ? 'bg-[#2383e2] text-white border-[#2383e2]'
+                            : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-500/30 hover:bg-amber-100'
+                        }`}
+                      >
+                        Rút Hết ({balance} Xu)
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -472,16 +538,16 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    disabled={balance < 10 || isWithdrawing}
+                    disabled={balance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU || isWithdrawing}
                     className="w-full py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-xl font-bold shadow-2xs flex items-center justify-center space-x-1.5 disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <ArrowUpRight className="w-4 h-4" />
-                    <span>{isWithdrawing ? 'Đang tạo lệnh...' : 'Xác nhận rút tiền về tài khoản'}</span>
+                    <span>{isWithdrawing ? 'Đang tạo lệnh...' : `Xác nhận rút ${Number(withdrawXu) || 0} Xu (${((Number(withdrawXu) || 0) * COIN_RATE_VND).toLocaleString()}đ)`}</span>
                   </button>
                 </div>
 
                 <p className="text-xs text-[#787774] dark:text-slate-400 text-center font-normal">
-                  Hệ thống xử lý duyệt và chuyển khoản 24/7.
+                  Hạn mức tối thiểu: 50 Xu. Admin duyệt và chuyển khoản trực tiếp qua ngân hàng 24/7.
                 </p>
               </form>
             </div>

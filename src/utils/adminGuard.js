@@ -1,6 +1,4 @@
-import { ADMIN_EMAIL } from './wallet.js';
-
-export const PRIMARY_ADMIN_EMAIL = ADMIN_EMAIL || 'thaitraicau123@gmail.com';
+export const PRIMARY_ADMIN_EMAIL = 'thaitraicau123@gmail.com';
 export const ADMIN_MASTER_PASSWORD = 'Caypiece123!';
 export const ADMIN_AUTH_SESSION_KEY = 'onthi_admin_session_auth_v1';
 

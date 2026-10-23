@@ -27,6 +27,7 @@ export const ADMIN_ZALO_LINK = 'https://zalo.me/0986019623';
 export const ADMIN_EMAIL = 'thaitraicau123@gmail.com';
 export const ADMIN_NTFY_TOPIC = 'https://ntfy.sh/Onthihubbbbb';
 export const COIN_RATE_VND = 1000; // 1 Xu = 1.000 VNĐ
+export const MIN_WITHDRAW_XU = 50; // Hạn mức rút tiền tối thiểu 50 Xu = 50.000 VNĐ
 
 // Get current wallet balance (Default 20 Xu tặng tân thủ)
 export function getWalletBalance() {
@@ -644,21 +645,32 @@ export async function createDepositRequest({ xuAmount, userEmail, userId }) {
 
 // Create Withdrawal Request (Rút Tiền)
 export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, accountName, userEmail, userId }) {
+  const amount = Number(xuAmount);
+  if (!amount || isNaN(amount) || amount < MIN_WITHDRAW_XU) {
+    return {
+      success: false,
+      message: `Hạn mức rút tiền tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`
+    };
+  }
+
   const currentBalance = getWalletBalance();
-  if (currentBalance < xuAmount) {
-    return { success: false, message: 'Số dư ví Xu không đủ để thực hiện lệnh rút!' };
+  if (currentBalance < amount) {
+    return {
+      success: false,
+      message: `Số dư ví Xu không đủ để thực hiện lệnh rút! Số dư hiện tại: ${currentBalance} Xu, cần: ${amount} Xu.`
+    };
   }
 
   // Deduct coins immediately and put into escrow
-  deductWalletCoins(xuAmount);
+  deductWalletCoins(amount);
 
-  const amountVnd = Number(xuAmount) * COIN_RATE_VND;
+  const amountVnd = amount * COIN_RATE_VND;
   const code = 'RUT' + Math.floor(100000 + Math.random() * 900000);
   const tx = {
     id: code,
     type: 'withdraw',
     status: 'pending', // 'pending' | 'approved' | 'rejected'
-    xuAmount: Number(xuAmount),
+    xuAmount: amount,
     amountVnd,
     userEmail: userEmail || 'creator@onthihub.vn',
     userId: userId || null,
