@@ -138,7 +138,7 @@ export default function PassDeckModal({
             <div className="mt-2 text-[11px] text-[#787774] flex items-center space-x-2">
               <span>{course.previewCards?.length || course.cardCount || 50} thẻ ôn tập</span>
               <span>•</span>
-              <span>Bản quyền gốc: {course.authorName || 'Giảng viên ÔnThiHub'}</span>
+              <span>Bản quyền gốc: {course.authorName || 'Ban Quản Trị OnThiHub'}</span>
             </div>
           </div>
 

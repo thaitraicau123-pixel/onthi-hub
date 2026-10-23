@@ -476,11 +476,26 @@ export default function MarketplaceView({
                         <button
                           type="button"
                           onClick={() => {
-                            onOpenDirectChat({
-                              id: pDeck.passSellerEmail || pDeck.passSellerName,
-                              name: pDeck.passSellerName,
-                              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(pDeck.passSellerName)}`
-                            }, pDeck);
+                            const isSellerAdmin =
+                              pDeck.passSellerEmail === 'thaitraicau123@gmail.com' ||
+                              (pDeck.passSellerName && pDeck.passSellerName.includes('Ban Quản Trị'));
+                            if (isSellerAdmin) {
+                              onOpenDirectChat({
+                                id: 'admin_onthi',
+                                name: 'Ban Quản Trị OnThiHub',
+                                email: 'thaitraicau123@gmail.com',
+                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+                                role: 'admin',
+                                tier: 'ultra',
+                                badge: '🛡️ Ban Quản Trị'
+                              }, pDeck);
+                            } else {
+                              onOpenDirectChat({
+                                id: pDeck.passSellerEmail || pDeck.passSellerName,
+                                name: pDeck.passSellerName,
+                                avatar: pDeck.passSellerAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(pDeck.passSellerName)}`
+                              }, pDeck);
+                            }
                           }}
                           className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors cursor-pointer"
                           title={`Hỏi người bán (${pDeck.passSellerName})`}
@@ -794,11 +809,27 @@ export default function MarketplaceView({
                         <button
                           type="button"
                           onClick={() => {
-                            onOpenDirectChat({
-                              id: deck.authorEmail || deck.authorName,
-                              name: deck.authorName,
-                              avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(deck.authorName)}`
-                            }, deck);
+                            const isAdminAuthor =
+                              !deck.isCustomUserDeck ||
+                              deck.authorEmail === 'thaitraicau123@gmail.com' ||
+                              (deck.authorName && deck.authorName.includes('Ban Quản Trị'));
+                            if (isAdminAuthor) {
+                              onOpenDirectChat({
+                                id: 'admin_onthi',
+                                name: 'Ban Quản Trị OnThiHub',
+                                email: 'thaitraicau123@gmail.com',
+                                avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+                                role: 'admin',
+                                tier: 'ultra',
+                                badge: '🛡️ Ban Quản Trị'
+                              }, deck);
+                            } else {
+                              onOpenDirectChat({
+                                id: deck.authorEmail || deck.authorName,
+                                name: deck.authorName,
+                                avatar: deck.authorAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(deck.authorName)}`
+                              }, deck);
+                            }
                           }}
                           className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors cursor-pointer"
                           title={`Nhắn tin hỏi tác giả (${deck.authorName})`}

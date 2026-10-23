@@ -145,9 +145,11 @@ export default function CreateFlashcardModal({
         categoryName: newDeck.categoryLabel,
         priceXu: Math.max(5, parseInt(priceXu, 10) || 10),
         cardCount: validCards.length,
-        authorName: user?.displayName || 'Người Học Ẩn Danh',
+        authorName: user?.displayName || 'Ban Quản Trị OnThiHub',
+        authorEmail: user?.email || 'thaitraicau123@gmail.com',
         authorAvatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
         authorTier: quota.tier,
+        isCustomUserDeck: Boolean(user?.displayName),
         sampleCards: validCards.slice(0, 3)
       });
     }

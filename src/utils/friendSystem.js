@@ -152,8 +152,8 @@ export function getFriendshipStatus(currentUserId, targetUserId) {
   const isFriend = pairs.some(
     (p) =>
       p.key === pairKey ||
-      (p.userAId === curId && (p.userBId === tgtId || (curId !== 'default_user' && p.userBId === 'default_user' && tgtId === 'student_lan_anh'))) ||
-      (p.userBId === curId && (p.userAId === tgtId || (curId !== 'default_user' && p.userAId === 'default_user' && tgtId === 'student_lan_anh'))) ||
+      (p.userAId === curId && p.userBId === tgtId) ||
+      (p.userBId === curId && p.userAId === tgtId) ||
       ((curId === 'default_user' || tgtId === 'default_user') && p.key.includes(tgtId))
   );
 

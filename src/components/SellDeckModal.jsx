@@ -75,7 +75,7 @@ export default function SellDeckModal({
             : 'Ngoại Ngữ',
         priceXu: Math.max(2, parseInt(sellPriceXu, 10) || 3),
         cardCount: cardsList.length || course.cardCount || 10,
-        authorName: user?.displayName || course.authorName || 'Học Viên Chia Sẻ',
+        authorName: user?.displayName || course.authorName || 'Ban Quản Trị OnThiHub',
         authorEmail: user?.email || '',
         authorAvatar:
           user?.photoURL ||
