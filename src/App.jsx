@@ -191,6 +191,9 @@ export default function App() {
 
       // 2. Phía Admin: Reo chuông + Toast + Desktop Notification khi có học viên gửi lệnh nạp mới
       const isAdmin = isUserAdmin(activeUser);
+      if (isAdmin && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+        requestBrowserNotificationPermission();
+      }
       if (isAdmin && Array.isArray(latestTxs)) {
         const newPending = latestTxs.filter((t) => t && t.status === 'pending' && !seenTxIds.has(t.id));
         if (newPending.length > 0) {
@@ -198,8 +201,8 @@ export default function App() {
           const first = newPending[0];
           const isDeposit = first.type === 'deposit';
 
-          // Rung chuông âm thanh
-          playSound('click');
+          // Rung chuông âm thanh chuông ngân to rõ ràng
+          playSound('bell');
 
           // Hiện Toast nổi bật trên web
           showToast(`🔔 [LỆNH ${isDeposit ? 'NẠP XU' : 'RÚT TIỀN'} MỚI] ${first.userEmail || 'Học viên'}: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')}đ). Mã: ${first.id}`);

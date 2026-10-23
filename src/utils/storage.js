@@ -299,7 +299,22 @@ export function playSound(type = 'click') {
     const ctx = getSharedSoundAudioContext();
     if (!ctx) return;
 
-    if (type === 'flip') {
+    if (type === 'bell' || type === 'alert') {
+      // Clear 3-tone chime for incoming alerts / deposits (G5 -> C6 -> E6)
+      const now = ctx.currentTime;
+      [783.99, 1046.5, 1318.5].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + i * 0.1);
+        gain.gain.setValueAtTime(0.2, now + i * 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.1);
+        osc.stop(now + i * 0.1 + 0.35);
+      });
+    } else if (type === 'flip') {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'triangle';
@@ -311,6 +326,18 @@ export function playSound(type = 'click') {
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 0.08);
+    } else if (type === 'click') {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 0.03);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.03);
     } else if (type === 'success') {
       const now = ctx.currentTime;
       [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {

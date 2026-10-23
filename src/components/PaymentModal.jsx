@@ -150,20 +150,20 @@ export default function PaymentModal({
       <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto cursor-default"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-xl border border-[#e9e9e8] dark:border-white/10 shadow-2xl overflow-hidden flex flex-col text-[#37352f] dark:text-slate-100 animate-scale-up my-auto cursor-default"
       >
         
         {/* Header */}
-        <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8] shrink-0">
+        <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] dark:bg-slate-900/90 text-[#37352f] dark:text-white flex items-center justify-between border-b border-[#e9e9e8] dark:border-white/10 shrink-0">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
               <Coins className="w-5 h-5 fill-amber-500" />
             </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-[#37352f]">
+              <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white">
                 Mở Khóa Tài Liệu Bằng Xu
               </h3>
-              <p className="text-[11px] text-[#787774]">
+              <p className="text-[11px] text-[#787774] dark:text-slate-400">
                 Nền tảng thanh toán bằng Xu ÔnThiHub tiện lợi và tức thì
               </p>
             </div>
@@ -171,22 +171,22 @@ export default function PaymentModal({
 
           <button
             onClick={onClose}
-            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-black/5 rounded-md border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-slate-800 rounded-md border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 transition-colors cursor-pointer"
             title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
             <span>Đóng</span>
-            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] dark:bg-slate-700 px-1 py-0.5 rounded text-[#787774] dark:text-slate-300">Esc</kbd>
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-4 max-h-[82vh] overflow-y-auto bg-white">
+        <div className="p-5 sm:p-6 space-y-4 max-h-[82vh] overflow-y-auto bg-white dark:bg-slate-900">
           
           {/* SUCCESS STATE */}
           {isPurchasedSuccess ? (
             <div className="py-6 text-center space-y-4 animate-fade-in">
-              <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+              <div className="w-16 h-16 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto border border-emerald-200 dark:border-emerald-800">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
 
@@ -194,18 +194,18 @@ export default function PaymentModal({
                 <span className="notion-tag notion-tag-green text-xs font-semibold">
                   GIAO DỊCH HOÀN TẤT 100%
                 </span>
-                <h3 className="text-lg sm:text-xl font-bold text-[#37352f] mt-2">
+                <h3 className="text-lg sm:text-xl font-bold text-[#37352f] dark:text-white mt-2">
                   Mở Khóa Thành Công!
                 </h3>
-                <p className="text-xs text-[#787774] mt-1 max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs text-[#787774] dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
                   Bộ thẻ <strong>"{item.title}"</strong> đã được chuyển vĩnh viễn vào Tủ Tài Liệu của bạn.
                 </p>
               </div>
 
               {/* Remaining Coins Info */}
-              <div className="p-3 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] max-w-xs mx-auto text-xs flex items-center justify-between">
-                <span className="text-[#787774] font-medium">Số dư ví còn lại:</span>
-                <strong className="text-[#37352f] font-semibold flex items-center space-x-1">
+              <div className="p-3 bg-[#f7f6f5] dark:bg-slate-800 rounded-lg border border-[#e9e9e8] dark:border-white/10 max-w-xs mx-auto text-xs flex items-center justify-between">
+                <span className="text-[#787774] dark:text-slate-400 font-medium">Số dư ví còn lại:</span>
+                <strong className="text-[#37352f] dark:text-white font-semibold flex items-center space-x-1">
                   <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
                   <span>{walletBalance} Xu</span>
                 </strong>
@@ -225,7 +225,7 @@ export default function PaymentModal({
 
                 <button
                   onClick={onClose}
-                  className="w-full sm:w-auto px-4 py-2 rounded-lg border border-[#e9e9e8] bg-white hover:bg-black/5 text-[#787774] text-xs font-medium transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 rounded-lg border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 hover:bg-black/5 dark:hover:bg-slate-700 text-[#787774] dark:text-slate-300 text-xs font-medium transition-colors"
                 >
                   Đóng Lại
                 </button>
@@ -235,7 +235,7 @@ export default function PaymentModal({
             /* NORMAL PURCHASE FLOW */
             <>
               {/* Item Card Recap */}
-              <div className="p-4 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] space-y-2.5">
+              <div className="p-4 bg-[#f7f6f5] dark:bg-slate-800/80 rounded-lg border border-[#e9e9e8] dark:border-white/10 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span className="notion-tag notion-tag-blue text-[10px] font-semibold">
                     {item.categoryLabel || (isCombo ? 'GÓI COMBO VIP' : 'TÀI LIỆU CHỌN LỌC')}
@@ -247,28 +247,28 @@ export default function PaymentModal({
                   )}
                 </div>
 
-                <h4 className="text-sm sm:text-base font-bold text-[#37352f] line-clamp-2 leading-snug">
+                <h4 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white line-clamp-2 leading-snug">
                   {item.title}
                 </h4>
 
                 {item.subtitle && (
-                  <p className="text-xs text-[#787774] line-clamp-2">
+                  <p className="text-xs text-[#787774] dark:text-slate-400 line-clamp-2">
                     {item.subtitle}
                   </p>
                 )}
 
                 {/* Price Pill */}
-                <div className="pt-2 border-t border-[#e9e9e8] flex items-baseline justify-between">
-                  <span className="text-xs text-[#787774]">Giá mở khóa bằng Xu:</span>
+                <div className="pt-2 border-t border-[#e9e9e8] dark:border-white/10 flex items-baseline justify-between">
+                  <span className="text-xs text-[#787774] dark:text-slate-400">Giá mở khóa bằng Xu:</span>
                   <div className="flex items-baseline space-x-2">
                     <div className="flex items-center space-x-1">
                       <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
-                      <strong className="text-lg font-bold text-[#37352f]">
+                      <strong className="text-lg font-bold text-[#37352f] dark:text-white">
                         {priceXu} Xu
                       </strong>
                     </div>
                     {originalPriceXu > priceXu && (
-                      <span className="text-xs text-[#787774] line-through">
+                      <span className="text-xs text-[#787774] dark:text-slate-400 line-through">
                         {originalPriceXu} Xu
                       </span>
                     )}
@@ -279,29 +279,29 @@ export default function PaymentModal({
               {/* Wallet Balance Box */}
               <div className={`p-4 rounded-lg border transition-all ${
                 hasEnoughCoins
-                  ? 'bg-emerald-50/50 border-emerald-200 text-emerald-950'
-                  : 'bg-rose-50/50 border-rose-200 text-rose-950'
+                  ? 'bg-emerald-50/50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50 text-emerald-950 dark:text-emerald-200'
+                  : 'bg-rose-50/50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/50 text-rose-950 dark:text-rose-200'
               }`}>
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs text-[#787774]">Số dư ví của bạn:</span>
+                  <span className="text-xs text-[#787774] dark:text-slate-400">Số dư ví của bạn:</span>
                   <div className="flex items-center space-x-1">
                     <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
-                    <strong className="text-base font-bold text-[#37352f]">
+                    <strong className="text-base font-bold text-[#37352f] dark:text-white">
                       {walletBalance} Xu
                     </strong>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-xs pt-1.5 border-t border-black/5">
-                  <span className="text-[#787774]">
+                <div className="flex items-center justify-between text-xs pt-1.5 border-t border-black/5 dark:border-white/10">
+                  <span className="text-[#787774] dark:text-slate-400">
                     {hasEnoughCoins ? 'Số dư sau khi thanh toán:' : 'Trạng thái ví:'}
                   </span>
                   {hasEnoughCoins ? (
-                    <strong className="text-emerald-700 font-semibold">
+                    <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">
                       Còn {walletBalance - priceXu} Xu (Đủ Xu)
                     </strong>
                   ) : (
-                    <strong className="text-rose-700 font-semibold">
+                    <strong className="text-rose-700 dark:text-rose-400 font-semibold">
                       Thiếu {missingCoins} Xu (Cần nạp thêm)
                     </strong>
                   )}
@@ -311,8 +311,8 @@ export default function PaymentModal({
               {/* Not Enough Coins Alert & Top-up Drawer */}
               {!hasEnoughCoins && (
                 <div className="space-y-3">
-                  <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start space-x-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-xs text-amber-900 dark:text-amber-200 flex items-start space-x-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
                       Trang web chỉ chấp nhận Tiền Xu để bảo vệ bản quyền. Bạn có thể nạp thêm Xu qua VietQR để mở khóa ngay bộ thẻ.
                     </p>
@@ -329,17 +329,17 @@ export default function PaymentModal({
                     </button>
                   ) : (
                     /* Embedded VietQR Quick Topup Panel */
-                    <div className="p-4 bg-[#fbfbfa] rounded-lg border border-[#e9e9e8] space-y-3 text-xs animate-fade-in">
-                      <div className="flex items-center justify-between pb-2 border-b border-[#e9e9e8]">
+                    <div className="p-4 bg-[#fbfbfa] dark:bg-slate-800/90 rounded-lg border border-[#e9e9e8] dark:border-white/10 space-y-3 text-xs animate-fade-in">
+                      <div className="flex items-center justify-between pb-2 border-b border-[#e9e9e8] dark:border-white/10">
                         <div className="flex items-center space-x-2">
-                          <QrCode className="w-4 h-4 text-[#2383e2]" />
-                          <strong className="font-semibold text-[#37352f]">
+                          <QrCode className="w-4 h-4 text-[#2383e2] dark:text-blue-400" />
+                          <strong className="font-semibold text-[#37352f] dark:text-white">
                             Nạp Xu Nhanh Bằng VietQR (Tự Động)
                           </strong>
                         </div>
                         <button
                           onClick={() => setIsTopupOpen(false)}
-                          className="text-[#787774] hover:text-[#37352f] text-xs"
+                          className="text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white text-xs"
                         >
                           Thu gọn
                         </button>
@@ -347,7 +347,7 @@ export default function PaymentModal({
 
                       {/* Select Top-up Tier */}
                       <div>
-                        <span className="text-[#787774] block mb-1.5 text-[11px]">
+                        <span className="text-[#787774] dark:text-slate-400 block mb-1.5 text-[11px]">
                           Chọn số lượng Xu cần nạp:
                         </span>
                         <div className="grid grid-cols-3 gap-2">
@@ -362,8 +362,8 @@ export default function PaymentModal({
                               onClick={() => setTopupAmount(tier.xu)}
                               className={`p-2 rounded-lg text-xs font-medium border text-center transition-all ${
                                 topupAmount === tier.xu
-                                  ? 'bg-[#37352f] text-white border-[#37352f]'
-                                  : 'bg-white border-[#e9e9e8] text-[#37352f] hover:bg-black/5'
+                                  ? 'bg-[#37352f] dark:bg-blue-600 text-white border-[#37352f] dark:border-blue-500'
+                                  : 'bg-white dark:bg-slate-800 border-[#e9e9e8] dark:border-white/10 text-[#37352f] dark:text-slate-200 hover:bg-black/5 dark:hover:bg-slate-700'
                               }`}
                             >
                               <div className="font-semibold">{tier.xu} Xu</div>
@@ -377,7 +377,7 @@ export default function PaymentModal({
 
                       {/* QR Code Display */}
                       <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                        <div className="w-32 h-32 bg-white rounded-lg border border-[#e9e9e8] p-1.5 shrink-0 flex items-center justify-center">
+                        <div className="w-32 h-32 bg-white rounded-lg border border-[#e9e9e8] dark:border-white/10 p-1.5 shrink-0 flex items-center justify-center">
                           <img
                             src={qrUrl}
                             alt="VietQR Topup"
@@ -387,24 +387,24 @@ export default function PaymentModal({
 
                         <div className="space-y-1.5 text-[11px] flex-1">
                           <div>
-                            <span className="text-[#787774] block">Số tiền chuyển:</span>
-                            <strong className="text-sm font-bold text-[#2383e2]">
+                            <span className="text-[#787774] dark:text-slate-400 block">Số tiền chuyển:</span>
+                            <strong className="text-sm font-bold text-[#2383e2] dark:text-blue-400">
                               {(topupAmount * 1000).toLocaleString()} VNĐ
                             </strong>
                           </div>
                           <div>
-                            <span className="text-[#787774] block">Nội dung chuyển khoản (Bắt buộc):</span>
+                            <span className="text-[#787774] dark:text-slate-400 block">Nội dung chuyển khoản (Bắt buộc):</span>
                             <div className="flex items-center space-x-1.5 mt-0.5">
-                              <code className="px-2 py-1 bg-amber-50 rounded-md font-mono font-semibold text-amber-900 text-xs border border-amber-200">
+                              <code className="px-2 py-1 bg-amber-50 dark:bg-amber-950/60 rounded-md font-mono font-semibold text-amber-900 dark:text-amber-300 text-xs border border-amber-200 dark:border-amber-800/60">
                                 NAPXU {topupOrderCode}
                               </code>
                               <button
                                 type="button"
                                 onClick={() => handleCopy(`NAPXU ${topupOrderCode}`)}
-                                className="p-1 rounded-md bg-white border border-[#e9e9e8] hover:bg-black/5 text-[#787774]"
+                                className="p-1 rounded-md bg-white dark:bg-slate-700 border border-[#e9e9e8] dark:border-white/10 hover:bg-black/5 dark:hover:bg-slate-600 text-[#787774] dark:text-slate-300"
                                 title="Copy cú pháp"
                               >
-                                {copiedMemo ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                {copiedMemo ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                               </button>
                             </div>
                           </div>
@@ -416,7 +416,7 @@ export default function PaymentModal({
                         type="button"
                         disabled={isSimulatingTopup}
                         onClick={handleSimulateTopup}
-                        className="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition-colors flex items-center justify-center space-x-1.5"
+                        className="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                       >
                         {isSimulatingTopup ? (
                           <span>Đang kiểm tra giao dịch chuyển khoản...</span>
@@ -437,14 +437,14 @@ export default function PaymentModal({
                 <div className="space-y-2 pt-2">
                   <button
                     onClick={handleConfirmPurchase}
-                    className="w-full py-2.5 px-4 rounded-lg font-semibold text-sm text-white bg-[#2383e2] hover:bg-[#1a73e8] transition-colors flex items-center justify-center space-x-2"
+                    className="w-full py-2.5 px-4 rounded-lg font-semibold text-sm text-white bg-[#2383e2] hover:bg-[#1a73e8] transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                   >
                     <Coins className="w-4 h-4 fill-white" />
                     <span>Xác Nhận Mở Khóa ({priceXu} Xu)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
-                  <div className="flex items-center justify-center space-x-1.5 text-[11px] text-[#787774] text-center">
+                  <div className="flex items-center justify-center space-x-1.5 text-[11px] text-[#787774] dark:text-slate-400 text-center">
                     <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                     <span>Trừ trực tiếp từ ví Xu • Mở khóa vĩnh viễn và lưu vào Tủ Tài Liệu</span>
                   </div>
