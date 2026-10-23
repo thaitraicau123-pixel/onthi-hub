@@ -64,8 +64,10 @@ import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
 import {
   getWalletBalance,
+  getTransactions,
   subscribeToTransactions,
-  checkAndApplyApprovedTransactions
+  checkAndApplyApprovedTransactions,
+  sendBrowserDesktopNotification
 } from './utils/wallet';
 import { playSound } from './utils/storage';
 import { isUserAdmin, PRIMARY_ADMIN_EMAIL } from './utils/adminGuard';
@@ -166,15 +168,49 @@ export default function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
 
-    // Global listener for cross-device transaction approvals
-    const unsubTxs = subscribeToTransactions(() => {
+    // Global listener for cross-device transaction approvals & real-time Admin alerts
+    const seenTxIds = new Set();
+    try {
+      const initTxs = getTransactions();
+      initTxs.forEach((t) => {
+        if (t && t.id) seenTxIds.add(t.id);
+      });
+    } catch (e) {}
+
+    const unsubTxs = subscribeToTransactions((latestTxs) => {
       const activeUser = getCurrentUser();
+
+      // 1. Phía học viên: Nhận thông báo khi lệnh nạp tiền được duyệt để cộng Xu
       const res = checkAndApplyApprovedTransactions(activeUser?.email);
       if (res.newlyCreditedCoins > 0) {
         setWalletBalance(getWalletBalance());
         playSound('success');
         confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
         showToast(`🎉 Lệnh nạp tiền đã được Admin duyệt! Bạn được cộng +${res.newlyCreditedCoins} Xu vào ví.`);
+      }
+
+      // 2. Phía Admin: Reo chuông + Toast + Desktop Notification khi có học viên gửi lệnh nạp mới
+      const isAdmin = isUserAdmin(activeUser);
+      if (isAdmin && Array.isArray(latestTxs)) {
+        const newPending = latestTxs.filter((t) => t && t.status === 'pending' && !seenTxIds.has(t.id));
+        if (newPending.length > 0) {
+          newPending.forEach((t) => seenTxIds.add(t.id));
+          const first = newPending[0];
+          const isDeposit = first.type === 'deposit';
+
+          // Rung chuông âm thanh
+          playSound('click');
+
+          // Hiện Toast nổi bật trên web
+          showToast(`🔔 [LỆNH ${isDeposit ? 'NẠP XU' : 'RÚT TIỀN'} MỚI] ${first.userEmail || 'Học viên'}: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')}đ). Mã: ${first.id}`);
+
+          // Bắn thông báo đẩy ra màn hình máy tính (Windows / Mac Desktop Notification)
+          sendBrowserDesktopNotification({
+            title: `🔔 [OnThiHub] Có Lệnh ${isDeposit ? 'Nạp Xu' : 'Rút Tiền'} Mới: ${first.id}`,
+            body: `Học viên: ${first.userEmail || 'Chưa cung cấp'}\nSố lượng: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')} VNĐ)\nBấm vào trang Admin để duyệt ngay.`,
+            tag: first.id
+          });
+        }
       }
     });
 
@@ -522,6 +558,7 @@ export default function App() {
           <PaymentModal
             item={activePaymentItem}
             isCombo={activePaymentItem.id === COMBO_PACKAGE.id}
+            user={user}
             onClose={() => setActivePaymentItem(null)}
             onPaymentSuccess={handlePaymentSuccess}
             onOpenWallet={() => {

@@ -1496,3 +1496,38 @@ export async function adminDirectAdjustUserBalance({ email, amountChange, type =
 
   return { success: true, newBalance, tx };
 }
+
+
+// Request Native Browser Desktop Notification Permission
+export async function requestBrowserNotificationPermission() {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    return 'unsupported';
+  }
+  if (Notification.permission === 'granted') {
+    return 'granted';
+  }
+  try {
+    const res = await Notification.requestPermission();
+    return res;
+  } catch (e) {
+    return 'denied';
+  }
+}
+
+// Send Native Browser Desktop Notification (Windows / Mac / Android)
+export function sendBrowserDesktopNotification({ title, body, icon, tag }) {
+  if (typeof window === 'undefined' || !('Notification' in window) || Notification.permission !== 'granted') {
+    return false;
+  }
+  try {
+    new Notification(title || '[OnThiHub] Thông Báo Mới', {
+      body: body || '',
+      icon: icon || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+      tag: tag || String(Date.now()),
+      requireInteraction: true
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

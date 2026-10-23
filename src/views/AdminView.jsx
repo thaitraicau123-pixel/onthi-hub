@@ -86,6 +86,8 @@ import {
   adminApproveTransaction,
   adminRejectTransaction,
   getAdminNotifications,
+  requestBrowserNotificationPermission,
+  sendBrowserDesktopNotification,
   ADMIN_EMAIL,
   ADMIN_PHONE,
   ADMIN_NTFY_TOPIC,
@@ -192,6 +194,23 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
   const [copiedNtfyTopic, setCopiedNtfyTopic] = useState(false);
   const [isSyncingFirebase, setIsSyncingFirebase] = useState(false);
   const [approvingTxId, setApprovingTxId] = useState(null);
+
+  // Desktop Notification State
+  const [desktopNotifStatus, setDesktopNotifStatus] = useState(() =>
+    typeof window !== 'undefined' && 'Notification' in window ? Notification.permission : 'unsupported'
+  );
+
+  const handleRequestDesktopNotif = async () => {
+    const perm = await requestBrowserNotificationPermission();
+    setDesktopNotifStatus(perm);
+    if (perm === 'granted') {
+      sendBrowserDesktopNotification({
+        title: '🔔 [OnThiHub] Thông báo đẩy đã kích hoạt!',
+        body: 'Máy tính của anh sẽ reo chuông và hiện thông báo ngay khi có học viên nạp hoặc rút Xu.'
+      });
+      playSound('success');
+    }
+  };
 
   // Community Moderation State
   const [communityPosts, setCommunityPosts] = useState(() => getCommunityPosts());
@@ -2887,6 +2906,66 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   </h4>
                   <p className="text-xs text-[#787774] font-medium">
                     Mỗi khi có khách nạp/rút tiền, hệ thống tự động đẩy thông báo qua Web Push ntfy.sh, Email và lưu lại nhật ký tại đây.
+                  </p>
+                </div>
+              </div>
+
+              {/* CARD 0: THÔNG BÁO ĐẨY MÀN HÌNH MÁY TÍNH (WINDOWS / CHROME DESKTOP NOTIFICATION) */}
+              <div className="p-5 bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-sky-950/40 dark:to-indigo-950/40 rounded-2xl border-2 border-sky-300 dark:border-sky-700/60 shadow-sm space-y-3.5 text-xs">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center space-x-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-sky-500 text-white flex items-center justify-center font-bold shadow-xs">
+                      <BellRing className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h5 className="text-sm font-black text-slate-900 dark:text-sky-100">
+                        Thông Báo Đẩy Màn Hình Máy Tính (Windows / Chrome / Edge)
+                      </h5>
+                      <span className="text-[11px] text-slate-600 dark:text-sky-200/80 font-medium">
+                        Reo chuông + Bắn popup góc màn hình ngay cả khi anh đang làm việc ở tab khác hoặc thu nhỏ trình duyệt
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    {desktopNotifStatus === 'granted' ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          sendBrowserDesktopNotification({
+                            title: '🔔 [OnThiHub] Kiểm Tra Thông Báo Máy Tính',
+                            body: 'Máy tính của anh đã sẵn sàng nhận thông báo Nạp Xu tức thì!'
+                          });
+                          playSound('click');
+                        }}
+                        className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors flex items-center space-x-1 cursor-pointer"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Bắn Thử Thông Báo</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleRequestDesktopNotif}
+                        className="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-black text-xs rounded-xl shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+                      >
+                        <BellRing className="w-3.5 h-3.5" />
+                        <span>Bật Thông Báo Về Máy Ngay</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="p-3 bg-white/90 dark:bg-slate-900/90 rounded-xl border border-sky-200 dark:border-sky-800 text-slate-600 dark:text-slate-300 space-y-1 text-[11px]">
+                  <p>
+                    <strong>Trạng thái máy tính:</strong>{' '}
+                    {desktopNotifStatus === 'granted' ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">✅ ĐÃ BẬT - Máy tính sẽ reo chuông và hiện thông báo khi có học viên nạp/rút tiền</span>
+                    ) : desktopNotifStatus === 'denied' ? (
+                      <span className="text-rose-600 dark:text-rose-400 font-bold">❌ BỊ CHẶN - Vui lòng bấm vào icon ổ khóa trên thanh địa chỉ trình duyệt để Bật Thông Báo (Allow Notifications)</span>
+                    ) : (
+                      <span className="text-amber-600 dark:text-amber-400 font-bold">⚠️ CHƯA BẬT - Hãy bấm nút "Bật Thông Báo Về Máy Ngay" ở trên</span>
+                    )}
                   </p>
                 </div>
               </div>
