@@ -95,29 +95,29 @@ export default function AnalyticsModal({
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl border border-[#e9e9e8] overflow-hidden flex flex-col max-h-[90vh] z-10 text-[#37352f] cursor-default"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-[#e9e9e8] dark:border-white/10 overflow-hidden flex flex-col max-h-[90vh] z-10 text-[#37352f] dark:text-slate-100 cursor-default"
       >
         
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-900/90 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-lg bg-[#2383e2]/10 text-[#2383e2] dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center font-bold">
               <BarChart2 className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-[#37352f]">Trung Tâm Phân Tích & Tiến Độ Học Tập</h3>
-              <p className="text-xs text-[#787774]">Theo dõi hiệu quả ghi nhớ Spaced Repetition SM-2 và thói quen học</p>
+              <h3 className="text-base font-bold text-[#37352f] dark:text-white">Trung Tâm Phân Tích & Tiến Độ Học Tập</h3>
+              <p className="text-xs text-[#787774] dark:text-slate-400">Theo dõi hiệu quả ghi nhớ Spaced Repetition SM-2 và thói quen học</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] hover:text-[#37352f] hover:bg-[#f1f1ef] rounded-lg border border-[#e9e9e8] bg-white transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-[#f1f1ef] dark:hover:bg-slate-800 rounded-lg border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 transition-colors cursor-pointer"
             title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
             <span>Đóng</span>
-            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] px-1 py-0.5 rounded text-[#787774]">Esc</kbd>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-[#f0efed] dark:bg-slate-700 px-1 py-0.5 rounded text-[#787774] dark:text-slate-300">Esc</kbd>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -127,71 +127,71 @@ export default function AnalyticsModal({
           
           {/* Top 4 KPI Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3.5 rounded-xl border border-[#e9e9e8] bg-[#fbfbfa]">
-              <div className="flex items-center justify-between text-[#787774]">
+            <div className="p-3.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-800/80">
+              <div className="flex items-center justify-between text-[#787774] dark:text-slate-400">
                 <span className="text-[11px] font-semibold">Tỷ Lệ Nhớ Sâu</span>
-                <Brain className="w-3.5 h-3.5 text-[#2383e2]" />
+                <Brain className="w-3.5 h-3.5 text-[#2383e2] dark:text-blue-400" />
               </div>
-              <div className="mt-2 text-2xl font-extrabold text-[#37352f]">
+              <div className="mt-2 text-2xl font-extrabold text-[#37352f] dark:text-white">
                 {masteryPercent}%
               </div>
-              <div className="mt-1 text-[10px] text-[#787774]">
+              <div className="mt-1 text-[10px] text-[#787774] dark:text-slate-400">
                 {srsStats.totalLearned} / {totalCards} thẻ nhớ lâu
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-[#e9e9e8] bg-[#fbfbfa]">
-              <div className="flex items-center justify-between text-[#787774]">
+            <div className="p-3.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-800/80">
+              <div className="flex items-center justify-between text-[#787774] dark:text-slate-400">
                 <span className="text-[11px] font-semibold">Chuỗi Ngày Học</span>
                 <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
               </div>
-              <div className="mt-2 text-2xl font-extrabold text-[#37352f]">
+              <div className="mt-2 text-2xl font-extrabold text-[#37352f] dark:text-white">
                 {gameStats.streak || 1} ngày
               </div>
-              <div className="mt-1 text-[10px] text-amber-700 font-semibold">
+              <div className="mt-1 text-[10px] text-amber-600 dark:text-amber-400 font-semibold">
                 🔥 Giữ vững phong độ
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-[#e9e9e8] bg-[#fbfbfa]">
-              <div className="flex items-center justify-between text-[#787774]">
+            <div className="p-3.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-800/80">
+              <div className="flex items-center justify-between text-[#787774] dark:text-slate-400">
                 <span className="text-[11px] font-semibold">Tập Trung Pomodoro</span>
-                <Clock className="w-3.5 h-3.5 text-emerald-600" />
+                <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <div className="mt-2 text-2xl font-extrabold text-[#37352f]">
+              <div className="mt-2 text-2xl font-extrabold text-[#37352f] dark:text-white">
                 {pomodoroStats.minutes}p
               </div>
-              <div className="mt-1 text-[10px] text-[#787774]">
+              <div className="mt-1 text-[10px] text-[#787774] dark:text-slate-400">
                 {pomodoroStats.count} phiên hôm nay
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl border border-[#e9e9e8] bg-[#fbfbfa]">
-              <div className="flex items-center justify-between text-[#787774]">
+            <div className="p-3.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-800/80">
+              <div className="flex items-center justify-between text-[#787774] dark:text-slate-400">
                 <span className="text-[11px] font-semibold">Thẻ Cần Ôn Hôm Nay</span>
-                <Calendar className="w-3.5 h-3.5 text-[#d44c47]" />
+                <Calendar className="w-3.5 h-3.5 text-[#d44c47] dark:text-rose-400" />
               </div>
-              <div className="mt-2 text-2xl font-extrabold text-[#d44c47]">
+              <div className="mt-2 text-2xl font-extrabold text-[#d44c47] dark:text-rose-400">
                 {srsStats.totalDue}
               </div>
-              <div className="mt-1 text-[10px] text-[#787774]">
+              <div className="mt-1 text-[10px] text-[#787774] dark:text-slate-400">
                 Chu kỳ SM-2 kích hoạt
               </div>
             </div>
           </div>
 
           {/* SM-2 Spaced Repetition Mastery Progress Bar */}
-          <div className="p-4 rounded-xl border border-[#e9e9e8] bg-white space-y-3">
+          <div className="p-4 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800/80 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#37352f] flex items-center space-x-1.5">
-                <Brain className="w-4 h-4 text-[#9065b0]" />
+              <span className="text-xs font-bold text-[#37352f] dark:text-white flex items-center space-x-1.5">
+                <Brain className="w-4 h-4 text-[#9065b0] dark:text-purple-400" />
                 <span>Trạng Thái Kiến Thức Trong Tủ Thẻ ({totalCards} Thẻ)</span>
               </span>
-              <span className="text-xs text-[#787774]">Mục tiêu 100% Nhớ Sâu</span>
+              <span className="text-xs text-[#787774] dark:text-slate-400">Mục tiêu 100% Nhớ Sâu</span>
             </div>
 
             {/* Segmented Bar */}
-            <div className="h-3 w-full bg-[#f1f1ef] rounded-full overflow-hidden flex">
+            <div className="h-3 w-full bg-[#f1f1ef] dark:bg-slate-700 rounded-full overflow-hidden flex">
               <div
                 style={{ width: `${totalCards > 0 ? (srsStats.totalLearned / totalCards) * 100 : 0}%` }}
                 className="bg-[#448361] h-full transition-all duration-500"
@@ -211,33 +211,33 @@ export default function AnalyticsModal({
 
             {/* Legend */}
             <div className="flex items-center justify-between text-xs pt-1">
-              <div className="flex items-center space-x-1.5 text-[#448361] font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#448361]" />
+              <div className="flex items-center space-x-1.5 text-[#448361] dark:text-emerald-400 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#448361] dark:bg-emerald-400" />
                 <span>Đã nhớ sâu: {srsStats.totalLearned}</span>
               </div>
-              <div className="flex items-center space-x-1.5 text-[#d44c47] font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#d44c47]" />
+              <div className="flex items-center space-x-1.5 text-[#d44c47] dark:text-rose-400 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#d44c47] dark:bg-rose-400" />
                 <span>Cần ôn gấp: {srsStats.totalDue}</span>
               </div>
-              <div className="flex items-center space-x-1.5 text-[#c29243] font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#c29243]" />
+              <div className="flex items-center space-x-1.5 text-[#c29243] dark:text-amber-400 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#c29243] dark:bg-amber-400" />
                 <span>Thẻ mới: {srsStats.totalNew}</span>
               </div>
             </div>
           </div>
 
           {/* 7-Day Spaced Repetition Due Forecast */}
-          <div className="p-4 rounded-xl border border-[#e9e9e8] bg-white space-y-3">
+          <div className="p-4 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800/80 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#37352f] flex items-center space-x-1.5">
-                <TrendingUp className="w-4 h-4 text-[#2383e2]" />
+              <span className="text-xs font-bold text-[#37352f] dark:text-white flex items-center space-x-1.5">
+                <TrendingUp className="w-4 h-4 text-[#2383e2] dark:text-blue-400" />
                 <span>Dự Báo Lịch Ôn Tập 7 Ngày Tới (Spaced Repetition Forecast)</span>
               </span>
-              <span className="text-[11px] text-[#787774]">Thuật toán SuperMemo SM-2</span>
+              <span className="text-[11px] text-[#787774] dark:text-slate-400">Thuật toán SuperMemo SM-2</span>
             </div>
 
             {/* Simple Bar Chart */}
-            <div className="grid grid-cols-7 gap-2 pt-2 items-end h-32 border-b border-[#e9e9e8] pb-2">
+            <div className="grid grid-cols-7 gap-2 pt-2 items-end h-32 border-b border-[#e9e9e8] dark:border-white/10 pb-2">
               {days.map((day, idx) => {
                 const count = forecastData[idx];
                 const heightPercent = Math.max(12, Math.round((count / maxForecast) * 100));
@@ -245,21 +245,21 @@ export default function AnalyticsModal({
 
                 return (
                   <div key={day} className="flex flex-col items-center h-full justify-end group">
-                    <span className="text-[10px] text-[#787774] font-mono mb-1 group-hover:text-[#37352f]">
+                    <span className="text-[10px] text-[#787774] dark:text-slate-400 font-mono mb-1 group-hover:text-[#37352f] dark:group-hover:text-white">
                       {count}
                     </span>
                     <div
                       style={{ height: `${heightPercent}%` }}
                       className={`w-full max-w-[32px] rounded-t-md transition-all ${
                         isToday
-                          ? 'bg-[#d44c47]'
+                          ? 'bg-[#d44c47] dark:bg-rose-500'
                           : count > 0
-                          ? 'bg-[#2383e2]/70 group-hover:bg-[#2383e2]'
-                          : 'bg-[#f1f1ef]'
+                          ? 'bg-[#2383e2]/70 dark:bg-blue-500/80 group-hover:bg-[#2383e2] dark:group-hover:bg-blue-400'
+                          : 'bg-[#f1f1ef] dark:bg-slate-700'
                       }`}
                     />
                     <span className={`text-[10px] mt-1.5 truncate max-w-full ${
-                      isToday ? 'font-bold text-[#d44c47]' : 'text-[#787774]'
+                      isToday ? 'font-bold text-[#d44c47] dark:text-rose-400' : 'text-[#787774] dark:text-slate-400'
                     }`}>
                       {day}
                     </span>
@@ -271,22 +271,22 @@ export default function AnalyticsModal({
 
           {/* Category Mastery Breakdown */}
           <div className="space-y-2.5">
-            <span className="text-xs font-bold text-[#37352f] block">
+            <span className="text-xs font-bold text-[#37352f] dark:text-white block">
               Tiến Độ Theo Chuyên Ngành
             </span>
             <div className="space-y-2">
               {categoryStats.map((cat) => (
-                <div key={cat.id} className="p-3 rounded-lg border border-[#e9e9e8] bg-[#fbfbfa] flex items-center justify-between text-xs">
+                <div key={cat.id} className="p-3 rounded-lg border border-[#e9e9e8] dark:border-white/10 bg-[#fbfbfa] dark:bg-slate-800/80 flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-2.5">
                     <span className="text-base select-none">{cat.emoji}</span>
                     <div>
-                      <span className="font-bold text-[#37352f] block">{cat.label}</span>
-                      <span className="text-[11px] text-[#787774]">{cat.count} bộ tài liệu • {cat.learned}/{cat.total} thẻ</span>
+                      <span className="font-bold text-[#37352f] dark:text-white block">{cat.label}</span>
+                      <span className="text-[11px] text-[#787774] dark:text-slate-400">{cat.count} bộ tài liệu • {cat.learned}/{cat.total} thẻ</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="font-extrabold text-sm text-[#37352f]">{cat.rate}%</span>
-                    <span className="block text-[10px] text-[#787774]">hoàn thành</span>
+                    <span className="font-extrabold text-sm text-[#37352f] dark:text-white">{cat.rate}%</span>
+                    <span className="block text-[10px] text-[#787774] dark:text-slate-400">hoàn thành</span>
                   </div>
                 </div>
               ))}
@@ -296,8 +296,8 @@ export default function AnalyticsModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="px-6 py-3.5 bg-[#fbfbfa] border-t border-[#e9e9e8] flex items-center justify-between">
-          <span className="text-xs text-[#787774]">
+        <div className="px-6 py-3.5 bg-[#fbfbfa] dark:bg-slate-900/90 border-t border-[#e9e9e8] dark:border-white/10 flex items-center justify-between">
+          <span className="text-xs text-[#787774] dark:text-slate-400">
             Học tập ngắt quãng giúp tăng 80% khả năng lưu trữ trí nhớ dài hạn.
           </span>
 
@@ -309,7 +309,7 @@ export default function AnalyticsModal({
                 onOpenDueCards(buildDueCardsDeck(unlockedList));
               }
             }}
-            className="px-4 py-2 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] text-white font-semibold text-xs flex items-center space-x-1.5 shadow-2xs transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-xs flex items-center space-x-1.5 shadow-2xs transition-colors cursor-pointer"
           >
             <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
             <span>Ôn Tập Ngay ({srsStats.totalDue} Thẻ)</span>

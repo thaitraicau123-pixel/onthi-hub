@@ -339,7 +339,7 @@ export async function loginWithGoogle() {
     if (isRealFirebaseConfigured()) {
       let msg = e.message;
       if (e.code === 'auth/operation-not-allowed') {
-        msg = 'Chưa bật nhà cung cấp Google trong Firebase Console (Authentication > Sign-in method > Google). Vui lòng đăng nhập bằng Email Admin (thaitraicau123@gmail.com / admin123456) hoặc bật tính năng này trên Firebase Console.';
+        msg = 'Chưa bật phương thức đăng nhập Google trong Firebase Console (Authentication > Sign-in method > Google). Vui lòng đăng nhập bằng Email và Mật khẩu hoặc kích hoạt tính năng này trên Firebase Console.';
       } else if (e.code === 'auth/popup-closed-by-user') {
         msg = 'Cửa sổ đăng nhập Google đã bị đóng.';
       } else if (e.code === 'auth/popup-blocked') {

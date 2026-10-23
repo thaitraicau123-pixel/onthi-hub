@@ -205,9 +205,15 @@ export default function BlindBoxModal({
         <div className="bg-[#fbfbfa] border-b border-[#e9e9e8] px-4 py-1.5 flex items-center justify-between text-[11px] overflow-hidden text-[#787774]">
           <div className="flex items-center space-x-2 truncate">
             <Trophy className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span className="text-amber-700 font-semibold shrink-0">Nổ Hũ Gần Đây:</span>
+            <span className="text-amber-700 font-semibold shrink-0">Túi Mù Tri Thức:</span>
             <span className="text-[#787774] truncate">
-              {recentWinners[0]?.user} vừa trúng <strong className="text-amber-700">{recentWinners[0]?.reward}</strong> ({recentWinners[0]?.time})
+              {recentWinners && recentWinners.length > 0 ? (
+                <>
+                  {recentWinners[0]?.user} vừa trúng <strong className="text-amber-700">{recentWinners[0]?.reward}</strong> ({recentWinners[0]?.time})
+                </>
+              ) : (
+                '100% mở hộp nhận thưởng thật: Xu hoàn lại, vé tạo thẻ AI Studio và bộ thẻ chuẩn thi!'
+              )}
             </span>
           </div>
 

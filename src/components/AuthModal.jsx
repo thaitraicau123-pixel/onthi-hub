@@ -561,25 +561,6 @@ export default function AuthModal({
                     <span className="bg-white px-3 text-[11px] font-bold text-slate-400 absolute">hoặc đăng nhập bằng Email</span>
                   </div>
 
-                  {/* Quick Admin Auto-fill Button */}
-                  <div className="p-2.5 bg-gradient-to-r from-amber-50 to-rose-50 rounded-xl border border-amber-200 flex items-center justify-between">
-                    <div className="flex items-center space-x-2 text-[11px] text-amber-900 font-bold">
-                      <Crown className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>Tài khoản Super Admin</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEmail('thaitraicau123@gmail.com');
-                        setPassword('admin123456');
-                        setAuthMode('login');
-                      }}
-                      className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-[10px] transition-all hover:scale-105 active:scale-95 shadow-xs"
-                    >
-                      ⚡ Điền nhanh Admin
-                    </button>
-                  </div>
-
                   {/* Email & Password Form */}
                   <form onSubmit={handleEmailSubmit} className="space-y-3">
                     {authMode === 'register' && (

@@ -91,7 +91,7 @@ export default function LeaderboardModal({ onClose }) {
       <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 animate-spring-3d cursor-default"
+        className="relative w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden border border-slate-200 dark:border-white/10 animate-spring-3d cursor-default"
       >
         {/* Header */}
         <div className="p-6 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white flex items-center justify-between">
@@ -117,13 +117,13 @@ export default function LeaderboardModal({ onClose }) {
         </div>
 
         {/* Sub-Tabs Switcher */}
-        <div className="px-5 pt-3 pb-2 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
+        <div className="px-5 pt-3 pb-2 bg-slate-50 dark:bg-slate-900/90 border-b border-slate-100 dark:border-white/10 flex items-center gap-2">
           <button
             onClick={() => setActiveSubTab('leaderboard')}
             className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
               activeSubTab === 'leaderboard'
                 ? 'bg-amber-500 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" />
@@ -135,7 +135,7 @@ export default function LeaderboardModal({ onClose }) {
             className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 ${
               activeSubTab === 'quests'
                 ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             <Target className="w-3.5 h-3.5" />
@@ -144,28 +144,28 @@ export default function LeaderboardModal({ onClose }) {
         </div>
 
         {/* User Streak Card */}
-        <div className="p-4 bg-gradient-to-b from-orange-50/60 to-white border-b border-slate-100">
-          <div className="flex items-center justify-between p-3.5 bg-white rounded-2xl border border-orange-200 shadow-xs">
+        <div className="p-4 bg-gradient-to-b from-orange-50/60 to-white dark:from-slate-800/40 dark:to-slate-900 border-b border-slate-100 dark:border-white/10">
+          <div className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-800 rounded-2xl border border-orange-200 dark:border-orange-500/30 shadow-xs">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 text-white flex items-center justify-center font-black text-lg shadow-sm">
                 <Flame className="w-6 h-6 text-white fill-white animate-pulse" />
               </div>
               <div>
                 <div className="flex items-center space-x-1.5">
-                  <span className="text-lg font-black text-slate-900">{streakInfo.streak} Ngày</span>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-700">
+                  <span className="text-lg font-black text-slate-900 dark:text-white">{streakInfo.streak} Ngày</span>
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300">
                     Chuỗi Streak 🔥
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  Cấp bậc: <strong className="text-indigo-600">{streakInfo.level}</strong> ({streakInfo.xp} XP)
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Cấp bậc: <strong className="text-indigo-600 dark:text-indigo-400">{streakInfo.level}</strong> ({streakInfo.xp} XP)
                 </p>
               </div>
             </div>
 
             <div className="text-right">
               <span className="text-[10px] font-bold text-slate-400 block">Kỷ lục cá nhân:</span>
-              <strong className="text-xs text-slate-800">{streakInfo.highestStreak} ngày liên tiếp</strong>
+              <strong className="text-xs text-slate-800 dark:text-slate-200">{streakInfo.highestStreak} ngày liên tiếp</strong>
             </div>
           </div>
         </div>
@@ -187,12 +187,12 @@ export default function LeaderboardModal({ onClose }) {
                   key={u.clientId || u.rank}
                   className={`p-3 rounded-2xl border flex items-center space-x-3 transition-all ${
                     isTop1
-                      ? 'bg-amber-50/70 border-amber-300 shadow-sm'
+                      ? 'bg-amber-50/70 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700/50 shadow-sm'
                       : isTop2
-                      ? 'bg-slate-50 border-slate-300'
+                      ? 'bg-slate-50 dark:bg-slate-800 border-slate-300 dark:border-white/10'
                       : isTop3
-                      ? 'bg-orange-50/50 border-orange-200'
-                      : 'bg-white border-slate-200'
+                      ? 'bg-orange-50/50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-700/50'
+                      : 'bg-white dark:bg-slate-800/80 border-slate-200 dark:border-white/10'
                   }`}
                 >
                   <div className="w-7 text-center font-black text-sm">
@@ -202,15 +202,15 @@ export default function LeaderboardModal({ onClose }) {
                   <img
                     src={u.avatar}
                     alt={u.name}
-                    className="w-10 h-10 rounded-full object-cover border border-slate-200"
+                    className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-white/10"
                   />
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-1.5">
-                      <span className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                      <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
                         {u.name}
                       </span>
-                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700">
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300">
                         {u.badge}
                       </span>
                     </div>
@@ -220,7 +220,7 @@ export default function LeaderboardModal({ onClose }) {
                   </div>
 
                   <div className="text-right shrink-0">
-                    <strong className="text-xs sm:text-sm font-black text-amber-600 block">
+                    <strong className="text-xs sm:text-sm font-black text-amber-600 dark:text-amber-400 block">
                       {(u.xp || 0).toLocaleString()} XP
                     </strong>
                     <span className="text-[10px] text-slate-400 font-medium">
@@ -236,12 +236,12 @@ export default function LeaderboardModal({ onClose }) {
         {/* TAB 2: DAILY QUESTS */}
         {activeSubTab === 'quests' && (
           <div className="p-5 overflow-y-auto flex-1 space-y-3">
-            <div className="p-3.5 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between">
+            <div className="p-3.5 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-800/50 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-indigo-900">Tiến Độ Hôm Nay:</span>
-                <p className="text-[11px] text-indigo-600">Hoàn thành nhiệm vụ học tập thật để tích lũy XP!</p>
+                <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">Tiến Độ Hôm Nay:</span>
+                <p className="text-[11px] text-indigo-600 dark:text-indigo-300">Hoàn thành nhiệm vụ học tập thật để tích lũy XP!</p>
               </div>
-              <span className="text-sm font-black text-indigo-700 bg-white px-3 py-1 rounded-xl shadow-xs border border-indigo-200">
+              <span className="text-sm font-black text-indigo-700 dark:text-indigo-300 bg-white dark:bg-slate-800 px-3 py-1 rounded-xl shadow-xs border border-indigo-200 dark:border-indigo-700/50">
                 {completedCount}/4 Đạt
               </span>
             </div>
@@ -251,13 +251,13 @@ export default function LeaderboardModal({ onClose }) {
                 key={q.id}
                 className={`p-3.5 rounded-2xl border flex items-center justify-between transition-all ${
                   q.completed
-                    ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950'
-                    : 'bg-white border-slate-200 text-slate-800'
+                    ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800/50 text-emerald-950 dark:text-emerald-100'
+                    : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200'
                 }`}
               >
                 <div className="flex items-center space-x-3">
                   <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
-                    q.completed ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-600'
+                    q.completed ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                   }`}>
                     {q.completed ? <CheckCircle2 className="w-5 h-5" /> : <Target className="w-4 h-4" />}
                   </div>
@@ -268,9 +268,9 @@ export default function LeaderboardModal({ onClose }) {
                 </div>
 
                 <div className="text-right shrink-0">
-                  <span className="text-xs font-black text-amber-600 block">+{q.xp} XP</span>
+                  <span className="text-xs font-black text-amber-600 dark:text-amber-400 block">+{q.xp} XP</span>
                   {q.completed ? (
-                    <span className="text-[10px] font-bold text-emerald-600">Đã Hoàn Thành</span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">Đã Hoàn Thành</span>
                   ) : (
                     <span className="text-[10px] font-bold text-slate-400">Chưa Đạt</span>
                   )}
@@ -281,7 +281,7 @@ export default function LeaderboardModal({ onClose }) {
         )}
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-100 text-center text-xs text-slate-500">
+        <div className="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-white/10 text-center text-xs text-slate-500 dark:text-slate-400">
           Điểm XP được tính trực tiếp từ số thẻ bạn đã lật, bài thi thử và thời gian học thực tế.
         </div>
       </div>

@@ -67,11 +67,11 @@ export default function ChangelogModal({
 
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-white rounded-xl border border-[#e9e9e8] shadow-2xl overflow-hidden flex flex-col text-[#37352f] animate-scale-up my-auto max-h-[92vh] cursor-default"
+        className="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-xl border border-[#e9e9e8] dark:border-white/15 shadow-2xl overflow-hidden flex flex-col text-[#37352f] dark:text-white animate-scale-up my-auto max-h-[92vh] cursor-default"
       >
         
         {/* HEADER */}
-        <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] text-[#37352f] flex items-center justify-between border-b border-[#e9e9e8] shrink-0">
+        <div className="px-5 sm:px-6 py-4 bg-[#fbfbfa] dark:bg-slate-950/80 text-[#37352f] dark:text-white flex items-center justify-between border-b border-[#e9e9e8] dark:border-white/10 shrink-0">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#2383e2]/10 text-[#2383e2] flex items-center justify-center">
               <Sparkles className="w-4 h-4" />
@@ -103,8 +103,8 @@ export default function ChangelogModal({
         </div>
 
         {/* VERSION SELECTOR TABS */}
-        <div className="px-5 sm:px-6 py-2.5 bg-[#f7f6f5] border-b border-[#e9e9e8] flex items-center space-x-2 overflow-x-auto scrollbar-none shrink-0">
-          <span className="text-[11px] font-semibold text-[#787774] uppercase tracking-wider shrink-0 mr-1">
+        <div className="px-5 sm:px-6 py-2.5 bg-[#f7f6f5] dark:bg-slate-950/50 border-b border-[#e9e9e8] dark:border-white/10 flex items-center space-x-2 overflow-x-auto scrollbar-none shrink-0">
+          <span className="text-[11px] font-semibold text-[#787774] dark:text-slate-400 uppercase tracking-wider shrink-0 mr-1">
             Phiên bản:
           </span>
           {CHANGELOG_DATA.map((rel) => {
@@ -118,8 +118,8 @@ export default function ChangelogModal({
                 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all flex items-center space-x-1.5 ${
                   isSelected
-                    ? 'bg-[#37352f] text-white shadow-xs'
-                    : 'bg-white hover:bg-black/5 text-[#787774] border border-[#e9e9e8]'
+                    ? 'bg-[#37352f] dark:bg-slate-700 text-white shadow-xs'
+                    : 'bg-white dark:bg-slate-800 hover:bg-black/5 dark:hover:bg-slate-700/60 text-[#787774] dark:text-slate-300 border border-[#e9e9e8] dark:border-white/10'
                 }`}
               >
                 <span>{rel.version}</span>
@@ -134,15 +134,15 @@ export default function ChangelogModal({
         </div>
 
         {/* SCROLLABLE CONTENT BODY */}
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm bg-white">
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs sm:text-sm bg-white dark:bg-slate-900 text-[#37352f] dark:text-white">
           
           {/* Version Banner */}
-          <div className="p-4 bg-[#f7f6f5] rounded-lg border border-[#e9e9e8] text-[#37352f] space-y-1.5">
+          <div className="p-4 bg-[#f7f6f5] dark:bg-slate-800/80 rounded-lg border border-[#e9e9e8] dark:border-white/10 text-[#37352f] dark:text-white space-y-1.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h4 className="text-base font-bold text-[#37352f] flex items-center space-x-2">
+              <h4 className="text-base font-bold text-[#37352f] dark:text-white flex items-center space-x-2">
                 <span>{activeRelease.title}</span>
               </h4>
-              <span className="text-[11px] font-medium text-[#787774] bg-white px-2 py-0.5 rounded-md border border-[#e9e9e8]">
+              <span className="text-[11px] font-medium text-[#787774] dark:text-slate-300 bg-white dark:bg-slate-700 px-2 py-0.5 rounded-md border border-[#e9e9e8] dark:border-slate-600">
                 📅 {activeRelease.date}
               </span>
             </div>

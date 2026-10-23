@@ -77,17 +77,34 @@ export const DEFAULT_BLIND_BOXES = [
 
 export const BLIND_BOXES = DEFAULT_BLIND_BOXES;
 
-// Real-time ticker hiển thị người trúng quà thực tế
+export const BLINDBOX_HISTORY_KEY = 'onthi_blindbox_history_v2';
+
+export function recordBlindBoxWin(boxName, rewardTitle, userDisplayName) {
+  try {
+    const raw = localStorage.getItem(BLINDBOX_HISTORY_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    list.unshift({
+      user: userDisplayName || 'Bạn vừa mở',
+      box: boxName,
+      reward: rewardTitle,
+      time: 'Vừa xong'
+    });
+    localStorage.setItem(BLINDBOX_HISTORY_KEY, JSON.stringify(list.slice(0, 20)));
+  } catch (e) {}
+}
+
+// Real-time ticker hiển thị người trúng quà thực tế (chỉ lưu và hiển thị kết quả thật, tuyệt đối không tạo tài khoản ảo)
 export function getRecentBlindBoxWinners() {
-  return [
-    { user: 'thanh_tung_neu', box: 'Túi May Mắn', reward: '🤖 +5 Lượt Tạo Thẻ AI', time: '1 phút trước' },
-    { user: 'hoang_long_hust', box: 'Hộp VIP', reward: '🌟 +25 Xu (Lãi +10 Xu)', time: '2 phút trước' },
-    { user: 'minh_thu_ftu', box: 'Rương ULTRA', reward: '💎 Thăng Hạng PRO (1 Tháng)', time: '4 phút trước' },
-    { user: 'ngoc_anh_vcu', box: 'Túi May Mắn', reward: '🗂️ Mở Khóa Đề Thi CBCC', time: '6 phút trước' },
-    { user: 'xuan_bac_it', box: 'Hộp VIP', reward: '💻 Thẻ Frontend Master (29 Xu)', time: '10 phút trước' },
-    { user: 'duc_anh_law', box: 'Rương ULTRA', reward: '🎉 NỔ HŨ JACKPOT 125 XU (3%)', time: '18 phút trước' },
-    { user: 'quynh_chi_ulis', box: 'Rương ULTRA', reward: '🇬🇧 Trọn Bộ IELTS 7.5+ (22 Xu)', time: '25 phút trước' }
-  ];
+  try {
+    const raw = localStorage.getItem(BLINDBOX_HISTORY_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return [];
 }
 
 /**
@@ -346,6 +363,12 @@ export function openBlindBox(boxId) {
   recordStudyAction(25); // +25 XP
   const reward = rollSingleReward(boxId);
 
+  try {
+    const userObj = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('onthi_current_user') || '{}') : null;
+    const userName = userObj?.displayName || (userObj?.email ? userObj.email.split('@')[0] : 'Bạn');
+    recordBlindBoxWin(box.name, reward.title, userName);
+  } catch (e) {}
+
   return {
     success: true,
     box,
@@ -379,6 +402,14 @@ export function openMultipleBlindBoxes(boxId, count = 5) {
   for (let i = 0; i < count; i++) {
     rewards.push(rollSingleReward(boxId));
   }
+
+  try {
+    const userObj = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('onthi_current_user') || '{}') : null;
+    const userName = userObj?.displayName || (userObj?.email ? userObj.email.split('@')[0] : 'Bạn');
+    if (rewards[0]) {
+      recordBlindBoxWin(box.name, `Combo x${count}: ${rewards[0].title}`, userName);
+    }
+  } catch (e) {}
 
   return {
     success: true,

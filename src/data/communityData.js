@@ -128,19 +128,19 @@ export function purgeTestCommunityData() {
           .map(p => {
             // Normalize old bot-inflated likes on initial posts
             if (p.id === 'post_init_1' && (p.likes > 20 || !p.likedBy)) {
-              p.likes = 5;
-              p.role = 'Học viên Ôn thi Công chức • Khối Hành chính';
-              p.likedBy = ['sv_ngoai_thuong_99', 'thanh_hang_neu', 'tuan_anh_hvtc', 'minh_chau_luat', 'hong_anh_hvhc'];
+              p.likes = 0;
+              p.role = 'Ban Quản Trị OnThiHub';
+              p.likedBy = [];
             }
             if (p.id === 'post_init_2' && (p.likes > 20 || !p.likedBy)) {
-              p.likes = 3;
-              p.role = 'Sinh viên CNTT • Đang thực tập Software';
-              p.likedBy = ['dev_bach_khoa', 'hoang_long_fpt', 'nguyen_anh_uit'];
+              p.likes = 0;
+              p.role = 'Ban Quản Trị OnThiHub';
+              p.likedBy = [];
             }
             if (p.id === 'post_init_3' && (p.likes > 20 || !p.likedBy)) {
-              p.likes = 4;
-              p.role = 'Sinh viên Ngoại thương • Tự học IELTS 8.0';
-              p.likedBy = ['lan_anh_dav', 'ha_my_hanu', 'phuong_thao_ftu', 'duc_anh_vcu'];
+              p.likes = 0;
+              p.role = 'Ban Quản Trị OnThiHub';
+              p.likedBy = [];
             }
             return {
               ...p,
