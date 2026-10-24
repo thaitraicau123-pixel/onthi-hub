@@ -227,34 +227,56 @@ export default function DirectChatModal({
   // Gửi tin nhắn
   const handleSendMessage = (e) => {
     e?.preventDefault?.();
-    if (!inputText.trim() && !attachedDeck && !attachedAchievement) return;
-    if (!activePartner) return;
+    const textToSend = inputText.trim();
+    if (!textToSend && !attachedDeck && !attachedAchievement) return;
+
+    // Tự động phân giải đối tác nếu activePartner bị khuyết
+    let partner = activePartner;
+    if (!partner) {
+      partner = isAdmin ? (directory[0] || ADMIN_PARTICIPANT) : ADMIN_PARTICIPANT;
+      setActivePartner(partner);
+    }
+    if (!partner) return;
+
+    // Tránh gửi tin nhắn cho chính mình nếu đang là Admin
+    if (isSameUser(currentParticipant, partner)) {
+      if (directory.length > 0) {
+        partner = directory[0];
+        setActivePartner(partner);
+      } else {
+        onShowToast?.('⚠️ Hãy chọn một bạn học viên trong danh bạ để gửi tin nhắn nhé!');
+        return;
+      }
+    }
 
     playSound('click');
 
+    // Lưu tạm các đính kèm để dọn dẹp form ngay lập tức
+    const deckAttachment = attachedDeck;
+    const achAttachment = attachedAchievement;
+    setInputText('');
+    setAttachedDeck(null);
+    setAttachedAchievement(null);
+
     // Nếu chưa kết bạn và không phải Admin, gửi kèm lời mời kết bạn tự động để kết nối MXH mượt mà
-    if (friendshipStatus === 'none') {
+    if (friendshipStatus === 'none' && !isSameUser(partner, ADMIN_PARTICIPANT)) {
       sendFriendRequest({
         sender: currentParticipant,
-        receiver: activePartner,
-        message: inputText.trim() || 'Chào bạn, kết bạn cùng ôn thi nhé!'
+        receiver: partner,
+        message: textToSend || 'Chào bạn, kết bạn cùng ôn thi nhé!'
       });
     }
 
     const sent = sendDirectMessage({
       sender: currentParticipant,
-      receiver: activePartner,
-      text: inputText,
-      sharedDeck: attachedDeck,
-      sharedAchievement: attachedAchievement
+      receiver: partner,
+      text: textToSend,
+      sharedDeck: deckAttachment,
+      sharedAchievement: achAttachment
     });
 
     if (sent) {
-      // Khử trùng lặp tuyệt đối (Fix lỗi 2 tin nhắn cùng hiện ra khi gửi)
       setMessages((prev) => (prev.some((m) => m.id === sent.id) ? prev : [...prev, sent]));
-      setInputText('');
-      setAttachedDeck(null);
-      setAttachedAchievement(null);
       refreshAllData();
     }
   };

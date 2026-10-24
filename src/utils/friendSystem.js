@@ -6,7 +6,7 @@
 // =========================================================================
 
 import { ADMIN_EMAIL } from './wallet';
-import { ADMIN_PARTICIPANT, isSameUser, matchesUserIdentifier } from './directMessaging';
+import { ADMIN_PARTICIPANT, isSameUser, matchesUserIdentifier, KVDB_BASE_URL } from './directMessaging';
 
 export const FRIENDS_STORAGE_KEY = 'onthi_friends_v2';
 export const FRIEND_REQUESTS_STORAGE_KEY = 'onthi_friend_requests_v2';
@@ -130,14 +130,42 @@ function broadcastFriendUpdate(payload = {}) {
     } catch (e) {}
   }
 
-  // 3. Cloud Relay (ntfy)
-  try {
-    fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'friend_update', ...payload })
-    }).catch(() => {});
-  } catch (e) {}
+  // 3. Đồng bộ KVDB Edge Singapore
+  (async () => {
+    try {
+      let recent = [];
+      try {
+        const res = await fetch(`${KVDB_BASE_URL}/index_recent_friends`, { cache: 'no-store' });
+        if (res.ok) recent = await res.json();
+      } catch (e) {}
+
+      if (!Array.isArray(recent)) recent = [];
+      recent.push({ type: 'friend_update', ...payload, time: Date.now() });
+      if (recent.length > 50) recent = recent.slice(-50);
+
+      await fetch(`${KVDB_BASE_URL}/index_recent_friends`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(recent)
+      });
+    } catch (e) {}
+
+    // 4. Dự phòng ntfy nếu khả dụng
+    try {
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+      fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'friend_update', ...payload }),
+        signal: controller ? controller.signal : undefined
+      })
+        .catch(() => {})
+        .finally(() => {
+          if (timeoutId) clearTimeout(timeoutId);
+        });
+    } catch (e) {}
+  })();
 }
 
 /**
@@ -452,125 +480,100 @@ export function getSuggestedFriends(currentUserId, allDirectoryUsers = []) {
 }
 
 /**
- * Đồng bộ các lời mời và cặp bạn bè từ Cloud Relay về thiết bị
+ * Đồng bộ các lời mời và cặp bạn bè từ Cloud Relay về thiết bị (KVDB Singapore Edge + ntfy fallback)
  */
 export async function syncFriendDataFromCloud(currentUserId) {
   if (!currentUserId) return;
+
+  // 1. Đồng bộ qua KVDB Singapore Edge (Ưu tiên số 1)
   try {
-    const res = await fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/json?poll=1&since=24h`);
-    if (!res.ok) return;
-    const text = await res.text();
-    if (!text) return;
+    const res = await fetch(`${KVDB_BASE_URL}/index_recent_friends`, { cache: 'no-store' });
+    if (res.ok) {
+      const recentFriends = await res.json();
+      if (Array.isArray(recentFriends) && recentFriends.length > 0) {
+        let hasChanges = false;
+        const requests = getAllFriendRequests();
+        const pairs = getAllFriendPairs();
+        const newEventsForMe = [];
 
-    const lines = text.trim().split('\n');
-    let hasChanges = false;
-    const requests = getAllFriendRequests();
-    const pairs = getAllFriendPairs();
+        for (const data of recentFriends) {
+          if (!data || data.type !== 'friend_update') continue;
 
-    for (const line of lines) {
-      try {
-        const payload = JSON.parse(line);
-        if (payload?.event === 'message' && payload.message) {
-          const data = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
-          if (data?.type === 'friend_update') {
-            if (data.action === 'request_sent' && data.request) {
-              const req = data.request;
-              if (!requests.some((r) => r.id === req.id)) {
-                requests.push(req);
-                hasChanges = true;
-              }
-            } else if (data.action === 'request_accepted' && data.pairKey) {
-              if (!pairs.some((p) => p.key === data.pairKey)) {
-                pairs.push({
-                  key: data.pairKey,
-                  userA: data.userA,
-                  userB: data.userB,
-                  userAId: data.userA?.id || data.userA?.email,
-                  userBId: data.userB?.id || data.userB?.email,
-                  createdAt: new Date().toISOString()
-                });
-                hasChanges = true;
-              }
+          if (data.action === 'request_sent' && data.request) {
+            const req = data.request;
+            if (!requests.some((r) => r.id === req.id)) {
+              requests.push(req);
+              hasChanges = true;
+              newEventsForMe.push(data);
+            }
+          } else if (data.action === 'request_accepted' && data.pairKey) {
+            if (!pairs.some((p) => p.key === data.pairKey)) {
+              pairs.push({
+                key: data.pairKey,
+                userA: data.userA,
+                userB: data.userB,
+                userAId: data.userA?.id || data.userA?.email,
+                userBId: data.userB?.id || data.userB?.email,
+                createdAt: new Date().toISOString()
+              });
+              hasChanges = true;
+              newEventsForMe.push(data);
             }
           }
         }
-      } catch (err) {}
-    }
 
-    if (hasChanges) {
-      saveAllFriendRequests(requests);
-      saveAllFriendPairs(pairs);
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('onthi-friend-updated'));
+        if (hasChanges) {
+          saveAllFriendRequests(requests);
+          saveAllFriendPairs(pairs);
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('onthi-friend-updated'));
+            newEventsForMe.forEach((evt) => {
+              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: evt }));
+            });
+          }
+        }
       }
     }
   } catch (e) {}
 }
 
-// Singleton SSE cho sự kiện bạn bè (Tránh mở nhiều kết nối trùng lặp & tranh chấp LocalStorage)
+// Singleton SSE & Poller cho sự kiện bạn bè (Tránh mở nhiều kết nối trùng lặp & tranh chấp LocalStorage)
 let sharedFriendEventSource = null;
 let sharedFriendSubscriberCount = 0;
+let sharedFriendPollerInterval = null;
 
-function ensureSharedFriendSseConnection() {
-  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
-  if (sharedFriendEventSource) return;
+function ensureSharedFriendConnection(currentUserId) {
+  if (typeof window === 'undefined') return;
 
-  try {
-    sharedFriendEventSource = new EventSource(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/sse`);
-    sharedFriendEventSource.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-        if (payload?.event === 'message' && payload.message) {
-          const data = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
-          if (data?.type === 'friend_update') {
-            if (data.action === 'request_sent' && data.request) {
-              const req = data.request;
-              const allReqs = getAllFriendRequests();
-              if (!allReqs.some((r) => r.id === req.id)) {
-                saveAllFriendRequests([...allReqs, req]);
-              }
-              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
-            } else if (data.action === 'request_accepted' && data.pairKey) {
-              const allPairs = getAllFriendPairs();
-              if (!allPairs.some((p) => p.key === data.pairKey)) {
-                saveAllFriendPairs([
-                  ...allPairs,
-                  {
-                    key: data.pairKey,
-                    userA: data.userA,
-                    userB: data.userB,
-                    userAId: data.userA?.id || data.userA?.email,
-                    userBId: data.userB?.id || data.userB?.email,
-                    createdAt: new Date().toISOString()
-                  }
-                ]);
-              }
-              // Đồng thời cập nhật trạng thái request sang accepted
-              const allReqs = getAllFriendRequests();
-              const updatedReqs = allReqs.map((r) => {
-                if (
-                  r.status === 'pending' &&
-                  ((isSameUser(r.sender, data.userA) && isSameUser(r.receiver, data.userB)) ||
-                    (isSameUser(r.sender, data.userB) && isSameUser(r.receiver, data.userA)))
-                ) {
-                  return { ...r, status: 'accepted', updatedAt: new Date().toISOString() };
-                }
-                return r;
-              });
-              saveAllFriendRequests(updatedReqs);
-              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
-            } else {
+  // 1. Poller định kỳ qua KVDB Singapore Edge (Mỗi 3s)
+  if (!sharedFriendPollerInterval) {
+    sharedFriendPollerInterval = setInterval(() => {
+      syncFriendDataFromCloud(currentUserId);
+    }, 3000);
+  }
+
+  // 2. Dự phòng SSE ntfy
+  if (typeof EventSource !== 'undefined' && !sharedFriendEventSource) {
+    try {
+      sharedFriendEventSource = new EventSource(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/sse`);
+      sharedFriendEventSource.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload?.event === 'message' && payload.message) {
+            const data = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
+            if (data?.type === 'friend_update') {
               window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
             }
           }
-        }
-      } catch (err) {}
-    };
-  } catch (err) {}
+        } catch (err) {}
+      };
+      sharedFriendEventSource.onerror = () => {};
+    } catch (err) {}
+  }
 }
 
 /**
- * Đăng ký lắng nghe sự kiện bạn bè theo thời gian thực (Tab Sync + Singleton Cloud SSE Relay)
+ * Đăng ký lắng nghe sự kiện bạn bè theo thời gian thực (Tab Sync + KVDB Edge Poller + Cloud SSE)
  */
 export function subscribeToFriendEvents(currentUserId, onUpdate) {
   const handleLocalOrCloud = (e) => {
@@ -590,21 +593,27 @@ export function subscribeToFriendEvents(currentUserId, onUpdate) {
     } catch (e) {}
   }
 
-  // 2. Tự động đồng bộ lời mời kết bạn từ Cloud Relay ngay khi bắt đầu
+  // 2. Tự động đồng bộ lời mời kết bạn ngay khi bắt đầu
   syncFriendDataFromCloud(currentUserId || true);
 
-  // 3. Kích hoạt Singleton Cloud Relay SSE (ntfy.sh)
+  // 3. Kích hoạt kết nối Singleton Cloud Relay (KVDB Poller + SSE)
   sharedFriendSubscriberCount++;
-  ensureSharedFriendSseConnection();
+  ensureSharedFriendConnection(currentUserId || true);
 
   return () => {
     window.removeEventListener('onthi-friend-updated', handleLocalOrCloud);
     window.removeEventListener('onthi-friend-cloud-received', handleLocalOrCloud);
     if (bc) bc.close();
     sharedFriendSubscriberCount = Math.max(0, sharedFriendSubscriberCount - 1);
-    if (sharedFriendSubscriberCount === 0 && sharedFriendEventSource) {
-      sharedFriendEventSource.close();
-      sharedFriendEventSource = null;
+    if (sharedFriendSubscriberCount === 0) {
+      if (sharedFriendPollerInterval) {
+        clearInterval(sharedFriendPollerInterval);
+        sharedFriendPollerInterval = null;
+      }
+      if (sharedFriendEventSource) {
+        sharedFriendEventSource.close();
+        sharedFriendEventSource = null;
+      }
     }
   };
 }
