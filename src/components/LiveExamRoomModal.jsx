@@ -21,7 +21,8 @@ import {
   Volume2,
   VolumeX,
   Coins,
-  MessageSquare
+  MessageSquare,
+  Crown
 } from 'lucide-react';
 import { addCommunityPost } from '../data/communityData';
 import {
@@ -498,22 +499,28 @@ export default function LiveExamRoomModal({
               {/* Card 2: Rewards Pool */}
               <div className="p-4 rounded-xl border border-slate-200 dark:border-white/15 bg-white dark:bg-slate-800/90 shadow-2xs space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">QUỸ THƯỞNG XU & BẢNG VÀNG</span>
-                  <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400">QUỸ THƯỞNG GÓI HỘI VIÊN & BẢNG VÀNG</span>
+                  <Crown className="w-4 h-4 text-amber-500 fill-amber-400" />
                 </div>
 
                 <div className="space-y-1.5 text-xs">
-                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200">
-                    <span>🥇 Top 1 Thủ Khoa</span>
-                    <strong className="font-black">+{activeExam.rewards.top1} Xu</strong>
+                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/60 dark:to-yellow-950/40 text-amber-900 dark:text-amber-200 border border-amber-200/80 dark:border-amber-800/60">
+                    <span className="font-semibold">🥇 Top 1 Thủ Khoa</span>
+                    <strong className="font-black text-amber-700 dark:text-amber-300">
+                      {activeExam.rewards?.top1?.name || 'Gói Hội Viên ULTRA 👑'}
+                    </strong>
                   </div>
-                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
+                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-200">
                     <span>🥈 Top 2 Toàn Quốc</span>
-                    <strong className="font-bold">+{activeExam.rewards.top2} Xu</strong>
+                    <strong className="font-bold text-sky-600 dark:text-sky-300">
+                      {activeExam.rewards?.top2?.name || 'Gói Hội Viên PRO 🚀'}
+                    </strong>
                   </div>
-                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200">
+                  <div className="flex items-center justify-between p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700/80 text-slate-800 dark:text-slate-200">
                     <span>🥉 Top 3 Toàn Quốc</span>
-                    <strong className="font-bold">+{activeExam.rewards.top3} Xu</strong>
+                    <strong className="font-bold text-sky-600 dark:text-sky-300">
+                      {activeExam.rewards?.top3?.name || 'Gói Hội Viên PRO 🚀'}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -839,10 +846,10 @@ export default function LiveExamRoomModal({
                 </div>
               </div>
 
-              {examResult.rewardedCoins > 0 && (
-                <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                  <Coins className="w-4 h-4 fill-amber-500 text-amber-500" />
-                  <span>Chúc mừng bạn nhận +{examResult.rewardedCoins} Xu học tập nội bộ & Danh hiệu Bảng Vàng!</span>
+              {examResult.rewardedMembership && (
+                <div className="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/15 via-yellow-500/15 to-amber-500/15 border border-amber-400/50 text-amber-900 dark:text-amber-200 text-xs font-bold inline-flex items-center gap-2 shadow-xs">
+                  <Crown className="w-4 h-4 fill-amber-500 text-amber-500 shrink-0" />
+                  <span>🎉 Chúc mừng bạn được trao tặng: <strong>{examResult.rewardedMembership}</strong> & Vinh danh Bảng Vàng!</span>
                 </div>
               )}
 

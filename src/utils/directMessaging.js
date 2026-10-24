@@ -428,10 +428,11 @@ export function getConversationMessages(conversationId, currentParticipant, targ
  * @param {Object} params.receiver - Thông tin người nhận
  * @param {string} params.text - Nội dung tin nhắn
  * @param {Object|null} [params.sharedDeck=null] - Bộ thẻ flashcard đính kèm (nếu có)
+ * @param {Object|null} [params.sharedAchievement=null] - Bằng khen/chứng nhận hoàng gia 4K đính kèm (nếu có)
  * @returns {Object} Tin nhắn vừa tạo
  */
-export function sendDirectMessage({ sender, receiver, text, sharedDeck = null }) {
-  if (!sender || !receiver || (!text?.trim() && !sharedDeck)) {
+export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, sharedAchievement = null }) {
+  if (!sender || !receiver || (!text?.trim() && !sharedDeck && !sharedAchievement)) {
     return null;
   }
 
@@ -475,8 +476,28 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
           priceXu: sharedDeck.priceXu !== undefined ? sharedDeck.priceXu : 0
         }
       : null,
+    sharedAchievement: sharedAchievement
+      ? {
+          id: sharedAchievement.id || `ach_${Date.now()}`,
+          title: sharedAchievement.title || 'Chứng Nhận Kỷ Lục Hoàng Gia',
+          subtitle: sharedAchievement.subtitle || 'Vinh danh bảng vàng thành tích xuất sắc',
+          userName: sharedAchievement.userName || sender.name,
+          userTier: sharedAchievement.userTier || sender.tier,
+          type: sharedAchievement.type || 'exam',
+          theme: sharedAchievement.theme || 'royal_gold',
+          score: sharedAchievement.score,
+          totalQuestions: sharedAchievement.totalQuestions,
+          accuracy: sharedAchievement.accuracy,
+          speed: sharedAchievement.speed,
+          streak: sharedAchievement.streak,
+          examTitle: sharedAchievement.examTitle || sharedAchievement.courseTitle || '',
+          dateStr: sharedAchievement.dateStr || nowIso
+        }
+      : null,
     createdAt: nowIso,
-    isRead: false
+    status: 'delivered', // 'sent' | 'delivered' | 'seen'
+    isRead: false,
+    readAt: null
   };
 
   // 1. Lưu cục bộ
@@ -513,12 +534,13 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null })
 }
 
 /**
- * Đánh dấu tất cả tin nhắn trong cuộc hội thoại là đã đọc
+ * Đánh dấu tất cả tin nhắn trong cuộc hội thoại là đã đọc & phát biên nhận đã xem (Read Receipt)
  */
 export function markConversationAsRead(conversationId, currentUserId) {
   if (!conversationId) return;
   const allMsgs = getAllMessages();
   let changed = false;
+  const nowIso = new Date().toISOString();
 
   const updated = allMsgs.map((msg) => {
     const isMatchingConv =
@@ -531,9 +553,9 @@ export function markConversationAsRead(conversationId, currentUserId) {
         msg.receiverId === 'default_user' ||
         (currentUserId === 'admin_onthi' && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi'));
 
-      if (isTargetReceiver && !msg.isRead) {
+      if (isTargetReceiver && (!msg.isRead || msg.status !== 'seen')) {
         changed = true;
-        return { ...msg, isRead: true };
+        return { ...msg, isRead: true, status: 'seen', readAt: nowIso };
       }
     }
     return msg;
@@ -541,9 +563,33 @@ export function markConversationAsRead(conversationId, currentUserId) {
 
   if (changed) {
     saveAllMessages(updated);
+
+    const receiptPayload = {
+      type: 'read_receipt',
+      conversationId,
+      readerId: typeof currentUserId === 'object' ? currentUserId.id : currentUserId,
+      readAt: nowIso
+    };
+
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('onthi-dm-read-updated'));
+      window.dispatchEvent(new CustomEvent('onthi-dm-read-updated', { detail: receiptPayload }));
     }
+
+    if (typeof BroadcastChannel !== 'undefined') {
+      try {
+        const bc = new BroadcastChannel(DM_BROADCAST_CHANNEL);
+        bc.postMessage(receiptPayload);
+        bc.close();
+      } catch (e) {}
+    }
+
+    try {
+      fetch(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body: JSON.stringify(receiptPayload)
+      }).catch(() => {});
+    } catch (e) {}
   }
 }
 
@@ -637,6 +683,20 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
       bc.onmessage = (event) => {
         if (event.data?.type === 'new_message' && event.data.message) {
           onNewMessage?.(event.data.message);
+        } else if (event.data?.type === 'read_receipt' && event.data.conversationId) {
+          const allMsgs = getAllMessages();
+          let changed = false;
+          const updated = allMsgs.map((m) => {
+            if (m.conversationId === event.data.conversationId && (!m.isRead || m.status !== 'seen')) {
+              changed = true;
+              return { ...m, isRead: true, status: 'seen', readAt: event.data.readAt || new Date().toISOString() };
+            }
+            return m;
+          });
+          if (changed) {
+            saveAllMessages(updated);
+            onNewMessage?.(null);
+          }
         }
       };
     } catch (e) {}
@@ -664,6 +724,20 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
                 saveAllMessages([...allMsgs, incoming]);
                 onNewMessage?.(incoming);
               }
+            }
+          } else if (dm?.type === 'read_receipt' && dm.conversationId) {
+            const allMsgs = getAllMessages();
+            let changed = false;
+            const updated = allMsgs.map((m) => {
+              if (m.conversationId === dm.conversationId && (!m.isRead || m.status !== 'seen')) {
+                changed = true;
+                return { ...m, isRead: true, status: 'seen', readAt: dm.readAt || new Date().toISOString() };
+              }
+              return m;
+            });
+            if (changed) {
+              saveAllMessages(updated);
+              onNewMessage?.(null);
             }
           }
         }

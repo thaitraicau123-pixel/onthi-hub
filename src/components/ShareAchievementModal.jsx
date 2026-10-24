@@ -129,12 +129,11 @@ export default function ShareAchievementModal({
     if (!onOpenDirectChat) return;
     playSound('click');
     onClose();
-    onOpenDirectChat(null, {
-      id: 'achievement_share',
-      title: `🏆 Giấy Chứng Nhận Hoàng Gia: ${achievementData?.title || 'Kỷ Lục'}`,
-      categoryLabel: 'Bảng Vàng Danh Dự',
-      previewCards: []
-    });
+    const payload = {
+      ...achievementData,
+      theme: selectedTheme
+    };
+    onOpenDirectChat(null, null, payload);
   };
 
   if (!isOpen) return null;

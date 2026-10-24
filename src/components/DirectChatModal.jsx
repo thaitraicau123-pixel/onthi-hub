@@ -21,7 +21,9 @@ import {
   Heart,
   MessageSquarePlus,
   HelpCircle,
-  Bell
+  Bell,
+  CheckCheck,
+  Crown
 } from 'lucide-react';
 import { useModalDismiss } from '../hooks/useModalDismiss';
 import {
@@ -77,8 +79,10 @@ export default function DirectChatModal({
   currentUser,
   targetPartner = null,
   initialAttachedDeck = null,
+  initialAttachedAchievement = null,
   allCourses = [],
   onOpenFlashcards,
+  onOpenShareAchievement,
   onShowToast
 }) {
   const { handleBackdropClick } = useModalDismiss(onClose, isOpen);
@@ -108,9 +112,10 @@ export default function DirectChatModal({
   const [inputText, setInputText] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [attachedDeck, setAttachedDeck] = useState(initialAttachedDeck);
+  const [attachedAchievement, setAttachedAchievement] = useState(initialAttachedAchievement);
   const [showDeckPicker, setShowDeckPicker] = useState(false);
   const [copiedLinkDeckId, setCopiedLinkDeckId] = useState(null);
-  const [mobileShowChat, setMobileShowChat] = useState(Boolean(targetPartner));
+  const [mobileShowChat, setMobileShowChat] = useState(Boolean(targetPartner || initialAttachedAchievement));
   
   // Thêm bạn bè trực tiếp qua Email hoặc tên
   const [addFriendInput, setAddFriendInput] = useState('');
@@ -124,7 +129,7 @@ export default function DirectChatModal({
     return getFriendshipStatus(currentParticipant, activePartner);
   }, [currentParticipant, activePartner, friends, incomingRequests]);
 
-  // Cập nhật khi targetPartner hoặc initialAttachedDeck từ ngoài truyền vào
+  // Cập nhật khi targetPartner hoặc initialAttachedDeck / initialAttachedAchievement từ ngoài truyền vào
   useEffect(() => {
     if (targetPartner) {
       setActivePartner(targetPartner);
@@ -138,6 +143,15 @@ export default function DirectChatModal({
       setAttachedDeck(initialAttachedDeck);
     }
   }, [initialAttachedDeck]);
+
+  useEffect(() => {
+    if (initialAttachedAchievement) {
+      setAttachedAchievement(initialAttachedAchievement);
+      setInputText((prev) => prev || `🏆 Mình vừa đạt chứng nhận kỷ lục hoàng gia: ${initialAttachedAchievement.title}! Khoe với bạn nè! ✨`);
+      setMobileShowChat(true);
+      setSidebarTab('conversations');
+    }
+  }, [initialAttachedAchievement]);
 
   // Làm mới tất cả dữ liệu hội thoại, bạn bè và lời mời
   const refreshAllData = () => {
@@ -188,8 +202,15 @@ export default function DirectChatModal({
             return [...prev, newMsg];
           });
           markConversationAsRead(curConvId, currentParticipant.id);
-          playSound('click');
+          if (!isSameUser(newMsg.sender, currentParticipant)) {
+            playSound('bell');
+          }
         }
+      } else if (activePartner && !newMsg) {
+        // Cập nhật trạng thái 'Đã xem' hoặc đồng bộ nền
+        const curConvId = getConversationId(currentParticipant.id, activePartner.id);
+        const msgs = getConversationMessages(curConvId, currentParticipant, activePartner);
+        setMessages(msgs);
       }
     });
 
@@ -206,7 +227,7 @@ export default function DirectChatModal({
   // Gửi tin nhắn
   const handleSendMessage = (e) => {
     e?.preventDefault?.();
-    if (!inputText.trim() && !attachedDeck) return;
+    if (!inputText.trim() && !attachedDeck && !attachedAchievement) return;
     if (!activePartner) return;
 
     playSound('click');
@@ -224,13 +245,16 @@ export default function DirectChatModal({
       sender: currentParticipant,
       receiver: activePartner,
       text: inputText,
-      sharedDeck: attachedDeck
+      sharedDeck: attachedDeck,
+      sharedAchievement: attachedAchievement
     });
 
     if (sent) {
-      setMessages((prev) => [...prev, sent]);
+      // Khử trùng lặp tuyệt đối (Fix lỗi 2 tin nhắn cùng hiện ra khi gửi)
+      setMessages((prev) => (prev.some((m) => m.id === sent.id) ? prev : [...prev, sent]));
       setInputText('');
       setAttachedDeck(null);
+      setAttachedAchievement(null);
       refreshAllData();
     }
   };
@@ -1303,16 +1327,110 @@ export default function DirectChatModal({
                             </div>
                           </div>
                         )}
+
+                        {/* Shared 4K Royal Achievement Certificate Card inside chat */}
+                        {msg.sharedAchievement && (
+                          <div
+                            className={`mt-2 p-3 rounded-2xl border transition-all shadow-md relative overflow-hidden ${
+                              msg.sharedAchievement.theme === 'crimson_glory'
+                                ? 'bg-gradient-to-br from-red-950/80 via-slate-900 to-amber-950/80 border-red-500/40 text-white'
+                                : msg.sharedAchievement.theme === 'cyber_diamond'
+                                ? 'bg-gradient-to-br from-sky-950/80 via-slate-900 to-indigo-950/80 border-sky-400/40 text-white'
+                                : 'bg-gradient-to-br from-amber-950/80 via-slate-900 to-yellow-950/80 border-amber-400/50 text-white'
+                            }`}
+                          >
+                            <div className="flex items-start space-x-2.5">
+                              <div
+                                className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 border shadow-md ${
+                                  msg.sharedAchievement.theme === 'crimson_glory'
+                                    ? 'bg-gradient-to-br from-red-500 to-amber-600 text-white border-red-400'
+                                    : msg.sharedAchievement.theme === 'cyber_diamond'
+                                    ? 'bg-gradient-to-br from-sky-400 to-purple-600 text-white border-sky-300'
+                                    : 'bg-gradient-to-br from-amber-400 to-yellow-600 text-slate-950 border-amber-300'
+                                }`}
+                              >
+                                <Crown className="w-5 h-5 fill-current" />
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                                    Bằng Khen Hoàng Gia 4K
+                                  </span>
+                                  {msg.sharedAchievement.score !== undefined && (
+                                    <span className="text-[10px] font-bold text-emerald-300">
+                                      {msg.sharedAchievement.score}/{msg.sharedAchievement.totalQuestions || 60} Câu ({msg.sharedAchievement.accuracy || 100}%)
+                                    </span>
+                                  )}
+                                  {msg.sharedAchievement.streak > 0 && (
+                                    <span className="text-[10px] font-bold text-amber-300">
+                                      🔥 Chuỗi {msg.sharedAchievement.streak} Ngày
+                                    </span>
+                                  )}
+                                </div>
+                                <h4 className="text-xs sm:text-sm font-black truncate mt-1 text-amber-100">
+                                  {msg.sharedAchievement.title}
+                                </h4>
+                                <p className="text-[10px] text-slate-300 truncate">
+                                  Thí sinh: {msg.sharedAchievement.userName || msg.sender?.name}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+                              <button
+                                type="button"
+                                onClick={() => onOpenShareAchievement?.(msg.sharedAchievement)}
+                                className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-950 text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all"
+                              >
+                                <Sparkles className="w-3.5 h-3.5" />
+                                <span>👑 Xem Bằng Khen 4K Retina</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Timestamp */}
-                      <span
-                        className={`text-[9px] text-slate-400 dark:text-slate-500 block px-1 ${
-                          isMe ? 'text-right' : 'text-left'
+                      {/* Timestamp & Delivery Status Badge */}
+                      <div
+                        className={`flex items-center space-x-1.5 px-1 ${
+                          isMe ? 'justify-end' : 'justify-start'
                         }`}
                       >
-                        {formatHanoiDateTime(msg.createdAt, false)}
-                      </span>
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500">
+                          {formatHanoiDateTime(msg.createdAt, false)}
+                        </span>
+
+                        {isMe && (
+                          <>
+                            {msg.status === 'seen' || msg.isRead ? (
+                              <span
+                                className="inline-flex items-center gap-0.5 text-[9px] text-sky-400 dark:text-sky-300 font-semibold"
+                                title={msg.readAt ? `Đã xem lúc ${formatHanoiDateTime(msg.readAt, false)}` : 'Đã xem'}
+                              >
+                                <CheckCheck className="w-3 h-3 text-sky-400" />
+                                <span>Đã xem</span>
+                              </span>
+                            ) : msg.status === 'delivered' ? (
+                              <span
+                                className="inline-flex items-center gap-0.5 text-[9px] text-slate-400 dark:text-slate-400 font-medium"
+                                title="Đã nhận"
+                              >
+                                <CheckCheck className="w-3 h-3 text-slate-400" />
+                                <span>Đã nhận</span>
+                              </span>
+                            ) : (
+                              <span
+                                className="inline-flex items-center gap-0.5 text-[9px] text-slate-400 dark:text-slate-400 font-medium"
+                                title="Đã gửi"
+                              >
+                                <Check className="w-3 h-3 text-slate-400" />
+                                <span>Đã gửi</span>
+                              </span>
+                            )}
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -1366,6 +1484,32 @@ export default function DirectChatModal({
             </div>
           )}
 
+          {/* Attached Achievement Preview Pill (before sending) */}
+          {attachedAchievement && (
+            <div className="mx-3 mt-1.5 p-2 rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/80 dark:to-yellow-950/60 border border-amber-300 dark:border-amber-500/50 flex items-center justify-between text-xs animate-fade-in shadow-xs">
+              <div className="flex items-center space-x-2 min-w-0">
+                <span className="text-base shrink-0">👑</span>
+                <div className="min-w-0">
+                  <span className="font-bold text-amber-900 dark:text-amber-200 block truncate">
+                    Đính kèm Bằng Khen Hoàng Gia: {attachedAchievement.title}
+                  </span>
+                  <span className="text-[10px] text-amber-700 dark:text-amber-400">
+                    {attachedAchievement.score !== undefined ? `${attachedAchievement.score}/${attachedAchievement.totalQuestions || 60} Câu` : 'Vinh Danh Kỷ Lục'} • Định dạng 4K Retina
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setAttachedAchievement(null)}
+                className="p-1 text-slate-400 hover:text-rose-500 cursor-pointer"
+                title="Bỏ đính kèm bằng khen"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           {/* Message Input Footer Form */}
           <form
             onSubmit={handleSendMessage}
@@ -1400,7 +1544,7 @@ export default function DirectChatModal({
             {/* Send Button */}
             <button
               type="submit"
-              disabled={!inputText.trim() && !attachedDeck}
+              disabled={!inputText.trim() && !attachedDeck && !attachedAchievement}
               className="px-4 py-2 bg-[#2383e2] hover:bg-[#1a73e8] disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs shrink-0 active:scale-95"
             >
               <span>Gửi</span>

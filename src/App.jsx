@@ -85,6 +85,11 @@ import {
   subscribeToSleepMode
 } from './utils/themeManager';
 import { parseUrlParameters } from './utils/shareLink';
+import {
+  subscribeToDirectMessages,
+  isSameUser,
+  matchesUserIdentifier
+} from './utils/directMessaging';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -126,11 +131,13 @@ export default function App() {
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
   const [directChatPartner, setDirectChatPartner] = useState(null);
   const [directChatAttachDeck, setDirectChatAttachDeck] = useState(null);
+  const [directChatAttachAchievement, setDirectChatAttachAchievement] = useState(null);
   const [initialCardIndex, setInitialCardIndex] = useState(null);
 
-  const handleOpenDirectChat = (partner = null, attachDeck = null) => {
+  const handleOpenDirectChat = (partner = null, attachDeck = null, attachAchievement = null) => {
     setDirectChatPartner(partner);
     setDirectChatAttachDeck(attachDeck);
+    setDirectChatAttachAchievement(attachAchievement);
     setIsDirectChatOpen(true);
   };
 
@@ -227,10 +234,40 @@ export default function App() {
       setMarketplaceDecks(decks);
     });
 
+    // Global real-time listener for incoming direct messages (Chime + Toast + Desktop Notification)
+    const unsubDM = subscribeToDirectMessages(user, (incomingMsg) => {
+      if (!incomingMsg || !incomingMsg.id) return;
+      const activeUser = getCurrentUser();
+      if (isSameUser(incomingMsg.sender, activeUser)) return;
+
+      const isForMe =
+        matchesUserIdentifier(incomingMsg.receiver, activeUser) ||
+        (isUserAdmin(activeUser) && (incomingMsg.receiverId === 'admin_onthi' || incomingMsg.receiver?.id === 'admin_onthi'));
+
+      if (isForMe) {
+        playSound('bell');
+        const senderName = incomingMsg.sender?.name || 'Bạn học';
+        const msgSnippet = incomingMsg.sharedAchievement
+          ? '🏆 Đã gửi Bằng Khen Kỷ Lục Hoàng Gia 4K!'
+          : incomingMsg.sharedDeck
+          ? `📇 Đã chia sẻ Bộ Thẻ: ${incomingMsg.sharedDeck.title}`
+          : incomingMsg.text || 'Tin nhắn mới';
+
+        showToast(`💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`);
+
+        sendBrowserDesktopNotification({
+          title: `💬 [OnThiHub] Tin nhắn mới từ ${senderName}`,
+          body: msgSnippet,
+          tag: incomingMsg.id
+        });
+      }
+    });
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       if (typeof unsubTxs === 'function') unsubTxs();
       if (typeof unsubMarket === 'function') unsubMarket();
+      if (typeof unsubDM === 'function') unsubDM();
       if (typeof unsubTheme === 'function') unsubTheme();
       if (typeof unsubWeather === 'function') unsubWeather();
       if (typeof unsubSleep === 'function') unsubSleep();
@@ -820,15 +857,18 @@ export default function App() {
               setIsDirectChatOpen(false);
               setDirectChatPartner(null);
               setDirectChatAttachDeck(null);
+              setDirectChatAttachAchievement(null);
             }}
             currentUser={user}
             targetPartner={directChatPartner}
             initialAttachedDeck={directChatAttachDeck}
+            initialAttachedAchievement={directChatAttachAchievement}
             allCourses={allAvailableCourses}
             onOpenFlashcards={(deck) => {
               setIsDirectChatOpen(false);
               setActiveFlashcardCourse(deck);
             }}
+            onOpenShareAchievement={(ach) => setActiveShareAchievement(ach)}
             onShowToast={showToast}
           />
         )}

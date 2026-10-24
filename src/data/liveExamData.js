@@ -13,6 +13,7 @@ import {
 } from '../utils/hanoiTime';
 import { COURSES_DATA } from './coursesData';
 import { addWalletCoins } from '../utils/wallet';
+import { setUserTier, getUserTier } from '../utils/userTier';
 
 export const LIVE_EXAM_REG_KEY = 'onthi_live_exam_registrations_v1';
 export const LIVE_EXAM_RESULTS_KEY = 'onthi_live_exam_results_v1';
@@ -36,10 +37,10 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:00',
     passThresholdPercent: 50, // Đúng >= 30/60 câu
     rewards: {
-      top1: 5,
-      top2: 3,
-      top3: 2,
-      passed: 1
+      top1: { tier: 'ultra', name: 'Gói Hội Viên ULTRA 👑 (VIP 1 Năm)' },
+      top2: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 6 Tháng)' },
+      top3: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 3 Tháng)' },
+      passed: { tier: 'plus', name: 'Gói Hội Viên PLUS 🌟 (Trải Nghiệm)' }
     },
     registeredBaseCount: 142,
     rules: [
@@ -47,7 +48,7 @@ export const SCHEDULED_LIVE_EXAMS = [
       'Thời gian làm bài: 60 phút gồm 60 câu trắc nghiệm chính thức.',
       'Cơ chế chống gian lận: Cảnh báo nếu chuyển tab hoặc rời màn hình quá 3 lần.',
       'Xếp hạng Realtime căn cứ vào: Số câu đúng cao nhất & Thời gian nộp bài sớm nhất.',
-      'Phần thưởng: Xu học tập nội bộ + Quyền Đăng Status Vinh Danh Lên Diễn Đàn & Khung Bảng Vàng.'
+      'Phần thưởng: Kích hoạt Gói Hội Viên ULTRA/PRO/PLUS VIP + Bằng Khen Kỷ Lục Hoàng Gia 4K & Quyền Đăng Status Vinh Danh Lên Diễn Đàn.'
     ]
   },
   {
@@ -64,17 +65,17 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:10',
     passThresholdPercent: 60,
     rewards: {
-      top1: 5,
-      top2: 3,
-      top3: 2,
-      passed: 1
+      top1: { tier: 'ultra', name: 'Gói Hội Viên ULTRA 👑 (VIP 1 Năm)' },
+      top2: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 6 Tháng)' },
+      top3: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 3 Tháng)' },
+      passed: { tier: 'plus', name: 'Gói Hội Viên PLUS 🌟 (Trải Nghiệm)' }
     },
     registeredBaseCount: 88,
     rules: [
       'Đề thi kỹ thuật chọn lọc từ ngân hàng câu hỏi phỏng vấn Tech Top tier.',
       'Thời gian: 40 phút cho 40 câu trắc nghiệm tình huống kiến trúc.',
       'Tính điểm trừ khi khoanh sai hoặc đoán mò.',
-      'Phần thưởng: Xu học tập nội bộ + Quyền Đăng Status Vinh Danh Lên Diễn Đàn.'
+      'Phần thưởng: Kích hoạt Gói Hội Viên ULTRA/PRO VIP + Bằng Khen Hoàng Gia & Quyền Đăng Status Vinh Danh.'
     ]
   },
   {
@@ -91,16 +92,16 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:55',
     passThresholdPercent: 70,
     rewards: {
-      top1: 3,
-      top2: 2,
-      top3: 1,
-      passed: 1
+      top1: { tier: 'ultra', name: 'Gói Hội Viên ULTRA 👑 (VIP 1 Năm)' },
+      top2: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 6 Tháng)' },
+      top3: { tier: 'pro', name: 'Gói Hội Viên PRO 🚀 (VIP 3 Tháng)' },
+      passed: { tier: 'plus', name: 'Gói Hội Viên PLUS 🌟 (Trải Nghiệm)' }
     },
     registeredBaseCount: 115,
     rules: [
       'Diễn ra hàng ngày lúc 21:30 tối (Giờ Hà Nội).',
       'Luyện phản xạ từ vựng cấp tốc dưới áp lực thời gian.',
-      'Cấp chứng nhận điện tử, cộng Xu học tập & Đăng Status Vinh Danh Lên Diễn Đàn.'
+      'Phần thưởng: Kích hoạt Gói Hội Viên ULTRA/PRO VIP + Cấp chứng nhận Hoàng Gia 4K & Quyền Đăng Status Vinh Danh.'
     ]
   }
 ];
@@ -309,26 +310,41 @@ export function submitLiveExamResult({
   // Tính thứ hạng của thí sinh
   const userRank = leaderboard.findIndex((r) => r.candidateNumber === candidateNumber) + 1;
 
-  // Thưởng Xu nếu đạt thứ hạng cao
-  let rewardedCoins = 0;
+  // Thưởng Gói Hội Viên danh giá dựa trên thứ hạng
+  let rewardedMembership = null;
+  let rewardedTier = null;
+
   if (userRank === 1 && targetExam?.rewards?.top1) {
-    rewardedCoins = targetExam.rewards.top1;
+    rewardedTier = targetExam.rewards.top1.tier || 'ultra';
+    rewardedMembership = targetExam.rewards.top1.name;
   } else if (userRank === 2 && targetExam?.rewards?.top2) {
-    rewardedCoins = targetExam.rewards.top2;
+    rewardedTier = targetExam.rewards.top2.tier || 'pro';
+    rewardedMembership = targetExam.rewards.top2.name;
   } else if (userRank === 3 && targetExam?.rewards?.top3) {
-    rewardedCoins = targetExam.rewards.top3;
+    rewardedTier = targetExam.rewards.top3.tier || 'pro';
+    rewardedMembership = targetExam.rewards.top3.name;
   } else if (passed && targetExam?.rewards?.passed) {
-    rewardedCoins = targetExam.rewards.passed;
+    rewardedTier = targetExam.rewards.passed.tier || 'plus';
+    rewardedMembership = targetExam.rewards.passed.name;
   }
 
-  if (rewardedCoins > 0) {
-    addWalletCoins(rewardedCoins);
+  // Tự động kích hoạt nâng cấp gói hội viên cho thí sinh
+  if (rewardedTier) {
+    try {
+      const currentTier = getUserTier();
+      const tierRankMap = { free: 0, plus: 1, pro: 2, ultra: 3 };
+      if ((tierRankMap[rewardedTier] || 0) > (tierRankMap[currentTier] || 0)) {
+        setUserTier(rewardedTier);
+      }
+    } catch (e) {}
   }
 
   return {
     ...resultRecord,
     rank: userRank,
-    rewardedCoins,
+    rewardedMembership,
+    rewardedTier,
+    rewardedCoins: 0, // Thay thế hoàn toàn bằng Gói Hội Viên để chống thâm hụt tài chính & lạm phát
     totalParticipants: leaderboard.length
   };
 }
