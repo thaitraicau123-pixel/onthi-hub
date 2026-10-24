@@ -42,7 +42,8 @@ export default function HomeView({
   onOpenCheatSheet,
   onOpenStudyRoom,
   allCourses,
-  onShowToast
+  onShowToast,
+  onOpenDirectChat
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchHome, setSearchHome] = useState('');
@@ -361,6 +362,7 @@ export default function HomeView({
                 onOpenCheatSheet={onOpenCheatSheet}
                 onBuy={onBuyCourse}
                 onShowToast={onShowToast}
+                onOpenDirectChat={onOpenDirectChat}
               />
             ))}
           </div>

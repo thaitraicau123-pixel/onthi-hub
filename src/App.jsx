@@ -414,6 +414,7 @@ export default function App() {
                 onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
                 allCourses={allAvailableCourses}
                 onShowToast={showToast}
+                onOpenDirectChat={handleOpenDirectChat}
               />
             )}
 

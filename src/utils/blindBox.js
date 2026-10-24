@@ -6,6 +6,7 @@ import { getWalletBalance, deductWalletCoins, addWalletCoins } from './wallet.js
 import { savePurchasedCourse } from './storage.js';
 import { setUserTier, addUserAiQuotaBonus } from './userTier.js';
 import { recordStudyAction } from './gamification.js';
+import { getCurrentUser } from './firebaseConfig.js';
 
 export const DEFAULT_BLIND_BOXES = [
   {
@@ -364,7 +365,7 @@ export function openBlindBox(boxId) {
   const reward = rollSingleReward(boxId);
 
   try {
-    const userObj = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('onthi_current_user') || '{}') : null;
+    const userObj = getCurrentUser();
     const userName = userObj?.displayName || (userObj?.email ? userObj.email.split('@')[0] : 'Bạn');
     recordBlindBoxWin(box.name, reward.title, userName);
   } catch (e) {}
@@ -404,7 +405,7 @@ export function openMultipleBlindBoxes(boxId, count = 5) {
   }
 
   try {
-    const userObj = typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('onthi_current_user') || '{}') : null;
+    const userObj = getCurrentUser();
     const userName = userObj?.displayName || (userObj?.email ? userObj.email.split('@')[0] : 'Bạn');
     if (rewards[0]) {
       recordBlindBoxWin(box.name, `Combo x${count}: ${rewards[0].title}`, userName);

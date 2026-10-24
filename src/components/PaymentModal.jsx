@@ -28,6 +28,7 @@ import {
   createDepositRequest
 } from '../utils/wallet';
 import { useModalDismiss } from '../hooks/useModalDismiss';
+import { getCurrentUser } from '../utils/firebaseConfig';
 
 export default function PaymentModal({
   item,
@@ -116,11 +117,12 @@ export default function PaymentModal({
   const handleSimulateTopup = async () => {
     setIsSimulatingTopup(true);
     // Create official deposit request so Admin receives phone push and email notification
-    const emailToUse = user?.email || (typeof localStorage !== 'undefined' ? JSON.parse(localStorage.getItem('onthi_current_user') || '{}')?.email : null) || 'khach_nap@onthihub.vn';
+    const activeUser = user || getCurrentUser();
+    const emailToUse = activeUser?.email || 'khach_nap@onthihub.vn';
     await createDepositRequest({
       xuAmount: topupAmount,
       userEmail: emailToUse,
-      userId: user?.uid || null
+      userId: activeUser?.uid || null
     });
     setTimeout(() => {
       addWalletCoins(topupAmount);

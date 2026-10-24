@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins, Share2 } from 'lucide-react';
+import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins, Share2, MessageCircle } from 'lucide-react';
 import { getSelectedTheme } from '../utils/themeManager';
 import { copyFlashcardShareLink } from '../utils/shareLink';
 import { playSound } from '../utils/storage';
@@ -11,7 +11,8 @@ function CourseCard({
   onOpenQuiz,
   onOpenCheatSheet,
   onBuy,
-  onShowToast
+  onShowToast,
+  onOpenDirectChat
 }) {
   const [copiedLink, setCopiedLink] = useState(false);
   const hasSnowCaps = !!getSelectedTheme()?.hasSnowCaps;
@@ -103,6 +104,20 @@ function CourseCard({
                 <Share2 className="w-3.5 h-3.5" />
               )}
             </button>
+            {onOpenDirectChat && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playSound('click');
+                  onOpenDirectChat(null, course);
+                }}
+                className="p-1 rounded-md text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/60 transition-colors cursor-pointer"
+                title="Gửi đính kèm bộ thẻ này vào tin nhắn trò chuyện hoặc hỏi Admin"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
