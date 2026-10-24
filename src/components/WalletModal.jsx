@@ -14,12 +14,16 @@ import {
 } from 'lucide-react';
 import {
   getWalletBalance,
+  getWithdrawableBalance,
   createDepositRequest,
   createWithdrawalRequest,
   getTransactions,
   ADMIN_EMAIL,
   COIN_RATE_VND,
-  MIN_WITHDRAW_XU
+  MIN_WITHDRAW_XU,
+  MAX_WITHDRAW_DAILY_XU,
+  WITHDRAW_FEE_PERCENT,
+  calculateWithdrawalFee
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 import { useModalDismiss } from '../hooks/useModalDismiss';
@@ -27,13 +31,14 @@ import { useModalDismiss } from '../hooks/useModalDismiss';
 export default function WalletModal({ user, onClose, onBalanceUpdated }) {
   const [activeTab, setActiveTab] = useState('deposit'); // 'deposit' | 'withdraw' | 'history'
   const [balance, setBalance] = useState(getWalletBalance());
+  const [withdrawableBalance, setWithdrawableBalanceState] = useState(getWithdrawableBalance());
   
   // Deposit state
   const [depositXu, setDepositXu] = useState(50);
   const [depositResult, setDepositResult] = useState(null);
 
   // Withdraw state
-  const [withdrawXu, setWithdrawXu] = useState(50);
+  const [withdrawXu, setWithdrawXu] = useState(MIN_WITHDRAW_XU);
   const [bankName, setBankName] = useState('MB Bank');
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -41,6 +46,9 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
 
   const bankConfig = getBankConfig();
   const transactions = getTransactions();
+  const withdrawNum = parseInt(withdrawXu, 10) || 0;
+  const feeCalc = calculateWithdrawalFee(withdrawNum);
+  const bonusCoins = Math.max(0, balance - withdrawableBalance);
 
   // Create Deposit Request
   const handleCreateDeposit = async () => {
@@ -65,8 +73,12 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
       setWithdrawMsg({ text: `Số lượng rút tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
       return;
     }
-    if (balance < amount) {
-      setWithdrawMsg({ text: `Số dư ví không đủ! Bạn hiện có ${balance} Xu, cần tối thiểu ${amount} Xu để rút.`, isError: true });
+    if (amount > MAX_WITHDRAW_DAILY_XU) {
+      setWithdrawMsg({ text: `Hạn mức rút tối đa mỗi ngày là ${MAX_WITHDRAW_DAILY_XU} Xu (${(MAX_WITHDRAW_DAILY_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
+      return;
+    }
+    if (withdrawableBalance < amount) {
+      setWithdrawMsg({ text: `Số dư rút được không đủ! Bạn hiện có ${withdrawableBalance} Xu có thể rút (từ bán tài liệu C2C hoặc tiền nạp). ${bonusCoins > 0 ? `${bonusCoins} Xu còn lại là Xu học tập nội bộ chỉ dùng trên web.` : ''}`, isError: true });
       return;
     }
 
@@ -82,9 +94,10 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
     if (res.success) {
       playSound('success');
       setBalance(getWalletBalance());
+      setWithdrawableBalanceState(getWithdrawableBalance());
       if (typeof onBalanceUpdated === 'function') onBalanceUpdated();
       setWithdrawMsg({
-        text: `🎉 Lệnh rút ${amount} Xu (${(amount * COIN_RATE_VND).toLocaleString()}đ) đã được tạo thành công! Mã: ${res.tx.id}. Thông báo đã được gửi tự động đến Admin để xử lý chuyển tiền.`,
+        text: `🎉 Lệnh rút ${amount} Xu đã được tạo thành công! Mã: ${res.tx.id}. Thực nhận: ${res.tx.netAmountVnd?.toLocaleString() || (amount * COIN_RATE_VND).toLocaleString()}đ (sau phí vận hành). Thông báo đã được gửi tự động đến Admin để đối soát & chuyển khoản.`,
         isError: false
       });
       setAccountNo('');
@@ -138,18 +151,33 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
         </div>
 
         {/* Balance Card */}
-        <div className="p-6 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-white">
-          <span className="text-xs font-semibold text-amber-100 uppercase tracking-wider block">
-            Số Dư Khả Dụng Trong Ví:
-          </span>
-          <div className="mt-1 flex items-baseline space-x-2">
-            <span className="text-3xl sm:text-4xl font-black">{balance} Xu</span>
-            <span className="text-xs text-amber-100 font-medium">
-              ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
-            </span>
+        <div className="p-5 sm:p-6 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <span className="text-xs font-semibold text-amber-100 uppercase tracking-wider block">
+                Tổng Số Dư Trong Ví:
+              </span>
+              <div className="mt-1 flex items-baseline space-x-2">
+                <span className="text-3xl sm:text-4xl font-black">{balance} Xu</span>
+                <span className="text-xs text-amber-100 font-medium">
+                  ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-black/20 backdrop-blur-sm rounded-xl p-3 border border-white/10 text-xs space-y-1">
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-amber-100">Khả dụng rút về:</span>
+                <strong className="text-white font-black text-sm">{withdrawableBalance} Xu</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-amber-200/80">Xu học tập (nội bộ):</span>
+                <span className="text-amber-200 font-semibold">{bonusCoins} Xu</span>
+              </div>
+            </div>
           </div>
           <p className="mt-2 text-[11px] text-amber-100">
-            Tiền bán tài liệu trên Sàn C2C sẽ được cộng trực tiếp vào số dư này.
+            Xu rút được tích lũy từ doanh thu bán tài liệu trên Sàn C2C & nạp tiền thực tế.
           </p>
         </div>
 
@@ -310,24 +338,25 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
 
               {/* POLICY NOTE */}
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 space-y-1">
-                <p className="font-bold">⚡ Quy định rút tiền về ngân hàng:</p>
-                <p>• Hạn mức rút tối thiểu: <strong>{MIN_WITHDRAW_XU} Xu</strong> (= {(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()}đ).</p>
-                <p>• Phí rút tiền: <strong>0đ (Miễn phí 100%)</strong> • Chuyển khoản 24/7 qua NAPAS.</p>
+                <p className="font-bold">⚡ Quy định rút tiền bảo vệ nền tảng:</p>
+                <p>• Hạn mức rút: Tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> ({(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()}đ), tối đa <strong>{MAX_WITHDRAW_DAILY_XU} Xu</strong>/ngày.</p>
+                <p>• Phí nền tảng & vận hành: <strong>{WITHDRAW_FEE_PERCENT}%</strong> (tối thiểu 5.000đ) để chi trả chi phí chuyển khoản và duy trì máy chủ.</p>
+                <p>• Nguồn rút: Chỉ rút Xu từ doanh thu bán tài liệu C2C hoặc số dư nạp. Xu thưởng thi đấu & khuyến mãi là Xu học tập nội bộ.</p>
               </div>
 
-              {balance < MIN_WITHDRAW_XU && (
-                <div className="p-2.5 bg-slate-100 border border-slate-200 rounded-xl text-[11px] text-slate-600">
-                  Số dư hiện tại của bạn là <strong>{balance} Xu</strong>. Bạn cần đạt tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> để thực hiện rút tiền.
+              {withdrawableBalance < MIN_WITHDRAW_XU && (
+                <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl text-[11px] text-rose-800">
+                  Số dư khả dụng để rút hiện tại của bạn là <strong>{withdrawableBalance} Xu</strong>. Bạn cần đạt tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> từ doanh thu bán tài liệu để yêu cầu rút tiền.
                 </div>
               )}
 
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="font-semibold text-slate-700">
-                    Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} Xu):
+                    Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} - Tối đa {MAX_WITHDRAW_DAILY_XU} Xu):
                   </label>
                   <span className="text-[11px] text-slate-500">
-                    Khả dụng: <strong className="text-amber-700 font-bold">{balance} Xu</strong>
+                    Rút được: <strong className="text-amber-700 font-bold">{withdrawableBalance} Xu</strong>
                   </span>
                 </div>
 
@@ -335,7 +364,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
                   <input
                     type="number"
                     min={MIN_WITHDRAW_XU}
-                    max={balance}
+                    max={Math.min(withdrawableBalance, MAX_WITHDRAW_DAILY_XU)}
                     value={withdrawXu}
                     onChange={(e) => setWithdrawXu(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-amber-500 font-bold"
@@ -346,14 +375,32 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
                   </span>
                 </div>
 
+                {/* Realtime Fee Breakdown Card */}
+                {withdrawNum >= MIN_WITHDRAW_XU && (
+                  <div className="mb-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[11px] space-y-1">
+                    <div className="flex justify-between text-slate-600">
+                      <span>Số tiền quy đổi:</span>
+                      <span>{feeCalc.grossAmountVnd.toLocaleString()}đ</span>
+                    </div>
+                    <div className="flex justify-between text-rose-600">
+                      <span>Phí sàn & đối soát ({WITHDRAW_FEE_PERCENT}%):</span>
+                      <span>-{feeCalc.feeAmountVnd.toLocaleString()}đ</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-emerald-700 pt-1 border-t border-slate-200 text-xs">
+                      <span>Thực nhận về tài khoản ngân hàng:</span>
+                      <span>{feeCalc.netAmountVnd.toLocaleString()} VNĐ</span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Quick pills */}
                 <div className="flex flex-wrap gap-1.5">
-                  {[50, 100, 200, 500].map((amt) => (
+                  {[100, 200, 300, 500].map((amt) => (
                     <button
                       key={amt}
                       type="button"
                       onClick={() => setWithdrawXu(amt)}
-                      disabled={balance < amt}
+                      disabled={withdrawableBalance < amt}
                       className={`px-2 py-0.5 rounded text-[10px] font-semibold border transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
                         Number(withdrawXu) === amt
                           ? 'bg-amber-600 text-white border-amber-600'
@@ -363,17 +410,17 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
                       {amt} Xu ({amt}k)
                     </button>
                   ))}
-                  {balance >= MIN_WITHDRAW_XU && (
+                  {withdrawableBalance >= MIN_WITHDRAW_XU && (
                     <button
                       type="button"
-                      onClick={() => setWithdrawXu(balance)}
+                      onClick={() => setWithdrawXu(Math.min(withdrawableBalance, MAX_WITHDRAW_DAILY_XU))}
                       className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-colors cursor-pointer ${
-                        Number(withdrawXu) === balance
+                        Number(withdrawXu) === Math.min(withdrawableBalance, MAX_WITHDRAW_DAILY_XU)
                           ? 'bg-amber-600 text-white border-amber-600'
                           : 'bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100'
                       }`}
                     >
-                      Rút Hết ({balance} Xu)
+                      Rút Tối Đa ({Math.min(withdrawableBalance, MAX_WITHDRAW_DAILY_XU)} Xu)
                     </button>
                   )}
                 </div>
@@ -424,16 +471,18 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={balance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU}
-                  className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 disabled:opacity-50"
+                  disabled={withdrawableBalance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU || Number(withdrawXu) > MAX_WITHDRAW_DAILY_XU || Number(withdrawXu) > withdrawableBalance}
+                  className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 disabled:opacity-50 cursor-pointer"
                 >
                   <ArrowUpRight className="w-4 h-4" />
-                  <span>Xác Nhận Rút {Number(withdrawXu) || 0} Xu ({(Number(withdrawXu || 0) * COIN_RATE_VND).toLocaleString()}đ)</span>
+                  <span>
+                    Xác Nhận Rút {Number(withdrawXu) || 0} Xu (Thực nhận: {feeCalc.netAmountVnd.toLocaleString()}đ)
+                  </span>
                 </button>
               </div>
 
               <p className="text-[11px] text-slate-400 text-center">
-                Lệnh rút tối thiểu 50 Xu. Hệ thống gửi thông báo đến Admin duyệt và chuyển khoản 24/7.
+                Lệnh rút tối thiểu {MIN_WITHDRAW_XU} Xu. Hệ thống thông báo tự động đến Admin để đối soát & chuyển khoản 24/7.
               </p>
             </form>
           )}

@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import {
   getWalletBalance,
+  getWithdrawableBalance,
+  calculateWithdrawalFee,
   createDepositRequest,
   createWithdrawalRequest,
   getTransactions,
@@ -25,7 +27,9 @@ import {
   ADMIN_EMAIL,
   ADMIN_PHONE,
   COIN_RATE_VND,
-  MIN_WITHDRAW_XU
+  MIN_WITHDRAW_XU,
+  MAX_WITHDRAW_DAILY_XU,
+  WITHDRAW_FEE_PERCENT
 } from '../utils/wallet';
 import { generateVietQRUrl, getBankConfig, playSound } from '../utils/storage';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
@@ -34,6 +38,7 @@ import confetti from 'canvas-confetti';
 export default function WalletView({ user, onBalanceUpdated }) {
   const [activeTab, setActiveTab] = useState('deposit'); // 'deposit' | 'withdraw' | 'history'
   const [balance, setBalance] = useState(getWalletBalance());
+  const [withdrawableBalance, setWithdrawableBalance] = useState(() => getWithdrawableBalance());
   const [transactions, setTransactions] = useState(() => getTransactions());
 
   // Deposit state
@@ -42,8 +47,8 @@ export default function WalletView({ user, onBalanceUpdated }) {
   const [depositResult, setDepositResult] = useState(null);
   const [isDepositing, setIsDepositing] = useState(false);
 
-  // Withdraw state
-  const [withdrawXu, setWithdrawXu] = useState(50);
+  // Withdraw state (default min 100 Xu)
+  const [withdrawXu, setWithdrawXu] = useState(100);
   const [bankName, setBankName] = useState('MB Bank');
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
@@ -98,8 +103,19 @@ export default function WalletView({ user, onBalanceUpdated }) {
       setWithdrawMsg({ text: `Số lượng rút tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
       return;
     }
+    if (amount > MAX_WITHDRAW_DAILY_XU) {
+      setWithdrawMsg({ text: `Hạn mức rút tối đa là ${MAX_WITHDRAW_DAILY_XU} Xu / ngày (${(MAX_WITHDRAW_DAILY_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`, isError: true });
+      return;
+    }
     if (balance < amount) {
       setWithdrawMsg({ text: `Số dư ví không đủ! Bạn hiện có ${balance} Xu, cần tối thiểu ${amount} Xu để rút.`, isError: true });
+      return;
+    }
+    if (withdrawableBalance < amount) {
+      setWithdrawMsg({
+        text: `Số dư Xu đủ điều kiện rút của bạn hiện là ${withdrawableBalance} Xu. Các khoản Xu khuyến mãi (tân thủ 20 Xu, điểm danh, giải thưởng) là Xu học tập nội bộ chỉ dùng để mở khóa bộ thẻ trên web, không quy đổi thành tiền mặt!`,
+        isError: true
+      });
       return;
     }
 
@@ -117,10 +133,11 @@ export default function WalletView({ user, onBalanceUpdated }) {
       if (res.success) {
         playSound('success');
         setBalance(getWalletBalance());
+        setWithdrawableBalance(getWithdrawableBalance());
         if (onBalanceUpdated) onBalanceUpdated();
         setLastWithdrawTx(res);
         setWithdrawMsg({
-          text: `🎉 Lệnh rút ${amount} Xu (${(amount * COIN_RATE_VND).toLocaleString()}đ) đã tạo thành công! Mã lệnh: ${res.tx.id}. Hệ thống đã gửi thông báo tự động đến Admin để xử lý chuyển tiền về tài khoản.`,
+          text: `🎉 Lệnh rút ${amount} Xu đã tạo thành công! Thực nhận về STK: ${(res.feeInfo?.netVnd || (amount * 900)).toLocaleString()}đ (sau khấu trừ 10% phí sàn ${(res.feeInfo?.feeVnd || (amount * 100)).toLocaleString()}đ). Mã lệnh: ${res.tx.id}. BQT sẽ đối soát và xử lý trong 12h-24h!`,
           isError: false
         });
         setAccountNo('');
@@ -147,12 +164,12 @@ export default function WalletView({ user, onBalanceUpdated }) {
         </p>
       </div>
 
-      {/* NOTION BALANCE CARD */}
-      <div className="bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-[#e9e9e8] dark:border-white/15 p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
+      {/* NOTION BALANCE CARD WITH CLEAR CLASSIFICATION */}
+      <div className="bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-[#e9e9e8] dark:border-white/15 p-5 sm:p-6 shadow-2xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="space-y-2">
           <div className="flex items-center space-x-1.5 text-xs text-[#787774] dark:text-slate-400 font-bold uppercase tracking-wider mb-1">
             <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
-            <span>SỐ DƯ KHẢ DỤNG</span>
+            <span>TỔNG SỐ DƯ TÀI KHOẢN</span>
           </div>
           <div className="flex items-baseline space-x-3">
             <span className="text-3xl sm:text-4xl font-extrabold text-[#37352f] dark:text-white">{balance} Xu</span>
@@ -160,9 +177,18 @@ export default function WalletView({ user, onBalanceUpdated }) {
               ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
             </span>
           </div>
-          <p className="mt-1.5 text-xs text-[#787774] dark:text-slate-300 max-w-sm">
-            1 Xu = 1.000 VNĐ. Dùng để mở khóa bộ thẻ, mua sắm trên Sàn C2C hoặc nâng cấp tài khoản.
-          </p>
+          
+          {/* Sub-balances breakdown */}
+          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-600/40 text-emerald-800 dark:text-emerald-300 font-bold">
+              <span>💵 Đủ ĐK rút tiền:</span>
+              <strong className="font-mono">{withdrawableBalance} Xu</strong>
+            </span>
+            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/70 border border-sky-300 dark:border-sky-600/40 text-sky-800 dark:text-sky-300 font-semibold" title="Xu tặng tân thủ, điểm danh, mở hộp mù & thưởng thi đấu">
+              <span>🎁 Xu học tập nội bộ:</span>
+              <strong className="font-mono">{Math.max(0, balance - withdrawableBalance)} Xu</strong>
+            </span>
+          </div>
         </div>
 
         <div className="flex sm:flex-col gap-2 w-full sm:w-auto shrink-0">
@@ -380,25 +406,31 @@ export default function WalletView({ user, onBalanceUpdated }) {
           {/* TAB 2: RÚT TIỀN */}
           {activeTab === 'withdraw' && (
             <div className="space-y-4">
-              {/* POLICY BANNER */}
-              <div className="p-3.5 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-500/30 rounded-xl text-xs space-y-1 text-left">
-                <div className="flex items-center space-x-2 font-bold text-amber-900 dark:text-amber-200">
+              {/* POLICY BANNER: ANTI-LOSS & FAIR-USE RULES */}
+              <div className="p-4 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-500/40 rounded-xl text-xs space-y-2 text-left">
+                <div className="flex items-center space-x-2 font-extrabold text-amber-900 dark:text-amber-200">
                   <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                  <span>Quy Định Rút Tiền Về Ngân Hàng</span>
+                  <span>Quy Chế Rút Tiền Về Ngân Hàng (Chống Lỗ & Chống Gian Lận)</span>
                 </div>
-                <ul className="text-amber-800 dark:text-amber-300 text-[11px] list-disc list-inside space-y-0.5 pt-0.5">
-                  <li>Hạn mức rút tối thiểu: <strong className="font-bold underline text-amber-900 dark:text-white">50 Xu</strong> (= 50.000 VNĐ).</li>
-                  <li>Tỷ lệ quy đổi: <strong>1 Xu = 1.000 VNĐ</strong> • Phí rút tiền: <strong>0đ (Miễn phí 100%)</strong>.</li>
-                  <li>Xử lý chuyển khoản ngân hàng 24/7 qua NAPAS trong vòng 5 - 30 phút.</li>
+                <ul className="text-amber-800 dark:text-amber-300 text-[11px] list-disc list-inside space-y-1">
+                  <li>Hạn mức rút: Tối thiểu <strong className="font-bold underline text-amber-900 dark:text-white">{MIN_WITHDRAW_XU} Xu</strong> (= {(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()}đ), tối đa <strong>{MAX_WITHDRAW_DAILY_XU} Xu / lần / ngày</strong>.</li>
+                  <li>Tỷ lệ quy đổi: <strong>1 Xu = 1.000 VNĐ</strong> • Phí nền tảng & xử lý Napas: <strong className="font-bold text-rose-600 dark:text-rose-400">{WITHDRAW_FEE_PERCENT}%</strong> (tối thiểu 5.000đ).</li>
+                  <li>Phân loại nguồn Xu: Chỉ áp dụng rút tiền cho <strong>Xu doanh thu bán thẻ C2C</strong> hoặc <strong>Xu nạp thực tế</strong>. Các khoản Xu tặng tân thủ (20 Xu), điểm danh mỗi ngày, giải thưởng là Xu học tập nội bộ chỉ dùng để mở khóa bộ thẻ trên web.</li>
+                  <li>Thời gian xét duyệt: Ban Quản Trị đối soát và duyệt chuyển khoản thủ công trong <strong>12h - 24h</strong> ngày làm việc.</li>
                 </ul>
               </div>
 
-              {balance < MIN_WITHDRAW_XU && (
-                <div className="p-3 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-600 dark:text-slate-300 flex items-start space-x-2">
+              {withdrawableBalance < MIN_WITHDRAW_XU && (
+                <div className="p-3.5 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 rounded-xl text-xs text-slate-600 dark:text-slate-300 flex items-start space-x-2.5">
                   <Coins className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                  <span>
-                    Số dư hiện tại của bạn là <strong>{balance} Xu</strong>. Bạn cần tích lũy tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong> để tạo lệnh rút về ngân hàng. Hãy tích lũy thêm Xu từ bán bộ thẻ hoặc nhận thưởng học tập!
-                  </span>
+                  <div className="space-y-1">
+                    <p>
+                      Số dư Xu đủ điều kiện rút hiện tại của bạn là <strong className="text-amber-600 dark:text-amber-400">{withdrawableBalance} Xu</strong> (yêu cầu tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong>).
+                    </p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      💡 Xu khuyến mãi (tân thủ 20 Xu, điểm danh, mở hộp mù, giải đấu) là Xu học tập nội bộ. Hãy chia sẻ và bán thêm bộ thẻ trên Sàn C2C để tích lũy Xu doanh thu có thể rút!
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -414,12 +446,12 @@ export default function WalletView({ user, onBalanceUpdated }) {
                       </strong>
                     </div>
                     <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 text-[10px] font-bold">
-                      Đang xử lý
+                      Đang chờ duyệt
                     </span>
                   </div>
 
                   <p className="text-[#787774] dark:text-slate-300 text-xs leading-relaxed">
-                    Mã giao dịch: <strong className="font-mono text-[#37352f] dark:text-white">{lastWithdrawTx.tx.id}</strong>. Tiền sẽ được chuyển về tài khoản ngân hàng của bạn trong ít phút!
+                    Mã giao dịch: <strong className="font-mono text-[#37352f] dark:text-white">{lastWithdrawTx.tx.id}</strong>. Số tiền thực nhận: <strong className="text-emerald-700 dark:text-emerald-400">{(lastWithdrawTx.feeInfo?.netVnd || (lastWithdrawTx.tx.xuAmount * 900)).toLocaleString()} VNĐ</strong> (đã khấu trừ 10% phí sàn). BQT sẽ xử lý trong 12h-24h!
                   </p>
                 </div>
               )}
@@ -438,10 +470,10 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <label className="font-semibold text-[#37352f] dark:text-slate-200">
-                      Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} Xu):
+                      Số lượng Xu muốn rút (Tối thiểu {MIN_WITHDRAW_XU} Xu, Tối đa {MAX_WITHDRAW_DAILY_XU} Xu):
                     </label>
                     <span className="text-[11px] text-[#787774] dark:text-slate-400">
-                      Khả dụng: <strong className="text-amber-600 dark:text-amber-400 font-bold">{balance} Xu</strong>
+                      Được rút: <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{withdrawableBalance} Xu</strong>
                     </span>
                   </div>
 
@@ -449,7 +481,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
                     <input
                       type="number"
                       min={MIN_WITHDRAW_XU}
-                      max={balance}
+                      max={Math.min(MAX_WITHDRAW_DAILY_XU, withdrawableBalance)}
                       value={withdrawXu}
                       onChange={(e) => setWithdrawXu(e.target.value)}
                       className="w-full px-3 py-2 border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] dark:focus:border-sky-400 font-bold bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white transition-colors"
@@ -460,14 +492,41 @@ export default function WalletView({ user, onBalanceUpdated }) {
                     </span>
                   </div>
 
+                  {/* REALTIME FEE & NET PAYOUT CARD */}
+                  {Number(withdrawXu) > 0 && (() => {
+                    const feeInfo = calculateWithdrawalFee(withdrawXu);
+                    return (
+                      <div className="mb-3 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-200 dark:border-white/10 space-y-1.5 text-xs">
+                        <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                          <span>Số Xu yêu cầu rút:</span>
+                          <span className="font-mono font-bold text-slate-900 dark:text-white">
+                            {Number(withdrawXu)} Xu (= {feeInfo.grossVnd.toLocaleString()}đ)
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                          <span>Phí nền tảng & xử lý Napas (10%):</span>
+                          <span className="font-mono font-bold text-rose-600 dark:text-rose-400">
+                            -{feeInfo.feeVnd.toLocaleString()}đ
+                          </span>
+                        </div>
+                        <div className="pt-1.5 border-t border-slate-200 dark:border-white/10 flex items-center justify-between font-extrabold text-xs sm:text-sm text-emerald-600 dark:text-emerald-400">
+                          <span>Số tiền thực nhận chuyển về tài khoản:</span>
+                          <span className="font-mono text-sm sm:text-base">
+                            {feeInfo.netVnd.toLocaleString()} VNĐ
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   {/* QUICK SELECT PILLS */}
                   <div className="flex flex-wrap gap-1.5 pt-0.5">
-                    {[50, 100, 200, 500].map((amt) => (
+                    {[100, 200, 300, 500].map((amt) => (
                       <button
                         key={amt}
                         type="button"
                         onClick={() => setWithdrawXu(amt)}
-                        disabled={balance < amt}
+                        disabled={withdrawableBalance < amt}
                         className={`px-2.5 py-1 rounded-md text-[11px] font-semibold border transition-colors cursor-pointer disabled:opacity-35 disabled:cursor-not-allowed ${
                           Number(withdrawXu) === amt
                             ? 'bg-[#2383e2] text-white border-[#2383e2]'
@@ -477,17 +536,17 @@ export default function WalletView({ user, onBalanceUpdated }) {
                         {amt} Xu ({amt}k)
                       </button>
                     ))}
-                    {balance >= MIN_WITHDRAW_XU && (
+                    {withdrawableBalance >= MIN_WITHDRAW_XU && (
                       <button
                         type="button"
-                        onClick={() => setWithdrawXu(balance)}
+                        onClick={() => setWithdrawXu(Math.min(MAX_WITHDRAW_DAILY_XU, withdrawableBalance))}
                         className={`px-2.5 py-1 rounded-md text-[11px] font-bold border transition-colors cursor-pointer ${
-                          Number(withdrawXu) === balance
+                          Number(withdrawXu) === Math.min(MAX_WITHDRAW_DAILY_XU, withdrawableBalance)
                             ? 'bg-[#2383e2] text-white border-[#2383e2]'
-                            : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-500/30 hover:bg-amber-100'
+                            : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30 hover:bg-emerald-100'
                         }`}
                       >
-                        Rút Hết ({balance} Xu)
+                        Rút Hết Đủ ĐK ({Math.min(MAX_WITHDRAW_DAILY_XU, withdrawableBalance)} Xu)
                       </button>
                     )}
                   </div>
@@ -538,16 +597,16 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    disabled={balance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU || isWithdrawing}
+                    disabled={withdrawableBalance < MIN_WITHDRAW_XU || Number(withdrawXu) < MIN_WITHDRAW_XU || Number(withdrawXu) > MAX_WITHDRAW_DAILY_XU || isWithdrawing}
                     className="w-full py-2.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-xl font-bold shadow-2xs flex items-center justify-center space-x-1.5 disabled:opacity-40 transition-colors cursor-pointer"
                   >
                     <ArrowUpRight className="w-4 h-4" />
-                    <span>{isWithdrawing ? 'Đang tạo lệnh...' : `Xác nhận rút ${Number(withdrawXu) || 0} Xu (${((Number(withdrawXu) || 0) * COIN_RATE_VND).toLocaleString()}đ)`}</span>
+                    <span>{isWithdrawing ? 'Đang tạo lệnh...' : `Xác nhận rút ${Number(withdrawXu) || 0} Xu (Thực nhận ${calculateWithdrawalFee(withdrawXu).netVnd.toLocaleString()}đ)`}</span>
                   </button>
                 </div>
 
-                <p className="text-xs text-[#787774] dark:text-slate-400 text-center font-normal">
-                  Hạn mức tối thiểu: 50 Xu. Admin duyệt và chuyển khoản trực tiếp qua ngân hàng 24/7.
+                <p className="text-[11px] text-[#787774] dark:text-slate-400 text-center font-normal">
+                  Hạn mức: {MIN_WITHDRAW_XU} - {MAX_WITHDRAW_DAILY_XU} Xu/ngày • Phí nền tảng {WITHDRAW_FEE_PERCENT}% • Admin đối soát & duyệt chuyển khoản trong 12h - 24h.
                 </p>
               </form>
             </div>

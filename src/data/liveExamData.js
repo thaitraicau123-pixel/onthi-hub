@@ -36,17 +36,18 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:00',
     passThresholdPercent: 50, // Đúng >= 30/60 câu
     rewards: {
-      top1: 50,
-      top2: 30,
-      top3: 20,
-      passed: 5
+      top1: 5,
+      top2: 3,
+      top3: 2,
+      passed: 1
     },
     registeredBaseCount: 142,
     rules: [
       'Đề thi niêm phong tự động mở đúng 20:00:00 (Giờ Hà Nội).',
       'Thời gian làm bài: 60 phút gồm 60 câu trắc nghiệm chính thức.',
       'Cơ chế chống gian lận: Cảnh báo nếu chuyển tab hoặc rời màn hình quá 3 lần.',
-      'Xếp hạng Realtime căn cứ vào: Số câu đúng cao nhất & Thời gian nộp bài sớm nhất.'
+      'Xếp hạng Realtime căn cứ vào: Số câu đúng cao nhất & Thời gian nộp bài sớm nhất.',
+      'Phần thưởng: Xu học tập nội bộ + Quyền Đăng Status Vinh Danh Lên Diễn Đàn & Khung Bảng Vàng.'
     ]
   },
   {
@@ -63,16 +64,17 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:10',
     passThresholdPercent: 60,
     rewards: {
-      top1: 50,
-      top2: 30,
-      top3: 15,
-      passed: 5
+      top1: 5,
+      top2: 3,
+      top3: 2,
+      passed: 1
     },
     registeredBaseCount: 88,
     rules: [
       'Đề thi kỹ thuật chọn lọc từ ngân hàng câu hỏi phỏng vấn Tech Top tier.',
       'Thời gian: 40 phút cho 40 câu trắc nghiệm tình huống kiến trúc.',
-      'Tính điểm trừ khi khoanh sai hoặc đoán mò.'
+      'Tính điểm trừ khi khoanh sai hoặc đoán mò.',
+      'Phần thưởng: Xu học tập nội bộ + Quyền Đăng Status Vinh Danh Lên Diễn Đàn.'
     ]
   },
   {
@@ -89,16 +91,16 @@ export const SCHEDULED_LIVE_EXAMS = [
     endTimeStr: '21:55',
     passThresholdPercent: 70,
     rewards: {
-      top1: 30,
-      top2: 20,
-      top3: 10,
-      passed: 3
+      top1: 3,
+      top2: 2,
+      top3: 1,
+      passed: 1
     },
     registeredBaseCount: 115,
     rules: [
       'Diễn ra hàng ngày lúc 21:30 tối (Giờ Hà Nội).',
       'Luyện phản xạ từ vựng cấp tốc dưới áp lực thời gian.',
-      'Cấp chứng nhận điện tử và cộng Xu thưởng trực tiếp vào ví.'
+      'Cấp chứng nhận điện tử, cộng Xu học tập & Đăng Status Vinh Danh Lên Diễn Đàn.'
     ]
   }
 ];

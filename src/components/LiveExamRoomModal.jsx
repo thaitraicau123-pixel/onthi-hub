@@ -20,8 +20,10 @@ import {
   RotateCcw,
   Volume2,
   VolumeX,
-  Coins
+  Coins,
+  MessageSquare
 } from 'lucide-react';
+import { addCommunityPost } from '../data/communityData';
 import {
   SCHEDULED_LIVE_EXAMS,
   getLiveExamStatus,
@@ -61,6 +63,7 @@ export default function LiveExamRoomModal({
 
   // Exam state: 'lobby' | 'exam' | 'result'
   const [viewState, setViewState] = useState('lobby');
+  const [hasPostedStatus, setHasPostedStatus] = useState(false);
 
   // Real-time live status from Hanoi Clock
   const [liveInfo, setLiveInfo] = useState(() => getLiveExamStatus(activeExam));
@@ -249,12 +252,61 @@ export default function LiveExamRoomModal({
 
     setExamResult(result);
     setLeaderboard(getLiveExamLeaderboard(activeExam.id));
+    setHasPostedStatus(false);
     setViewState('result');
     playSound('success');
 
     if (result.passed) {
       confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
     }
+  };
+
+  const handlePostStatusToCommunity = () => {
+    if (!examResult || hasPostedStatus) return;
+    const rankTitle =
+      examResult.rank === 1
+        ? '👑 THỦ KHOA TOÀN QUỐC'
+        : examResult.rank === 2
+        ? '🥈 Á KHOA TOÀN QUỐC'
+        : examResult.rank === 3
+        ? '🥉 TOP 3 BẢNG VÀNG'
+        : examResult.rank <= 10
+        ? `⭐ TOP ${examResult.rank} TOÀN QUỐC`
+        : examResult.passed
+        ? '🎖️ ĐẠT TIÊU CHUẨN SÁT HẠCH'
+        : '🔥 THÍ SINH NỖ LỰC';
+
+    const candidateName = myRegistration?.userName || user?.displayName || user?.email?.split('@')[0] || 'Thí Sinh OnThiHub';
+    const candidateNumber = myRegistration?.candidateNumber || examResult.candidateNumber || 'SBD-ONTHI';
+
+    const postContent =
+      `🎉 [VINH DANH THI ĐẤU TOÀN QUỐC 2026] Thí sinh ${candidateName} (${candidateNumber}) vừa hoàn thành xuất sắc kỳ thi "${activeExam.title}":\n\n` +
+      `• Kết quả: ${examResult.score}/${examResult.totalQuestions} câu đúng (${examResult.percentage}%)\n` +
+      `• Xếp hạng: Hạng #${examResult.rank} Toàn Quốc\n` +
+      `• Danh hiệu: ${rankTitle}\n` +
+      `• Mã chứng nhận: ${examResult.certCode}\n\n` +
+      `Chúc mừng thí sinh đã hoàn thành kỳ thi sát hạch trực tiếp! Mọi người cùng vào chúc mừng, thả tim và kết bạn trao đổi kinh nghiệm ôn thi nhé! 🚀`;
+
+    addCommunityPost({
+      id: 'post_exam_' + Date.now(),
+      author: candidateName,
+      authorEmail: user?.email || `${candidateNumber.toLowerCase()}@onthihub.vn`,
+      role: 'student',
+      avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+      category: activeExam.baseCourseId || 'meo-thi',
+      categoryLabel: '🏆 Bảng Vàng Toàn Quốc',
+      badge: rankTitle,
+      content: postContent,
+      createdAt: new Date().toISOString(),
+      likes: 1,
+      likedBy: [user?.email || 'thisinh@onthihub.vn'],
+      comments: []
+    });
+
+    setHasPostedStatus(true);
+    playSound('success');
+    confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+    onShowToast?.('🎉 Đã đăng Status vinh danh lên Diễn Đàn Cộng Đồng thành công! Mọi người đã có thể xem và chúc mừng bạn.');
   };
 
   const formatTime = (secs) => {
@@ -790,12 +842,38 @@ export default function LiveExamRoomModal({
               {examResult.rewardedCoins > 0 && (
                 <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-950 border border-amber-300 dark:border-amber-700 text-amber-900 dark:text-amber-200 text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
                   <Coins className="w-4 h-4 fill-amber-500 text-amber-500" />
-                  <span>Chúc mừng bạn được cộng thưởng +{examResult.rewardedCoins} Xu vào ví ÔnThiHub!</span>
+                  <span>Chúc mừng bạn nhận +{examResult.rewardedCoins} Xu học tập nội bộ & Danh hiệu Bảng Vàng!</span>
                 </div>
               )}
 
-              {/* Quick Share Achievement Action */}
+              {/* Quick Share Achievement Action & Up Status */}
               <div className="pt-2 flex flex-wrap items-center justify-center gap-2">
+                {/* 1. UP STATUS TO COMMUNITY FORUM */}
+                <button
+                  type="button"
+                  onClick={handlePostStatusToCommunity}
+                  disabled={hasPostedStatus}
+                  className={`px-4 py-2 text-white text-xs font-bold rounded-xl shadow-md flex items-center space-x-1.5 transition-all cursor-pointer ${
+                    hasPostedStatus
+                      ? 'bg-emerald-700 opacity-90 cursor-default'
+                      : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 hover:scale-105 active:scale-95'
+                  }`}
+                  title="Đăng bài vinh danh kết quả thi trực tiếp lên Diễn đàn Cộng Đồng học viên"
+                >
+                  {hasPostedStatus ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-200" />
+                      <span>✓ Đã Đăng Status Diễn Đàn</span>
+                    </>
+                  ) : (
+                    <>
+                      <MessageSquare className="w-4 h-4" />
+                      <span>📢 Đăng Status Lên Diễn Đàn</span>
+                    </>
+                  )}
+                </button>
+
+                {/* 2. SHARE CERTIFICATE 2X */}
                 {onOpenShareAchievement && (
                   <button
                     type="button"
@@ -815,7 +893,7 @@ export default function LiveExamRoomModal({
                     className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs font-bold rounded-xl shadow-md flex items-center space-x-1.5 transition-all hover:scale-105 cursor-pointer"
                   >
                     <Award className="w-4 h-4" />
-                    <span>Khoe Thành Tích & Tải Thẻ Chứng Nhận</span>
+                    <span>Khoe Thẻ Ảnh 2x</span>
                   </button>
                 )}
 

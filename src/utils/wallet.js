@@ -27,13 +27,16 @@ export const ADMIN_ZALO_LINK = 'https://zalo.me/0986019623';
 export const ADMIN_EMAIL = 'thaitraicau123@gmail.com';
 export const ADMIN_NTFY_TOPIC = 'https://ntfy.sh/Onthihubbbbb';
 export const COIN_RATE_VND = 1000; // 1 Xu = 1.000 VNĐ
-export const MIN_WITHDRAW_XU = 50; // Hạn mức rút tiền tối thiểu 50 Xu = 50.000 VNĐ
+export const MIN_WITHDRAW_XU = 100; // Hạn mức rút tiền tối thiểu 100 Xu = 100.000 VNĐ (Tránh rút lẻ tẻ gây lỗ phí ngân hàng)
+export const MAX_WITHDRAW_DAILY_XU = 500; // Hạn mức rút tối đa 500 Xu / lần / ngày = 500.000 VNĐ (Chống xả quỹ đột biến)
+export const WITHDRAW_FEE_PERCENT = 10; // Phí nền tảng & xử lý chuyển tiền qua cổng Napas/VietQR: 10% (Tối thiểu 5.000đ)
+export const WITHDRAWABLE_BALANCE_KEY = 'onthi_withdrawable_balance';
 
-// Get current wallet balance (Default 20 Xu tặng tân thủ)
+// Get current wallet balance (Default 20 Xu tặng tân thủ - chỉ dùng để học bài)
 export function getWalletBalance() {
   try {
     const raw = localStorage.getItem(WALLET_BALANCE_KEY);
-    return raw !== null ? parseInt(raw, 10) : 20; // 20 Xu = 20k chào mừng
+    return raw !== null ? parseInt(raw, 10) : 20; // 20 Xu = 20k chào mừng học tập
   } catch (e) {
     return 20;
   }
@@ -48,7 +51,7 @@ export function setWalletBalance(amount) {
   }
 }
 
-// Add coins
+// Add coins (total balance)
 export function addWalletCoins(coins) {
   const current = getWalletBalance();
   const next = current + coins;
@@ -63,6 +66,73 @@ export function deductWalletCoins(coins) {
   const next = current - coins;
   setWalletBalance(next);
   return true;
+}
+
+// Lấy số dư Xu đủ điều kiện rút tiền (Chỉ gồm Xu doanh thu bán thẻ C2C hoặc Xu nạp thực tế, KHÔNG gồm Xu khuyến mãi / tặng tân thủ / điểm danh)
+export function getWithdrawableBalance() {
+  try {
+    const raw = localStorage.getItem(WITHDRAWABLE_BALANCE_KEY);
+    const total = getWalletBalance();
+    if (raw !== null) {
+      const stored = parseInt(raw, 10);
+      return Math.max(0, Math.min(stored, total));
+    }
+    // Nếu chưa lưu: Kiểm tra các giao dịch doanh thu bán thẻ hoặc nạp tiền đã duyệt
+    const txs = getTransactions();
+    let earned = 0;
+    txs.forEach((t) => {
+      if ((t.type === 'deposit' || t.type === 'marketplace_sale') && t.status === 'approved') {
+        earned += Number(t.xuAmount) || 0;
+      }
+      if (t.type === 'withdraw' && (t.status === 'approved' || t.status === 'pending')) {
+        earned -= Number(t.xuAmount) || 0;
+      }
+    });
+    return Math.max(0, Math.min(earned, total));
+  } catch (e) {
+    return 0;
+  }
+}
+
+// Cập nhật số dư Xu có thể rút
+export function setWithdrawableBalance(amount) {
+  try {
+    const val = Math.max(0, parseInt(amount, 10) || 0);
+    localStorage.setItem(WITHDRAWABLE_BALANCE_KEY, val.toString());
+  } catch (e) {}
+}
+
+// Cộng Xu đủ điều kiện rút (Khi có đơn bán thẻ C2C thành công hoặc khi nạp tiền)
+export function addWithdrawableCoins(coins) {
+  const current = getWithdrawableBalance();
+  const next = current + Math.max(0, parseInt(coins, 10) || 0);
+  setWithdrawableBalance(next);
+  return next;
+}
+
+// Trừ Xu có thể rút khi tạo lệnh rút tiền
+export function deductWithdrawableCoins(coins) {
+  const current = getWithdrawableBalance();
+  const next = Math.max(0, current - Math.max(0, parseInt(coins, 10) || 0));
+  setWithdrawableBalance(next);
+  return next;
+}
+
+// Tính phí nền tảng và số tiền thực nhận về tài khoản ngân hàng
+export function calculateWithdrawalFee(xuAmount) {
+  const xu = Math.max(0, Number(xuAmount) || 0);
+  const grossVnd = xu * COIN_RATE_VND;
+  // Phí 10% sàn (tối thiểu 5.000đ để web không bao giờ bị lỗ phí chuyển khoản Napas)
+  const feeVnd = Math.max(5000, Math.round(grossVnd * (WITHDRAW_FEE_PERCENT / 100)));
+  const feeXu = Math.ceil(feeVnd / COIN_RATE_VND);
+  const netVnd = Math.max(0, grossVnd - feeVnd);
+  return {
+    grossVnd,
+    feeVnd,
+    feeXu,
+    netVnd,
+    feePercent: WITHDRAW_FEE_PERCENT
+  };
 }
 
 // Get all transactions
@@ -83,7 +153,9 @@ export function formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEm
 
   let extra = '';
   if (type === 'withdraw' && details) {
-    extra = `\n🏦 Ngân hàng: ${details.bankName || ''}\n💳 STK: ${details.accountNo || ''}\n👤 Chủ TK: ${details.accountName || ''}`;
+    const netVnd = details.netVnd ? details.netVnd.toLocaleString('vi-VN') + 'đ' : vndText + 'đ';
+    const feeVnd = details.feeVnd ? details.feeVnd.toLocaleString('vi-VN') + 'đ' : '0đ';
+    extra = `\n🏦 Ngân hàng: ${details.bankName || ''}\n💳 STK: ${details.accountNo || ''}\n👤 Chủ TK: ${details.accountName || ''}\n💰 Phí sàn giữ lại (10%): ${feeVnd}\n💵 SỐ TIỀN THỰC CHUYỂN QUA APP: ${netVnd}`;
   } else if (type === 'deposit') {
     extra = `\n💳 Cú pháp quét mã: ${code}\n💰 Số tiền chuyển khoản: ${vndText}đ`;
   }
@@ -649,7 +721,14 @@ export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, a
   if (!amount || isNaN(amount) || amount < MIN_WITHDRAW_XU) {
     return {
       success: false,
-      message: `Hạn mức rút tiền tối thiểu phải là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ)!`
+      message: `Hạn mức rút tiền tối thiểu là ${MIN_WITHDRAW_XU} Xu (${(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()} VNĐ) để đảm bảo tối ưu chi phí xử lý giao dịch!`
+    };
+  }
+
+  if (amount > MAX_WITHDRAW_DAILY_XU) {
+    return {
+      success: false,
+      message: `Hạn mức rút tiền tối đa là ${MAX_WITHDRAW_DAILY_XU} Xu / ngày (${(MAX_WITHDRAW_DAILY_XU * COIN_RATE_VND).toLocaleString()} VNĐ) nhằm bảo đảm an toàn dòng tiền hệ thống!`
     };
   }
 
@@ -661,17 +740,31 @@ export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, a
     };
   }
 
-  // Deduct coins immediately and put into escrow
-  deductWalletCoins(amount);
+  const withdrawable = getWithdrawableBalance();
+  if (withdrawable < amount) {
+    return {
+      success: false,
+      message: `Số dư Xu đủ điều kiện rút của bạn hiện là ${withdrawable} Xu. Các khoản Xu khuyến mãi (tân thủ, điểm danh, giải thưởng) là Xu học tập nội bộ chỉ dùng để mở khóa thẻ bài trên web, không quy đổi thành tiền mặt!`
+    };
+  }
 
-  const amountVnd = amount * COIN_RATE_VND;
+  // Tính phí sàn 10% & số tiền thực nhận
+  const feeInfo = calculateWithdrawalFee(amount);
+
+  // Khấu trừ Xu khỏi ví và số dư có thể rút
+  deductWalletCoins(amount);
+  deductWithdrawableCoins(amount);
+
   const code = 'RUT' + Math.floor(100000 + Math.random() * 900000);
   const tx = {
     id: code,
     type: 'withdraw',
     status: 'pending', // 'pending' | 'approved' | 'rejected'
     xuAmount: amount,
-    amountVnd,
+    amountVnd: feeInfo.grossVnd,
+    feeVnd: feeInfo.feeVnd,
+    netVnd: feeInfo.netVnd,
+    feePercent: feeInfo.feePercent,
     userEmail: userEmail || 'creator@onthihub.vn',
     userId: userId || null,
     createdAt: new Date().toISOString(),
@@ -679,7 +772,10 @@ export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, a
       bankName,
       accountNo,
       accountName,
-      note: 'Chờ duyệt chuyển khoản ngân hàng'
+      feeVnd: feeInfo.feeVnd,
+      netVnd: feeInfo.netVnd,
+      feePercent: feeInfo.feePercent,
+      note: `Thực nhận: ${feeInfo.netVnd.toLocaleString()}đ (Đã khấu trừ 10% phí sàn ${feeInfo.feeVnd.toLocaleString()}đ)`
     }
   };
 
@@ -698,12 +794,12 @@ export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, a
     type: 'withdraw',
     code,
     amountXu: Number(xuAmount),
-    amountVnd,
+    amountVnd: feeInfo.netVnd, // Báo cho Admin số tiền thực chuyển
     userEmail,
     details: tx.details
   });
 
-  return { success: true, tx, emailData: notifData, notifData, zaloMessage: notifData.zaloMessage, zaloLink: ADMIN_ZALO_LINK };
+  return { success: true, tx, feeInfo, emailData: notifData, notifData, zaloMessage: notifData.zaloMessage, zaloLink: ADMIN_ZALO_LINK };
 }
 
 // Admin approves transaction (Duyệt Chay)

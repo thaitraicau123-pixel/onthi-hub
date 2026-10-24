@@ -1,4 +1,4 @@
-import { getWalletBalance, deductWalletCoins, addWalletCoins } from '../utils/wallet.js';
+import { getWalletBalance, deductWalletCoins, addWalletCoins, addWithdrawableCoins } from '../utils/wallet.js';
 import { getUserTier, getTierLimits } from '../utils/userTier.js';
 import { savePurchasedCourse } from '../utils/storage.js';
 import { getFirestoreDb, collection, doc, setDoc, onSnapshot, query, getDocs, deleteDoc } from '../utils/firebaseConfig.js';
@@ -6956,6 +6956,9 @@ export function purchaseMarketplaceDeck(deck) {
 
   // Save to buyer's purchased courses in localStorage
   savePurchasedCourse(deck.id);
+
+  // Credit seller earnings to withdrawable balance
+  addWithdrawableCoins(sellerEarnings);
 
   return {
     success: true,
