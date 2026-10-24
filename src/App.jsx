@@ -67,7 +67,8 @@ import {
   getTransactions,
   subscribeToTransactions,
   checkAndApplyApprovedTransactions,
-  sendBrowserDesktopNotification
+  sendBrowserDesktopNotification,
+  requestBrowserNotificationPermission
 } from './utils/wallet';
 import { playSound } from './utils/storage';
 import { isUserAdmin, PRIMARY_ADMIN_EMAIL } from './utils/adminGuard';
