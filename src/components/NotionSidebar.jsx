@@ -61,18 +61,18 @@ function NotionSidebar({
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const curParticipant = getCurrentUserParticipant(user);
-  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(curParticipant.id));
+  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(curParticipant));
 
   useEffect(() => {
     const updateDm = () => {
-      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant.id));
+      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant));
     };
     updateDm();
-    const unsub = subscribeToDirectMessages(curParticipant.id, updateDm);
+    const unsub = subscribeToDirectMessages(curParticipant, updateDm);
     return () => {
       if (typeof unsub === 'function') unsub();
     };
-  }, [curParticipant.id]);
+  }, [user]);
 
   const userIsAdmin = isUserAdmin(user);
   const currentTier = getUserTier();

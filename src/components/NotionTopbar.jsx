@@ -90,12 +90,12 @@ export default function NotionTopbar({
   useEffect(() => {
     const curParticipant = getCurrentUserParticipant(user);
     const updateCounts = () => {
-      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant.id));
-      setPendingRequestsCount(getIncomingRequestsCount(curParticipant.id));
+      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant));
+      setPendingRequestsCount(getIncomingRequestsCount(curParticipant));
     };
     updateCounts();
-    const unsubDm = subscribeToDirectMessages(curParticipant.id, updateCounts);
-    const unsubFriends = subscribeToFriendEvents(curParticipant.id, updateCounts);
+    const unsubDm = subscribeToDirectMessages(curParticipant, updateCounts);
+    const unsubFriends = subscribeToFriendEvents(curParticipant, updateCounts);
     return () => {
       if (typeof unsubDm === 'function') unsubDm();
       if (typeof unsubFriends === 'function') unsubFriends();

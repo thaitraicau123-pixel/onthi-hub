@@ -31,9 +31,12 @@ import {
   sendDirectMessage,
   markConversationAsRead,
   subscribeToDirectMessages,
+  syncDirectMessagesFromCloud,
   getConversationId,
   getStudentDirectory,
-  ADMIN_PARTICIPANT
+  ADMIN_PARTICIPANT,
+  isSameUser,
+  matchesUserIdentifier
 } from '../utils/directMessaging';
 import {
   getFriendshipStatus,
@@ -45,7 +48,8 @@ import {
   getIncomingFriendRequests,
   getIncomingRequestsCount,
   getSuggestedFriends,
-  subscribeToFriendEvents
+  subscribeToFriendEvents,
+  syncFriendDataFromCloud
 } from '../utils/friendSystem';
 import { formatHanoiRelativeTime, formatHanoiDateTime } from '../utils/hanoiTime';
 import { copyFlashcardShareLink } from '../utils/shareLink';
@@ -107,14 +111,18 @@ export default function DirectChatModal({
   const [showDeckPicker, setShowDeckPicker] = useState(false);
   const [copiedLinkDeckId, setCopiedLinkDeckId] = useState(null);
   const [mobileShowChat, setMobileShowChat] = useState(Boolean(targetPartner));
+  
+  // Thêm bạn bè trực tiếp qua Email hoặc tên
+  const [addFriendInput, setAddFriendInput] = useState('');
+  const [addFriendNote, setAddFriendNote] = useState('');
 
   const messagesEndRef = useRef(null);
 
   // Quan hệ bạn bè giữa người dùng hiện tại và activePartner
   const friendshipStatus = useMemo(() => {
     if (!activePartner) return 'none';
-    return getFriendshipStatus(currentParticipant.id, activePartner.id);
-  }, [currentParticipant.id, activePartner, friends, incomingRequests]);
+    return getFriendshipStatus(currentParticipant, activePartner);
+  }, [currentParticipant, activePartner, friends, incomingRequests]);
 
   // Cập nhật khi targetPartner hoặc initialAttachedDeck từ ngoài truyền vào
   useEffect(() => {
@@ -137,34 +145,44 @@ export default function DirectChatModal({
     const dir = getStudentDirectory(currentParticipant.id);
     setConversations(convs);
     setDirectory(dir);
-    setFriends(getFriendsList(currentParticipant.id, dir));
-    setIncomingRequests(getIncomingFriendRequests(currentParticipant.id));
-    setSuggestedFriends(getSuggestedFriends(currentParticipant.id, dir));
+    setFriends(getFriendsList(currentParticipant, dir));
+    setIncomingRequests(getIncomingFriendRequests(currentParticipant));
+    setSuggestedFriends(getSuggestedFriends(currentParticipant, dir));
   };
 
   // Tải tin nhắn của cuộc hội thoại đang chọn
   useEffect(() => {
     if (!isOpen || !activePartner) return;
     const convId = getConversationId(currentParticipant.id, activePartner.id);
-    const msgs = getConversationMessages(convId, currentParticipant.id);
+    const msgs = getConversationMessages(convId, currentParticipant, activePartner);
     setMessages(msgs);
     markConversationAsRead(convId, currentParticipant.id);
     refreshAllData();
-  }, [isOpen, activePartner, currentParticipant.id]);
+  }, [isOpen, activePartner, currentParticipant]);
 
   // Tự động cuộn xuống tin nhắn mới nhất
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Lắng nghe sự kiện tin nhắn thời gian thực
+  // Lắng nghe sự kiện tin nhắn & bạn bè thời gian thực
   useEffect(() => {
     if (!isOpen) return;
-    const unsubMessages = subscribeToDirectMessages(currentParticipant.id, (newMsg) => {
+
+    // Tự động đồng bộ tin nhắn & lời mời kết bạn từ Cloud Relay ngay khi mở modal
+    syncDirectMessagesFromCloud(currentParticipant);
+    syncFriendDataFromCloud(currentParticipant);
+
+    const unsubMessages = subscribeToDirectMessages(currentParticipant, (newMsg) => {
       refreshAllData();
       if (activePartner && newMsg) {
         const curConvId = getConversationId(currentParticipant.id, activePartner.id);
-        if (newMsg.conversationId === curConvId) {
+        const isCurrentChatMsg =
+          newMsg.conversationId === curConvId ||
+          (isSameUser(newMsg.sender, activePartner) && isSameUser(newMsg.receiver, currentParticipant)) ||
+          (isSameUser(newMsg.sender, currentParticipant) && isSameUser(newMsg.receiver, activePartner));
+
+        if (isCurrentChatMsg) {
           setMessages((prev) => {
             if (prev.some((m) => m.id === newMsg.id)) return prev;
             return [...prev, newMsg];
@@ -175,7 +193,7 @@ export default function DirectChatModal({
       }
     });
 
-    const unsubFriends = subscribeToFriendEvents(currentParticipant.id, () => {
+    const unsubFriends = subscribeToFriendEvents(currentParticipant, () => {
       refreshAllData();
     });
 
@@ -183,7 +201,7 @@ export default function DirectChatModal({
       if (typeof unsubMessages === 'function') unsubMessages();
       if (typeof unsubFriends === 'function') unsubFriends();
     };
-  }, [isOpen, activePartner, currentParticipant.id]);
+  }, [isOpen, activePartner, currentParticipant]);
 
   // Gửi tin nhắn
   const handleSendMessage = (e) => {
@@ -250,7 +268,7 @@ export default function DirectChatModal({
       });
     } catch (e) {}
 
-    const res = acceptFriendRequest(currentParticipant.id, requester.id);
+    const res = acceptFriendRequest(currentParticipant, requester);
     if (res.success) {
       // Gửi một tin nhắn chào mừng bạn mới tự động
       sendDirectMessage({
@@ -265,6 +283,59 @@ export default function DirectChatModal({
       setSidebarTab('conversations');
       onShowToast?.(`Đã trở thành bạn bè với ${requester.name}! 🎉`);
     }
+  };
+
+  // Xử lý gửi lời mời kết bạn trực tiếp qua form nhập Email/Tên
+  const handleManualAddFriend = (e) => {
+    e?.preventDefault?.();
+    const raw = addFriendInput.trim();
+    if (!raw) {
+      onShowToast?.('Vui lòng nhập địa chỉ Email hoặc tên bạn học!');
+      return;
+    }
+
+    if (matchesUserIdentifier(currentParticipant, raw)) {
+      onShowToast?.('Không thể gửi lời mời kết bạn cho chính mình!');
+      return;
+    }
+
+    if (raw.toLowerCase() === 'thaitraicau123@gmail.com' || raw === 'admin_onthi') {
+      onShowToast?.('Ban Quản Trị luôn sẵn sàng trò chuyện tại tab Hội Thoại mà không cần kết bạn!');
+      return;
+    }
+
+    const cleanEmail = raw.includes('@') ? raw.toLowerCase().trim() : `${raw.toLowerCase().trim()}@student.onthihub.vn`;
+    const found = directory.find((u) => matchesUserIdentifier(u, raw) || matchesUserIdentifier(u, cleanEmail));
+    const targetUser = found || {
+      id: cleanEmail,
+      name: raw.includes('@') ? raw.split('@')[0] : raw,
+      email: cleanEmail,
+      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(cleanEmail)}`,
+      role: 'student',
+      tier: 'free',
+      badge: '🎓 Học Viên'
+    };
+
+    const status = getFriendshipStatus(currentParticipant, targetUser);
+    if (status === 'friends') {
+      onShowToast?.(`Bạn và ${targetUser.name} đã là bạn bè chính thức rồi! 🎉`);
+      setAddFriendInput('');
+      return;
+    }
+    if (status === 'sent') {
+      onShowToast?.(`Bạn đã gửi lời mời kết bạn tới ${targetUser.name} trước đó rồi!`);
+      setAddFriendInput('');
+      return;
+    }
+    if (status === 'received') {
+      handleAcceptRequest(targetUser);
+      setAddFriendInput('');
+      return;
+    }
+
+    handleSendFriendRequest(targetUser, addFriendNote);
+    setAddFriendInput('');
+    setAddFriendNote('');
   };
 
   // Xử lý từ chối lời mời
@@ -683,6 +754,38 @@ export default function DirectChatModal({
           {/* TAB 3: LỜI MỜI KẾT BẠN & GỢI Ý BẠN HỌC */}
           {sidebarTab === 'requests' && (
             <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 p-2 space-y-3">
+              {/* PHẦN 0: FORM THÊM BẠN TRỰC TIẾP QUA EMAIL HOẶC TÊN */}
+              <form
+                onSubmit={handleManualAddFriend}
+                className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-sky-200 dark:border-sky-500/30 space-y-2 shadow-xs"
+              >
+                <div className="flex items-center space-x-1.5">
+                  <UserPlus className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
+                  <span className="text-xs font-black text-slate-900 dark:text-white">
+                    Kết Bạn Nhanh Qua Email / Tên:
+                  </span>
+                </div>
+                <div className="flex gap-1.5">
+                  <input
+                    type="text"
+                    placeholder="Nhập email bạn học (vd: banhoc@gmail.com)..."
+                    value={addFriendInput}
+                    onChange={(e) => setAddFriendInput(e.target.value)}
+                    className="flex-1 px-2.5 py-1.5 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg outline-none focus:border-[#2383e2] dark:focus:border-sky-400 text-slate-900 dark:text-white placeholder:text-slate-400"
+                  />
+                  <button
+                    type="submit"
+                    className="px-3 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold rounded-lg shadow-xs flex items-center gap-1 cursor-pointer transition-all active:scale-95 shrink-0"
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    <span>Kết bạn</span>
+                  </button>
+                </div>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                  ⚡ Bạn của bạn dù ở trên điện thoại hay máy tính khác, lời mời sẽ gửi tức thì qua Cloud Relay!
+                </p>
+              </form>
+
               {/* PHẦN 1: LỜI MỜI KẾT BẠN ĐANG CHỜ PHÊ DUYỆT */}
               {incomingRequests.length > 0 && (
                 <div className="space-y-2 pb-2">
@@ -1079,7 +1182,7 @@ export default function DirectChatModal({
               </div>
             ) : (
               messages.map((msg) => {
-                const isMe = msg.sender?.id === currentParticipant.id;
+                const isMe = isSameUser(msg.sender, currentParticipant);
                 return (
                   <div
                     key={msg.id}
