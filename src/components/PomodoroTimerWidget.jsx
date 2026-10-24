@@ -247,26 +247,33 @@ export default function PomodoroTimerWidget({ onBonusReward }) {
               getAudioContext();
               setIsOpen(true);
             }}
-            className={`flex items-center space-x-2.5 px-3.5 py-2 rounded-full shadow-lg touch-3d font-medium text-xs sm:text-sm transition-all border cursor-pointer ${
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-full shadow-xl touch-3d font-medium text-xs transition-all border cursor-pointer ${
               isActive
-                ? 'bg-[#2383e2] text-white border-[#2383e2] shadow-blue-500/25'
-                : 'bg-white dark:bg-slate-900 hover:bg-[#f7f6f5] dark:hover:bg-slate-800 text-[#37352f] dark:text-white border-[#e9e9e8] dark:border-white/15'
+                ? 'bg-[#2383e2] text-white border-[#2383e2] shadow-blue-500/25 ring-2 ring-blue-400/30'
+                : 'bg-white/95 dark:bg-slate-900/95 backdrop-blur-md hover:bg-[#f7f6f5] dark:hover:bg-slate-800 text-[#37352f] dark:text-white border-[#e9e9e8] dark:border-white/15'
             }`}
-            title="Đồng hồ Pomodoro tập trung học"
+            title="Đồng hồ Pomodoro tập trung học sâu 25 phút • Bấm mở bảng điều khiển âm thanh & lofi"
           >
-            <Timer className={`w-4 h-4 ${isActive ? 'animate-spin text-white' : 'text-[#2383e2] dark:text-sky-400'}`} style={{ animationDuration: '6s' }} />
-            <span className="font-mono tracking-wider font-semibold">{formatTime(secondsLeft)}</span>
+            <Timer className={`w-4 h-4 shrink-0 ${isActive ? 'animate-spin text-white' : 'text-[#2383e2] dark:text-sky-400'}`} style={{ animationDuration: '6s' }} />
+            <span className="font-extrabold text-[11px] hidden sm:inline">
+              {isActive ? 'Đang Học Sâu:' : '🍅 Pomodoro:'}
+            </span>
+            <span className="font-mono tracking-wider font-bold text-xs">{formatTime(secondsLeft)}</span>
             
             {/* Sound Icon on floating button */}
             {isTickSoundEnabled ? (
-              <Volume2 className={`w-3.5 h-3.5 ${isActive ? 'text-blue-100' : 'text-[#787774] dark:text-slate-300'}`} />
+              <Volume2 className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-blue-100' : 'text-[#787774] dark:text-slate-300'}`} />
             ) : (
-              <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+              <VolumeX className="w-3.5 h-3.5 shrink-0 text-slate-400" />
             )}
 
-            {completedSessions > 0 && (
-              <span className="px-1.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 text-[10px] font-semibold border border-amber-200 dark:border-amber-700/50">
+            {completedSessions > 0 ? (
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-[10px] font-black border border-amber-300 dark:border-amber-700/50">
                 🍅 {completedSessions}
+              </span>
+            ) : (
+              <span className="hidden md:inline px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] font-bold border border-slate-200 dark:border-white/10">
+                25p
               </span>
             )}
           </button>

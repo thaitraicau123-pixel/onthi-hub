@@ -394,10 +394,11 @@ export default function LibraryView({
                                 onShowToast?.(res.message);
                               }
                             }}
-                            className="p-1 rounded-md hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#2383e2] transition-colors cursor-pointer"
+                            className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#2383e2] transition-colors cursor-pointer"
                             title="Sao chép đường dẫn chia sẻ bộ thẻ này"
                           >
-                            <Share2 className="w-3.5 h-3.5" />
+                            <Share2 className="w-3 h-3" />
+                            <span className="hidden sm:inline">Link</span>
                           </button>
 
                           {onOpenDirectChat && (
@@ -407,21 +408,23 @@ export default function LibraryView({
                                 playSound('click');
                                 onOpenDirectChat(null, course);
                               }}
-                              className="p-1 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[#787774] dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+                              className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[#787774] dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
                               title="Gửi thẻ này vào đoạn chat với bạn học"
                               aria-label="Chia sẻ qua tin nhắn"
                             >
-                              <MessageCircle className="w-3.5 h-3.5" />
+                              <MessageCircle className="w-3 h-3" />
+                              <span className="hidden sm:inline">Gửi chat</span>
                             </button>
                           )}
 
                           <button
                             type="button"
                             onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
-                            className="p-1 rounded-md hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white transition-colors cursor-pointer"
+                            className="inline-flex items-center space-x-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white transition-colors cursor-pointer"
                             title="Tùy chọn khác (In, Tải Anki, Pass lại, Bán thẻ)"
                           >
-                            <MoreHorizontal className="w-4 h-4" />
+                            <MoreHorizontal className="w-3.5 h-3.5" />
+                            <span className="hidden md:inline">Tùy chọn</span>
                           </button>
 
                           {isMenuOpen && (

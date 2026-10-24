@@ -95,13 +95,19 @@ function CourseCard({
                   onShowToast?.(res.message);
                 }
               }}
-              className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-[#2383e2] dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               title="Sao chép đường dẫn chia sẻ bộ thẻ này"
             >
               {copiedLink ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <>
+                  <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">Đã chép</span>
+                </>
               ) : (
-                <Share2 className="w-3.5 h-3.5" />
+                <>
+                  <Share2 className="w-3 h-3" />
+                  <span className="hidden sm:inline">Link</span>
+                </>
               )}
             </button>
             {onOpenDirectChat && (
@@ -112,10 +118,11 @@ function CourseCard({
                   playSound('click');
                   onOpenDirectChat(null, course);
                 }}
-                className="p-1 rounded-md text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/60 transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60 transition-colors cursor-pointer"
                 title="Gửi đính kèm bộ thẻ này vào tin nhắn trò chuyện hoặc hỏi Admin"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <MessageCircle className="w-3 h-3" />
+                <span className="hidden sm:inline">Gửi chat</span>
               </button>
             )}
           </div>
@@ -208,10 +215,10 @@ function CourseCard({
             type="button"
             onClick={() => onOpenFlashcards(course)}
             className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
-            title="Xem trước thẻ Anki"
+            title="Lật thẻ ghi nhớ Anki (Thuật toán SM-2)"
           >
             <Layers className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
-            <span>Lật Thẻ</span>
+            <span>Lật Thẻ Anki</span>
           </button>
 
           <button
@@ -221,7 +228,7 @@ function CourseCard({
             title="Thi thử trắc nghiệm 10 câu bấm giờ"
           >
             <PlayCircle className="w-3 h-3 text-[#cc782f] dark:text-amber-400" />
-            <span>Thi Thử</span>
+            <span>Thi Thử 10 Câu</span>
           </button>
 
           <button
@@ -231,7 +238,7 @@ function CourseCard({
             title="Bảng Cheatsheet tóm tắt 1 trang & In tài liệu cứu sinh"
           >
             <FileText className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-            <span>Tóm Tắt</span>
+            <span>Phao 1 Trang</span>
           </button>
         </div>
 

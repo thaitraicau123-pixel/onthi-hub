@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   PanelLeft,
   Bell,
@@ -10,7 +10,13 @@ import {
   Palette,
   Clock,
   User,
-  MessageCircle
+  MessageCircle,
+  ChevronDown,
+  Wrench,
+  Sparkles,
+  Trophy,
+  X,
+  FileText
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
@@ -44,12 +50,42 @@ export default function NotionTopbar({
   onOpenLiveExamRoom
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
   const [isMuted, setIsMuted] = useState(() => isSoundMuted());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [hanoiTime, setHanoiTime] = useState(() => getHanoiTimeString(new Date(), false));
   const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(user?.uid || user?.email));
   const [pendingRequestsCount, setPendingRequestsCount] = useState(() => getIncomingRequestsCount(user?.uid || user?.email));
+
+  const toolsMenuRef = useRef(null);
+  const notificationsRef = useRef(null);
+
+  // Click outside & Escape key listeners to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (toolsMenuRef.current && !toolsMenuRef.current.contains(e.target)) {
+        setShowToolsMenu(false);
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(e.target)) {
+        setShowNotifications(false);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowToolsMenu(false);
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     const curParticipant = getCurrentUserParticipant(user);
@@ -201,24 +237,28 @@ export default function NotionTopbar({
         </nav>
       </div>
 
-      {/* RIGHT: ICON-ONLY COLLAPSED TOOLBAR */}
+      {/* RIGHT: CLEAN LABELED TOOLBAR WITH TIỆN ÍCH HUB */}
       <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
         
-        {/* Quick Command Palette Search Button (Icon Only) */}
+        {/* Quick Command Palette Search Button */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenSearch?.();
           }}
-          className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 flex items-center justify-center transition-all cursor-pointer shadow-2xs"
-          title="Tìm nhanh & lệnh (Ctrl+K)"
+          className="px-2 sm:px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 flex items-center space-x-1.5 transition-all cursor-pointer shadow-2xs"
+          title="Tìm nhanh tài liệu, đề thi & lệnh (Ctrl+K)"
           aria-label="Tìm nhanh (Ctrl+K)"
         >
-          <Search className="w-3.5 h-3.5 text-slate-600 dark:text-sky-400" />
+          <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400 shrink-0" />
+          <span className="text-[11px] font-medium hidden md:inline text-slate-600 dark:text-slate-300">Tìm kiếm...</span>
+          <kbd className="text-[9px] font-mono font-bold px-1 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 text-slate-500 dark:text-slate-400 hidden lg:inline">
+            Ctrl K
+          </kbd>
         </button>
 
-        {/* Live Exam Room Button (Icon Only) */}
+        {/* Live Exam Room Button (With Live Label) */}
         {onOpenLiveExamRoom && (
           <button
             type="button"
@@ -226,51 +266,342 @@ export default function NotionTopbar({
               playSound('click');
               onOpenLiveExamRoom();
             }}
-            className="hidden sm:flex w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-600/50 items-center justify-center transition-all shadow-2xs cursor-pointer relative"
+            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-600/50 transition-all shadow-2xs cursor-pointer relative"
             title="Phòng thi thử trực tiếp toàn quốc theo lịch hẹn (Live ICT)"
             aria-label="Phòng thi đấu trực tiếp"
           >
             <span className="relative flex items-center justify-center">
-              <span className="text-sm select-none">🏛️</span>
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500" />
+              <span className="text-xs select-none">🏛️</span>
+              <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+              <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-rose-500" />
             </span>
+            <span className="text-[11px] font-extrabold tracking-tight">Thi Đấu</span>
           </button>
         )}
 
-        {/* Live Virtual Study Room Button (Icon Only) */}
+        {/* TIỆN ÍCH & CÔNG CỤ DROPDOWN HUB */}
+        <div className="relative" ref={toolsMenuRef}>
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              setShowToolsMenu(!showToolsMenu);
+            }}
+            className={`flex items-center space-x-1 px-2 sm:px-2.5 py-1.5 rounded-lg border transition-all shadow-2xs cursor-pointer ${
+              showToolsMenu
+                ? 'bg-[#2383e2] text-white border-[#2383e2]'
+                : 'bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/15'
+            }`}
+            title="Danh mục Tiện ích & Công cụ ôn luyện thông minh"
+            aria-label="Menu Tiện ích"
+          >
+            <Wrench className={`w-3.5 h-3.5 ${showToolsMenu ? 'text-white' : 'text-slate-600 dark:text-sky-400'}`} />
+            <span className="text-[11px] font-extrabold hidden md:inline">Tiện Ích</span>
+            <ChevronDown className={`w-3 h-3 transition-transform ${showToolsMenu ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+          </button>
+
+          {/* Quick Tools Dropdown Card */}
+          {showToolsMenu && (
+            <div className="absolute right-0 mt-1.5 w-80 sm:w-88 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 p-2 space-y-1 z-50 text-left animate-fade-in">
+              <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <span>🛠️ Tiện Ích & Công Cụ Ôn Luyện</span>
+                  </h4>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Khám phá các tính năng tăng tốc học tập</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowToolsMenu(false)}
+                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <div className="max-h-[70vh] overflow-y-auto space-y-1 p-0.5">
+                {/* 1. Thi đấu trực tiếp */}
+                {onOpenLiveExamRoom && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenLiveExamRoom();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/40 shrink-0">🏛️</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400">
+                          Thi Đấu Toàn Quốc
+                        </span>
+                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-rose-500 text-white">
+                          LIVE ICT
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Phòng thi trực tiếp theo lịch hẹn, cấp SBD & thưởng Xu Bảng Vàng.
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* 2. Phòng tự học ảo */}
+                {onOpenStudyRoom && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenStudyRoom();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 shrink-0">🎧</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                          Phòng Tự Học Ảo 24/7
+                        </span>
+                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-500 text-white">
+                          LIVE
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Âm thanh sóng não Alpha, tiếng mưa rơi & cùng cày Flashcard tập trung.
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* 3. Đồng hồ mục tiêu & Giờ Hà Nội */}
+                {onOpenTargetClock && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenTargetClock();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-transparent hover:border-amber-200 dark:hover:border-amber-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/40 shrink-0">⏰</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400">
+                          Đồng Hồ Mục Tiêu & Lộ Trình
+                        </span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 font-mono">
+                          {hanoiTime}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Máy tính chia lịch học 30 ngày & lưu vết giờ học theo Giờ Hà Nội.
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* 4. Tiến độ ghi nhớ SM-2 */}
+                {onOpenAnalytics && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenAnalytics();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 shrink-0">📊</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
+                          Tiến Độ Ghi Nhớ SM-2
+                        </span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
+                          SuperMemo
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Thống kê chu kỳ lặp lại ngắt quãng, số thẻ đến hạn & tỷ lệ nhớ sâu.
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* 5. Đổi giao diện 3D 4K */}
+                {onOpenThemePicker && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenThemePicker();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 border border-transparent hover:border-purple-200 dark:hover:border-purple-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/40 shrink-0">🎨</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                          Đổi Giao Diện 3D 4K
+                        </span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300">
+                          16 Themes
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Tùy chọn phong cách thẩm mỹ (Cyberpunk, Lofi, Ghibli, Vintage...).
+                      </p>
+                    </div>
+                  </button>
+                )}
+
+                {/* 6. Hiệu ứng khí quyển */}
+                {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
+                  const weatherInfoMap = {
+                    'mario-stars': { icon: '🍄', label: 'Mario Stars' },
+                    'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat' },
+                    snow: { icon: '❄️', label: 'Tuyết Rơi' },
+                    halloween: { icon: '🎃', label: 'Halloween' },
+                    sakura: { icon: '🌸', label: 'Hoa Đào' },
+                    stars: { icon: '✨', label: 'Sao Băng' },
+                    fireflies: { icon: '🍃', label: 'Đom Đóm' },
+                    'coffee-steam': { icon: '☕', label: 'Hơi Cà Phê' },
+                    'digital-rain': { icon: '⚡', label: 'Ma Trận' },
+                    'sunset-dust': { icon: '🌅', label: 'Bụi Nắng' },
+                    'fizzy-citrus': { icon: '🫧', label: 'Bọt Khí' },
+                    'aurora-ice': { icon: '🌌', label: 'Cực Quang' },
+                    'autumn-leaves': { icon: '🍂', label: 'Lá Vàng' },
+                    'minimal-sparkles': { icon: '✨', label: 'Lấp Lánh' }
+                  };
+                  const info = weatherInfoMap[currentTheme.weatherType] || { icon: '✨', label: 'Khí Quyển' };
+                  return (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playSound('click');
+                        onToggleWeather?.();
+                      }}
+                      className="w-full text-left p-2 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-950/40 border border-transparent hover:border-sky-200 dark:hover:border-sky-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                    >
+                      <span className="text-lg p-1.5 rounded-lg bg-sky-100 dark:bg-sky-900/40 shrink-0">{info.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400">
+                            Hiệu Ứng: {info.label}
+                          </span>
+                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
+                            isWeatherEnabled
+                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                              : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                          }`}>
+                            {isWeatherEnabled ? 'Đang Bật' : 'Đã Tắt'}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                          Bấm để bật hoặc tắt các hạt rơi chuyển động trên nền giao diện.
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })()}
+
+                {/* 7. Nhật ký tính năng mới */}
+                {onOpenChangelog && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenChangelog();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-white/10 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0">📜</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white">
+                          Nhật Ký Bản Nâng Cấp
+                        </span>
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+                          v3.0
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Xem danh sách các tính năng và cải tiến vừa được phát hành.
+                      </p>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* FINANCIAL STATS: VÍ XU (Clear Balance Display) */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
-            onOpenStudyRoom?.();
+            onSelectTab('wallet');
           }}
-          className="hidden sm:flex w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 items-center justify-center transition-all shadow-2xs cursor-pointer relative"
-          title="Phòng tự học chung ảo trực tuyến (Live 24/7)"
-          aria-label="Phòng tự học ảo Live"
+          className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
+          title={`Ví Xu OnThiHub: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
+          aria-label="Ví Xu"
         >
-          <span className="relative flex items-center justify-center">
-            <span className="text-sm select-none">🎧</span>
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500" />
-          </span>
+          <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />
+          <span className="text-[11px] font-black font-mono">{walletBalance}</span>
+          <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 hidden sm:inline">Xu</span>
         </button>
 
-        {/* Theme Picker Button (Icon Only) */}
+        {/* GAMIFICATION STATS: CHUỖI NGÀY HỌC (Streak with Day Count) */}
         <button
           type="button"
           onClick={() => {
-            playSound('click');
-            onOpenThemePicker?.();
+            playSound('flip');
+            onOpenLeaderboard?.();
           }}
-          className="hidden sm:flex w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
-          title="Đổi chủ đề không gian học & icon (16 Themes 3D 4K)"
-          aria-label="Đổi chủ đề"
+          className="hidden sm:flex items-center space-x-1 px-2 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-950/80 hover:bg-orange-100 dark:hover:bg-orange-900/60 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
+          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
+          aria-label="Chuỗi học tập"
         >
-          <Palette className="w-3.5 h-3.5 text-purple-700 dark:text-purple-300" />
+          <span className="text-xs select-none">{currentTheme?.icons?.streak || '🔥'}</span>
+          <span className="text-[11px] font-black font-mono">{streakInfo.streak}</span>
+          <span className="text-[10px] font-bold text-orange-700 dark:text-orange-300 hidden md:inline">ngày</span>
         </button>
 
-        {/* Chế Độ Ngủ 🌙 / Ban Ngày ☀️ Controls (Icon Only) */}
+        {/* DAILY REWARD: ĐIỂM DANH NHẬN XU (With Clear Label) */}
+        <button
+          type="button"
+          onClick={handleCheckIn}
+          className="hidden xl:flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
+          title="Điểm danh nhận Xu thưởng miễn phí mỗi ngày"
+          aria-label="Điểm danh nhận Xu"
+        >
+          <span className="text-xs select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
+          <span className="text-[11px] font-bold">Điểm danh</span>
+        </button>
+
+        {/* AUDIO MUTE / UNMUTE */}
+        <button
+          type="button"
+          onClick={handleToggleMute}
+          className="hidden md:flex w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 items-center justify-center transition-colors cursor-pointer shrink-0"
+          title={isMuted ? "Âm thanh: Đang tắt (Bấm để bật)" : "Âm thanh: Đang bật (Bấm để tắt)"}
+          aria-label="Bật/Tắt âm thanh"
+        >
+          {isMuted ? (
+            <VolumeX className="w-3.5 h-3.5 text-rose-500" />
+          ) : (
+            <Volume2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+          )}
+        </button>
+
+        {/* DAY / NIGHT SLEEP MODE CONTROLS */}
         {isDayTheme(currentTheme?.id) ? (
           <button
             type="button"
@@ -279,7 +610,7 @@ export default function NotionTopbar({
               const nextMode = toggleSleepMode();
               setSleepMode(nextMode);
             }}
-            className={`hidden md:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border ${
+            className={`hidden sm:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border shrink-0 ${
               sleepMode === 'dark'
                 ? 'bg-indigo-950/90 text-indigo-100 border-indigo-400/50 hover:bg-indigo-900'
                 : 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
@@ -291,144 +622,11 @@ export default function NotionTopbar({
             }
             aria-label="Chế độ Ban đêm / Ban ngày"
           >
-            <span className="text-sm select-none">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
+            <span className="text-xs select-none">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
           </button>
-        ) : (
-          <div
-            className="hidden md:flex w-8 h-8 rounded-lg bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs items-center justify-center text-sm"
-            title="Chủ đề 3D 4K chạy Chế độ tối cinema."
-          >
-            🌙
-          </div>
-        )}
+        ) : null}
 
-        {/* Dynamic Weather & Atmosphere Particle Toggle Button (Icon Only) */}
-        {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
-          const weatherInfoMap = {
-            'mario-stars': { icon: '🍄', label: 'Mario Stars' },
-            'anime-comet': { icon: '🌠', label: 'Sao Băng Tiamat' },
-            snow: { icon: '❄️', label: 'Tuyết Rơi' },
-            halloween: { icon: '🎃', label: 'Halloween' },
-            sakura: { icon: '🌸', label: 'Hoa Đào' },
-            stars: { icon: '✨', label: 'Sao Băng' },
-            fireflies: { icon: '🍃', label: 'Đom Đóm' },
-            'coffee-steam': { icon: '☕', label: 'Hơi Cà Phê' },
-            'digital-rain': { icon: '⚡', label: 'Ma Trận' },
-            'sunset-dust': { icon: '🌅', label: 'Bụi Nắng' },
-            'fizzy-citrus': { icon: '🫧', label: 'Bọt Khí' },
-            'aurora-ice': { icon: '🌌', label: 'Cực Quang' },
-            'autumn-leaves': { icon: '🍂', label: 'Lá Vàng' },
-            'minimal-sparkles': { icon: '✨', label: 'Lấp Lánh' }
-          };
-          const info = weatherInfoMap[currentTheme.weatherType] || { icon: '✨', label: 'Hiệu Ứng' };
-
-          return (
-            <button
-              type="button"
-              onClick={() => {
-                playSound('click');
-                onToggleWeather?.();
-              }}
-              className={`hidden md:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border ${
-                isWeatherEnabled
-                  ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-200 border-sky-300 dark:border-sky-500/40 hover:bg-sky-200 dark:hover:bg-sky-900'
-                  : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-white/10 opacity-60'
-              }`}
-              title={
-                isWeatherEnabled
-                  ? `Hiệu ứng: ${info.label} (Bấm để tắt)`
-                  : `Hiệu ứng: ${info.label} (Bấm để bật)`
-              }
-              aria-label="Hiệu ứng thời tiết"
-            >
-              <span className="text-sm select-none">{info.icon}</span>
-            </button>
-          );
-        })()}
-
-        {/* Live Hanoi Clock & Target Study Goal (Icon Only) */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('click');
-            onOpenTargetClock?.();
-          }}
-          className="hidden lg:flex w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 items-center justify-center shadow-2xs cursor-pointer"
-          title={`Giờ Hà Nội: ${hanoiTime} • Bấm mở Đồng hồ mục tiêu & Vết thời gian`}
-          aria-label="Đồng hồ Giờ Hà Nội"
-        >
-          <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-        </button>
-
-        {/* Analytics Dashboard Button (Icon Only) */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('click');
-            onOpenAnalytics?.();
-          }}
-          className="hidden md:flex w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
-          title="Xem phân tích & tiến độ học tập SM-2"
-          aria-label="Tiến độ học tập"
-        >
-          <BarChart2 className="w-3.5 h-3.5 text-indigo-700 dark:text-indigo-300" />
-        </button>
-
-        {/* Wallet Balance Pill (Icon Only) */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('click');
-            onSelectTab('wallet');
-          }}
-          className="hidden sm:flex w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
-          title={`Ví Xu: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
-          aria-label="Ví Xu"
-        >
-          <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-500" />
-        </button>
-
-        {/* Streak Pill (Icon Only) */}
-        <button
-          type="button"
-          onClick={() => {
-            playSound('flip');
-            onOpenLeaderboard?.();
-          }}
-          className="hidden sm:flex w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
-          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
-          aria-label="Chuỗi học tập"
-        >
-          <span className="text-sm select-none">{currentTheme?.icons?.streak || '🔥'}</span>
-        </button>
-
-        {/* Daily Check-in Button (Icon Only) */}
-        <button
-          type="button"
-          onClick={handleCheckIn}
-          className="hidden sm:flex w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
-          title="Điểm danh mỗi ngày nhận Xu miễn phí"
-          aria-label="Điểm danh nhận Xu"
-        >
-          <span className="text-sm select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
-        </button>
-
-        {/* Audio Mute/Unmute (Icon Only) */}
-        <button
-          type="button"
-          onClick={handleToggleMute}
-          className="hidden md:flex w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 items-center justify-center transition-colors cursor-pointer"
-          title={isMuted ? "Bật âm thanh hiệu ứng" : "Tắt âm thanh"}
-          aria-label="Bật/Tắt âm thanh"
-        >
-          {isMuted ? (
-            <VolumeX className="w-4 h-4 text-rose-500" />
-          ) : (
-            <Volume2 className="w-4 h-4 text-slate-600 dark:text-slate-300" />
-          )}
-        </button>
-
-        {/* Direct Messages & Friends Button (Icon Only with Live Badge) */}
+        {/* DIRECT CHAT & FRIENDS BUTTON */}
         {(() => {
           const totalSocialBadge = (unreadDmCount || 0) + (pendingRequestsCount || 0);
           return (
@@ -438,13 +636,13 @@ export default function NotionTopbar({
                 playSound('click');
                 onOpenDirectChat?.();
               }}
-              className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer"
-              title={`Tin nhắn & Bạn học${totalSocialBadge > 0 ? ` (${totalSocialBadge} thông báo mới)` : ''}`}
+              className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer shrink-0"
+              title={`Tin nhắn trực tiếp & Bạn học${totalSocialBadge > 0 ? ` (${totalSocialBadge} thông báo mới)` : ''}`}
               aria-label="Tin nhắn và Bạn bè"
             >
-              <MessageCircle className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
+              <MessageCircle className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
               {totalSocialBadge > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black ring-2 ring-white dark:ring-slate-900 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black ring-2 ring-white dark:ring-slate-900 flex items-center justify-center animate-pulse">
                   {totalSocialBadge > 9 ? '9+' : totalSocialBadge}
                 </span>
               )}
@@ -452,16 +650,16 @@ export default function NotionTopbar({
           );
         })()}
 
-        {/* Notification Bell (Icon Only) */}
-        <div className="relative">
+        {/* NOTIFICATION BELL */}
+        <div className="relative" ref={notificationsRef}>
           <button
             type="button"
             onClick={handleOpenNotifications}
-            className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors relative cursor-pointer"
+            className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors relative cursor-pointer shrink-0"
             title="Thông báo hệ thống"
             aria-label="Thông báo"
           >
-            <Bell className="w-4 h-4" />
+            <Bell className="w-3.5 h-3.5" />
             {unreadCount > 0 && (
               <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
             )}
@@ -469,7 +667,7 @@ export default function NotionTopbar({
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-white/15 p-3 space-y-2 z-50 text-left">
+            <div className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 p-3 space-y-2 z-50 text-left animate-fade-in">
               <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
                 <span className="font-bold text-xs text-slate-900 dark:text-white">Thông Báo Hệ Thống</span>
                 <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-300">{notifications.length} tin</span>
@@ -496,12 +694,12 @@ export default function NotionTopbar({
           )}
         </div>
 
-        {/* User Profile / Auth Button (Icon Only) */}
+        {/* USER PROFILE / AUTH BUTTON */}
         {user ? (
           <button
             type="button"
             onClick={onOpenAuth}
-            className="w-8 h-8 rounded-lg hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer shrink-0"
             title={`Tài khoản: ${user.displayName || user.email}`}
             aria-label="Tài khoản cá nhân"
           >
@@ -513,11 +711,11 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="w-8 h-8 rounded-lg bg-[#2383e2] hover:bg-[#1d6fc2] text-white flex items-center justify-center shadow-2xs transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-lg bg-[#2383e2] hover:bg-[#1d6fc2] text-white flex items-center justify-center shadow-2xs transition-colors cursor-pointer shrink-0"
             title="Đăng Nhập / Quản lý Tài Khoản"
             aria-label="Đăng Nhập"
           >
-            <User className="w-4 h-4" />
+            <User className="w-3.5 h-3.5" />
           </button>
         )}
 
