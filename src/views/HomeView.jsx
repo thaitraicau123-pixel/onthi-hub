@@ -180,7 +180,7 @@ export default function HomeView({
           <button
             type="button"
             onClick={() => onOpenStudyRoom && onOpenStudyRoom()}
-            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-sky-500/10 dark:from-emerald-950/60 dark:to-slate-900 border border-emerald-300/70 dark:border-emerald-500/40 hover:border-emerald-500 transition-all cursor-pointer group"
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-emerald-500/10 via-teal-500/10 to-sky-500/10 dark:from-emerald-950/60 dark:to-slate-900 border border-emerald-300/70 dark:border-emerald-500/40 hover:border-emerald-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-extrabold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
@@ -198,7 +198,7 @@ export default function HomeView({
           <button
             type="button"
             onClick={() => onOpenCheatSheet && onOpenCheatSheet(allCourses[0]?.id || 'pldc')}
-            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-sky-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/60 dark:to-slate-900 border border-sky-300/70 dark:border-sky-500/40 hover:border-sky-500 transition-all cursor-pointer group"
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-sky-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/60 dark:to-slate-900 border border-sky-300/70 dark:border-sky-500/40 hover:border-sky-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-extrabold text-sky-900 dark:text-sky-300 flex items-center gap-1.5">
@@ -216,7 +216,7 @@ export default function HomeView({
           <button
             type="button"
             onClick={() => onOpenTargetClock && onOpenTargetClock()}
-            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-rose-500/10 dark:from-amber-950/60 dark:to-slate-900 border border-amber-300/70 dark:border-amber-500/40 hover:border-amber-500 transition-all cursor-pointer group"
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 via-orange-500/10 to-rose-500/10 dark:from-amber-950/60 dark:to-slate-900 border border-amber-300/70 dark:border-amber-500/40 hover:border-amber-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
           >
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-extrabold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
@@ -430,7 +430,7 @@ export default function HomeView({
               const el = document.getElementById('catalog-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-[#2383e2] dark:hover:border-sky-400 cursor-pointer transition-all flex flex-col justify-between select-none"
+            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-[#2383e2] dark:hover:border-sky-400 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
             <div className="w-8 h-8 rounded-lg bg-[#fbf3db] dark:bg-amber-950/70 text-[#c29243] dark:text-amber-300 border border-[#f4e4b7] dark:border-amber-700/50 flex items-center justify-center mb-2">
               <Landmark className="w-4 h-4" />
@@ -444,7 +444,7 @@ export default function HomeView({
           {/* Card 2: Chợ Thẻ C2C */}
           <div
             onClick={() => onSwitchTab('marketplace')}
-            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-emerald-500 cursor-pointer transition-all flex flex-col justify-between select-none"
+            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-emerald-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
             <div className="w-8 h-8 rounded-lg bg-[#edf3ec] dark:bg-emerald-950/70 text-[#448361] dark:text-emerald-300 border border-[#d3e5d7] dark:border-emerald-700/50 flex items-center justify-center mb-2">
               <Store className="w-4 h-4" />
@@ -461,7 +461,7 @@ export default function HomeView({
           {/* Card 3: Túi Mù Tri Thức */}
           <div
             onClick={onOpenBlindBox}
-            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-purple-500 cursor-pointer transition-all flex flex-col justify-between select-none"
+            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-purple-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
             <div className="w-8 h-8 rounded-lg bg-[#f4f0f7] dark:bg-purple-950/70 text-[#9065b0] dark:text-purple-300 border border-[#e3d7ec] dark:border-purple-700/50 flex items-center justify-center mb-2">
               <Gift className="w-4 h-4" />
@@ -475,7 +475,7 @@ export default function HomeView({
           {/* Card 4: Game Nối Thẻ */}
           <div
             onClick={() => onOpenMatchGame(allCourses[0])}
-            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-sky-500 cursor-pointer transition-all flex flex-col justify-between select-none"
+            className="p-3.5 rounded-2xl bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 shadow-2xs hover:border-sky-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
             <div className="w-8 h-8 rounded-lg bg-[#e7f3f8] dark:bg-sky-950/70 text-[#2b7aa1] dark:text-sky-300 border border-[#cbe3ed] dark:border-sky-700/50 flex items-center justify-center mb-2">
               <Gamepad2 className="w-4 h-4" />

@@ -4,7 +4,7 @@
 // Luôn ưu tiên bản mới nhất từ mạng (Network-First) và tự động dự phòng Offline
 // =========================================================================
 
-const CACHE_NAME = 'onthi-pwa-v4.3';
+const CACHE_NAME = 'onthi-pwa-v4.4';
 
 const STATIC_PRECACHE = [
   '/',

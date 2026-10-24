@@ -224,7 +224,7 @@ export default function NotionTopbar({
             playSound('click');
             onOpenStudyRoom?.();
           }}
-          className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 flex items-center justify-center transition-all shadow-2xs cursor-pointer relative"
+          className="hidden sm:flex w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-600/50 items-center justify-center transition-all shadow-2xs cursor-pointer relative"
           title="Phòng tự học chung ảo trực tuyến (Live 24/7)"
           aria-label="Phòng tự học ảo Live"
         >
@@ -242,7 +242,7 @@ export default function NotionTopbar({
             playSound('click');
             onOpenThemePicker?.();
           }}
-          className="w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          className="hidden sm:flex w-8 h-8 rounded-lg bg-purple-100 dark:bg-purple-950/80 hover:bg-purple-200 dark:hover:bg-purple-900 text-purple-800 dark:text-purple-200 border border-purple-300 dark:border-purple-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
           title="Đổi chủ đề không gian học & icon (16 Themes 3D 4K)"
           aria-label="Đổi chủ đề"
         >
@@ -258,7 +258,7 @@ export default function NotionTopbar({
               const nextMode = toggleSleepMode();
               setSleepMode(nextMode);
             }}
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all shadow-2xs cursor-pointer border ${
+            className={`hidden md:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border ${
               sleepMode === 'dark'
                 ? 'bg-indigo-950/90 text-indigo-100 border-indigo-400/50 hover:bg-indigo-900'
                 : 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
@@ -274,7 +274,7 @@ export default function NotionTopbar({
           </button>
         ) : (
           <div
-            className="w-8 h-8 rounded-lg bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs flex items-center justify-center text-sm"
+            className="hidden md:flex w-8 h-8 rounded-lg bg-indigo-950/90 text-indigo-100 border border-indigo-400/40 shadow-2xs items-center justify-center text-sm"
             title="Chủ đề 3D 4K chạy Chế độ tối cinema."
           >
             🌙
@@ -308,7 +308,7 @@ export default function NotionTopbar({
                 playSound('click');
                 onToggleWeather?.();
               }}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all shadow-2xs cursor-pointer border ${
+              className={`hidden md:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border ${
                 isWeatherEnabled
                   ? 'bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-200 border-sky-300 dark:border-sky-500/40 hover:bg-sky-200 dark:hover:bg-sky-900'
                   : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-white/10 opacity-60'
@@ -332,7 +332,7 @@ export default function NotionTopbar({
             playSound('click');
             onOpenTargetClock?.();
           }}
-          className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 flex items-center justify-center shadow-2xs cursor-pointer"
+          className="hidden lg:flex w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/50 items-center justify-center shadow-2xs cursor-pointer"
           title={`Giờ Hà Nội: ${hanoiTime} • Bấm mở Đồng hồ mục tiêu & Vết thời gian`}
           aria-label="Đồng hồ Giờ Hà Nội"
         >
@@ -346,7 +346,7 @@ export default function NotionTopbar({
             playSound('click');
             onOpenAnalytics?.();
           }}
-          className="w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          className="hidden md:flex w-8 h-8 rounded-lg bg-indigo-100 dark:bg-indigo-950/80 hover:bg-indigo-200 dark:hover:bg-indigo-900 text-indigo-800 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
           title="Xem phân tích & tiến độ học tập SM-2"
           aria-label="Tiến độ học tập"
         >
@@ -360,7 +360,7 @@ export default function NotionTopbar({
             playSound('click');
             onSelectTab('wallet');
           }}
-          className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          className="hidden sm:flex w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/80 hover:bg-amber-200 dark:hover:bg-amber-900 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
           title={`Ví Xu: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
           aria-label="Ví Xu"
         >
@@ -374,7 +374,7 @@ export default function NotionTopbar({
             playSound('flip');
             onOpenLeaderboard?.();
           }}
-          className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          className="hidden sm:flex w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-950/80 hover:bg-orange-200 dark:hover:bg-orange-900 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
           title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
           aria-label="Chuỗi học tập"
         >
@@ -385,7 +385,7 @@ export default function NotionTopbar({
         <button
           type="button"
           onClick={handleCheckIn}
-          className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 flex items-center justify-center transition-all shadow-2xs cursor-pointer"
+          className="hidden sm:flex w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 hover:bg-emerald-200 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 items-center justify-center transition-all shadow-2xs cursor-pointer"
           title="Điểm danh mỗi ngày nhận Xu miễn phí"
           aria-label="Điểm danh nhận Xu"
         >
@@ -396,7 +396,7 @@ export default function NotionTopbar({
         <button
           type="button"
           onClick={handleToggleMute}
-          className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer"
+          className="hidden md:flex w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 items-center justify-center transition-colors cursor-pointer"
           title={isMuted ? "Bật âm thanh hiệu ứng" : "Tắt âm thanh"}
           aria-label="Bật/Tắt âm thanh"
         >

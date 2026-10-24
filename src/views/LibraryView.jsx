@@ -346,7 +346,7 @@ export default function LibraryView({
                 return (
                   <div
                     key={course.id}
-                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] dark:border-white/15 bg-white/95 dark:bg-slate-900/90 hover:border-[#c5c4c0] dark:hover:border-white/25 card-3d shadow-3d-sm hover:shadow-3d-md hover:-translate-y-0.5 transition-all flex flex-col justify-between text-[#37352f] dark:text-white relative overflow-hidden"
+                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-white/95 dark:bg-[#16122b]/95 backdrop-blur-md hover:border-[#2383e2] dark:hover:border-sky-500/70 shadow-3d-sm hover:shadow-3d-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between text-[#37352f] dark:text-[#f8fafc] relative overflow-hidden group"
                   >
                     {/* Festive Snow Cap Banner */}
                     {hasSnowCaps && (
@@ -399,6 +399,21 @@ export default function LibraryView({
                           >
                             <Share2 className="w-3.5 h-3.5" />
                           </button>
+
+                          {onOpenDirectChat && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                playSound('click');
+                                onOpenDirectChat(null, course);
+                              }}
+                              className="p-1 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[#787774] dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+                              title="Gửi thẻ này vào đoạn chat với bạn học"
+                              aria-label="Chia sẻ qua tin nhắn"
+                            >
+                              <MessageCircle className="w-3.5 h-3.5" />
+                            </button>
+                          )}
 
                           <button
                             type="button"

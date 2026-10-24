@@ -411,7 +411,7 @@ export default function MarketplaceView({
               return (
                 <div
                   key={pDeck.id}
-                  className="bg-[#fbfbfa] dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 hover:border-[#c5c4c0] dark:hover:border-white/25 rounded-xl p-3.5 flex flex-col justify-between transition-all"
+                  className="bg-[#fbfbfa] dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 hover:border-[#2383e2] dark:hover:border-sky-500/50 rounded-xl p-3.5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -683,7 +683,7 @@ export default function MarketplaceView({
               return (
                 <div
                   key={deck.id}
-                  className={`bg-white/95 dark:bg-slate-900/90 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-2xs hover:shadow-xs hover:border-[#c5c4c0] dark:hover:border-white/25 ${
+                  className={`bg-white/95 dark:bg-slate-900/90 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-3d-sm hover:shadow-3d-md hover:-translate-y-1 hover:border-[#2383e2] dark:hover:border-sky-500/70 ${
                     deck.isPassDeck
                       ? 'border-[#e0d6eb] dark:border-purple-500/40'
                       : 'border-[#e9e9e8] dark:border-white/15'

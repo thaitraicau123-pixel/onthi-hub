@@ -171,7 +171,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
               setActiveTab('deposit');
               setDepositResult(null);
             }}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold shadow-2xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] hover:-translate-y-0.5 active:scale-[0.98] text-white text-xs font-bold shadow-2xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
           >
             <ArrowDownLeft className="w-3.5 h-3.5" />
             <span>Nạp Thêm Xu</span>
@@ -179,7 +179,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           <button
             onClick={() => setActiveTab('withdraw')}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 hover:-translate-y-0.5 active:scale-[0.98] text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
           >
             <ArrowUpRight className="w-3.5 h-3.5 text-[#787774] dark:text-slate-300" />
             <span>Rút Tiền Mặt</span>

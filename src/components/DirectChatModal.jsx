@@ -381,7 +381,7 @@ export default function DirectChatModal({
 
             <button
               onClick={onClose}
-              className="sm:hidden p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg cursor-pointer"
+              className="sm:hidden p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -828,7 +828,7 @@ export default function DirectChatModal({
               <button
                 type="button"
                 onClick={() => setMobileShowChat(false)}
-                className="sm:hidden p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                className="sm:hidden p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 title="Quay lại danh sách hội thoại"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -936,7 +936,7 @@ export default function DirectChatModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
+                className="p-1.5 min-w-[36px] min-h-[36px] flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg transition-colors cursor-pointer"
                 title="Đóng (Esc)"
               >
                 <X className="w-4 h-4" />

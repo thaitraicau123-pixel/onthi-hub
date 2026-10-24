@@ -173,7 +173,7 @@ export default function PaymentModal({
 
           <button
             onClick={onClose}
-            className="flex items-center space-x-1 px-2.5 py-1 text-xs text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-slate-800 rounded-md border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 transition-colors cursor-pointer"
+            className="flex items-center space-x-1 px-2.5 py-1 min-h-[36px] text-xs text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white hover:bg-black/5 dark:hover:bg-slate-800 rounded-md border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 transition-colors cursor-pointer"
             title="Đóng (hoặc nhấn Esc, bấm ra ngoài)"
           >
             <span>Đóng</span>
@@ -439,7 +439,7 @@ export default function PaymentModal({
                 <div className="space-y-2 pt-2">
                   <button
                     onClick={handleConfirmPurchase}
-                    className="w-full py-2.5 px-4 rounded-lg font-semibold text-sm text-white bg-[#2383e2] hover:bg-[#1a73e8] transition-colors flex items-center justify-center space-x-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl font-bold text-sm text-white bg-[#2383e2] hover:bg-[#1a73e8] hover:-translate-y-0.5 active:scale-[0.99] shadow-xs transition-all flex items-center justify-center space-x-2 cursor-pointer"
                   >
                     <Coins className="w-4 h-4 fill-white" />
                     <span>Xác Nhận Mở Khóa ({priceXu} Xu)</span>

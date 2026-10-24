@@ -86,10 +86,10 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
           return (
             <div
               key={plan.id}
-              className={`rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 relative border ${
+              className={`rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 relative border hover:-translate-y-1 hover:shadow-md ${
                 plan.isPopular
                   ? 'border-[#2383e2] dark:border-sky-400 ring-1 ring-[#2383e2] dark:ring-sky-400 bg-white/95 dark:bg-slate-900/95 shadow-xs'
-                  : 'border-[#e9e9e8] dark:border-white/15 bg-white/95 dark:bg-slate-900/90 hover:border-[#c5c4c0] dark:hover:border-white/25 shadow-2xs'
+                  : 'border-[#e9e9e8] dark:border-white/15 bg-white/95 dark:bg-slate-900/90 hover:border-[#2383e2] dark:hover:border-sky-500/50 shadow-2xs'
               } text-[#37352f] dark:text-white`}
             >
               {plan.badge && (
@@ -155,7 +155,7 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
                   <div className="space-y-2">
                     <button
                       onClick={() => handleUpgradeWithXu(plan)}
-                      className="w-full py-2.5 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold shadow-2xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+                      className="w-full py-2.5 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] hover:-translate-y-0.5 active:scale-[0.98] text-white text-xs font-bold shadow-2xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
                     >
                       <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
                       <span>Kích Hoạt Gói ({plan.priceXu} Xu)</span>
