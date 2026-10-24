@@ -507,34 +507,17 @@ export async function syncFriendDataFromCloud(currentUserId) {
   } catch (e) {}
 }
 
-/**
- * Đăng ký lắng nghe sự kiện bạn bè theo thời gian thực (Tab Sync + Cloud SSE Relay)
- */
-export function subscribeToFriendEvents(currentUserId, onUpdate) {
-  const handleLocal = (e) => {
-    if (typeof onUpdate === 'function') onUpdate(e.detail);
-  };
-  window.addEventListener('onthi-friend-updated', handleLocal);
+// Singleton SSE cho sự kiện bạn bè (Tránh mở nhiều kết nối trùng lặp & tranh chấp LocalStorage)
+let sharedFriendEventSource = null;
+let sharedFriendSubscriberCount = 0;
 
-  // 1. Cross-tab BroadcastChannel
-  let bc = null;
-  if (typeof BroadcastChannel !== 'undefined') {
-    try {
-      bc = new BroadcastChannel(FRIEND_BROADCAST_CHANNEL);
-      bc.onmessage = (event) => {
-        if (typeof onUpdate === 'function') onUpdate(event.data);
-      };
-    } catch (e) {}
-  }
+function ensureSharedFriendSseConnection() {
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
+  if (sharedFriendEventSource) return;
 
-  // 2. Tự động đồng bộ lời mời kết bạn từ Cloud Relay ngay khi bắt đầu
-  syncFriendDataFromCloud(currentUserId);
-
-  // 3. Lắng nghe Cloud Relay SSE (ntfy.sh)
-  let es = null;
   try {
-    es = new EventSource(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/sse`);
-    es.onmessage = (event) => {
+    sharedFriendEventSource = new EventSource(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/sse`);
+    sharedFriendEventSource.onmessage = (event) => {
       try {
         const payload = JSON.parse(event.data);
         if (payload?.event === 'message' && payload.message) {
@@ -545,8 +528,8 @@ export function subscribeToFriendEvents(currentUserId, onUpdate) {
               const allReqs = getAllFriendRequests();
               if (!allReqs.some((r) => r.id === req.id)) {
                 saveAllFriendRequests([...allReqs, req]);
-                onUpdate?.(data);
               }
+              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
             } else if (data.action === 'request_accepted' && data.pairKey) {
               const allPairs = getAllFriendPairs();
               if (!allPairs.some((p) => p.key === data.pairKey)) {
@@ -561,20 +544,67 @@ export function subscribeToFriendEvents(currentUserId, onUpdate) {
                     createdAt: new Date().toISOString()
                   }
                 ]);
-                onUpdate?.(data);
               }
+              // Đồng thời cập nhật trạng thái request sang accepted
+              const allReqs = getAllFriendRequests();
+              const updatedReqs = allReqs.map((r) => {
+                if (
+                  r.status === 'pending' &&
+                  ((isSameUser(r.sender, data.userA) && isSameUser(r.receiver, data.userB)) ||
+                    (isSameUser(r.sender, data.userB) && isSameUser(r.receiver, data.userA)))
+                ) {
+                  return { ...r, status: 'accepted', updatedAt: new Date().toISOString() };
+                }
+                return r;
+              });
+              saveAllFriendRequests(updatedReqs);
+              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
             } else {
-              onUpdate?.(data);
+              window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: data }));
             }
           }
         }
       } catch (err) {}
     };
   } catch (err) {}
+}
+
+/**
+ * Đăng ký lắng nghe sự kiện bạn bè theo thời gian thực (Tab Sync + Singleton Cloud SSE Relay)
+ */
+export function subscribeToFriendEvents(currentUserId, onUpdate) {
+  const handleLocalOrCloud = (e) => {
+    if (typeof onUpdate === 'function') onUpdate(e.detail);
+  };
+  window.addEventListener('onthi-friend-updated', handleLocalOrCloud);
+  window.addEventListener('onthi-friend-cloud-received', handleLocalOrCloud);
+
+  // 1. Cross-tab BroadcastChannel
+  let bc = null;
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      bc = new BroadcastChannel(FRIEND_BROADCAST_CHANNEL);
+      bc.onmessage = (event) => {
+        if (typeof onUpdate === 'function') onUpdate(event.data);
+      };
+    } catch (e) {}
+  }
+
+  // 2. Tự động đồng bộ lời mời kết bạn từ Cloud Relay ngay khi bắt đầu
+  syncFriendDataFromCloud(currentUserId || true);
+
+  // 3. Kích hoạt Singleton Cloud Relay SSE (ntfy.sh)
+  sharedFriendSubscriberCount++;
+  ensureSharedFriendSseConnection();
 
   return () => {
-    window.removeEventListener('onthi-friend-updated', handleLocal);
+    window.removeEventListener('onthi-friend-updated', handleLocalOrCloud);
+    window.removeEventListener('onthi-friend-cloud-received', handleLocalOrCloud);
     if (bc) bc.close();
-    if (es) es.close();
+    sharedFriendSubscriberCount = Math.max(0, sharedFriendSubscriberCount - 1);
+    if (sharedFriendSubscriberCount === 0 && sharedFriendEventSource) {
+      sharedFriendEventSource.close();
+      sharedFriendEventSource = null;
+    }
   };
 }

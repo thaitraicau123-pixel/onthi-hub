@@ -87,9 +87,11 @@ import {
 import { parseUrlParameters } from './utils/shareLink';
 import {
   subscribeToDirectMessages,
+  getCurrentUserParticipant,
   isSameUser,
   matchesUserIdentifier
 } from './utils/directMessaging';
+import { subscribeToFriendEvents } from './utils/friendSystem';
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
@@ -119,6 +121,7 @@ export default function App() {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [toastActionPartner, setToastActionPartner] = useState(null);
   const [currentTheme, setCurrentTheme] = useState(() => getSelectedTheme());
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
@@ -234,17 +237,20 @@ export default function App() {
       setMarketplaceDecks(decks);
     });
 
-    // Global real-time listener for incoming direct messages (Chime + Toast + Desktop Notification)
-    const unsubDM = subscribeToDirectMessages(user, (incomingMsg) => {
-      if (!incomingMsg || !incomingMsg.id) return;
-      const activeUser = getCurrentUser();
-      if (isSameUser(incomingMsg.sender, activeUser)) return;
+    // Global real-time listener for incoming direct messages (Chime + Interactive Toast + Desktop Notification)
+    const seenNotifyMsgIds = new Set();
+    const unsubDM = subscribeToDirectMessages(null, (incomingMsg) => {
+      if (!incomingMsg || !incomingMsg.id || seenNotifyMsgIds.has(incomingMsg.id)) return;
+      const curParticipant = getCurrentUserParticipant(getCurrentUser());
+      if (isSameUser(incomingMsg.sender, curParticipant)) return;
 
       const isForMe =
-        matchesUserIdentifier(incomingMsg.receiver, activeUser) ||
-        (isUserAdmin(activeUser) && (incomingMsg.receiverId === 'admin_onthi' || incomingMsg.receiver?.id === 'admin_onthi'));
+        isSameUser(incomingMsg.receiver, curParticipant) ||
+        matchesUserIdentifier(incomingMsg.receiver, curParticipant) ||
+        (isUserAdmin(curParticipant) && (incomingMsg.receiverId === 'admin_onthi' || incomingMsg.receiver?.id === 'admin_onthi'));
 
       if (isForMe) {
+        seenNotifyMsgIds.add(incomingMsg.id);
         playSound('bell');
         const senderName = incomingMsg.sender?.name || 'Bạn học';
         const msgSnippet = incomingMsg.sharedAchievement
@@ -253,7 +259,7 @@ export default function App() {
           ? `📇 Đã chia sẻ Bộ Thẻ: ${incomingMsg.sharedDeck.title}`
           : incomingMsg.text || 'Tin nhắn mới';
 
-        showToast(`💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`);
+        showToast(`💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`, incomingMsg.sender);
 
         sendBrowserDesktopNotification({
           title: `💬 [OnThiHub] Tin nhắn mới từ ${senderName}`,
@@ -263,11 +269,51 @@ export default function App() {
       }
     });
 
+    // Global real-time listener for incoming friend requests & friend acceptances
+    const seenFriendEventIds = new Set();
+    const unsubFriends = subscribeToFriendEvents(null, (friendData) => {
+      if (!friendData || friendData.type !== 'friend_update') return;
+      const curParticipant = getCurrentUserParticipant(getCurrentUser());
+
+      if (friendData.action === 'request_sent' && friendData.request) {
+        const req = friendData.request;
+        if (seenFriendEventIds.has(req.id)) return;
+        if (
+          (isSameUser(req.receiver, curParticipant) || matchesUserIdentifier(curParticipant, req.receiverId)) &&
+          !isSameUser(req.sender, curParticipant)
+        ) {
+          seenFriendEventIds.add(req.id);
+          playSound('bell');
+          const senderName = req.sender?.name || 'Bạn học';
+          showToast(`🤝 [LỜI MỜI KẾT BẠN] ${senderName} muốn kết bạn cùng ôn thi với bạn!`, req.sender);
+          sendBrowserDesktopNotification({
+            title: `🤝 [OnThiHub] Lời mời kết bạn từ ${senderName}`,
+            body: req.message || 'Chào bạn, kết bạn cùng ôn thi trên OnThiHub nhé!',
+            tag: req.id
+          });
+        }
+      } else if (friendData.action === 'request_accepted' && friendData.pairKey) {
+        const eventKey = `acc_${friendData.pairKey}`;
+        if (seenFriendEventIds.has(eventKey)) return;
+        const isMeA = isSameUser(friendData.userA, curParticipant);
+        const isMeB = isSameUser(friendData.userB, curParticipant);
+        if (isMeA || isMeB) {
+          seenFriendEventIds.add(eventKey);
+          const newFriend = isMeA ? friendData.userB : friendData.userA;
+          if (newFriend && !isSameUser(newFriend, curParticipant)) {
+            playSound('success');
+            showToast(`🎉 [BẠN BÈ MỚI] Bạn và ${newFriend.name} đã trở thành bạn bè!`, newFriend);
+          }
+        }
+      }
+    });
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       if (typeof unsubTxs === 'function') unsubTxs();
       if (typeof unsubMarket === 'function') unsubMarket();
       if (typeof unsubDM === 'function') unsubDM();
+      if (typeof unsubFriends === 'function') unsubFriends();
       if (typeof unsubTheme === 'function') unsubTheme();
       if (typeof unsubWeather === 'function') unsubWeather();
       if (typeof unsubSleep === 'function') unsubSleep();
@@ -280,9 +326,13 @@ export default function App() {
     setMarketplaceDecks(getMarketplaceDecks());
   };
 
-  const showToast = (msg) => {
+  const showToast = (msg, actionPartner = null) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 4000);
+    setToastActionPartner(actionPartner);
+    setTimeout(() => {
+      setToastMessage('');
+      setToastActionPartner(null);
+    }, 5000);
   };
 
   const handlePaymentSuccess = (itemId) => {
@@ -361,11 +411,38 @@ export default function App() {
       {/* High-Fidelity Themed Atmosphere Illustrated Artwork */}
       <ThemeAtmosphereBackground theme={currentTheme} />
       
-      {/* Toast Notification */}
+      {/* Toast Notification (Interactive when message or friend request arrives) */}
       {toastMessage && (
-        <div className="fixed top-14 right-6 z-50 flex items-center space-x-2.5 px-4 py-3 rounded-xl bg-[#2e2e2e] text-white shadow-xl text-xs sm:text-sm font-semibold border border-[#4a4a4a] animate-fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{toastMessage}</span>
+        <div
+          onClick={() => {
+            if (toastActionPartner) {
+              handleOpenDirectChat(toastActionPartner);
+              setToastMessage('');
+              setToastActionPartner(null);
+            }
+          }}
+          className={`fixed top-14 right-4 sm:right-6 z-50 max-w-md flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-[#18191d]/95 backdrop-blur-md text-white shadow-2xl text-xs sm:text-sm font-semibold border border-white/15 animate-fade-in ${
+            toastActionPartner ? 'cursor-pointer hover:border-sky-400/60 transition-all' : ''
+          }`}
+        >
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="truncate sm:whitespace-normal">{toastMessage}</span>
+          </div>
+          {toastActionPartner && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenDirectChat(toastActionPartner);
+                setToastMessage('');
+                setToastActionPartner(null);
+              }}
+              className="px-2.5 py-1 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-[11px] font-bold shrink-0 shadow-xs cursor-pointer"
+            >
+              Mở Chat →
+            </button>
+          )}
         </div>
       )}
 

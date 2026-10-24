@@ -170,7 +170,7 @@ export default function DirectChatModal({
     const convId = getConversationId(currentParticipant.id, activePartner.id);
     const msgs = getConversationMessages(convId, currentParticipant, activePartner);
     setMessages(msgs);
-    markConversationAsRead(convId, currentParticipant.id);
+    markConversationAsRead(convId, currentParticipant, activePartner);
     refreshAllData();
   }, [isOpen, activePartner, currentParticipant]);
 
@@ -201,7 +201,7 @@ export default function DirectChatModal({
             if (prev.some((m) => m.id === newMsg.id)) return prev;
             return [...prev, newMsg];
           });
-          markConversationAsRead(curConvId, currentParticipant.id);
+          markConversationAsRead(curConvId, currentParticipant, activePartner);
           if (!isSameUser(newMsg.sender, currentParticipant)) {
             playSound('bell');
           }
@@ -641,18 +641,33 @@ export default function DirectChatModal({
 
                         <div className="flex items-center justify-between gap-1 mt-0.5">
                           <p
-                            className={`text-[11px] truncate ${
+                            className={`text-[11px] truncate flex items-center gap-1 ${
                               hasUnread
                                 ? 'font-bold text-slate-900 dark:text-white'
                                 : 'text-slate-500 dark:text-slate-400'
                             }`}
                           >
-                            {conv.lastMessage?.sharedDeck ? (
-                              <span className="text-[#2383e2] dark:text-sky-400 font-semibold flex items-center gap-1">
-                                <span>📇 Đã chia sẻ bộ thẻ</span>
+                            {conv.lastMessage && isSameUser(conv.lastMessage.sender, currentParticipant) && (
+                              <span className="shrink-0 inline-flex items-center">
+                                {conv.lastMessage.status === 'seen' || conv.lastMessage.isRead ? (
+                                  <CheckCheck className="w-3 h-3 text-sky-400 mr-0.5" title="Đã xem" />
+                                ) : conv.lastMessage.status === 'delivered' ? (
+                                  <CheckCheck className="w-3 h-3 text-slate-400 mr-0.5" title="Đã nhận" />
+                                ) : (
+                                  <Check className="w-3 h-3 text-slate-400 mr-0.5" title="Đã gửi" />
+                                )}
+                              </span>
+                            )}
+                            {conv.lastMessage?.sharedAchievement ? (
+                              <span className="text-amber-600 dark:text-amber-400 font-semibold truncate">
+                                👑 Bằng Khen Hoàng Gia 4K
+                              </span>
+                            ) : conv.lastMessage?.sharedDeck ? (
+                              <span className="text-[#2383e2] dark:text-sky-400 font-semibold truncate">
+                                📇 Đã chia sẻ bộ thẻ
                               </span>
                             ) : conv.lastMessage?.text ? (
-                              conv.lastMessage.text
+                              <span className="truncate">{conv.lastMessage.text}</span>
                             ) : (
                               <span className="italic text-slate-400">Bắt đầu trò chuyện...</span>
                             )}

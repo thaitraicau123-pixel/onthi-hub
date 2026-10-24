@@ -8,6 +8,7 @@
 
 import { getOrCreateCommunityClientId } from '../data/communityData';
 import { getLocalUsersWithBalances, ADMIN_EMAIL } from './wallet';
+import { getCurrentUser } from './firebaseConfig';
 
 export const DM_STORAGE_KEY = 'onthi_direct_messages_v2';
 export const DM_BROADCAST_CHANNEL = 'onthi_hub_direct_chat_v2';
@@ -72,7 +73,7 @@ export function matchesUserIdentifier(userObj, identifier) {
   const target = String(identifier).toLowerCase().trim();
   const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
 
-  if (target === 'admin_onthi') {
+  if (target === 'admin_onthi' || target === adminEmail) {
     return (
       userObj.id === 'admin_onthi' ||
       userObj.role === 'admin' ||
@@ -92,6 +93,11 @@ export function matchesUserIdentifier(userObj, identifier) {
  */
 export function isUserAdmin(user) {
   if (!user) return false;
+  if (typeof user === 'string') {
+    const lower = user.toLowerCase().trim();
+    const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
+    return lower === 'admin_onthi' || lower === adminEmail;
+  }
   const email = (user.email || '').toLowerCase().trim();
   const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
   return email === adminEmail || user.role === 'admin' || user.id === 'admin_onthi';
@@ -99,20 +105,23 @@ export function isUserAdmin(user) {
 
 /**
  * Lấy đối tượng thông tin người tham gia từ user hiện tại
+ * Tự động đọc getCurrentUser() nếu tham số truyền vào bị trống
  */
 export function getCurrentUserParticipant(user) {
-  if (user && (user.email || user.displayName || user.uid)) {
-    const email = (user.email || `${user.uid || 'guest'}@onthihub.vn`).toLowerCase().trim();
-    const name = user.displayName || email.split('@')[0];
-    const isAdmin = isUserAdmin(user);
+  const resolved = user || (typeof window !== 'undefined' ? getCurrentUser() : null);
+
+  if (resolved && typeof resolved === 'object' && (resolved.email || resolved.displayName || resolved.name || resolved.uid || resolved.id)) {
+    const email = (resolved.email || `${resolved.uid || resolved.id || 'guest'}@onthihub.vn`).toLowerCase().trim();
+    const name = resolved.displayName || resolved.name || email.split('@')[0];
+    const isAdmin = isUserAdmin(resolved);
 
     if (isAdmin) {
       return {
         id: 'admin_onthi',
-        uid: user.uid || 'admin_onthi',
+        uid: resolved.uid || 'admin_onthi',
         email: email || ADMIN_EMAIL,
-        name: user.displayName || 'Ban Quản Trị OnThiHub',
-        avatar: user.photoURL || ADMIN_PARTICIPANT.avatar,
+        name: resolved.displayName || resolved.name || 'Ban Quản Trị OnThiHub',
+        avatar: resolved.photoURL || resolved.avatar || ADMIN_PARTICIPANT.avatar,
         role: 'admin',
         tier: 'ultra',
         badge: '🛡️ Ban Quản Trị'
@@ -120,14 +129,14 @@ export function getCurrentUserParticipant(user) {
     }
 
     return {
-      id: user.uid || email,
-      uid: user.uid || null,
+      id: resolved.uid || resolved.id || email,
+      uid: resolved.uid || null,
       email,
       name,
-      avatar: user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+      avatar: resolved.photoURL || resolved.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
       role: 'student',
-      tier: user.tier || 'free',
-      badge: user.tier === 'ultra' ? '👑 Học Viên ULTRA' : user.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên'
+      tier: resolved.tier || 'free',
+      badge: resolved.tier === 'ultra' ? '👑 Học Viên ULTRA' : resolved.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên'
     };
   }
 
@@ -495,7 +504,7 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
         }
       : null,
     createdAt: nowIso,
-    status: 'delivered', // 'sent' | 'delivered' | 'seen'
+    status: isSameUser(receiver, ADMIN_PARTICIPANT) ? 'delivered' : 'sent', // 'sent' | 'delivered' | 'seen'
     isRead: false,
     readAt: null
   };
@@ -509,7 +518,7 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
   if (typeof BroadcastChannel !== 'undefined') {
     try {
       const bc = new BroadcastChannel(DM_BROADCAST_CHANNEL);
-      bc.postMessage({ type: 'new_message', message: newMsg });
+      bc.postMessage({ type: 'new_message', message: { ...newMsg, status: 'delivered' } });
       bc.close();
     } catch (e) {}
   }
@@ -519,14 +528,34 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
     window.dispatchEvent(new CustomEvent('onthi-dm-message-sent', { detail: newMsg }));
   }
 
-  // 4. Đồng bộ Cloud Relay (ntfy) nếu gửi cho người dùng khác
+  // 4. Đồng bộ Cloud Relay (ntfy) nếu gửi cho người dùng khác & chuyển sang trạng thái 'delivered' (✓✓ Đã nhận)
   if (!isSameUser(sender, receiver)) {
     try {
       fetch(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}`, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-        body: JSON.stringify({ type: 'direct_message', message: newMsg })
-      }).catch(() => {});
+        body: JSON.stringify({ type: 'direct_message', message: { ...newMsg, status: 'delivered' } })
+      })
+        .then((res) => {
+          if (res.ok) {
+            const currentMsgs = getAllMessages();
+            let updatedStatus = false;
+            const nextMsgs = currentMsgs.map((m) => {
+              if (m.id === newMsg.id && m.status === 'sent') {
+                updatedStatus = true;
+                return { ...m, status: 'delivered' };
+              }
+              return m;
+            });
+            if (updatedStatus) {
+              saveAllMessages(nextMsgs);
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('onthi-dm-read-updated'));
+              }
+            }
+          }
+        })
+        .catch(() => {});
     } catch (e) {}
   }
 
@@ -534,27 +563,75 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
 }
 
 /**
+ * Áp dụng biên nhận Đã nhận / Đã xem vào kho tin nhắn cục bộ
+ */
+function applyReceiptToMessages(allMsgs, receipt) {
+  if (!receipt) return { updated: allMsgs, changed: false };
+  let changed = false;
+  const nowIso = receipt.readAt || new Date().toISOString();
+
+  const updated = allMsgs.map((m) => {
+    if (!m) return m;
+
+    if (receipt.type === 'delivery_receipt' && receipt.messageId === m.id && m.status === 'sent') {
+      changed = true;
+      return { ...m, status: 'delivered' };
+    }
+
+    if (receipt.type === 'read_receipt') {
+      const matchById = Array.isArray(receipt.messageIds) && receipt.messageIds.includes(m.id);
+      const matchByConv = receipt.conversationId && m.conversationId === receipt.conversationId;
+      const matchByUsers =
+        receipt.reader &&
+        receipt.partner &&
+        isSameUser(m.sender, receipt.partner) &&
+        isSameUser(m.receiver, receipt.reader);
+
+      if ((matchById || matchByConv || matchByUsers) && (!m.isRead || m.status !== 'seen')) {
+        // Chỉ đánh dấu đã xem đối với những tin nhắn mà người đọc là người nhận
+        if (!receipt.reader || isSameUser(m.receiver, receipt.reader) || matchById) {
+          changed = true;
+          return { ...m, isRead: true, status: 'seen', readAt: nowIso };
+        }
+      }
+    }
+
+    return m;
+  });
+
+  return { updated, changed };
+}
+
+/**
  * Đánh dấu tất cả tin nhắn trong cuộc hội thoại là đã đọc & phát biên nhận đã xem (Read Receipt)
  */
-export function markConversationAsRead(conversationId, currentUserId) {
+export function markConversationAsRead(conversationId, currentUserId, targetPartner = null) {
   if (!conversationId) return;
+  const curParticipant = getCurrentUserParticipant(currentUserId);
+  const isAdmin = isUserAdmin(curParticipant) || isSameUser(curParticipant, ADMIN_PARTICIPANT);
   const allMsgs = getAllMessages();
   let changed = false;
+  const readMessageIds = [];
   const nowIso = new Date().toISOString();
 
   const updated = allMsgs.map((msg) => {
     const isMatchingConv =
       msg.conversationId === conversationId ||
-      (conversationId.includes('admin_onthi') && msg.conversationId === 'conv_admin_onthi__default_user');
+      (conversationId.includes('admin_onthi') && msg.conversationId === 'conv_admin_onthi__default_user') ||
+      (targetPartner &&
+        ((isSameUser(msg.sender, targetPartner) && isSameUser(msg.receiver, curParticipant)) ||
+          (isSameUser(msg.sender, curParticipant) && isSameUser(msg.receiver, targetPartner))));
 
     if (isMatchingConv) {
       const isTargetReceiver =
+        isSameUser(msg.receiver, curParticipant) ||
         matchesUserIdentifier(msg.receiver, currentUserId) ||
-        msg.receiverId === 'default_user' ||
-        (currentUserId === 'admin_onthi' && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi'));
+        (!isAdmin && msg.receiverId === 'default_user') ||
+        (isAdmin && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi' || msg.receiver?.role === 'admin'));
 
       if (isTargetReceiver && (!msg.isRead || msg.status !== 'seen')) {
         changed = true;
+        readMessageIds.push(msg.id);
         return { ...msg, isRead: true, status: 'seen', readAt: nowIso };
       }
     }
@@ -567,7 +644,10 @@ export function markConversationAsRead(conversationId, currentUserId) {
     const receiptPayload = {
       type: 'read_receipt',
       conversationId,
-      readerId: typeof currentUserId === 'object' ? currentUserId.id : currentUserId,
+      messageIds: readMessageIds,
+      reader: curParticipant,
+      partner: targetPartner,
+      readerId: curParticipant.id,
       readAt: nowIso
     };
 
@@ -597,12 +677,15 @@ export function markConversationAsRead(conversationId, currentUserId) {
  * Tính tổng số tin nhắn chưa đọc của người dùng hiện tại
  */
 export function getUnreadDirectMessagesCount(currentUserId) {
-  if (!currentUserId) return 0;
+  const curParticipant = getCurrentUserParticipant(currentUserId);
+  if (!curParticipant) return 0;
   const allMsgs = getAllMessages();
-  const isAdmin = currentUserId === 'admin_onthi';
+  const isAdmin = isUserAdmin(curParticipant) || isSameUser(curParticipant, ADMIN_PARTICIPANT);
 
   return allMsgs.filter((msg) => {
+    if (isSameUser(msg.sender, curParticipant)) return false;
     const isReceiver =
+      isSameUser(msg.receiver, curParticipant) ||
       matchesUserIdentifier(msg.receiver, currentUserId) ||
       (!isAdmin && msg.receiverId === 'default_user') ||
       (isAdmin && (msg.receiverId === 'admin_onthi' || msg.receiver?.id === 'admin_onthi' || msg.receiver?.role === 'admin'));
@@ -612,10 +695,11 @@ export function getUnreadDirectMessagesCount(currentUserId) {
 }
 
 /**
- * Đồng bộ tin nhắn từ Cloud Relay về thiết bị (Bù đắp tin gửi khi offline hoặc tắt tab)
+ * Đồng bộ tin nhắn & biên nhận đã xem từ Cloud Relay về thiết bị (Bù đắp tin gửi khi offline hoặc tắt tab)
  */
 export async function syncDirectMessagesFromCloud(userOrId) {
-  if (!userOrId) return;
+  const curParticipant = getCurrentUserParticipant(userOrId);
+  if (!curParticipant) return;
   try {
     const res = await fetch(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}/json?poll=1&since=24h`);
     if (!res.ok) return;
@@ -623,9 +707,10 @@ export async function syncDirectMessagesFromCloud(userOrId) {
     if (!text) return;
 
     const lines = text.trim().split('\n');
-    let hasNew = false;
-    const allMsgs = getAllMessages();
+    let hasChanges = false;
+    let allMsgs = getAllMessages();
     const existingIds = new Set(allMsgs.map((m) => m.id));
+    const pendingReceipts = [];
 
     for (const line of lines) {
       try {
@@ -636,20 +721,33 @@ export async function syncDirectMessagesFromCloud(userOrId) {
             const incoming = dm.message;
             if (!incoming.id || existingIds.has(incoming.id)) continue;
 
-            const isMeReceiver = matchesUserIdentifier(incoming.receiver, userOrId);
-            const isMeSender = matchesUserIdentifier(incoming.sender, userOrId);
+            const isMeReceiver = isSameUser(incoming.receiver, curParticipant) || matchesUserIdentifier(incoming.receiver, curParticipant);
+            const isMeSender = isSameUser(incoming.sender, curParticipant) || matchesUserIdentifier(incoming.sender, curParticipant);
 
             if (isMeReceiver || isMeSender) {
-              allMsgs.push(incoming);
+              allMsgs.push({
+                ...incoming,
+                status: incoming.status === 'seen' ? 'seen' : 'delivered'
+              });
               existingIds.add(incoming.id);
-              hasNew = true;
+              hasChanges = true;
             }
+          } else if (dm?.type === 'read_receipt' || dm?.type === 'delivery_receipt') {
+            pendingReceipts.push(dm);
           }
         }
       } catch (err) {}
     }
 
-    if (hasNew) {
+    for (const receipt of pendingReceipts) {
+      const resReceipt = applyReceiptToMessages(allMsgs, receipt);
+      if (resReceipt.changed) {
+        allMsgs = resReceipt.updated;
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
       saveAllMessages(allMsgs);
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('onthi-dm-cloud-synced'));
@@ -658,12 +756,80 @@ export async function syncDirectMessagesFromCloud(userOrId) {
   } catch (e) {}
 }
 
+// Singleton SSE Engine dùng chung cho toàn bộ ứng dụng (Tránh mở nhiều kết nối trùng lặp & tranh chấp LocalStorage)
+let sharedDmEventSource = null;
+let sharedDmSubscriberCount = 0;
+
+function ensureSharedDmSseConnection() {
+  if (typeof window === 'undefined' || typeof EventSource === 'undefined') return;
+  if (sharedDmEventSource) return;
+
+  try {
+    sharedDmEventSource = new EventSource(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}/sse`);
+    sharedDmEventSource.onmessage = (event) => {
+      try {
+        const payload = JSON.parse(event.data);
+        if (payload?.event === 'message' && payload.message) {
+          const dm = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
+          const activeParticipant = getCurrentUserParticipant();
+
+          if (dm?.type === 'direct_message' && dm.message) {
+            const incoming = {
+              ...dm.message,
+              status: dm.message.status === 'seen' ? 'seen' : 'delivered'
+            };
+            const isMeReceiver =
+              isSameUser(incoming.receiver, activeParticipant) ||
+              matchesUserIdentifier(incoming.receiver, activeParticipant);
+            const isMeSender =
+              isSameUser(incoming.sender, activeParticipant) ||
+              matchesUserIdentifier(incoming.sender, activeParticipant);
+
+            if (isMeReceiver && !isMeSender) {
+              const allMsgs = getAllMessages();
+              if (!allMsgs.some((m) => m.id === incoming.id)) {
+                saveAllMessages([...allMsgs, incoming]);
+                // Gửi biên nhận đã nhận (delivery_receipt) về cho người gửi
+                try {
+                  fetch(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                    body: JSON.stringify({
+                      type: 'delivery_receipt',
+                      messageId: incoming.id,
+                      conversationId: incoming.conversationId
+                    })
+                  }).catch(() => {});
+                } catch (e) {}
+              }
+              // Phát sự kiện nội bộ để MỌI component (App, DirectChatModal, Sidebar, Topbar) đều nhận được đồng thời
+              window.dispatchEvent(new CustomEvent('onthi-dm-cloud-received', { detail: incoming }));
+            }
+          } else if (dm?.type === 'read_receipt' || dm?.type === 'delivery_receipt') {
+            const allMsgs = getAllMessages();
+            const { updated, changed } = applyReceiptToMessages(allMsgs, dm);
+            if (changed) {
+              saveAllMessages(updated);
+              window.dispatchEvent(new CustomEvent('onthi-dm-read-updated', { detail: dm }));
+            }
+          }
+        }
+      } catch (err) {}
+    };
+    sharedDmEventSource.onerror = () => {
+      // Cho phép trình duyệt tự kết nối lại hoặc khởi tạo lại khi cần
+    };
+  } catch (err) {}
+}
+
 /**
- * Đăng ký lắng nghe tin nhắn mới theo thời gian thực (Tab Sync + Cloud SSE Relay)
+ * Đăng ký lắng nghe tin nhắn mới theo thời gian thực (Tab Sync + Singleton Cloud SSE Relay)
  */
 export function subscribeToDirectMessages(currentUserId, onNewMessage) {
-  // 1. Lắng nghe CustomEvent cục bộ
-  const handleLocal = (e) => {
+  const curParticipant = getCurrentUserParticipant(currentUserId);
+
+  // 1. Lắng nghe CustomEvent cục bộ & từ Singleton SSE
+  const handleLocalOrCloud = (e) => {
     if (e.detail && typeof onNewMessage === 'function') {
       onNewMessage(e.detail);
     }
@@ -671,7 +837,8 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
   const handleRead = () => onNewMessage?.(null);
   const handleCloudSync = () => onNewMessage?.(null);
 
-  window.addEventListener('onthi-dm-message-sent', handleLocal);
+  window.addEventListener('onthi-dm-message-sent', handleLocalOrCloud);
+  window.addEventListener('onthi-dm-cloud-received', handleLocalOrCloud);
   window.addEventListener('onthi-dm-read-updated', handleRead);
   window.addEventListener('onthi-dm-cloud-synced', handleCloudSync);
 
@@ -683,16 +850,9 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
       bc.onmessage = (event) => {
         if (event.data?.type === 'new_message' && event.data.message) {
           onNewMessage?.(event.data.message);
-        } else if (event.data?.type === 'read_receipt' && event.data.conversationId) {
+        } else if (event.data?.type === 'read_receipt' || event.data?.type === 'delivery_receipt') {
           const allMsgs = getAllMessages();
-          let changed = false;
-          const updated = allMsgs.map((m) => {
-            if (m.conversationId === event.data.conversationId && (!m.isRead || m.status !== 'seen')) {
-              changed = true;
-              return { ...m, isRead: true, status: 'seen', readAt: event.data.readAt || new Date().toISOString() };
-            }
-            return m;
-          });
+          const { updated, changed } = applyReceiptToMessages(allMsgs, event.data);
           if (changed) {
             saveAllMessages(updated);
             onNewMessage?.(null);
@@ -703,53 +863,22 @@ export function subscribeToDirectMessages(currentUserId, onNewMessage) {
   }
 
   // 3. Tự động đồng bộ tin nhắn từ Cloud Relay ngay khi bắt đầu
-  syncDirectMessagesFromCloud(currentUserId);
+  syncDirectMessagesFromCloud(curParticipant);
 
-  // 4. Lắng nghe Cloud Relay (SSE via ntfy.sh)
-  let es = null;
-  try {
-    es = new EventSource(`https://ntfy.sh/${DM_CLOUD_RELAY_TOPIC}/sse`);
-    es.onmessage = (event) => {
-      try {
-        const payload = JSON.parse(event.data);
-        if (payload?.event === 'message' && payload.message) {
-          const dm = typeof payload.message === 'string' ? JSON.parse(payload.message) : payload.message;
-          if (dm?.type === 'direct_message' && dm.message) {
-            const incoming = dm.message;
-            const isMeReceiver = matchesUserIdentifier(incoming.receiver, currentUserId);
-
-            if (isMeReceiver && !matchesUserIdentifier(incoming.sender, currentUserId)) {
-              const allMsgs = getAllMessages();
-              if (!allMsgs.some((m) => m.id === incoming.id)) {
-                saveAllMessages([...allMsgs, incoming]);
-                onNewMessage?.(incoming);
-              }
-            }
-          } else if (dm?.type === 'read_receipt' && dm.conversationId) {
-            const allMsgs = getAllMessages();
-            let changed = false;
-            const updated = allMsgs.map((m) => {
-              if (m.conversationId === dm.conversationId && (!m.isRead || m.status !== 'seen')) {
-                changed = true;
-                return { ...m, isRead: true, status: 'seen', readAt: dm.readAt || new Date().toISOString() };
-              }
-              return m;
-            });
-            if (changed) {
-              saveAllMessages(updated);
-              onNewMessage?.(null);
-            }
-          }
-        }
-      } catch (err) {}
-    };
-  } catch (err) {}
+  // 4. Kích hoạt kết nối Singleton Cloud SSE Relay
+  sharedDmSubscriberCount++;
+  ensureSharedDmSseConnection();
 
   return () => {
-    window.removeEventListener('onthi-dm-message-sent', handleLocal);
+    window.removeEventListener('onthi-dm-message-sent', handleLocalOrCloud);
+    window.removeEventListener('onthi-dm-cloud-received', handleLocalOrCloud);
     window.removeEventListener('onthi-dm-read-updated', handleRead);
     window.removeEventListener('onthi-dm-cloud-synced', handleCloudSync);
     if (bc) bc.close();
-    if (es) es.close();
+    sharedDmSubscriberCount = Math.max(0, sharedDmSubscriberCount - 1);
+    if (sharedDmSubscriberCount === 0 && sharedDmEventSource) {
+      sharedDmEventSource.close();
+      sharedDmEventSource = null;
+    }
   };
 }
