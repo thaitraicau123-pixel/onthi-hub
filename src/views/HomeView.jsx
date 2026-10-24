@@ -101,6 +101,19 @@ export default function HomeView({
 
   const handleQuickGenerate = (e) => {
     e.preventDefault();
+    try {
+      if (quickPrompt.trim()) {
+        localStorage.setItem(
+          'onthi_quick_studio_draft',
+          JSON.stringify({
+            topic: quickPrompt.trim(),
+            category: quickSubject || 'cong-chuc'
+          })
+        );
+      }
+    } catch {
+      // ignore storage errors
+    }
     onSwitchTab('create');
   };
 
@@ -474,7 +487,10 @@ export default function HomeView({
       </div>
 
       {/* Combo VIP Banner */}
-      <ComboBanner onBuyCombo={onBuyCombo} />
+      <ComboBanner
+        onBuyCombo={onBuyCombo}
+        isPurchased={isCoursePurchased(COMBO_PACKAGE.id)}
+      />
 
       {/* Testimonials & FAQs */}
       <TestimonialsFaq />

@@ -223,22 +223,22 @@ export default function AuthModal({
       <div className="fixed inset-0 -z-10" onClick={onClose} aria-hidden="true" />
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-2xl bg-[#ffffff] text-[#1e1e24] rounded-xl shadow-2xl overflow-hidden border border-[#e9e9e8] animate-spring-3d flex flex-col max-h-[92vh] cursor-default"
+        className="relative w-full max-w-2xl bg-[#ffffff] dark:bg-slate-900 text-[#1e1e24] dark:text-slate-100 rounded-xl shadow-2xl overflow-hidden border border-[#e9e9e8] dark:border-white/10 animate-spring-3d flex flex-col max-h-[92vh] cursor-default"
       >
         
         {/* =========================================================
             HEADER: QUẢN LÝ TÀI KHOẢN (Theo phong cách Image 1)
             ========================================================= */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100 bg-white">
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100 dark:border-white/10 bg-white dark:bg-slate-900">
           <div className="flex items-center space-x-3.5">
             <div className="w-11 h-11 rounded-2xl bg-[#4f46e5] text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/25">
               <User className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-bold tracking-tight text-[#111827]">
+              <h3 className="text-lg sm:text-xl font-bold tracking-tight text-[#111827] dark:text-white">
                 Quản lý Tài khoản
               </h3>
-              <p className="text-xs text-[#6b7280] font-medium mt-0.5">
+              <p className="text-xs text-[#6b7280] dark:text-slate-400 font-medium mt-0.5">
                 Hồ sơ, ảnh đại diện, bảo mật & tùy chọn học tập
               </p>
             </div>
@@ -246,11 +246,11 @@ export default function AuthModal({
 
           <button
             onClick={onClose}
-            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer border border-slate-200/80 bg-white shadow-2xs group"
+            className="flex items-center space-x-1.5 px-3 py-1.5 text-xs text-slate-500 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer border border-slate-200/80 dark:border-white/15 bg-white dark:bg-slate-800/80 shadow-2xs group"
             title="Đóng cửa sổ (hoặc nhấn phím Esc, bấm ra ngoài)"
           >
             <span className="font-semibold">Đóng</span>
-            <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 px-1 py-0.5 rounded text-slate-500">Esc</kbd>
+            <kbd className="hidden sm:inline text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1 py-0.5 rounded text-slate-500 dark:text-slate-300">Esc</kbd>
             <X className="w-4 h-4 ml-0.5 group-hover:scale-110 transition-transform" />
           </button>
         </div>
@@ -258,7 +258,7 @@ export default function AuthModal({
         {/* =========================================================
             TAB NAVIGATION BAR (Theo phong cách Image 1)
             ========================================================= */}
-        <div className="flex items-center px-6 border-b border-slate-200 bg-slate-50/70 overflow-x-auto no-scrollbar gap-1 sm:gap-2">
+        <div className="flex items-center px-6 border-b border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-slate-800/50 overflow-x-auto no-scrollbar gap-1 sm:gap-2">
           {[
             { id: 'profile', label: 'Hồ sơ cá nhân', icon: User },
             { id: 'tier', label: 'Gói & Hạn mức', icon: Star },
@@ -276,11 +276,11 @@ export default function AuthModal({
                 }}
                 className={`flex items-center space-x-1.5 py-3 px-3 sm:px-4 text-xs font-bold transition-all relative border-b-2 whitespace-nowrap ${
                   isActive
-                    ? 'border-[#4f46e5] text-[#4f46e5] font-extrabold'
-                    : 'border-transparent text-[#6b7280] hover:text-[#111827]'
+                    ? 'border-[#4f46e5] dark:border-indigo-400 text-[#4f46e5] dark:text-indigo-400 font-extrabold'
+                    : 'border-transparent text-[#6b7280] dark:text-slate-400 hover:text-[#111827] dark:hover:text-white'
                 }`}
               >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#4f46e5]' : 'text-slate-400'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#4f46e5] dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -289,15 +289,15 @@ export default function AuthModal({
 
         {/* Message Banners */}
         {errorMsg && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-500/40 text-rose-800 dark:text-rose-200 text-xs font-bold flex items-center space-x-2">
+            <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {successMsg && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/40 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center space-x-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -305,7 +305,7 @@ export default function AuthModal({
         {/* =========================================================
             TAB CONTENT PANELS
             ========================================================= */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-5 bg-white">
+        <div className="p-6 overflow-y-auto flex-1 space-y-5 bg-white dark:bg-slate-900">
           
           {/* -------------------------------------------------------
               TAB 2: GÓI & HẠN MỨC (Kế thừa trọn vẹn từ Image 1)
@@ -357,49 +357,49 @@ export default function AuthModal({
 
               {/* Quyền lợi và Hạn mức tính năng */}
               <div className="space-y-3 pt-1">
-                <h4 className="text-sm font-black text-slate-900">
+                <h4 className="text-sm font-black text-slate-900 dark:text-white">
                   Quyền lợi và Hạn mức tính năng
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-slate-500 font-bold block text-[11px]">Hạn mức tạo thẻ:</span>
-                      <strong className="text-slate-900 text-sm font-black">
+                      <span className="text-slate-500 dark:text-slate-400 font-bold block text-[11px]">Hạn mức tạo thẻ:</span>
+                      <strong className="text-slate-900 dark:text-white text-sm font-black">
                         {currentLimits.dailyLimit === 9999 ? 'Không giới hạn' : `${currentLimits.dailyLimit} thẻ/ngày`}
                       </strong>
                     </div>
-                    <span className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">⚡</span>
+                    <span className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-300 flex items-center justify-center font-bold">⚡</span>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-slate-500 font-bold block text-[11px]">Thưởng điểm danh:</span>
-                      <strong className="text-slate-900 text-sm font-black">
+                      <span className="text-slate-500 dark:text-slate-400 font-bold block text-[11px]">Thưởng điểm danh:</span>
+                      <strong className="text-slate-900 dark:text-white text-sm font-black">
                         +{currentLimits.checkInBonus} lượt/ngày
                       </strong>
                     </div>
-                    <span className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">🎁</span>
+                    <span className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-600 dark:text-amber-300 flex items-center justify-center font-bold">🎁</span>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-slate-500 font-bold block text-[11px]">Phí sàn C2C:</span>
-                      <strong className="text-slate-900 text-sm font-black">
+                      <span className="text-slate-500 dark:text-slate-400 font-bold block text-[11px]">Phí sàn C2C:</span>
+                      <strong className="text-slate-900 dark:text-white text-sm font-black">
                         Chỉ {currentLimits.marketplaceFee}%
                       </strong>
                     </div>
-                    <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">🏪</span>
+                    <span className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-300 flex items-center justify-center font-bold">🏪</span>
                   </div>
 
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-slate-500 font-bold block text-[11px]">Dung lượng lưu trữ:</span>
-                      <strong className="text-slate-900 text-sm font-black">
+                      <span className="text-slate-500 dark:text-slate-400 font-bold block text-[11px]">Dung lượng lưu trữ:</span>
+                      <strong className="text-slate-900 dark:text-white text-sm font-black">
                         Không giới hạn
                       </strong>
                     </div>
-                    <span className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">📦</span>
+                    <span className="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/80 text-rose-600 dark:text-rose-300 flex items-center justify-center font-bold">📦</span>
                   </div>
                 </div>
 
@@ -421,9 +421,9 @@ export default function AuthModal({
                       onClose();
                       onOpenWallet?.();
                     }}
-                    className="w-full sm:w-auto py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-black rounded-xl transition-colors flex items-center justify-center space-x-1.5"
+                    className="w-full sm:w-auto py-3 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-transparent dark:border-white/10 text-xs font-black rounded-xl transition-colors flex items-center justify-center space-x-1.5"
                   >
-                    <Coins className="w-4 h-4 text-amber-600" />
+                    <Coins className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                     <span>Nạp Xu ({walletBalance} Xu)</span>
                   </button>
                 </div>
@@ -440,17 +440,17 @@ export default function AuthModal({
               {user ? (
                 /* Đã đăng nhập */
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                  <div className="flex items-center space-x-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10">
                     <img
                       src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`}
                       alt="Avatar"
-                      className="w-14 h-14 rounded-2xl border-2 border-[#4f46e5] object-cover bg-white shadow-xs"
+                      className="w-14 h-14 rounded-2xl border-2 border-[#4f46e5] object-cover bg-white dark:bg-slate-700 shadow-xs"
                     />
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-base font-bold text-slate-900 truncate">
+                      <h4 className="text-base font-bold text-slate-900 dark:text-white truncate">
                         {user.displayName || user.email}
                       </h4>
-                      <p className="text-xs text-slate-500 font-medium truncate">{user.email}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">{user.email}</p>
                       <div className="flex items-center space-x-2 mt-2">
                         <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-[#4f46e5] text-white uppercase">
                           Gói: {currentTier.toUpperCase()}
@@ -460,7 +460,7 @@ export default function AuthModal({
                             👑 SUPER ADMIN
                           </span>
                         )}
-                        <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-700">
+                        <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-slate-200/80 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
                           UID: {user.uid?.slice(0, 8)}...
                         </span>
                       </div>
@@ -469,10 +469,10 @@ export default function AuthModal({
 
                   {/* Wallet & Streak stats */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-between">
+                    <div className="p-3.5 rounded-2xl bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-500/30 flex items-center justify-between">
                       <div>
-                        <span className="text-amber-800 font-bold block text-[11px]">Số dư ví:</span>
-                        <strong className="text-amber-950 text-base font-black">{walletBalance} Xu</strong>
+                        <span className="text-amber-800 dark:text-amber-300 font-bold block text-[11px]">Số dư ví:</span>
+                        <strong className="text-amber-950 dark:text-amber-100 text-base font-black">{walletBalance} Xu</strong>
                       </div>
                       <button
                         onClick={() => {
@@ -485,10 +485,10 @@ export default function AuthModal({
                       </button>
                     </div>
 
-                    <div className="p-3.5 rounded-2xl bg-orange-50/70 border border-orange-200 flex items-center justify-between">
+                    <div className="p-3.5 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-500/30 flex items-center justify-between">
                       <div>
-                        <span className="text-orange-800 font-bold block text-[11px]">Chuỗi streak:</span>
-                        <strong className="text-orange-950 text-base font-black">{streakInfo.streak} ngày</strong>
+                        <span className="text-orange-800 dark:text-orange-300 font-bold block text-[11px]">Chuỗi streak:</span>
+                        <strong className="text-orange-950 dark:text-orange-100 text-base font-black">{streakInfo.streak} ngày</strong>
                       </div>
                       <Flame className="w-5 h-5 text-orange-500 fill-orange-500" />
                     </div>
@@ -511,13 +511,13 @@ export default function AuthModal({
                   <div className="pt-2 flex items-center justify-between">
                     <button
                       onClick={() => setActiveTab('tier')}
-                      className="px-4 py-2.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-black transition-colors"
+                      className="px-4 py-2.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-xs font-black transition-colors"
                     >
                       Xem Gói & Hạn Mức
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-xs font-bold transition-colors flex items-center space-x-1"
+                      className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/60 hover:text-rose-700 dark:hover:text-rose-300 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors flex items-center space-x-1"
                     >
                       <LogOut className="w-3.5 h-3.5" />
                       <span>Đăng Xuất</span>
@@ -527,16 +527,16 @@ export default function AuthModal({
               ) : (
                 /* Khách (Chưa đăng nhập) -> Form đăng nhập / Google */
                 <div className="space-y-4">
-                  <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-xs text-indigo-950 flex items-center justify-between">
+                  <div className="p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-500/30 text-xs text-indigo-950 dark:text-indigo-100 flex items-center justify-between">
                     <div>
-                      <strong className="block text-sm font-black text-indigo-900">
+                      <strong className="block text-sm font-black text-indigo-900 dark:text-indigo-200">
                         Chế độ Khách (Guest)
                       </strong>
-                      <span className="text-[11px] text-indigo-700 font-medium">
+                      <span className="text-[11px] text-indigo-700 dark:text-indigo-300 font-medium">
                         Dữ liệu lưu trên máy. Đăng nhập Google để đồng bộ vĩnh viễn trên đám mây.
                       </span>
                     </div>
-                    <span className="px-2.5 py-1 rounded-lg bg-indigo-200/80 text-indigo-800 font-black text-[10px] uppercase">
+                    <span className="px-2.5 py-1 rounded-lg bg-indigo-200/80 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200 font-black text-[10px] uppercase">
                       Chưa đăng nhập
                     </span>
                   </div>
@@ -545,7 +545,7 @@ export default function AuthModal({
                   <button
                     onClick={handleGoogleSubmit}
                     disabled={loading}
-                    className="w-full py-3 px-4 bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-800 text-xs font-black rounded-xl shadow-xs flex items-center justify-center space-x-2 transition-all hover:border-slate-300 active:scale-98"
+                    className="w-full py-3 px-4 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-2 border-slate-200 dark:border-white/15 text-slate-800 dark:text-white text-xs font-black rounded-xl shadow-xs flex items-center justify-center space-x-2 transition-all hover:border-slate-300 dark:hover:border-white/30 active:scale-98"
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -557,47 +557,47 @@ export default function AuthModal({
                   </button>
 
                   <div className="relative flex items-center justify-center my-3">
-                    <div className="border-t border-slate-200 w-full"></div>
-                    <span className="bg-white px-3 text-[11px] font-bold text-slate-400 absolute">hoặc đăng nhập bằng Email</span>
+                    <div className="border-t border-slate-200 dark:border-white/10 w-full"></div>
+                    <span className="bg-white dark:bg-slate-900 px-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 absolute">hoặc đăng nhập bằng Email</span>
                   </div>
 
                   {/* Email & Password Form */}
                   <form onSubmit={handleEmailSubmit} className="space-y-3">
                     {authMode === 'register' && (
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 block mb-1">Tên hiển thị:</label>
+                        <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">Tên hiển thị:</label>
                         <input
                           type="text"
                           required
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
                           placeholder="Nguyễn Văn A"
-                          className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#4f46e5]"
+                          className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#4f46e5] dark:focus:border-indigo-400"
                         />
                       </div>
                     )}
 
                     <div>
-                      <label className="text-[11px] font-bold text-slate-600 block mb-1">Email:</label>
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">Email:</label>
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="hocvien@gmail.com"
-                        className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#4f46e5]"
+                        className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#4f46e5] dark:focus:border-indigo-400"
                       />
                     </div>
 
                     <div>
-                      <label className="text-[11px] font-bold text-slate-600 block mb-1">Mật khẩu:</label>
+                      <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">Mật khẩu:</label>
                       <input
                         type="password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="w-full px-3.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#4f46e5]"
+                        className="w-full px-3.5 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#4f46e5] dark:focus:border-indigo-400"
                       />
                     </div>
 
@@ -610,11 +610,11 @@ export default function AuthModal({
                     </button>
                   </form>
 
-                  <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+                  <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
                     <button
                       type="button"
                       onClick={() => setAuthMode(authMode === 'register' ? 'login' : 'register')}
-                      className="text-[#4f46e5] font-bold hover:underline"
+                      className="text-[#4f46e5] dark:text-indigo-400 font-bold hover:underline"
                     >
                       {authMode === 'register' ? 'Đã có tài khoản? Đăng nhập' : 'Chưa có tài khoản? Đăng ký ngay'}
                     </button>
@@ -629,20 +629,20 @@ export default function AuthModal({
               ------------------------------------------------------- */}
           {activeTab === 'security' && (
             <div className="space-y-4 animate-fade-in text-xs">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                <div className="flex items-center space-x-2 text-slate-900 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 space-y-2">
+                <div className="flex items-center space-x-2 text-slate-900 dark:text-white font-bold">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   <span>Chứng chỉ an toàn Google Firebase</span>
                 </div>
-                <p className="text-[11px] text-slate-500 font-medium">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                   Tài khoản của bạn được mã hóa bằng chuẩn an toàn của Google. Không lưu mật khẩu thô và đảm bảo an toàn tuyệt đối.
                 </p>
               </div>
 
               {/* Reset Password Form */}
-              <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
-                <h5 className="font-bold text-slate-900">Khôi phục & Đặt lại mật khẩu</h5>
-                <p className="text-[11px] text-slate-500">
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 space-y-3">
+                <h5 className="font-bold text-slate-900 dark:text-white">Khôi phục & Đặt lại mật khẩu</h5>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Nhập email đăng ký để nhận đường dẫn đặt lại mật khẩu an toàn:
                 </p>
                 <div className="flex items-center gap-2">
@@ -651,12 +651,12 @@ export default function AuthModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="email@example.com"
-                    className="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-[#4f46e5]"
+                    className="flex-1 px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-white/15 text-slate-900 dark:text-white rounded-xl outline-none focus:border-[#4f46e5] dark:focus:border-indigo-400"
                   />
                   <button
                     onClick={handleForgotPassword}
                     disabled={loading}
-                    className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shrink-0"
+                    className="px-4 py-2 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 text-white rounded-xl text-xs font-bold shrink-0"
                   >
                     Gửi mail
                   </button>
@@ -667,7 +667,7 @@ export default function AuthModal({
                 <div className="pt-2">
                   <button
                     onClick={handleLogout}
-                    className="w-full py-2.5 rounded-xl border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-bold transition-colors flex items-center justify-center space-x-1.5"
+                    className="w-full py-2.5 rounded-xl border border-rose-200 dark:border-rose-500/40 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/60 text-xs font-bold transition-colors flex items-center justify-center space-x-1.5"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     <span>Đăng xuất tài khoản khỏi thiết bị này</span>
@@ -683,49 +683,49 @@ export default function AuthModal({
           {activeTab === 'preferences' && (
             <div className="space-y-3 animate-fade-in text-xs">
               
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <div className="flex items-center space-x-2 font-bold text-slate-900">
-                    <Volume2 className="w-4 h-4 text-indigo-600" />
+                  <div className="flex items-center space-x-2 font-bold text-slate-900 dark:text-white">
+                    <Volume2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                     <span>Hiệu ứng âm thanh (Lật thẻ & Âm đúng/sai)</span>
                   </div>
-                  <span className="text-[11px] text-slate-500">Phát âm thanh sinh động khi lật flashcard và hoàn thành bài thi</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Phát âm thanh sinh động khi lật flashcard và hoàn thành bài thi</span>
                 </div>
                 <button
                   onClick={handleToggleSound}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${soundEnabled ? 'bg-[#4f46e5]' : 'bg-slate-300'}`}
+                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${soundEnabled ? 'bg-[#4f46e5]' : 'bg-slate-300 dark:bg-slate-600'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${soundEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <div className="flex items-center space-x-2 font-bold text-slate-900">
-                    <RefreshCw className="w-4 h-4 text-indigo-600" />
+                  <div className="flex items-center space-x-2 font-bold text-slate-900 dark:text-white">
+                    <RefreshCw className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                     <span>Tự động phát lại thẻ theo Spaced Repetition</span>
                   </div>
-                  <span className="text-[11px] text-slate-500">Tự động ưu tiên hiện lại các thẻ bạn đánh giá "Khó"</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Tự động ưu tiên hiện lại các thẻ bạn đánh giá "Khó"</span>
                 </div>
                 <button
                   onClick={handleToggleAutoFlip}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${autoFlip ? 'bg-[#4f46e5]' : 'bg-slate-300'}`}
+                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${autoFlip ? 'bg-[#4f46e5]' : 'bg-slate-300 dark:bg-slate-600'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${autoFlip ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <div className="flex items-center space-x-2 font-bold text-slate-900">
-                    <Bell className="w-4 h-4 text-indigo-600" />
+                  <div className="flex items-center space-x-2 font-bold text-slate-900 dark:text-white">
+                    <Bell className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                     <span>Nhắc nhở học tập & Giữ chuỗi streak hàng ngày</span>
                   </div>
-                  <span className="text-[11px] text-slate-500">Nhắc bạn mở web điểm danh và nhận Xu mỗi ngày</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Nhắc bạn mở web điểm danh và nhận Xu mỗi ngày</span>
                 </div>
                 <button
                   onClick={handleToggleReminder}
-                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${studyReminder ? 'bg-[#4f46e5]' : 'bg-slate-300'}`}
+                  className={`w-11 h-6 rounded-full transition-colors relative p-0.5 ${studyReminder ? 'bg-[#4f46e5]' : 'bg-slate-300 dark:bg-slate-600'}`}
                 >
                   <div className={`w-5 h-5 rounded-full bg-white transition-transform ${studyReminder ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
