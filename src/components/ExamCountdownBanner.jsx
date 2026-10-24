@@ -264,6 +264,18 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
 
         {/* Right: Actions */}
         <div className="flex items-center space-x-2 w-full md:w-auto justify-end shrink-0">
+          {onStartReview && (
+            <button
+              type="button"
+              onClick={onStartReview}
+              className="px-2.5 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold transition-all flex items-center space-x-1 shadow-2xs hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+              title="Bắt đầu ôn luyện bộ thẻ mục tiêu ngay"
+            >
+              <Zap className="w-3.5 h-3.5 fill-amber-300 text-amber-300" />
+              <span>Ôn Ngay</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={() => {
@@ -272,7 +284,7 @@ export default function ExamCountdownBanner({ onStartReview, onOpenTargetModal }
               setInputTime(examTime);
               setShowConfigModal(true);
             }}
-            className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors flex items-center space-x-1 shadow-2xs cursor-pointer"
+            className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors flex items-center space-x-1 shadow-2xs cursor-pointer hover:-translate-y-0.5 active:scale-95"
             title="Tùy chỉnh kỳ thi mục tiêu & giờ thi của bạn"
           >
             <Edit3 className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />

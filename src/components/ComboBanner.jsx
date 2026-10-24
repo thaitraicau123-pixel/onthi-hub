@@ -66,7 +66,7 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
                 <button
                   type="button"
                   onClick={() => onBuyCombo(COMBO_PACKAGE)}
-                  className="w-full py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm bg-gradient-to-r from-[#2383e2] to-indigo-600 hover:from-[#1a73e8] hover:to-indigo-500 text-white shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]"
+                  className="w-full py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm bg-gradient-to-r from-[#2383e2] to-indigo-600 hover:from-[#1a73e8] hover:to-indigo-500 text-white shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] duration-200"
                 >
                   <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
                   <span>Kích Hoạt Combo All-Access ({COMBO_PACKAGE.priceXu} Xu)</span>

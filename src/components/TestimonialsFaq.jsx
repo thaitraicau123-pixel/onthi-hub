@@ -26,7 +26,7 @@ export default function TestimonialsFaq() {
           {TESTIMONIALS.map((item, idx) => (
             <div
               key={idx}
-              className="bg-white dark:bg-slate-800/90 p-6 rounded-2xl border border-slate-200 dark:border-white/15 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+              className="bg-white dark:bg-slate-800/90 p-6 rounded-2xl border border-slate-200 dark:border-white/15 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center space-x-1 text-amber-400 mb-3">

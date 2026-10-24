@@ -234,7 +234,10 @@ export default function HomeView({
       </div>
 
       {/* Countdown đếm ngược ngày thi thực chiến (Đồng bộ Giờ Hà Nội) */}
-      <ExamCountdownBanner onOpenTargetModal={onOpenTargetClock} />
+      <ExamCountdownBanner
+        onOpenTargetModal={onOpenTargetClock}
+        onStartReview={() => allCourses[0] && onOpenFlashcards(allCourses[0])}
+      />
 
       {/* =========================================================
           KHO BỘ ĐỀ & FLASHCARD TIÊU CHUẨN (UNIFIED HEADER + CATALOG)
