@@ -88,7 +88,8 @@ export default function QuizModal({
   course,
   isPurchased,
   onClose,
-  onBuy
+  onBuy,
+  onOpenShareAchievement
 }) {
   const [examMode, setExamMode] = useState('official_60'); // 'official_60' | 'quick_10'
   const totalDuration = examMode === 'official_60' ? 3600 : 600; // 60 mins vs 10 mins
@@ -609,14 +610,39 @@ export default function QuizModal({
                         <span>Chứng chỉ được xác thực bởi Hệ thống Khảo thí OnThiHub</span>
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={handleCopyCertificate}
-                        className="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-black text-xs flex items-center space-x-1.5 transition-colors cursor-pointer shadow-xs"
-                      >
-                        {copiedCert ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
-                        <span>{copiedCert ? 'Đã Sao Chép!' : 'Chia Sẻ Chứng Nhận'}</span>
-                      </button>
+                      <div className="flex items-center space-x-2">
+                        {onOpenShareAchievement && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onOpenShareAchievement({
+                                type: 'exam_passed',
+                                title: course.title,
+                                subtitle: 'Nghị định 138/2020/NĐ-CP • Vòng 1',
+                                score,
+                                maxScore: questions.length,
+                                percentage,
+                                passed: isPassed,
+                                candidateName,
+                                certCode
+                              });
+                            }}
+                            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-black text-xs flex items-center space-x-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+                          >
+                            <Award className="w-3.5 h-3.5" />
+                            <span>Khoe Thẻ Ảnh</span>
+                          </button>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={handleCopyCertificate}
+                          className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs flex items-center space-x-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          {copiedCert ? <Check className="w-3.5 h-3.5" /> : <Share2 className="w-3.5 h-3.5" />}
+                          <span>{copiedCert ? 'Đã Copy!' : 'Copy Text'}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

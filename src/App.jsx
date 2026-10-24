@@ -36,6 +36,8 @@ const TargetStudyClockModal = lazy(() => import('./components/TargetStudyClockMo
 const CheatSheetModal = lazy(() => import('./components/CheatSheetModal'));
 const VirtualStudyRoomModal = lazy(() => import('./components/VirtualStudyRoomModal'));
 const DirectChatModal = lazy(() => import('./components/DirectChatModal'));
+const LiveExamRoomModal = lazy(() => import('./components/LiveExamRoomModal'));
+const ShareAchievementModal = lazy(() => import('./components/ShareAchievementModal'));
 
 function ViewLoadingFallback() {
   return (
@@ -120,6 +122,8 @@ export default function App() {
   const [activeCheatSheetCourse, setActiveCheatSheetCourse] = useState(null);
   const [isStudyRoomOpen, setIsStudyRoomOpen] = useState(false);
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
+  const [isLiveExamRoomOpen, setIsLiveExamRoomOpen] = useState(false);
+  const [activeShareAchievement, setActiveShareAchievement] = useState(null);
   const [directChatPartner, setDirectChatPartner] = useState(null);
   const [directChatAttachDeck, setDirectChatAttachDeck] = useState(null);
   const [initialCardIndex, setInitialCardIndex] = useState(null);
@@ -364,6 +368,8 @@ export default function App() {
         onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
         onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
         onOpenDirectChat={() => handleOpenDirectChat()}
+        onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
+        onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -393,6 +399,7 @@ export default function App() {
           onOpenTargetClock={() => setIsTargetClockOpen(true)}
           onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
           onOpenDirectChat={() => handleOpenDirectChat()}
+          onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -415,6 +422,8 @@ export default function App() {
                 allCourses={allAvailableCourses}
                 onShowToast={showToast}
                 onOpenDirectChat={handleOpenDirectChat}
+                onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
+                onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
               />
             )}
 
@@ -540,6 +549,7 @@ export default function App() {
             isPurchased={isCoursePurchased(activeQuizCourse.id)}
             onClose={() => setActiveQuizCourse(null)}
             onBuy={(c) => setActivePaymentItem(c)}
+            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
           />
         )}
 
@@ -555,6 +565,7 @@ export default function App() {
         {isLeaderboardOpen && (
           <LeaderboardModal
             onClose={() => setIsLeaderboardOpen(false)}
+            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
           />
         )}
 
@@ -731,6 +742,8 @@ export default function App() {
             onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
             onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
             onOpenDirectChat={() => handleOpenDirectChat()}
+            onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
+            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
           />
         )}
 
@@ -816,6 +829,30 @@ export default function App() {
               setIsDirectChatOpen(false);
               setActiveFlashcardCourse(deck);
             }}
+            onShowToast={showToast}
+          />
+        )}
+
+        {/* 22. Live National Mock Exam Room Modal (Đồng bộ Giờ Hà Nội) */}
+        {isLiveExamRoomOpen && (
+          <LiveExamRoomModal
+            isOpen={isLiveExamRoomOpen}
+            onClose={() => setIsLiveExamRoomOpen(false)}
+            user={user}
+            allCourses={allAvailableCourses}
+            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
+            onShowToast={showToast}
+            onOpenDirectChat={handleOpenDirectChat}
+          />
+        )}
+
+        {/* 23. Share Achievement & Certificate Canvas Card Modal */}
+        {activeShareAchievement && (
+          <ShareAchievementModal
+            isOpen={Boolean(activeShareAchievement)}
+            onClose={() => setActiveShareAchievement(null)}
+            achievementData={activeShareAchievement}
+            onOpenDirectChat={handleOpenDirectChat}
             onShowToast={showToast}
           />
         )}

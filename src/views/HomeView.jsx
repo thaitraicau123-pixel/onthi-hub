@@ -43,7 +43,9 @@ export default function HomeView({
   onOpenStudyRoom,
   allCourses,
   onShowToast,
-  onOpenDirectChat
+  onOpenDirectChat,
+  onOpenLiveExamRoom,
+  onOpenShareAchievement
 }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchHome, setSearchHome] = useState('');
@@ -174,9 +176,27 @@ export default function HomeView({
         </div>
 
         {/* =========================================================
-            TRUNG TÂM TĂNG TỐC v3.0 (3 TÍNH NĂNG ĐỘT PHÁ MỚI)
+            TRUNG TÂM TĂNG TỐC v3.0 (4 TÍNH NĂNG ĐỘT PHÁ MỚI)
             ========================================================= */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+          <button
+            type="button"
+            onClick={() => onOpenLiveExamRoom && onOpenLiveExamRoom()}
+            className="text-left p-3.5 rounded-xl bg-gradient-to-br from-rose-500/10 via-pink-500/10 to-amber-500/10 dark:from-rose-950/60 dark:to-slate-900 border border-rose-300/70 dark:border-rose-500/40 hover:border-rose-500 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
+          >
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-extrabold text-rose-900 dark:text-rose-300 flex items-center gap-1.5">
+                <span>🏛️ Thi Đấu Toàn Quốc</span>
+              </span>
+              <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-rose-600 text-white animate-pulse">
+                LIVE ICT
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug">
+              Thi thử trực tiếp theo lịch hẹn cùng 140+ thí sinh • Cấp SBD, chống rời tab & thưởng Xu Bảng Vàng.
+            </p>
+          </button>
+
           <button
             type="button"
             onClick={() => onOpenStudyRoom && onOpenStudyRoom()}

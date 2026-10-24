@@ -40,7 +40,8 @@ export default function NotionTopbar({
   onToggleWeather,
   onOpenTargetClock,
   onOpenStudyRoom,
-  onOpenDirectChat
+  onOpenDirectChat,
+  onOpenLiveExamRoom
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState(() => getUserNotifications());
@@ -216,6 +217,26 @@ export default function NotionTopbar({
         >
           <Search className="w-3.5 h-3.5 text-slate-600 dark:text-sky-400" />
         </button>
+
+        {/* Live Exam Room Button (Icon Only) */}
+        {onOpenLiveExamRoom && (
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              onOpenLiveExamRoom();
+            }}
+            className="hidden sm:flex w-8 h-8 rounded-lg bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-600/50 items-center justify-center transition-all shadow-2xs cursor-pointer relative"
+            title="Phòng thi thử trực tiếp toàn quốc theo lịch hẹn (Live ICT)"
+            aria-label="Phòng thi đấu trực tiếp"
+          >
+            <span className="relative flex items-center justify-center">
+              <span className="text-sm select-none">🏛️</span>
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500" />
+            </span>
+          </button>
+        )}
 
         {/* Live Virtual Study Room Button (Icon Only) */}
         <button

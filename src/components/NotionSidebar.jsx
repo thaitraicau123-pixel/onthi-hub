@@ -55,7 +55,9 @@ function NotionSidebar({
   onOpenTargetClock,
   onOpenStudyRoom,
   onOpenCheatSheet,
-  onOpenDirectChat
+  onOpenDirectChat,
+  onOpenLiveExamRoom,
+  onOpenShareAchievement
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const curParticipant = getCurrentUserParticipant(user);
@@ -97,6 +99,15 @@ function NotionSidebar({
 
   const toolsNavItems = [
     {
+      id: 'live-exam-room',
+      label: 'Thi Đấu Trực Tiếp',
+      emoji: '🏛️',
+      badge: '🔴 Live ICT',
+      badgeColor: 'notion-pill-red',
+      action: onOpenLiveExamRoom,
+      desc: 'Phòng thi thử trực tiếp theo lịch hẹn, cấp SBD & Bảng Vàng'
+    },
+    {
       id: 'direct-messages',
       label: 'Tin Nhắn Trực Tiếp',
       emoji: '💬',
@@ -113,6 +124,24 @@ function NotionSidebar({
       badgeColor: 'notion-pill-green',
       action: onOpenStudyRoom,
       desc: 'Phòng tự học trực tuyến & cày thẻ tập trung'
+    },
+    {
+      id: 'share-achievement',
+      label: 'Khoe Thẻ Thành Tích',
+      emoji: '🏆',
+      badge: 'Xuất Ảnh',
+      badgeColor: 'notion-pill-yellow',
+      action: () => {
+        onOpenShareAchievement?.({
+          type: 'streak',
+          title: 'Kỷ Lục Chuỗi Ngày Học Tập ÔnThiHub 2026',
+          streak: streakInfo.streak,
+          rank: streakInfo.level || 'Học Viên Xuất Sắc',
+          candidateName: user?.displayName || user?.email?.split('@')[0] || 'Học Viên ÔnThiHub',
+          certCode: `STREAK-${streakInfo.streak}D-${Math.floor(1000 + Math.random() * 9000)}`
+        });
+      },
+      desc: 'Xuất ảnh chứng chỉ đồ họa 4:5 chia sẻ lên Story & Facebook'
     },
     {
       id: 'cheatsheet',

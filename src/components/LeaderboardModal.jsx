@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Trophy, Flame, Target, CheckCircle2 } from 'lucide-react';
+import { X, Trophy, Flame, Target, CheckCircle2, Award, Share2 } from 'lucide-react';
 import {
   getStreakInfo,
   getDailyQuests,
@@ -9,7 +9,7 @@ import {
 import { getCurrentUser } from '../utils/firebaseConfig';
 import { useModalDismiss } from '../hooks/useModalDismiss';
 
-export default function LeaderboardModal({ onClose }) {
+export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
   const [activeSubTab, setActiveSubTab] = useState('leaderboard'); // 'leaderboard' | 'quests'
   const streakInfo = getStreakInfo();
   const [quests] = useState(() => getDailyQuests());
@@ -163,9 +163,33 @@ export default function LeaderboardModal({ onClose }) {
               </div>
             </div>
 
-            <div className="text-right">
-              <span className="text-[10px] font-bold text-slate-400 block">Kỷ lục cá nhân:</span>
-              <strong className="text-xs text-slate-800 dark:text-slate-200">{streakInfo.highestStreak} ngày liên tiếp</strong>
+            <div className="flex flex-col items-end space-y-1.5 shrink-0">
+              <div className="text-right">
+                <span className="text-[10px] font-bold text-slate-400 block">Kỷ lục cá nhân:</span>
+                <strong className="text-xs text-slate-800 dark:text-slate-200">{streakInfo.highestStreak} ngày</strong>
+              </div>
+
+              {onOpenShareAchievement && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const currentUser = getCurrentUser();
+                    const myName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Học Viên ÔnThiHub';
+                    onOpenShareAchievement({
+                      type: 'streak',
+                      title: 'Chuỗi Ngày Học Tập ÔnThiHub 2026',
+                      streak: streakInfo.streak,
+                      rank: streakInfo.level || 'Học Viên Bền Bỉ',
+                      candidateName: myName,
+                      certCode: `STREAK-${streakInfo.streak}D-${Math.floor(1000 + Math.random() * 9000)}`
+                    });
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-[10px] font-black flex items-center space-x-1 transition-all shadow-xs active:scale-95 cursor-pointer"
+                >
+                  <Award className="w-3 h-3" />
+                  <span>Khoe Kỷ Lục</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

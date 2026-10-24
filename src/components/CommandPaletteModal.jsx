@@ -45,7 +45,9 @@ export default function CommandPaletteModal({
   onOpenTargetClock,
   onOpenStudyRoom,
   onOpenCheatSheet,
-  onOpenDirectChat
+  onOpenDirectChat,
+  onOpenLiveExamRoom,
+  onOpenShareAchievement
 }) {
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -61,6 +63,36 @@ export default function CommandPaletteModal({
   }, [isOpen]);
 
   const quickActions = [
+    {
+      id: 'action-live-exam',
+      title: 'Phòng Thi Đấu Trực Tiếp Toàn Quốc (Live ICT)',
+      desc: 'Thi thử trực tiếp theo lịch hẹn, cấp SBD, chống rời tab & cạnh tranh Bảng Vàng',
+      icon: Trophy,
+      category: 'Khảo thí & Thi đấu',
+      badge: '🔴 Live ICT',
+      onSelect: () => {
+        onOpenLiveExamRoom?.();
+        onClose();
+      }
+    },
+    {
+      id: 'action-share-achievement',
+      title: 'Khoe Thẻ Thành Tích & Chứng Nhận (Story / MXH)',
+      desc: 'Tự động xuất ảnh chứng chỉ đồ họa chuẩn 4:5 để chia sẻ lên Facebook, Zalo, Story',
+      icon: Sparkles,
+      category: 'Cá nhân & Thành tích',
+      badge: 'Xuất Ảnh',
+      onSelect: () => {
+        onOpenShareAchievement?.({
+          type: 'streak',
+          title: 'Kỷ Lục Chuỗi Ngày Học Tập ÔnThiHub 2026',
+          streak: 15,
+          rank: 'Học Viên Xuất Sắc',
+          candidateName: 'Học Viên ÔnThiHub'
+        });
+        onClose();
+      }
+    },
     {
       id: 'action-direct-chat',
       title: 'Tin Nhắn Trực Tiếp & Hỏi Đáp 1-1',
