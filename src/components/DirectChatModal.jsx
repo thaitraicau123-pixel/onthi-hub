@@ -33,7 +33,7 @@ import {
 import { useModalDismiss } from '../hooks/useModalDismiss';
 import { getDuoStreak, markDuoNudged } from '../utils/duoStreak';
 import PvpBattleModal from './PvpBattleModal';
-import { acceptPvpChallenge, declinePvpChallenge } from '../utils/pvpBattle';
+import { acceptPvpChallenge, declinePvpChallenge, startBattleWithOpponentBot, getBattleById } from '../utils/pvpBattle';
 import {
   getCurrentUserParticipant,
   getUserConversations,
@@ -177,8 +177,8 @@ export default function DirectChatModal({
     playSound('success');
     let addedCount = 0;
     filteredSuggestions.forEach((s) => {
-      const status = getFriendshipStatus(currentParticipant.id, s.id);
-      if (status === 'none') {
+      const status = getFriendshipStatus(currentParticipant, s);
+      if (status !== 'friends') {
         sendFriendRequest({
           sender: currentParticipant,
           receiver: s,
@@ -191,7 +191,11 @@ export default function DirectChatModal({
     try {
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.4 } });
     } catch (e) {}
-    onShowToast?.(`🎉 Đã gửi lời mời kết bạn nhanh đến ${addedCount} bạn học!`);
+    if (addedCount > 0) {
+      onShowToast?.(`🎉 Đã kết bạn nhanh thành công với ${addedCount} bạn học trên web!`);
+    } else {
+      onShowToast?.(`✅ Bạn đã kết bạn với tất cả học viên trong danh sách này rồi!`);
+    }
   };
 
   const messagesEndRef = useRef(null);
@@ -364,7 +368,6 @@ export default function DirectChatModal({
 
   // Xử lý gửi lời mời kết bạn từ nút bấm
   const handleSendFriendRequest = (targetUser, introMsg = '') => {
-    playSound('click');
     const res = sendFriendRequest({
       sender: currentParticipant,
       receiver: targetUser,
@@ -372,7 +375,16 @@ export default function DirectChatModal({
     });
     if (res.success) {
       refreshAllData();
-      onShowToast?.(`Đã gửi lời mời kết bạn tới ${targetUser.name}!`);
+      if (res.autoAccepted) {
+        playSound('success');
+        try {
+          confetti({ particleCount: 45, spread: 55, origin: { y: 0.6 } });
+        } catch (e) {}
+        onShowToast?.(`🎉 Đã kết bạn thành công với ${targetUser.name}! Hãy nhắn tin hoặc Thách đấu 1v1 ngay!`);
+      } else {
+        playSound('click');
+        onShowToast?.(`Đã gửi lời mời kết bạn tới ${targetUser.name}!`);
+      }
     }
   };
 
@@ -757,7 +769,11 @@ export default function DirectChatModal({
                                 )}
                               </span>
                             )}
-                            {conv.lastMessage?.sharedAchievement ? (
+                            {conv.lastMessage?.pvpChallenge ? (
+                              <span className="text-rose-600 dark:text-rose-400 font-semibold truncate">
+                                ⚔️ Thách Đấu 1v1: {conv.lastMessage.pvpChallenge.deckTitle}
+                              </span>
+                            ) : conv.lastMessage?.sharedAchievement ? (
                               <span className="text-amber-600 dark:text-amber-400 font-semibold truncate">
                                 👑 Bằng Khen Hoàng Gia 4K
                               </span>
@@ -1032,13 +1048,16 @@ export default function DirectChatModal({
                   </div>
                 ) : (
                   filteredSuggestions.map((suggested) => {
-                    const status = getFriendshipStatus(currentParticipant.id, suggested.id);
+                    const status = suggested.friendshipStatus || getFriendshipStatus(currentParticipant, suggested);
                     return (
                       <div
                         key={suggested.id}
                         className="p-2.5 rounded-xl bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-900 border border-slate-200/80 dark:border-white/10 transition-all flex items-center justify-between gap-2 shadow-2xs hover:shadow-xs"
                       >
-                        <div className="flex items-center space-x-2.5 min-w-0 flex-1">
+                        <div
+                          onClick={() => handleSelectPartner(suggested)}
+                          className="flex items-center space-x-2.5 min-w-0 flex-1 cursor-pointer"
+                        >
                           <div className="relative shrink-0">
                             <img
                               src={suggested.avatar}
@@ -1052,6 +1071,11 @@ export default function DirectChatModal({
                               <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
                                 {suggested.name}
                               </span>
+                              {status === 'friends' && (
+                                <span className="px-1 py-0.2 rounded text-[8px] font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300">
+                                  ✓ BẠN BÈ
+                                </span>
+                              )}
                               {suggested.tier === 'ultra' && (
                                 <span className="px-1 py-0.2 rounded text-[8px] font-black bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300">
                                   👑 ULTRA
@@ -1077,36 +1101,66 @@ export default function DirectChatModal({
 
                         <div className="flex items-center space-x-1.5 shrink-0">
                           {status === 'friends' ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleSelectPartner(suggested)}
+                                className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/50 hover:bg-emerald-600 hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                              >
+                                <MessageCircle className="w-3 h-3" />
+                                <span>Nhắn tin</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenPvpChallenge(suggested)}
+                                className="px-2 py-1 rounded-lg text-[10px] font-black bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-xs transition-all flex items-center space-x-1 cursor-pointer shrink-0 active:scale-95"
+                                title="Thách đấu trắc nghiệm 1v1 ngay lập tức"
+                              >
+                                <Swords className="w-3 h-3 text-yellow-200" />
+                                <span className="hidden sm:inline">Đấu 1v1</span>
+                              </button>
+                            </>
+                          ) : status === 'received' ? (
                             <button
                               type="button"
-                              onClick={() => handleSelectPartner(suggested)}
-                              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 hover:bg-[#2383e2] hover:text-white transition-colors cursor-pointer"
+                              onClick={() => handleAcceptRequest(suggested)}
+                              className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all flex items-center space-x-1 cursor-pointer shrink-0 active:scale-95"
                             >
-                              Nhắn tin
+                              <Check className="w-3 h-3" />
+                              <span>Đồng ý</span>
                             </button>
                           ) : status === 'sent' ? (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                cancelFriendRequest(currentParticipant.id, suggested.id);
-                                refreshAllData();
-                                playSound('click');
-                              }}
-                              className="px-2 py-1 rounded-lg text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 cursor-pointer transition-colors"
-                              title="Hủy lời mời"
-                            >
-                              Đã gửi • Hủy
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => handleSelectPartner(suggested)}
+                                className="px-2 py-1 rounded-lg text-[10px] font-bold bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 cursor-pointer"
+                              >
+                                Nhắn tin
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  cancelFriendRequest(currentParticipant.id, suggested.id);
+                                  refreshAllData();
+                                  playSound('click');
+                                }}
+                                className="px-2 py-1 rounded-lg text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-rose-500 cursor-pointer transition-colors"
+                                title="Hủy lời mời"
+                              >
+                                Đã gửi • Hủy
+                              </button>
+                            </>
                           ) : (
                             <>
                               <button
                                 type="button"
                                 onClick={() => handleSendFriendRequest(suggested)}
                                 className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-[#2383e2] hover:bg-[#1a73e8] text-white shadow-xs transition-all flex items-center space-x-1 cursor-pointer shrink-0 active:scale-95"
-                                title="Gửi lời mời kết bạn"
+                                title="Kết bạn ngay"
                               >
                                 <UserPlus className="w-3 h-3" />
-                                <span>Kết bạn</span>
+                                <span>+ Kết bạn</span>
                               </button>
 
                               <button
@@ -1610,86 +1664,101 @@ export default function DirectChatModal({
                         )}
 
                         {/* 1v1 PvP Challenge Invitation Card */}
-                        {msg.pvpChallenge && (
-                          <div className="mt-2 p-3 rounded-2xl border transition-all shadow-md relative overflow-hidden bg-gradient-to-br from-red-950/85 via-slate-900 to-amber-950/85 border-red-500/40 text-white">
-                            <div className="flex items-start space-x-2.5">
-                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-amber-600 flex items-center justify-center text-lg shrink-0 border border-red-400 shadow-md">
-                                <Swords className="w-5 h-5 text-yellow-200 fill-current animate-pulse" />
-                              </div>
-
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-red-500/30 text-rose-300 border border-red-500/40">
-                                    Thách Đấu 1v1 Đối Kháng
-                                  </span>
-                                  {msg.pvpChallenge.wagerXu > 0 ? (
-                                    <span className="text-[10px] font-black text-amber-300 px-1.5 py-0.2 rounded bg-amber-400/20 border border-amber-400/30 flex items-center gap-1">
-                                      <Coins className="w-3 h-3" />
-                                      <span>Cược {msg.pvpChallenge.wagerXu} Xu</span>
-                                    </span>
-                                  ) : (
-                                    <span className="text-[10px] font-bold text-sky-300">
-                                      🤝 Giao Hữu
-                                    </span>
-                                  )}
+                        {msg.pvpChallenge && (() => {
+                          const liveChallenge = getBattleById(msg.pvpChallenge.id) || msg.pvpChallenge;
+                          return (
+                            <div className="mt-2 p-3 rounded-2xl border transition-all shadow-md relative overflow-hidden bg-gradient-to-br from-red-950/85 via-slate-900 to-amber-950/85 border-red-500/40 text-white">
+                              <div className="flex items-start space-x-2.5">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-amber-600 flex items-center justify-center text-lg shrink-0 border border-red-400 shadow-md">
+                                  <Swords className="w-5 h-5 text-yellow-200 fill-current animate-pulse" />
                                 </div>
-                                <h4 className="text-xs sm:text-sm font-black truncate mt-1 text-amber-100">
-                                  {msg.pvpChallenge.deckTitle}
-                                </h4>
-                                <p className="text-[10px] text-slate-300 truncate">
-                                  {msg.pvpChallenge.totalQuestions || 5} Câu hỏi trắc nghiệm đối kháng
-                                </p>
-                              </div>
-                            </div>
 
-                            <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-2">
-                              {!isMe && msg.pvpChallenge.status === 'pending' ? (
-                                <>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleAcceptAndPlayPvp(msg.pvpChallenge)}
-                                    className="flex-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all animate-pulse"
-                                  >
-                                    <Swords className="w-3.5 h-3.5 text-yellow-200" />
-                                    <span>⚔️ Chấp Nhận & Thi Đấu Ngay</span>
-                                  </button>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-red-500/30 text-rose-300 border border-red-500/40">
+                                      Thách Đấu 1v1 Đối Kháng
+                                    </span>
+                                    {liveChallenge.wagerXu > 0 ? (
+                                      <span className="text-[10px] font-black text-amber-300 px-1.5 py-0.2 rounded bg-amber-400/20 border border-amber-400/30 flex items-center gap-1">
+                                        <Coins className="w-3 h-3" />
+                                        <span>Cược {liveChallenge.wagerXu} Xu</span>
+                                      </span>
+                                    ) : (
+                                      <span className="text-[10px] font-bold text-sky-300">
+                                        🤝 Giao Hữu
+                                      </span>
+                                    )}
+                                    {liveChallenge.status === 'finished' && (
+                                      <span className="text-[10px] font-black px-1.5 py-0.2 rounded bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">
+                                        ✓ Đã hoàn thành
+                                      </span>
+                                    )}
+                                  </div>
+                                  <h4 className="text-xs sm:text-sm font-black truncate mt-1 text-amber-100">
+                                    {liveChallenge.deckTitle}
+                                  </h4>
+                                  <p className="text-[10px] text-slate-300 truncate">
+                                    {liveChallenge.totalQuestions || 5} Câu hỏi trắc nghiệm đối kháng
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-2">
+                                {!isMe && liveChallenge.status === 'pending' ? (
+                                  <>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleAcceptAndPlayPvp(liveChallenge)}
+                                      className="flex-1 py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all animate-pulse"
+                                    >
+                                      <Swords className="w-3.5 h-3.5 text-yellow-200" />
+                                      <span>⚔️ Chấp Nhận & Thi Đấu Ngay</span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        try {
+                                          playSound('click');
+                                          await declinePvpChallenge(liveChallenge.id, currentUser);
+                                          refreshAllData();
+                                        } catch (e) {
+                                          alert(e.message || 'Không thể từ chối');
+                                        }
+                                      }}
+                                      className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer transition-colors"
+                                    >
+                                      Từ chối
+                                    </button>
+                                  </>
+                                ) : (
                                   <button
                                     type="button"
                                     onClick={async () => {
-                                      try {
-                                        playSound('click');
-                                        await declinePvpChallenge(msg.pvpChallenge.id, currentUser);
-                                        refreshAllData();
-                                      } catch (e) {
-                                        alert(e.message || 'Không thể từ chối');
+                                      if (isMe && liveChallenge.status === 'pending') {
+                                        const started = await startBattleWithOpponentBot(liveChallenge.id);
+                                        handleOpenPvpChallenge(activePartner, started || liveChallenge);
+                                      } else {
+                                        handleOpenPvpChallenge(activePartner, liveChallenge);
                                       }
                                     }}
-                                    className="py-1.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold cursor-pointer transition-colors"
+                                    className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all"
                                   >
-                                    Từ chối
+                                    <Swords className="w-3.5 h-3.5" />
+                                    <span>
+                                      {liveChallenge.status === 'finished'
+                                        ? '🏆 Xem Kết Quả Trận Đấu'
+                                        : liveChallenge.status === 'in_progress'
+                                        ? '🔥 Vào Thi Đấu Tiếp Ngay'
+                                        : isMe
+                                        ? '⚡ Vào Thi Đấu Ngay Cùng Bạn Học'
+                                        : '⚔️ Chấp Nhận & Thi Đấu Ngay'}
+                                    </span>
                                   </button>
-                                </>
-                              ) : (
-                                <button
-                                  type="button"
-                                  onClick={() => handleOpenPvpChallenge(activePartner, msg.pvpChallenge)}
-                                  className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all"
-                                >
-                                  <Swords className="w-3.5 h-3.5" />
-                                  <span>
-                                    {msg.pvpChallenge.status === 'finished'
-                                      ? '🏆 Xem Kết Quả Trận Đấu'
-                                      : msg.pvpChallenge.status === 'in_progress'
-                                      ? '🔥 Vào Đấu Trường Ngay'
-                                      : isMe
-                                      ? '⚔️ Vào Phòng Chờ / Hối Bạn Học'
-                                      : '⚔️ Chấp Nhận & Thi Đấu Ngay'}
-                                  </span>
-                                </button>
-                              )}
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          );
+                        })()}
                       </div>
 
                       {/* Timestamp & Delivery Status Badge */}

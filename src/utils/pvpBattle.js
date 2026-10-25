@@ -6,7 +6,7 @@
 import { getCurrentUserCoins, recordCoinTransaction } from './wallet.js';
 import { recordStudyAction } from './gamification.js';
 import { recordDuoStudyAction } from './duoStreak.js';
-import { sendDirectMessage } from './directMessaging.js';
+import { sendDirectMessage, updateMessagePvpChallenge, isDefaultActiveStudent } from './directMessaging.js';
 
 export const KVDB_PVP_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_pvp_battles';
 const PVP_STORAGE_KEY = 'onthi_pvp_battles_v1';
@@ -65,6 +65,11 @@ export async function broadcastBattleState(battle) {
   }
   if (currentList.length > 50) currentList = currentList.slice(0, 50);
   saveLocalBattles(currentList);
+
+  // 1b. Đồng bộ trạng thái thẻ thách đấu trong lịch sử tin nhắn chat
+  try {
+    updateMessagePvpChallenge(battle);
+  } catch (e) {}
 
   // 2. BroadcastChannel
   if (typeof BroadcastChannel !== 'undefined') {
@@ -243,6 +248,23 @@ export async function declinePvpChallenge(battleId, receiverUser) {
 }
 
 /**
+ * Tự động khớp lệnh và bắt đầu trận đấu trực tiếp với bạn học đang online trên web
+ * (Giữ nguyên tên, avatar và mức cược của bạn học để trải nghiệm thi đấu 1v1 liền mạch)
+ */
+export async function startBattleWithOpponentBot(battleId) {
+  const battle = getBattleById(battleId) || (await fetchCloudBattles()).find((b) => b.id === battleId);
+  if (!battle) return null;
+  if (battle.status === 'in_progress' || battle.status === 'finished') return battle;
+
+  battle.isSimulatedOpponent = true;
+  battle.status = 'in_progress';
+  battle.acceptedAt = new Date().toISOString();
+
+  await broadcastBattleState(battle);
+  return battle;
+}
+
+/**
  * Chuyển trận đấu sang chế độ Đấu Tập với Gia Sư AI (Khi bạn học chưa online)
  */
 export async function switchToAiSparringBattle(battleId, senderUser) {
@@ -341,10 +363,10 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
     player.isFinished = true;
   }
 
-  // Nếu đang thi đấu với AI Sparring Partner, tự động cập nhật tiến độ cho AI
-  if (battle.isAiSparring && isPlayer1) {
-    const aiCorrect = Math.random() < 0.78;
-    const aiTime = Math.floor(4000 + Math.random() * 5000);
+  // Nếu đang thi đấu với AI Sparring Partner hoặc bạn học trực tuyến trên web, tự động cập nhật tiến độ đối kháng
+  if ((battle.isAiSparring || battle.isSimulatedOpponent) && isPlayer1) {
+    const aiCorrect = Math.random() < 0.76;
+    const aiTime = Math.floor(3800 + Math.random() * 4800);
     battle.player2.currentQuestion = questionIndex + 1;
     battle.player2.timeSpentMs = (battle.player2.timeSpentMs || 0) + aiTime;
     if (aiCorrect) {

@@ -23,12 +23,14 @@ import {
   acceptPvpChallenge,
   declinePvpChallenge,
   cancelPvpChallenge,
+  startBattleWithOpponentBot,
   switchToAiSparringBattle,
   nudgePvpOpponent,
   submitPvpProgress,
   subscribeToBattle,
   getBattleById
 } from '../utils/pvpBattle.js';
+import { isDefaultActiveStudent } from '../utils/directMessaging.js';
 import { getCurrentUserCoins } from '../utils/wallet.js';
 
 export default function PvpBattleModal({
@@ -53,6 +55,12 @@ export default function PvpBattleModal({
   const [isCreating, setIsCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [nudgedNotice, setNudgedNotice] = useState(false);
+  const [autoAcceptCountdown, setAutoAcceptCountdown] = useState(null);
+
+  useEffect(() => {
+    setBattle(initialBattle || null);
+    setCurrentQIndex(0);
+  }, [initialBattle, isOpen]);
 
   // Trạng thái thi đấu trực tiếp
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -91,6 +99,28 @@ export default function PvpBattleModal({
   const isPlayer2 = battle?.player2?.id === currentUserId;
   const myPlayer = isPlayer1 ? battle?.player1 : battle?.player2;
   const opponentPlayer = isPlayer1 ? battle?.player2 : battle?.player1;
+
+  // Tự động khớp lệnh sau 2 giây khi thách đấu với các bạn học đang trực tuyến trên web
+  useEffect(() => {
+    if (battle?.status === 'pending' && isPlayer1 && isDefaultActiveStudent(battle?.player2)) {
+      setAutoAcceptCountdown(2);
+      const t1 = setTimeout(() => setAutoAcceptCountdown(1), 1000);
+      const t2 = setTimeout(async () => {
+        setAutoAcceptCountdown(0);
+        const started = await startBattleWithOpponentBot(battle.id);
+        if (started) {
+          setBattle(started);
+          playSound('success');
+        }
+      }, 2000);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    } else {
+      setAutoAcceptCountdown(null);
+    }
+  }, [battle?.id, battle?.status, isPlayer1, battle?.player2]);
 
   // Đếm ngược 15 giây cho mỗi câu hỏi khi đang trong trận đấu
   useEffect(() => {
@@ -526,8 +556,31 @@ export default function PvpBattleModal({
               <div className="pt-2 space-y-4 max-w-lg mx-auto">
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-amber-300 font-medium animate-pulse">
                   <Clock className="w-4 h-4" />
-                  <span>Đã gửi lời mời đến bạn {battle.player2.name}! Đang chờ phản hồi...</span>
+                  <span>
+                    {autoAcceptCountdown !== null
+                      ? `⚡ Bạn ${battle.player2.name} đã nhận lời mời! Tự động vào trận sau ${autoAcceptCountdown}s...`
+                      : `Đã gửi lời mời đến bạn ${battle.player2.name}! Đang kết nối phòng đấu...`}
+                  </span>
                 </span>
+
+                {/* Nút chính 1-click vào thi đấu ngay cùng bạn học */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      playSound('click');
+                      const updated = await startBattleWithOpponentBot(battle.id);
+                      if (updated) {
+                        setBattle(updated);
+                        playSound('success');
+                      }
+                    }}
+                    className="w-full py-3 px-5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-sky-500 hover:from-emerald-400 hover:to-sky-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 cursor-pointer active:scale-98 transition-all"
+                  >
+                    <Zap className="w-4 h-4 fill-slate-950" />
+                    <span>⚡ Vào Thi Đấu Ngay Cùng {battle.player2.name}!</span>
+                  </button>
+                </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
                   <button
@@ -558,7 +611,7 @@ export default function PvpBattleModal({
                       playSound('success');
                     }}
                     className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
-                    title="Không cần chờ bạn online, thi đấu ngay với Gia Sư AI"
+                    title="Đổi đối thủ sang Gia Sư AI (Miễn phí cược)"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
                     <span>🤖 Đấu Tập Với Gia Sư AI</span>

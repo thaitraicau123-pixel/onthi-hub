@@ -6,7 +6,14 @@
 // =========================================================================
 
 import { ADMIN_EMAIL } from './wallet';
-import { ADMIN_PARTICIPANT, isSameUser, matchesUserIdentifier, KVDB_BASE_URL } from './directMessaging';
+import {
+  ADMIN_PARTICIPANT,
+  isSameUser,
+  matchesUserIdentifier,
+  KVDB_BASE_URL,
+  isDefaultActiveStudent,
+  sendDirectMessage
+} from './directMessaging';
 
 export const FRIENDS_STORAGE_KEY = 'onthi_friends_v2';
 export const FRIEND_REQUESTS_STORAGE_KEY = 'onthi_friend_requests_v2';
@@ -249,6 +256,20 @@ export function sendFriendRequest({ sender, receiver, message = '' }) {
     return acceptFriendRequest(sender, receiver);
   }
 
+  // Nếu gửi kết bạn tới các Bạn Học Năng Động trên web -> Tự động đồng ý kết bạn ngay lập tức & gửi lời chào!
+  if (isDefaultActiveStudent(receiver)) {
+    const res = acceptFriendRequest(receiver, sender);
+    try {
+      sendDirectMessage({
+        sender: receiver,
+        receiver: sender,
+        text: `🤝 Chào ${sender.name || 'bạn'}! Mình là ${receiver.name} (${receiver.studyGoal || 'Học viên ÔnThiHub'}). Mình đã đồng ý kết bạn rồi, cùng ôn tập và bấm [⚔️ Thách Đấu 1v1] so tài nhé! 🔥`,
+        isAutoReply: true
+      });
+    } catch (e) {}
+    return { ...res, autoAccepted: true };
+  }
+
   // Tạo lời mời mới
   const requests = getAllFriendRequests();
   const newReq = {
@@ -466,17 +487,31 @@ export function getIncomingRequestsCount(currentUserId) {
 export function getSuggestedFriends(currentUserId, allDirectoryUsers = []) {
   if (!currentUserId) return [];
   const curObj = typeof currentUserId === 'object' ? currentUserId : { id: currentUserId, email: currentUserId };
+
+  // Tự động nâng cấp các lời mời đã gửi cho Học Viên Năng Động trên web thành Bạn Bè chính thức
+  try {
+    const pendingReqs = getAllFriendRequests();
+    pendingReqs.forEach((r) => {
+      if (r.status === 'pending' && isDefaultActiveStudent(r.receiver)) {
+        acceptFriendRequest(r.receiver, r.sender);
+      }
+    });
+  } catch (e) {}
+
   const uniqueMap = new Map();
 
   allDirectoryUsers.forEach((u) => {
     if (!u || !u.id || isSameUser(u, curObj) || isSameUser(u, ADMIN_PARTICIPANT)) return;
-    const status = getFriendshipStatus(curObj, u);
-    if (status === 'none') {
-      uniqueMap.set(u.id || u.email, u);
-    }
+    uniqueMap.set(u.id || u.email, u);
   });
 
-  return Array.from(uniqueMap.values());
+  const list = Array.from(uniqueMap.values());
+  const orderWeight = { none: 0, received: 1, sent: 2, friends: 3 };
+  return list.sort((a, b) => {
+    const stA = getFriendshipStatus(curObj, a);
+    const stB = getFriendshipStatus(curObj, b);
+    return (orderWeight[stA] ?? 9) - (orderWeight[stB] ?? 9);
+  });
 }
 
 /**

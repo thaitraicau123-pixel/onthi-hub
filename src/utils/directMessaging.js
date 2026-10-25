@@ -297,6 +297,16 @@ export const DEFAULT_ACTIVE_STUDENT_DIRECTORY = [
 ];
 
 /**
+ * Kiểm tra xem một học viên có nằm trong danh sách học viên năng động mặc định trên hệ thống hay không
+ */
+export function isDefaultActiveStudent(userOrId) {
+  if (!userOrId) return false;
+  return DEFAULT_ACTIVE_STUDENT_DIRECTORY.some(
+    (stu) => isSameUser(stu, userOrId) || matchesUserIdentifier(stu, userOrId)
+  );
+}
+
+/**
  * Lấy danh bạ toàn bộ học viên và Admin trong hệ thống
  * Phục vụ tính năng tìm kiếm bạn học và bắt đầu trò chuyện trực tiếp
  */
@@ -625,38 +635,67 @@ export function getConversationMessages(conversationId, currentParticipant, targ
  * @param {Object|null} [params.sharedAchievement=null] - Bằng khen/chứng nhận hoàng gia 4K đính kèm (nếu có)
  * @returns {Object} Tin nhắn vừa tạo
  */
-export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, sharedAchievement = null }) {
-  if (!sender || !receiver || (!text?.trim() && !sharedDeck && !sharedAchievement)) {
+export function sendDirectMessage(arg1, arg2, arg3, arg4 = null, arg5 = null, arg6 = null) {
+  let sender,
+    receiver,
+    text,
+    sharedDeck = null,
+    sharedAchievement = null,
+    pvpChallenge = null,
+    isAutoReply = false;
+
+  if (arg1 && typeof arg1 === 'object' && ('sender' in arg1 || 'receiver' in arg1)) {
+    ({
+      sender,
+      receiver,
+      text,
+      sharedDeck = null,
+      sharedAchievement = null,
+      pvpChallenge = null,
+      isAutoReply = false
+    } = arg1);
+  } else {
+    sender = arg1;
+    receiver = arg2;
+    text = arg3;
+    sharedDeck = arg4;
+    sharedAchievement = arg5;
+    pvpChallenge = arg6;
+  }
+
+  if (!sender || !receiver || (!text?.trim() && !sharedDeck && !sharedAchievement && !pvpChallenge)) {
     return null;
   }
 
-  const conversationId = getConversationId(sender.id, receiver.id);
+  const senderId = sender.id || sender.uid || sender.email;
+  const receiverId = receiver.id || receiver.uid || receiver.email;
+  const conversationId = getConversationId(senderId, receiverId);
   const nowIso = new Date().toISOString();
 
   const newMsg = {
     id: `dm_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     conversationId,
     sender: {
-      id: sender.id,
+      id: senderId,
       uid: sender.uid || null,
-      name: sender.name,
-      email: sender.email,
-      avatar: sender.avatar,
+      name: sender.name || sender.displayName || 'Bạn Học',
+      email: sender.email || senderId,
+      avatar: sender.avatar || sender.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(senderId || 'user')}`,
       role: sender.role || 'student',
       tier: sender.tier || 'free',
       badge: sender.badge || (sender.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
     },
     receiver: {
-      id: receiver.id,
+      id: receiverId,
       uid: receiver.uid || null,
-      name: receiver.name,
-      email: receiver.email,
-      avatar: receiver.avatar,
+      name: receiver.name || receiver.displayName || 'Bạn Học',
+      email: receiver.email || receiverId,
+      avatar: receiver.avatar || receiver.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(receiverId || 'partner')}`,
       role: receiver.role || 'student',
       tier: receiver.tier || 'free',
       badge: receiver.badge || (receiver.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
     },
-    receiverId: receiver.id,
+    receiverId,
     text: (text || '').trim(),
     sharedDeck: sharedDeck
       ? {
@@ -688,8 +727,23 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
           dateStr: sharedAchievement.dateStr || nowIso
         }
       : null,
+    pvpChallenge: pvpChallenge
+      ? {
+          id: pvpChallenge.id,
+          status: pvpChallenge.status || 'pending',
+          deckId: pvpChallenge.deckId,
+          deckTitle: pvpChallenge.deckTitle,
+          deckIcon: pvpChallenge.deckIcon || '⚔️',
+          wagerXu: pvpChallenge.wagerXu || 0,
+          totalQuestions: pvpChallenge.totalQuestions || (pvpChallenge.questions ? pvpChallenge.questions.length : 5),
+          questions: pvpChallenge.questions || [],
+          player1: pvpChallenge.player1,
+          player2: pvpChallenge.player2,
+          winnerId: pvpChallenge.winnerId || null
+        }
+      : null,
     createdAt: nowIso,
-    status: isSameUser(receiver, ADMIN_PARTICIPANT) ? 'delivered' : 'sent', // 'sent' | 'delivered' | 'seen'
+    status: isSameUser(receiver, ADMIN_PARTICIPANT) || isDefaultActiveStudent(receiver) ? 'delivered' : 'sent', // 'sent' | 'delivered' | 'seen'
     isRead: false,
     readAt: null
   };
@@ -771,9 +825,83 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
           });
       } catch (e) {}
     });
+
+    // 5. Nếu nhắn tin với Bạn Học Năng Động trên hệ thống -> Tự động Đã xem & phản hồi thân thiện
+    if (
+      !isAutoReply &&
+      !pvpChallenge &&
+      isDefaultActiveStudent(receiver) &&
+      !String(text || '').startsWith('🤝 Chúng ta đã trở thành bạn bè')
+    ) {
+      setTimeout(() => {
+        try {
+          const curMsgs = getAllMessages();
+          const seenAt = new Date().toISOString();
+          const markedMsgs = curMsgs.map((m) =>
+            m.id === newMsg.id ? { ...m, status: 'seen', isRead: true, readAt: seenAt } : m
+          );
+          saveAllMessages(markedMsgs);
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('onthi-dm-read-updated'));
+          }
+
+          const stuProfile =
+            DEFAULT_ACTIVE_STUDENT_DIRECTORY.find(
+              (s) => isSameUser(s, receiver) || matchesUserIdentifier(s, receiver)
+            ) || receiver;
+
+          const replies = [
+            `Chào ${sender.name || 'bạn'}! Mình đang cày bộ thẻ ${stuProfile.studyGoal || 'ôn thi 2026'}. Bạn bấm nút [⚔️ Thách Đấu 1v1] ở góc trên để tụi mình so tài trắc nghiệm ngay nhé! 🔥`,
+            `Ok bạn ơi! Hôm nay mình vừa ôn xong 30 thẻ Anki. Tụi mình giữ chuỗi Lửa Bạn Cùng Tiến 🔥 mỗi ngày nhé, cần đấu 1v1 cứ mời mình nha!`,
+            `Rất vui được trao đổi cùng ${sender.name || 'bạn'}! Mục tiêu của mình là đỗ kỳ thi năm nay (${stuProfile.studyGoal || 'ÔnThiHub'}). Cùng cố gắng nhé! 💪📚`
+          ];
+          const randomReply = replies[Math.floor(Math.random() * replies.length)];
+
+          sendDirectMessage({
+            sender: stuProfile,
+            receiver: sender,
+            text: randomReply,
+            isAutoReply: true
+          });
+        } catch (e) {}
+      }, 1500);
+    }
   }
 
   return newMsg;
+}
+
+/**
+ * Cập nhật trạng thái thẻ Thách Đấu 1v1 bên trong tin nhắn chat khi trận đấu thay đổi trạng thái
+ */
+export function updateMessagePvpChallenge(battle) {
+  if (!battle || !battle.id) return;
+  try {
+    const allMsgs = getAllMessages();
+    let changed = false;
+    const nextMsgs = allMsgs.map((m) => {
+      if (m?.pvpChallenge?.id === battle.id) {
+        changed = true;
+        return {
+          ...m,
+          pvpChallenge: {
+            ...m.pvpChallenge,
+            status: battle.status,
+            player1: battle.player1,
+            player2: battle.player2,
+            winnerId: battle.winnerId || null
+          }
+        };
+      }
+      return m;
+    });
+    if (changed) {
+      saveAllMessages(nextMsgs);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('onthi-dm-read-updated'));
+      }
+    }
+  } catch (e) {}
 }
 
 // Hàng đợi ghi tuần tự lên KVDB chống ghi đè khi gửi tin nhắn liên tiếp
