@@ -6656,26 +6656,52 @@ function toCompactDeckPayload(deck) {
   };
 }
 
-// Broadcast action to Cloud Relay (cross-browser / cross-device broadcast)
+const KVDB_MARKETPLACE_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_marketplace_events';
+
+// Broadcast action to Cloud Relay (KVDB Singapore Edge + ntfy fallback)
 export async function broadcastMarketplaceAction(action, data) {
   if (typeof fetch === 'undefined') return;
+  let payloadData = data;
+  if (action === 'publish_deck') {
+    payloadData = toCompactDeckPayload(data);
+  }
+  const eventObj = { action, data: payloadData, timestamp: new Date().toISOString() };
+
+  // 1. Primary: KVDB Singapore Edge
   try {
-    let payloadData = data;
-    if (action === 'publish_deck') {
-      payloadData = toCompactDeckPayload(data);
-    }
+    let list = [];
+    try {
+      const res = await fetch(KVDB_MARKETPLACE_URL, { cache: 'no-store' });
+      if (res.ok) list = await res.json();
+    } catch (e) {}
+    if (!Array.isArray(list)) list = [];
+    list.push(eventObj);
+    if (list.length > 60) list = list.slice(-60);
+
+    await fetch(KVDB_MARKETPLACE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(list)
+    });
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy with 2s timeout
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
     await fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: CLOUD_MARKETPLACE_TOPIC,
-        message: JSON.stringify({ action, data: payloadData, timestamp: new Date().toISOString() }),
+        message: JSON.stringify(eventObj),
         title: `MKT_${action}`
-      })
+      }),
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
     });
-  } catch (e) {
-    console.warn('Marketplace cloud relay notice:', e);
-  }
+  } catch (e) {}
 }
 
 // Alias for backward compatibility
@@ -6683,32 +6709,52 @@ export async function broadcastDeckToCloudRelay(deck) {
   return broadcastMarketplaceAction('publish_deck', deck);
 }
 
-// Fetch cross-device decks and events from Cloud Relay
+// Fetch cross-device decks and events from Cloud Relay (KVDB Singapore Edge + ntfy fallback)
 export async function fetchCloudRelayMarketplaceEvents() {
   if (typeof fetch === 'undefined') return [];
-  try {
-    const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1`);
-    if (!res.ok) return [];
-    const text = await res.text();
-    const lines = text.trim().split('\n');
-    const events = [];
+  const events = [];
 
-    for (const line of lines) {
-      if (!line.trim()) continue;
-      try {
-        const json = JSON.parse(line);
-        if (json.event === 'message' && json.message) {
-          let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
-          if (body) {
-            events.push(body);
-          }
-        }
-      } catch (e) {}
+  // 1. Primary: KVDB Singapore Edge
+  try {
+    const res = await fetch(KVDB_MARKETPLACE_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const list = await res.json();
+      if (Array.isArray(list)) {
+        list.forEach((item) => {
+          if (item) events.push(item);
+        });
+      }
     }
-    return events;
-  } catch (e) {
-    return [];
-  }
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy with 2s timeout
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+    const res = await fetch(`https://ntfy.sh/${CLOUD_MARKETPLACE_TOPIC}/json?poll=1`, {
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
+    });
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.trim().split('\n');
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const json = JSON.parse(line);
+          if (json.event === 'message' && json.message) {
+            let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
+            if (body) {
+              events.push(body);
+            }
+          }
+        } catch (e) {}
+      }
+    }
+  } catch (e) {}
+
+  return events;
 }
 
 // Alias for backward compatibility

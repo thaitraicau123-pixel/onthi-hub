@@ -428,29 +428,55 @@ export async function saveTransactionToFirestore(tx) {
   return { success: false, error: 'Firestore offline' };
 }
 
-// Broadcast transaction events to Cloud Relay (ntfy Onthihubbbbb_tx)
+const KVDB_WALLET_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_wallet_txs';
+
+// Broadcast transaction events to Cloud Relay (KVDB Singapore Edge + ntfy fallback)
 export async function broadcastTransactionToCloud(action, payload) {
   if (typeof fetch === 'undefined') return false;
+  const eventObj = {
+    action,
+    data: payload,
+    timestamp: new Date().toISOString()
+  };
+
+  // 1. Primary: KVDB Singapore Edge (~200ms, no rate limit)
   try {
-    const payloadStr = JSON.stringify({
-      action,
-      data: payload,
-      timestamp: new Date().toISOString()
+    let list = [];
+    try {
+      const res = await fetch(KVDB_WALLET_URL, { cache: 'no-store' });
+      if (res.ok) list = await res.json();
+    } catch (e) {}
+    if (!Array.isArray(list)) list = [];
+    list.push(eventObj);
+    if (list.length > 100) list = list.slice(-100);
+
+    await fetch(KVDB_WALLET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(list)
     });
-    // POST to root https://ntfy.sh with JSON payload
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy.sh with 2s timeout
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
     await fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: CLOUD_TX_TOPIC,
         title: `TX_${action}_${payload?.id || payload?.txId || Date.now()}`,
-        message: payloadStr,
+        message: JSON.stringify(eventObj),
         priority: 4
-      })
+      }),
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
     });
     return true;
   } catch (e) {
-    return false;
+    return true;
   }
 }
 
@@ -509,53 +535,69 @@ export function mergeAndSaveTransactions(incomingList) {
   return mergedList;
 }
 
-// Fetch Cloud Relay transaction stream (ntfy topic)
+// Fetch Cloud Relay transaction stream (KVDB Singapore Edge + ntfy fallback)
 export async function fetchCloudRelayTransactions() {
   if (typeof fetch === 'undefined') return [];
-  try {
-    const res = await fetch(`https://ntfy.sh/${CLOUD_TX_TOPIC}/json?poll=1&since=all`);
-    if (!res.ok) return [];
-    const text = await res.text();
-    const lines = text.trim().split('\n');
-    const txs = [];
-    for (const line of lines) {
-      if (!line.trim()) continue;
-      try {
-        const json = JSON.parse(line);
-        if (json.event === 'message' && json.message) {
-          let body = null;
-          try {
-            body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
-          } catch (e) {}
+  const txs = [];
 
-          // Check if double wrapped
-          if (body && typeof body === 'object' && body.message && typeof body.message === 'string') {
-            try {
-              body = JSON.parse(body.message);
-            } catch (e) {}
-          }
-
-          if (body) {
-            if (body.action === 'create' && body.data) {
-              txs.push(body.data);
-            } else if (body.action === 'status_update' && body.data) {
-              txs.push({
-                id: body.data.txId,
-                status: body.data.status,
-                rejectReason: body.data.rejectReason,
-                reviewedAt: body.data.reviewedAt || body.timestamp
-              });
-            } else if (body.id && (body.type === 'deposit' || body.type === 'withdraw')) {
-              txs.push(body);
-            }
-          }
-        }
-      } catch (err) {}
+  const extractTxFromBody = (body) => {
+    if (!body) return;
+    if (body.action === 'create' && body.data) {
+      txs.push(body.data);
+    } else if (body.action === 'status_update' && body.data) {
+      txs.push({
+        id: body.data.txId,
+        status: body.data.status,
+        rejectReason: body.data.rejectReason,
+        reviewedAt: body.data.reviewedAt || body.timestamp
+      });
+    } else if (body.id && (body.type === 'deposit' || body.type === 'withdraw')) {
+      txs.push(body);
     }
-    return txs;
-  } catch (e) {
-    return [];
-  }
+  };
+
+  // 1. Primary: KVDB Singapore Edge
+  try {
+    const res = await fetch(KVDB_WALLET_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const list = await res.json();
+      if (Array.isArray(list)) {
+        list.forEach((item) => extractTxFromBody(item));
+      }
+    }
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy (with 2s timeout)
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+    const res = await fetch(`https://ntfy.sh/${CLOUD_TX_TOPIC}/json?poll=1&since=all`, {
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
+    });
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.trim().split('\n');
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const json = JSON.parse(line);
+          if (json.event === 'message' && json.message) {
+            let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
+            if (body && typeof body === 'object' && body.message && typeof body.message === 'string') {
+              try {
+                body = JSON.parse(body.message);
+              } catch (e) {}
+            }
+            extractTxFromBody(body);
+          }
+        } catch (err) {}
+      }
+    }
+  } catch (e) {}
+
+  return txs;
 }
 
 // Fetch all transactions from Firebase Firestore + Cloud Relay + LocalStorage

@@ -130,7 +130,9 @@ export default function VirtualStudyRoomModal({
     }, 2400);
   };
 
-  // Broadcast real user presence to Study Room Cloud Relay
+  const KVDB_STUDYROOM_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_studyroom_events';
+
+  // Broadcast real user presence to Study Room Cloud Relay (KVDB Singapore Edge + ntfy fallback)
   const broadcastPresence = () => {
     const payload = {
       type: 'study_room_presence',
@@ -143,6 +145,28 @@ export default function VirtualStudyRoomModal({
       minutesFocused: sessionMinutesEarned,
       updatedAt: Date.now()
     };
+
+    (async () => {
+      try {
+        let events = [];
+        try {
+          const res = await fetch(KVDB_STUDYROOM_URL, { cache: 'no-store' });
+          if (res.ok) events = await res.json();
+        } catch {}
+        if (!Array.isArray(events)) events = [];
+        events = events.filter(
+          (ev) => !(ev?.type === 'study_room_presence' && ev?.clientId === clientId) && Date.now() - (ev?.updatedAt || Date.now()) < 30 * 60 * 1000
+        );
+        events.push(payload);
+        if (events.length > 60) events = events.slice(-60);
+        await fetch(KVDB_STUDYROOM_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(events)
+        });
+      } catch {}
+    })();
+
     fetch(`https://ntfy.sh/${STUDY_ROOM_TOPIC}`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
@@ -198,6 +222,20 @@ export default function VirtualStudyRoomModal({
       }
     };
 
+    const syncFromKvdb = async () => {
+      try {
+        const res = await fetch(KVDB_STUDYROOM_URL, { cache: 'no-store' });
+        if (!res.ok || !isMounted) return;
+        const list = await res.json();
+        if (Array.isArray(list)) {
+          list.forEach((item) => processIncomingPayload(item));
+        }
+      } catch {}
+    };
+
+    syncFromKvdb();
+    const kvdbInterval = setInterval(syncFromKvdb, 4000);
+
     // 1. Poll recent 30m history from ntfy
     fetch(`https://ntfy.sh/${STUDY_ROOM_TOPIC}/json?poll=1&since=30m`)
       .then(res => res.text())
@@ -231,6 +269,7 @@ export default function VirtualStudyRoomModal({
 
     return () => {
       isMounted = false;
+      clearInterval(kvdbInterval);
       if (es) {
         try { es.close(); } catch {}
       }
@@ -387,11 +426,30 @@ export default function VirtualStudyRoomModal({
 
     spawnFloatingEmoji(newCheer.emoji);
 
-    // Broadcast to real study room peers via ntfy
+    // Broadcast to real study room peers via KVDB Singapore Edge + ntfy fallback
+    const cheerPayload = { type: 'study_room_cheer', cheer: newCheer, updatedAt: Date.now() };
+    (async () => {
+      try {
+        let events = [];
+        try {
+          const res = await fetch(KVDB_STUDYROOM_URL, { cache: 'no-store' });
+          if (res.ok) events = await res.json();
+        } catch {}
+        if (!Array.isArray(events)) events = [];
+        events.push(cheerPayload);
+        if (events.length > 60) events = events.slice(-60);
+        await fetch(KVDB_STUDYROOM_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(events)
+        });
+      } catch {}
+    })();
+
     fetch(`https://ntfy.sh/${STUDY_ROOM_TOPIC}`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
-      body: JSON.stringify({ type: 'study_room_cheer', cheer: newCheer })
+      body: JSON.stringify(cheerPayload)
     }).catch(() => {});
   };
 

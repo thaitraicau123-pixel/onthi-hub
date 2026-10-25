@@ -178,6 +178,8 @@ export function getConversationId(idA, idB) {
   return `conv_${sorted[0]}__${sorted[1]}`;
 }
 
+const CLOUD_USERS_DIRECTORY_KEY = 'onthi_cloud_users_directory_v1';
+
 /**
  * Lấy danh bạ toàn bộ học viên và Admin trong hệ thống
  * Phục vụ tính năng tìm kiếm bạn học và bắt đầu trò chuyện trực tiếp
@@ -223,7 +225,62 @@ export function getStudentDirectory(currentUserId) {
     }
   } catch (e) {}
 
-  // 3. Khám phá thêm từ lịch sử tin nhắn thực tế (tránh bị sót bạn học giữa 2 thiết bị khác nhau)
+  // 3. Khám phá thêm từ Danh bạ Cloud KVDB & Lời mời kết bạn / Bạn bè thực tế
+  try {
+    const cloudDirRaw = localStorage.getItem(CLOUD_USERS_DIRECTORY_KEY);
+    if (cloudDirRaw) {
+      const cloudUsers = JSON.parse(cloudDirRaw);
+      if (Array.isArray(cloudUsers)) {
+        cloudUsers.forEach((p) => {
+          if (!p || !p.id || isSameUser(curIdent, p)) return;
+          const pKey = isSameUser(p, ADMIN_PARTICIPANT) ? 'admin_onthi' : p.id || p.email;
+          if (!directoryMap.has(pKey)) {
+            directoryMap.set(pKey, {
+              id: p.id || p.email,
+              uid: p.uid || null,
+              name: p.name || (p.email ? p.email.split('@')[0] : 'Bạn Học'),
+              email: p.email || `${p.id}@onthihub.vn`,
+              avatar: p.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.id)}`,
+              role: p.role || 'student',
+              tier: p.tier || 'free',
+              badge: p.badge || '🎓 Học Viên',
+              studyGoal: p.studyGoal || 'Học viên OnThiHub',
+              isOnline: true
+            });
+          }
+        });
+      }
+    }
+
+    const reqRaw = localStorage.getItem('onthi_friend_requests_v2');
+    if (reqRaw) {
+      const reqs = JSON.parse(reqRaw);
+      if (Array.isArray(reqs)) {
+        reqs.forEach((r) => {
+          [r?.from, r?.to].forEach((p) => {
+            if (!p || !p.id || isSameUser(curIdent, p)) return;
+            const pKey = isSameUser(p, ADMIN_PARTICIPANT) ? 'admin_onthi' : p.id || p.email;
+            if (!directoryMap.has(pKey)) {
+              directoryMap.set(pKey, {
+                id: p.id || p.email,
+                uid: p.uid || null,
+                name: p.name || (p.email ? p.email.split('@')[0] : 'Bạn Học'),
+                email: p.email || `${p.id}@onthihub.vn`,
+                avatar: p.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.id)}`,
+                role: p.role || 'student',
+                tier: p.tier || 'free',
+                badge: p.badge || '🎓 Học Viên',
+                studyGoal: p.studyGoal || 'Học viên OnThiHub',
+                isOnline: true
+              });
+            }
+          });
+        });
+      }
+    }
+  } catch (e) {}
+
+  // 4. Khám phá thêm từ lịch sử tin nhắn thực tế (tránh bị sót bạn học giữa 2 thiết bị khác nhau)
   try {
     const allMsgs = getAllMessages();
     allMsgs.forEach((msg) => {
@@ -530,11 +587,10 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
     window.dispatchEvent(new CustomEvent('onthi-dm-message-sent', { detail: newMsg }));
   }
 
-  // 4. Đồng bộ Cloud Relay (KVDB Singapore Edge + ntfy fallback) & chuyển trạng thái 'delivered' (✓✓ Đã nhận)
+  // 4. Đồng bộ Cloud Relay (KVDB Singapore Edge tuần tự + tự phục hồi chống ghi đè + ntfy fallback)
   if (!isSameUser(sender, receiver)) {
-    (async () => {
+    enqueueDmCloudTask(async () => {
       try {
-        // Ghi lên KVDB Edge Singapore (độ trễ ~200ms, không giới hạn 429)
         let recent = [];
         try {
           const res = await fetch(`${KVDB_BASE_URL}/index_recent_dms`, { cache: 'no-store' });
@@ -542,7 +598,10 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
         } catch (e) {}
 
         if (!Array.isArray(recent)) recent = [];
-        recent.push({ ...newMsg, status: 'delivered' });
+        const existingCloudIds = new Set(recent.map((m) => m?.id).filter(Boolean));
+        if (!existingCloudIds.has(newMsg.id)) {
+          recent.push({ ...newMsg, status: 'delivered' });
+        }
         if (recent.length > 80) recent = recent.slice(-80);
 
         const writeRes = await fetch(`${KVDB_BASE_URL}/index_recent_dms`, {
@@ -585,10 +644,17 @@ export function sendDirectMessage({ sender, receiver, text, sharedDeck = null, s
             if (timeoutId) clearTimeout(timeoutId);
           });
       } catch (e) {}
-    })();
+    });
   }
 
   return newMsg;
+}
+
+// Hàng đợi ghi tuần tự lên KVDB chống ghi đè khi gửi tin nhắn liên tiếp
+let dmCloudWritePromise = Promise.resolve();
+function enqueueDmCloudTask(taskFn) {
+  dmCloudWritePromise = dmCloudWritePromise.then(taskFn).catch(() => {});
+  return dmCloudWritePromise;
 }
 
 /**
@@ -746,20 +812,79 @@ export function getUnreadDirectMessagesCount(currentUserId) {
 }
 
 /**
- * Đồng bộ tin nhắn & biên nhận đã xem từ Cloud Relay về thiết bị (KVDB Singapore Edge + ntfy fallback)
+ * Đồng bộ danh bạ người dùng hoạt động lên KVDB để mọi thiết bị đều tìm thấy nhau trong mục Kết Bạn
+ */
+let lastDirectorySyncTime = 0;
+async function syncUserDirectoryWithCloud(curParticipant) {
+  if (!curParticipant || !curParticipant.id || curParticipant.id === 'default_user') return;
+  const now = Date.now();
+  if (now - lastDirectorySyncTime < 25000) return;
+  lastDirectorySyncTime = now;
+
+  try {
+    const res = await fetch(`${KVDB_BASE_URL}/index_users_directory`, { cache: 'no-store' });
+    let cloudUsers = [];
+    if (res.ok) {
+      cloudUsers = await res.json();
+    }
+    if (!Array.isArray(cloudUsers)) cloudUsers = [];
+
+    const existingIdx = cloudUsers.findIndex((u) => isSameUser(u, curParticipant));
+    const entry = {
+      id: curParticipant.id,
+      uid: curParticipant.uid || null,
+      name: curParticipant.name,
+      email: curParticipant.email,
+      avatar: curParticipant.avatar,
+      role: curParticipant.role || 'student',
+      badge: curParticipant.badge || '🎓 Học Viên',
+      studyGoal: curParticipant.studyGoal || 'Học viên OnThiHub',
+      updatedAt: now
+    };
+
+    let shouldPost = false;
+    if (existingIdx === -1) {
+      cloudUsers.push(entry);
+      if (cloudUsers.length > 100) cloudUsers = cloudUsers.slice(-100);
+      shouldPost = true;
+    } else if (now - (cloudUsers[existingIdx].updatedAt || 0) > 300000) {
+      cloudUsers[existingIdx] = entry;
+      shouldPost = true;
+    }
+
+    try {
+      localStorage.setItem(CLOUD_USERS_DIRECTORY_KEY, JSON.stringify(cloudUsers));
+    } catch (e) {}
+
+    if (shouldPost) {
+      await fetch(`${KVDB_BASE_URL}/index_users_directory`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cloudUsers)
+      });
+    }
+  } catch (e) {}
+}
+
+/**
+ * Đồng bộ tin nhắn & biên nhận đã xem từ Cloud Relay về thiết bị (KVDB Singapore Edge + tự phục hồi chống mất tin)
  */
 export async function syncDirectMessagesFromCloud(userOrId) {
   const curParticipant = getCurrentUserParticipant(userOrId);
   if (!curParticipant) return;
+
+  // Đồng bộ danh bạ người dùng đa thiết bị
+  syncUserDirectoryWithCloud(curParticipant);
 
   // 1. Đồng bộ qua KVDB Singapore Edge (Ưu tiên số 1 - siêu tốc ~200ms, không giới hạn 429)
   try {
     const res = await fetch(`${KVDB_BASE_URL}/index_recent_dms`, { cache: 'no-store' });
     if (res.ok) {
       const recentDms = await res.json();
-      if (Array.isArray(recentDms) && recentDms.length > 0) {
+      if (Array.isArray(recentDms)) {
         let allMsgs = getAllMessages();
         const existingIds = new Set(allMsgs.map((m) => m.id));
+        const cloudIds = new Set(recentDms.map((m) => m?.id).filter(Boolean));
         let hasChanges = false;
         const newIncomingForMe = [];
 
@@ -781,6 +906,43 @@ export async function syncDirectMessagesFromCloud(userOrId) {
               newIncomingForMe.push(dm);
             }
           }
+        }
+
+        // Cơ chế Tự Phục Hồi (Self-Healing Reconciliation):
+        // Nếu có tin nhắn do chính mình vừa gửi trong 10 phút qua mà bị thiết bị khác vô tình ghi đè trên Cloud, tự động đẩy bù lên KVDB
+        const tenMinsAgo = Date.now() - 10 * 60 * 1000;
+        const missingMySentMsgs = allMsgs.filter((m) => {
+          if (!m || !m.id || m.id.startsWith('msg_welcome_')) return false;
+          const createdTime = new Date(m.createdAt || 0).getTime();
+          if (createdTime < tenMinsAgo) return false;
+          const isMine = isSameUser(m.sender, curParticipant) || matchesUserIdentifier(m.sender, curParticipant);
+          return isMine && !cloudIds.has(m.id);
+        });
+
+        if (missingMySentMsgs.length > 0) {
+          enqueueDmCloudTask(async () => {
+            try {
+              const latestRes = await fetch(`${KVDB_BASE_URL}/index_recent_dms`, { cache: 'no-store' });
+              let latestList = latestRes.ok ? await latestRes.json() : [];
+              if (!Array.isArray(latestList)) latestList = [];
+              const latestSet = new Set(latestList.map((x) => x?.id).filter(Boolean));
+              let addedAny = false;
+              for (const msgToHeal of missingMySentMsgs) {
+                if (!latestSet.has(msgToHeal.id)) {
+                  latestList.push({ ...msgToHeal, status: msgToHeal.status === 'seen' ? 'seen' : 'delivered' });
+                  addedAny = true;
+                }
+              }
+              if (addedAny) {
+                if (latestList.length > 80) latestList = latestList.slice(-80);
+                await fetch(`${KVDB_BASE_URL}/index_recent_dms`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(latestList)
+                });
+              }
+            } catch (e) {}
+          });
         }
 
         if (hasChanges) {

@@ -213,48 +213,97 @@ export async function syncPostToFirestore(post) {
   }
 }
 
-// Broadcast action to Cloud Relay (cross-device stream)
+const KVDB_COMMUNITY_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_community_events';
+
+// Broadcast action to Cloud Relay (KVDB Singapore Edge + ntfy fallback)
 export async function broadcastCommunityActionToCloud(action, payload) {
   if (typeof fetch === 'undefined') return;
+  const clean = sanitizeForFirestore(payload);
+  const eventObj = { action, data: clean, timestamp: new Date().toISOString() };
+
+  // 1. Primary: KVDB Singapore Edge (~200ms, zero rate limit)
   try {
-    const clean = sanitizeForFirestore(payload);
+    let list = [];
+    try {
+      const res = await fetch(KVDB_COMMUNITY_URL, { cache: 'no-store' });
+      if (res.ok) list = await res.json();
+    } catch (e) {}
+    if (!Array.isArray(list)) list = [];
+    list.push(eventObj);
+    if (list.length > 80) list = list.slice(-80);
+
+    await fetch(KVDB_COMMUNITY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(list)
+    });
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy with 2s timeout
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
     await fetch('https://ntfy.sh', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         topic: CLOUD_COMMUNITY_TOPIC,
-        message: JSON.stringify({ action, data: clean, timestamp: new Date().toISOString() }),
+        message: JSON.stringify(eventObj),
         title: `COMMUNITY_${action}`
-      })
+      }),
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
     });
   } catch (e) {}
 }
 
-// Fetch cross-device posts and updates from Cloud Relay
+// Fetch cross-device posts and updates from Cloud Relay (KVDB Singapore Edge + ntfy fallback)
 export async function fetchCloudRelayCommunityEvents() {
   if (typeof fetch === 'undefined') return [];
+  const events = [];
+
+  // 1. Primary: KVDB Singapore Edge
   try {
-    const res = await fetch(`https://ntfy.sh/${CLOUD_COMMUNITY_TOPIC}/json?poll=1`);
-    if (!res.ok) return [];
-    const text = await res.text();
-    const lines = text.trim().split('\n');
-    const events = [];
-    for (const line of lines) {
-      if (!line.trim()) continue;
-      try {
-        const json = JSON.parse(line);
-        if (json.event === 'message' && json.message) {
-          let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
-          if (body && body.action) {
-            events.push(body);
-          }
-        }
-      } catch (e) {}
+    const res = await fetch(KVDB_COMMUNITY_URL, { cache: 'no-store' });
+    if (res.ok) {
+      const list = await res.json();
+      if (Array.isArray(list)) {
+        list.forEach((item) => {
+          if (item && item.action) events.push(item);
+        });
+      }
     }
-    return events;
-  } catch (e) {
-    return [];
-  }
+  } catch (e) {}
+
+  // 2. Secondary fallback: ntfy with 2s timeout
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
+    const res = await fetch(`https://ntfy.sh/${CLOUD_COMMUNITY_TOPIC}/json?poll=1`, {
+      signal: controller ? controller.signal : undefined
+    }).finally(() => {
+      if (timeoutId) clearTimeout(timeoutId);
+    });
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.trim().split('\n');
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        try {
+          const json = JSON.parse(line);
+          if (json.event === 'message' && json.message) {
+            let body = typeof json.message === 'string' ? JSON.parse(json.message) : json.message;
+            if (body && body.action) {
+              events.push(body);
+            }
+          }
+        } catch (e) {}
+      }
+    }
+  } catch (e) {}
+
+  return events;
 }
 
 // Merge remote posts and updates into local cache

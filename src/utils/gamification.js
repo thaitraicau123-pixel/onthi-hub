@@ -7,6 +7,7 @@ const NOTIFICATIONS_KEY = 'onthi_user_notifications_v3';
 const CLAIMED_VOUCHERS_KEY = 'onthi_claimed_vouchers';
 const LIKES_KEY = 'onthi_deck_likes';
 export const LEADERBOARD_CLOUD_TOPIC = 'onthi_hub_leaderboard_v3';
+export const KVDB_LEADERBOARD_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_leaderboard_entries';
 
 // 1. STREAK & XP ENGINE (Đồng bộ chuẩn Giờ Hà Nội - 100% Dữ liệu thật)
 export function getStreakInfo() {
@@ -46,6 +47,27 @@ export function broadcastUserLeaderboardEntry(streakData) {
       updatedAt: Date.now()
     };
 
+    // 1. Primary: KVDB Singapore Edge
+    (async () => {
+      try {
+        let list = [];
+        try {
+          const res = await fetch(KVDB_LEADERBOARD_URL, { cache: 'no-store' });
+          if (res.ok) list = await res.json();
+        } catch {}
+        if (!Array.isArray(list)) list = [];
+        list = list.filter((item) => item?.clientId !== clientId);
+        list.push(entry);
+        if (list.length > 60) list = list.slice(-60);
+        await fetch(KVDB_LEADERBOARD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(list)
+        });
+      } catch {}
+    })();
+
+    // 2. Fallback: ntfy
     fetch(`https://ntfy.sh/${LEADERBOARD_CLOUD_TOPIC}`, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },

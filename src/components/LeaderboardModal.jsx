@@ -4,6 +4,7 @@ import {
   getStreakInfo,
   getDailyQuests,
   LEADERBOARD_CLOUD_TOPIC,
+  KVDB_LEADERBOARD_URL,
   broadcastUserLeaderboardEntry
 } from '../utils/gamification';
 import { getCurrentUser } from '../utils/firebaseConfig';
@@ -19,33 +20,55 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
 
   useModalDismiss(onClose);
 
-  // Sync real user leaderboard entries from Cloud Relay (no fake bots)
+  // Sync real user leaderboard entries from Cloud Relay (KVDB Singapore Edge + ntfy fallback)
   useEffect(() => {
     let isMounted = true;
     if (streakInfo.xp > 0) {
       broadcastUserLeaderboardEntry(streakInfo);
     }
 
+    // 1. Primary: KVDB Singapore Edge
+    fetch(KVDB_LEADERBOARD_URL, { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((list) => {
+        if (!isMounted || !Array.isArray(list)) return;
+        setCloudEntriesMap((prev) => {
+          const next = { ...prev };
+          list.forEach((data) => {
+            if (data && data.type === 'leaderboard_sync' && data.clientId && data.xp > 0) {
+              if (!next[data.clientId] || data.xp >= next[data.clientId].xp) {
+                next[data.clientId] = data;
+              }
+            }
+          });
+          return next;
+        });
+      })
+      .catch(() => {});
+
+    // 2. Secondary fallback: ntfy
     fetch(`https://ntfy.sh/${LEADERBOARD_CLOUD_TOPIC}/json?poll=1&since=72h`)
       .then(res => res.text())
       .then(text => {
         if (!isMounted || !text) return;
         const lines = text.trim().split('\n');
-        const map = {};
-        lines.forEach(line => {
-          try {
-            const ev = JSON.parse(line);
-            if (ev.event === 'message' && ev.message) {
-              const data = JSON.parse(ev.message);
-              if (data.type === 'leaderboard_sync' && data.clientId && data.xp > 0) {
-                if (!map[data.clientId] || data.xp >= map[data.clientId].xp) {
-                  map[data.clientId] = data;
+        setCloudEntriesMap((prev) => {
+          const map = { ...prev };
+          lines.forEach(line => {
+            try {
+              const ev = JSON.parse(line);
+              if (ev.event === 'message' && ev.message) {
+                const data = JSON.parse(ev.message);
+                if (data.type === 'leaderboard_sync' && data.clientId && data.xp > 0) {
+                  if (!map[data.clientId] || data.xp >= map[data.clientId].xp) {
+                    map[data.clientId] = data;
+                  }
                 }
               }
-            }
-          } catch {}
+            } catch {}
+          });
+          return map;
         });
-        setCloudEntriesMap(map);
       })
       .catch(() => {});
 
