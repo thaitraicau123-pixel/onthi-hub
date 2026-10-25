@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import NotionSidebar from './components/NotionSidebar';
 import NotionTopbar from './components/NotionTopbar';
 import HomeView from './views/HomeView';
