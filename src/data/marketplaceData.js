@@ -6550,41 +6550,34 @@ export function getMarketplaceDecks() {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
         const filtered = parsed.filter(d => d && d.id && !deletedIds.has(d.id));
-        const existingIds = new Set(filtered.map(d => d.id));
-        let hasNewDecks = false;
-        let hasSanitized = false;
-        // Chuẩn hóa tác giả mọi bộ thẻ hệ thống/nền tảng về Ban Quản Trị OnThiHub, loại bỏ triệt để tài khoản ảo
-        filtered.forEach(d => {
-          if (!d.isCustomUserDeck && !d.isPassDeck) {
-            if (d.authorName !== 'Ban Quản Trị OnThiHub' || d.authorEmail !== 'thaitraicau123@gmail.com') {
-              d.authorName = 'Ban Quản Trị OnThiHub';
-              d.authorEmail = 'thaitraicau123@gmail.com';
-              d.authorAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80';
-              d.authorTier = 'ultra';
-              hasSanitized = true;
-            }
-          } else if (d.isPassDeck) {
-            if (!d.authorName || d.authorName !== 'Ban Quản Trị OnThiHub') {
-              d.authorName = 'Ban Quản Trị OnThiHub';
-              d.authorEmail = 'thaitraicau123@gmail.com';
-              hasSanitized = true;
-            }
+        
+        // Build unified map: Canonical baseline decks + user custom/pass decks
+        const deckMap = new Map();
+        
+        // 1. Seed with latest canonical INITIAL_MARKETPLACE_DECKS
+        INITIAL_MARKETPLACE_DECKS.forEach(initDeck => {
+          if (!deletedIds.has(initDeck.id)) {
+            deckMap.set(initDeck.id, { ...initDeck });
           }
         });
 
-        INITIAL_MARKETPLACE_DECKS.forEach(initDeck => {
-          if (!existingIds.has(initDeck.id) && !deletedIds.has(initDeck.id)) {
-            filtered.push(initDeck);
-            hasNewDecks = true;
+        // 2. Merge cached user decks and preserve ratings / sales counts
+        filtered.forEach(d => {
+          if (d.isCustomUserDeck || d.isPassDeck) {
+            deckMap.set(d.id, d);
+          } else if (deckMap.has(d.id)) {
+            const baseline = deckMap.get(d.id);
+            deckMap.set(d.id, {
+              ...baseline,
+              salesCount: Math.max(d.salesCount || 0, baseline.salesCount || 0),
+              rating: d.rating || baseline.rating
+            });
           }
         });
-        if (hasSanitized) hasNewDecks = true;
-        if (hasNewDecks || filtered.length !== parsed.length) {
-          localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(filtered));
-        }
-        if (filtered.length > 0) {
-          return filtered;
-        }
+
+        const fullDecks = Array.from(deckMap.values());
+        localStorage.setItem(MARKETPLACE_KEY, JSON.stringify(fullDecks));
+        return fullDecks;
       }
     }
   } catch (e) {}

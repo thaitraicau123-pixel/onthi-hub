@@ -165,6 +165,18 @@ export default function MarketplaceView({
       let matchCat = true;
       if (activeCategory === 'pass') {
         matchCat = d.isPassDeck === true;
+      } else if (activeCategory === 'toeic') {
+        matchCat = (d.id && d.id.includes('toeic')) || (d.title && d.title.toLowerCase().includes('toeic')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('toeic'));
+      } else if (activeCategory === 'ielts') {
+        matchCat = (d.id && d.id.includes('ielts')) || (d.title && d.title.toLowerCase().includes('ielts')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('ielts'));
+      } else if (activeCategory === 'sat') {
+        matchCat = (d.id && d.id.includes('sat')) || (d.title && d.title.toLowerCase().includes('sat')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('sat'));
+      } else if (activeCategory === 'english-core') {
+        matchCat = (d.id && d.id.includes('english')) || (d.title && (d.title.includes('Oxford') || d.title.includes('Giao Tiếp') || d.title.includes('Ngữ Pháp') || d.title.includes('Cụm Động Từ') || d.title.includes('Phát Âm')));
+      } else if (activeCategory === 'it-tech') {
+        matchCat = d.category === 'it-tech';
+      } else if (activeCategory === 'other') {
+        matchCat = d.category === 'cong-chuc' || d.category === 'tai-chinh' || d.category === 'y-duoc';
       } else if (activeCategory !== 'all') {
         matchCat = d.category === activeCategory;
       }
@@ -173,6 +185,8 @@ export default function MarketplaceView({
       const matchSearch =
         !term ||
         d.title.toLowerCase().includes(term) ||
+        (d.subtitle && d.subtitle.toLowerCase().includes(term)) ||
+        (d.categoryLabel && d.categoryLabel.toLowerCase().includes(term)) ||
         (d.description && d.description.toLowerCase().includes(term)) ||
         (d.authorName && d.authorName.toLowerCase().includes(term)) ||
         (d.passSellerName && d.passSellerName.toLowerCase().includes(term));
@@ -180,9 +194,10 @@ export default function MarketplaceView({
     })
     .sort((a, b) => {
       if (sortBy === 'newest') {
-        const idA = String(a.id || '');
-        const idB = String(b.id || '');
-        return idB.localeCompare(idA);
+        const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (timeB !== timeA) return timeB - timeA;
+        return (a.priceXu || 0) - (b.priceXu || 0);
       }
       if (sortBy === 'price_asc') return a.priceXu - b.priceXu;
       if (sortBy === 'price_desc') return b.priceXu - a.priceXu;
@@ -533,14 +548,85 @@ export default function MarketplaceView({
 
       {/* 3. FILTER & SEARCH (Notion Control Bar) */}
       <section id="marketplace-catalog" className="bg-white/95 dark:bg-slate-900/90 rounded-2xl p-3.5 sm:p-4 border border-[#e9e9e8] dark:border-white/15 shadow-2xs text-[#37352f] dark:text-white space-y-3">
+        {/* NEW ARRIVAL ENGLISH SPOTLIGHT BANNER */}
+        <div className="p-3 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/40 dark:to-indigo-950/40 rounded-xl border border-blue-200/80 dark:border-sky-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-2.5">
+            <span className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+              ✨
+            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
+                  25 Bộ Thẻ Tiếng Anh Kích Cầu Vừa Lên Sàn
+                </h4>
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-white animate-pulse">
+                  1 - 4 XU
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                Đầy đủ TOEIC, IELTS, Digital SAT & Giao tiếp cốt lõi. Học thử miễn phí không giới hạn.
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => { setActiveCategory('toeic'); setSearchQuery(''); }}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
+                activeCategory === 'toeic'
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-blue-500 text-blue-700 dark:text-sky-300'
+              }`}
+            >
+              🇬🇧 TOEIC
+            </button>
+            <button
+              type="button"
+              onClick={() => { setActiveCategory('ielts'); setSearchQuery(''); }}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
+                activeCategory === 'ielts'
+                  ? 'bg-indigo-600 text-white border-indigo-600'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-indigo-500 text-indigo-700 dark:text-indigo-300'
+              }`}
+            >
+              🎓 IELTS
+            </button>
+            <button
+              type="button"
+              onClick={() => { setActiveCategory('sat'); setSearchQuery(''); }}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
+                activeCategory === 'sat'
+                  ? 'bg-purple-600 text-white border-purple-600'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-purple-500 text-purple-700 dark:text-purple-300'
+              }`}
+            >
+              🇺🇸 SAT
+            </button>
+            <button
+              type="button"
+              onClick={() => { setActiveCategory('english-core'); setSearchQuery(''); }}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
+                activeCategory === 'english-core'
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-emerald-500 text-emerald-700 dark:text-emerald-300'
+              }`}
+            >
+              💬 Cốt Lõi
+            </button>
+          </div>
+        </div>
+
         {/* Tier 1: Category Selection Tabs */}
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           {[
-            { id: 'all', name: '📋 Tất cả chợ' },
+            { id: 'all', name: `📋 Tất cả chợ (${decks.length})` },
+            { id: 'toeic', name: '🇬🇧 TOEIC (6 bộ)' },
+            { id: 'ielts', name: '🎓 IELTS (7 bộ)' },
+            { id: 'sat', name: '🇺🇸 SAT (5 bộ)' },
+            { id: 'english-core', name: '💬 Tiếng Anh Cốt Lõi (7 bộ)' },
             { id: 'pass', name: `🔁 Góc Pass Lại (${passDecks.length})` },
-            { id: 'ngoai-ngu', name: '🌍 Ngoại ngữ & SAT' },
             { id: 'it-tech', name: '💻 IT & Lập Trình' },
-            { id: 'cong-chuc', name: '🏛️ Công Chức & Ngành Y' }
+            { id: 'other', name: '🏛️ Lịch Sử & Khác' }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -692,13 +778,22 @@ export default function MarketplaceView({
                   <div className="p-4 sm:p-5">
                     
                     {/* Pass badge or Category */}
-                    {deck.isPassDeck && (
+                    {deck.isPassDeck ? (
                       <div className="mb-2">
                         <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/40 text-[10px] font-bold inline-flex items-center space-x-1">
                           <Repeat className="w-2.5 h-2.5" />
                           <span>HỌC VIÊN PASS LẠI</span>
                         </span>
                       </div>
+                    ) : (
+                      deck.categoryLabel && (
+                        <div className="mb-2">
+                          <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-sky-950/80 text-blue-700 dark:text-sky-300 border border-blue-200 dark:border-sky-500/30 text-[10px] font-bold inline-flex items-center space-x-1">
+                            <Sparkles className="w-2.5 h-2.5 text-blue-500" />
+                            <span>{deck.categoryLabel}</span>
+                          </span>
+                        </div>
+                      )
                     )}
 
                     {/* Creator / Reseller Info */}

@@ -56,7 +56,7 @@ export default function FlashcardModal({
 }) {
   const allDeckCards = course?.previewCards?.length
     ? course.previewCards
-    : (course?.cards?.length ? course.cards : (course?.sampleCards || []));
+    : (course?.cards?.length ? course.cards : (course?.flashcards?.length ? course.flashcards : (course?.sampleCards || [])));
 
   // Starred / Favorite Cards State
   const starredKey = `onthi_starred_cards_${course?.id || 'default'}`;
