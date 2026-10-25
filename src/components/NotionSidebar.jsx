@@ -57,7 +57,8 @@ function NotionSidebar({
   onOpenCheatSheet,
   onOpenDirectChat,
   onOpenLiveExamRoom,
-  onOpenShareAchievement
+  onOpenShareAchievement,
+  onOpenExamReadiness
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const curParticipant = getCurrentUserParticipant(user);
@@ -176,6 +177,15 @@ function NotionSidebar({
       emoji: icons.analytics || '📊',
       action: onOpenAnalytics,
       desc: 'Tỷ lệ nhớ sâu SM-2 & Biểu đồ học'
+    },
+    {
+      id: 'exam-readiness',
+      label: 'Radar & Tỷ Lệ Đỗ',
+      emoji: '🎯',
+      badge: 'AI v2.0',
+      badgeColor: 'notion-pill-green',
+      action: onOpenExamReadiness,
+      desc: 'Radar 5 trục & dự báo xác suất đỗ kỳ thi'
     },
     {
       id: 'mistakes',

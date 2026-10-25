@@ -47,7 +47,8 @@ export default function NotionTopbar({
   onOpenTargetClock,
   onOpenStudyRoom,
   onOpenDirectChat,
-  onOpenLiveExamRoom
+  onOpenLiveExamRoom,
+  onOpenExamReadiness
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -279,6 +280,23 @@ export default function NotionTopbar({
           </button>
         )}
 
+        {/* Exam Readiness & Pass Probability Quick Pill */}
+        {onOpenExamReadiness && (
+          <button
+            type="button"
+            onClick={() => {
+              playSound('click');
+              onOpenExamReadiness();
+            }}
+            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-200 border border-sky-300 dark:border-sky-600/50 transition-all shadow-2xs cursor-pointer"
+            title="Radar Năng Lực & Dự Báo Xác Suất Đỗ Kỳ Thi (AI v2.0)"
+            aria-label="Dự báo tỷ lệ đỗ"
+          >
+            <span className="text-xs select-none">🎯</span>
+            <span className="text-[11px] font-extrabold tracking-tight">Tỷ Lệ Đỗ</span>
+          </button>
+        )}
+
         {/* TIỆN ÍCH & CÔNG CỤ DROPDOWN HUB */}
         <div className="relative" ref={toolsMenuRef}>
           <button
@@ -320,6 +338,34 @@ export default function NotionTopbar({
               </div>
 
               <div className="max-h-[70vh] overflow-y-auto space-y-1 p-0.5">
+                {/* 0. Radar Năng Lực & Dự Báo Tỷ Lệ Đỗ */}
+                {onOpenExamReadiness && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowToolsMenu(false);
+                      playSound('click');
+                      onOpenExamReadiness();
+                    }}
+                    className="w-full text-left p-2 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-950/40 border border-transparent hover:border-sky-200 dark:hover:border-sky-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                  >
+                    <span className="text-lg p-1.5 rounded-lg bg-sky-100 dark:bg-sky-900/40 shrink-0">🎯</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400">
+                          Radar Năng Lực & Tỷ Lệ Đỗ
+                        </span>
+                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-sky-500 text-white">
+                          AI v2.0
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                        Biểu đồ 5 trục kiến thức, dự báo tỷ lệ % đỗ kỳ thi & lộ trình 7 ngày.
+                      </p>
+                    </div>
+                  </button>
+                )}
+
                 {/* 1. Thi đấu trực tiếp */}
                 {onOpenLiveExamRoom && (
                   <button

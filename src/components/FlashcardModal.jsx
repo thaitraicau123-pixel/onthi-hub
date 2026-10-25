@@ -22,7 +22,9 @@ import {
   Headphones,
   Share2,
   MessageCircle,
-  MoreHorizontal
+  MoreHorizontal,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { exportAnkiDeckFile, printFlashcardCutoutSheet, playSound } from '../utils/storage';
 import { recordStudyAction, completeDailyQuest } from '../utils/gamification';
@@ -114,6 +116,80 @@ export default function FlashcardModal({
 
   const modalContainerRef = useRef(null);
   const moreMenuRef = useRef(null);
+
+  // Voice Q&A / Speech-to-Text State
+  const [isListening, setIsListening] = useState(false);
+  const [voiceResult, setVoiceResult] = useState(null);
+  const recognitionRef = useRef(null);
+
+  const handleStartVoiceCheck = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert('Trình duyệt của bạn chưa hỗ trợ nhận diện giọng nói (Web Speech API). Bạn hãy sử dụng Google Chrome trên máy tính hoặc điện thoại nhé!');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.lang = 'vi-VN';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      setIsListening(true);
+      setVoiceResult(null);
+      playSound('click');
+
+      recognition.onresult = (event) => {
+        const spoken = event.results[0][0].transcript;
+        const targetAnswer = currentCard.back || '';
+
+        const normalize = (s) =>
+          s
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9\u00C0-\u1EF9]/g, ' ')
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+        const spokenWords = new Set(normalize(spoken));
+        const targetWords = normalize(targetAnswer);
+        let matchCount = 0;
+        targetWords.forEach((w) => {
+          if (spokenWords.has(w)) matchCount++;
+        });
+
+        const similarity = targetWords.length > 0 ? Math.round((matchCount / targetWords.length) * 100) : 50;
+        const isMatch = similarity >= 35;
+
+        setVoiceResult({ spokenText: spoken, similarity, isMatch });
+        setIsListening(false);
+
+        if (isMatch) {
+          playSound('success');
+          try {
+            confetti({ particleCount: 45, spread: 65, origin: { y: 0.6 } });
+          } catch (e) {}
+          setIsFlipped(true);
+        } else {
+          playSound('error');
+          setIsFlipped(true);
+        }
+      };
+
+      recognition.onerror = () => setIsListening(false);
+      recognition.onend = () => setIsListening(false);
+
+      recognition.start();
+    } catch (e) {
+      setIsListening(false);
+    }
+  };
 
   // Close more menu on click outside
   useEffect(() => {
@@ -841,6 +917,21 @@ export default function FlashcardModal({
                     >
                       <Volume2 className="w-4 h-4" />
                     </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartVoiceCheck();
+                      }}
+                      className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                        isListening
+                          ? 'bg-rose-500 text-white animate-pulse'
+                          : 'text-slate-400 hover:text-rose-300 hover:bg-slate-700/80'
+                      }`}
+                      title={isListening ? 'Đang lắng nghe... Bấm để dừng' : 'Nói đáp án (Vấn đáp bằng giọng nói AI)'}
+                    >
+                      {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                    </button>
                   </div>
                 </div>
 
@@ -912,6 +1003,26 @@ export default function FlashcardModal({
 
             </div>
           </div>
+
+          {/* Voice Review Feedback Strip */}
+          {isListening && (
+            <div className="mt-3 px-4 py-2 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-200 text-xs flex items-center gap-2 animate-pulse">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+              <span>🎙️ Đang lắng nghe... Hãy nói to đáp án vào mic!</span>
+            </div>
+          )}
+
+          {voiceResult && (
+            <div className="mt-3 max-w-xl w-full p-3 rounded-2xl bg-slate-800/90 border border-slate-700 text-xs space-y-1 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-slate-400">Bạn vừa nói:</span>
+                <span className={`font-black ${voiceResult.isMatch ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {voiceResult.isMatch ? '🎉 Trả lời chuẩn xác' : '⚡ Cần bổ sung thêm'} ({voiceResult.similarity}% khớp)
+                </span>
+              </div>
+              <p className="text-white italic">"{voiceResult.spokenText}"</p>
+            </div>
+          )}
 
           {/* Navigation Controls: Prev / Next buttons */}
           <div className="mt-4 sm:mt-5 flex items-center space-x-5">

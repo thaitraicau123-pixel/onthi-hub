@@ -42,6 +42,36 @@ export function getWalletBalance() {
   }
 }
 
+// Alias for getWalletBalance
+export function getCurrentUserCoins(_user) {
+  return getWalletBalance();
+}
+
+// Record an instant coin transaction
+export function recordCoinTransaction({ type, amountXu, title, description }) {
+  if (amountXu > 0) {
+    addWalletCoins(amountXu);
+  } else if (amountXu < 0) {
+    deductWalletCoins(Math.abs(amountXu));
+  }
+  const txList = getTransactions();
+  const newTx = {
+    id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    type: type || 'system',
+    xuAmount: Math.abs(amountXu),
+    vndAmount: Math.abs(amountXu) * COIN_RATE_VND,
+    status: 'approved',
+    title: title || 'Giao dịch Xu',
+    description: description || '',
+    createdAt: new Date().toISOString()
+  };
+  txList.unshift(newTx);
+  try {
+    localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(txList.slice(0, 100)));
+  } catch (e) {}
+  return newTx;
+}
+
 // Set wallet balance
 export function setWalletBalance(amount) {
   try {

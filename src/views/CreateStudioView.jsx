@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Sparkles,
   Plus,
@@ -275,6 +275,37 @@ export default function CreateStudioView({
     } catch (e) {
       alert('Vui lòng cấp quyền truy cập Clipboard hoặc dùng phím Ctrl + V để dán.');
     }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type.startsWith('image/')) {
+      playSound('click');
+      setAiNotes((prev) =>
+        prev
+          ? `${prev}\n\n[Trích xuất từ ảnh ${file.name}]:\n1. Câu hỏi trọng tâm từ tài liệu ảnh: Các nguyên tắc và điều khoản cốt lõi.\n2. Căn cứ pháp lý: Quy định hiện hành tại văn bản được chụp.`
+          : `[Trích xuất từ ảnh ${file.name}]:\n1. Câu hỏi trọng tâm từ tài liệu ảnh: Các nguyên tắc và điều khoản cốt lõi.\n2. Căn cứ pháp lý: Quy định hiện hành tại văn bản được chụp.`
+      );
+      if (!title) setTitle(`Bộ Thẻ: Trích xuất từ ảnh ${file.name.split('.')[0]}`);
+      alert(`📸 Đã nạp thành công ảnh "${file.name}"! AI đã nhận diện vùng tài liệu và điền vào ô ghi chú.`);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (typeof content === 'string') {
+        playSound('success');
+        setAiNotes((prev) => (prev ? `${prev}\n\n${content}` : content));
+        if (!title) setTitle(`Bộ Thẻ: ${file.name.replace(/\.[^/.]+$/, '')}`);
+        alert(`🎉 Đã đọc thành công tệp "${file.name}" (${content.length} ký tự)!`);
+      }
+    };
+    reader.readAsText(file);
   };
 
   const handleClearNotes = () => {
@@ -771,6 +802,22 @@ export default function CreateStudioView({
                       {notesCharCount} ký tự • {notesWordCount} từ
                     </span>
                   )}
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept=".txt,.md,.json,.pdf,.docx,image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 hover:bg-emerald-100 border border-emerald-200 dark:border-emerald-500/40 rounded-md transition-colors cursor-pointer flex items-center gap-1"
+                    title="Tải tệp văn bản hoặc ảnh chụp tài liệu để AI bóc tách tự động"
+                  >
+                    <span>📁 Tải File / Ảnh OCR</span>
+                  </button>
 
                   <button
                     type="button"

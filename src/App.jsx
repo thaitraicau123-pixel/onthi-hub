@@ -38,6 +38,7 @@ const VirtualStudyRoomModal = lazy(() => import('./components/VirtualStudyRoomMo
 const DirectChatModal = lazy(() => import('./components/DirectChatModal'));
 const LiveExamRoomModal = lazy(() => import('./components/LiveExamRoomModal'));
 const ShareAchievementModal = lazy(() => import('./components/ShareAchievementModal'));
+const ExamReadinessModal = lazy(() => import('./components/ExamReadinessModal'));
 
 function ViewLoadingFallback() {
   return (
@@ -131,6 +132,7 @@ export default function App() {
   const [isStudyRoomOpen, setIsStudyRoomOpen] = useState(false);
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
   const [isLiveExamRoomOpen, setIsLiveExamRoomOpen] = useState(false);
+  const [isExamReadinessOpen, setIsExamReadinessOpen] = useState(false);
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
   const [directChatPartner, setDirectChatPartner] = useState(null);
   const [directChatAttachDeck, setDirectChatAttachDeck] = useState(null);
@@ -484,6 +486,7 @@ export default function App() {
         onOpenDirectChat={() => handleOpenDirectChat()}
         onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
         onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
+        onOpenExamReadiness={() => setIsExamReadinessOpen(true)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -514,6 +517,7 @@ export default function App() {
           onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
           onOpenDirectChat={() => handleOpenDirectChat()}
           onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
+          onOpenExamReadiness={() => setIsExamReadinessOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -971,6 +975,19 @@ export default function App() {
             achievementData={activeShareAchievement}
             onOpenDirectChat={handleOpenDirectChat}
             onShowToast={showToast}
+          />
+        )}
+
+        {/* 24. AI Exam Readiness Radar & Pass Probability Modal */}
+        {isExamReadinessOpen && (
+          <ExamReadinessModal
+            isOpen={isExamReadinessOpen}
+            onClose={() => setIsExamReadinessOpen(false)}
+            allCourses={allAvailableCourses}
+            onOpenFlashcards={(deck) => {
+              setIsExamReadinessOpen(false);
+              setActiveFlashcardCourse(deck);
+            }}
           />
         )}
       </Suspense>

@@ -23,9 +23,15 @@ import {
   HelpCircle,
   Bell,
   CheckCheck,
-  Crown
+  Crown,
+  Swords,
+  Coins,
+  Flame,
+  Trophy
 } from 'lucide-react';
 import { useModalDismiss } from '../hooks/useModalDismiss';
+import { getDuoStreak, markDuoNudged } from '../utils/duoStreak';
+import PvpBattleModal from './PvpBattleModal';
 import {
   getCurrentUserParticipant,
   getUserConversations,
@@ -120,6 +126,37 @@ export default function DirectChatModal({
   // Thêm bạn bè trực tiếp qua Email hoặc tên
   const [addFriendInput, setAddFriendInput] = useState('');
   const [addFriendNote, setAddFriendNote] = useState('');
+
+  // 1v1 PvP Battle Arena State
+  const [isPvpModalOpen, setIsPvpModalOpen] = useState(false);
+  const [activeBattleForModal, setActiveBattleForModal] = useState(null);
+
+  // Chuỗi ngọn lửa đôi bạn cùng tiến (Duo Streak)
+  const partnerDuoStreak = useMemo(() => {
+    if (!activePartner || activePartner.role === 'admin' || activePartner.id === 'admin_onthi') {
+      return { streak: 0, flameLevel: { icon: '💤', label: 'Chưa Thắp Lửa' } };
+    }
+    return getDuoStreak(currentParticipant.id, activePartner.id);
+  }, [currentParticipant, activePartner, messages]);
+
+  const handleDuoNudge = async () => {
+    if (!activePartner) return;
+    playSound('click');
+    markDuoNudged(currentParticipant.id, activePartner.id);
+    await sendDirectMessage(
+      currentParticipant,
+      activePartner,
+      `🔔 [HỐI BẠN HỌC]: Bạn ơi vào web học tập hoặc thách đấu 1v1 một chút hôm nay để giữ chuỗi Ngọn Lửa Đôi Bạn Cùng Tiến ${partnerDuoStreak.flameLevel.icon} nhé! 🔥✨`
+    );
+    onShowToast?.(`Đã gửi lời nhắc bạn cùng học đến ${activePartner.name}! 🔥`);
+  };
+
+  const handleOpenPvpChallenge = (partner, existingBattle = null) => {
+    playSound('click');
+    setActivePartner(partner);
+    setActiveBattleForModal(existingBattle);
+    setIsPvpModalOpen(true);
+  };
 
   const messagesEndRef = useRef(null);
 
@@ -1029,6 +1066,23 @@ export default function DirectChatModal({
                       <span>Học Viên</span>
                     </span>
                   )}
+
+                  {/* Duo Streak Flame Badge */}
+                  {activePartner?.role !== 'admin' && activePartner?.id !== 'admin_onthi' && (
+                    <button
+                      type="button"
+                      onClick={handleDuoNudge}
+                      className="px-1.5 py-0.2 rounded text-[10px] font-black bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 flex items-center gap-1 cursor-pointer transition-all active:scale-95"
+                      title={
+                        partnerDuoStreak.streak > 0
+                          ? `Chuỗi bạn cùng tiến: ${partnerDuoStreak.streak} ngày liên tiếp!`
+                          : 'Bấm để nhắc bạn cùng học ngay hôm nay để thắp lửa!'
+                      }
+                    >
+                      <span>{partnerDuoStreak.flameLevel.icon}</span>
+                      <span>{partnerDuoStreak.streak > 0 ? `Chuỗi ${partnerDuoStreak.streak}N` : 'Nhắc học'}</span>
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex items-center space-x-2 text-[10px]">
@@ -1084,6 +1138,19 @@ export default function DirectChatModal({
                     </button>
                   )}
                 </>
+              )}
+
+              {/* 1v1 PvP Battle Challenge Button */}
+              {activePartner?.role !== 'admin' && activePartner?.id !== 'admin_onthi' && (
+                <button
+                  type="button"
+                  onClick={() => handleOpenPvpChallenge(activePartner)}
+                  className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white text-xs font-black flex items-center space-x-1 transition-all cursor-pointer shadow-xs active:scale-95"
+                  title="Thách đấu trắc nghiệm 1v1 đối kháng trực tiếp"
+                >
+                  <Swords className="w-3.5 h-3.5 text-yellow-200" />
+                  <span className="hidden sm:inline">Thách Đấu 1v1</span>
+                </button>
               )}
 
               {/* Quick Attach / Share Deck Button */}
@@ -1426,6 +1493,60 @@ export default function DirectChatModal({
                             </div>
                           </div>
                         )}
+
+                        {/* 1v1 PvP Challenge Invitation Card */}
+                        {msg.pvpChallenge && (
+                          <div className="mt-2 p-3 rounded-2xl border transition-all shadow-md relative overflow-hidden bg-gradient-to-br from-red-950/85 via-slate-900 to-amber-950/85 border-red-500/40 text-white">
+                            <div className="flex items-start space-x-2.5">
+                              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-amber-600 flex items-center justify-center text-lg shrink-0 border border-red-400 shadow-md">
+                                <Swords className="w-5 h-5 text-yellow-200 fill-current animate-pulse" />
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-red-500/30 text-rose-300 border border-red-500/40">
+                                    Thách Đấu 1v1 Đối Kháng
+                                  </span>
+                                  {msg.pvpChallenge.wagerXu > 0 ? (
+                                    <span className="text-[10px] font-black text-amber-300 px-1.5 py-0.2 rounded bg-amber-400/20 border border-amber-400/30 flex items-center gap-1">
+                                      <Coins className="w-3 h-3" />
+                                      <span>Cược {msg.pvpChallenge.wagerXu} Xu</span>
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] font-bold text-sky-300">
+                                      🤝 Giao Hữu
+                                    </span>
+                                  )}
+                                </div>
+                                <h4 className="text-xs sm:text-sm font-black truncate mt-1 text-amber-100">
+                                  {msg.pvpChallenge.deckTitle}
+                                </h4>
+                                <p className="text-[10px] text-slate-300 truncate">
+                                  {msg.pvpChallenge.totalQuestions || 5} Câu hỏi trắc nghiệm đối kháng
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="mt-2.5 pt-2 border-t border-white/10 flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenPvpChallenge(activePartner, msg.pvpChallenge)}
+                                className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all"
+                              >
+                                <Swords className="w-3.5 h-3.5" />
+                                <span>
+                                  {msg.pvpChallenge.status === 'finished'
+                                    ? '🏆 Xem Kết Quả Trận Đấu'
+                                    : msg.pvpChallenge.status === 'in_progress'
+                                    ? '🔥 Vào Đấu Trường Ngay'
+                                    : isMe
+                                    ? '⚔️ Xem Phòng Đấu'
+                                    : '⚔️ Chấp Nhận & Thi Đấu Ngay'}
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Timestamp & Delivery Status Badge */}
@@ -1590,6 +1711,22 @@ export default function DirectChatModal({
           </form>
         </main>
       </div>
+
+      {/* 1v1 PvP BATTLE ARENA MODAL */}
+      {isPvpModalOpen && (
+        <PvpBattleModal
+          isOpen={isPvpModalOpen}
+          onClose={() => setIsPvpModalOpen(false)}
+          currentUser={currentUser}
+          targetPartner={activePartner}
+          allCourses={allCourses}
+          initialBattle={activeBattleForModal}
+          onOpenDirectChat={(p) => {
+            setIsPvpModalOpen(false);
+            if (p) setActivePartner(p);
+          }}
+        />
+      )}
     </div>
   );
 }
