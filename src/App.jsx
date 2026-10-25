@@ -355,7 +355,25 @@ export default function App() {
     refreshState();
   };
 
-  const allAvailableCourses = [...customDecks, ...marketplaceDecks, ...COURSES_DATA];
+  const allAvailableCourses = useMemo(() => {
+    return [...customDecks, ...marketplaceDecks, ...COURSES_DATA].map((c) => {
+      const cards = c.cards || c.previewCards || c.sampleCards || c.flashcards || [];
+      const quiz = c.quiz || c.previewQuiz || c.questions || [];
+      const count = c.cardsCount || c.cardCount || cards.length;
+      return {
+        ...c,
+        cards,
+        previewCards: c.previewCards || cards,
+        sampleCards: c.sampleCards || cards,
+        flashcards: c.flashcards || cards,
+        cardsCount: count,
+        cardCount: count,
+        quiz,
+        previewQuiz: c.previewQuiz || quiz,
+        questions: c.questions || quiz
+      };
+    });
+  }, [customDecks, marketplaceDecks]);
 
   // Tự động nhận diện đường dẫn chia sẻ bộ thẻ Flashcard (?deck=...&card=...&tab=...)
   useEffect(() => {

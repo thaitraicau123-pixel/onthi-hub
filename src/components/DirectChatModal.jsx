@@ -1390,7 +1390,7 @@ export default function DirectChatModal({
                         </span>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
                           {deck.categoryLabel || 'Kiến Thức'} •{' '}
-                          {deck.cardsCount || (deck.cards ? deck.cards.length : 0)} Thẻ
+                          {deck.cardsCount || (deck.cards ? deck.cards.length : (deck.previewCards ? deck.previewCards.length : 0))} Thẻ
                         </span>
                       </div>
                     </div>
@@ -1493,7 +1493,7 @@ export default function DirectChatModal({
                                   }`}
                                 >
                                   {msg.sharedDeck.categoryLabel || 'Bộ Thẻ Anki'} •{' '}
-                                  {msg.sharedDeck.cardsCount || 0} Thẻ
+                                  {msg.sharedDeck.cardsCount || (msg.sharedDeck.cards ? msg.sharedDeck.cards.length : (msg.sharedDeck.previewCards ? msg.sharedDeck.previewCards.length : 0))} Thẻ
                                 </span>
                                 <h4 className="text-xs sm:text-sm font-bold truncate mt-0.5">
                                   {msg.sharedDeck.title}
@@ -1768,7 +1768,7 @@ export default function DirectChatModal({
                   </span>
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">
                     {attachedDeck.cardsCount ||
-                      (attachedDeck.cards ? attachedDeck.cards.length : 0)}{' '}
+                      (attachedDeck.cards ? attachedDeck.cards.length : (attachedDeck.previewCards ? attachedDeck.previewCards.length : 0))}{' '}
                     Thẻ Flashcard
                   </span>
                 </div>

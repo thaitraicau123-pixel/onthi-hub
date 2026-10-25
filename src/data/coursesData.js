@@ -8989,6 +8989,22 @@ export const COURSES_DATA = [
 }
 ];
 
+// Chuẩn hóa cards, cardsCount, quiz cho toàn bộ hệ thống
+COURSES_DATA.forEach((course) => {
+  if (!course.cards && course.previewCards) {
+    course.cards = course.previewCards;
+  }
+  const count = (course.cards && course.cards.length) || (course.previewCards && course.previewCards.length) || 0;
+  course.cardsCount = course.cardsCount || count;
+  course.cardCount = course.cardCount || count;
+  if (!course.quiz && course.previewQuiz) {
+    course.quiz = course.previewQuiz;
+  }
+  if (!course.questions && course.previewQuiz) {
+    course.questions = course.previewQuiz;
+  }
+});
+
 export const COMBO_PACKAGE = {
   id: 'combo-all-access',
   title: 'COMBO VIP: Mở Khóa Trọn Đời Toàn Bộ Kho Tài Liệu & Flashcard Beta',

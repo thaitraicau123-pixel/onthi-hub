@@ -67,10 +67,10 @@ export default function VirtualStudyRoomModal({
   // Available decks for in-room study
   const studyDecks = useMemo(() => {
     const base = allCourses && allCourses.length > 0 ? allCourses : COURSES_DATA;
-    return base.filter(c => c && c.cards && c.cards.length > 0);
+    return base.filter(c => c && ((c.cards && c.cards.length > 0) || (c.previewCards && c.previewCards.length > 0)));
   }, [allCourses]);
 
-  const [selectedDeckId, setSelectedDeckId] = useState(() => studyDecks[0]?.id || 'pldc');
+  const [selectedDeckId, setSelectedDeckId] = useState(() => studyDecks[0]?.id || 'cc-kien-thuc-chung');
   const currentDeck = useMemo(
     () => studyDecks.find(d => d.id === selectedDeckId) || studyDecks[0],
     [studyDecks, selectedDeckId]

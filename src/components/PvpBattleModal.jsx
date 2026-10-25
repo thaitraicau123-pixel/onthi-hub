@@ -193,9 +193,11 @@ export default function PvpBattleModal({
       return;
     }
 
-    // Trích xuất câu hỏi từ bộ thẻ (hoặc giả lập trắc nghiệm từ Flashcard)
-    let rawCards = selectedDeck.cards || selectedDeck.sampleCards || [];
-    if (rawCards.length === 0) {
+    // Trích xuất câu hỏi từ bộ đề (Ưu tiên ngân hàng trắc nghiệm chuẩn, kết hợp thẻ Flashcard)
+    const existingQuiz = selectedDeck.quiz || selectedDeck.previewQuiz || selectedDeck.questions || [];
+    const rawCards = selectedDeck.cards || selectedDeck.previewCards || selectedDeck.sampleCards || selectedDeck.flashcards || [];
+
+    if (existingQuiz.length === 0 && rawCards.length === 0) {
       setErrorMsg('Bộ thẻ này chưa có đủ nội dung câu hỏi!');
       return;
     }
@@ -204,23 +206,60 @@ export default function PvpBattleModal({
     setErrorMsg('');
 
     try {
-      const shuffled = [...rawCards].sort(() => 0.5 - Math.random()).slice(0, questionCount);
-      const generatedQuestions = shuffled.map((card, idx) => {
-        const correctText = card.back || card.answer || 'Đáp án chính xác theo quy định pháp luật.';
-        const fakeWrong = [
-          'Chưa có quy định cụ thể tại văn bản này.',
-          'Thuộc thẩm quyền quyết định của cơ quan cấp trên.',
-          'Thời hạn thực hiện tối đa không quá 30 ngày làm việc.'
-        ];
-        const allOpts = [correctText, ...fakeWrong].sort(() => 0.5 - Math.random());
-        return {
-          id: `q_${idx}_${Date.now()}`,
-          prompt: card.front || card.question || `Câu hỏi trọng tâm số ${idx + 1}`,
-          options: allOpts,
-          correctIndex: allOpts.indexOf(correctText),
-          explanation: card.note || card.explanation || 'Theo quy định trọng tâm của bộ tài liệu ôn thi.'
-        };
-      });
+      let generatedQuestions = [];
+
+      // 1. Nếu có sẵn câu hỏi trắc nghiệm chuẩn (ví dụ các bộ đề chính thức có sẵn previewQuiz)
+      if (existingQuiz.length > 0) {
+        const shuffledQuiz = [...existingQuiz].sort(() => 0.5 - Math.random());
+        generatedQuestions = shuffledQuiz.slice(0, questionCount).map((q, idx) => {
+          const opts = q.options || [];
+          const correctIdx = q.correct ?? q.correctIndex ?? 0;
+          return {
+            id: `q_quiz_${idx}_${Date.now()}`,
+            prompt: q.question || q.prompt || `Câu hỏi trọng tâm số ${idx + 1}`,
+            options: opts,
+            correctIndex: correctIdx,
+            explanation: q.explanation || 'Theo đáp án chuẩn kỳ thi quốc gia.'
+          };
+        });
+      }
+
+      // 2. Nếu câu hỏi trắc nghiệm chưa đủ số lượng yêu cầu, bổ sung thêm từ ngân hàng Flashcard
+      if (generatedQuestions.length < questionCount && rawCards.length > 0) {
+        const needed = questionCount - generatedQuestions.length;
+        const shuffledCards = [...rawCards].sort(() => 0.5 - Math.random()).slice(0, needed);
+
+        const cardQuestions = shuffledCards.map((card, idx) => {
+          const correctText = card.back || card.answer || 'Đáp án chính xác theo tài liệu ôn thi.';
+          // Lấy phương án nhiễu từ các thẻ khác trong cùng bộ
+          const otherCards = rawCards.filter((c) => c !== card);
+          const poolDistractors = otherCards
+            .map((c) => (c.back || c.answer || '').split('\n')[0].trim())
+            .filter((t) => t && t !== correctText && t.length < 120);
+
+          let fakeWrong = poolDistractors.slice(0, 3);
+          while (fakeWrong.length < 3) {
+            const defaults = [
+              'Chưa có quy định cụ thể tại văn bản này.',
+              'Thuộc thẩm quyền quyết định của cơ quan cấp trên.',
+              'Thời hạn thực hiện tối đa không quá 30 ngày làm việc.',
+              'Thực hiện theo quy chế nội bộ của đơn vị.'
+            ];
+            fakeWrong.push(defaults[fakeWrong.length] || 'Phương án không chính xác.');
+          }
+
+          const allOpts = [correctText, ...fakeWrong].sort(() => 0.5 - Math.random());
+          return {
+            id: `q_card_${idx}_${Date.now()}`,
+            prompt: card.front || card.question || `Câu hỏi kiến thức số ${generatedQuestions.length + idx + 1}`,
+            options: allOpts,
+            correctIndex: allOpts.indexOf(correctText),
+            explanation: card.note || card.explanation || card.back || 'Theo tài liệu ôn thi trọng tâm.'
+          };
+        });
+
+        generatedQuestions = [...generatedQuestions, ...cardQuestions];
+      }
 
       const newBattle = await createPvpChallenge({
         sender: {
@@ -355,11 +394,16 @@ export default function PvpBattleModal({
                 onChange={(e) => setSelectedDeckId(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-xs font-medium text-white outline-none focus:border-amber-400"
               >
-                {allCourses.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.icon || '📚'} {c.title} ({c.cardsCount || c.cards?.length || 0} thẻ)
-                  </option>
-                ))}
+                {allCourses.map((c) => {
+                  const cardsList = c.cards || c.previewCards || c.sampleCards || c.flashcards || [];
+                  const quizList = c.quiz || c.previewQuiz || c.questions || [];
+                  const count = c.cardsCount || c.cardCount || cardsList.length;
+                  return (
+                    <option key={c.id} value={c.id}>
+                      {c.icon || '📚'} {c.title} ({count} thẻ{quizList.length > 0 ? ` • ${quizList.length} trắc nghiệm` : ''})
+                    </option>
+                  );
+                })}
               </select>
             </div>
 

@@ -10,11 +10,11 @@ export function CheatSheetModal({ onClose, initialCourseId, allCourses = [] }) {
 
   const courseList = useMemo(() => {
     const base = allCourses && allCourses.length > 0 ? allCourses : COURSES_DATA;
-    return base.filter(c => c && c.cards && c.cards.length > 0);
+    return base.filter(c => c && ((c.cards && c.cards.length > 0) || (c.previewCards && c.previewCards.length > 0)));
   }, [allCourses]);
 
   const [selectedCourseId, setSelectedCourseId] = useState(
-    initialCourseId || courseList[0]?.id || 'pldc'
+    initialCourseId || courseList[0]?.id || 'cc-kien-thuc-chung'
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('all'); // 'all' | 'numbers' | 'starred' | 'core'
@@ -48,10 +48,11 @@ export function CheatSheetModal({ onClose, initialCourseId, allCourses = [] }) {
 
   // Trích xuất các câu hỏi có con số/mốc thời gian/tỷ lệ % và tạo bản tóm tắt cô đọng
   const processedItems = useMemo(() => {
-    if (!selectedCourse?.cards) return [];
+    const rawCards = selectedCourse?.cards || selectedCourse?.previewCards || [];
+    if (rawCards.length === 0) return [];
     const numberRegex = /(\d+\s*(năm|tháng|ngày|giờ|tuổi|%|phần trăm|lần|bậc|cấp|điều|khoản|điểm|triệu|tỷ|ngàn|nghìn))/i;
 
-    return selectedCourse.cards.map((card, idx) => {
+    return rawCards.map((card, idx) => {
       const fullText = `${card.front || ''} ${card.back || ''} ${card.detail || ''}`;
       const hasNumber = numberRegex.test(fullText) || /\b\d+\b/.test(card.back || '');
       const isStarred = starredIds.has(card.id) || starredIds.has(`${selectedCourse.id}_${card.id}`);

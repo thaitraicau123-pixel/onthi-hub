@@ -44,8 +44,10 @@ export default function MatchGameModal({ course, onClose }) {
   };
 
   // Initialize game with 5-6 pairs
+  const deckCards = course?.cards || course?.previewCards || course?.sampleCards || course?.flashcards || [];
+
   const initGame = () => {
-    const rawCards = (course.previewCards || []).slice(0, 6);
+    const rawCards = deckCards.slice(0, 6);
     const generatedTiles = [];
 
     rawCards.forEach((c, idx) => {
@@ -130,7 +132,7 @@ export default function MatchGameModal({ course, onClose }) {
       setSelectedTile(null);
 
       // Check win condition
-      const totalPairs = Math.min(course.previewCards?.length || 6, 6);
+      const totalPairs = Math.min(deckCards.length || 6, 6);
       if (newMatched.length === totalPairs) {
         setIsGameOver(true);
         playSound('success');
@@ -161,7 +163,7 @@ export default function MatchGameModal({ course, onClose }) {
     }
   };
 
-  const totalPairs = Math.min(course.previewCards?.length || 6, 6);
+  const totalPairs = Math.min(deckCards.length || 6, 6);
 
   // Close on Escape key
   useModalDismiss(onClose);

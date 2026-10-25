@@ -132,7 +132,7 @@ export default function HomeView({
             <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-sky-500/40 text-[#1458a6] dark:text-sky-300 text-[11px] font-bold">
               <span>🚀 ONTHIHUB v3.0 • KHÔNG GIAN ÔN LUYỆN THÔNG MINH 2026</span>
               <span className="text-sky-400">•</span>
-              <span>{allCourses.reduce((sum, c) => sum + (c.cardsCount || (c.flashcards ? c.flashcards.length : 0)), 0).toLocaleString()}+ Thẻ Anki</span>
+              <span>{allCourses.reduce((sum, c) => sum + (c.cardsCount || c.cards?.length || c.previewCards?.length || 0), 0).toLocaleString()}+ Thẻ Anki</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               Kho Đề Thi & Bộ Thẻ Chuẩn Hóa
