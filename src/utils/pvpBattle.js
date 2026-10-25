@@ -243,6 +243,57 @@ export async function declinePvpChallenge(battleId, receiverUser) {
 }
 
 /**
+ * Chuyển trận đấu sang chế độ Đấu Tập với Gia Sư AI (Khi bạn học chưa online)
+ */
+export async function switchToAiSparringBattle(battleId, senderUser) {
+  const battle = getBattleById(battleId) || (await fetchCloudBattles()).find((b) => b.id === battleId);
+  if (!battle) return;
+
+  const wager = battle.wagerXu || 0;
+  if (wager > 0) {
+    // Hoàn trả cược vì chuyển sang chế độ tập dượt với AI
+    recordCoinTransaction({
+      type: 'pvp_refund',
+      amountXu: wager,
+      title: 'Hoàn cược Thách Đấu (Chuyển sang Đấu Tập AI)',
+      description: `Hoàn trả ${wager} Xu để chuyển sang chế độ đấu tập tự do cùng Gia Sư AI.`
+    });
+    battle.wagerXu = 0;
+  }
+
+  battle.player2 = {
+    id: 'ai_sparring_partner',
+    name: 'Gia Sư AI (Đấu Tập)',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=ai_tutor_onthi',
+    score: 0,
+    currentQuestion: 0,
+    timeSpentMs: 0,
+    answers: [],
+    isFinished: false
+  };
+  battle.isAiSparring = true;
+  battle.status = 'in_progress';
+  battle.acceptedAt = new Date().toISOString();
+
+  await broadcastBattleState(battle);
+  return battle;
+}
+
+/**
+ * Gửi tin nhắn hối bạn học vào thi đấu ngay
+ */
+export async function nudgePvpOpponent(battle, sender) {
+  if (!battle || !battle.player2) return;
+  try {
+    await sendDirectMessage(
+      sender,
+      battle.player2,
+      `🔔 [HỐI VÀO ĐẤU TRƯỜNG]: Bạn ơi mình đang đợi bạn trong phòng Thách Đấu 1v1 bộ đề "${battle.deckTitle}"! Vào thi đấu ngay nhé! ⚔️🔥`
+    );
+  } catch (e) {}
+}
+
+/**
  * Hủy lời thách đấu khi đối thủ chưa chấp nhận (Hoàn lại Xu cho người gửi)
  */
 export async function cancelPvpChallenge(battleId, senderUser) {
@@ -288,6 +339,22 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
   player.answers.push({ questionIndex, isCorrect, timeSpentMs });
   if (isFinished) {
     player.isFinished = true;
+  }
+
+  // Nếu đang thi đấu với AI Sparring Partner, tự động cập nhật tiến độ cho AI
+  if (battle.isAiSparring && isPlayer1) {
+    const aiCorrect = Math.random() < 0.78;
+    const aiTime = Math.floor(4000 + Math.random() * 5000);
+    battle.player2.currentQuestion = questionIndex + 1;
+    battle.player2.timeSpentMs = (battle.player2.timeSpentMs || 0) + aiTime;
+    if (aiCorrect) {
+      battle.player2.score = (battle.player2.score || 0) + 1;
+    }
+    battle.player2.answers = battle.player2.answers || [];
+    battle.player2.answers.push({ questionIndex, isCorrect: aiCorrect, timeSpentMs: aiTime });
+    if (isFinished) {
+      battle.player2.isFinished = true;
+    }
   }
 
   // Nếu cả 2 người chơi đều đã hoàn thành bài thi -> Phân định thắng bại

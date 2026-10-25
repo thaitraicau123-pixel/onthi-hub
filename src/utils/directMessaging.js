@@ -180,6 +180,122 @@ export function getConversationId(idA, idB) {
 
 const CLOUD_USERS_DIRECTORY_KEY = 'onthi_cloud_users_directory_v1';
 
+// Danh bạ các bạn học năng động trên hệ thống ÔnThiHub (Đề xuất kết bạn nhanh)
+export const DEFAULT_ACTIVE_STUDENT_DIRECTORY = [
+  {
+    id: 'quocanh.cbcc@gmail.com',
+    name: 'Quốc Anh',
+    email: 'quocanh.cbcc@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=QuocAnh2026',
+    role: 'student',
+    tier: 'ultra',
+    badge: '👑 Học Viên ULTRA',
+    studyGoal: '🏛️ Ôn Thi Công Chức 2026 • Chuyên viên Vòng 1',
+    field: 'cong-chuc',
+    streak: 14,
+    xp: 860,
+    isOnline: true
+  },
+  {
+    id: 'thuydung.ielts@gmail.com',
+    name: 'Thùy Dung',
+    email: 'thuydung.ielts@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ThuyDungIelts',
+    role: 'student',
+    tier: 'pro',
+    badge: '🚀 Học Viên PRO',
+    studyGoal: '🌍 IELTS Band 7.5+ • Luyện Collocations & Nói 1v1',
+    field: 'ngoai-ngu',
+    streak: 9,
+    xp: 620,
+    isOnline: true
+  },
+  {
+    id: 'hoangnam.thue@gmail.com',
+    name: 'Hoàng Nam',
+    email: 'hoangnam.thue@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HoangNamTax',
+    role: 'student',
+    tier: 'pro',
+    badge: '🚀 Học Viên PRO',
+    studyGoal: '💼 Thuế & Kho Bạc • Luật Quản Lý Thuế 2026',
+    field: 'cong-chuc',
+    streak: 18,
+    xp: 940,
+    isOnline: true
+  },
+  {
+    id: 'ngocmai.yduoc@gmail.com',
+    name: 'Ngọc Mai',
+    email: 'ngocmai.yduoc@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NgocMaiYDuoc',
+    role: 'student',
+    tier: 'pro',
+    badge: '🚀 Học Viên PRO',
+    studyGoal: '🏥 Viên Chức Y Tế • Luật Khám Chữa Bệnh 2023',
+    field: 'y-te',
+    streak: 7,
+    xp: 480,
+    isOnline: true
+  },
+  {
+    id: 'ducviet.cntt@gmail.com',
+    name: 'Đức Việt',
+    email: 'ducviet.cntt@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=DucVietDev',
+    role: 'student',
+    tier: 'ultra',
+    badge: '👑 Học Viên ULTRA',
+    studyGoal: '💻 Kỹ Thuật Viên CNTT • System Design & Tin Học Văn Phòng',
+    field: 'it-tech',
+    streak: 21,
+    xp: 1250,
+    isOnline: true
+  },
+  {
+    id: 'kimngan.ngoaingu@gmail.com',
+    name: 'Kim Ngân',
+    email: 'kimngan.ngoaingu@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KimNganB1',
+    role: 'student',
+    tier: 'free',
+    badge: '🎓 Học Viên',
+    studyGoal: '🇬🇧 Tiếng Anh Công Vụ B1 • Ngữ Pháp & Đọc Hiểu',
+    field: 'ngoai-ngu',
+    streak: 11,
+    xp: 530,
+    isOnline: true
+  },
+  {
+    id: 'minhkhoi.toaan@gmail.com',
+    name: 'Minh Khôi',
+    email: 'minhkhoi.toaan@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhKhoiLaw',
+    role: 'student',
+    tier: 'pro',
+    badge: '🚀 Học Viên PRO',
+    studyGoal: '⚖️ Thư Ký Tòa Án & Viện Kiểm Sát • Luật Tổ Chức Tòa Án',
+    field: 'cong-chuc',
+    streak: 15,
+    xp: 790,
+    isOnline: true
+  },
+  {
+    id: 'lananh.khoobac@gmail.com',
+    name: 'Lan Anh',
+    email: 'lananh.khoobac@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LanAnhTreasury',
+    role: 'student',
+    tier: 'free',
+    badge: '🎓 Học Viên',
+    studyGoal: '📊 Kế Toán & Kho Bạc Nhà Nước • Luật Ngân Sách',
+    field: 'cong-chuc',
+    streak: 8,
+    xp: 410,
+    isOnline: true
+  }
+];
+
 /**
  * Lấy danh bạ toàn bộ học viên và Admin trong hệ thống
  * Phục vụ tính năng tìm kiếm bạn học và bắt đầu trò chuyện trực tiếp
@@ -223,6 +339,16 @@ export function getStudentDirectory(currentUserId) {
         });
       }
     }
+  } catch (e) {}
+
+  // 3. Khám phá thêm từ Danh bạ học viên năng động mặc định trên web (Đảm bảo luôn có bạn học đề xuất)
+  try {
+    DEFAULT_ACTIVE_STUDENT_DIRECTORY.forEach((stu) => {
+      if (isSameUser(curIdent, stu)) return;
+      if (!directoryMap.has(stu.id)) {
+        directoryMap.set(stu.id, { ...stu });
+      }
+    });
   } catch (e) {}
 
   // 3. Khám phá thêm từ Danh bạ Cloud KVDB & Lời mời kết bạn / Bạn bè thực tế

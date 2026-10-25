@@ -255,16 +255,23 @@ export default function App() {
         seenNotifyMsgIds.add(incomingMsg.id);
         playSound('bell');
         const senderName = incomingMsg.sender?.name || 'Bạn học';
-        const msgSnippet = incomingMsg.sharedAchievement
+        const isPvp = !!incomingMsg.pvpChallenge;
+        const msgSnippet = incomingMsg.pvpChallenge
+          ? `⚔️ Đã gửi lời mời Thách Đấu 1v1: ${incomingMsg.pvpChallenge.deckTitle || 'Bộ đề thi'}!`
+          : incomingMsg.sharedAchievement
           ? '🏆 Đã gửi Bằng Khen Kỷ Lục Hoàng Gia 4K!'
           : incomingMsg.sharedDeck
           ? `📇 Đã chia sẻ Bộ Thẻ: ${incomingMsg.sharedDeck.title}`
           : incomingMsg.text || 'Tin nhắn mới';
 
-        showToast(`💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`, incomingMsg.sender);
+        const toastTitle = isPvp
+          ? `⚔️ [THÁCH ĐẤU 1V1] ${senderName}: ${msgSnippet}`
+          : `💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`;
+
+        showToast(toastTitle, incomingMsg.sender);
 
         sendBrowserDesktopNotification({
-          title: `💬 [OnThiHub] Tin nhắn mới từ ${senderName}`,
+          title: isPvp ? `⚔️ [OnThiHub] Thách Đấu 1v1 từ ${senderName}` : `💬 [OnThiHub] Tin nhắn mới từ ${senderName}`,
           body: msgSnippet,
           tag: incomingMsg.id
         });

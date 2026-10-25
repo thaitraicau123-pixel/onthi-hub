@@ -13,7 +13,8 @@ import {
   RotateCcw,
   ArrowRight,
   Shield,
-  HelpCircle
+  HelpCircle,
+  Bell
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { playSound } from '../utils/storage.js';
@@ -21,6 +22,9 @@ import {
   createPvpChallenge,
   acceptPvpChallenge,
   declinePvpChallenge,
+  cancelPvpChallenge,
+  switchToAiSparringBattle,
+  nudgePvpOpponent,
   submitPvpProgress,
   subscribeToBattle,
   getBattleById
@@ -48,6 +52,7 @@ export default function PvpBattleModal({
   const [wagerXu, setWagerXu] = useState(0);
   const [isCreating, setIsCreating] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [nudgedNotice, setNudgedNotice] = useState(false);
 
   // Trạng thái thi đấu trực tiếp
   const [currentQIndex, setCurrentQIndex] = useState(0);
@@ -474,11 +479,60 @@ export default function PvpBattleModal({
                 </button>
               </div>
             ) : (
-              <div className="pt-2">
+              <div className="pt-2 space-y-4 max-w-lg mx-auto">
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-amber-300 font-medium animate-pulse">
                   <Clock className="w-4 h-4" />
-                  <span>Đối thủ đang nhận thông báo trên khung chat...</span>
+                  <span>Đã gửi lời mời đến bạn {battle.player2.name}! Đang chờ phản hồi...</span>
                 </span>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      playSound('click');
+                      await nudgePvpOpponent(battle, {
+                        id: currentUserId,
+                        name: currentUserName,
+                        avatar: currentUserAvatar,
+                        email: currentUser?.email
+                      });
+                      setNudgedNotice(true);
+                      setTimeout(() => setNudgedNotice(false), 3000);
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                  >
+                    <Bell className="w-3.5 h-3.5" />
+                    <span>{nudgedNotice ? '✓ Đã Gửi Lời Nhắc!' : '🔔 Hối Bạn Học Vào Thi'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      playSound('click');
+                      const updated = await switchToAiSparringBattle(battle.id, currentUser);
+                      setBattle(updated);
+                      playSound('success');
+                    }}
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
+                    title="Không cần chờ bạn online, thi đấu ngay với Gia Sư AI"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+                    <span>🤖 Đấu Tập Với Gia Sư AI</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      playSound('click');
+                      await cancelPvpChallenge(battle.id, currentUser);
+                      setBattle(null);
+                      onClose();
+                    }}
+                    className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-rose-400 font-medium text-xs border border-slate-700 cursor-pointer transition-colors"
+                  >
+                    ✕ Hủy Thách Đấu
+                  </button>
+                </div>
               </div>
             )}
           </div>
