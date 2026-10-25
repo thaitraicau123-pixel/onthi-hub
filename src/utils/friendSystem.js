@@ -137,7 +137,16 @@ function broadcastFriendUpdate(payload = {}) {
     } catch (e) {}
   }
 
-  // 3. Đồng bộ KVDB Edge Singapore
+  // 3. Đồng bộ tức thì qua ntfy.sh Cloud Relay (Đa thiết bị, thời gian thực, không giới hạn rate limit)
+  try {
+    fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({ type: 'friend_update', ...payload })
+    }).catch(() => {});
+  } catch (e) {}
+
+  // 4. Kênh phụ KVDB (nếu khả dụng)
   (async () => {
     try {
       let recent = [];
@@ -154,23 +163,7 @@ function broadcastFriendUpdate(payload = {}) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(recent)
-      });
-    } catch (e) {}
-
-    // 4. Dự phòng ntfy nếu khả dụng
-    try {
-      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      const timeoutId = controller ? setTimeout(() => controller.abort(), 2000) : null;
-      fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'friend_update', ...payload }),
-        signal: controller ? controller.signal : undefined
-      })
-        .catch(() => {})
-        .finally(() => {
-          if (timeoutId) clearTimeout(timeoutId);
-        });
+      }).catch(() => {});
     } catch (e) {}
   })();
 }
@@ -515,12 +508,66 @@ export function getSuggestedFriends(currentUserId, allDirectoryUsers = []) {
 }
 
 /**
- * Đồng bộ các lời mời và cặp bạn bè từ Cloud Relay về thiết bị (KVDB Singapore Edge + ntfy fallback)
+ * Đồng bộ các lời mời và cặp bạn bè từ Cloud Relay về thiết bị (ntfy.sh Cloud Relay + KVDB)
  */
 export async function syncFriendDataFromCloud(currentUserId) {
   if (!currentUserId) return;
 
-  // 1. Đồng bộ qua KVDB Singapore Edge (Ưu tiên số 1)
+  // 1. Đồng bộ qua ntfy.sh Cloud Relay (Ưu tiên số 1 - siêu tốc, đa thiết bị, không bị 429)
+  try {
+    const res = await fetch(`https://ntfy.sh/${FRIEND_CLOUD_RELAY_TOPIC}/json?poll=1&since=all`, { cache: 'no-store' });
+    if (res.ok) {
+      const text = await res.text();
+      const lines = text.trim().split('\n').filter(Boolean);
+      let hasChanges = false;
+      const requests = getAllFriendRequests();
+      const pairs = getAllFriendPairs();
+      const newEventsForMe = [];
+
+      for (const line of lines) {
+        try {
+          const raw = JSON.parse(line);
+          const data = typeof raw.message === 'string' ? JSON.parse(raw.message) : raw.message;
+          if (!data || data.type !== 'friend_update') continue;
+
+          if (data.action === 'request_sent' && data.request) {
+            const req = data.request;
+            if (!requests.some((r) => r.id === req.id)) {
+              requests.push(req);
+              hasChanges = true;
+              newEventsForMe.push(data);
+            }
+          } else if (data.action === 'request_accepted' && data.pairKey) {
+            if (!pairs.some((p) => p.key === data.pairKey)) {
+              pairs.push({
+                key: data.pairKey,
+                userA: data.userA,
+                userB: data.userB,
+                userAId: data.userA?.id || data.userA?.email,
+                userBId: data.userB?.id || data.userB?.email,
+                createdAt: new Date().toISOString()
+              });
+              hasChanges = true;
+              newEventsForMe.push(data);
+            }
+          }
+        } catch (je) {}
+      }
+
+      if (hasChanges) {
+        saveAllFriendRequests(requests);
+        saveAllFriendPairs(pairs);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('onthi-friend-updated'));
+          newEventsForMe.forEach((evt) => {
+            window.dispatchEvent(new CustomEvent('onthi-friend-cloud-received', { detail: evt }));
+          });
+        }
+      }
+    }
+  } catch (e) {}
+
+  // 2. Kênh phụ KVDB
   try {
     const res = await fetch(`${KVDB_BASE_URL}/index_recent_friends`, { cache: 'no-store' });
     if (res.ok) {

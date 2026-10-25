@@ -33,7 +33,7 @@ import {
 import { useModalDismiss } from '../hooks/useModalDismiss';
 import { getDuoStreak, markDuoNudged } from '../utils/duoStreak';
 import PvpBattleModal from './PvpBattleModal';
-import { acceptPvpChallenge, declinePvpChallenge, startBattleWithOpponentBot, getBattleById } from '../utils/pvpBattle';
+import { acceptPvpChallenge, declinePvpChallenge, getBattleById } from '../utils/pvpBattle';
 import {
   getCurrentUserParticipant,
   getUserConversations,
@@ -1733,13 +1733,8 @@ export default function DirectChatModal({
                                 ) : (
                                   <button
                                     type="button"
-                                    onClick={async () => {
-                                      if (isMe && liveChallenge.status === 'pending') {
-                                        const started = await startBattleWithOpponentBot(liveChallenge.id);
-                                        handleOpenPvpChallenge(activePartner, started || liveChallenge);
-                                      } else {
-                                        handleOpenPvpChallenge(activePartner, liveChallenge);
-                                      }
+                                    onClick={() => {
+                                      handleOpenPvpChallenge(activePartner, liveChallenge);
                                     }}
                                     className="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white text-xs font-black shadow-md flex items-center justify-center space-x-1.5 cursor-pointer active:scale-95 transition-all"
                                   >
@@ -1750,7 +1745,7 @@ export default function DirectChatModal({
                                         : liveChallenge.status === 'in_progress'
                                         ? '🔥 Vào Thi Đấu Tiếp Ngay'
                                         : isMe
-                                        ? '⚡ Vào Thi Đấu Ngay Cùng Bạn Học'
+                                        ? '⚔️ Phòng Chờ Thách Đấu (Đang Chờ Bạn)'
                                         : '⚔️ Chấp Nhận & Thi Đấu Ngay'}
                                     </span>
                                   </button>

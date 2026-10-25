@@ -1,14 +1,14 @@
 // =========================================================================
 // ONTHIHUB REAL-TIME 1v1 PVP BATTLE ENGINE (Đấu Trường Trắc Nghiệm Đối Kháng)
-// Đồng bộ thời gian thực qua KVDB Singapore Edge (~200ms) + BroadcastChannel
+// Đồng bộ thời gian thực qua Cloud Relay (ntfy.sh SSE ~100ms) + BroadcastChannel
 // =========================================================================
 
 import { getCurrentUserCoins, recordCoinTransaction } from './wallet.js';
 import { recordStudyAction } from './gamification.js';
 import { recordDuoStudyAction } from './duoStreak.js';
-import { sendDirectMessage, updateMessagePvpChallenge, isDefaultActiveStudent } from './directMessaging.js';
+import { sendDirectMessage, updateMessagePvpChallenge } from './directMessaging.js';
 
-export const KVDB_PVP_URL = 'https://kvdb.io/SBPTa4d8XoFCmTGm4KJGC9/index_pvp_battles';
+export const PVP_CLOUD_RELAY_TOPIC = 'onthi_hub_pvp_battles_v2';
 const PVP_STORAGE_KEY = 'onthi_pvp_battles_v1';
 const PVP_BROADCAST_CHANNEL = 'onthi_pvp_channel';
 
@@ -33,24 +33,37 @@ export function getBattleById(battleId) {
 }
 
 /**
- * Đồng bộ toàn bộ các trận đấu từ KVDB Singapore Edge
+ * Đồng bộ toàn bộ các trận đấu từ Cloud Relay (ntfy.sh)
  */
 export async function fetchCloudBattles() {
   try {
-    const res = await fetch(KVDB_PVP_URL, { cache: 'no-store' });
+    const res = await fetch(`https://ntfy.sh/${PVP_CLOUD_RELAY_TOPIC}/json?poll=1&since=all`, { cache: 'no-store' });
     if (res.ok) {
-      const cloudList = await res.json();
-      if (Array.isArray(cloudList)) {
-        saveLocalBattles(cloudList);
-        return cloudList;
+      const text = await res.text();
+      const lines = text.trim().split('\n').filter(Boolean);
+      let localList = getLocalBattles();
+      const map = new Map(localList.map((b) => [b.id, b]));
+      for (const line of lines) {
+        try {
+          const raw = JSON.parse(line);
+          const payload = typeof raw.message === 'string' ? JSON.parse(raw.message) : raw.message;
+          if (payload?.type === 'battle_update' && payload.battle?.id) {
+            map.set(payload.battle.id, payload.battle);
+          }
+        } catch (je) {}
       }
+      const merged = Array.from(map.values())
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        .slice(0, 50);
+      saveLocalBattles(merged);
+      return merged;
     }
   } catch (e) {}
   return getLocalBattles();
 }
 
 /**
- * Đẩy trạng thái trận đấu lên KVDB Singapore Edge & phát tín hiệu cục bộ
+ * Đẩy trạng thái trận đấu lên Cloud Relay & phát tín hiệu cục bộ
  */
 export async function broadcastBattleState(battle) {
   if (!battle || !battle.id) return;
@@ -85,27 +98,13 @@ export async function broadcastBattleState(battle) {
     window.dispatchEvent(new CustomEvent('onthi-pvp-update', { detail: battle }));
   }
 
-  // 4. KVDB Edge Singapore
+  // 4. Cloud Pub-Sub qua ntfy.sh (Đồng bộ đa thiết bị tức thì, không giới hạn rate limit)
   try {
-    let cloudList = [];
-    try {
-      const res = await fetch(KVDB_PVP_URL, { cache: 'no-store' });
-      if (res.ok) cloudList = await res.json();
-    } catch (e) {}
-    if (!Array.isArray(cloudList)) cloudList = [];
-    const cIdx = cloudList.findIndex((b) => b.id === battle.id);
-    if (cIdx >= 0) {
-      cloudList[cIdx] = battle;
-    } else {
-      cloudList.unshift(battle);
-    }
-    if (cloudList.length > 50) cloudList = cloudList.slice(0, 50);
-
-    await fetch(KVDB_PVP_URL, {
+    fetch(`https://ntfy.sh/${PVP_CLOUD_RELAY_TOPIC}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(cloudList)
-    });
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: JSON.stringify({ type: 'battle_update', battle })
+    }).catch(() => {});
   } catch (e) {}
 }
 
@@ -248,23 +247,6 @@ export async function declinePvpChallenge(battleId, receiverUser) {
 }
 
 /**
- * Tự động khớp lệnh và bắt đầu trận đấu trực tiếp với bạn học đang online trên web
- * (Giữ nguyên tên, avatar và mức cược của bạn học để trải nghiệm thi đấu 1v1 liền mạch)
- */
-export async function startBattleWithOpponentBot(battleId) {
-  const battle = getBattleById(battleId) || (await fetchCloudBattles()).find((b) => b.id === battleId);
-  if (!battle) return null;
-  if (battle.status === 'in_progress' || battle.status === 'finished') return battle;
-
-  battle.isSimulatedOpponent = true;
-  battle.status = 'in_progress';
-  battle.acceptedAt = new Date().toISOString();
-
-  await broadcastBattleState(battle);
-  return battle;
-}
-
-/**
  * Chuyển trận đấu sang chế độ Đấu Tập với Gia Sư AI (Khi bạn học chưa online)
  */
 export async function switchToAiSparringBattle(battleId, senderUser) {
@@ -363,10 +345,10 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
     player.isFinished = true;
   }
 
-  // Nếu đang thi đấu với AI Sparring Partner hoặc bạn học trực tuyến trên web, tự động cập nhật tiến độ đối kháng
-  if ((battle.isAiSparring || battle.isSimulatedOpponent) && isPlayer1) {
-    const aiCorrect = Math.random() < 0.76;
-    const aiTime = Math.floor(3800 + Math.random() * 4800);
+  // Nếu đang thi đấu với AI Sparring Partner (chế độ tự chọn Đấu Tập AI), tự động cập nhật tiến độ cho AI
+  if (battle.isAiSparring && isPlayer1) {
+    const aiCorrect = Math.random() < 0.78;
+    const aiTime = Math.floor(4000 + Math.random() * 4500);
     battle.player2.currentQuestion = questionIndex + 1;
     battle.player2.timeSpentMs = (battle.player2.timeSpentMs || 0) + aiTime;
     if (aiCorrect) {
@@ -444,7 +426,7 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
 }
 
 /**
- * Đăng ký lắng nghe sự kiện trận đấu thời gian thực
+ * Đăng ký lắng nghe sự kiện trận đấu thời gian thực (Tab Sync + SSE Stream + Poller)
  */
 export function subscribeToBattle(battleId, onUpdate) {
   let isSubscribed = true;
@@ -469,27 +451,42 @@ export function subscribeToBattle(battleId, onUpdate) {
     } catch (e) {}
   }
 
-  // Polling định kỳ mỗi 1.8s từ KVDB để đảm bảo đồng bộ 2 máy khác nhau
+  // 1. Real-time Server-Sent Events (SSE) qua ntfy.sh (Độ trễ ~100ms giữa 2 người chơi khác nhau)
+  let es = null;
+  if (typeof EventSource !== 'undefined') {
+    try {
+      es = new EventSource(`https://ntfy.sh/${PVP_CLOUD_RELAY_TOPIC}/sse`);
+      es.onmessage = (event) => {
+        if (!isSubscribed) return;
+        try {
+          const raw = JSON.parse(event.data);
+          const payload = typeof raw.message === 'string' ? JSON.parse(raw.message) : raw.message;
+          if (payload?.type === 'battle_update' && payload.battle?.id === battleId) {
+            onUpdate(payload.battle);
+          }
+        } catch (e) {}
+      };
+      es.onerror = () => {};
+    } catch (e) {}
+  }
+
+  // 2. Polling định kỳ mỗi 2s để đảm bảo đồng bộ 100%
   const intervalId = setInterval(async () => {
     if (!isSubscribed) return;
     try {
-      const res = await fetch(KVDB_PVP_URL, { cache: 'no-store' });
-      if (res.ok) {
-        const list = await res.json();
-        if (Array.isArray(list)) {
-          const found = list.find((b) => b.id === battleId);
-          if (found && isSubscribed) {
-            onUpdate(found);
-          }
-        }
+      const battles = await fetchCloudBattles();
+      const found = battles.find((b) => b.id === battleId);
+      if (found && isSubscribed) {
+        onUpdate(found);
       }
     } catch (e) {}
-  }, 1800);
+  }, 2000);
 
   return () => {
     isSubscribed = false;
     clearInterval(intervalId);
     window.removeEventListener('onthi-pvp-update', handleEvent);
     if (bc) bc.close();
+    if (es) es.close();
   };
 }
