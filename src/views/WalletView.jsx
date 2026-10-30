@@ -164,40 +164,40 @@ export default function WalletView({ user, onBalanceUpdated }) {
         </p>
       </div>
 
-      {/* NOTION BALANCE CARD WITH CLEAR CLASSIFICATION */}
-      <div className="bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-[#e9e9e8] dark:border-white/15 p-5 sm:p-6 shadow-2xs flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <div className="flex items-center space-x-1.5 text-xs text-[#787774] dark:text-slate-400 font-bold uppercase tracking-wider mb-1">
+      {/* APPLE BALANCE CARD WITH CLEAR CLASSIFICATION */}
+      <div className="apple-card rounded-3xl border border-black/[0.06] dark:border-white/[0.08] p-6 sm:p-7 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+        <div className="space-y-2.5">
+          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-zinc-400 font-bold uppercase tracking-wider mb-1">
             <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
             <span>TỔNG SỐ DƯ TÀI KHOẢN</span>
           </div>
           <div className="flex items-baseline space-x-3">
-            <span className="text-3xl sm:text-4xl font-extrabold text-[#37352f] dark:text-white">{balance} Xu</span>
-            <span className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 font-medium">
+            <span className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-900 dark:text-white tracking-tight">{balance} Xu</span>
+            <span className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 font-medium">
               ~ {(balance * COIN_RATE_VND).toLocaleString()} VNĐ
             </span>
           </div>
           
           {/* Sub-balances breakdown */}
           <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
-            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-300 dark:border-emerald-600/40 text-emerald-800 dark:text-emerald-300 font-bold">
+            <span className="apple-pill-emerald inline-flex items-center space-x-1.5 px-3 py-1 rounded-full font-bold">
               <span>💵 Đủ ĐK rút tiền:</span>
               <strong className="font-mono">{withdrawableBalance} Xu</strong>
             </span>
-            <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/70 border border-sky-300 dark:border-sky-600/40 text-sky-800 dark:text-sky-300 font-semibold" title="Xu tặng tân thủ, điểm danh, mở hộp mù & thưởng thi đấu">
-              <span>🎁 Xu học tập nội bộ:</span>
+            <span className="apple-pill-blue inline-flex items-center space-x-1.5 px-3 py-1 rounded-full font-semibold" title="Xu tặng tân thủ, điểm danh & mở hộp mù">
+              <span>🎁 Xu thưởng nội bộ:</span>
               <strong className="font-mono">{Math.max(0, balance - withdrawableBalance)} Xu</strong>
             </span>
           </div>
         </div>
 
-        <div className="flex sm:flex-col gap-2 w-full sm:w-auto shrink-0">
+        <div className="flex sm:flex-col gap-2.5 w-full sm:w-auto shrink-0">
           <button
             onClick={() => {
               setActiveTab('deposit');
               setDepositResult(null);
             }}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] hover:-translate-y-0.5 active:scale-[0.98] text-white text-xs font-bold shadow-2xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+            className="apple-btn-prominent flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
           >
             <ArrowDownLeft className="w-3.5 h-3.5" />
             <span>Nạp Thêm Xu</span>
@@ -205,28 +205,28 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           <button
             onClick={() => setActiveTab('withdraw')}
-            className="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 hover:-translate-y-0.5 active:scale-[0.98] text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+            className="apple-btn-secondary flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 cursor-pointer"
           >
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#787774] dark:text-slate-300" />
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 dark:text-zinc-400" />
             <span>Rút Tiền Mặt</span>
           </button>
         </div>
       </div>
 
-      {/* TABS CONTAINER (Notion Workspace Container) */}
-      <div className="bg-white/95 dark:bg-slate-900/90 rounded-2xl border border-[#e9e9e8] dark:border-white/15 shadow-2xs overflow-hidden">
+      {/* TABS CONTAINER (Apple Segmented Styling) */}
+      <div className="apple-card rounded-3xl border border-black/[0.06] dark:border-white/[0.08] shadow-sm overflow-hidden">
         
         {/* Tab switch header */}
-        <div className="flex border-b border-[#e9e9e8] dark:border-white/10 px-4 pt-2 bg-[#fbfbfa] dark:bg-slate-800/70 text-xs font-medium overflow-x-auto scrollbar-none">
+        <div className="flex border-b border-black/[0.06] dark:border-white/[0.08] px-4 pt-3 bg-black/[0.02] dark:bg-white/[0.02] text-xs font-medium overflow-x-auto scrollbar-none gap-2">
           <button
             onClick={() => {
               setActiveTab('deposit');
               setDepositResult(null);
             }}
-            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`py-2 px-3.5 rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
               activeTab === 'deposit'
-                ? 'border-[#2383e2] dark:border-sky-400 text-[#2383e2] dark:text-sky-400 font-bold'
-                : 'border-transparent text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white font-bold shadow-xs'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
@@ -235,10 +235,10 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           <button
             onClick={() => setActiveTab('withdraw')}
-            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`py-2 px-3.5 rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
               activeTab === 'withdraw'
-                ? 'border-[#2383e2] dark:border-sky-400 text-[#2383e2] dark:text-sky-400 font-bold'
-                : 'border-transparent text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white font-bold shadow-xs'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -247,10 +247,10 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`py-2.5 px-3 border-b-2 flex items-center space-x-1.5 transition-colors cursor-pointer whitespace-nowrap ${
+            className={`py-2 px-3.5 rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer whitespace-nowrap active:scale-[0.98] ${
               activeTab === 'history'
-                ? 'border-[#2383e2] dark:border-sky-400 text-[#2383e2] dark:text-sky-400 font-bold'
-                : 'border-transparent text-[#787774] dark:text-slate-400 hover:text-[#37352f] dark:hover:text-white'
+                ? 'bg-white dark:bg-zinc-800 text-slate-900 dark:text-white font-bold shadow-xs'
+                : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Clock className="w-3.5 h-3.5" />

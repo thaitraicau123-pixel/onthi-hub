@@ -1,5 +1,5 @@
 // =========================================================================
-// ONTHIHUB GRAND ACHIEVEMENT & ROYAL CERTIFICATE CANVAS GENERATOR (2026)
+// PROMPTMMO GRAND CREATOR CERTIFICATE CANVAS GENERATOR (2026)
 // Thiết kế bằng khen & chứng nhận kỷ lục hoàng gia siêu hoành tráng (1080x1350)
 // Hỗ trợ 3 phong cách vinh danh đỉnh cao: Hoàng Gia 24K, Chiến Thần Lửa, Kim Cương
 // Tương thích chuẩn Retina 4K, chia sẻ Facebook, Instagram Story & Zalo

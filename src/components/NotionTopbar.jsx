@@ -45,11 +45,7 @@ export default function NotionTopbar({
   onOpenThemePicker,
   isWeatherEnabled = true,
   onToggleWeather,
-  onOpenTargetClock,
-  onOpenStudyRoom,
-  onOpenDirectChat,
-  onOpenLiveExamRoom,
-  onOpenExamReadiness
+  onOpenDirectChat
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -180,7 +176,7 @@ export default function NotionTopbar({
   const currentBreadcrumb = breadcrumbMap[activeTab] || breadcrumbMap.home;
 
   return (
-    <header className={`sticky top-0 z-30 h-12 ${currentTheme?.topbarBgClass || 'bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-xl'} border-b ${currentTheme?.borderClass || 'border-[#e9e9e8] dark:border-white/15'} flex items-center justify-between px-3 sm:px-5 select-none text-xs text-slate-900 dark:text-white transition-colors duration-500 relative`}>
+    <header className="sticky top-0 z-30 h-14 apple-glass border-b border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between px-3 sm:px-6 select-none text-xs text-slate-900 dark:text-zinc-100 transition-colors duration-300 relative">
       {/* Festive Snow Cap Drip on Header */}
       {currentTheme?.hasSnowCaps && (
         <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none overflow-hidden z-40">
@@ -208,95 +204,58 @@ export default function NotionTopbar({
         </div>
       )}
 
-      {/* LEFT: SIDEBAR TOGGLE & NOTION BREADCRUMB */}
-      <div className="flex items-center space-x-2 min-w-0">
-        
+      {/* LEFT: SIDEBAR TOGGLE & APPLE HIG BREADCRUMB */}
+      <div className="flex items-center space-x-2.5 min-w-0">
         {/* Toggle Sidebar Button */}
         <button
           onClick={() => {
             playSound('click');
             onToggleSidebar();
           }}
-          className="p-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-900/10 dark:hover:bg-white/10 rounded-md transition-colors shrink-0 cursor-pointer"
+          className="p-2 text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] active:scale-[0.95] rounded-xl transition-all shrink-0 cursor-pointer"
           title={sidebarOpen ? "Thu gọn thanh bên" : "Mở rộng thanh bên (Ctrl + \\)"}
         >
           <PanelLeft className="w-4 h-4" />
         </button>
 
-        {/* Notion Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center space-x-1.5 truncate">
-          <span
+        {/* Apple Style Segmented Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="flex items-center space-x-2 truncate">
+          <button
+            type="button"
             onClick={() => onSelectTab('home')}
-            className="text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white font-semibold cursor-pointer transition-colors truncate"
+            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-slate-600 dark:text-zinc-300 hover:text-slate-950 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] font-semibold tracking-tight transition-all cursor-pointer"
           >
-            ⚡ PromptMMO
-          </span>
-          <span className="text-slate-400 dark:text-slate-500">/</span>
-          <span className="font-extrabold text-slate-900 dark:text-white flex items-center space-x-1 truncate">
+            <span className="text-amber-500 font-bold">⚡</span>
+            <span>PromptMMO</span>
+          </button>
+          <span className="text-slate-300 dark:text-zinc-600 select-none">/</span>
+          <div className="flex items-center space-x-1.5 px-2 py-1 rounded-lg bg-black/[0.03] dark:bg-white/[0.05] font-bold text-slate-900 dark:text-white truncate">
             <span className="text-sm shrink-0">{currentBreadcrumb.emoji}</span>
-            <span className="truncate">{currentBreadcrumb.title}</span>
-          </span>
+            <span className="truncate tracking-tight">{currentBreadcrumb.title}</span>
+          </div>
         </nav>
       </div>
 
-      {/* RIGHT: CLEAN LABELED TOOLBAR WITH TIỆN ÍCH HUB */}
-      <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
+      {/* RIGHT: APPLE TRANSLUCENT FUNCTIONAL TOOLBAR */}
+      <div className="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
         
-        {/* Quick Command Palette Search Button */}
+        {/* Apple Spotlight Search Capsule */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onOpenSearch?.();
           }}
-          className="px-2 sm:px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 flex items-center space-x-1.5 transition-all cursor-pointer shadow-2xs"
-          title="Tìm nhanh Prompt, AI tool & lệnh (Ctrl+K)"
-          aria-label="Tìm nhanh (Ctrl+K)"
+          className="h-8 px-2.5 sm:px-3 rounded-full bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.07] dark:hover:bg-white/[0.1] active:scale-[0.97] text-slate-700 dark:text-zinc-200 border border-black/[0.06] dark:border-white/[0.08] flex items-center space-x-2 transition-all cursor-pointer"
+          title="Tìm kiếm nhanh Prompt, AI tool & kỹ năng (Ctrl+K)"
+          aria-label="Spotlight Search"
         >
-          <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400 shrink-0" />
-          <span className="text-[11px] font-medium hidden md:inline text-slate-600 dark:text-slate-300">Tìm kiếm...</span>
-          <kbd className="text-[9px] font-mono font-bold px-1 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/20 text-slate-500 dark:text-slate-400 hidden lg:inline">
-            Ctrl K
+          <Search className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-400 shrink-0" />
+          <span className="text-[11px] font-medium hidden md:inline text-slate-600 dark:text-zinc-300">Tìm kiếm...</span>
+          <kbd className="text-[10px] font-medium font-mono px-1.5 py-0.5 rounded-md bg-white/80 dark:bg-zinc-800/80 shadow-2xs text-slate-500 dark:text-zinc-400 border border-black/[0.06] dark:border-white/[0.08] hidden lg:inline">
+            ⌘K
           </kbd>
         </button>
-
-        {/* Live Exam Room Button (With Live Label) */}
-        {onOpenLiveExamRoom && (
-          <button
-            type="button"
-            onClick={() => {
-              playSound('click');
-              onOpenLiveExamRoom();
-            }}
-            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-600/50 transition-all shadow-2xs cursor-pointer relative"
-            title="Phòng thi thử trực tiếp toàn quốc theo lịch hẹn (Live ICT)"
-            aria-label="Phòng thi đấu trực tiếp"
-          >
-            <span className="relative flex items-center justify-center">
-              <span className="text-xs select-none">🏛️</span>
-              <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-              <span className="absolute -top-1 -right-1 w-1.5 h-1.5 rounded-full bg-rose-500" />
-            </span>
-            <span className="text-[11px] font-extrabold tracking-tight">Thi Đấu</span>
-          </button>
-        )}
-
-        {/* Exam Readiness & Pass Probability Quick Pill */}
-        {onOpenExamReadiness && (
-          <button
-            type="button"
-            onClick={() => {
-              playSound('click');
-              onOpenExamReadiness();
-            }}
-            className="hidden sm:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-sky-800 dark:text-sky-200 border border-sky-300 dark:border-sky-600/50 transition-all shadow-2xs cursor-pointer"
-            title="Radar Năng Lực & Dự Báo Xác Suất Đỗ Kỳ Thi (AI v2.0)"
-            aria-label="Dự báo tỷ lệ đỗ"
-          >
-            <span className="text-xs select-none">🎯</span>
-            <span className="text-[11px] font-extrabold tracking-tight">Tỷ Lệ Đỗ</span>
-          </button>
-        )}
 
         {/* TIỆN ÍCH & CÔNG CỤ DROPDOWN HUB */}
         <div className="relative" ref={toolsMenuRef}>
@@ -306,33 +265,33 @@ export default function NotionTopbar({
               playSound('click');
               setShowToolsMenu(!showToolsMenu);
             }}
-            className={`flex items-center space-x-1 px-2 sm:px-2.5 py-1.5 rounded-lg border transition-all shadow-2xs cursor-pointer ${
+            className={`h-8 px-2.5 sm:px-3 rounded-full border transition-all cursor-pointer active:scale-[0.97] flex items-center space-x-1.5 ${
               showToolsMenu
-                ? 'bg-[#2383e2] text-white border-[#2383e2]'
-                : 'bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/15'
+                ? 'bg-amber-500 text-white border-amber-500 shadow-sm'
+                : 'bg-black/[0.04] dark:bg-white/[0.06] hover:bg-black/[0.07] dark:hover:bg-white/[0.1] text-slate-700 dark:text-zinc-200 border-black/[0.06] dark:border-white/[0.08]'
             }`}
-            title="Danh mục Tiện ích & Công cụ ôn luyện thông minh"
-            aria-label="Menu Tiện ích"
+            title="Công cụ & Tiện ích sáng tạo"
+            aria-label="Tiện ích"
           >
-            <Wrench className={`w-3.5 h-3.5 ${showToolsMenu ? 'text-white' : 'text-slate-600 dark:text-sky-400'}`} />
-            <span className="text-[11px] font-extrabold hidden md:inline">Tiện Ích</span>
-            <ChevronDown className={`w-3 h-3 transition-transform ${showToolsMenu ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+            <Wrench className={`w-3.5 h-3.5 ${showToolsMenu ? 'text-white' : 'text-slate-500 dark:text-zinc-400'}`} />
+            <span className="text-[11px] font-semibold hidden md:inline">Tiện Ích</span>
+            <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${showToolsMenu ? 'rotate-180' : 'text-slate-400'}`} />
           </button>
 
-          {/* Quick Tools Dropdown Card */}
+          {/* Apple Floating Tools Sheet */}
           {showToolsMenu && (
-            <div className="absolute right-0 mt-1.5 w-80 sm:w-88 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 p-2 space-y-1 z-50 text-left animate-fade-in">
-              <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+            <div className="absolute right-0 mt-2 w-80 sm:w-88 apple-glass-floating rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl p-2 space-y-1 z-50 text-left animate-fade-in">
+              <div className="px-3 py-2 border-b border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
                 <div>
-                  <h4 className="text-xs font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <span>🛠️ Tiện Ích & Công Cụ Ôn Luyện</span>
+                  <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <span>🛠️ Tiện Ích & Công Cụ Sáng Tạo</span>
                   </h4>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400">Khám phá các tính năng tăng tốc học tập</p>
+                  <p className="text-[10px] text-slate-500 dark:text-zinc-400">Tối ưu quy trình sáng tạo & kiếm tiền</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowToolsMenu(false)}
-                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded"
+                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded-lg hover:bg-black/[0.05] dark:hover:bg-white/[0.08]"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -348,26 +307,26 @@ export default function NotionTopbar({
                       playSound('click');
                       onOpenThemePicker();
                     }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 border border-transparent hover:border-purple-200 dark:hover:border-purple-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                    className="w-full text-left p-2 rounded-xl hover:bg-purple-500/10 dark:hover:bg-purple-500/20 border border-transparent hover:border-purple-500/30 transition-all flex items-start gap-2.5 cursor-pointer group active:scale-[0.98]"
                   >
-                    <span className="text-lg p-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/40 shrink-0">🎨</span>
+                    <span className="text-lg p-1.5 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-300 shrink-0">🎨</span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
                           Đổi Giao Diện 3D 4K
                         </span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300">
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300">
                           16 Themes
                         </span>
                       </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                      <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-snug mt-0.5">
                         Tùy chọn phong cách thẩm mỹ (Cyberpunk, Lofi, Ghibli, Vintage...).
                       </p>
                     </div>
                   </button>
                 )}
 
-                {/* 6. Hiệu ứng khí quyển */}
+                {/* 2. Hiệu ứng khí quyển */}
                 {currentTheme?.weatherType && currentTheme.weatherType !== 'none' && (() => {
                   const weatherInfoMap = {
                     'mario-stars': { icon: '🍄', label: 'Mario Stars' },
@@ -393,31 +352,31 @@ export default function NotionTopbar({
                         playSound('click');
                         onToggleWeather?.();
                       }}
-                      className="w-full text-left p-2 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-950/40 border border-transparent hover:border-sky-200 dark:hover:border-sky-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                      className="w-full text-left p-2 rounded-xl hover:bg-sky-500/10 dark:hover:bg-sky-500/20 border border-transparent hover:border-sky-500/30 transition-all flex items-start gap-2.5 cursor-pointer group active:scale-[0.98]"
                     >
-                      <span className="text-lg p-1.5 rounded-lg bg-sky-100 dark:bg-sky-900/40 shrink-0">{info.icon}</span>
+                      <span className="text-lg p-1.5 rounded-xl bg-sky-500/15 text-sky-600 dark:text-sky-300 shrink-0">{info.icon}</span>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400">
                             Hiệu Ứng: {info.label}
                           </span>
-                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
+                          <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
                             isWeatherEnabled
-                              ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                              : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                              ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'
+                              : 'bg-black/[0.06] dark:bg-white/[0.08] text-slate-500 dark:text-zinc-400'
                           }`}>
                             {isWeatherEnabled ? 'Đang Bật' : 'Đã Tắt'}
                           </span>
                         </div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                          Bấm để bật hoặc tắt các hạt rơi chuyển động trên nền giao diện.
+                        <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-snug mt-0.5">
+                          Bật hoặc tắt các hiệu ứng hạt chuyển động rơi trên màn hình.
                         </p>
                       </div>
                     </button>
                   );
                 })()}
 
-                {/* 7. Nhật ký tính năng mới */}
+                {/* 3. Nhật ký tính năng mới */}
                 {onOpenChangelog && (
                   <button
                     type="button"
@@ -426,19 +385,19 @@ export default function NotionTopbar({
                       playSound('click');
                       onOpenChangelog();
                     }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-white/10 transition-colors flex items-start gap-2.5 cursor-pointer group"
+                    className="w-full text-left p-2 rounded-xl hover:bg-black/[0.05] dark:hover:bg-white/[0.08] border border-transparent hover:border-black/[0.06] dark:hover:border-white/[0.08] transition-all flex items-start gap-2.5 cursor-pointer group active:scale-[0.98]"
                   >
-                    <span className="text-lg p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0">📜</span>
+                    <span className="text-lg p-1.5 rounded-xl bg-black/[0.06] dark:bg-white/[0.08] shrink-0">📜</span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-slate-900 dark:text-white">
                           Nhật Ký Bản Nâng Cấp
                         </span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300">
-                          v3.0
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-300">
+                          v4.0
                         </span>
                       </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
+                      <p className="text-[10px] text-slate-500 dark:text-zinc-400 leading-snug mt-0.5">
                         Xem danh sách các tính năng và cải tiến vừa được phát hành.
                       </p>
                     </div>
@@ -449,66 +408,66 @@ export default function NotionTopbar({
           )}
         </div>
 
-        {/* FINANCIAL STATS: VÍ XU (Clear Balance Display) */}
+        {/* APPLE AMBER PILL: VÍ XU */}
         <button
           type="button"
           onClick={() => {
             playSound('click');
             onSelectTab('wallet');
           }}
-          className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
+          className="apple-pill-amber h-8 px-2.5 sm:px-3 rounded-full flex items-center space-x-1.5 active:scale-[0.97] transition-all cursor-pointer shrink-0"
           title={`Ví Xu PromptMMO: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
           aria-label="Ví Xu"
         >
           <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />
           <span className="text-[11px] font-black font-mono">{walletBalance}</span>
-          <span className="text-[10px] font-bold text-amber-700 dark:text-amber-300 hidden sm:inline">Xu</span>
+          <span className="text-[10px] font-bold hidden sm:inline">Xu</span>
         </button>
 
-        {/* GAMIFICATION STATS: CHUỖI NGÀY HỌC (Streak with Day Count) */}
+        {/* APPLE ORANGE PILL: CHUỖI ĐĂNG NHẬP */}
         <button
           type="button"
           onClick={() => {
             playSound('flip');
             onOpenLeaderboard?.();
           }}
-          className="hidden sm:flex items-center space-x-1 px-2 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-950/80 hover:bg-orange-100 dark:hover:bg-orange-900/60 text-orange-900 dark:text-orange-200 border border-orange-300 dark:border-orange-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
-          title={`Chuỗi học tập liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
-          aria-label="Chuỗi học tập"
+          className="hidden sm:flex h-8 px-2.5 rounded-full bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/25 items-center space-x-1.5 font-bold active:scale-[0.97] transition-all cursor-pointer shrink-0"
+          title={`Chuỗi tương tác liên tục: ${streakInfo.streak} ngày (Bấm mở Bảng Vàng)`}
+          aria-label="Chuỗi ngày"
         >
           <span className="text-xs select-none">{currentTheme?.icons?.streak || '🔥'}</span>
           <span className="text-[11px] font-black font-mono">{streakInfo.streak}</span>
-          <span className="text-[10px] font-bold text-orange-700 dark:text-orange-300 hidden md:inline">ngày</span>
+          <span className="text-[10px] font-bold hidden md:inline">ngày</span>
         </button>
 
-        {/* DAILY REWARD: ĐIỂM DANH NHẬN XU (With Clear Label) */}
+        {/* APPLE EMERALD PILL: ĐIỂM DANH */}
         <button
           type="button"
           onClick={handleCheckIn}
-          className="hidden xl:flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/80 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
+          className="hidden xl:flex apple-pill-emerald h-8 px-3 rounded-full items-center space-x-1.5 font-bold active:scale-[0.97] transition-all cursor-pointer shrink-0"
           title="Điểm danh nhận Xu thưởng miễn phí mỗi ngày"
-          aria-label="Điểm danh nhận Xu"
+          aria-label="Điểm danh"
         >
           <span className="text-xs select-none">{currentTheme?.icons?.checkin || '🎁'}</span>
-          <span className="text-[11px] font-bold">Điểm danh</span>
+          <span className="text-[11px] font-semibold">Điểm danh</span>
         </button>
 
         {/* AUDIO MUTE / UNMUTE */}
         <button
           type="button"
           onClick={handleToggleMute}
-          className="hidden md:flex w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 items-center justify-center transition-colors cursor-pointer shrink-0"
+          className="hidden md:flex w-8 h-8 rounded-full text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] active:scale-[0.95] items-center justify-center transition-all cursor-pointer shrink-0"
           title={isMuted ? "Âm thanh: Đang tắt (Bấm để bật)" : "Âm thanh: Đang bật (Bấm để tắt)"}
           aria-label="Bật/Tắt âm thanh"
         >
           {isMuted ? (
             <VolumeX className="w-3.5 h-3.5 text-rose-500" />
           ) : (
-            <Volume2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+            <Volume2 className="w-3.5 h-3.5" />
           )}
         </button>
 
-        {/* DAY / NIGHT SLEEP MODE CONTROLS (Circular-reveal dark mode #219) */}
+        {/* DAY / NIGHT SLEEP MODE CONTROLS */}
         {isDayTheme(currentTheme?.id) ? (
           <CircularRevealDarkMode
             sleepMode={sleepMode}
@@ -521,7 +480,7 @@ export default function NotionTopbar({
           />
         ) : null}
 
-        {/* DIRECT CHAT & FRIENDS BUTTON */}
+        {/* DIRECT CHAT & NETWORK */}
         {(() => {
           const totalSocialBadge = (unreadDmCount || 0) + (pendingRequestsCount || 0);
           return (
@@ -531,13 +490,13 @@ export default function NotionTopbar({
                 playSound('click');
                 onOpenDirectChat?.();
               }}
-              className="w-8 h-8 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-300 dark:border-sky-500/40 flex items-center justify-center transition-all shadow-2xs relative cursor-pointer shrink-0"
-              title={`Tin nhắn trực tiếp & Bạn học${totalSocialBadge > 0 ? ` (${totalSocialBadge} thông báo mới)` : ''}`}
-              aria-label="Tin nhắn và Bạn bè"
+              className="w-8 h-8 rounded-full bg-[#007aff]/10 dark:bg-[#0a84ff]/20 hover:bg-[#007aff]/20 text-[#007aff] dark:text-[#0a84ff] border border-[#007aff]/20 flex items-center justify-center transition-all active:scale-[0.95] relative cursor-pointer shrink-0"
+              title={`Tin nhắn trực tiếp & Kết nối Creator${totalSocialBadge > 0 ? ` (${totalSocialBadge} tin mới)` : ''}`}
+              aria-label="Tin nhắn"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
+              <MessageCircle className="w-3.5 h-3.5" />
               {totalSocialBadge > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black ring-2 ring-white dark:ring-slate-900 flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-black ring-2 ring-white dark:ring-zinc-900 flex items-center justify-center animate-pulse">
                   {totalSocialBadge > 9 ? '9+' : totalSocialBadge}
                 </span>
               )}
@@ -550,37 +509,37 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={handleOpenNotifications}
-            className="w-8 h-8 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors relative cursor-pointer shrink-0"
+            className="w-8 h-8 rounded-full text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] active:scale-[0.95] flex items-center justify-center transition-all relative cursor-pointer shrink-0"
             title="Thông báo hệ thống"
             aria-label="Thông báo"
           >
             <Bell className="w-3.5 h-3.5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-zinc-900" />
             )}
           </button>
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-1.5 w-72 sm:w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 p-3 space-y-2 z-50 text-left animate-fade-in">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
+            <div className="absolute right-0 mt-2 w-72 sm:w-80 apple-glass-floating rounded-2xl border border-black/10 dark:border-white/10 shadow-2xl p-3 space-y-2 z-50 text-left animate-fade-in">
+              <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
                 <span className="font-bold text-xs text-slate-900 dark:text-white">Thông Báo Hệ Thống</span>
-                <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-300">{notifications.length} tin</span>
+                <span className="text-[10px] font-semibold text-slate-500 dark:text-zinc-400">{notifications.length} tin</span>
               </div>
               <div className="max-h-64 overflow-y-auto space-y-1.5 pr-1">
                 {notifications.length === 0 ? (
-                  <p className="text-center text-xs text-slate-500 dark:text-slate-400 py-4">Chưa có thông báo nào</p>
+                  <p className="text-center text-xs text-slate-500 dark:text-zinc-400 py-4">Chưa có thông báo nào</p>
                 ) : (
                   notifications.map((notif) => (
                     <div
                       key={notif.id}
-                      className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/90 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xs space-y-1 border border-slate-200/80 dark:border-white/10"
+                      className="p-2.5 rounded-xl bg-black/[0.03] dark:bg-white/[0.05] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] transition-colors text-xs space-y-1 border border-black/[0.04] dark:border-white/[0.06]"
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-slate-900 dark:text-white line-clamp-1">{notif.title}</span>
-                        <span className="text-[9px] text-slate-500 dark:text-slate-400 shrink-0 ml-1">{notif.time || 'Vừa xong'}</span>
+                        <span className="text-[9px] text-slate-500 dark:text-zinc-400 shrink-0 ml-1">{notif.time || 'Vừa xong'}</span>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-200 text-[11px] leading-relaxed">{notif.message}</p>
+                      <p className="text-slate-600 dark:text-zinc-300 text-[11px] leading-relaxed">{notif.message}</p>
                     </div>
                   ))
                 )}
@@ -594,11 +553,11 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="w-8 h-8 rounded-lg hover:bg-slate-200/70 dark:hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            className="w-8 h-8 rounded-full hover:opacity-90 active:scale-[0.95] flex items-center justify-center transition-all cursor-pointer shrink-0"
             title={`Tài khoản: ${user.displayName || user.email}`}
             aria-label="Tài khoản cá nhân"
           >
-            <div className="w-6 h-6 rounded-full bg-[#2383e2] dark:bg-indigo-600 text-white flex items-center justify-center font-bold text-[11px] shadow-2xs">
+            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-1 ring-black/10 dark:ring-white/20">
               {user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email ? user.email.charAt(0).toUpperCase() : 'U'}
             </div>
           </button>
@@ -606,11 +565,12 @@ export default function NotionTopbar({
           <button
             type="button"
             onClick={onOpenAuth}
-            className="w-8 h-8 rounded-lg bg-[#2383e2] hover:bg-[#1d6fc2] text-white flex items-center justify-center shadow-2xs transition-colors cursor-pointer shrink-0"
-            title="Đăng Nhập / Quản lý Tài Khoản"
+            className="apple-btn-prominent h-8 px-3 rounded-full text-xs font-semibold flex items-center space-x-1.5 cursor-pointer shrink-0"
+            title="Đăng Nhập / Đăng Ký Tài Khoản"
             aria-label="Đăng Nhập"
           >
             <User className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Đăng nhập</span>
           </button>
         )}
 

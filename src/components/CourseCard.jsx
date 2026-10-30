@@ -54,7 +54,7 @@ function CourseCard({
     : 0;
 
   return (
-    <div className="bg-white/95 dark:bg-[#16122b]/95 backdrop-blur-md rounded-xl border border-[#e9e9e8] dark:border-white/10 hover:border-[#2383e2] dark:hover:border-sky-500/70 shadow-3d-sm hover:shadow-3d-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between overflow-hidden group select-none relative text-[#37352f] dark:text-[#f8fafc]">
+    <div className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] hover:border-[#007aff]/40 dark:hover:border-[#0a84ff]/40 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group select-none relative text-slate-900 dark:text-zinc-100">
       {/* Festive Winter Snow Cap Banner */}
       {hasSnowCaps && (
         <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none z-10 overflow-hidden">
@@ -68,15 +68,15 @@ function CourseCard({
         </div>
       )}
       
-      {/* Top Banner with Notion Pill Badges */}
+      {/* Top Banner with Apple Semantic Pills */}
       <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">
         
         <div className="flex items-center justify-between gap-1.5 mb-2.5">
-          <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#e7f3f8] dark:bg-sky-950/80 text-[#2b7aa1] dark:text-sky-300 border border-[#cbe3ed] dark:border-sky-500/40">
+          <span className="apple-pill-blue text-[10px] font-bold px-2.5 py-0.5 rounded-full">
             {categoryLabel}
           </span>
           <div className="flex items-center space-x-1.5">
-            <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#faece3] dark:bg-amber-950/80 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-500/40">
+            <span className="apple-pill-amber text-[10px] font-bold px-2.5 py-0.5 rounded-full">
               {badge}
             </span>
             <button
@@ -95,7 +95,7 @@ function CourseCard({
                   onShowToast?.(res.message);
                 }
               }}
-              className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-[#2383e2] dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-[10px] font-medium text-slate-500 dark:text-zinc-400 hover:text-[#007aff] dark:hover:text-[#0a84ff] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] active:scale-[0.95] transition-all cursor-pointer"
               title="Sao chép đường dẫn chia sẻ gói prompt này"
             >
               {copiedLink ? (
@@ -118,8 +118,8 @@ function CourseCard({
                   playSound('click');
                   onOpenDirectChat(null, course);
                 }}
-                className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60 transition-colors cursor-pointer"
-                title="Gửi đính kèm gói prompt này vào tin nhắn trò chuyện hoặc hỏi Admin"
+                className="inline-flex items-center space-x-1 px-2 py-1 rounded-lg text-[10px] font-medium text-slate-500 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-500/10 active:scale-[0.95] transition-all cursor-pointer"
+                title="Gửi đính kèm gói prompt này vào tin nhắn trò chuyện"
               >
                 <MessageCircle className="w-3 h-3" />
                 <span className="hidden sm:inline">Gửi chat</span>
@@ -129,48 +129,48 @@ function CourseCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white group-hover:text-[#2383e2] dark:group-hover:text-sky-400 transition-colors line-clamp-2 leading-snug">
+        <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-[#007aff] dark:group-hover:text-[#0a84ff] transition-colors line-clamp-2 leading-snug tracking-tight">
           {course.title}
         </h3>
 
         {/* Subtitle */}
         {course.subtitle && (
-          <p className="mt-1.5 text-xs text-[#787774] dark:text-slate-300 line-clamp-2 leading-relaxed">
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
             {course.subtitle}
           </p>
         )}
 
         {/* Social Proof Stats */}
-        <div className="mt-3 flex items-center space-x-2.5 text-xs text-[#787774] dark:text-slate-300">
-          <div className="flex items-center space-x-1 text-amber-600 dark:text-amber-400 font-semibold">
+        <div className="mt-3 flex items-center space-x-2 text-xs text-slate-500 dark:text-zinc-400 font-medium">
+          <div className="flex items-center space-x-1 text-amber-500 font-semibold">
             <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
             <span>{rating}</span>
-            <span className="text-[#9b9a97] dark:text-slate-400 font-normal">({reviewsCount})</span>
+            <span className="text-slate-400 dark:text-zinc-500 font-normal">({reviewsCount})</span>
           </div>
-          <span className="text-[#e9e9e8] dark:text-white/20">•</span>
-          <span className="text-[#787774] dark:text-slate-300">
-            {studentsCount} người học
+          <span className="text-slate-300 dark:text-zinc-700">•</span>
+          <span>
+            {studentsCount} Creator dùng
           </span>
         </div>
 
         {/* Highlights List */}
-        <ul className="mt-3.5 space-y-1 text-xs text-[#5a5751] dark:text-slate-300 border-t border-[#e9e9e8]/70 dark:border-white/10 pt-2.5">
+        <ul className="mt-3.5 space-y-1.5 text-xs text-slate-600 dark:text-zinc-300 border-t border-black/[0.06] dark:border-white/[0.08] pt-2.5">
           {highlights.slice(0, 2).map((item, idx) => (
             <li key={idx} className="flex items-start space-x-1.5">
-              <CheckCircle className="w-3.5 h-3.5 text-[#448361] dark:text-emerald-400 shrink-0 mt-0.5" />
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
               <span className="line-clamp-1">{item}</span>
             </li>
           ))}
         </ul>
 
         {/* Format Tags */}
-        <div className="mt-3 flex flex-wrap gap-1 pt-1">
+        <div className="mt-3 flex flex-wrap gap-1.5 pt-1">
           {formatList.map((fmt, idx) => (
             <span
               key={idx}
-              className="inline-flex items-center space-x-1 text-[10px] px-1.5 py-0.5 bg-[#f1f1ef] dark:bg-slate-800/80 text-[#5a5751] dark:text-slate-200 border border-[#e3e2e0] dark:border-white/10 rounded"
+              className="inline-flex items-center space-x-1 text-[10px] font-medium px-2 py-0.5 bg-black/[0.03] dark:bg-white/[0.06] text-slate-600 dark:text-zinc-300 border border-black/[0.04] dark:border-white/[0.06] rounded-md"
             >
-              <FileText className="w-3 h-3 text-[#787774] dark:text-slate-400" />
+              <FileText className="w-3 h-3 text-slate-400 dark:text-zinc-500" />
               <span>{fmt}</span>
             </span>
           ))}
@@ -179,30 +179,30 @@ function CourseCard({
       </div>
 
       {/* Pricing & Footer Actions */}
-      <div className="p-4 sm:p-5 pt-3 bg-[#faf9f8]/95 dark:bg-[#1a1533]/95 border-t border-[#e9e9e8] dark:border-white/10 mt-auto space-y-3">
+      <div className="p-4 sm:p-5 pt-3 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] mt-auto space-y-3">
         
         {/* Price Row */}
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline space-x-1.5">
             <Coins className="w-4 h-4 text-amber-500 fill-amber-400 self-center shrink-0" />
-            <span className="text-lg font-bold text-[#37352f] dark:text-white">
+            <span className="text-lg font-bold font-mono text-slate-900 dark:text-white tracking-tight">
               {priceXu} Xu
             </span>
             {originalPriceXu > priceXu && (
-              <span className="text-xs text-[#9b9a97] dark:text-slate-400 line-through">
+              <span className="text-xs text-slate-400 dark:text-zinc-500 font-mono line-through">
                 {originalPriceXu} Xu
               </span>
             )}
           </div>
 
           {isPurchased ? (
-            <span className="inline-flex items-center space-x-1 text-[11px] font-semibold px-2 py-0.5 bg-[#edf3ec] dark:bg-emerald-950/60 text-[#448361] dark:text-emerald-300 rounded-md border border-[#d3e5d7] dark:border-emerald-600/40">
+            <span className="apple-pill-emerald text-[11px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1">
               <Check className="w-3 h-3" />
               <span>Đã Mở Khóa</span>
             </span>
           ) : (
             discountPercent > 0 && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-[#fdebec] dark:bg-rose-950/60 text-[#d44c47] dark:text-rose-300 rounded border border-[#f9c9cb] dark:border-rose-600/40">
+              <span className="apple-pill-rose text-[10px] font-bold px-2 py-0.5 rounded-full">
                 -{discountPercent}%
               </span>
             )
@@ -210,24 +210,24 @@ function CourseCard({
         </div>
 
         {/* Interactive Preview Buttons */}
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1 py-2 px-2 text-[11px] font-bold text-slate-800 dark:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-lg border border-slate-200 dark:border-white/15 transition-all shadow-2xs touch-3d cursor-pointer"
+            className="apple-btn-secondary py-2 px-2.5 text-[11px] font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
             title="Xem trước mẫu prompt và thông số kỹ thuật"
           >
-            <Layers className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
-            <span>📋 Xem Prompt Mẫu</span>
+            <Layers className="w-3.5 h-3.5 text-amber-500" />
+            <span>Xem Mẫu</span>
           </button>
 
           <button
             type="button"
             onClick={() => onOpenDirectChat?.(null, course)}
-            className="flex items-center justify-center space-x-1 py-2 px-2 text-[11px] font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 hover:bg-sky-100 dark:hover:bg-sky-900/60 rounded-lg border border-sky-200 dark:border-sky-700/60 transition-all shadow-2xs touch-3d cursor-pointer"
+            className="apple-btn-secondary py-2 px-2.5 text-[11px] font-semibold text-[#007aff] dark:text-[#0a84ff] rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
             title="Nhắn tin với người bán hoặc hỗ trợ kỹ thuật"
           >
-            <MessageCircle className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <MessageCircle className="w-3.5 h-3.5 text-[#007aff] dark:text-[#0a84ff]" />
             <span>Tư Vấn 1-1</span>
           </button>
         </div>
@@ -237,16 +237,16 @@ function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/80 border border-emerald-300 dark:border-emerald-700/50 rounded-lg transition-all cursor-pointer touch-3d"
+            className="apple-pill-emerald w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer active:scale-[0.98] transition-transform"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Vào Kho & Copy Toàn Bộ Prompt</span>
+            <span>Vào Kho & Copy Prompt</span>
           </button>
         ) : (
           <button
             type="button"
             onClick={() => onBuy(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-lg shadow-sm transition-all active:scale-[0.98] cursor-pointer touch-3d"
+            className="apple-btn-prominent w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
           >
             <Coins className="w-3.5 h-3.5 text-white fill-white" />
             <span>Mở Khóa Prompt ({priceXu} Xu)</span>

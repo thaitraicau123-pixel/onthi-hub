@@ -126,33 +126,33 @@ export default function LibraryView({
         </div>
       </div>
 
-      {/* NOTION SPACED REPETITION (SM-2) CALLOUT WIDGET */}
+      {/* APPLE SMART PROMPT REVIEW WIDGET */}
       {unlockedList.length > 0 && (
-        <div className="bg-white/95 dark:bg-slate-900/90 p-4 sm:p-5 rounded-2xl border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="apple-card p-5 sm:p-6 rounded-3xl border border-black/[0.06] dark:border-white/[0.08] text-slate-900 dark:text-zinc-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-5">
           <div className="space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded bg-[#f4f0f7] dark:bg-purple-950/70 border border-[#e3d7ec] dark:border-purple-500/40 text-[11px] font-bold text-[#9065b0] dark:text-purple-300">
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full apple-pill-purple text-[11px] font-bold">
               <Brain className="w-3.5 h-3.5" />
-              <span>SuperMemo SM-2 • Chống Quên Lãng</span>
+              <span>Smart Recommendation • Prompt Đề Xuất Sử Dụng</span>
             </div>
-            <h3 className="text-base sm:text-lg font-extrabold text-[#37352f] dark:text-white">
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               {srsStats.totalDue > 0 ? (
-                <>🎯 Hôm nay có <span className="text-[#d44c47] dark:text-rose-400 font-black">{srsStats.totalDue}</span> thẻ cần ôn tập!</>
+                <>🎯 Hôm nay có <span className="text-amber-500 font-extrabold">{srsStats.totalDue}</span> prompt đề xuất khai thác nội dung!</>
               ) : (
-                <>🎉 Tuyệt vời! Bạn đã ôn hết tất cả thẻ đến hạn hôm nay!</>
+                <>🎉 Tuyệt vời! Bạn đã khám phá toàn bộ kho prompt sở hữu!</>
               )}
             </h3>
-            <p className="text-xs text-[#787774] dark:text-slate-300 max-w-xl">
-              Hệ thống tự động tính chu kỳ lặp lại ngắt quãng để củng cố trí nhớ dài hạn trước ngày thi.
+            <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-xl">
+              Hệ thống tự động đề xuất các câu lệnh chất lượng cao để bạn tạo video 8K, mockup ảnh studio và kịch bản triệu view hôm nay.
             </p>
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 pt-1 text-xs">
-              <span className="px-2 py-0.5 rounded bg-[#fdebec] dark:bg-rose-950/70 border border-[#f9c9cb] dark:border-rose-500/40 text-[#d44c47] dark:text-rose-300 font-semibold">
-                ⏰ Cần ôn: <strong>{srsStats.totalDue}</strong>
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1 text-xs">
+              <span className="apple-pill-amber px-2.5 py-0.5 rounded-full font-bold">
+                ⏰ Đề xuất dùng: <strong>{srsStats.totalDue}</strong>
               </span>
-              <span className="px-2 py-0.5 rounded bg-[#edf3ec] dark:bg-emerald-950/70 border border-[#d3e5d7] dark:border-emerald-500/40 text-[#448361] dark:text-emerald-300 font-semibold">
-                🧠 Đã nhớ sâu: <strong>{srsStats.totalLearned}</strong>
+              <span className="apple-pill-emerald px-2.5 py-0.5 rounded-full font-semibold">
+                ✨ Đã copy dùng: <strong>{srsStats.totalLearned}</strong>
               </span>
-              <span className="px-2 py-0.5 rounded bg-[#fbf3db] dark:bg-amber-950/70 border border-[#f4e4b7] dark:border-amber-500/40 text-[#c29243] dark:text-amber-300 font-semibold">
-                ✨ Thẻ mới: <strong>{srsStats.totalNew}</strong>
+              <span className="apple-pill-blue px-2.5 py-0.5 rounded-full font-semibold">
+                🆕 Mẫu mới sở hữu: <strong>{srsStats.totalNew}</strong>
               </span>
             </div>
           </div>
@@ -162,62 +162,34 @@ export default function LibraryView({
               <button
                 type="button"
                 onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
-                className="w-full md:w-auto px-4 py-2.5 rounded-xl bg-[#2383e2] hover:bg-[#1a73e8] text-white font-bold text-xs shadow-2xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+                className="apple-btn-prominent w-full md:w-auto px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer"
               >
-                <Flame className="w-4 h-4 text-amber-300 fill-amber-300" />
-                <span>Ôn Toàn Bộ {srsStats.totalDue} Thẻ Đến Hạn</span>
+                <Flame className="w-4 h-4 text-white fill-white" />
+                <span>Mở Xem {srsStats.totalDue} Prompt Đề Xuất</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
-                className="w-full md:w-auto px-4 py-2 rounded-xl bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white font-semibold text-xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer"
+                className="apple-btn-secondary w-full md:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 cursor-pointer"
               >
-                <CheckCircle className="w-4 h-4 text-[#448361] dark:text-emerald-400" />
-                <span>Ôn Tập Thêm Luyện Phản Xạ</span>
+                <CheckCircle className="w-4 h-4 text-emerald-500" />
+                <span>Xem Kho Prompt Sở Hữu</span>
               </button>
             )}
           </div>
         </div>
       )}
 
-      {/* MISTAKES QUICK ACCESS CALLOUT */}
-      {unmasteredMistakesCount > 0 && (
-        <div className="bg-[#fdebec] dark:bg-rose-950/40 border border-[#f9c9cb] dark:border-rose-500/40 rounded-xl p-3.5 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-[#d44c47] dark:text-rose-300 shadow-2xs">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-white dark:bg-rose-900/50 border border-[#f9c9cb] dark:border-rose-500/40 text-[#d44c47] dark:text-rose-300 flex items-center justify-center shrink-0">
-              <BookMarked className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-sm block text-[#37352f] dark:text-white">
-                Sổ Tay Câu Sai: Có {unmasteredMistakesCount} câu cần khắc phục!
-              </span>
-              <span className="text-[#787774] dark:text-slate-300 text-[11px]">
-                Xem lại câu trắc nghiệm làm sai và nhận chẩn đoán lỗ hổng kiến thức từ AI.
-              </span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={onOpenMistakes}
-            className="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-[#d44c47] hover:bg-[#c23d38] text-white font-bold text-xs shadow-2xs flex items-center justify-center space-x-1.5 transition-colors cursor-pointer shrink-0"
-          >
-            <span>Mở Sổ Tay ({unmasteredMistakesCount})</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      )}
-
       {/* C2C PASS TIPS CALLOUT */}
-      <div className="bg-[#f1f1ef] dark:bg-slate-900/80 border border-[#e9e9e8] dark:border-white/10 rounded-xl p-3 text-xs flex items-center justify-between gap-2.5 text-[#37352f] dark:text-slate-200">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-7 h-7 rounded-md bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/15 text-[#2383e2] dark:text-sky-400 flex items-center justify-center shrink-0">
-            <Repeat className="w-3.5 h-3.5" />
+      <div className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] p-4 text-xs flex items-center justify-between gap-3 text-slate-900 dark:text-zinc-100 shadow-xs">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+            <Repeat className="w-4 h-4" />
           </div>
-          <div className="text-[11px] leading-relaxed">
-            <span className="font-bold text-[#37352f] dark:text-white">Đã khai thác xong giá trị của gói Prompt? </span>
-            <span className="text-[#787774] dark:text-slate-300">Bạn có thể bấm nút <strong>&ldquo;Tiện ích ➔ Pass Lại Prompt&rdquo;</strong> ở mỗi gói bên dưới để nhượng lại cho Creator khác trên Chợ C2C và nhận Xu vào ví!</span>
+          <div className="text-xs leading-relaxed">
+            <span className="font-bold text-slate-900 dark:text-white">Đã khai thác xong giá trị của gói Prompt? </span>
+            <span className="text-slate-500 dark:text-zinc-400">Bạn có thể bấm nút <strong>&ldquo;Tùy chọn ➔ Pass Lại Prompt C2C&rdquo;</strong> ở mỗi gói bên dưới để nhượng lại cho Creator khác trên Chợ và nhận Xu vào ví!</span>
           </div>
         </div>
       </div>
@@ -243,13 +215,15 @@ export default function LibraryView({
         <div className="space-y-4">
           {/* Filter and Search Bar for Library (Notion Control Bar) */}
           <div className="bg-white/95 dark:bg-slate-900/90 p-3 rounded-xl border border-[#e9e9e8] dark:border-white/15 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-[#37352f] dark:text-white">
-            {/* Category Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
+            {/* Apple Segmented Category Pills */}
+            <div className="apple-segmented-container flex flex-wrap items-center gap-1">
               {[
                 { id: 'all', label: 'Tất Cả' },
-                { id: 'cong-chuc', label: '🏛️ Công Chức' },
-                { id: 'it-tech', label: '💻 IT & Tech' },
-                { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ' }
+                { id: 'video-ai', label: '🎬 Video AI' },
+                { id: 'image-ai', label: '🎨 Ảnh Studio' },
+                { id: 'copy-mmo', label: '✍️ Kịch Bản MMO' },
+                { id: 'skills-automation', label: '⚡ N8N & Auto' },
+                { id: 'acc-tools', label: '🔑 Tool & Tài Nguyên' }
               ].map((cat) => {
                 const count = cat.id === 'all'
                   ? unlockedList.length
@@ -260,15 +234,13 @@ export default function LibraryView({
                     key={cat.id}
                     type="button"
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center space-x-1.5 cursor-pointer ${
-                      active
-                        ? 'bg-[#2383e2] text-white shadow-2xs font-bold'
-                        : 'bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 text-[#5a5955] dark:text-slate-300 border border-[#e9e9e8] dark:border-white/10'
+                    className={`apple-segmented-item flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold cursor-pointer ${
+                      active ? 'active' : ''
                     }`}
                   >
                     <span>{cat.label}</span>
-                    <span className={`text-[10px] font-bold px-1.5 rounded-full ${
-                      active ? 'bg-white/20 text-white' : 'bg-[#e9e9e8] dark:bg-slate-900 text-[#787774] dark:text-slate-400'
+                    <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                      active ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-black/[0.04] dark:bg-white/[0.08] text-slate-400 dark:text-zinc-500'
                     }`}>
                       {count}
                     </span>
@@ -304,7 +276,7 @@ export default function LibraryView({
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 text-[#37352f] dark:text-white font-semibold border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors cursor-pointer"
               >
-                <option value="due_first">⏰ Cần ôn tập trước</option>
+                <option value="due_first">⏰ Đề xuất dùng trước</option>
                 <option value="title">🔤 Tên A → Z</option>
               </select>
             </div>
@@ -346,7 +318,7 @@ export default function LibraryView({
                 return (
                   <div
                     key={course.id}
-                    className="p-4 sm:p-5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-white/95 dark:bg-[#16122b]/95 backdrop-blur-md hover:border-[#2383e2] dark:hover:border-sky-500/70 shadow-3d-sm hover:shadow-3d-md hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between text-[#37352f] dark:text-[#f8fafc] relative overflow-hidden group"
+                    className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] p-4 sm:p-5 hover:border-[#007aff]/40 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-slate-900 dark:text-zinc-100 relative overflow-hidden group"
                   >
                     {/* Festive Snow Cap Banner */}
                     {hasSnowCaps && (
@@ -365,18 +337,12 @@ export default function LibraryView({
                       {/* Top Badges & More Options Menu */}
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#edf3ec] dark:bg-emerald-950/70 text-[#448361] dark:text-emerald-300 border border-[#d3e5d7] dark:border-emerald-500/40">
+                          <span className="apple-pill-emerald text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                             ĐÃ SỞ HỮU
                           </span>
-                          {deckSrs.due > 0 ? (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#fdebec] dark:bg-rose-950/70 text-[#d44c47] dark:text-rose-300 border border-[#f9c9cb] dark:border-rose-500/40">
-                              ⏰ {deckSrs.due} thẻ cần ôn
-                            </span>
-                          ) : (
-                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#f1f1ef] dark:bg-slate-800 text-[#787774] dark:text-slate-300 border border-[#e3e2e0] dark:border-white/10">
-                              ✓ Đã ôn đủ
-                            </span>
-                          )}
+                          <span className="apple-pill-blue text-[10px] font-semibold px-2.5 py-0.5 rounded-full">
+                            ✓ Sẵn sàng Copy
+                          </span>
                         </div>
 
                         {/* More Actions Dropdown & Share Link */}
@@ -545,30 +511,26 @@ export default function LibraryView({
                       </div>
                     </div>
 
-                    {/* Notion Action Bar: Clean & Focused */}
-                    <div className="mt-4 pt-3 border-t border-[#e9e9e8] dark:border-white/10 space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => onOpenFlashcards(course)}
-                          className="py-2 px-3 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer touch-3d col-span-2"
-                        >
-                          <Zap className="w-3.5 h-3.5" />
-                          <span>Xem & Sao Chép Prompt Siêu Tốc</span>
-                        </button>
-                      </div>
+                    {/* Apple Action Bar: Clean & Focused */}
+                    <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-white/[0.08] space-y-2">
+                      <button
+                        type="button"
+                        onClick={() => onOpenFlashcards(course)}
+                        className="apple-btn-prominent w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Xem & Sao Chép Prompt Siêu Tốc</span>
+                      </button>
 
-                      <div className="flex items-center space-x-2">
-                        <button
-                          type="button"
-                          onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
-                          className="w-full py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white text-xs font-medium flex items-center justify-center space-x-1 transition-colors cursor-pointer touch-3d"
-                          title="Xuất file, Pass lại, Bán gói prompt"
-                        >
-                          <span>Tiện ích mở rộng</span>
-                          <ChevronDown className="w-3 h-3" />
-                        </button>
-                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
+                        className="apple-btn-secondary w-full py-2 px-2.5 text-xs font-medium rounded-xl flex items-center justify-center space-x-1 cursor-pointer"
+                        title="Xuất file, Pass lại, Bán gói prompt"
+                      >
+                        <span>Tiện ích mở rộng</span>
+                        <ChevronDown className="w-3 h-3 text-slate-400" />
+                      </button>
                     </div>
                   </div>
                 );

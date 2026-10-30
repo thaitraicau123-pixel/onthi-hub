@@ -483,19 +483,13 @@ export default function App() {
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
         onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-        onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
         onOpenChangelog={() => setIsChangelogOpen(true)}
         onOpenSearch={() => setIsCommandPaletteOpen(true)}
         onOpenAnalytics={() => setIsAnalyticsOpen(true)}
         currentTheme={currentTheme}
         onOpenThemePicker={() => setIsThemePickerOpen(true)}
-        onOpenTargetClock={() => setIsTargetClockOpen(true)}
-        onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-        onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
         onOpenDirectChat={() => handleOpenDirectChat()}
-        onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
         onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
-        onOpenExamReadiness={() => setIsExamReadinessOpen(true)}
       />
 
       {/* Right Canvas: Notion Topbar + Main Canvas + Footer (Softly Translucent to Showcase Background Artwork) */}
@@ -522,11 +516,7 @@ export default function App() {
           onOpenThemePicker={() => setIsThemePickerOpen(true)}
           isWeatherEnabled={isWeatherEnabled}
           onToggleWeather={() => setWeatherEffectsEnabled(!isWeatherEnabled)}
-          onOpenTargetClock={() => setIsTargetClockOpen(true)}
-          onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
           onOpenDirectChat={() => handleOpenDirectChat()}
-          onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
-          onOpenExamReadiness={() => setIsExamReadinessOpen(true)}
         />
 
         {/* MAIN NOTION PAGE CANVAS */}
@@ -536,20 +526,14 @@ export default function App() {
             {activeTab === 'home' && (
               <HomeView
                 onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-                onOpenQuiz={(c) => setActiveQuizCourse(c)}
                 onBuyCourse={(c) => setActivePaymentItem(c)}
                 onBuyCombo={(combo) => setActivePaymentItem(combo)}
                 onSwitchTab={setActiveTab}
-                onOpenMatchGame={(c) => setActiveMatchGameCourse(c || allAvailableCourses[0])}
                 onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
                 onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-                onOpenTargetClock={() => setIsTargetClockOpen(true)}
-                onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
-                onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
                 allCourses={allAvailableCourses}
                 onShowToast={showToast}
                 onOpenDirectChat={handleOpenDirectChat}
-                onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
                 onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
               />
             )}
@@ -598,12 +582,8 @@ export default function App() {
                 purchasedCourses={purchasedCourses}
                 allCourses={allAvailableCourses}
                 onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-                onOpenQuiz={(c) => setActiveQuizCourse(c)}
-                onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
                 onOpenPassDeck={(course) => setActivePassCourse(course)}
                 onOpenSellDeck={(course) => setActiveSellCourse(course)}
-                onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
-                onOpenCheatSheet={(course) => setActiveCheatSheetCourse(course)}
                 onSwitchTab={setActiveTab}
                 onOpenDirectChat={handleOpenDirectChat}
                 onShowToast={showToast}
@@ -662,7 +642,6 @@ export default function App() {
               setActiveFlashcardCourse(null);
               setInitialCardIndex(null);
             }}
-            onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c)}
             onBuy={(c) => setActivePaymentItem(c)}
             initialCardIndex={initialCardIndex}
             onOpenDirectChat={handleOpenDirectChat}

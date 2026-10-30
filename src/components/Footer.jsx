@@ -11,7 +11,7 @@ function Footer({ onOpenAdmin }) {
   };
 
   return (
-    <footer className="bg-[#f7f6f5]/95 dark:bg-slate-950/90 backdrop-blur-md text-[#787774] dark:text-slate-400 py-10 border-t border-[#e9e9e8] dark:border-white/10 text-xs transition-colors duration-300">
+    <footer className="bg-slate-50/80 dark:bg-[#0c0c0e]/80 backdrop-blur-xl text-slate-500 dark:text-zinc-400 py-10 border-t border-black/[0.06] dark:border-white/[0.08] text-xs transition-colors duration-300">
       <div className="max-w-5xl mx-auto px-4 sm:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Info */}

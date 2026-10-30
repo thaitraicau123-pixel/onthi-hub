@@ -250,33 +250,33 @@ export default function MarketplaceView({
         </div>
       </div>
 
-      {/* 2. DAILY FLASH DEALS SECTION (Notion Callout) */}
-      <section className="bg-white/95 dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 rounded-2xl p-4 sm:p-5 shadow-2xs text-[#37352f] dark:text-white relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-4 border-b border-[#e9e9e8] dark:border-white/10 pb-3">
+      {/* 2. DAILY FLASH DEALS SECTION (Apple Showcase Card) */}
+      <section className="apple-card rounded-3xl p-5 sm:p-6 border border-black/[0.06] dark:border-white/[0.08] shadow-sm text-slate-900 dark:text-white relative overflow-hidden space-y-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#faece3] dark:bg-amber-950/70 border border-[#f3d6c1] dark:border-amber-500/40 text-[#cc782f] dark:text-amber-400 flex items-center justify-center shadow-2xs shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <Zap className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-xs sm:text-sm font-extrabold text-[#37352f] dark:text-white uppercase tracking-wider">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                   Ưu Đãi Theo Ngày (Flash Deals 24h)
                 </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#faece3] dark:bg-amber-950/80 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-500/40">
+                <span className="apple-pill-amber text-[10px] font-bold px-2 py-0.5 rounded-full">
                   {dailyData.dateStr}
                 </span>
               </div>
-              <p className="text-[11px] text-[#787774] dark:text-slate-300">
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">
                 Giá ưu đãi xoay tua mỗi 24 giờ. Tự động làm mới vào nửa đêm!
               </p>
             </div>
           </div>
 
           {/* Countdown Clock Display */}
-          <div className="flex items-center space-x-1.5 bg-[#f7f6f5] dark:bg-slate-800 px-3 py-1 rounded-lg border border-[#e9e9e8] dark:border-white/15 text-xs text-[#787774] dark:text-slate-300">
-            <Clock className="w-3.5 h-3.5 text-[#cc782f] dark:text-amber-400" />
+          <div className="flex items-center space-x-2 bg-black/[0.03] dark:bg-white/[0.06] px-3.5 py-1.5 rounded-full border border-black/[0.06] dark:border-white/[0.08] text-xs text-slate-500 dark:text-zinc-400">
+            <Clock className="w-3.5 h-3.5 text-amber-500" />
             <span>Kết thúc trong:</span>
-            <span className="font-mono font-bold text-[#37352f] dark:text-white">
+            <span className="font-mono font-bold text-slate-900 dark:text-white">
               {formatCountdown(secondsRemaining)}
             </span>
           </div>
@@ -289,34 +289,34 @@ export default function MarketplaceView({
             return (
               <div
                 key={deal.id}
-                className="bg-[#fbfbfa] dark:bg-slate-800/80 border border-[#e9e9e8] dark:border-white/10 hover:border-[#c5c4c0] dark:hover:border-white/25 rounded-xl p-4 transition-all flex flex-col justify-between shadow-2xs"
+                className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] p-4.5 transition-all flex flex-col justify-between hover:shadow-md"
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/40 text-[10px] font-bold">
+                    <span className="apple-pill-amber text-[10px] font-bold px-2.5 py-0.5 rounded-full">
                       {deal.badge}
                     </span>
-                    <span className="text-xs text-[#787774] dark:text-slate-300 font-medium">
+                    <span className="text-xs text-slate-500 dark:text-zinc-400 font-medium">
                       {deal.categoryLabel}
                     </span>
                   </div>
 
-                  <h4 className="text-sm font-bold text-[#37352f] dark:text-white leading-snug">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-snug tracking-tight">
                     {deal.title}
                   </h4>
-                  <p className="text-xs text-[#787774] dark:text-slate-300 mt-1 line-clamp-2">
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
                     {deal.subtitle}
                   </p>
 
                   {/* Stock progress meter */}
                   <div className="mt-3">
-                    <div className="flex items-center justify-between text-[11px] text-[#787774] dark:text-slate-300 mb-1">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400 mb-1">
                       <span>Đã bán {deal.soldPercent}%</span>
-                      <span className="text-[#2383e2] dark:text-sky-400 font-semibold">Chỉ còn {deal.stockRemaining} suất cuối</span>
+                      <span className="text-[#007aff] dark:text-[#0a84ff] font-semibold">Chỉ còn {deal.stockRemaining} suất cuối</span>
                     </div>
-                    <div className="w-full h-1.5 bg-[#e9e9e8] dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-black/[0.06] dark:bg-white/[0.1] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#2383e2] dark:bg-sky-400 rounded-full transition-all"
+                        className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all"
                         style={{ width: `${deal.soldPercent}%` }}
                       />
                     </div>
@@ -324,17 +324,17 @@ export default function MarketplaceView({
                 </div>
 
                 {/* Pricing & Buy Action */}
-                <div className="mt-4 pt-3 border-t border-[#e9e9e8] dark:border-white/10 flex items-center justify-between">
+                <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
                   <div>
                     <div className="flex items-baseline space-x-2">
-                      <span className="text-base font-extrabold text-[#37352f] dark:text-white">
+                      <span className="text-base font-extrabold font-mono text-slate-900 dark:text-white">
                         {deal.priceXu} Xu
                       </span>
-                      <span className="text-xs text-[#9b9a97] dark:text-slate-400 line-through">
+                      <span className="text-xs text-slate-400 dark:text-zinc-500 font-mono line-through">
                         {deal.originalPriceXu} Xu
                       </span>
                     </div>
-                    <span className="text-[10px] text-emerald-700 dark:text-emerald-400 block font-semibold">
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block font-semibold">
                       Tiết kiệm {deal.originalPriceXu - deal.priceXu} Xu ({deal.discountPercent}% OFF)
                     </span>
                   </div>
@@ -343,21 +343,21 @@ export default function MarketplaceView({
                     {deal.previewCards && deal.previewCards.length > 0 && (
                       <button
                         onClick={() => onOpenFlashcardSample(deal)}
-                        className="px-2.5 py-1.5 rounded-lg border border-[#e9e9e8] dark:border-white/15 bg-white dark:bg-slate-700 hover:bg-[#f0efed] dark:hover:bg-slate-600 text-[#37352f] dark:text-white text-xs font-semibold cursor-pointer"
+                        className="apple-btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer"
                       >
-                        Xem Thử
+                        Xem Mẫu
                       </button>
                     )}
 
                     {isOwned ? (
-                      <span className="px-3 py-1.5 bg-[#edf3ec] dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-[#d3e5d2] dark:border-emerald-500/40 rounded-lg text-xs font-semibold flex items-center space-x-1">
+                      <span className="apple-pill-emerald px-3 py-1.5 rounded-full text-xs font-bold flex items-center space-x-1">
                         <Check className="w-3.5 h-3.5" />
                         <span>Đã Sở Hữu</span>
                       </span>
                     ) : (
                       <button
                         onClick={() => handleBuy(deal)}
-                        className="px-3.5 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+                        className="apple-btn-prominent px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center space-x-1.5 cursor-pointer shadow-sm"
                       >
                         <ShoppingCart className="w-3.5 h-3.5" />
                         <span>Mua ({deal.priceXu} Xu)</span>
@@ -365,7 +365,6 @@ export default function MarketplaceView({
                     )}
                   </div>
                 </div>
-
               </div>
             );
           })}
@@ -401,7 +400,7 @@ export default function MarketplaceView({
                 const el = document.getElementById('marketplace-catalog');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="self-start sm:self-auto px-3 py-1 rounded-lg bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-xs font-semibold text-[#37352f] dark:text-white transition-colors cursor-pointer"
+              className="self-start sm:self-auto apple-btn-secondary px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer"
             >
               Xem tất cả ({passDecks.length}) prompt pass →
             </button>
@@ -414,7 +413,7 @@ export default function MarketplaceView({
               return (
                 <div
                   key={pDeck.id}
-                  className="bg-[#fbfbfa] dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 hover:border-[#2383e2] dark:hover:border-sky-500/50 rounded-xl p-3.5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-sm transition-all duration-200"
+                  className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] hover:border-purple-500/40 p-4 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -509,18 +508,18 @@ export default function MarketplaceView({
 
                       <button
                         onClick={() => onOpenFlashcardSample(pDeck)}
-                        className="px-2 py-1 rounded-md bg-white dark:bg-slate-700 hover:bg-[#f0efed] dark:hover:bg-slate-600 border border-[#e9e9e8] dark:border-white/10 text-[10px] font-semibold text-[#37352f] dark:text-white cursor-pointer"
+                        className="apple-btn-secondary px-2.5 py-1 rounded-xl text-[10px] font-semibold cursor-pointer"
                       >
-                        Học Thử
+                        Xem Mẫu
                       </button>
                       {isOwned ? (
-                        <span className="px-2 py-1 rounded-md bg-[#edf3ec] dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 text-[10px] font-semibold">
+                        <span className="apple-pill-emerald px-2.5 py-1 rounded-full text-[10px] font-bold">
                           Đã Mua
                         </span>
                       ) : (
                         <button
                           onClick={() => handleBuy(pDeck)}
-                          className="px-2.5 py-1 rounded-md bg-[#2383e2] hover:bg-[#1a73e8] text-[10px] font-bold text-white shadow-2xs cursor-pointer"
+                          className="apple-btn-prominent px-3 py-1 rounded-xl text-[10px] font-bold shadow-2xs cursor-pointer"
                         >
                           Mua ({pDeck.priceXu} Xu)
                         </button>
@@ -756,18 +755,14 @@ export default function MarketplaceView({
               return (
                 <div
                   key={deck.id}
-                  className={`bg-white/95 dark:bg-slate-900/90 rounded-xl border transition-all duration-200 flex flex-col justify-between overflow-hidden group shadow-3d-sm hover:shadow-3d-md hover:-translate-y-1 hover:border-[#2383e2] dark:hover:border-sky-500/70 ${
-                    deck.isPassDeck
-                      ? 'border-[#e0d6eb] dark:border-purple-500/40'
-                      : 'border-[#e9e9e8] dark:border-white/15'
-                  }`}
+                  className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] hover:border-[#007aff]/40 dark:hover:border-[#0a84ff]/40 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group text-slate-900 dark:text-zinc-100"
                 >
                   <div className="p-4 sm:p-5">
                     
                     {/* Pass badge or Category */}
                     {deck.isPassDeck ? (
                       <div className="mb-2">
-                        <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/40 text-[10px] font-bold inline-flex items-center space-x-1">
+                        <span className="apple-pill-purple text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1">
                           <Repeat className="w-2.5 h-2.5" />
                           <span>CREATOR PASS LẠI</span>
                         </span>
@@ -775,8 +770,8 @@ export default function MarketplaceView({
                     ) : (
                       deck.categoryLabel && (
                         <div className="mb-2">
-                          <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-sky-950/80 text-blue-700 dark:text-sky-300 border border-blue-200 dark:border-sky-500/30 text-[10px] font-bold inline-flex items-center space-x-1">
-                            <Sparkles className="w-2.5 h-2.5 text-blue-500" />
+                          <span className="apple-pill-blue text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1">
+                            <Sparkles className="w-2.5 h-2.5" />
                             <span>{deck.categoryLabel}</span>
                           </span>
                         </div>
@@ -789,13 +784,13 @@ export default function MarketplaceView({
                         <img
                           src={deck.isPassDeck ? (deck.passSellerAvatar || deck.authorAvatar) : (deck.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80')}
                           alt={deck.authorName}
-                          className="w-6 h-6 rounded-full object-cover border border-[#e9e9e8] dark:border-white/15 shrink-0"
+                          className="w-6 h-6 rounded-full object-cover border border-black/[0.06] dark:border-white/[0.1] shrink-0"
                         />
                         <div className="min-w-0 flex-1">
-                          <span className="text-xs font-bold text-[#37352f] dark:text-white truncate block">
+                          <span className="text-xs font-bold text-slate-900 dark:text-white truncate block">
                             {deck.isPassDeck ? deck.passSellerName : deck.authorName}
                           </span>
-                          <span className="text-[10px] text-[#787774] dark:text-slate-400 block">
+                          <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">
                             {deck.isPassDeck ? `Bản quyền: ${deck.authorName}` : (deck.categoryName || 'Cộng đồng')}
                           </span>
                         </div>
@@ -805,7 +800,7 @@ export default function MarketplaceView({
                         {canDeleteDeck(deck) && (
                           <button
                             onClick={(e) => handleDeleteDeck(e, deck)}
-                            className="p-1 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-500 transition-colors cursor-pointer"
+                            className="p-1.5 rounded-lg hover:bg-rose-500/10 text-rose-500 transition-colors cursor-pointer"
                             title="Xóa gói Prompt này khỏi Chợ C2C"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -813,37 +808,37 @@ export default function MarketplaceView({
                         )}
                         <button
                           onClick={() => handleToggleLike(deck.id)}
-                          className="p-1 rounded-md hover:bg-[#f7f6f5] dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
                           title="Thả tim"
                         >
-                          <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-[#9b9a97] dark:text-slate-400 hover:text-rose-500'}`} />
+                          <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-rose-500 text-rose-500' : 'text-slate-400 dark:text-zinc-500 hover:text-rose-500'}`} />
                         </button>
                       </div>
                     </div>
 
                     {/* Pass Note quote if available */}
                     {deck.isPassDeck && deck.passNote && (
-                      <div className="p-2 rounded-lg bg-[#fbfbfa] dark:bg-slate-800/80 border border-[#e9e9e8] dark:border-white/10 text-[11px] text-[#5a5955] dark:text-slate-300 italic mb-2">
+                      <div className="p-2.5 rounded-xl bg-black/[0.02] dark:bg-white/[0.04] border border-black/[0.04] dark:border-white/[0.06] text-[11px] text-slate-600 dark:text-zinc-300 italic mb-2">
                         &ldquo;{deck.passNote}&rdquo;
                       </div>
                     )}
 
                     {/* Title & Desc */}
-                    <h4 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white group-hover:text-[#2383e2] dark:group-hover:text-sky-400 line-clamp-2 leading-snug transition-colors">
+                    <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white group-hover:text-[#007aff] dark:group-hover:text-[#0a84ff] line-clamp-2 leading-snug tracking-tight transition-colors">
                       {deck.title}
                     </h4>
-                    <p className="text-xs text-[#787774] dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
                       {deck.description}
                     </p>
 
                     {/* Stats */}
-                    <div className="mt-3 flex items-center space-x-1.5 text-[11px] text-[#787774] dark:text-slate-300">
-                      <div className="flex items-center space-x-0.5 text-amber-600 dark:text-amber-400 font-semibold">
+                    <div className="mt-3 flex items-center space-x-2 text-[11px] text-slate-500 dark:text-zinc-400 font-medium">
+                      <div className="flex items-center space-x-1 text-amber-500 font-semibold">
                         <Star className="w-3.5 h-3.5 fill-amber-400" />
                         <span>{deck.rating || 5.0}</span>
                       </div>
                       <span>•</span>
-                      <span>{deck.cardCount} thẻ</span>
+                      <span>{deck.cardCount} prompt</span>
                       <span>•</span>
                       <span>Đã bán: {deck.salesCount || 0}</span>
                     </div>
@@ -851,15 +846,15 @@ export default function MarketplaceView({
                   </div>
 
                   {/* Footer Action */}
-                  <div className="p-3.5 sm:px-5 bg-[#fbfbfa] dark:bg-slate-800/70 border-t border-[#f0efed] dark:border-white/10 flex items-center justify-between gap-2">
+                  <div className="p-3.5 sm:px-5 bg-black/[0.02] dark:bg-white/[0.02] border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between gap-2">
                     <div>
                       <div className="flex items-baseline space-x-1.5">
                         <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400 self-center shrink-0" />
-                        <span className="text-base font-extrabold text-[#37352f] dark:text-white">
+                        <span className="text-base font-extrabold font-mono text-slate-900 dark:text-white">
                           {deck.priceXu} Xu
                         </span>
                         {deck.originalPriceXu && deck.originalPriceXu > deck.priceXu && (
-                          <span className="text-[11px] text-[#9b9a97] dark:text-slate-400 line-through">
+                          <span className="text-[11px] text-slate-400 dark:text-zinc-500 font-mono line-through">
                             {deck.originalPriceXu} Xu
                           </span>
                         )}
@@ -881,7 +876,7 @@ export default function MarketplaceView({
                             onShowToast?.(res.message);
                           }
                         }}
-                        className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-[#007aff] hover:bg-black/[0.04] dark:hover:bg-white/[0.06] active:scale-[0.95] transition-all cursor-pointer"
                         title="Chia sẻ đường dẫn gói prompt này"
                       >
                         <Share2 className="w-3.5 h-3.5" />
@@ -913,7 +908,7 @@ export default function MarketplaceView({
                               }, deck);
                             }
                           }}
-                          className="p-1 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-500/10 active:scale-[0.95] transition-all cursor-pointer"
                           title={`Nhắn tin hỏi tác giả (${deck.authorName})`}
                         >
                           <MessageCircle className="w-3.5 h-3.5" />
@@ -926,21 +921,21 @@ export default function MarketplaceView({
                             ...deck,
                             previewCards: deck.previewCards || deck.sampleCards || []
                           })}
-                          className="px-2.5 py-1.5 rounded-lg border border-[#e9e9e8] dark:border-white/15 bg-white dark:bg-slate-700 text-[#37352f] dark:text-white text-xs font-semibold hover:bg-[#f7f6f5] dark:hover:bg-slate-600 cursor-pointer"
+                          className="apple-btn-secondary px-2.5 py-1.5 rounded-xl text-xs font-semibold cursor-pointer"
                         >
-                          Xem Thử
+                          Xem Mẫu
                         </button>
                       )}
 
                       {isOwned ? (
-                        <span className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-[#edf3ec] dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-[#d3e5d7] dark:border-emerald-500/40 text-xs font-semibold">
+                        <span className="apple-pill-emerald px-3 py-1.5 rounded-full text-xs font-bold inline-flex items-center space-x-1">
                           <Check className="w-3 h-3" />
                           <span>Đã Mua</span>
                         </span>
                       ) : (
                         <button
                           onClick={() => handleBuy(deck)}
-                          className="px-3 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold shadow-2xs flex items-center space-x-1 transition-colors cursor-pointer"
+                          className="apple-btn-prominent px-3 py-1.5 rounded-xl text-xs font-bold shadow-2xs flex items-center space-x-1.5 cursor-pointer"
                         >
                           <ShoppingCart className="w-3.5 h-3.5" />
                           <span>Mua ({deck.priceXu} Xu)</span>

@@ -231,9 +231,9 @@ export default function AnalyticsModal({
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#37352f] dark:text-white flex items-center space-x-1.5">
                 <TrendingUp className="w-4 h-4 text-[#2383e2] dark:text-blue-400" />
-                <span>Dự Báo Lịch Ôn Tập 7 Ngày Tới (Spaced Repetition Forecast)</span>
+                <span>Dự Báo Tần Suất Khai Thác Prompt 7 Ngày Tới (Prompt Usage Forecast)</span>
               </span>
-              <span className="text-[11px] text-[#787774] dark:text-slate-400">Thuật toán SuperMemo SM-2</span>
+              <span className="text-[11px] text-[#787774] dark:text-slate-400">Thuật toán Đề Xuất Tối Ưu</span>
             </div>
 
             {/* Simple Bar Chart */}
@@ -312,7 +312,7 @@ export default function AnalyticsModal({
             className="px-4 py-2 rounded-lg bg-[#2e2e2e] hover:bg-[#1a1a1a] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-xs flex items-center space-x-1.5 shadow-2xs transition-colors cursor-pointer"
           >
             <Flame className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-            <span>Ôn Tập Ngay ({srsStats.totalDue} Thẻ)</span>
+            <span>Mở Kho Prompt ({srsStats.totalDue} Mẫu)</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

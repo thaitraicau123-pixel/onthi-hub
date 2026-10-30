@@ -72,18 +72,197 @@ html {
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Plus Jakarta Sans", system-ui, sans-serif;
+  letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: #ffffff;
-  color: #37352f;
+  color: #1d1d1f;
   min-height: 100vh;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark body {
+  background-color: #000000;
+  color: #f5f5f7;
 }
 
 ::selection {
-  background-color: #cce5ff;
-  color: #37352f;
+  background-color: rgba(245, 158, 11, 0.25);
+  color: inherit;
 }
+
+/* =========================================
+   APPLE HUMAN INTERFACE GUIDELINES (HIG)
+   LIQUID GLASS & CRAFT TOKENS
+   ========================================= */
+
+/* Functional Layer: Liquid Glass Material */
+.apple-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .apple-glass {
+  background: rgba(12, 12, 14, 0.82);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.apple-glass-floating {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.dark .apple-glass-floating {
+  background: rgba(22, 22, 26, 0.85);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+/* Content Layer: Apple Standard Material Card (No Glass in Content) */
+.apple-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .apple-card {
+  background-color: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.apple-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.dark .apple-card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Apple Segmented Control */
+.apple-segmented-container {
+  display: inline-flex;
+  background: rgba(120, 120, 128, 0.12);
+  padding: 3px;
+  border-radius: 9999px;
+  gap: 2px;
+}
+
+.dark .apple-segmented-container {
+  background: rgba(120, 120, 128, 0.24);
+}
+
+.apple-segmented-item {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6e6e73;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dark .apple-segmented-item {
+  color: #86868b;
+}
+
+.apple-segmented-item:hover {
+  color: #1d1d1f;
+}
+
+.dark .apple-segmented-item:hover {
+  color: #f5f5f7;
+}
+
+.apple-segmented-item.active {
+  background: #ffffff;
+  color: #1d1d1f;
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0.5px 1px rgba(0, 0, 0, 0.08);
+}
+
+.dark .apple-segmented-item.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Apple Buttons */
+.apple-btn-prominent {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  box-shadow: 0 1px 3px rgba(217, 119, 6, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-btn-prominent:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.apple-btn-prominent:active {
+  transform: scale(0.97);
+}
+
+.apple-btn-secondary {
+  background: rgba(120, 120, 128, 0.09);
+  color: #1d1d1f;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 13px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .apple-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.apple-btn-secondary:hover {
+  background: rgba(120, 120, 128, 0.14);
+}
+
+.dark .apple-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.apple-btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* Apple Semantic Pills */
+.apple-pill-blue { background: rgba(0, 113, 227, 0.08); color: #0071e3; border: 1px solid rgba(0, 113, 227, 0.15); }
+.apple-pill-amber { background: rgba(245, 158, 11, 0.09); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.18); }
+.apple-pill-emerald { background: rgba(16, 185, 129, 0.09); color: #059669; border: 1px solid rgba(16, 185, 129, 0.18); }
+.apple-pill-purple { background: rgba(139, 92, 246, 0.09); color: #7c3aed; border: 1px solid rgba(139, 92, 246, 0.18); }
+.apple-pill-rose { background: rgba(244, 63, 94, 0.09); color: #e11d48; border: 1px solid rgba(244, 63, 94, 0.18); }
+
+.dark .apple-pill-blue { background: rgba(0, 113, 227, 0.16); color: #38bdf8; border-color: rgba(56, 189, 248, 0.2); }
+.dark .apple-pill-amber { background: rgba(245, 158, 11, 0.16); color: #fbbf24; border-color: rgba(251, 191, 36, 0.2); }
+.dark .apple-pill-emerald { background: rgba(16, 185, 129, 0.16); color: #34d399; border-color: rgba(52, 211, 153, 0.2); }
+.dark .apple-pill-purple { background: rgba(139, 92, 246, 0.16); color: #c084fc; border-color: rgba(192, 132, 252, 0.2); }
+.dark .apple-pill-rose { background: rgba(244, 63, 94, 0.16); color: #fb7185; border-color: rgba(251, 113, 133, 0.2); }
 
 /* NOTION PALETTE & COMPONENT STANDARDS */
 .notion-sidebar {

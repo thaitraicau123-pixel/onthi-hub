@@ -31,10 +31,10 @@ async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt =
     switch (answerLength) {
       case 'detailed':
         return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: CHI TIẾT (KHOẢNG 50 - 100 TỪ).
-- Trường "back" phải giải thích sâu, phân tích bản chất, viện dẫn chi tiết điều luật/căn cứ/nguyên lý và ví dụ minh họa cụ thể để người học nắm tường tận bản chất.`;
+- Trường "back" phải giải thích sâu, phân tích bản chất câu lệnh, phân tích góc máy/ánh sáng/từ khóa kỹ thuật và ví dụ minh họa cụ thể để Creator nắm tường tận cách ứng dụng ra kết quả đẹp nhất.`;
       case 'concise':
         return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: NGẮN GỌN (KHOẢNG 10 - 25 TỪ).
-- Trường "back" phải SIÊU CÔ ĐỌNG, đi thẳng vào đáp án/kết quả cốt lõi trong 1-2 dòng ngắn gọn. Không viết rườm rà lan man. Tối ưu cho ôn tập phản xạ siêu tốc.`;
+- Trường "back" phải SIÊU CÔ ĐỌNG, đi thẳng vào câu lệnh prompt/kết quả cốt lõi trong 1-2 dòng ngắn gọn. Không viết rườm rà lan man. Tối ưu cho áp dụng và 1-Click Copy vào Higgsfield, Midjourney, Claude.`;
       case 'balanced':
       default:
         return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (KHOẢNG 25 - 50 TỪ).
@@ -529,9 +529,9 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
       tag: 'Ngoại lệ quan trọng'
     },
     {
-      front: `Công thức / Quy tắc vàng ghi nhớ nhanh siêu tốc về "${title}"?`,
-      back: `KỸ THUẬT GHI NHỚ:\n• Gom nhóm các ý tương đồng (Chunking).\n• Liên tưởng với ví dụ thực tiễn đời sống.\n• Ôn tập ngắt quãng (Spaced Repetition) vào ngày 1, ngày 3, ngày 7.`,
-      tag: 'Kỹ thuật ghi nhớ'
+      front: `Công thức / Quy tắc vàng tối ưu câu lệnh siêu tốc về "${title}"?`,
+      back: `KỸ THUẬT PROMPT:\n• Cấu trúc: [Chủ thể] + [Bối cảnh / Ánh sáng] + [Góc quay Camera] + [Phong cách nghệ thuật] + [Tham số kỹ thuật --ar, --v, --motion].\n• Thử nghiệm ít nhất 3 biến thể seed để chọn ra kết quả hoàn hảo nhất.`,
+      tag: 'Kỹ thuật Prompt'
     },
     {
       front: `Dạng bài tập thực chiến hoặc tình huống hay gặp về "${title}"?`,
