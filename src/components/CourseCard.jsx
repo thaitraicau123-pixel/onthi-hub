@@ -23,20 +23,20 @@ function CourseCard({
   const rating = course.rating || 4.9;
   const reviewsCount = course.reviewsCount || course.salesCount || 128;
   const studentsCount = (course.studentsCount || course.salesCount || 360).toLocaleString();
-  const categoryLabel = course.categoryLabel || course.categoryName || 'Tài Liệu Ôn Thi';
-  const badge = course.badge || (course.salesCount ? `Đã bán ${course.salesCount}` : 'Đề Chọn Lọc');
+  const categoryLabel = course.categoryLabel || course.categoryName || 'Prompt MMO';
+  const badge = course.badge || (course.salesCount ? `Đã bán ${course.salesCount}` : 'Hot Trend 🔥');
 
   const highlights = Array.isArray(course.highlights) && course.highlights.length > 0
     ? course.highlights
     : [
-        'Bộ thẻ ghi nhớ trọng tâm bám sát cấu trúc đề thi',
-        'Ứng dụng thuật toán lặp lại ngắt quãng Spaced Repetition',
-        'Hỗ trợ chế độ thi trắc nghiệm và ôn rảnh tay'
+        'Prompt chuẩn quốc tế có tham số Camera & Tỉ lệ khung hình',
+        '1-Click Copy siêu tốc đưa ngay vào Higgsfield, Midjourney, Claude',
+        'Tặng kèm mẹo tiếng Việt & công thức tối ưu chuyển đổi'
       ];
 
   const formatList = Array.isArray(course.format) && course.format.length > 0
     ? course.format
-    : ['Thẻ Flashcard 3D', 'File Anki (.apkg)', 'Trắc nghiệm tính giờ'];
+    : ['Prompt Chuẩn', 'Tham Số Kỹ Thuật', '1-Click Copy'];
 
   // Pure Platform Coin (Xu) Pricing
   const priceXu = course.priceXu !== undefined
@@ -210,35 +210,25 @@ function CourseCard({
         </div>
 
         {/* Interactive Preview Buttons */}
-        <div className="grid grid-cols-3 gap-1">
+        <div className="grid grid-cols-2 gap-1.5">
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
-            title="Lật thẻ ghi nhớ Anki (Thuật toán SM-2)"
+            className="flex items-center justify-center space-x-1 py-2 px-2 text-[11px] font-bold text-slate-800 dark:text-white bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 rounded-lg border border-slate-200 dark:border-white/15 transition-all shadow-2xs touch-3d cursor-pointer"
+            title="Xem trước mẫu prompt và thông số kỹ thuật"
           >
-            <Layers className="w-3 h-3 text-[#2383e2] dark:text-sky-400" />
-            <span>Lật Thẻ Anki</span>
+            <Layers className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
+            <span>📋 Xem Prompt Mẫu</span>
           </button>
 
           <button
             type="button"
-            onClick={() => onOpenQuiz(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-[#37352f] dark:text-white bg-white dark:bg-white/10 hover:bg-[#efefed] dark:hover:bg-white/20 rounded-lg border border-[#e9e9e8] dark:border-white/15 transition-colors shadow-2xs touch-3d cursor-pointer"
-            title="Thi thử trắc nghiệm 10 câu bấm giờ"
+            onClick={() => onOpenDirectChat?.(null, course)}
+            className="flex items-center justify-center space-x-1 py-2 px-2 text-[11px] font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 hover:bg-sky-100 dark:hover:bg-sky-900/60 rounded-lg border border-sky-200 dark:border-sky-700/60 transition-all shadow-2xs touch-3d cursor-pointer"
+            title="Nhắn tin với người bán hoặc hỗ trợ kỹ thuật"
           >
-            <PlayCircle className="w-3 h-3 text-[#cc782f] dark:text-amber-400" />
-            <span>Thi Thử 10 Câu</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onOpenCheatSheet && onOpenCheatSheet(course)}
-            className="flex items-center justify-center space-x-1 py-1.5 px-1.5 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 rounded-lg border border-emerald-200 dark:border-emerald-700/60 transition-colors shadow-2xs touch-3d cursor-pointer"
-            title="Bảng Cheatsheet tóm tắt 1 trang & In tài liệu cứu sinh"
-          >
-            <FileText className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-            <span>Phao 1 Trang</span>
+            <MessageCircle className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+            <span>Tư Vấn 1-1</span>
           </button>
         </div>
 
@@ -247,19 +237,19 @@ function CourseCard({
           <button
             type="button"
             onClick={() => onOpenFlashcards(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-[#448361] dark:text-emerald-300 bg-[#edf3ec] dark:bg-emerald-950/70 hover:bg-[#e0ece0] dark:hover:bg-emerald-900/80 border border-[#d3e5d7] dark:border-emerald-700/50 rounded-lg transition-colors cursor-pointer touch-3d"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-100/80 hover:bg-emerald-200/80 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/80 border border-emerald-300 dark:border-emerald-700/50 rounded-lg transition-all cursor-pointer touch-3d"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>Vào Học Bộ Thẻ</span>
+            <span>Vào Kho & Copy Toàn Bộ Prompt</span>
           </button>
         ) : (
           <button
             type="button"
             onClick={() => onBuy(course)}
-            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-[#2383e2] dark:hover:bg-[#1a73e8] rounded-lg shadow-sm transition-all active:scale-[0.98] cursor-pointer touch-3d"
+            className="w-full flex items-center justify-center space-x-1.5 py-2 px-3 text-xs font-bold text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-lg shadow-sm transition-all active:scale-[0.98] cursor-pointer touch-3d"
           >
-            <Coins className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-            <span>Mở Khóa ({priceXu} Xu)</span>
+            <Coins className="w-3.5 h-3.5 text-white fill-white" />
+            <span>Mở Khóa Prompt ({priceXu} Xu)</span>
           </button>
         )}
 

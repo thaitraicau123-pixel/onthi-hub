@@ -91,23 +91,14 @@ function NotionSidebar({
   const icons = currentTheme?.icons || {};
 
   const workspaceNavItems = [
-    { id: 'home', label: 'Trang Chủ & Kho Đề', icon: Home, emoji: icons.home || '🏠', desc: 'Đề thi chuẩn & Khám phá' },
-    { id: 'library', label: 'Tủ Thẻ Của Tôi', icon: FolderHeart, emoji: icons.library || '📚', count: purchasedCount, desc: 'Thẻ đã mua & Anki' },
-    { id: 'create', label: 'Studio Tạo Thẻ AI', icon: PlusSquare, emoji: icons.create || '✍️', badge: 'AI', badgeColor: 'notion-pill-purple', desc: 'Tạo thẻ ghi nhớ tự động' },
-    { id: 'marketplace', label: 'Chợ Thẻ C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán thẻ' },
-    { id: 'community', label: 'Cộng Đồng Học Viên', icon: Users, emoji: icons.community || '💬', desc: 'Thảo luận & Hỏi đáp' },
+    { id: 'home', label: 'Trang Chủ & Kho Prompt', icon: Home, emoji: icons.home || '⚡', desc: 'Prompt AI & Kịch bản MMO' },
+    { id: 'library', label: 'Kho Prompt Của Tôi', icon: FolderHeart, emoji: icons.library || '📁', count: purchasedCount, desc: 'Prompt đã mua & 1-Click Copy' },
+    { id: 'create', label: 'Studio Đăng Bán Prompt', icon: PlusSquare, emoji: icons.create || '✍️', badge: '80% LÃI', badgeColor: 'notion-pill-purple', desc: 'Creator đăng bán Prompt kiếm Xu' },
+    { id: 'marketplace', label: 'Chợ Prompt C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán Prompt cộng đồng' },
+    { id: 'community', label: 'Cộng Đồng MMO & AI', icon: Users, emoji: icons.community || '💬', desc: 'Thủ thuật, kinh nghiệm & kết bạn' },
   ];
 
   const toolsNavItems = [
-    {
-      id: 'live-exam-room',
-      label: 'Thi Đấu Trực Tiếp',
-      emoji: '🏛️',
-      badge: '🔴 Live ICT',
-      badgeColor: 'notion-pill-red',
-      action: onOpenLiveExamRoom,
-      desc: 'Phòng thi thử trực tiếp theo lịch hẹn, cấp SBD & Bảng Vàng'
-    },
     {
       id: 'direct-messages',
       label: 'Tin Nhắn Trực Tiếp',
@@ -115,104 +106,34 @@ function NotionSidebar({
       badge: unreadDmCount > 0 ? `${unreadDmCount} tin mới` : 'Chat 1-1',
       badgeColor: unreadDmCount > 0 ? 'notion-pill-red' : 'notion-pill-blue',
       action: onOpenDirectChat,
-      desc: 'Nhắn tin riêng & chia sẻ bộ thẻ giữa học viên'
+      desc: 'Nhắn tin riêng & trao đổi prompt giữa thành viên'
     },
     {
-      id: 'study-room',
-      label: 'Phòng Tự Học Ảo',
-      emoji: '👥',
-      badge: '🟢 Live',
-      badgeColor: 'notion-pill-green',
-      action: onOpenStudyRoom,
-      desc: 'Phòng tự học trực tuyến & cày thẻ tập trung'
-    },
-    {
-      id: 'share-achievement',
-      label: 'Khoe Thẻ Thành Tích',
-      emoji: '🏆',
-      badge: 'Xuất Ảnh',
+      id: 'blindbox',
+      label: 'Túi Mù May Mắn',
+      emoji: icons.blindbox || '🎁',
+      badge: 'Nhận Xu Free',
       badgeColor: 'notion-pill-yellow',
-      action: () => {
-        onOpenShareAchievement?.({
-          type: 'streak',
-          title: 'Kỷ Lục Chuỗi Ngày Học Tập ÔnThiHub 2026',
-          streak: streakInfo.streak,
-          rank: streakInfo.level || 'Học Viên Xuất Sắc',
-          candidateName: user?.displayName || user?.email?.split('@')[0] || 'Học Viên ÔnThiHub',
-          certCode: `STREAK-${streakInfo.streak}D-${Math.floor(1000 + Math.random() * 9000)}`
-        });
-      },
-      desc: 'Xuất ảnh chứng chỉ đồ họa 4:5 chia sẻ lên Story & Facebook'
-    },
-    {
-      id: 'cheatsheet',
-      label: 'Cheatsheet Cứu Sinh',
-      emoji: '📄',
-      badge: '1 Trang',
-      badgeColor: 'notion-pill-blue',
-      action: onOpenCheatSheet,
-      desc: 'Tóm tắt trọng tâm & in 1 trang trước giờ thi'
-    },
-    {
-      id: 'target-clock',
-      label: 'Đồng Hồ Mục Tiêu',
-      emoji: '⏰',
-      badge: 'Giờ HN',
-      badgeColor: 'notion-pill-green',
-      action: onOpenTargetClock,
-      desc: 'Giờ Hà Nội, đồng hồ mục tiêu & vết thời gian'
-    },
-    {
-      id: 'theme',
-      label: 'Đổi Chủ Đề Nền',
-      emoji: '🎨',
-      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '16 Themes',
-      badgeColor: 'notion-pill-blue',
-      action: onOpenThemePicker,
-      desc: '16 chủ đề 3D 4K & Messenger'
-    },
-    {
-      id: 'analytics',
-      label: 'Tiến Độ & Phân Tích',
-      emoji: icons.analytics || '📊',
-      action: onOpenAnalytics,
-      desc: 'Tỷ lệ nhớ sâu SM-2 & Biểu đồ học'
-    },
-    {
-      id: 'exam-readiness',
-      label: 'Radar & Tỷ Lệ Đỗ',
-      emoji: '🎯',
-      badge: 'AI v2.0',
-      badgeColor: 'notion-pill-green',
-      action: onOpenExamReadiness,
-      desc: 'Radar 5 trục & dự báo xác suất đỗ kỳ thi'
-    },
-    {
-      id: 'mistakes',
-      label: 'Sổ Tay Câu Sai',
-      emoji: icons.mistakes || '📓',
-      badge: unmasteredMistakesCount > 0 ? `${unmasteredMistakesCount} câu` : 'Ôn tập',
-      badgeColor: unmasteredMistakesCount > 0 ? 'notion-pill-red' : 'notion-pill-gray',
-      action: onOpenMistakes,
-      desc: 'Ôn tập câu sai & điểm yếu'
+      action: onOpenBlindBox,
+      desc: 'Nhận Xu miễn phí mỗi ngày & nổ hũ'
     },
     {
       id: 'leaderboard',
-      label: 'Bảng Vàng & Streak',
+      label: 'Bảng Vàng Doanh Thu',
       emoji: icons.leaderboard || '🏆',
       badge: `🔥 ${streakInfo.streak}d`,
       badgeColor: 'notion-pill-orange',
       action: onOpenLeaderboard,
-      desc: 'Bảng xếp hạng & Chuỗi học tập'
+      desc: 'Top Creator kiếm Xu nhiều nhất'
     },
     {
-      id: 'blindbox',
-      label: 'Túi Mù Tri Thức',
-      emoji: icons.blindbox || '🎁',
-      badge: '100% Trúng',
-      badgeColor: 'notion-pill-yellow',
-      action: onOpenBlindBox,
-      desc: '100% trúng quà & nổ hũ Xu'
+      id: 'theme',
+      label: 'Đổi Giao Diện Nền',
+      emoji: '🎨',
+      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '16 Themes',
+      badgeColor: 'notion-pill-blue',
+      action: onOpenThemePicker,
+      desc: '16 chủ đề Cyber, Lofi & Neon'
     },
     {
       id: 'changelog',
@@ -228,7 +149,7 @@ function NotionSidebar({
   const accountNavItems = [
     {
       id: 'wallet',
-      label: 'Ví Xu ÔnThiHub',
+      label: 'Ví Xu PromptMMO',
       icon: Wallet,
       emoji: icons.wallet || '🪙',
       highlight: `${walletBalance} Xu`
@@ -302,12 +223,12 @@ function NotionSidebar({
             <div className="flex flex-col min-w-0 flex-1">
               <div className="flex items-center space-x-1">
                 <span className="font-extrabold text-[13px] text-slate-900 dark:text-white truncate tracking-tight">
-                  Ôn Thi Hub
+                  PromptMMO
                 </span>
                 <ChevronsUpDown className="w-3.5 h-3.5 text-slate-500 dark:text-slate-300 shrink-0" />
               </div>
               <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
-                {user ? user.email || user.displayName : 'Không gian ôn luyện 2026'}
+                {user ? user.email || user.displayName : 'Chợ Prompt & AI Skills MMO'}
               </span>
             </div>
           </div>

@@ -162,24 +162,25 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
     if (!newPostText.trim()) return;
 
     const catMap = {
-      'cong-chuc': '🏛️ Công Chức',
-      'it': '💻 IT & Tech',
-      'ngoai-ngu': '🌍 Ngoại Ngữ',
-      'meo-thi': '💡 Mẹo Ôn Thi'
+      'video-ai': '🎬 Video AI (Higgsfield/Kling)',
+      'image-ai': '🎨 Ảnh Studio (Flux/Midjourney)',
+      'copy-mmo': '✍️ Kịch Bản & Content MMO',
+      'skills-automation': '⚡ AI Skills & Auto N8N',
+      'meo-thi': '💡 Thủ Thuật & Mẹo MMO'
     };
 
     const tierLabels = {
-      plus: 'Học Viên PLUS ⭐',
-      pro: 'Chuyên Gia PRO 🚀',
-      ultra: 'Creator ULTRA 👑'
+      plus: 'Creator PLUS ⭐',
+      pro: 'MMO Master PRO 🚀',
+      ultra: 'Agency ULTRA 👑'
     };
 
     const nowIso = new Date().toISOString();
     const newPost = {
       id: 'post_' + Date.now(),
-      author: user?.displayName || 'Bạn Học OnThiHub',
+      author: user?.displayName || 'Creator PromptMMO',
       avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
-      role: isAdmin ? 'Quản Trị Viên (Admin) 🛡️' : (tierLabels[currentTier] || 'Học Viên VIP ⭐'),
+      role: isAdmin ? 'Quản Trị Viên (Admin) 🛡️' : (tierLabels[currentTier] || 'Thành Viên VIP ⭐'),
       category: newPostCategory,
       categoryLabel: catMap[newPostCategory] || 'Hỏi Đáp',
       isPinned: false,
@@ -319,10 +320,11 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none text-xs">
           {[
             { id: 'all', label: 'Tất Cả', icon: '📋' },
-            { id: 'cong-chuc', label: 'Công Chức', icon: '🏛️' },
-            { id: 'it', label: 'IT & Tech', icon: '💻' },
-            { id: 'ngoai-ngu', label: 'Ngoại Ngữ', icon: '🌍' },
-            { id: 'meo-thi', label: 'Mẹo Ôn Thi', icon: '💡' }
+            { id: 'video-ai', label: 'Video AI', icon: '🎬' },
+            { id: 'image-ai', label: 'Ảnh Studio', icon: '🎨' },
+            { id: 'copy-mmo', label: 'Kịch Bản MMO', icon: '✍️' },
+            { id: 'skills-automation', label: 'Auto N8N', icon: '⚡' },
+            { id: 'meo-thi', label: 'Thủ Thuật', icon: '💡' }
           ].map((cat) => (
             <button
               key={cat.id}

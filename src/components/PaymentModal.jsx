@@ -163,10 +163,10 @@ export default function PaymentModal({
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white">
-                Mở Khóa Tài Liệu Bằng Xu
+                Mở Khóa Prompt Bằng Xu
               </h3>
               <p className="text-[11px] text-[#787774] dark:text-slate-400">
-                Nền tảng thanh toán bằng Xu ÔnThiHub tiện lợi và tức thì
+                Cổng thanh toán Xu PromptMMO tự động và tức thì
               </p>
             </div>
           </div>
@@ -197,10 +197,10 @@ export default function PaymentModal({
                   GIAO DỊCH HOÀN TẤT 100%
                 </span>
                 <h3 className="text-lg sm:text-xl font-bold text-[#37352f] dark:text-white mt-2">
-                  Mở Khóa Thành Công!
+                  Mở Khóa Prompt Thành Công!
                 </h3>
                 <p className="text-xs text-[#787774] dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
-                  Bộ thẻ <strong>"{item.title}"</strong> đã được chuyển vĩnh viễn vào Tủ Tài Liệu của bạn.
+                  Gói Prompt <strong>"{item.title}"</strong> đã được lưu vĩnh viễn vào Kho Prompt của bạn. Bắt đầu xem và 1-Click Copy ngay!
                 </p>
               </div>
 
@@ -219,10 +219,10 @@ export default function PaymentModal({
                     onClose();
                     if (onGoToLibrary) onGoToLibrary();
                   }}
-                  className="w-full sm:w-auto px-5 py-2 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-semibold shadow-xs flex items-center justify-center space-x-1.5 transition-colors"
+                  className="w-full sm:w-auto px-5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center space-x-1.5 transition-colors"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>Vào Tủ Học Ngay</span>
+                  <span>Vào Kho & Copy Prompt</span>
                 </button>
 
                 <button

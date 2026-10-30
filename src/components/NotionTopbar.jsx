@@ -22,6 +22,7 @@ import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
 import { playSound, isSoundMuted, toggleSoundMute } from '../utils/storage';
 import { getSleepMode, toggleSleepMode, subscribeToSleepMode, isDayTheme } from '../utils/themeManager';
+import CircularRevealDarkMode from './CircularRevealDarkMode';
 import { getHanoiTimeString } from '../utils/hanoiTime';
 import { getUnreadDirectMessagesCount, subscribeToDirectMessages, getCurrentUserParticipant } from '../utils/directMessaging';
 import { getIncomingRequestsCount, subscribeToFriendEvents } from '../utils/friendSystem';
@@ -338,147 +339,7 @@ export default function NotionTopbar({
               </div>
 
               <div className="max-h-[70vh] overflow-y-auto space-y-1 p-0.5">
-                {/* 0. Radar Năng Lực & Dự Báo Tỷ Lệ Đỗ */}
-                {onOpenExamReadiness && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      playSound('click');
-                      onOpenExamReadiness();
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-950/40 border border-transparent hover:border-sky-200 dark:hover:border-sky-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
-                  >
-                    <span className="text-lg p-1.5 rounded-lg bg-sky-100 dark:bg-sky-900/40 shrink-0">🎯</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400">
-                          Radar Năng Lực & Tỷ Lệ Đỗ
-                        </span>
-                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-sky-500 text-white">
-                          AI v2.0
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                        Biểu đồ 5 trục kiến thức, dự báo tỷ lệ % đỗ kỳ thi & lộ trình 7 ngày.
-                      </p>
-                    </div>
-                  </button>
-                )}
-
-                {/* 1. Thi đấu trực tiếp */}
-                {onOpenLiveExamRoom && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      playSound('click');
-                      onOpenLiveExamRoom();
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
-                  >
-                    <span className="text-lg p-1.5 rounded-lg bg-rose-100 dark:bg-rose-900/40 shrink-0">🏛️</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400">
-                          Thi Đấu Toàn Quốc
-                        </span>
-                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-rose-500 text-white">
-                          LIVE ICT
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                        Phòng thi trực tiếp theo lịch hẹn, cấp SBD & thưởng Xu Bảng Vàng.
-                      </p>
-                    </div>
-                  </button>
-                )}
-
-                {/* 2. Phòng tự học ảo */}
-                {onOpenStudyRoom && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      playSound('click');
-                      onOpenStudyRoom();
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/40 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
-                  >
-                    <span className="text-lg p-1.5 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 shrink-0">🎧</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                          Phòng Tự Học Ảo 24/7
-                        </span>
-                        <span className="text-[9px] font-black px-1.5 py-0.2 rounded bg-emerald-500 text-white">
-                          LIVE
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                        Âm thanh sóng não Alpha, tiếng mưa rơi & cùng cày Flashcard tập trung.
-                      </p>
-                    </div>
-                  </button>
-                )}
-
-                {/* 3. Đồng hồ mục tiêu & Giờ Hà Nội */}
-                {onOpenTargetClock && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      playSound('click');
-                      onOpenTargetClock();
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-transparent hover:border-amber-200 dark:hover:border-amber-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
-                  >
-                    <span className="text-lg p-1.5 rounded-lg bg-amber-100 dark:bg-amber-900/40 shrink-0">⏰</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400">
-                          Đồng Hồ Mục Tiêu & Lộ Trình
-                        </span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300 font-mono">
-                          {hanoiTime}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                        Máy tính chia lịch học 30 ngày & lưu vết giờ học theo Giờ Hà Nội.
-                      </p>
-                    </div>
-                  </button>
-                )}
-
-                {/* 4. Tiến độ ghi nhớ SM-2 */}
-                {onOpenAnalytics && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowToolsMenu(false);
-                      playSound('click');
-                      onOpenAnalytics();
-                    }}
-                    className="w-full text-left p-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-950/40 border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800/40 transition-colors flex items-start gap-2.5 cursor-pointer group"
-                  >
-                    <span className="text-lg p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 shrink-0">📊</span>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400">
-                          Tiến Độ Ghi Nhớ SM-2
-                        </span>
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300">
-                          SuperMemo
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-snug mt-0.5">
-                        Thống kê chu kỳ lặp lại ngắt quãng, số thẻ đến hạn & tỷ lệ nhớ sâu.
-                      </p>
-                    </div>
-                  </button>
-                )}
-
-                {/* 5. Đổi giao diện 3D 4K */}
+                {/* 1. Đổi giao diện 3D 4K */}
                 {onOpenThemePicker && (
                   <button
                     type="button"
@@ -647,29 +508,17 @@ export default function NotionTopbar({
           )}
         </button>
 
-        {/* DAY / NIGHT SLEEP MODE CONTROLS */}
+        {/* DAY / NIGHT SLEEP MODE CONTROLS (Circular-reveal dark mode #219) */}
         {isDayTheme(currentTheme?.id) ? (
-          <button
-            type="button"
-            onClick={() => {
-              playSound('click');
+          <CircularRevealDarkMode
+            sleepMode={sleepMode}
+            onToggle={() => {
               const nextMode = toggleSleepMode();
               setSleepMode(nextMode);
             }}
-            className={`hidden sm:flex w-8 h-8 rounded-lg items-center justify-center transition-all shadow-2xs cursor-pointer border shrink-0 ${
-              sleepMode === 'dark'
-                ? 'bg-indigo-950/90 text-indigo-100 border-indigo-400/50 hover:bg-indigo-900'
-                : 'bg-amber-100 text-amber-900 border-amber-300 hover:bg-amber-200'
-            }`}
-            title={
-              sleepMode === 'dark'
-                ? 'Chế độ Ban đêm. Bấm chuyển sang Ban ngày ☀️'
-                : 'Chế độ Ban ngày. Bấm chuyển sang Ban đêm 🌙'
-            }
-            aria-label="Chế độ Ban đêm / Ban ngày"
-          >
-            <span className="text-xs select-none">{sleepMode === 'dark' ? '🌙' : '☀️'}</span>
-          </button>
+            playSound={playSound}
+            className="hidden sm:grid shrink-0"
+          />
         ) : null}
 
         {/* DIRECT CHAT & FRIENDS BUTTON */}

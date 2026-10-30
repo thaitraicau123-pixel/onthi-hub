@@ -1,10 +1,10 @@
 // =========================================================================
-// ONTHIHUB PWA SERVICE WORKER (v3.0)
-// Cung cấp trải nghiệm ứng dụng di động nguyên bản (Native-like Mobile App)
+// PROMPTMMO PWA SERVICE WORKER (v7.0)
+// Chợ Prompt & AI Skills Thực Chiến Cho Creator & Dân MMO
 // Luôn ưu tiên bản mới nhất từ mạng (Network-First) và tự động dự phòng Offline
 // =========================================================================
 
-const CACHE_NAME = 'onthi-pwa-v6.1';
+const CACHE_NAME = 'promptmmo-pwa-v7.0';
 
 const STATIC_PRECACHE = [
   '/',

@@ -13,15 +13,15 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
           <div className="lg:col-span-7 space-y-3">
             <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-md bg-[#f4f0f7] dark:bg-purple-950/70 border border-[#e3d7ec] dark:border-purple-500/40 text-[#9065b0] dark:text-purple-300 text-[11px] font-semibold">
               <Sparkles className="w-3.5 h-3.5 text-[#9065b0] dark:text-purple-300" />
-              <span>GÓI TIẾT KIỆM ĐƯỢC 78% HỌC VIÊN LỰA CHỌN</span>
+              <span>GÓI VIP ALL-ACCESS ĐƯỢC 85% DÂN MMO LỰA CHỌN</span>
             </div>
 
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#37352f] dark:text-white leading-snug">
-              Sở Hữu Trọn Đời Tất Cả Tài Liệu & Flashcard
+              Sở Hữu Trọn Đời Toàn Bộ Kho Prompt & AI Skills MMO
             </h2>
 
             <p className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-              Mở khóa toàn bộ kho tài liệu Công chức 2026, IT và Ngoại ngữ với 1 lần thanh toán duy nhất bằng Xu trong ví. Nhận toàn bộ bản cập nhật đề thi mới suốt năm.
+              Mở khóa toàn bộ kho Prompt Video AI (Higgsfield/Kling), Ảnh Studio (Flux/Midjourney), Kịch bản TikTok Shop và Workflow N8N với 1 lần thanh toán duy nhất 99 Xu. Nhận toàn bộ Prompt cập nhật hàng tuần trọn đời.
             </p>
 
             {/* Checkmark List */}

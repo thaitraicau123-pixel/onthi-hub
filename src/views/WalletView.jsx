@@ -157,10 +157,10 @@ export default function WalletView({ user, onBalanceUpdated }) {
       <div className="space-y-2 pb-3 border-b border-[#e9e9e8] dark:border-white/10">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight flex items-center gap-2.5">
           <span>🪙</span>
-          <span>Ví Xu & Giao Dịch</span>
+          <span>Ví Xu & Cổng Giao Dịch PromptMMO</span>
         </h1>
         <p className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 font-normal">
-          Quản lý số dư Xu cá nhân, nạp tiền tự động qua VietQR và rút doanh thu bán bộ thẻ.
+          Quản lý số dư Xu cá nhân, nạp tiền tự động qua VietQR mở khóa Prompt & rút doanh thu bán Prompt về ngân hàng.
         </p>
       </div>
 

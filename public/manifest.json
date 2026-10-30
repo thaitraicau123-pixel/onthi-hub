@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
   "id": "/?source=pwa",
-  "name": "ÔnThiHub - Nền Tảng Ôn Thi & Flashcard Anki",
-  "short_name": "ÔnThiHub",
-  "description": "Kho Flashcard Anki thông minh và Bộ đề thi tuyển dụng Công chức, IT, Ngoại ngữ chuẩn 2026.",
+  "name": "PromptMMO - Chợ Prompt & AI Skills Thực Chiến",
+  "short_name": "PromptMMO",
+  "description": "Chợ mua bán Prompt Video AI, Ảnh Studio, Kịch bản TikTok Shop và Workflow N8N tự động hóa cho Creator & Dân MMO.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",

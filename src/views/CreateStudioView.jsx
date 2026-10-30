@@ -41,72 +41,59 @@ import confetti from 'canvas-confetti';
 
 const INSTANT_STUDIO_PRESETS = [
   {
-    id: 'cbcc-2026',
-    title: 'Bộ Thẻ Trọng Tâm Luật Cán Bộ, Công Chức 2026',
-    category: 'cong-chuc',
-    topic: 'Trọng tâm Luật Cán bộ, công chức 2008 & Luật sửa đổi 2019',
-    badge: '🏛️ Thi Công Chức Vòng 1',
-    highlight: 'Hỏi - Đáp Trực Diện',
-    notes: `1. Nghĩa vụ của cán bộ, công chức đối với Đảng, Nhà nước và nhân dân: Trung thành với Đảng, Nhà nước; tôn trọng và tận tụy phục vụ nhân dân; chấp hành nghiêm chỉnh đường lối, chủ trương chính sách.
-2. Thời gian tập sự: 12 tháng đối với ngạch chuyên viên hoặc tương đương; 06 tháng đối với ngạch cán sự hoặc nhân viên.
-3. Các hình thức kỷ luật đối với công chức không giữ chức vụ lãnh đạo: Khiển trách, Cảnh cáo, Hạ bậc lương, Buộc thôi việc (không còn hình thức giáng chức hoặc cách chức).
-4. Nguyên tắc quản lý cán bộ, công chức: Bảo đảm sự lãnh đạo của Đảng; kết hợp giữa tiêu chuẩn chức danh với vị trí việc làm; thực hiện nguyên tắc tập trung dân chủ.`,
-    extractionMode: 'qa',
-    answerLength: 'balanced',
-    cardCount: 4
-  },
-  {
-    id: 'ielts-75',
-    title: 'IELTS 7.5+ Master Collocations: Technology & Environment',
-    category: 'ngoai-ngu',
-    topic: 'High-Yield Collocations for IELTS Speaking & Writing Band 7.5+',
-    badge: '🌍 IELTS Band 7.5+',
-    highlight: 'Kèm Ngữ Cảnh & Ví Dụ',
-    notes: `1. Mitigate environmental degradation: Giảm thiểu sự suy thoái môi trường. Example: Governments must subsidize green energy to mitigate environmental degradation.
-2. Spur technological innovation: Thúc đẩy đổi mới công nghệ mang tính đột phá. Example: AI advancements have spurred technological innovation across healthcare.
-3. Exert a detrimental impact on: Gây ảnh hưởng tiêu cực sâu sắc lên điều gì đó. Example: Unchecked screen time exerts a detrimental impact on cognitive development.
-4. Paradigm shift: Một sự thay đổi mang tính cách mạng về tư duy / mô hình. Example: Remote work represents a fundamental paradigm shift in modern employment.`,
-    extractionMode: 'auto',
-    answerLength: 'detailed',
-    cardCount: 4
-  },
-  {
-    id: 'system-design',
-    title: 'System Design & Backend Architecture Flashcards',
-    category: 'it-tech',
-    topic: 'Phỏng vấn System Design: Caching, Concurrency & Database Scaling',
-    badge: '💻 IT & System Design',
-    highlight: 'Chuẩn Phỏng Vấn Tech',
-    notes: `1. Cache-Aside (Lazy Loading) Pattern là gì và hoạt động ra sao?
-Đáp án: Ứng dụng đọc dữ liệu trực tiếp từ Cache trước; nếu Cache Miss thì truy vấn Database rồi ghi ngược lại vào Cache. Ưu điểm: Chỉ cache dữ liệu thực sự cần; Nhược điểm: Cache Miss lần đầu tốn thời gian.
-2. Cache Stampede (Thundering Herd) là gì và cách phòng chống?
-Đáp án: Xảy ra khi một Key hot hết hạn (TTL) khiến hàng nghìn request đồng thời ập vào Database. Khắc phục: Sử dụng Mutex Lock / Promise Coalescing hoặc Probabilistic Early Expiration (XFetch).
-3. Database Sharding vs Partitioning khác nhau thế nào?
-Đáp án: Partitioning chia nhỏ bảng trong cùng một Database Engine (Horizontal/Vertical). Sharding chia dữ liệu ra nhiều server vật lý hoặc node Database độc lập để mở rộng theo chiều ngang.
-4. CAP Theorem phát biểu điều gì trong hệ thống phân tán?
-Đáp án: Một hệ thống phân tán chỉ có thể đồng thời thỏa mãn tối đa 2 trong 3 yếu tố: C (Consistency - Nhất quán), A (Availability - Sẵn sàng), P (Partition Tolerance - Chịu chia cắt mạng).`,
-    extractionMode: 'qa',
-    answerLength: 'balanced',
-    cardCount: 4
-  },
-  {
-    id: 'y-duoc-2023',
-    title: 'Trọng Tâm Điểm Mới Luật Khám Chữa Bệnh Số 15/2023/QH15',
-    category: 'cong-chuc',
-    topic: 'Luật Khám bệnh, chữa bệnh 2023 & Quy chế chuyên môn ngành Y',
-    badge: '🏥 Công Chức Ngành Y',
-    highlight: 'Quy Chế & Đánh Giá NL',
-    notes: `1. Giấy phép hành nghề khám bệnh, chữa bệnh có thời hạn bao lâu theo Luật 2023?
-Đáp án: Giấy phép hành nghề có thời hạn 05 năm (thay vì cấp một lần vô thời hạn như Luật 2009). Để gia hạn phải cập nhật kiến thức y khoa liên tục (CME).
-2. Điều kiện để được cấp mới giấy phép hành nghề khám chữa bệnh từ năm 2024?
-Đáp án: Người hành nghề phải trải qua kỳ kiểm tra đánh giá năng lực hành nghề do Hội đồng Y khoa Quốc gia tổ chức (ngoại trừ một số giai đoạn chuyển tiếp).
-3. Quyền được từ chối khám bệnh, chữa bệnh của người hành nghề trong trường hợp nào?
-Đáp án: Khi việc khám chữa bệnh trái quy định pháp luật hoặc đạo đức nghề nghiệp; khi người bệnh hoặc thân nhân có hành vi xâm hại thân thể, nhân phẩm của nhân viên y tế (trừ trường hợp cấp cứu).
-4. Phân cấp chuyên môn kỹ thuật trong khám chữa bệnh gồm mấy cấp?
-Đáp án: Gồm 3 cấp: Cấp khám bệnh chữa bệnh ban đầu, Cấp khám bệnh chữa bệnh cơ bản, và Cấp khám bệnh chữa bệnh chuyên sâu.`,
+    id: 'higgsfield-cinematic-preset',
+    title: 'Bộ Prompt Video AI Điện Ảnh 8K (Higgsfield & Kling 1.5)',
+    category: 'video-ai',
+    topic: 'Prompt Cinematic Drone, Hyperlapse, Neon Cyberpunk và CGI Motion',
+    badge: '🎬 Video Triệu View',
+    highlight: 'Kèm Tham Số Camera',
+    notes: `1. Cinematic Cyberpunk Drone Hyperlapse: Cinematic ultra-wide drone shot flying rapidly through a futuristic Tokyo cyberpunk cityscape at heavy midnight rain, towering neon holograms reflecting on wet asphalt, flying cars passing by, volumetric fog, anamorphic lens flare, photorealistic 8k octane render --ar 16:9 --motion 7
+2. Quái Thú Thần Thoại Biển Đêm: Colossal mythical leviathan serpent emerging slowly from stormy turbulent ocean waves at night, bioluminescent glowing turquoise scales, lightning strikes illuminating dark clouds, 60fps slow motion, IMAX 70mm film stock --ar 16:9 --motion 5
+3. Cận Cảnh Cà Phê Rót Chậm: Extreme macro close-up slow motion shot of rich golden espresso dripping into clear glass cup, velvety crema swirling, steam rising gently in warm morning sunlight, commercial advertisement aesthetic --ar 9:16 --motion 4`,
     extractionMode: 'qa',
     answerLength: 'detailed',
-    cardCount: 4
+    cardCount: 3
+  },
+  {
+    id: 'flux-midjourney-preset',
+    title: 'Bộ Prompt Ảnh Mẫu Thời Trang & Mockup Sản Phẩm Studio',
+    category: 'image-ai',
+    topic: 'Prompt Flux.1 Dev & Midjourney v6.1 thương mại chuẩn catalog',
+    badge: '🎨 Ảnh Studio 8K',
+    highlight: 'Mockup Chốt Đơn',
+    notes: `1. Mockup Serum Mỹ Phẩm Sang Trọng: Commercial product photography of a frosted amber glass cosmetic serum bottle resting on wet natural marble stone slab, pure water splashes and micro droplets, soft studio rim lighting, Hasselblad H6D-100c 100mm macro --ar 3:4 --v 6.1 --style raw
+2. Người Mẫu Nữ Á Đông Đầm Dạ Hội: Editorial fashion shoot of a 24-year-old elegant Vietnamese model wearing an emerald satin evening gown, contemporary sunlit art gallery, soft natural diffused daylight, genuine skin texture, Canon EOS R5 85mm f/1.4, Vogue style --ar 4:5 --v 6.1 --style raw
+3. Giày Sneaker Cyber Bay Lơ Lửng: Dynamic commercial photo of a futuristic neon cyber-running sneaker suspended mid-air at 45 degree angle, colorful powder explosion around sole, sharp cyan magenta rim light --ar 1:1 --v 6.1`,
+    extractionMode: 'qa',
+    answerLength: 'detailed',
+    cardCount: 3
+  },
+  {
+    id: 'tiktok-viral-script-preset',
+    title: 'Bộ Kịch Bản Video Ngắn TikTok Triệu View & Hook 3 Giây',
+    category: 'copy-mmo',
+    topic: 'Kịch bản phân cảnh 2 cột Visual & Voiceover, kỹ thuật kéo tương tác',
+    badge: '✍️ Kịch Bản Chốt Đơn',
+    highlight: 'Hook & Phân Cảnh',
+    notes: `1. Prompt 10 Câu Hook 3 Giây Mở Đầu: Viết 10 câu Hook mở đầu video ngắn dưới 15 chữ theo 5 phong cách: Tấn công nỗi đau, lật ngược sai lầm, bí mật ngành, so sánh sốc và tò mò thị giác.
+2. Kịch Bản 60 Giây Bảng 2 Cột: Bảng 2 cột Visual mô tả hành động đạo cụ góc máy + Audio lời thoại từng giây kèm SFX tiếng chuông và kêu gọi bấm vào giỏ hàng góc trái.
+3. Kịch Bản MC Livestream Tung Deal 1K: Kịch bản nói dồn dập 15 phút đẩy deal giờ vàng, đếm ngược 5-4-3-2-1 tạo FOMO và thông báo chỉ còn 3 suất cuối.`,
+    extractionMode: 'qa',
+    answerLength: 'balanced',
+    cardCount: 3
+  },
+  {
+    id: 'n8n-automation-preset',
+    title: 'Bộ Workflow N8N & AI Agent Tự Động Hóa MMO 24/7',
+    category: 'skills-automation',
+    topic: 'Workflow cào sản phẩm Shopee, viết bài Facebook tự động',
+    badge: '⚡ AI Auto 24/7',
+    highlight: 'Import JSON 1-Click',
+    notes: `1. AI Sales Agent Fanpage: System prompt cho Agent tiếp nhận câu hỏi khách hàng, tư vấn sản phẩm, thu thập thông tin nhận hàng và tự động sinh mã QR thanh toán VietQR gửi cho khách.
+2. N8N Quét Top Bán Chạy & Auto Đăng Bài: Workflow chạy 6h sáng cào sản phẩm hot trend hoa hồng >15%, dùng AI sinh 3 bài viết kèm link affiliate và đẩy sang Telegram báo cáo.`,
+    extractionMode: 'qa',
+    answerLength: 'balanced',
+    cardCount: 2
   }
 ];
 

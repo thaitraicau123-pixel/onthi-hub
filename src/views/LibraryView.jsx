@@ -109,11 +109,11 @@ export default function LibraryView({
         <div className="flex items-start justify-between flex-wrap gap-2">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight flex items-center gap-2.5">
-              <span>📚</span>
-              <span>Tủ Thẻ & Tài Liệu Của Tôi</span>
+              <span>📁</span>
+              <span>Kho Prompt & AI Skills Của Tôi</span>
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-              Lưu trữ vĩnh viễn trên thiết bị của bạn ({unlockedList.length} bộ tài liệu). Bắt đầu học ngay hoặc xuất file nạp vào Anki.
+              Lưu trữ vĩnh viễn ({unlockedList.length} bộ Prompt đã sở hữu). Xem chi tiết câu lệnh tiếng Anh và 1-Click Copy vào Higgsfield, Midjourney, N8N.
             </p>
           </div>
 

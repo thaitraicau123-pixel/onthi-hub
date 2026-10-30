@@ -110,6 +110,7 @@ export default function FlashcardModal({
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
   const [copiedAiText, setCopiedAiText] = useState(false);
+  const [copiedPrompt, setCopiedPrompt] = useState(false);
 
   // SRS Stats
   const [_reviewedStats, setReviewedStats] = useState({ again: 0, hard: 0, good: 0, easy: 0 });
@@ -318,6 +319,34 @@ export default function FlashcardModal({
     playSound('success');
     setCopiedAiText(true);
     setTimeout(() => setCopiedAiText(false), 2500);
+  };
+
+  const handleCopyPrompt = async (text) => {
+    if (!text) return;
+    let promptText = text;
+    const match = text.match(/PROMPT:\s*([\s\S]*?)(?=\n\n📌|\n\n💡|$)/i);
+    if (match && match[1].trim()) {
+      promptText = match[1].trim();
+    }
+    try {
+      await navigator.clipboard.writeText(promptText);
+      playSound('success');
+      setCopiedPrompt(true);
+      setShareToast('📋 Đã sao chép Prompt thành công! Dán ngay vào Higgsfield, Midjourney hoặc Claude.');
+      try {
+        confetti({ particleCount: 35, spread: 50, origin: { y: 0.3 } });
+      } catch (e) {}
+      setTimeout(() => {
+        setCopiedPrompt(false);
+        setShareToast('');
+      }, 3500);
+    } catch (err) {
+      try {
+        navigator.clipboard.writeText(text);
+        setCopiedPrompt(true);
+        setTimeout(() => setCopiedPrompt(false), 2500);
+      } catch (e) {}
+    }
   };
 
   // Rate spaced repetition
@@ -890,8 +919,8 @@ export default function FlashcardModal({
               >
                 {/* Top Row: Tag Badge + Action Buttons */}
                 <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 tracking-wide uppercase">
-                    {parsedFront.tag || 'Câu Hỏi'}
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 tracking-wide uppercase">
+                    {parsedFront.tag || 'Prompt Mẫu'}
                   </span>
                   
                   <div className="flex items-center space-x-1.5">
@@ -912,25 +941,10 @@ export default function FlashcardModal({
                         e.stopPropagation();
                         handleSpeak(currentCard.front);
                       }}
-                      className="p-2 text-slate-400 hover:text-sky-300 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
-                      title="Đọc câu hỏi"
+                      className="p-2 text-slate-400 hover:text-amber-300 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
+                      title="Đọc thông tin prompt"
                     >
                       <Volume2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleStartVoiceCheck();
-                      }}
-                      className={`p-2 rounded-xl transition-colors cursor-pointer ${
-                        isListening
-                          ? 'bg-rose-500 text-white animate-pulse'
-                          : 'text-slate-400 hover:text-rose-300 hover:bg-slate-700/80'
-                      }`}
-                      title={isListening ? 'Đang lắng nghe... Bấm để dừng' : 'Nói đáp án (Vấn đáp bằng giọng nói AI)'}
-                    >
-                      {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
@@ -943,22 +957,22 @@ export default function FlashcardModal({
                 </div>
 
                 {/* Flip Hint */}
-                <div className="text-center text-xs text-sky-400/90 flex items-center justify-center space-x-2 font-medium">
-                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-sky-400" />
-                  <span>Chạm hoặc bấm [Phím Cách] để lật đáp án</span>
+                <div className="text-center text-xs text-amber-400/90 flex items-center justify-center space-x-2 font-medium">
+                  <RotateCw className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-500 text-amber-400" />
+                  <span>Chạm hoặc bấm [Phím Cách] để xem câu lệnh Prompt & thông số kỹ thuật</span>
                 </div>
               </div>
 
               {/* ================= BACK SIDE ================= */}
               <div
-                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-[#1e293b]/95 border-2 border-indigo-500/60 shadow-[0_16px_40px_rgba(99,102,241,0.25)] backdrop-blur-xl transition-opacity duration-200 ${
+                className={`absolute inset-0 backface-hidden rotate-y-180 p-6 sm:p-8 flex flex-col justify-between rounded-3xl bg-[#1e293b]/95 border-2 border-amber-500/60 shadow-[0_16px_40px_rgba(245,158,11,0.25)] backdrop-blur-xl transition-opacity duration-200 ${
                   isFlipped ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
                 }`}
               >
                 {/* Top Row: Answer Badge + Action Buttons */}
                 <div className="flex items-center justify-between">
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tracking-wide uppercase">
-                    ✨ Đáp Án & Căn Cứ
+                    ✨ Câu Lệnh Prompt & Tham Số
                   </span>
 
                   <div className="flex items-center space-x-1.5">
@@ -977,27 +991,41 @@ export default function FlashcardModal({
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleSpeak(currentCard.back);
+                        handleCopyPrompt(currentCard.back);
                       }}
-                      className="p-2 text-indigo-400 hover:text-indigo-300 hover:bg-slate-700/80 rounded-xl transition-colors cursor-pointer"
-                      title="Đọc đáp án"
+                      className="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-bold text-xs flex items-center space-x-1 transition-all shadow-sm cursor-pointer"
+                      title="Sao chép prompt"
                     >
-                      <Volume2 className="w-4 h-4" />
+                      {copiedPrompt ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5 text-white" />}
+                      <span>{copiedPrompt ? 'Đã Copy!' : 'Copy'}</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Answer Text */}
-                <div className="my-auto py-3 max-h-[190px] overflow-y-auto px-2">
-                  <div className="text-base sm:text-lg text-slate-100 leading-relaxed whitespace-pre-line font-medium text-left sm:text-center">
-                    {currentCard.back || (cards.length === 0 ? 'Chưa có đáp án' : 'Trống')}
+                <div className="my-auto py-3 max-h-[170px] overflow-y-auto px-2">
+                  <div className="text-sm sm:text-base text-slate-100 leading-relaxed whitespace-pre-line font-mono bg-slate-900/60 p-3 rounded-xl border border-slate-700/60 text-left">
+                    {currentCard.back || (cards.length === 0 ? 'Chưa có prompt' : 'Trống')}
                   </div>
                 </div>
 
+                {/* 1-Click Copy Banner Button */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCopyPrompt(currentCard.back);
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-extrabold text-xs flex items-center justify-center space-x-2 shadow-lg active:scale-95 transition-all cursor-pointer"
+                >
+                  {copiedPrompt ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4 text-white" />}
+                  <span>{copiedPrompt ? '🎉 ĐÃ SAO CHÉP PROMPT THÀNH CÔNG!' : '📋 SAO CHÉP PROMPT 1-CHẠM'}</span>
+                </button>
+
                 {/* Flip Back Hint */}
-                <div className="text-center sm:text-right text-xs text-indigo-400 font-medium flex items-center justify-center sm:justify-end space-x-1.5">
-                  <RotateCw className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Chạm để lật lại câu hỏi</span>
+                <div className="text-center sm:text-right text-[11px] text-slate-400 font-medium flex items-center justify-center sm:justify-end space-x-1.5 pt-1">
+                  <RotateCw className="w-3 h-3 text-slate-400" />
+                  <span>Chạm để lật lại tên Prompt</span>
                 </div>
               </div>
 

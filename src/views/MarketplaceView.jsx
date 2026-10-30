@@ -233,10 +233,10 @@ export default function MarketplaceView({
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight flex items-center gap-2.5">
               <span>🏪</span>
-              <span>Chợ Thẻ & Sàn Flashcard C2C</span>
+              <span>Chợ Prompt & Sàn AI Skills C2C</span>
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed max-w-xl">
-              Sàn thương mại điện tử trao đổi, mua bán và pass lại bộ thẻ flashcard giữa học viên. Hỗ trợ rút tiền thật về VietQR và mở túi mù nhận quà.
+              Sàn giao dịch C2C trao đổi, mua bán Prompt AI, kịch bản video và Workflow tự động giữa Creator & Dân MMO. Hỗ trợ rút tiền Xu thật về VietQR 24/7.
             </p>
           </div>
 
@@ -247,16 +247,16 @@ export default function MarketplaceView({
               className="px-3 py-1.5 bg-[#fbf3db] dark:bg-amber-950/80 hover:bg-[#f6ebd0] dark:hover:bg-amber-900 text-[#976d57] dark:text-amber-300 border border-[#f4e4b7] dark:border-amber-500/40 rounded-lg text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
             >
               <Gift className="w-3.5 h-3.5 text-[#cc782f] dark:text-amber-400" />
-              <span>🎁 Khui Túi Mù (5 Xu)</span>
+              <span>🎁 Túi Mù May Mắn (5 Xu)</span>
             </button>
 
             <button
               type="button"
               onClick={onOpenCreateDeck}
-              className="px-3.5 py-1.5 bg-[#2383e2] hover:bg-[#1a73e8] text-white rounded-lg text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Đăng Bán Bộ Thẻ</span>
+              <span>Đăng Bán Prompt Mới</span>
             </button>
           </div>
         </div>
