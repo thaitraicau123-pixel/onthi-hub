@@ -212,7 +212,7 @@ export default function BlindBoxModal({
                   {recentWinners[0]?.user} vừa trúng <strong className="text-amber-700 dark:text-amber-400">{recentWinners[0]?.reward}</strong> ({recentWinners[0]?.time})
                 </>
               ) : (
-                '100% mở hộp nhận thưởng thật: Xu hoàn lại, vé tạo thẻ AI Studio và bộ thẻ chuẩn thi!'
+                '100% mở hộp nhận thưởng thật: Xu hoàn lại, vé tạo prompt AI Studio và gói prompt chuẩn MMO!'
               )}
             </span>
           </div>
@@ -242,7 +242,7 @@ export default function BlindBoxModal({
                 </span>
               </div>
               <p className="text-xs text-[#787774] dark:text-slate-400">
-                Khui quà 100% nhận thật: Hoàn Xu có lãi, tặng vé tạo thẻ AI Studio, mở khóa trọn bộ đề thi và Jackpot 150 Xu!
+                Khui quà 100% nhận thật: Hoàn Xu có lãi, tặng vé tạo Prompt AI Studio, mở khóa trọn bộ Prompt đỉnh cao và Jackpot 150 Xu!
               </p>
             </div>
           </div>
@@ -458,7 +458,7 @@ export default function BlindBoxModal({
                 </div>
 
                 <p className="text-[10px] text-[#787774] dark:text-slate-400 mt-2">
-                  Cam kết 100% phần thưởng thực tế: Tự động cộng Xu vào ví, mở khóa bộ thẻ vào Tủ Của Tôi, hoặc tặng lượt tạo AI ngay lập tức!
+                  Cam kết 100% phần thưởng thực tế: Tự động cộng Xu vào ví, mở khóa gói Prompt vào Kho Của Tôi, hoặc tặng lượt tạo AI ngay lập tức!
                 </p>
 
               </div>

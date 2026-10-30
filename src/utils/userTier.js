@@ -24,7 +24,7 @@ export const DEFAULT_TIER_LIMITS = {
     badge: 'Thành Viên Plus ⭐'
   },
   pro: {
-    name: 'Gói Pro (Chuyên Sâu & Luyện Thi)',
+    name: 'Gói Pro (Chuyên Sâu & MMO Thực Chiến)',
     dailyLimit: 50,       // 50 lượt tạo mỗi ngày
     checkInBonus: 3,      // Điểm danh tặng 3 lượt
     marketplaceFee: 7,    // Phí sàn 7%
@@ -143,7 +143,7 @@ export function getUserQuota() {
   }
 }
 
-// Consume quota when creating a flashcard deck
+// Consume quota when creating a prompt deck
 export function consumeUserQuota(count = 1) {
   const quotaInfo = getUserQuota();
   if (quotaInfo.remaining < count) return false;
@@ -177,7 +177,7 @@ export function performDailyCheckIn() {
   // Lưu vết thời gian điểm danh vào hệ thống Giờ Hà Nội
   recordStudyTimeLog({
     type: 'checkin',
-    title: 'Điểm danh hàng ngày nhận thưởng lượt tạo thẻ',
+    title: 'Điểm danh hàng ngày nhận thưởng lượt tạo Prompt Studio',
     durationMinutes: 1,
     xpGained: 25
   });
@@ -185,7 +185,7 @@ export function performDailyCheckIn() {
   return {
     success: true,
     bonus: bonusAmount,
-    message: `🎉 Điểm danh thành công! Bạn được cộng thêm +${bonusAmount} lượt tạo thẻ Flashcard hôm nay!`
+    message: `🎉 Điểm danh thành công! Bạn được cộng thêm +${bonusAmount} lượt tạo Prompt Studio hôm nay!`
   };
 }
 

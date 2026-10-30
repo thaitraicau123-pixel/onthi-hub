@@ -96,7 +96,7 @@ function CourseCard({
                 }
               }}
               className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-[#2383e2] dark:hover:text-sky-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-              title="Sao chép đường dẫn chia sẻ bộ thẻ này"
+              title="Sao chép đường dẫn chia sẻ gói prompt này"
             >
               {copiedLink ? (
                 <>
@@ -119,7 +119,7 @@ function CourseCard({
                   onOpenDirectChat(null, course);
                 }}
                 className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium text-slate-500 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/60 transition-colors cursor-pointer"
-                title="Gửi đính kèm bộ thẻ này vào tin nhắn trò chuyện hoặc hỏi Admin"
+                title="Gửi đính kèm gói prompt này vào tin nhắn trò chuyện hoặc hỏi Admin"
               >
                 <MessageCircle className="w-3 h-3" />
                 <span className="hidden sm:inline">Gửi chat</span>

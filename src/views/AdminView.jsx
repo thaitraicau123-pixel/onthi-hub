@@ -205,8 +205,8 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     setDesktopNotifStatus(perm);
     if (perm === 'granted') {
       sendBrowserDesktopNotification({
-        title: '🔔 [OnThiHub] Thông báo đẩy đã kích hoạt!',
-        body: 'Máy tính của anh sẽ reo chuông và hiện thông báo ngay khi có học viên nạp hoặc rút Xu.'
+        title: '🔔 [PromptMMO] Thông báo đẩy đã kích hoạt!',
+        body: 'Máy tính của anh sẽ reo chuông và hiện thông báo ngay khi có Creator nạp hoặc rút Xu.'
       });
       playSound('success');
     }
@@ -596,7 +596,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
   };
 
   const handleDeleteDeck = (deckId, title) => {
-    if (window.confirm(`Bạn có chắc chắn muốn XÓA VĨNH VIỄN bộ thẻ "${title || deckId}" khỏi Sàn Chợ Thẻ không?\nThao tác này sẽ xóa đồng bộ trên tất cả thiết bị của học viên.`)) {
+    if (window.confirm(`Bạn có chắc chắn muốn XÓA VĨNH VIỄN gói Prompt "${title || deckId}" khỏi Chợ Prompt MMO không?\nThao tác này sẽ xóa đồng bộ trên tất cả thiết bị của Creator.`)) {
       deleteMarketplaceDeck(deckId);
       playSound('flip');
       reloadData();
@@ -605,7 +605,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
 
   // Community Moderation Actions (Admin Control)
   const handleAdminDeletePost = async (postId, author) => {
-    if (window.confirm(`[Admin] Bạn có chắc chắn muốn XÓA VĨNH VIỄN bài viết của "${author || 'người dùng'}" (#${postId}) không?\nBài viết sẽ bị xóa khỏi diễn đàn và đồng bộ trên tất cả thiết bị của học viên.`)) {
+    if (window.confirm(`[Admin] Bạn có chắc chắn muốn XÓA VĨNH VIỄN bài viết của "${author || 'người dùng'}" (#${postId}) không?\nBài viết sẽ bị xóa khỏi diễn đàn và đồng bộ trên tất cả thiết bị của thành viên.`)) {
       playSound('flip');
       const updated = await deleteCommunityPost(postId);
       setCommunityPosts(updated);
@@ -644,7 +644,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(communityPosts, null, 2));
     const downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `onthi_community_posts_${new Date().toISOString().slice(0, 10)}.json`);
+    downloadAnchor.setAttribute("download", `promptmmo_community_posts_${new Date().toISOString().slice(0, 10)}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -757,7 +757,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
     saveGeminiApiKey(geminiApiKey);
     saveOpenAIApiKey(openaiApiKey);
     playSound('success');
-    setAiSaveMsg('✅ Đã lưu cấu hình API Key AI thành công! Toàn bộ học viên sẽ dùng key này khi tạo thẻ.');
+    setAiSaveMsg('✅ Đã lưu cấu hình API Key AI thành công! Toàn bộ thành viên sẽ dùng key này khi tạo Prompt AI.');
     setTimeout(() => setAiSaveMsg(''), 4000);
   };
 
@@ -899,7 +899,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
             }`}
           >
             <Users className="w-4 h-4 text-emerald-500" />
-            <span>Bảng Trạng Thái & Quản Lý Học Viên</span>
+            <span>Bảng Trạng Thái & Quản Lý Thành Viên</span>
             {totalPendingUsersCount > 0 ? (
               <span className="px-2 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-black animate-pulse">
                 {totalPendingUsersCount} chờ duyệt
@@ -1032,7 +1032,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
             }`}
           >
             <Cpu className="w-4 h-4 text-cyan-600" />
-            <span>Thẻ API Key AI (ÔnThiHub Cloud)</span>
+            <span>Thẻ API Key AI (PromptMMO Cloud)</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
               hasValidAiKey() ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
             }`}>
@@ -1044,7 +1044,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
         {/* TAB CONTENTS */}
         <div className="p-6 sm:p-8">
           
-          {/* TAB 0: CHI TIẾT SỐ DƯ HỌC VIÊN & DUYỆT NẠP/RÚT */}
+          {/* TAB 0: CHI TIẾT SỐ DƯ THÀNH VIÊN & DUYỆT NẠP/RÚT */}
           {activeTab === 'user_balances' && (
             <div className="space-y-6">
               {/* BẢNG TRẠNG THÁI & CHỈ SỐ HỆ THỐNG (STATUS DASHBOARD) */}
@@ -1053,7 +1053,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   <div className="flex items-center space-x-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                     <h3 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                      Bảng Trạng Thái & Thống Kê Học Viên
+                      Bảng Trạng Thái & Thống Kê Thành Viên
                     </h3>
                   </div>
                   <div className="hidden sm:flex items-center space-x-2 text-[11px] font-bold text-slate-500 dark:text-slate-400">
@@ -1064,14 +1064,14 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-                  {/* 1. Tổng Học Viên */}
+                  {/* 1. Tổng Thành Viên */}
                   <div className="p-3.5 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-[#2383e2] dark:text-sky-400 flex items-center justify-center shrink-0 border border-blue-200/60 dark:border-blue-900/40">
                       <Users className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
                       <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                        Tổng Học Viên
+                        Tổng Thành Viên
                       </span>
                       <strong className="text-base font-black text-slate-900 dark:text-white block truncate">
                         {totalUsersCount} nick
@@ -1350,7 +1350,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
               ) : filteredUsers.length === 0 ? (
                 <div className="text-center py-16 bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800">
                   <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
-                  <p className="text-sm font-black text-slate-700 dark:text-slate-300">Không tìm thấy học viên nào phù hợp bộ lọc.</p>
+                  <p className="text-sm font-black text-slate-700 dark:text-slate-300">Không tìm thấy thành viên nào phù hợp bộ lọc.</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Hãy thử xóa từ khóa tìm kiếm hoặc chọn bộ lọc "Tất Cả".</p>
                 </div>
               ) : userViewMode === 'table' ? (
@@ -1360,7 +1360,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                     <table className="w-full text-left text-xs border-collapse">
                       <thead className="bg-slate-100 dark:bg-slate-800/90 border-b border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 uppercase tracking-wider font-black">
                         <tr>
-                          <th className="p-3.5 whitespace-nowrap">Học Viên</th>
+                          <th className="p-3.5 whitespace-nowrap">Thành Viên / Creator</th>
                           <th className="p-3.5 whitespace-nowrap">Email</th>
                           <th className="p-3.5 whitespace-nowrap">Số Dư Ví</th>
                           <th className="p-3.5 whitespace-nowrap">Cấp Bậc (Tier)</th>
@@ -1380,7 +1380,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                                 u.hasPending ? 'bg-amber-50/50 dark:bg-amber-950/20' : ''
                               }`}
                             >
-                              {/* Cột 1: Học Viên */}
+                              {/* Cột 1: Thành Viên / Creator */}
                               <td className="p-3.5">
                                 <div className="flex items-center space-x-2.5">
                                   <img
@@ -1492,7 +1492,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                                     ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                                     : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                                 }`}>
-                                  {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : u.role === 'vip' ? '💎 VIP' : '👨‍🎓 Học Viên'}
+                                  {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🚀 Creator' : u.role === 'vip' ? '💎 VIP' : '🚀 Creator'}
                                 </span>
                               </td>
 
@@ -1587,7 +1587,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                                   <button
                                     onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'deposit', amount: 50, reason: '' })}
                                     className="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/90 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-black text-[11px] transition-colors"
-                                    title="Cộng Xu trực tiếp cho học viên"
+                                    title="Cộng Xu trực tiếp cho thành viên"
                                   >
                                     + Nạp
                                   </button>
@@ -1716,7 +1716,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                                   ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
                                   : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
                               }`}>
-                                {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🎓 Creator' : u.role === 'vip' ? '💎 VIP' : '👨‍🎓 Học Viên'}
+                                {u.role === 'admin' ? '🛡️ Admin' : u.role === 'creator' ? '🚀 Creator' : u.role === 'vip' ? '💎 VIP' : '🚀 Creator'}
                               </span>
 
                               {u.status === 'suspended' ? (
@@ -1816,7 +1816,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                             <div className="flex items-center justify-between text-xs font-black text-amber-900 dark:text-amber-200">
                               <span className="flex items-center space-x-1">
                                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
-                                <span>Lệnh chờ duyệt của học viên này:</span>
+                                <span>Lệnh chờ duyệt của thành viên này:</span>
                               </span>
                               <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200">
                                 {(u.pendingDeposits?.length || 0) + (u.pendingWithdrawals?.length || 0)} lệnh
@@ -1909,7 +1909,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                           <button
                             onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'deposit', amount: 50, reason: '' })}
                             className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/70 dark:hover:bg-emerald-900/90 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-black text-xs flex items-center space-x-1 transition-colors"
-                            title="Admin cộng Xu trực tiếp cho học viên này"
+                            title="Admin cộng Xu trực tiếp cho thành viên này"
                           >
                             <PlusCircle className="w-3.5 h-3.5" />
                             <span>+ Nạp Xu</span>
@@ -1919,7 +1919,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                             onClick={() => setAdjustModal({ isOpen: true, user: u, type: 'withdraw', amount: Math.min(u.currentBalance, 50), reason: '' })}
                             disabled={u.currentBalance <= 0}
                             className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/70 dark:hover:bg-rose-900/90 disabled:opacity-40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-black text-xs flex items-center space-x-1 transition-colors"
-                            title="Admin trừ Xu trực tiếp từ học viên này"
+                            title="Admin trừ Xu trực tiếp từ thành viên này"
                           >
                             <MinusCircle className="w-3.5 h-3.5" />
                             <span>- Trừ Xu</span>
@@ -2030,7 +2030,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 <div className="flex items-center space-x-2">
                   <Database className="w-4 h-4 text-[#2383e2] dark:text-sky-400 shrink-0" />
                   <span>
-                    Tính năng duyệt tiền đã kết nối <strong className="font-bold text-blue-900 dark:text-sky-200">Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của học viên trên mọi thiết bị sẽ được cộng Xu tức thì!
+                    Tính năng duyệt tiền đã kết nối <strong className="font-bold text-blue-900 dark:text-sky-200">Firebase Firestore (onthi-hub)</strong>. Khi bấm "Duyệt", số dư ví của thành viên trên mọi thiết bị sẽ được cộng Xu tức thì!
                   </span>
                 </div>
                 <a
@@ -2180,10 +2180,12 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
           {/* TAB: QUẢN LÝ CỘNG ĐỒNG & XÓA BÀI (ADMIN MODERATION) */}
           {activeTab === 'community' && (() => {
             const catMap = {
-              'cong-chuc': '🏛️ Công Chức',
-              'it': '💻 IT & Tech',
-              'ngoai-ngu': '🌍 Ngoại Ngữ',
-              'meo-thi': '💡 Mẹo Ôn Thi'
+              'video-ai': '🎬 Video AI',
+              'image-ai': '🎨 Ảnh Studio',
+              'copy-mmo': '✍️ Kịch Bản MMO',
+              'skills-automation': '⚡ N8N & Auto',
+              'acc-tools': '🔑 Tool MMO',
+              'meo-thi': '💡 Mẹo & Kỹ Năng MMO'
             };
 
             const filteredPosts = communityPosts.filter((post) => {
@@ -2246,7 +2248,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                       <ThumbsUp className="w-4 h-4 text-rose-500" />
                     </div>
                     <div className="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">{totalLikes}</div>
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Học viên ủng hộ</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-normal">Thành viên ủng hộ</div>
                   </div>
                 </div>
 
@@ -2311,10 +2313,12 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                     <div className="flex items-center gap-1.5 overflow-x-auto text-xs pb-1 sm:pb-0">
                       {[
                         { id: 'all', label: 'Tất Cả' },
-                        { id: 'cong-chuc', label: '🏛️ Công Chức' },
-                        { id: 'it', label: '💻 IT & Tech' },
-                        { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ' },
-                        { id: 'meo-thi', label: '💡 Mẹo Ôn Thi' }
+                        { id: 'video-ai', label: '🎬 Video AI' },
+                        { id: 'image-ai', label: '🎨 Ảnh Studio' },
+                        { id: 'copy-mmo', label: '✍️ Kịch Bản MMO' },
+                        { id: 'skills-automation', label: '⚡ N8N & Auto' },
+                        { id: 'acc-tools', label: '🔑 Tool MMO' },
+                        { id: 'meo-thi', label: '💡 Mẹo & Kỹ Năng MMO' }
                       ].map((cat) => (
                         <button
                           key={cat.id}
@@ -2628,10 +2632,10 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
                     <h4 className="text-sm font-black text-slate-900 dark:text-white">
-                      Quản Lý & Kiểm Duyệt Trùng Lặp Sàn Flashcard C2C
+                      Quản Lý & Kiểm Duyệt Trùng Lặp Chợ Prompt MMO C2C
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
-                      Hệ thống tự động đối chiếu Jaccard & N-gram để phát hiện đạo văn hoặc sao chép thẻ trái phép.
+                      Hệ thống tự động đối chiếu Jaccard & N-gram để phát hiện đạo văn hoặc sao chép câu lệnh trái phép.
                     </p>
                   </div>
 
@@ -2669,7 +2673,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                       }`}
                     >
                       <Repeat className="w-3.5 h-3.5" />
-                      <span>Thẻ Pass ({passCount})</span>
+                      <span>Prompt Pass ({passCount})</span>
                     </button>
 
                     <button
@@ -2688,7 +2692,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
 
                 {filteredDecks.length === 0 ? (
                   <div className="p-8 text-center bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-                    Không có bộ thẻ nào trong danh mục lọc này.
+                    Không có gói Prompt nào trong danh mục lọc này.
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
@@ -2727,7 +2731,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                             <div className="mt-2 p-2 rounded-xl bg-purple-50 dark:bg-purple-950/80 border border-purple-200 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-[11px]">
                               <span className="font-black flex items-center space-x-1">
                                 <Repeat className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
-                                <span>Thẻ Pass C2C từ học viên: {deck.passSellerName}</span>
+                                <span>Prompt Pass C2C từ Creator: {deck.passSellerName}</span>
                               </span>
                               {deck.passNote && (
                                 <span className="text-[10px] text-purple-700 dark:text-purple-300 italic block mt-0.5">
@@ -2785,7 +2789,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                             <button
                               onClick={() => handleDeleteDeck(deck.id, deck.title)}
                               className="px-3 py-1 text-xs font-black rounded-lg bg-rose-600 hover:bg-rose-700 text-white flex items-center space-x-1 transition-colors shadow-xs"
-                              title="Xóa vĩnh viễn bộ thẻ này"
+                              title="Xóa vĩnh viễn gói Prompt này"
                             >
                               <Trash2 className="w-3 h-3" />
                               <span>Xóa</span>
@@ -2820,7 +2824,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                     </div>
                     <p className="text-xs text-teal-800 dark:text-teal-300 leading-relaxed font-medium">
                       Thời gian hiện tại: <strong>{hanoiNow.dayName}, {hanoiNow.fullFormatted}</strong>.
-                      Tất cả các phiên làm bài thi thử, mục tiêu học tập hàng ngày và lịch sử giao dịch đều được ghi nhận chuẩn theo múi giờ Việt Nam.
+                      Tất cả các phiên làm việc, thử thách kỹ năng MMO, mục tiêu hàng ngày và lịch sử giao dịch đều được ghi nhận chuẩn theo múi giờ Việt Nam.
                     </p>
                   </div>
 
@@ -2837,10 +2841,10 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   <div className="p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/90 flex items-center justify-between">
                     <div>
                       <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-                        Nhật Ký Vết Thời Gian Học Tập ({studyLogs.length})
+                        Nhật Ký Vết Thời Gian Hoạt Động ({studyLogs.length})
                       </h4>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                        Lưu vết các phiên học, hoàn thành nhiệm vụ và bài thi theo chuẩn giờ Hà Nội
+                        Lưu vết các phiên làm việc, hoàn thành nhiệm vụ và thử thách theo chuẩn giờ Hà Nội
                       </p>
                     </div>
                   </div>
@@ -2869,7 +2873,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400">{log.hanoiDate}</span>
                               </td>
                               <td className="p-3">
-                                <div className="font-semibold text-slate-900 dark:text-white">{log.title || 'Phiên học OnThiHub'}</div>
+                                <div className="font-semibold text-slate-900 dark:text-white">{log.title || 'Phiên làm việc PromptMMO'}</div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-bold">
                                   {log.type}
                                 </span>
@@ -2933,7 +2937,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                         type="button"
                         onClick={() => {
                           sendBrowserDesktopNotification({
-                            title: '🔔 [OnThiHub] Kiểm Tra Thông Báo Máy Tính',
+                            title: '🔔 [PromptMMO] Kiểm Tra Thông Báo Máy Tính',
                             body: 'Máy tính của anh đã sẵn sàng nhận thông báo Nạp Xu tức thì!'
                           });
                           playSound('click');
@@ -2960,7 +2964,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   <p>
                     <strong>Trạng thái máy tính:</strong>{' '}
                     {desktopNotifStatus === 'granted' ? (
-                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">✅ ĐÃ BẬT - Máy tính sẽ reo chuông và hiện thông báo khi có học viên nạp/rút tiền</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 font-bold">✅ ĐÃ BẬT - Máy tính sẽ reo chuông và hiện thông báo khi có Creator nạp/rút tiền</span>
                     ) : desktopNotifStatus === 'denied' ? (
                       <span className="text-rose-600 dark:text-rose-400 font-bold">❌ BỊ CHẶN - Vui lòng bấm vào icon ổ khóa trên thanh địa chỉ trình duyệt để Bật Thông Báo (Allow Notifications)</span>
                     ) : (
@@ -2996,7 +3000,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   <p>2. Tìm email do máy chủ <strong>FormSubmit</strong> gửi tới với tiêu đề <em>&ldquo;FormSubmit - Confirm your email address&rdquo;</em> hoặc <em>&ldquo;Activate Form&rdquo;</em>.</p>
                   <p>3. Bấm vào nút <strong>&ldquo;Activate Form&rdquo;</strong> trong email đó.</p>
                   <p className="text-emerald-700 dark:text-emerald-400 font-bold">
-                    ✅ Sau khi bấm, máy chủ FormSubmit sẽ kích hoạt vĩnh viễn. Mọi lệnh Nạp tiền và Rút tiền từ học viên trên web sẽ tự động gửi thẳng email chi tiết về Gmail của anh!
+                    ✅ Sau khi bấm, máy chủ FormSubmit sẽ kích hoạt vĩnh viễn. Mọi lệnh Nạp tiền và Rút tiền từ Creator trên web sẽ tự động gửi thẳng email chi tiết về Gmail của anh!
                   </p>
                 </div>
               </div>
@@ -3042,7 +3046,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                       <p className="text-[11px] text-purple-900/90 dark:text-purple-300 leading-relaxed font-medium">
                         <strong>ntfy</strong> được thiết kế theo cơ chế ẩn danh (Zero-login). 
                         Anh không cần tạo tài khoản hay ghi nhớ mật khẩu! Thay vào đó, 
-                        chủ đề (Topic) <code className="bg-purple-200/80 dark:bg-purple-900/80 text-purple-950 dark:text-purple-200 px-1.5 py-0.5 rounded font-mono font-black">Onthihubbbbb</code> chính là kênh thông báo riêng biệt của website ÔnThiHub.
+                        chủ đề (Topic) <code className="bg-purple-200/80 dark:bg-purple-900/80 text-purple-950 dark:text-purple-200 px-1.5 py-0.5 rounded font-mono font-black">Onthihubbbbb</code> chính là kênh thông báo riêng biệt của website PromptMMO.
                       </p>
                     </div>
                   </div>
@@ -3573,7 +3577,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                   </div>
 
                   <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-purple-100 dark:border-purple-900 space-y-1">
-                    <strong className="text-purple-700 dark:text-purple-400 font-bold block">3. Giữ Chân Học Viên Bằng Phần Thưởng Thực</strong>
+                    <strong className="text-purple-700 dark:text-purple-400 font-bold block">3. Giữ Chân Creator Bằng Phần Thưởng Thực</strong>
                     <p className="text-[11px] text-slate-600 dark:text-slate-400">Thưởng trực tiếp Xu, vé AI Studio hoặc VIP trọn gói, loại bỏ hoàn toàn các loại voucher ảo khó dùng để tăng độ tin cậy.</p>
                   </div>
                 </div>
@@ -3591,10 +3595,10 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 <div>
                   <h4 className="text-base font-black text-[#37352f] flex items-center space-x-2">
                     <Cpu className="w-5 h-5 text-cyan-600" />
-                    <span>Cấu Hình Khóa Động Cơ AI ÔnThiHub Cloud (High Performance)</span>
+                    <span>Cấu Hình Khóa Động Cơ AI PromptMMO Cloud (High Performance)</span>
                   </h4>
                   <p className="text-xs text-[#787774] font-medium mt-0.5">
-                    Tích hợp trí tuệ nhân tạo chuyên biệt để tự động trích xuất tài liệu, sách giáo trình thành bộ thẻ Anki thật 100%.
+                    Tích hợp trí tuệ nhân tạo chuyên biệt để tự động trích xuất ý tưởng, tài liệu thành gói Prompt MMO chuẩn xác 100%.
                   </p>
                 </div>
 
@@ -3644,7 +3648,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                     </h5>
                     <p className="text-[11px] opacity-80 font-medium">
                       {hasValidAiKey()
-                        ? 'Hệ thống đã nhận diện Khóa AI hợp lệ. Học viên khi bấm "Tạo thẻ AI" sẽ nhận kết quả phân tích trực tiếp từ mô hình trí tuệ nhân tạo điện toán đám mây.'
+                        ? 'Hệ thống đã nhận diện Khóa AI hợp lệ. Creator khi bấm "Tạo Prompt AI" sẽ nhận kết quả phân tích trực tiếp từ mô hình trí tuệ nhân tạo điện toán đám mây.'
                         : 'Chưa có Khóa AI. Hệ thống hiện chạy thuật toán mô phỏng thông minh. Hãy nhập Khóa AI Cloud dưới đây để kích hoạt máy chủ thật.'}
                     </p>
                   </div>
@@ -3680,10 +3684,10 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                       <span className="text-base">✨</span>
                       <div>
                         <strong className="text-sm font-black text-slate-900 dark:text-white block">
-                          Khóa Động Cơ AI ÔnThiHub Cloud (Khuyên Dùng - Tốc Độ Cao)
+                          Khóa Động Cơ AI PromptMMO Cloud (Khuyên Dùng - Tốc Độ Cao)
                         </strong>
                         <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                          Mô hình AI Flash siêu tốc: phân tích và trích xuất cấu trúc đề thi, hỗ trợ tiếng Việt cực chuẩn.
+                          Mô hình AI Flash siêu tốc: phân tích và trích xuất cấu trúc prompt, hỗ trợ tiếng Việt cực chuẩn.
                         </span>
                       </div>
                     </div>
@@ -3833,7 +3837,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 </div>
                 <div>
                   <h3 className="font-black text-base text-slate-900 dark:text-white">
-                    {adjustModal.type === 'deposit' ? 'Cộng Xu Cho Học Viên' : 'Trừ Xu Học Viên'}
+                    {adjustModal.type === 'deposit' ? 'Cộng Xu Cho Thành Viên' : 'Trừ Xu Thành Viên'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Admin điều chỉnh số dư trực tiếp</p>
                 </div>
@@ -4024,7 +4028,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
             <div className="overflow-y-auto flex-1 my-4 space-y-2.5 pr-1">
               {(!selectedUserHistory.userTxs || selectedUserHistory.userTxs.length === 0) ? (
                 <div className="text-center py-12 text-slate-400 text-xs font-bold">
-                  Học viên này chưa có phát sinh giao dịch nào.
+                  Thành viên này chưa có phát sinh giao dịch nào.
                 </div>
               ) : (
                 selectedUserHistory.userTxs.map((t) => (
@@ -4114,7 +4118,7 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
             {/* Target User Info */}
             <div className="my-4 p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 flex items-center justify-between shrink-0">
               <div className="min-w-0 pr-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Học Viên</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">Thành Viên</span>
                 <span className="font-black text-xs text-slate-900 dark:text-white block truncate">{statusModal.user.displayName || statusModal.user.email}</span>
                 <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">{statusModal.user.email}</span>
               </div>
@@ -4200,8 +4204,8 @@ export default function AdminView({ user: _user, onBackToHome, onOpenChangelog, 
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { key: 'student', label: '👨‍🎓 Học Viên', desc: 'Người học cơ bản' },
-                    { key: 'creator', label: '🎓 Creator', desc: 'Tác giả tạo và bán bộ thẻ' },
+                    { key: 'student', label: '🚀 Creator', desc: 'Thành viên sáng tạo nội dung MMO' },
+                    { key: 'creator', label: '👑 Creator Pro', desc: 'Tác giả tạo và bán gói Prompt' },
                     { key: 'vip', label: '💎 Khách VIP', desc: 'Thành viên ưu tiên' },
                     { key: 'admin', label: '🛡️ Quản Trị Viên', desc: 'Toàn quyền kiểm soát' }
                   ].map((r) => (

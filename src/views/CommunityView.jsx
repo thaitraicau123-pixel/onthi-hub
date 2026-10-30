@@ -283,14 +283,14 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
       <div className="space-y-2 pb-3 border-b border-[#e9e9e8] dark:border-white/10">
         <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>ĐỒNG BỘ THỜI GIAN THỰC • CỘNG ĐỒNG SĨ TỬ 2026</span>
+          <span>ĐỒNG BỘ THỜI GIAN THỰC • CỘNG ĐỒNG CREATOR & MMO 2026</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight flex items-center gap-2.5">
           <span>💬</span>
-          <span>Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm</span>
+          <span>Diễn Đàn Thảo Luận & Chia Sẻ Kinh Nghiệm MMO</span>
         </h1>
         <p className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 font-normal">
-          Giao lưu, hỏi đáp câu hỏi khó, xin tài liệu và chia sẻ bí quyết đỗ kỳ thi tuyển dụng theo thời gian thực.
+          Giao lưu, hỏi đáp kỹ thuật Prompt AI, chia sẻ bí quyết làm video triệu view và tối ưu doanh thu MMO theo thời gian thực.
         </p>
       </div>
 
@@ -298,7 +298,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
       <div className="bg-sky-50/90 dark:bg-slate-900/90 border border-sky-200/80 dark:border-white/10 rounded-xl p-3.5 flex items-start gap-3 shadow-2xs">
         <span className="text-lg leading-none">💡</span>
         <div className="text-xs text-[#37352f] dark:text-slate-200 leading-relaxed">
-          <strong>Mẹo cộng đồng:</strong> Tích cực đặt câu hỏi và giải đáp thắc mắc sẽ được tặng <strong className="text-emerald-700 dark:text-emerald-400">+25 XP</strong> kinh nghiệm và tăng uy tín học viên trong bảng xếp hạng.
+          <strong>Mẹo cộng đồng:</strong> Tích cực đặt câu hỏi và chia sẻ kinh nghiệm kiếm tiền MMO sẽ được tặng <strong className="text-emerald-700 dark:text-emerald-400">+25 XP</strong> kinh nghiệm và tăng uy tín Creator trong bảng xếp hạng.
         </div>
       </div>
 
@@ -309,7 +309,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
           <Search className="w-3.5 h-3.5 text-[#9b9a97] dark:text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Tìm kiếm câu hỏi, đề thi..."
+            placeholder="Tìm kiếm bài viết, mẹo prompt..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-8 pr-3 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white rounded-lg border border-[#e9e9e8] dark:border-white/15 focus:border-[#2383e2] dark:focus:border-sky-400 outline-none transition-all placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
@@ -359,7 +359,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
                 </span>
               </div>
               <p className="text-xs text-[#5a5955] dark:text-slate-300 leading-relaxed">
-                Để bảo vệ cộng đồng học tập văn minh, chia sẻ kinh nghiệm chất lượng cao và ngăn chặn tin rác / spam, tính năng <strong>đăng chủ đề thảo luận mới</strong> được dành riêng cho học viên có gói hội viên. Bạn vẫn có thể đọc toàn bộ bài viết và tự do <strong>bình luận, trả lời thảo luận</strong> trên diễn đàn!
+                Để bảo vệ cộng đồng MMO văn minh, chia sẻ kinh nghiệm chất lượng cao và ngăn chặn tin rác / spam, tính năng <strong>đăng chủ đề thảo luận mới</strong> được dành riêng cho thành viên có gói hội viên VIP. Bạn vẫn có thể đọc toàn bộ bài viết và tự do <strong>bình luận, trả lời thảo luận</strong> trên diễn đàn!
               </p>
             </div>
           </div>
@@ -409,7 +409,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
                 <option value="cong-chuc">🏛️ Công Chức</option>
                 <option value="it">💻 IT & Tech</option>
                 <option value="ngoai-ngu">🌍 Ngoại Ngữ</option>
-                <option value="meo-thi">💡 Mẹo Ôn Thi</option>
+                <option value="meo-thi">💡 Mẹo & Thủ Thuật MMO</option>
               </select>
             </div>
 
@@ -432,7 +432,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
             icon={MessageSquare}
             badge="DIỄN ĐÀN THẢO LUẬN"
             title={searchQuery ? `Không tìm thấy bài viết nào khớp với "${searchQuery}"` : 'Chưa có bài viết nào trong chủ đề này'}
-            description="Hãy là người đầu tiên đặt câu hỏi ôn thi hoặc chia sẻ tài liệu hữu ích cho cộng đồng bạn học!"
+            description="Hãy là người đầu tiên chia sẻ mẹo prompt hoặc kinh nghiệm kiếm tiền MMO hữu ích cho cộng đồng Creator!"
             primaryAction={{
               label: isFreeUser ? 'Nâng Cấp Gói Để Thảo Luận' : 'Viết Bài / Đặt Câu Hỏi Ngay',
               onClick: () => {
@@ -504,7 +504,7 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
 
                         {(() => {
                           const authorId = post.authorEmail || post.author;
-                          if (!userIdentifier || authorId === userIdentifier || authorId === 'admin_onthi') return null;
+                          if (!userIdentifier || authorId === userIdentifier || authorId === 'admin_promptmmo' || authorId === 'admin_onthi') return null;
                           const fStatus = getFriendshipStatus(userIdentifier, authorId);
                           if (fStatus === 'friends') {
                             return (
@@ -531,13 +531,13 @@ export default function CommunityView({ user, onOpenPricing, onOpenDirectChat, o
                                     sender: {
                                       id: userIdentifier,
                                       name: user?.displayName || userIdentifier.split('@')[0],
-                                      email: user?.email || `${userIdentifier}@onthihub.vn`,
+                                      email: user?.email || `${userIdentifier}@creator.promptmmo.com`,
                                       avatar: user?.photoURL
                                     },
                                     receiver: {
                                       id: authorId,
                                       name: post.author,
-                                      email: post.authorEmail || `${authorId}@onthihub.vn`,
+                                      email: post.authorEmail || `${authorId}@creator.promptmmo.com`,
                                       avatar: post.avatar
                                     }
                                   });

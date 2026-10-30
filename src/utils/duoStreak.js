@@ -1,5 +1,5 @@
 // =========================================================================
-// ONTHIHUB DUO STREAK ENGINE (Chuỗi Học Tập Đôi Bạn Cùng Tiến 🔥)
+// PROMPTMMO DUO STREAK ENGINE (Chuỗi Bạn Đồng Hành Cùng Tiến 🔥)
 // Theo dõi ngày học chung giữa 2 bạn học, hỗ trợ nhắc học và nâng cấp ngọn lửa
 // =========================================================================
 

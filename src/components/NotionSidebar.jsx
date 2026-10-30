@@ -258,7 +258,7 @@ function NotionSidebar({
           >
             <div className="flex items-center space-x-2">
               <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400" />
-              <span>Tìm đề & lệnh nhanh...</span>
+              <span>Tìm kiếm prompt & lệnh nhanh...</span>
             </div>
             <kbd className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15">
               Ctrl+K
@@ -269,7 +269,7 @@ function NotionSidebar({
         {/* SECTION 1: WORKSPACE */}
         <div className="px-2.5 pt-2.5 pb-1">
           <div className="px-2 pb-1.5 text-[10px] font-extrabold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center justify-between">
-            <span>Không gian học tập</span>
+            <span>Không gian làm việc MMO</span>
             <span className="text-[9px] font-bold text-slate-500 dark:text-slate-400">5 mục</span>
           </div>
           <nav className="space-y-1">
@@ -442,7 +442,7 @@ function NotionSidebar({
 
         {/* Bottom subtle label */}
         <div className="flex items-center justify-between px-2 text-[10px] font-medium text-slate-600 dark:text-slate-300">
-          <span>Ôn Thi Hub {APP_VERSION}</span>
+          <span>PromptMMO {APP_VERSION}</span>
           <span className="text-slate-500 dark:text-slate-400 font-semibold">{currentTheme?.name?.split(' ')[0] || 'Notion'} UI</span>
         </div>
 

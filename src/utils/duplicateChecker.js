@@ -1,4 +1,4 @@
-// Utility to detect duplicate or plagiarized flashcard decks
+// Utility to detect duplicate or plagiarized prompt decks
 // Compares titles, descriptions, and card contents (front/back) against existing catalogs
 
 import { COURSES_DATA } from '../data/coursesData';
@@ -51,7 +51,7 @@ export function checkDeckDuplication(candidate, excludeDeckId = null) {
       title: c.title,
       description: c.subtitle || c.description,
       cards: c.previewCards || [],
-      source: 'Chính Quy ÔnThiHub'
+      source: 'Chính Quy PromptMMO'
     })),
     ...getMarketplaceDecks().map(m => ({
       id: m.id,
@@ -120,7 +120,7 @@ export function checkDeckDuplication(candidate, excludeDeckId = null) {
     matchedDeck: mostSimilarDeck,
     reason: isDuplicate
       ? duplicateReason
-      : 'Không phát hiện trùng lặp đáng kể. Bộ thẻ đạt chuẩn tính nguyên bản.',
+      : 'Không phát hiện trùng lặp đáng kể. Gói Prompt đạt chuẩn tính nguyên bản.',
     status: highestScore < 30 ? 'safe' : highestScore < 55 ? 'warning' : 'duplicate'
   };
 }

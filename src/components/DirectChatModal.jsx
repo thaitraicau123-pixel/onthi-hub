@@ -68,17 +68,17 @@ import confetti from 'canvas-confetti';
 
 const STUDENT_PROMPTS = [
   '👋 Chào bạn!',
-  '📚 Bạn đang ôn kỳ thi nào thế?',
-  '💡 Cùng kết bạn trao đổi đề thi nhé!',
-  '📇 Bạn có bộ thẻ Flashcard này không?',
-  '🔥 Chúc bạn ôn thi đạt điểm cao!'
+  '🎬 Bạn đang làm chủ đề video nào thế?',
+  '💡 Cùng kết bạn trao đổi prompt và kinh nghiệm MMO nhé!',
+  '⚡ Bạn có gói Prompt AI này không?',
+  '🔥 Chúc kênh của bạn sớm đạt triệu view!'
 ];
 
 const ADMIN_PROMPTS = [
-  '👋 Chào Ban Quản Trị!',
-  '💳 Nhờ Admin kiểm tra lệnh nạp/rút Xu',
-  '❓ Em cần hỗ trợ về tài liệu & đề thi',
-  '🌟 Em có góp ý cải tiến tính năng ứng dụng'
+  '👋 Chào Ban Quản Trị PromptMMO!',
+  '💳 Nhờ Admin duyệt nhanh lệnh nạp/rút Xu',
+  '❓ Mình cần hỗ trợ tư vấn gói Prompt & Tool',
+  '🌟 Mình có góp ý thêm gói prompt mới cho sàn'
 ];
 
 export default function DirectChatModal({
@@ -182,7 +182,7 @@ export default function DirectChatModal({
         sendFriendRequest({
           sender: currentParticipant,
           receiver: s,
-          message: 'Chào bạn, cùng kết bạn ôn thi nhé!'
+          message: 'Chào bạn, cùng kết bạn trao đổi làm MMO nhé!'
         });
         addedCount++;
       }
@@ -192,9 +192,9 @@ export default function DirectChatModal({
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.4 } });
     } catch (e) {}
     if (addedCount > 0) {
-      onShowToast?.(`🎉 Đã kết bạn nhanh thành công với ${addedCount} bạn học trên web!`);
+      onShowToast?.(`🎉 Đã kết bạn nhanh thành công với ${addedCount} Creator trên web!`);
     } else {
-      onShowToast?.(`✅ Bạn đã kết bạn với tất cả học viên trong danh sách này rồi!`);
+      onShowToast?.(`✅ Bạn đã kết bạn với tất cả thành viên trong danh sách này rồi!`);
     }
   };
 
@@ -321,7 +321,7 @@ export default function DirectChatModal({
         partner = directory[0];
         setActivePartner(partner);
       } else {
-        onShowToast?.('⚠️ Hãy chọn một bạn học viên trong danh bạ để gửi tin nhắn nhé!');
+        onShowToast?.('⚠️ Hãy chọn một bạn Creator trong danh bạ để gửi tin nhắn nhé!');
         return;
       }
     }
@@ -340,7 +340,7 @@ export default function DirectChatModal({
       sendFriendRequest({
         sender: currentParticipant,
         receiver: partner,
-        message: textToSend || 'Chào bạn, kết bạn cùng ôn thi nhé!'
+        message: textToSend || 'Chào bạn, kết bạn cùng kiếm tiền MMO nhé!'
       });
     }
 
@@ -371,7 +371,7 @@ export default function DirectChatModal({
     const res = sendFriendRequest({
       sender: currentParticipant,
       receiver: targetUser,
-      message: introMsg || `Chào ${targetUser.name}! Mình muốn kết bạn cùng ôn thi trên OnThiHub 📚`
+      message: introMsg || `Chào ${targetUser.name}! Mình muốn kết bạn cùng làm MMO trên PromptMMO ⚡`
     });
     if (res.success) {
       refreshAllData();
@@ -380,7 +380,7 @@ export default function DirectChatModal({
         try {
           confetti({ particleCount: 45, spread: 55, origin: { y: 0.6 } });
         } catch (e) {}
-        onShowToast?.(`🎉 Đã kết bạn thành công với ${targetUser.name}! Hãy nhắn tin hoặc Thách đấu 1v1 ngay!`);
+        onShowToast?.(`🎉 Đã kết bạn thành công với ${targetUser.name}! Hãy nhắn tin trao đổi kinh nghiệm ngay!`);
       } else {
         playSound('click');
         onShowToast?.(`Đã gửi lời mời kết bạn tới ${targetUser.name}!`);
@@ -405,7 +405,7 @@ export default function DirectChatModal({
       sendDirectMessage({
         sender: currentParticipant,
         receiver: requester,
-        text: '🤝 Chúng ta đã trở thành bạn bè trên OnThiHub! Rất vui được cùng bạn ôn tập và chia sẻ tài liệu nhé! 🎉'
+        text: '🤝 Chúng ta đã trở thành bạn bè trên PromptMMO! Rất vui được cùng bạn trao đổi prompt và làm MMO nhé! 🎉'
       });
 
       refreshAllData();
@@ -435,7 +435,7 @@ export default function DirectChatModal({
       return;
     }
 
-    const cleanEmail = raw.includes('@') ? raw.toLowerCase().trim() : `${raw.toLowerCase().trim()}@student.onthihub.vn`;
+    const cleanEmail = raw.includes('@') ? raw.toLowerCase().trim() : `${raw.toLowerCase().trim()}@creator.promptmmo.com`;
     const found = directory.find((u) => matchesUserIdentifier(u, raw) || matchesUserIdentifier(u, cleanEmail));
     const targetUser = found || {
       id: cleanEmail,
@@ -444,7 +444,7 @@ export default function DirectChatModal({
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(cleanEmail)}`,
       role: 'student',
       tier: 'free',
-      badge: '🎓 Học Viên'
+      badge: '⚡ Creator'
     };
 
     const status = getFriendshipStatus(currentParticipant, targetUser);
@@ -477,14 +477,14 @@ export default function DirectChatModal({
     onShowToast?.(`Đã bỏ qua lời mời kết bạn từ ${requester.name}.`);
   };
 
-  // Chọn bộ thẻ đính kèm
+  // Chọn gói Prompt đính kèm
   const handleSelectDeckToAttach = (deck) => {
     setAttachedDeck(deck);
     setShowDeckPicker(false);
     playSound('flip');
   };
 
-  // Sao chép link bộ thẻ trong tin nhắn
+  // Sao chép link gói Prompt trong tin nhắn
   const handleCopyDeckLink = async (e, deck) => {
     e.stopPropagation();
     const res = await copyFlashcardShareLink({
@@ -574,12 +574,12 @@ export default function DirectChatModal({
               </div>
               <div>
                 <h2 className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>Tin Nhắn & Bạn Học</span>
+                  <span>Tin Nhắn & Bạn Bè Creator</span>
                 </h2>
                 <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400">
                   <span className="truncate max-w-[130px] font-medium">{currentParticipant.name}</span>
                   <span className="px-1 py-0.2 rounded text-[9px] font-black bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                    {isAdmin ? '🛡️ Admin' : '🎓 Học Viên'}
+                    {isAdmin ? '🛡️ Admin' : '🚀 Creator'}
                   </span>
                 </div>
               </div>
@@ -688,7 +688,7 @@ export default function DirectChatModal({
                       Chưa có cuộc trò chuyện nào
                     </p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      Kết bạn cùng các bạn học viên để bắt đầu trao đổi bộ thẻ!
+                      Kết bạn cùng các Creator để bắt đầu trao đổi gói prompt!
                     </p>
                   </div>
                   <button
@@ -779,7 +779,7 @@ export default function DirectChatModal({
                               </span>
                             ) : conv.lastMessage?.sharedDeck ? (
                               <span className="text-[#2383e2] dark:text-sky-400 font-semibold truncate">
-                                📇 Đã chia sẻ bộ thẻ
+                                📇 Đã chia sẻ gói Prompt
                               </span>
                             ) : conv.lastMessage?.text ? (
                               <span className="truncate">{conv.lastMessage.text}</span>
@@ -805,7 +805,7 @@ export default function DirectChatModal({
           {/* TAB 2: DANH SÁCH BẠN BÈ ĐÃ KẾT NỐI */}
           {sidebarTab === 'friends' && (
             <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 p-2 space-y-1.5">
-              {/* Kênh hỗ trợ chính thức Ban Quản Trị OnThiHub */}
+              {/* Kênh hỗ trợ chính thức Ban Quản Trị PromptMMO */}
               {!isAdmin && (
                 <div
                   onClick={() => handleSelectPartner(ADMIN_PARTICIPANT)}
@@ -823,7 +823,7 @@ export default function DirectChatModal({
                     <div className="min-w-0">
                       <div className="flex items-center space-x-1.5">
                         <span className="text-xs font-black text-rose-900 dark:text-rose-200 truncate">
-                          Ban Quản Trị OnThiHub
+                          Ban Quản Trị PromptMMO
                         </span>
                         <ShieldCheck className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
                       </div>
@@ -840,7 +840,7 @@ export default function DirectChatModal({
 
               <div className="pt-1">
                 <span className="text-[10px] font-black uppercase text-slate-400 px-2 tracking-wider">
-                  Bạn Bè Cùng Học ({filteredFriends.length})
+                  Bạn Bè Creator ({filteredFriends.length})
                 </span>
               </div>
 
@@ -852,7 +852,7 @@ export default function DirectChatModal({
                     onClick={() => setSidebarTab('requests')}
                     className="text-xs font-bold text-[#2383e2] hover:underline cursor-pointer"
                   >
-                    + Khám phá & kết bạn với các bạn học viên khác
+                    + Khám phá & kết bạn với các Creator khác
                   </button>
                 </div>
               ) : (
@@ -966,7 +966,7 @@ export default function DirectChatModal({
                             {req.sender?.name}
                           </span>
                           <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
-                            {req.sender?.studyGoal || 'Học viên OnThiHub'}
+                            {req.sender?.studyGoal || 'Creator PromptMMO'}
                           </span>
                         </div>
                       </div>
@@ -999,11 +999,11 @@ export default function DirectChatModal({
                 </div>
               )}
 
-              {/* PHẦN 2: GỢI Ý BẠN HỌC ÔN THI */}
+              {/* PHẦN 2: GỢI Ý BẠN BÈ CREATOR */}
               <div className="space-y-2.5 pt-2">
                 <div className="flex items-center justify-between px-1">
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">
-                    Gợi Ý Bạn Học Ôn Thi ({filteredSuggestions.length})
+                    Gợi Ý Kết Bạn Creator MMO ({filteredSuggestions.length})
                   </span>
                   {filteredSuggestions.length > 0 && (
                     <button
@@ -1022,10 +1022,10 @@ export default function DirectChatModal({
                 <div className="flex items-center gap-1 overflow-x-auto pb-1 no-scrollbar text-[10px]">
                   {[
                     { id: 'ALL', label: '🌟 Tất Cả' },
-                    { id: 'cong-chuc', label: '🏛️ Công Chức & Thuế' },
-                    { id: 'ngoai-ngu', label: '🌍 Ngoại Ngữ / IELTS' },
-                    { id: 'y-te', label: '🏥 Y Tế & Dược' },
-                    { id: 'it-tech', label: '💻 CNTT & Tin Học' }
+                    { id: 'video-ai', label: '🎬 Video AI & Kling' },
+                    { id: 'image-ai', label: '🎨 Ảnh Midjourney & Flux' },
+                    { id: 'copy-mmo', label: '✍️ Kịch Bản & Hooks' },
+                    { id: 'skills-automation', label: '⚡ N8N & Automation' }
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -1232,7 +1232,7 @@ export default function DirectChatModal({
                   ) : (
                     <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-white/10 flex items-center gap-1">
                       <GraduationCap className="w-3 h-3 text-slate-400" />
-                      <span>Học Viên</span>
+                      <span>Creator MMO</span>
                     </span>
                   )}
 
@@ -1327,10 +1327,10 @@ export default function DirectChatModal({
                 type="button"
                 onClick={() => setShowDeckPicker(!showDeckPicker)}
                 className="px-2.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/80 hover:bg-sky-100 dark:hover:bg-sky-900 text-[#2383e2] dark:text-sky-300 border border-sky-200 dark:border-sky-500/40 text-xs font-bold flex items-center space-x-1 transition-colors cursor-pointer"
-                title="Gửi đính kèm một bộ thẻ Flashcard vào cuộc trò chuyện"
+                title="Gửi đính kèm một gói Prompt vào cuộc trò chuyện"
               >
                 <Layers className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Chia Sẻ Bộ Thẻ</span>
+                <span className="hidden sm:inline">Chia Sẻ Prompt</span>
               </button>
 
               <button
@@ -1418,7 +1418,7 @@ export default function DirectChatModal({
               <div className="flex items-center justify-between">
                 <span className="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
-                  <span>Chọn bộ thẻ ôn tập để đính kèm vào tin nhắn:</span>
+                  <span>Chọn gói prompt MMO để đính kèm vào tin nhắn:</span>
                 </span>
                 <button
                   type="button"
@@ -1470,9 +1470,9 @@ export default function DirectChatModal({
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
                     {activePartner?.role === 'admin'
-                      ? 'Gửi câu hỏi hoặc yêu cầu hỗ trợ trực tiếp tới Ban Quản Trị OnThiHub để được giải đáp nhanh chóng.'
+                      ? 'Gửi câu hỏi hoặc yêu cầu hỗ trợ trực tiếp tới Ban Quản Trị PromptMMO để được giải đáp nhanh chóng.'
                       : friendshipStatus === 'friends'
-                      ? 'Hai bạn đã là bạn bè! Hãy cùng chia sẻ kinh nghiệm học và đính kèm bộ thẻ flashcard nhé!'
+                      ? 'Hai bạn đã là bạn bè! Hãy cùng chia sẻ kinh nghiệm làm MMO và đính kèm gói prompt thực chiến nhé!'
                       : 'Gửi lời chào làm quen! Tin nhắn đầu tiên sẽ gửi kèm lời mời kết bạn để hai bạn dễ dàng kết nối.'}
                   </p>
                 </div>
@@ -1527,7 +1527,7 @@ export default function DirectChatModal({
                           <p className="whitespace-pre-line font-normal">{msg.text}</p>
                         )}
 
-                        {/* Shared Flashcard Deck Card inside chat */}
+                        {/* Shared Prompt Deck Card inside chat */}
                         {msg.sharedDeck && (
                           <div
                             className={`mt-2 p-3 rounded-xl border transition-all ${
@@ -1546,8 +1546,8 @@ export default function DirectChatModal({
                                     isMe ? 'text-blue-100' : 'text-[#2383e2] dark:text-sky-400'
                                   }`}
                                 >
-                                  {msg.sharedDeck.categoryLabel || 'Bộ Thẻ Anki'} •{' '}
-                                  {msg.sharedDeck.cardsCount || (msg.sharedDeck.cards ? msg.sharedDeck.cards.length : (msg.sharedDeck.previewCards ? msg.sharedDeck.previewCards.length : 0))} Thẻ
+                                  {msg.sharedDeck.categoryLabel || 'Gói Prompt'} •{' '}
+                                  {msg.sharedDeck.cardsCount || (msg.sharedDeck.cards ? msg.sharedDeck.cards.length : (msg.sharedDeck.previewCards ? msg.sharedDeck.previewCards.length : 0))} Prompts
                                 </span>
                                 <h4 className="text-xs sm:text-sm font-bold truncate mt-0.5">
                                   {msg.sharedDeck.title}
@@ -1571,7 +1571,7 @@ export default function DirectChatModal({
                                 }`}
                               >
                                 <BookOpen className="w-3.5 h-3.5" />
-                                <span>Mở Học Ngay</span>
+                                <span>Xem & Sao Chép Prompt</span>
                                 <ArrowRight className="w-3 h-3" />
                               </button>
 
@@ -1583,7 +1583,7 @@ export default function DirectChatModal({
                                     ? 'hover:bg-white/20 text-white'
                                     : 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'
                                 }`}
-                                title="Sao chép đường dẫn chia sẻ bộ thẻ này"
+                                title="Sao chép đường dẫn chia sẻ gói prompt này"
                               >
                                 {copiedLinkDeckId === msg.sharedDeck.id ? (
                                   <>
@@ -1833,7 +1833,7 @@ export default function DirectChatModal({
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">
                     {attachedDeck.cardsCount ||
                       (attachedDeck.cards ? attachedDeck.cards.length : (attachedDeck.previewCards ? attachedDeck.previewCards.length : 0))}{' '}
-                    Thẻ Flashcard
+                    Prompts thực chiến
                   </span>
                 </div>
               </div>
@@ -1885,7 +1885,7 @@ export default function DirectChatModal({
               type="button"
               onClick={() => setShowDeckPicker(!showDeckPicker)}
               className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer shrink-0"
-              title="Đính kèm bộ thẻ Flashcard"
+              title="Đính kèm gói Prompt MMO"
             >
               <Layers className="w-4 h-4 text-[#2383e2] dark:text-sky-400" />
             </button>
@@ -1895,10 +1895,10 @@ export default function DirectChatModal({
               type="text"
               placeholder={
                 activePartner?.role === 'admin'
-                  ? 'Nhắn tin hỏi đáp với Ban Quản Trị OnThiHub...'
+                  ? 'Nhắn tin hỏi đáp với Ban Quản Trị PromptMMO...'
                   : friendshipStatus === 'friends'
-                  ? `Nhắn tin cho bạn ${activePartner?.name || 'học'}...`
-                  : `Gửi lời chào làm quen tới ${activePartner?.name || 'bạn học'}...`
+                  ? `Nhắn tin cho Creator ${activePartner?.name || ''}...`
+                  : `Gửi lời chào làm quen tới ${activePartner?.name || 'Creator'}...`
               }
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}

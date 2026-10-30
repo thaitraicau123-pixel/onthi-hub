@@ -19,26 +19,18 @@ const AdminView = lazy(() => import('./views/AdminView'));
 
 // Lazy loaded interactive modals (Loaded on-demand only when opened)
 const FlashcardModal = lazy(() => import('./components/FlashcardModal'));
-const QuizModal = lazy(() => import('./components/QuizModal'));
-const MatchGameModal = lazy(() => import('./components/MatchGameModal'));
 const LeaderboardModal = lazy(() => import('./components/LeaderboardModal'));
 const PaymentModal = lazy(() => import('./components/PaymentModal'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const BlindBoxModal = lazy(() => import('./components/BlindBoxModal'));
 const PassDeckModal = lazy(() => import('./components/PassDeckModal'));
 const SellDeckModal = lazy(() => import('./components/SellDeckModal'));
-const MistakeNotebookModal = lazy(() => import('./components/MistakeNotebookModal'));
 const ChangelogModal = lazy(() => import('./components/ChangelogModal'));
 const CommandPaletteModal = lazy(() => import('./components/CommandPaletteModal'));
 const AnalyticsModal = lazy(() => import('./components/AnalyticsModal'));
 const ThemePickerModal = lazy(() => import('./components/ThemePickerModal'));
-const TargetStudyClockModal = lazy(() => import('./components/TargetStudyClockModal'));
-const CheatSheetModal = lazy(() => import('./components/CheatSheetModal'));
-const VirtualStudyRoomModal = lazy(() => import('./components/VirtualStudyRoomModal'));
 const DirectChatModal = lazy(() => import('./components/DirectChatModal'));
-const LiveExamRoomModal = lazy(() => import('./components/LiveExamRoomModal'));
 const ShareAchievementModal = lazy(() => import('./components/ShareAchievementModal'));
-const ExamReadinessModal = lazy(() => import('./components/ExamReadinessModal'));
 
 function ViewLoadingFallback() {
   return (
@@ -109,15 +101,12 @@ export default function App() {
 
   // Focused Overlay Modals
   const [activeFlashcardCourse, setActiveFlashcardCourse] = useState(null);
-  const [activeQuizCourse, setActiveQuizCourse] = useState(null);
-  const [activeMatchGameCourse, setActiveMatchGameCourse] = useState(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [activePaymentItem, setActivePaymentItem] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBlindBoxOpen, setIsBlindBoxOpen] = useState(false);
   const [activePassCourse, setActivePassCourse] = useState(null);
   const [activeSellCourse, setActiveSellCourse] = useState(null);
-  const [isMistakesNotebookOpen, setIsMistakesNotebookOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(() => isChangelogUnread());
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
@@ -127,12 +116,7 @@ export default function App() {
   const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [isWeatherEnabled, setIsWeatherEnabled] = useState(() => isWeatherEffectsEnabled());
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
-  const [isTargetClockOpen, setIsTargetClockOpen] = useState(false);
-  const [activeCheatSheetCourse, setActiveCheatSheetCourse] = useState(null);
-  const [isStudyRoomOpen, setIsStudyRoomOpen] = useState(false);
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
-  const [isLiveExamRoomOpen, setIsLiveExamRoomOpen] = useState(false);
-  const [isExamReadinessOpen, setIsExamReadinessOpen] = useState(false);
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
   const [directChatPartner, setDirectChatPartner] = useState(null);
   const [directChatAttachDeck, setDirectChatAttachDeck] = useState(null);
@@ -197,7 +181,7 @@ export default function App() {
     const unsubTxs = subscribeToTransactions((latestTxs) => {
       const activeUser = getCurrentUser();
 
-      // 1. Phía học viên: Nhận thông báo khi lệnh nạp tiền được duyệt để cộng Xu
+      // 1. Phía Creator / Thành viên: Nhận thông báo khi lệnh nạp tiền được duyệt để cộng Xu
       const res = checkAndApplyApprovedTransactions(activeUser?.email);
       if (res.newlyCreditedCoins > 0) {
         setWalletBalance(getWalletBalance());
@@ -206,7 +190,7 @@ export default function App() {
         showToast(`🎉 Lệnh nạp tiền đã được Admin duyệt! Bạn được cộng +${res.newlyCreditedCoins} Xu vào ví.`);
       }
 
-      // 2. Phía Admin: Reo chuông + Toast + Desktop Notification khi có học viên gửi lệnh nạp mới
+      // 2. Phía Admin: Reo chuông + Toast + Desktop Notification khi có thành viên gửi lệnh nạp mới
       const isAdmin = isUserAdmin(activeUser);
       if (isAdmin && typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
         requestBrowserNotificationPermission();
@@ -222,12 +206,12 @@ export default function App() {
           playSound('bell');
 
           // Hiện Toast nổi bật trên web
-          showToast(`🔔 [LỆNH ${isDeposit ? 'NẠP XU' : 'RÚT TIỀN'} MỚI] ${first.userEmail || 'Học viên'}: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')}đ). Mã: ${first.id}`);
+          showToast(`🔔 [LỆNH ${isDeposit ? 'NẠP XU' : 'RÚT TIỀN'} MỚI] ${first.userEmail || 'Creator'}: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')}đ). Mã: ${first.id}`);
 
           // Bắn thông báo đẩy ra màn hình máy tính (Windows / Mac Desktop Notification)
           sendBrowserDesktopNotification({
-            title: `🔔 [OnThiHub] Có Lệnh ${isDeposit ? 'Nạp Xu' : 'Rút Tiền'} Mới: ${first.id}`,
-            body: `Học viên: ${first.userEmail || 'Chưa cung cấp'}\nSố lượng: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')} VNĐ)\nBấm vào trang Admin để duyệt ngay.`,
+            title: `🔔 [PromptMMO] Có Lệnh ${isDeposit ? 'Nạp Xu' : 'Rút Tiền'} Mới: ${first.id}`,
+            body: `Thành viên: ${first.userEmail || 'Chưa cung cấp'}\nSố lượng: ${first.xuAmount} Xu (~${(first.amountVnd || first.xuAmount * 1000).toLocaleString('vi-VN')} VNĐ)\nBấm vào trang Admin để duyệt ngay.`,
             tag: first.id
           });
         }
@@ -249,29 +233,29 @@ export default function App() {
       const isForMe =
         isSameUser(incomingMsg.receiver, curParticipant) ||
         matchesUserIdentifier(incomingMsg.receiver, curParticipant) ||
-        (isUserAdmin(curParticipant) && (incomingMsg.receiverId === 'admin_onthi' || incomingMsg.receiver?.id === 'admin_onthi'));
+        (isUserAdmin(curParticipant) && (incomingMsg.receiverId === 'admin_promptmmo' || incomingMsg.receiverId === 'admin_onthi' || incomingMsg.receiver?.id === 'admin_onthi'));
 
       if (isForMe) {
         seenNotifyMsgIds.add(incomingMsg.id);
         playSound('bell');
-        const senderName = incomingMsg.sender?.name || 'Bạn học';
+        const senderName = incomingMsg.sender?.name || 'Thành viên';
         const isPvp = !!incomingMsg.pvpChallenge;
         const msgSnippet = incomingMsg.pvpChallenge
-          ? `⚔️ Đã gửi lời mời Thách Đấu 1v1: ${incomingMsg.pvpChallenge.deckTitle || 'Bộ đề thi'}!`
+          ? `⚔️ Đã gửi lời mời Thách Đấu: ${incomingMsg.pvpChallenge.deckTitle || 'Thử thách'}!`
           : incomingMsg.sharedAchievement
           ? '🏆 Đã gửi Bằng Khen Kỷ Lục Hoàng Gia 4K!'
           : incomingMsg.sharedDeck
-          ? `📇 Đã chia sẻ Bộ Thẻ: ${incomingMsg.sharedDeck.title}`
+          ? `📇 Đã chia sẻ Gói Prompt: ${incomingMsg.sharedDeck.title}`
           : incomingMsg.text || 'Tin nhắn mới';
 
         const toastTitle = isPvp
-          ? `⚔️ [THÁCH ĐẤU 1V1] ${senderName}: ${msgSnippet}`
+          ? `⚔️ [THÁCH ĐẤU] ${senderName}: ${msgSnippet}`
           : `💬 [TIN NHẮN MỚI] ${senderName}: ${msgSnippet}`;
 
         showToast(toastTitle, incomingMsg.sender);
 
         sendBrowserDesktopNotification({
-          title: isPvp ? `⚔️ [OnThiHub] Thách Đấu 1v1 từ ${senderName}` : `💬 [OnThiHub] Tin nhắn mới từ ${senderName}`,
+          title: isPvp ? `⚔️ [PromptMMO] Thách đấu từ ${senderName}` : `💬 [PromptMMO] Tin nhắn mới từ ${senderName}`,
           body: msgSnippet,
           tag: incomingMsg.id
         });
@@ -293,11 +277,11 @@ export default function App() {
         ) {
           seenFriendEventIds.add(req.id);
           playSound('bell');
-          const senderName = req.sender?.name || 'Bạn học';
-          showToast(`🤝 [LỜI MỜI KẾT BẠN] ${senderName} muốn kết bạn cùng ôn thi với bạn!`, req.sender);
+          const senderName = req.sender?.name || 'Thành viên';
+          showToast(`🤝 [LỜI MỜI KẾT BẠN] ${senderName} muốn kết bạn cùng trao đổi với bạn!`, req.sender);
           sendBrowserDesktopNotification({
-            title: `🤝 [OnThiHub] Lời mời kết bạn từ ${senderName}`,
-            body: req.message || 'Chào bạn, kết bạn cùng ôn thi trên OnThiHub nhé!',
+            title: `🤝 [PromptMMO] Lời mời kết bạn từ ${senderName}`,
+            body: req.message || 'Chào bạn, kết bạn cùng trao đổi trên PromptMMO nhé!',
             tag: req.id
           });
         }
@@ -346,12 +330,12 @@ export default function App() {
 
   const handlePaymentSuccess = (itemId) => {
     refreshState();
-    showToast('🎉 Mở khóa thành công! Bạn có thể vào "Tủ Của Tôi" để học ngay.');
+    showToast('🎉 Mở khóa thành công! Bạn có thể vào "Tủ Của Tôi" để sử dụng ngay.');
   };
 
   const handleDeckCreated = (newDeck) => {
     setCustomDecks((prev) => [newDeck, ...prev]);
-    showToast(`🎉 Tạo thành công bộ thẻ "${newDeck.title}"!`);
+    showToast(`🎉 Tạo thành công gói Prompt "${newDeck.title}"!`);
     refreshState();
   };
 
@@ -375,7 +359,7 @@ export default function App() {
     });
   }, [customDecks, marketplaceDecks]);
 
-  // Tự động nhận diện đường dẫn chia sẻ bộ thẻ Flashcard (?deck=...&card=...&tab=...)
+  // Tự động nhận diện đường dẫn chia sẻ gói Prompt (?deck=...&card=...&tab=...)
   useEffect(() => {
     const { deckId, cardIndex, tab, chatWith } = parseUrlParameters();
 
@@ -390,7 +374,7 @@ export default function App() {
         setInitialCardIndex(cardIndex);
         setActiveFlashcardCourse(targetDeck);
         playSound('flip');
-        showToast(`🔗 Đang mở bộ thẻ được chia sẻ: ${targetDeck.title}`);
+        showToast(`🔗 Đang mở gói Prompt được chia sẻ: ${targetDeck.title}`);
       }
     }
 
@@ -548,7 +532,7 @@ export default function App() {
         {/* MAIN NOTION PAGE CANVAS */}
         <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
           <Suspense fallback={<ViewLoadingFallback />}>
-            {/* TAB 1: TRANG CHỦ / ĐỀ THI CHÍNH QUY */}
+            {/* TAB 1: TRANG CHỦ / PROMPT & SKILLS CHÍNH QUY */}
             {activeTab === 'home' && (
               <HomeView
                 onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
@@ -685,25 +669,6 @@ export default function App() {
           />
         )}
 
-        {/* 2. Timed Quiz Mock Exam */}
-        {activeQuizCourse && (
-          <QuizModal
-            course={activeQuizCourse}
-            isPurchased={isCoursePurchased(activeQuizCourse.id)}
-            onClose={() => setActiveQuizCourse(null)}
-            onBuy={(c) => setActivePaymentItem(c)}
-            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
-          />
-        )}
-
-        {/* 3. Viral Match Game (Ghép thẻ siêu tốc kiểu Quizlet) */}
-        {activeMatchGameCourse && (
-          <MatchGameModal
-            course={activeMatchGameCourse}
-            onClose={() => setActiveMatchGameCourse(null)}
-          />
-        )}
-
         {/* 4. Duolingo Leaderboard & Streak Modal */}
         {isLeaderboardOpen && (
           <LeaderboardModal
@@ -789,7 +754,7 @@ export default function App() {
           />
         )}
 
-        {/* 9. Pass Lại Bộ Thẻ (C2C Resale) */}
+        {/* 9. Pass Lại Gói Prompt (C2C Resale) */}
         {activePassCourse && (
           <PassDeckModal
             course={activePassCourse}
@@ -798,13 +763,13 @@ export default function App() {
             onPassSuccess={(res) => {
               refreshState();
               setActiveTab('marketplace');
-              showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+              showToast(`🎉 Gói Prompt "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           />
         )}
 
-        {/* 10. Bán Thẻ Trực Tiếp Từ Tủ (C2C Direct Sell) */}
+        {/* 10. Bán Gói Prompt Trực Tiếp Từ Tủ (C2C Direct Sell) */}
         {activeSellCourse && (
           <SellDeckModal
             course={activeSellCourse}
@@ -813,18 +778,9 @@ export default function App() {
             onSellSuccess={(res) => {
               refreshState();
               setActiveTab('marketplace');
-              showToast(`🎉 Bộ thẻ "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
+              showToast(`🎉 Gói Prompt "${res?.title || ''}" đã chính thức lên Sàn C2C!`);
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-          />
-        )}
-
-        {/* 11. Sổ Tay Câu Sai & Điểm Yếu (Mistake Notebook) */}
-        {isMistakesNotebookOpen && (
-          <MistakeNotebookModal
-            onClose={() => setIsMistakesNotebookOpen(false)}
-            onStartFlashcardPractice={(deck) => setActiveFlashcardCourse(deck)}
-            onStartQuizPractice={(deck) => setActiveQuizCourse(deck)}
           />
         )}
 
@@ -846,10 +802,6 @@ export default function App() {
               setActiveTab('admin');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            onOpenMatchGame={(c) => {
-              setIsChangelogOpen(false);
-              setActiveMatchGameCourse(c || allAvailableCourses[0]);
-            }}
             onOpenLibrary={() => {
               setIsChangelogOpen(false);
               setActiveTab('library');
@@ -870,9 +822,6 @@ export default function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
-            onOpenQuiz={(c) => setActiveQuizCourse(c)}
-            onOpenMatchGame={(c) => setActiveMatchGameCourse(c)}
-            onOpenMistakes={() => setIsMistakesNotebookOpen(true)}
             onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
             onOpenBlindBox={() => setIsBlindBoxOpen(true)}
             onOpenWallet={() => {
@@ -881,11 +830,7 @@ export default function App() {
             }}
             onOpenAnalytics={() => setIsAnalyticsOpen(true)}
             onOpenThemePicker={() => setIsThemePickerOpen(true)}
-            onOpenTargetClock={() => setIsTargetClockOpen(true)}
-            onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-            onOpenCheatSheet={(c) => setActiveCheatSheetCourse(c || allAvailableCourses[0] || COURSES_DATA[0])}
             onOpenDirectChat={() => handleOpenDirectChat()}
-            onOpenLiveExamRoom={() => setIsLiveExamRoomOpen(true)}
             onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
           />
         )}
@@ -914,47 +859,6 @@ export default function App() {
           />
         )}
 
-        {/* 17. Target Study Clock & Study Time History Trace Modal (Đồng bộ Giờ Hà Nội ICT GMT+7) */}
-        {isTargetClockOpen && (
-          <TargetStudyClockModal
-            isOpen={isTargetClockOpen}
-            onClose={() => setIsTargetClockOpen(false)}
-            onOpenPomodoro={() => {
-              showToast('⏱️ Hãy bấm vào widget Pomodoro ở góc dưới màn hình để bắt đầu học!');
-            }}
-            onOpenQuiz={() => {
-              if (allAvailableCourses[0]) {
-                setActiveQuizCourse(allAvailableCourses[0]);
-              }
-            }}
-            onOpenStudyRoom={() => setIsStudyRoomOpen(true)}
-            onOpenCheatSheet={() => setActiveCheatSheetCourse(allAvailableCourses[0] || COURSES_DATA[0])}
-            onOpenFlashcards={() => setActiveFlashcardCourse(allAvailableCourses[0] || COURSES_DATA[0])}
-          />
-        )}
-
-        {/* 19. 1-Page High-Yield Cheat Sheet Modal v3.0 */}
-        {activeCheatSheetCourse && (
-          <CheatSheetModal
-            initialCourseId={typeof activeCheatSheetCourse === 'string' ? activeCheatSheetCourse : activeCheatSheetCourse?.id}
-            allCourses={allAvailableCourses}
-            onClose={() => setActiveCheatSheetCourse(null)}
-          />
-        )}
-
-        {/* 20. Virtual Study Room v3.0 (Study With Me + Live Flashcards + Web Audio) Modal */}
-        {isStudyRoomOpen && (
-          <VirtualStudyRoomModal
-            user={user}
-            allCourses={allAvailableCourses}
-            onClose={() => setIsStudyRoomOpen(false)}
-            onOpenCheatSheet={(courseId) => {
-              setIsStudyRoomOpen(false);
-              setActiveCheatSheetCourse(courseId || allAvailableCourses[0]?.id || 'pldc');
-            }}
-          />
-        )}
-
         {/* 21. Direct Messages & 1-on-1 Peer Chat Modal */}
         {isDirectChatOpen && (
           <DirectChatModal
@@ -979,19 +883,6 @@ export default function App() {
           />
         )}
 
-        {/* 22. Live National Mock Exam Room Modal (Đồng bộ Giờ Hà Nội) */}
-        {isLiveExamRoomOpen && (
-          <LiveExamRoomModal
-            isOpen={isLiveExamRoomOpen}
-            onClose={() => setIsLiveExamRoomOpen(false)}
-            user={user}
-            allCourses={allAvailableCourses}
-            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
-            onShowToast={showToast}
-            onOpenDirectChat={handleOpenDirectChat}
-          />
-        )}
-
         {/* 23. Share Achievement & Certificate Canvas Card Modal */}
         {activeShareAchievement && (
           <ShareAchievementModal
@@ -1000,19 +891,6 @@ export default function App() {
             achievementData={activeShareAchievement}
             onOpenDirectChat={handleOpenDirectChat}
             onShowToast={showToast}
-          />
-        )}
-
-        {/* 24. AI Exam Readiness Radar & Pass Probability Modal */}
-        {isExamReadinessOpen && (
-          <ExamReadinessModal
-            isOpen={isExamReadinessOpen}
-            onClose={() => setIsExamReadinessOpen(false)}
-            allCourses={allAvailableCourses}
-            onOpenFlashcards={(deck) => {
-              setIsExamReadinessOpen(false);
-              setActiveFlashcardCourse(deck);
-            }}
           />
         )}
       </Suspense>

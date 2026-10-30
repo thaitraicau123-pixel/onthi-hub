@@ -12,13 +12,13 @@ export default function TestimonialsFaq() {
         {/* TESTIMONIALS SECTION */}
         <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
           <span className="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 px-3 py-1 rounded-full border border-indigo-200 dark:border-indigo-500/40">
-            Học Viên Nói Gì Về ÔnThiHub
+            Creator Nói Gì Về PromptMMO
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-3">
-            Hơn 12,500+ Học Viên Đã Tự Tin Thi Đỗ & Pass Phỏng Vấn
+            Hơn 12,500+ Creator & Dân MMO Đã Bứt Phá Doanh Thu & Triệu View
           </h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-            Kết quả thực tế từ những người đã kiên trì ôn luyện cùng Flashcard Anki mỗi ngày.
+            Kết quả thực tế từ những người áp dụng Prompt AI & Kịch bản thực chiến mỗi ngày.
           </p>
         </div>
 

@@ -1,5 +1,5 @@
-// Blind Box (Hộp Mù / Túi Mù Tri Thức) Game System
-// Phần thưởng 100% THỰC TẾ & CÓ LỢI CHO CẢ HỌC VIÊN LẪN CHỦ HỆ THỐNG
+// Blind Box (Hộp Mù / Túi Mù Tri Thức & Kỹ Năng) Game System
+// Phần thưởng 100% THỰC TẾ & CÓ LỢI CHO CẢ CREATOR LẪN HỆ THỐNG PROMPTMMO
 // KHÔNG CÒN VOUCHER ẢO VÔ NGHĨA! Mọi phần thưởng được kích hoạt thẳng vào tài khoản ngay lập tức!
 
 import { getWalletBalance, deductWalletCoins, addWalletCoins } from './wallet.js';
@@ -19,36 +19,36 @@ export const DEFAULT_BLIND_BOXES = [
     borderColor: 'border-amber-400',
     glowColor: 'shadow-amber-500/40',
     accentColor: '#f59e0b',
-    description: 'Chỉ 5 Xu thử vận: Nhận Xu thật, vé tạo thẻ AI Studio, trọn bộ đề thi công chức và khiên bảo vệ chuỗi học!',
-    expectedRewards: ['Hoàn 2 - 4 Xu Thật', '🌟 Lãi To: +8 Xu Thật', '🤖 Vé +5 Lượt Tạo Thẻ AI', '🗂️ Mở Khóa Đề CBCC (25 Xu)', '🛡️ Khiên Streak + 50 XP'],
+    description: 'Chỉ 5 Xu thử vận: Nhận Xu thật, vé tạo Prompt AI Studio, trọn bộ Prompt TikTok Hooks và khiên bảo vệ chuỗi!',
+    expectedRewards: ['Hoàn 2 - 4 Xu Thật', '🌟 Lãi To: +8 Xu Thật', '🤖 Vé +5 Lượt Tạo Prompt AI', '🗂️ Mở Khóa TikTok Hooks (25 Xu)', '🛡️ Khiên Streak + 50 XP'],
     badge: '100% CÓ QUÀ THỰC TẾ',
     dropRates: [
       { name: '🪙 Hoàn Xu May Mắn (2 - 4 Xu)', rate: '45%', rarity: 'common' },
-      { name: '🤖 Vé +5 Lượt Tạo Thẻ AI Studio', rate: '25%', rarity: 'uncommon' },
+      { name: '🤖 Vé +5 Lượt Tạo Prompt AI Studio', rate: '25%', rarity: 'uncommon' },
       { name: '🛡️ Khiên Bảo Vệ Chuỗi Streak + 50 XP', rate: '15%', rarity: 'rare' },
       { name: '🌟 May Mắn Phát Tài: +8 Xu Thật (Lãi +3 Xu)', rate: '10%', rarity: 'epic' },
-      { name: '🗂️ Mở Khóa Trọn Bộ Đề Công Chức 2026', rate: '5%', rarity: 'legendary' }
+      { name: '🗂️ Mở Khóa Trọn Bộ Prompt TikTok Hooks 2026', rate: '5%', rarity: 'legendary' }
     ]
   },
   {
     id: 'silver',
-    name: 'Hộp Mù Tri Thức VIP',
-    subname: 'Sĩ Tử Quyết Thắng',
+    name: 'Hộp Mù Creator VIP',
+    subname: 'Cao Thủ Thực Chiến',
     costXu: 15,
     icon: '🎁',
     color: 'from-pink-500 via-rose-600 to-purple-700',
     borderColor: 'border-[#2383e2]',
     glowColor: 'shadow-blue-500/50',
     accentColor: '#2383e2',
-    description: 'Hộp VIP 15 Xu: Nhận 8 - 12 Xu thật, vé +15 lượt AI, bộ thẻ Frontend / TOEIC hoặc thăng hạng PLUS!',
-    expectedRewards: ['Hoàn 8 - 12 Xu Thật', '🌟 Trúng Lớn: +25 Xu (+10 Xu Lời)', '🤖 Vé +15 Lượt Tạo Thẻ AI', '💻 Thẻ Frontend Master / TOEIC', '👑 Thăng Hạng Gói PLUS (1 Tháng)'],
+    description: 'Hộp VIP 15 Xu: Nhận 8 - 12 Xu thật, vé +15 lượt AI Studio, gói Prompt Midjourney / Higgsfield hoặc thăng hạng PLUS!',
+    expectedRewards: ['Hoàn 8 - 12 Xu Thật', '🌟 Trúng Lớn: +25 Xu (+10 Xu Lời)', '🤖 Vé +15 Lượt Tạo Prompt AI', '💻 Prompt Midjourney Studio Master', '👑 Thăng Hạng Gói PLUS (1 Tháng)'],
     badge: '🔥 BÁN CHẠY NHẤT',
     dropRates: [
       { name: '🪙 Hoàn Xu Tích Lũy (8 - 12 Xu)', rate: '40%', rarity: 'common' },
-      { name: '🤖 Vé +15 Lượt Tạo Thẻ AI Studio', rate: '22%', rarity: 'uncommon' },
+      { name: '🤖 Vé +15 Lượt Tạo Prompt AI Studio', rate: '22%', rarity: 'uncommon' },
       { name: '⚡ Buff x2 Xu Thưởng & +100 XP (24h)', rate: '15%', rarity: 'rare' },
       { name: '🌟 Trúng Đậm: +25 Xu Thật (Lãi +10 Xu)', rate: '10%', rarity: 'epic' },
-      { name: '💻 Mở Khóa: Thẻ Frontend Master / TOEIC', rate: '8%', rarity: 'epic' },
+      { name: '💻 Mở Khóa: Prompt Midjourney Studio Master', rate: '8%', rarity: 'epic' },
       { name: '👑 Nâng Cấp Hội Viên PLUS (79 Xu)', rate: '5%', rarity: 'legendary' }
     ]
   },
@@ -62,14 +62,14 @@ export const DEFAULT_BLIND_BOXES = [
     borderColor: 'border-amber-300',
     glowColor: 'shadow-amber-400/50',
     accentColor: '#fbbf24',
-    description: 'Thử thách nhân phẩm cực hạn: NỔ HŨ JACKPOT 100 - 150 Xu, siêu thẻ IELTS 7.5+, vé +30 lượt AI hoặc gói PRO!',
-    expectedRewards: ['Hoàn 18 - 25 Xu Thật', '🌟 Trúng Lớn: +50 Xu (+20 Xu Lời)', '🤖 Vé +30 Lượt Tạo Thẻ AI', '🇬🇧 Trọn Bộ Thẻ IELTS 7.5+', '💎 Thăng Hạng Gói PRO (1 Tháng)', '🏆 SIÊU NỔ HŨ JACKPOT: 100 - 150 XU'],
+    description: 'Thử thách nhân phẩm cực hạn: NỔ HŨ JACKPOT 100 - 150 Xu, siêu bộ Prompt Kling Video Cinema, vé +30 lượt AI hoặc gói PRO!',
+    expectedRewards: ['Hoàn 18 - 25 Xu Thật', '🌟 Trúng Lớn: +50 Xu (+20 Xu Lời)', '🤖 Vé +30 Lượt Tạo Prompt AI', '🎬 Trọn Bộ Prompt Kling Cinema 4K', '💎 Thăng Hạng Gói PRO (1 Tháng)', '🏆 SIÊU NỔ HŨ JACKPOT: 100 - 150 XU'],
     badge: '✨ NỔ HŨ JACKPOT',
     dropRates: [
       { name: '🪙 Hoàn Xu Cao Cấp (18 - 25 Xu)', rate: '35%', rarity: 'common' },
-      { name: '🤖 Vé Siêu Cấp +30 Lượt Tạo Thẻ AI Studio', rate: '20%', rarity: 'rare' },
+      { name: '🤖 Vé Siêu Cấp +30 Lượt Tạo Prompt AI Studio', rate: '20%', rarity: 'rare' },
       { name: '🌟 Thần Tài Đến: +50 Xu Thật (Lãi +20 Xu)', rate: '15%', rarity: 'epic' },
-      { name: '🇬🇧 Mở Khóa: Trọn Bộ 1200 Từ Vựng IELTS 7.5+', rate: '15%', rarity: 'epic' },
+      { name: '🎬 Mở Khóa: Trọn Bộ Prompt Kling Video Cinema 4K', rate: '15%', rarity: 'epic' },
       { name: '💎 Thăng Hạng Hội Viên PRO (149 Xu)', rate: '12%', rarity: 'legendary' },
       { name: '🏆 NỔ HŨ JACKPOT: +100 - 150 XU (3%)', rate: '3%', rarity: 'secret' }
     ]
@@ -184,7 +184,7 @@ function rollSingleReward(boxId) {
     }
   } else if (boxId === 'silver') {
     // Giá mở: 15 Xu
-    // 5% PLUS Tier, 8% Thẻ Frontend/TOEIC, 10% Lãi +25 Xu, 15% Buff x2 Xu & +100 XP, 22% +15 lượt AI, 40% Hoàn 8-12 Xu
+    // 5% PLUS Tier, 8% Gói Midjourney/Higgsfield, 10% Lãi +25 Xu, 15% Buff x2 Xu & +100 XP, 22% +15 lượt AI, 40% Hoàn 8-12 Xu
     if (roll < 5) {
       setUserTier('plus');
       return {
@@ -198,18 +198,18 @@ function rollSingleReward(boxId) {
         icon: '👑'
       };
     } else if (roll < 13) {
-      const deckId = Math.random() < 0.5 ? 'it-frontend-master' : 'toeic-850-flashcard';
+      const deckId = Math.random() < 0.5 ? 'mkt_midjourney_flux_ecommerce' : 'mkt_higgsfield_kling_cinema';
       savePurchasedCourse(deckId);
       return {
         type: 'deck',
         courseId: deckId,
         rarity: 'epic',
         rarityLabel: 'SỬ THI (EPIC)',
-        title: deckId === 'it-frontend-master' ? '💻 Mở Khóa: 250 Câu Phỏng Vấn Frontend Master' : '🎯 Mở Khóa: 600 Từ Vựng & Bẫy TOEIC 850+',
-        description: 'Trị giá lên đến 29 Xu! Bộ thẻ đã được thêm vĩnh viễn vào "Tủ Của Tôi" của bạn.',
-        actionText: 'Vào Tủ Thẻ Học Ngay',
+        title: deckId === 'mkt_midjourney_flux_ecommerce' ? '🎨 Mở Khóa: Midjourney & Flux Studio Chụp Sản Phẩm' : '🎬 Mở Khóa: Bộ Prompt Kling & Higgsfield Cinema FX',
+        description: 'Trị giá lên đến 29 Xu! Gói Prompt đã được thêm vĩnh viễn vào "Tủ Của Tôi" của bạn.',
+        actionText: 'Vào Kho Prompt Sử Dụng',
         actionType: 'library',
-        icon: deckId === 'it-frontend-master' ? '💻' : '🎯'
+        icon: deckId === 'mkt_midjourney_flux_ecommerce' ? '🎨' : '🎬'
       };
     } else if (roll < 23) {
       addWalletCoins(25, 'Trúng Lớn Hộp Bạc (+25 Xu)');
@@ -230,8 +230,8 @@ function rollSingleReward(boxId) {
         rarity: 'rare',
         rarityLabel: 'SIÊU BUFF (RARE)',
         title: '⚡ Kích Hoạt Buff x2 Xu Thưởng & +100 XP',
-        description: 'Nhân đôi Xu thưởng khi học Flashcard và làm bài thi trong 24 giờ tới, cộng thêm +100 XP!',
-        actionText: 'Vào Học Ngay Để Nhận x2',
+        description: 'Nhân đôi Xu thưởng khi tương tác, luyện tập Prompt và giao dịch trong 24 giờ tới, cộng thêm +100 XP!',
+        actionText: 'Vào Tủ Khám Phá Ngay',
         actionType: 'library',
         icon: '⚡'
       };
@@ -241,9 +241,9 @@ function rollSingleReward(boxId) {
         type: 'ai',
         rarity: 'uncommon',
         rarityLabel: 'SIÊU TIỆN ÍCH',
-        title: '🤖 Vé +15 Lượt Tạo Thẻ AI Studio',
-        description: 'Trị giá 45 Xu! Đã cộng ngay 15 lượt tạo thẻ AI từ file/ảnh vào tài khoản.',
-        actionText: 'Tạo Bộ Thẻ Bằng AI Ngay',
+        title: '🤖 Vé +15 Lượt Tạo Prompt AI Studio',
+        description: 'Trị giá 45 Xu! Đã cộng ngay 15 lượt tạo Prompt AI từ file/ảnh vào tài khoản.',
+        actionText: 'Tạo Gói Prompt Bằng AI Ngay',
         actionType: 'studio',
         icon: '🤖'
       };
@@ -263,7 +263,7 @@ function rollSingleReward(boxId) {
     }
   } else {
     // Giá mở: 30 Xu (Rương ULTRA)
-    // 3% JACKPOT 100-150 Xu, 12% PRO Tier, 15% Thẻ IELTS 7.5+, 15% Thần Tài +50 Xu, 20% +30 lượt AI, 35% Hoàn 18-25 Xu
+    // 3% JACKPOT 100-150 Xu, 12% PRO Tier, 15% Gói Kling & Runway FX, 15% Thần Tài +50 Xu, 20% +30 lượt AI, 35% Hoàn 18-25 Xu
     if (roll < 3) {
       const jackpotAmount = Math.floor(Math.random() * 51) + 100; // 100 - 150 Xu
       addWalletCoins(jackpotAmount, 'JACKPOT Rương ULTRA');
@@ -284,23 +284,23 @@ function rollSingleReward(boxId) {
         rarity: 'legendary',
         rarityLabel: 'HUYỀN THOẠI (LEGENDARY)',
         title: '💎 Thăng Hạng: Hội Viên PRO (1 Tháng)',
-        description: 'Trị giá 149 Xu! 50 lượt tạo thẻ AI/ngày, phí sàn bán thẻ giảm còn 7%, huy hiệu PRO 🚀!',
+        description: 'Trị giá 149 Xu! 50 lượt tạo Prompt AI/ngày, phí sàn bán prompt giảm còn 7%, huy hiệu PRO 🚀!',
         actionText: 'Xem Đặc Quyền PRO',
         actionType: 'plans',
         icon: '💎'
       };
     } else if (roll < 30) {
-      savePurchasedCourse('ielts-band-75-vocab');
+      savePurchasedCourse('mkt_sora_runway_gen3_fx');
       return {
         type: 'deck',
-        courseId: 'ielts-band-75-vocab',
+        courseId: 'mkt_sora_runway_gen3_fx',
         rarity: 'epic',
         rarityLabel: 'SỬ THI (EPIC)',
-        title: '🇬🇧 Mở Khóa: 1200 Từ Vựng IELTS 7.5+ Chuyên Sâu',
-        description: 'Trị giá 22 Xu! Kèm Audio & Collocations, đã mở khóa vĩnh viễn trong Tủ Của Tôi.',
-        actionText: 'Vào Tủ Thẻ Học Ngay',
+        title: '🎬 Mở Khóa: Kỹ xảo Video AI Kling & Runway Gen-3',
+        description: 'Trị giá 29 Xu! Kèm prompt motion scale & camera cinematic, đã mở khóa vĩnh viễn trong Tủ Của Tôi.',
+        actionText: 'Vào Kho Prompt Sử Dụng',
         actionType: 'library',
-        icon: '🇬🇧'
+        icon: '🎬'
       };
     } else if (roll < 45) {
       addWalletCoins(50, 'Trúng lớn Rương ULTRA (+50 Xu)');
@@ -320,9 +320,9 @@ function rollSingleReward(boxId) {
         type: 'ai',
         rarity: 'rare',
         rarityLabel: 'SIÊU VIP',
-        title: '🤖 Vé Thần Tốc +30 Lượt Tạo Thẻ AI Studio',
-        description: 'Trị giá 90 Xu! Đã cộng ngay 30 lượt tạo thẻ AI từ tài liệu của bạn.',
-        actionText: 'Tạo Bộ Thẻ Bằng AI Ngay',
+        title: '🤖 Vé Thần Tốc +30 Lượt Tạo Prompt AI Studio',
+        description: 'Trị giá 90 Xu! Đã cộng ngay 30 lượt tạo Prompt AI từ tài liệu của bạn.',
+        actionText: 'Tạo Gói Prompt Bằng AI Ngay',
         actionType: 'studio',
         icon: '🤖'
       };

@@ -1,9 +1,9 @@
 // =========================================================================
-// ONTHIHUB DIRECT MESSAGING & REAL-TIME PEER-TO-PEER CHAT ENGINE
-// Hỗ trợ nhắn tin riêng 1-1 giữa các học viên với nhau và kênh riêng với Admin
-// Tích hợp chia sẻ đường dẫn bộ thẻ Flashcard trực tiếp trong hội thoại
+// PROMPTMMO DIRECT MESSAGING & REAL-TIME PEER-TO-PEER CHAT ENGINE
+// Hỗ trợ nhắn tin riêng 1-1 giữa các Creator với nhau và kênh riêng với Admin
+// Tích hợp chia sẻ đường dẫn gói Prompt trực tiếp trong hội thoại
 // Cơ chế đồng bộ đa tầng: LocalStorage + Cross-tab Broadcast + Cloud SSE Relay (ntfy.sh)
-// (Hoàn toàn KHÔNG sử dụng AI Tutor - chỉ tài khoản học viên thật & Ban Quản Trị)
+// (Hoàn toàn KHÔNG sử dụng AI Tutor - chỉ tài khoản Creator thật & Ban Quản Trị)
 // =========================================================================
 
 import { getOrCreateCommunityClientId } from '../data/communityData';
@@ -18,9 +18,9 @@ export const KVDB_BASE_URL = `https://kvdb.io/${KVDB_DM_BUCKET}`;
 
 // Ban Quản Trị hỗ trợ chính thức
 export const ADMIN_PARTICIPANT = {
-  id: 'admin_onthi',
-  uid: 'admin_onthi',
-  name: 'Ban Quản Trị OnThiHub',
+  id: 'admin_promptmmo',
+  uid: 'admin_promptmmo',
+  name: 'Ban Quản Trị PromptMMO',
   email: ADMIN_EMAIL || 'thaitraicau123@gmail.com',
   avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
   role: 'admin',
@@ -58,8 +58,8 @@ export function isSameUser(u1, u2) {
 
   // 6. Nhận diện Ban Quản Trị
   const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
-  const isAdmin1 = user1.id === 'admin_onthi' || user1.role === 'admin' || e1 === adminEmail;
-  const isAdmin2 = user2.id === 'admin_onthi' || user2.role === 'admin' || e2 === adminEmail;
+  const isAdmin1 = user1.id === 'admin_promptmmo' || user1.id === 'admin_onthi' || user1.role === 'admin' || e1 === adminEmail;
+  const isAdmin2 = user2.id === 'admin_promptmmo' || user2.id === 'admin_onthi' || user2.role === 'admin' || e2 === adminEmail;
   if (isAdmin1 && isAdmin2) return true;
 
   return false;
@@ -75,8 +75,9 @@ export function matchesUserIdentifier(userObj, identifier) {
   const target = String(identifier).toLowerCase().trim();
   const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
 
-  if (target === 'admin_onthi' || target === adminEmail) {
+  if (target === 'admin_promptmmo' || target === 'admin_onthi' || target === adminEmail) {
     return (
+      userObj.id === 'admin_promptmmo' ||
       userObj.id === 'admin_onthi' ||
       userObj.role === 'admin' ||
       (userObj.email && userObj.email.toLowerCase().trim() === adminEmail)
@@ -98,11 +99,11 @@ export function isUserAdmin(user) {
   if (typeof user === 'string') {
     const lower = user.toLowerCase().trim();
     const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
-    return lower === 'admin_onthi' || lower === adminEmail;
+    return lower === 'admin_promptmmo' || lower === 'admin_onthi' || lower === adminEmail;
   }
   const email = (user.email || '').toLowerCase().trim();
   const adminEmail = (ADMIN_EMAIL || 'thaitraicau123@gmail.com').toLowerCase().trim();
-  return email === adminEmail || user.role === 'admin' || user.id === 'admin_onthi';
+  return email === adminEmail || user.role === 'admin' || user.id === 'admin_promptmmo' || user.id === 'admin_onthi';
 }
 
 /**
@@ -113,16 +114,16 @@ export function getCurrentUserParticipant(user) {
   const resolved = user || (typeof window !== 'undefined' ? getCurrentUser() : null);
 
   if (resolved && typeof resolved === 'object' && (resolved.email || resolved.displayName || resolved.name || resolved.uid || resolved.id)) {
-    const email = (resolved.email || `${resolved.uid || resolved.id || 'guest'}@onthihub.vn`).toLowerCase().trim();
+    const email = (resolved.email || `${resolved.uid || resolved.id || 'guest'}@creator.promptmmo.com`).toLowerCase().trim();
     const name = resolved.displayName || resolved.name || email.split('@')[0];
     const isAdmin = isUserAdmin(resolved);
 
     if (isAdmin) {
       return {
-        id: 'admin_onthi',
-        uid: resolved.uid || 'admin_onthi',
+        id: 'admin_promptmmo',
+        uid: resolved.uid || 'admin_promptmmo',
         email: email || ADMIN_EMAIL,
-        name: resolved.displayName || resolved.name || 'Ban Quản Trị OnThiHub',
+        name: resolved.displayName || resolved.name || 'Ban Quản Trị PromptMMO',
         avatar: resolved.photoURL || resolved.avatar || ADMIN_PARTICIPANT.avatar,
         role: 'admin',
         tier: 'ultra',
@@ -136,24 +137,24 @@ export function getCurrentUserParticipant(user) {
       email,
       name,
       avatar: resolved.photoURL || resolved.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-      role: 'student',
+      role: 'creator',
       tier: resolved.tier || 'free',
-      badge: resolved.tier === 'ultra' ? '👑 Học Viên ULTRA' : resolved.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên'
+      badge: resolved.tier === 'ultra' ? '👑 Creator ULTRA' : resolved.tier === 'pro' ? '🚀 Creator PRO' : '⚡ Creator'
     };
   }
 
-  // Khách vãng lai / học viên chưa đăng nhập
+  // Khách vãng lai / thành viên chưa đăng nhập
   const clientId = getOrCreateCommunityClientId();
   const shortCode = clientId.slice(-4).toUpperCase();
   return {
     id: clientId,
     uid: clientId,
-    email: `${clientId}@student.onthihub.vn`,
-    name: `Bạn Học #${shortCode}`,
+    email: `${clientId}@creator.promptmmo.com`,
+    name: `Creator #${shortCode}`,
     avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(clientId)}`,
-    role: 'student',
+    role: 'creator',
     tier: 'free',
-    badge: '🎓 Học Viên'
+    badge: '⚡ Creator'
   };
 }
 
@@ -180,124 +181,124 @@ export function getConversationId(idA, idB) {
 
 const CLOUD_USERS_DIRECTORY_KEY = 'onthi_cloud_users_directory_v1';
 
-// Danh bạ các bạn học năng động trên hệ thống ÔnThiHub (Đề xuất kết bạn nhanh)
+// Danh bạ các Creator năng động trên hệ thống PromptMMO (Đề xuất kết bạn nhanh)
 export const DEFAULT_ACTIVE_STUDENT_DIRECTORY = [
   {
-    id: 'quocanh.cbcc@gmail.com',
-    name: 'Quốc Anh',
-    email: 'quocanh.cbcc@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=QuocAnh2026',
-    role: 'student',
+    id: 'hoanglong.mmo@gmail.com',
+    name: 'Hoàng Long (Long MMO)',
+    email: 'hoanglong.mmo@gmail.com',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+    role: 'creator',
     tier: 'ultra',
-    badge: '👑 Học Viên ULTRA',
-    studyGoal: '🏛️ Ôn Thi Công Chức 2026 • Chuyên viên Vòng 1',
-    field: 'cong-chuc',
-    streak: 14,
-    xp: 860,
+    badge: '👑 Creator ULTRA',
+    studyGoal: '🎬 Kênh TikTok 850k Follower • Higgsfield & Kling 1.5 Video 8K',
+    field: 'video-ai',
+    streak: 24,
+    xp: 1860,
     isOnline: true
   },
   {
-    id: 'thuydung.ielts@gmail.com',
-    name: 'Thùy Dung',
-    email: 'thuydung.ielts@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ThuyDungIelts',
-    role: 'student',
+    id: 'thuhuong.studio@gmail.com',
+    name: 'Thu Hương',
+    email: 'thuhuong.studio@gmail.com',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+    role: 'creator',
     tier: 'pro',
-    badge: '🚀 Học Viên PRO',
-    studyGoal: '🌍 IELTS Band 7.5+ • Luyện Collocations & Nói 1v1',
-    field: 'ngoai-ngu',
-    streak: 9,
-    xp: 620,
+    badge: '🚀 Creator PRO',
+    studyGoal: '🎨 Shop Thời Trang Shopee • Ảnh Mẫu Studio Flux & Midjourney',
+    field: 'image-ai',
+    streak: 19,
+    xp: 1420,
     isOnline: true
   },
   {
-    id: 'hoangnam.thue@gmail.com',
-    name: 'Hoàng Nam',
-    email: 'hoangnam.thue@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HoangNamTax',
-    role: 'student',
-    tier: 'pro',
-    badge: '🚀 Học Viên PRO',
-    studyGoal: '💼 Thuế & Kho Bạc • Luật Quản Lý Thuế 2026',
-    field: 'cong-chuc',
-    streak: 18,
-    xp: 940,
-    isOnline: true
-  },
-  {
-    id: 'ngocmai.yduoc@gmail.com',
-    name: 'Ngọc Mai',
-    email: 'ngocmai.yduoc@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=NgocMaiYDuoc',
-    role: 'student',
-    tier: 'pro',
-    badge: '🚀 Học Viên PRO',
-    studyGoal: '🏥 Viên Chức Y Tế • Luật Khám Chữa Bệnh 2023',
-    field: 'y-te',
-    streak: 7,
-    xp: 480,
-    isOnline: true
-  },
-  {
-    id: 'ducviet.cntt@gmail.com',
-    name: 'Đức Việt',
-    email: 'ducviet.cntt@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=DucVietDev',
-    role: 'student',
+    id: 'tuananh.n8n@gmail.com',
+    name: 'Đặng Tuấn Anh',
+    email: 'tuananh.n8n@gmail.com',
+    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
+    role: 'creator',
     tier: 'ultra',
-    badge: '👑 Học Viên ULTRA',
-    studyGoal: '💻 Kỹ Thuật Viên CNTT • System Design & Tin Học Văn Phòng',
-    field: 'it-tech',
-    streak: 21,
-    xp: 1250,
+    badge: '👑 Creator ULTRA',
+    studyGoal: '⚡ Affiliate Shopee • Auto Workflow N8N & Make 24/7',
+    field: 'skills-automation',
+    streak: 31,
+    xp: 2240,
     isOnline: true
   },
   {
-    id: 'kimngan.ngoaingu@gmail.com',
-    name: 'Kim Ngân',
-    email: 'kimngan.ngoaingu@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=KimNganB1',
-    role: 'student',
-    tier: 'free',
-    badge: '🎓 Học Viên',
-    studyGoal: '🇬🇧 Tiếng Anh Công Vụ B1 • Ngữ Pháp & Đọc Hiểu',
-    field: 'ngoai-ngu',
-    streak: 11,
-    xp: 530,
-    isOnline: true
-  },
-  {
-    id: 'minhkhoi.toaan@gmail.com',
-    name: 'Minh Khôi',
-    email: 'minhkhoi.toaan@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhKhoiLaw',
-    role: 'student',
+    id: 'minhtri.media@gmail.com',
+    name: 'Minh Trí (Trí Media)',
+    email: 'minhtri.media@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MinhTriMedia',
+    role: 'creator',
     tier: 'pro',
-    badge: '🚀 Học Viên PRO',
-    studyGoal: '⚖️ Thư Ký Tòa Án & Viện Kiểm Sát • Luật Tổ Chức Tòa Án',
-    field: 'cong-chuc',
+    badge: '🚀 Creator PRO',
+    studyGoal: '🔥 TikTok Shop & Reels • Kịch Bản Phân Cảnh Bán Hàng 100k View',
+    field: 'copy-mmo',
     streak: 15,
-    xp: 790,
+    xp: 980,
     isOnline: true
   },
   {
-    id: 'lananh.khoobac@gmail.com',
-    name: 'Lan Anh',
-    email: 'lananh.khoobac@gmail.com',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LanAnhTreasury',
-    role: 'student',
+    id: 'phuongthao.canva@gmail.com',
+    name: 'Phương Thảo',
+    email: 'phuongthao.canva@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=PhuongThaoDesign',
+    role: 'creator',
+    tier: 'pro',
+    badge: '🚀 Creator PRO',
+    studyGoal: '🔑 Template Canva Pro & CapCut • Thiết Kế Bán POD Quốc Tế',
+    field: 'acc-tools',
+    streak: 12,
+    xp: 850,
+    isOnline: true
+  },
+  {
+    id: 'baongoc.podcast@gmail.com',
+    name: 'Bảo Ngọc',
+    email: 'baongoc.podcast@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=BaoNgocPodcast',
+    role: 'creator',
     tier: 'free',
-    badge: '🎓 Học Viên',
-    studyGoal: '📊 Kế Toán & Kho Bạc Nhà Nước • Luật Ngân Sách',
-    field: 'cong-chuc',
+    badge: '⚡ Creator',
+    studyGoal: '🎙️ Kênh Kể Chuyện Thần Thoại Triệu View • Giọng Đọc & Ảnh AI',
+    field: 'video-ai',
     streak: 8,
-    xp: 410,
+    xp: 490,
+    isOnline: true
+  },
+  {
+    id: 'haidang.affiliate@gmail.com',
+    name: 'Hải Đăng',
+    email: 'haidang.affiliate@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HaiDangMmo',
+    role: 'creator',
+    tier: 'pro',
+    badge: '🚀 Creator PRO',
+    studyGoal: '🛒 Top Seller TikTok Shop • Review Sản Phẩm & Chốt Đơn 95%',
+    field: 'copy-mmo',
+    streak: 16,
+    xp: 1120,
+    isOnline: true
+  },
+  {
+    id: 'quanghuy.tools@gmail.com',
+    name: 'Quang Huy',
+    email: 'quanghuy.tools@gmail.com',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=QuangHuyTools',
+    role: 'creator',
+    tier: 'free',
+    badge: '⚡ Creator',
+    studyGoal: '🔑 Chia Sẻ Thủ Thuật Slot Tool MMO • Canva & CapCut Giá Sỉ',
+    field: 'acc-tools',
+    streak: 10,
+    xp: 610,
     isOnline: true
   }
 ];
 
 /**
- * Kiểm tra xem một học viên có nằm trong danh sách học viên năng động mặc định trên hệ thống hay không
+ * Kiểm tra xem một Creator có nằm trong danh sách Creator năng động mặc định trên hệ thống hay không
  */
 export function isDefaultActiveStudent(userOrId) {
   if (!userOrId) return false;
@@ -307,8 +308,8 @@ export function isDefaultActiveStudent(userOrId) {
 }
 
 /**
- * Lấy danh bạ toàn bộ học viên và Admin trong hệ thống
- * Phục vụ tính năng tìm kiếm bạn học và bắt đầu trò chuyện trực tiếp
+ * Lấy danh bạ toàn bộ Creator và Admin trong hệ thống
+ * Phục vụ tính năng tìm kiếm Creator và bắt đầu trò chuyện trực tiếp
  */
 export function getStudentDirectory(currentUserId) {
   const directoryMap = new Map();
@@ -341,17 +342,17 @@ export function getStudentDirectory(currentUserId) {
           name: u.displayName || u.email.split('@')[0],
           email: u.email,
           avatar: u.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(u.email)}`,
-          role: 'student',
+          role: 'creator',
           tier: u.tier || 'free',
-          badge: u.tier === 'ultra' ? '👑 Học Viên ULTRA' : u.tier === 'pro' ? '🚀 Học Viên PRO' : '🎓 Học Viên',
-          studyGoal: u.studyGoal || 'Học viên OnThiHub',
+          badge: u.tier === 'ultra' ? '👑 Creator ULTRA' : u.tier === 'pro' ? '🚀 Creator PRO' : '⚡ Creator',
+          studyGoal: u.studyGoal || 'Creator PromptMMO',
           isOnline: true
         });
       }
     }
   } catch (e) {}
 
-  // 3. Khám phá thêm từ Danh bạ học viên năng động mặc định trên web (Đảm bảo luôn có bạn học đề xuất)
+  // 3. Khám phá thêm từ Danh bạ Creator năng động mặc định trên web (Đảm bảo luôn có Creator đề xuất)
   try {
     DEFAULT_ACTIVE_STUDENT_DIRECTORY.forEach((stu) => {
       if (isSameUser(curIdent, stu)) return;
@@ -374,13 +375,13 @@ export function getStudentDirectory(currentUserId) {
             directoryMap.set(pKey, {
               id: p.id || p.email,
               uid: p.uid || null,
-              name: p.name || (p.email ? p.email.split('@')[0] : 'Bạn Học'),
-              email: p.email || `${p.id}@onthihub.vn`,
+              name: p.name || (p.email ? p.email.split('@')[0] : 'Creator'),
+              email: p.email || `${p.id}@promptmmo.com`,
               avatar: p.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.id)}`,
-              role: p.role || 'student',
+              role: p.role || 'creator',
               tier: p.tier || 'free',
-              badge: p.badge || '🎓 Học Viên',
-              studyGoal: p.studyGoal || 'Học viên OnThiHub',
+              badge: p.badge || '🚀 Creator',
+              studyGoal: p.studyGoal || 'Creator PromptMMO',
               isOnline: true
             });
           }
@@ -400,13 +401,13 @@ export function getStudentDirectory(currentUserId) {
               directoryMap.set(pKey, {
                 id: p.id || p.email,
                 uid: p.uid || null,
-                name: p.name || (p.email ? p.email.split('@')[0] : 'Bạn Học'),
-                email: p.email || `${p.id}@onthihub.vn`,
+                name: p.name || (p.email ? p.email.split('@')[0] : 'Creator'),
+                email: p.email || `${p.id}@promptmmo.com`,
                 avatar: p.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.id)}`,
-                role: p.role || 'student',
+                role: p.role || 'creator',
                 tier: p.tier || 'free',
-                badge: p.badge || '🎓 Học Viên',
-                studyGoal: p.studyGoal || 'Học viên OnThiHub',
+                badge: p.badge || '🚀 Creator',
+                studyGoal: p.studyGoal || 'Creator PromptMMO',
                 isOnline: true
               });
             }
@@ -416,7 +417,7 @@ export function getStudentDirectory(currentUserId) {
     }
   } catch (e) {}
 
-  // 4. Khám phá thêm từ lịch sử tin nhắn thực tế (tránh bị sót bạn học giữa 2 thiết bị khác nhau)
+  // 4. Khám phá thêm từ lịch sử tin nhắn thực tế (tránh bị sót Creator giữa 2 thiết bị khác nhau)
   try {
     const allMsgs = getAllMessages();
     allMsgs.forEach((msg) => {
@@ -427,13 +428,13 @@ export function getStudentDirectory(currentUserId) {
           directoryMap.set(pKey, {
             id: p.id || p.email,
             uid: p.uid || null,
-            name: p.name || (p.email ? p.email.split('@')[0] : 'Bạn Học'),
-            email: p.email || `${p.id}@onthihub.vn`,
+            name: p.name || (p.email ? p.email.split('@')[0] : 'Creator'),
+            email: p.email || `${p.id}@promptmmo.com`,
             avatar: p.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(p.id)}`,
-            role: p.role || 'student',
+            role: p.role || 'creator',
             tier: p.tier || 'free',
-            badge: p.badge || '🎓 Học Viên',
-            studyGoal: p.studyGoal || 'Học viên OnThiHub',
+            badge: p.badge || '🚀 Creator',
+            studyGoal: p.studyGoal || 'Creator PromptMMO',
             isOnline: true
           });
         }
@@ -475,17 +476,17 @@ export function getAllMessages() {
   const initialMessages = [
     {
       id: 'msg_welcome_admin_1',
-      conversationId: getConversationId('admin_onthi', 'default_user'),
+      conversationId: getConversationId('admin_promptmmo', 'default_user'),
       sender: ADMIN_PARTICIPANT,
-      receiver: { id: 'default_user', name: 'Học Viên Mới', role: 'student' },
+      receiver: { id: 'default_user', name: 'Creator Mới', role: 'creator' },
       receiverId: 'default_user',
-      text: 'Chào bạn! Đây là kênh liên hệ và hỗ trợ học viên chính thức từ Ban Quản Trị OnThiHub 🛡️.\n\nBạn có thể nhắn tin hỏi đáp hỗ trợ, báo lỗi hoặc kết nối với các bạn học viên khác trong danh bạ để cùng trao đổi tài liệu và bộ thẻ Flashcard nhé!',
+      text: 'Chào bạn! Đây là kênh liên hệ và hỗ trợ Creator chính thức từ Ban Quản Trị PromptMMO 🛡️.\n\nBạn có thể nhắn tin hỏi đáp hỗ trợ, duyệt lệnh rút/nạp Xu hoặc kết nối với các Creator khác trong danh bạ để cùng trao đổi gói Prompt triệu view và bí kíp thực chiến nhé!',
       sharedDeck: {
-        id: 'cbcc-2026',
-        title: 'Bộ Thẻ Trọng Tâm Luật Cán Bộ, Công Chức 2026',
-        cardsCount: 60,
-        categoryLabel: 'Công Chức',
-        icon: '🏛️',
+        id: 'mkt_higgsfield_kling_cinema',
+        title: 'Công Thức Video Điện Ảnh AI Kling & Higgsfield',
+        cardsCount: 25,
+        categoryLabel: 'Video AI',
+        icon: '🎬',
         priceXu: 29
       },
       createdAt: new Date(Date.now() - 3600000).toISOString(),
@@ -530,7 +531,7 @@ export function getUserConversations(currentUser) {
   const convMap = new Map();
   const isAdmin = current.role === 'admin' || current.id === 'admin_onthi';
 
-  // 1. Đối với học viên: Luôn luôn có kênh riêng với Ban Quản Trị OnThiHub
+  // 1. Đối với Creator: Luôn luôn có kênh riêng với Ban Quản Trị PromptMMO
   const adminConvId = getConversationId(current.id, ADMIN_PARTICIPANT.id);
   if (!isAdmin) {
     convMap.set(adminConvId, {
@@ -626,12 +627,12 @@ export function getConversationMessages(conversationId, currentParticipant, targ
 }
 
 /**
- * Gửi tin nhắn trực tiếp giữa 2 tài khoản (Học viên - Học viên hoặc Học viên - Admin)
+ * Gửi tin nhắn trực tiếp giữa 2 tài khoản (Creator - Creator hoặc Creator - Admin)
  * @param {Object} params
  * @param {Object} params.sender - Thông tin người gửi
  * @param {Object} params.receiver - Thông tin người nhận
  * @param {string} params.text - Nội dung tin nhắn
- * @param {Object|null} [params.sharedDeck=null] - Bộ thẻ flashcard đính kèm (nếu có)
+ * @param {Object|null} [params.sharedDeck=null] - Gói Prompt đính kèm (nếu có)
  * @param {Object|null} [params.sharedAchievement=null] - Bằng khen/chứng nhận hoàng gia 4K đính kèm (nếu có)
  * @returns {Object} Tin nhắn vừa tạo
  */
@@ -678,22 +679,22 @@ export function sendDirectMessage(arg1, arg2, arg3, arg4 = null, arg5 = null, ar
     sender: {
       id: senderId,
       uid: sender.uid || null,
-      name: sender.name || sender.displayName || 'Bạn Học',
+      name: sender.name || sender.displayName || 'Creator',
       email: sender.email || senderId,
       avatar: sender.avatar || sender.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(senderId || 'user')}`,
-      role: sender.role || 'student',
+      role: sender.role || 'creator',
       tier: sender.tier || 'free',
-      badge: sender.badge || (sender.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
+      badge: sender.badge || (sender.role === 'admin' ? '🛡️ Ban Quản Trị' : '🚀 Creator')
     },
     receiver: {
       id: receiverId,
       uid: receiver.uid || null,
-      name: receiver.name || receiver.displayName || 'Bạn Học',
+      name: receiver.name || receiver.displayName || 'Creator',
       email: receiver.email || receiverId,
       avatar: receiver.avatar || receiver.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(receiverId || 'partner')}`,
-      role: receiver.role || 'student',
+      role: receiver.role || 'creator',
       tier: receiver.tier || 'free',
-      badge: receiver.badge || (receiver.role === 'admin' ? '🛡️ Ban Quản Trị' : '🎓 Học Viên')
+      badge: receiver.badge || (receiver.role === 'admin' ? '🛡️ Ban Quản Trị' : '🚀 Creator')
     },
     receiverId,
     text: (text || '').trim(),
@@ -825,9 +826,9 @@ export function sendDirectMessage(arg1, arg2, arg3, arg4 = null, arg5 = null, ar
             ) || receiver;
 
           const replies = [
-            `Chào ${sender.name || 'bạn'}! Mình đang cày bộ thẻ ${stuProfile.studyGoal || 'ôn thi 2026'}. Bạn bấm nút [⚔️ Thách Đấu 1v1] ở góc trên để tụi mình so tài trắc nghiệm ngay nhé! 🔥`,
-            `Ok bạn ơi! Hôm nay mình vừa ôn xong 30 thẻ Anki. Tụi mình giữ chuỗi Lửa Bạn Cùng Tiến 🔥 mỗi ngày nhé, cần đấu 1v1 cứ mời mình nha!`,
-            `Rất vui được trao đổi cùng ${sender.name || 'bạn'}! Mục tiêu của mình là đỗ kỳ thi năm nay (${stuProfile.studyGoal || 'ÔnThiHub'}). Cùng cố gắng nhé! 💪📚`
+            `Chào ${sender.name || 'bạn'}! Mình đang tối ưu gói Prompt ${stuProfile.studyGoal || 'Video AI 2026'}. Bạn bấm nút [⚔️ Thách Đấu 1v1] ở góc trên để tụi mình so tài kỹ năng ngay nhé! 🚀`,
+            `Ok bạn ơi! Hôm nay mình vừa chốt thêm khách mua prompt trên Sàn C2C. Tụi mình giữ chuỗi Lửa Bạn Cùng Tiến 🔥 mỗi ngày nhé, cần đấu 1v1 cứ mời mình nha!`,
+            `Rất vui được trao đổi cùng ${sender.name || 'bạn'}! Mục tiêu của mình là bùng nổ doanh số MMO năm nay (${stuProfile.studyGoal || 'PromptMMO'}). Cùng cố gắng nhé! 🚀💎`
           ];
           const randomReply = replies[Math.floor(Math.random() * replies.length)];
 
@@ -1065,8 +1066,8 @@ async function syncUserDirectoryWithCloud(curParticipant) {
       email: curParticipant.email,
       avatar: curParticipant.avatar,
       role: curParticipant.role || 'student',
-      badge: curParticipant.badge || '🎓 Học Viên',
-      studyGoal: curParticipant.studyGoal || 'Học viên OnThiHub',
+      badge: curParticipant.badge || '🚀 Creator',
+      studyGoal: curParticipant.studyGoal || 'Creator PromptMMO',
       updatedAt: now
     };
 

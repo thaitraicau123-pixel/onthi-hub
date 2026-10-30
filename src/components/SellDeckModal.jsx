@@ -24,11 +24,11 @@ export default function SellDeckModal({
 }) {
   const [sellTitle, setSellTitle] = useState(course?.title || '');
   const [sellPriceXu, setSellPriceXu] = useState(() => {
-    return Math.max(2, course?.priceXu ? Math.min(course.priceXu, 10) : 4);
+    return Math.max(2, course?.priceXu ? Math.min(course.priceXu, 50) : 15);
   });
-  const [sellCategory, setSellCategory] = useState(course?.category || 'cong-chuc');
+  const [sellCategory, setSellCategory] = useState(course?.category || 'video-ai');
   const [sellDescription, setSellDescription] = useState(
-    course?.subtitle || course?.description || 'Bộ thẻ kiến thức trọng tâm do học viên chia sẻ.'
+    course?.subtitle || course?.description || 'Gói Prompt AI & Kịch bản thực chiến do Creator chia sẻ.'
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,7 +42,7 @@ export default function SellDeckModal({
     if (!course) return;
 
     if (!sellTitle.trim()) {
-      alert('Vui lòng nhập tiêu đề bộ thẻ!');
+      alert('Vui lòng nhập tiêu đề gói prompt!');
       return;
     }
 
@@ -59,23 +59,31 @@ export default function SellDeckModal({
 
       const newMarketDeck = publishDeckToMarketplace({
         title: sellTitle.trim(),
-        description: sellDescription.trim() || `Bộ thẻ do ${user?.displayName || 'Cộng đồng'} chia sẻ.`,
+        description: sellDescription.trim() || `Gói Prompt do ${user?.displayName || 'Creator'} chia sẻ.`,
         category: sellCategory,
         categoryName:
-          sellCategory === 'cong-chuc'
-            ? 'Công Chức'
-            : sellCategory === 'it-tech'
-            ? 'IT & Lập Trình'
-            : 'Ngoại Ngữ',
+          sellCategory === 'video-ai'
+            ? 'Video AI Triệu View'
+            : sellCategory === 'image-ai'
+            ? 'Ảnh AI Studio'
+            : sellCategory === 'copy-mmo'
+            ? 'Kịch Bản Content MMO'
+            : sellCategory === 'skills-automation'
+            ? 'AI Skills & Auto'
+            : 'Tool & Tài Khoản MMO',
         categoryLabel:
-          sellCategory === 'cong-chuc'
-            ? 'Thi Công Chức 2026'
-            : sellCategory === 'it-tech'
-            ? 'IT & Lập Trình'
-            : 'Ngoại Ngữ',
-        priceXu: Math.max(2, parseInt(sellPriceXu, 10) || 3),
+          sellCategory === 'video-ai'
+            ? 'Video AI Triệu View'
+            : sellCategory === 'image-ai'
+            ? 'Ảnh AI Studio'
+            : sellCategory === 'copy-mmo'
+            ? 'Kịch Bản Content MMO'
+            : sellCategory === 'skills-automation'
+            ? 'AI Skills & Auto'
+            : 'Tool & Tài Khoản MMO',
+        priceXu: Math.max(2, parseInt(sellPriceXu, 10) || 15),
         cardCount: cardsList.length || course.cardCount || 10,
-        authorName: user?.displayName || course.authorName || 'Ban Quản Trị OnThiHub',
+        authorName: user?.displayName || course.authorName || 'Creator PromptMMO',
         authorEmail: user?.email || '',
         authorAvatar:
           user?.photoURL ||
@@ -98,7 +106,7 @@ export default function SellDeckModal({
       onSellSuccess?.(newMarketDeck);
       onClose();
     } catch (err) {
-      alert('Có lỗi xảy ra khi đăng bán bộ thẻ: ' + (err.message || 'Lỗi mạng'));
+      alert('Có lỗi xảy ra khi đăng bán gói Prompt: ' + (err.message || 'Lỗi mạng'));
     } finally {
       setIsSubmitting(false);
     }
@@ -128,10 +136,10 @@ export default function SellDeckModal({
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white">
-                Đăng Bán Bộ Thẻ Lên Sàn C2C
+                Đăng Bán Gói Prompt Lên Chợ C2C
               </h3>
               <p className="text-[11px] text-[#787774] dark:text-slate-400">
-                Kiếm Xu vào ví khi học viên khác trên toàn quốc mua bộ thẻ của bạn
+                Kiếm Xu vào ví khi Creator khác mua gói Prompt của bạn (Nhận tới 80% Xu)
               </p>
             </div>
           </div>
@@ -155,10 +163,10 @@ export default function SellDeckModal({
           <div className="p-4 rounded-lg bg-[#f7f6f5] dark:bg-slate-800/80 border border-[#e9e9e8] dark:border-white/10">
             <div className="flex items-center justify-between">
               <span className="notion-tag notion-tag-blue text-[10px] font-semibold">
-                BỘ THẺ TỪ TỦ CỦA BẠN
+                GÓI PROMPT CỦA BẠN
               </span>
               <span className="text-[11px] font-medium text-[#787774] dark:text-slate-400">
-                {course?.previewCards?.length || course?.cardCount || 10} thẻ Anki
+                {course?.previewCards?.length || course?.cardCount || 10} Prompts thực chiến
               </span>
             </div>
             
@@ -170,7 +178,7 @@ export default function SellDeckModal({
                 type="text"
                 value={sellTitle}
                 onChange={(e) => setSellTitle(e.target.value)}
-                placeholder="VD: 50 Thẻ Ghi Nhớ Nhanh Nghị Định 138..."
+                placeholder="VD: 50+ Prompt Video 8K Higgsfield & Kling 1.5 Triệu View..."
                 className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs font-semibold text-[#37352f] dark:text-white outline-none focus:border-[#2383e2] dark:focus:border-blue-400 focus:ring-1 focus:ring-[#2383e2]"
               />
             </div>
@@ -202,16 +210,18 @@ export default function SellDeckModal({
             {/* Category selection */}
             <div>
               <label className="text-xs font-semibold text-[#37352f] dark:text-slate-200 block mb-1.5">
-                Danh mục phân loại:
+                Danh mục Prompt & Skills:
               </label>
               <select
                 value={sellCategory}
                 onChange={(e) => setSellCategory(e.target.value)}
                 className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs font-semibold text-[#37352f] dark:text-white outline-none focus:border-[#2383e2] dark:focus:border-blue-400 focus:ring-1 focus:ring-[#2383e2] cursor-pointer"
               >
-                <option value="cong-chuc">🏛️ Công Chức</option>
-                <option value="it-tech">💻 IT & Lập Trình</option>
-                <option value="ngoai-ngu">🌐 Ngoại Ngữ</option>
+                <option value="video-ai">🎬 Video AI Triệu View</option>
+                <option value="image-ai">🎨 Ảnh AI Chuẩn Studio</option>
+                <option value="copy-mmo">✍️ Kịch Bản & Content MMO</option>
+                <option value="skills-automation">⚡ AI Skills & Auto</option>
+                <option value="acc-tools">🔑 Tool & Tài Khoản MMO</option>
               </select>
             </div>
           </div>
@@ -219,13 +229,13 @@ export default function SellDeckModal({
           {/* Description */}
           <div>
             <label className="text-xs font-semibold text-[#37352f] dark:text-slate-200 block mb-1.5">
-              Mô tả ngắn thu hút học viên:
+              Mô tả ngắn thu hút người mua:
             </label>
             <textarea
               rows="2"
               value={sellDescription}
               onChange={(e) => setSellDescription(e.target.value)}
-              placeholder="Tóm tắt nội dung trọng tâm và lý do nên học bộ thẻ này..."
+              placeholder="Tóm tắt Use Case, công cụ hỗ trợ và mẹo quay dựng kiếm triệu view..."
               className="w-full p-2.5 bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs text-[#37352f] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#2383e2] dark:focus:border-blue-400 focus:ring-1 focus:ring-[#2383e2] resize-none"
             />
           </div>
@@ -250,7 +260,7 @@ export default function SellDeckModal({
           <div className="flex items-start space-x-2 text-[11px] text-[#787774] dark:text-slate-400 p-2.5 bg-[#fbfbfa] dark:bg-slate-800/50 rounded-lg border border-[#e9e9e8] dark:border-white/10">
             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
             <span>
-              🔥 <strong>Tự động đưa lên Firebase:</strong> Bộ thẻ sẽ xuất hiện ngay lập tức trên Chợ Thẻ C2C cho toàn bộ người dùng trên cả nước nhìn thấy và mua!
+              🔥 <strong>Tự động đưa lên Firebase:</strong> Gói Prompt sẽ xuất hiện ngay lập tức trên Chợ Prompt C2C cho toàn bộ cộng đồng MMO nhìn thấy và mua!
             </span>
           </div>
 

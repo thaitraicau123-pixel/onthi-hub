@@ -1,5 +1,5 @@
-// Mistake Notebook & Weakness Bank Tracker for OnThiHub
-// Automatically captures failed quiz questions and forgotten flashcards
+// Mistake Notebook & Skill Gap Tracker for PromptMMO
+// Automatically captures failed prompt quiz questions and misapplied techniques
 // Powered by Google Gemini Multi-Model AI for Cognitive Gap Diagnosis
 
 import { getGeminiApiKey, GEMINI_MODELS } from './aiApiKey.js';
@@ -208,20 +208,20 @@ export async function diagnoseWeaknessesWithAi(unmasteredMistakes = []) {
     return `${i + 1}. [Chủ đề: ${m.deckTitle} | Tag: ${m.tag}]\n- Câu hỏi: "${m.question}"\n- Đáp án đúng: "${m.answer}"\n- Lựa chọn sai của thí sinh: "${m.userChoice || 'Bị quên/chọn nhầm'}"`;
   }).join('\n\n');
 
-  const prompt = `Bạn là Trưởng ban Khảo thí & Chuyên gia Phân tích Tư duy Học tập của ÔnThiHub.
-Dưới đây là danh sách các câu hỏi mà một thí sinh vừa làm sai hoặc hay quên trong quá trình luyện đề:
+  const prompt = `Bạn là Chuyên gia Đào tạo Prompt Engineering & Tối ưu Chiến dịch MMO của PromptMMO.
+Dưới đây là danh sách các tình huống/câu hỏi kỹ thuật mà một Creator vừa làm sai hoặc hiểu nhầm:
 
 ${sampleMistakes}
 
-HÃY ĐƯA RA "BÁO CÁO BẮT BỆNH LỖ HỔNG KIẾN THỨC & PHÁC ĐỒ CẤP TỐC" (viết bằng Markdown, ngắn gọn, súc tích, trực diện):
+HÃY ĐƯA RA "BÁO CÁO BẮT BỆNH LỖ HỔNG KỸ THUẬT & PHÁC ĐỒ CẤP TỐC PROMPTMMO" (viết bằng Markdown, ngắn gọn, súc tích, trực diện):
 ### 🩺 1. Chẩn Đoán Lỗ Hổng Tư Duy Cốt Lõi (Root Cognitive Gap)
-(Chỉ rõ lỗ hổng kiến thức gốc rễ là gì? Do nhầm lẫn mốc thời gian, không phân biệt được thẩm quyền cơ quan, bị bẫy từ ngữ phủ định/khẳng định, hay suy luận cảm tính?)
+(Chỉ rõ sai lầm gốc rễ là gì? Do hiểu nhầm tham số model AI, prompt quá mơ hồ, thiếu camera motion, hay áp dụng sai công thức kiếm tiền?)
 
-### 🚨 2. Các Bẫy Đề Thi Cần Tuyệt Đối Cảnh Giác
-(Cảnh báo 2-3 kiểu bẫy trắc nghiệm tương tự mà giám khảo các kỳ thi rất hay gài bẫy thí sinh ở các dạng câu hỏi này)
+### 🚨 2. Các Lỗi Sai Khi Chạy Thực Tế Cần Tuyệt Đối Cảnh Giác
+(Cảnh báo 2-3 lỗi sai phổ biến khiến hình ảnh/video render bị lỗi hoặc video flop, lãng phí chi phí API)
 
-### 💊 3. Phác Đồ Ôn Tập Trong 24 Giờ Tới
-(Đưa ra 3 hành động cụ thể, quy tắc nhớ vắt tắt giúp thí sinh không bao giờ lặp lại các lỗi sai trên)`;
+### 💊 3. Phác Đồ Khắc Phục Trong 24 Giờ Tới
+(Đưa ra 3 hành động cụ thể, cú pháp chuẩn xác giúp Creator tối ưu kết quả ngay lập tức)`;
 
   let lastError = '';
 

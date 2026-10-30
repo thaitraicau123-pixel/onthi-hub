@@ -1,4 +1,4 @@
-// SuperMemo SM-2 Spaced Repetition System (SRS) for OnThiHub
+// SuperMemo SM-2 Spaced Repetition System (SRS) for PromptMMO
 // Calculates optimal review intervals based on forgetting curve & retention ratings
 
 const SRS_STORAGE_KEY = 'onthi_srs_cards_v1';

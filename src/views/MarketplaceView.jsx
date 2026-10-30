@@ -66,7 +66,7 @@ export default function MarketplaceView({
 
   const handleDeleteDeck = (e, deck) => {
     e.stopPropagation();
-    if (window.confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN bộ thẻ "${deck.title}" khỏi Chợ Thẻ không?\nThao tác này sẽ gỡ bỏ thẻ trên toàn bộ hệ thống.`)) {
+    if (window.confirm(`Bạn có chắc muốn XÓA VĨNH VIỄN gói prompt "${deck.title}" khỏi Chợ Prompt không?\nThao tác này sẽ gỡ bỏ prompt trên toàn bộ hệ thống.`)) {
       deleteMarketplaceDeck(deck.id);
       playSound('flip');
       setDecks((prev) => prev.filter((d) => d.id !== deck.id));
@@ -165,20 +165,8 @@ export default function MarketplaceView({
       let matchCat = true;
       if (activeCategory === 'pass') {
         matchCat = d.isPassDeck === true;
-      } else if (activeCategory === 'toeic') {
-        matchCat = (d.id && d.id.includes('toeic')) || (d.title && d.title.toLowerCase().includes('toeic')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('toeic'));
-      } else if (activeCategory === 'ielts') {
-        matchCat = (d.id && d.id.includes('ielts')) || (d.title && d.title.toLowerCase().includes('ielts')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('ielts'));
-      } else if (activeCategory === 'sat') {
-        matchCat = (d.id && d.id.includes('sat')) || (d.title && d.title.toLowerCase().includes('sat')) || (d.categoryLabel && d.categoryLabel.toLowerCase().includes('sat'));
-      } else if (activeCategory === 'english-core') {
-        matchCat = (d.id && d.id.includes('english')) || (d.title && (d.title.includes('Oxford') || d.title.includes('Giao Tiếp') || d.title.includes('Ngữ Pháp') || d.title.includes('Cụm Động Từ') || d.title.includes('Phát Âm')));
-      } else if (activeCategory === 'it-tech') {
-        matchCat = d.category === 'it-tech';
-      } else if (activeCategory === 'other') {
-        matchCat = d.category === 'cong-chuc' || d.category === 'tai-chinh' || d.category === 'y-duoc';
       } else if (activeCategory !== 'all') {
-        matchCat = d.category === activeCategory;
+        matchCat = d.category === activeCategory || d.field === activeCategory;
       }
 
       const term = searchQuery.toLowerCase().trim();
@@ -395,14 +383,14 @@ export default function MarketplaceView({
               <div>
                 <div className="flex items-center space-x-2">
                   <h3 className="text-sm sm:text-base font-extrabold text-[#37352f] dark:text-white uppercase tracking-wide">
-                    🔁 Sàn Pass Lại Thẻ Học Viên ({passDecks.length})
+                    🔁 Sàn Pass Lại Prompt Creator ({passDecks.length})
                   </h3>
                   <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/40 text-[10px] font-bold">
                     LIVE C2C
                   </span>
                 </div>
                 <p className="text-xs text-[#787774] dark:text-slate-300">
-                  Bộ thẻ do học viên thi đỗ pass lại với giá ưu đãi. 100% bản quyền từ tác giả.
+                  Gói Prompt do Creator đã test ra doanh thu pass lại với giá ưu đãi. 100% bản quyền từ tác giả.
                 </p>
               </div>
             </div>
@@ -415,7 +403,7 @@ export default function MarketplaceView({
               }}
               className="self-start sm:self-auto px-3 py-1 rounded-lg bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-xs font-semibold text-[#37352f] dark:text-white transition-colors cursor-pointer"
             >
-              Xem tất cả ({passDecks.length}) thẻ pass →
+              Xem tất cả ({passDecks.length}) prompt pass →
             </button>
           </div>
 
@@ -444,7 +432,7 @@ export default function MarketplaceView({
                         <button
                           onClick={(e) => handleDeleteDeck(e, pDeck)}
                           className="p-1 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-500 transition-colors ml-2 shrink-0 cursor-pointer"
-                          title="Xóa bộ thẻ pass này"
+                          title="Xóa gói Prompt pass này"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -482,7 +470,7 @@ export default function MarketplaceView({
                           }
                         }}
                         className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                        title="Chia sẻ đường dẫn bộ thẻ này"
+                        title="Chia sẻ đường dẫn gói prompt này"
                       >
                         <Share2 className="w-3.5 h-3.5" />
                       </button>
@@ -496,8 +484,8 @@ export default function MarketplaceView({
                               (pDeck.passSellerName && pDeck.passSellerName.includes('Ban Quản Trị'));
                             if (isSellerAdmin) {
                               onOpenDirectChat({
-                                id: 'admin_onthi',
-                                name: 'Ban Quản Trị OnThiHub',
+                                id: 'admin_promptmmo',
+                                name: 'Ban Quản Trị PromptMMO',
                                 email: 'thaitraicau123@gmail.com',
                                 avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
                                 role: 'admin',
@@ -548,70 +536,70 @@ export default function MarketplaceView({
 
       {/* 3. FILTER & SEARCH (Notion Control Bar) */}
       <section id="marketplace-catalog" className="bg-white/95 dark:bg-slate-900/90 rounded-2xl p-3.5 sm:p-4 border border-[#e9e9e8] dark:border-white/15 shadow-2xs text-[#37352f] dark:text-white space-y-3">
-        {/* NEW ARRIVAL ENGLISH SPOTLIGHT BANNER */}
-        <div className="p-3 bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-purple-500/10 dark:from-sky-950/40 dark:to-indigo-950/40 rounded-xl border border-blue-200/80 dark:border-sky-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        {/* NEW ARRIVAL MMO PROMPT SPOTLIGHT BANNER */}
+        <div className="p-3 bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-purple-500/10 dark:from-amber-950/40 dark:to-purple-950/40 rounded-xl border border-amber-200/80 dark:border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
-            <span className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
-              ✨
+            <span className="w-8 h-8 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-center font-bold text-sm shrink-0 shadow-sm">
+              ⚡
             </span>
             <div>
               <div className="flex items-center gap-2">
                 <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white">
-                  25 Bộ Thẻ Tiếng Anh Kích Cầu Vừa Lên Sàn
+                  Kho Prompt & Kịch Bản Triệu View Thực Chiến
                 </h4>
                 <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-white animate-pulse">
-                  1 - 4 XU
+                  2 - 5 XU
                 </span>
               </div>
               <p className="text-[11px] text-slate-600 dark:text-slate-300">
-                Đầy đủ TOEIC, IELTS, Digital SAT & Giao tiếp cốt lõi. Học thử miễn phí không giới hạn.
+                Higgsfield, Kling AI, Midjourney v6 Studio, TikTok Shop & N8N Automation. 1-Click Copy và kiếm tiền ngay.
               </p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-1.5 shrink-0">
             <button
               type="button"
-              onClick={() => { setActiveCategory('toeic'); setSearchQuery(''); }}
+              onClick={() => { setActiveCategory('video-ai'); setSearchQuery(''); }}
               className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
-                activeCategory === 'toeic'
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-blue-500 text-blue-700 dark:text-sky-300'
+                activeCategory === 'video-ai'
+                  ? 'bg-amber-600 text-white border-amber-600'
+                  : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-amber-500 text-amber-700 dark:text-amber-300'
               }`}
             >
-              🇬🇧 TOEIC
+              🎬 Video AI
             </button>
             <button
               type="button"
-              onClick={() => { setActiveCategory('ielts'); setSearchQuery(''); }}
+              onClick={() => { setActiveCategory('image-ai'); setSearchQuery(''); }}
               className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
-                activeCategory === 'ielts'
+                activeCategory === 'image-ai'
                   ? 'bg-indigo-600 text-white border-indigo-600'
                   : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-indigo-500 text-indigo-700 dark:text-indigo-300'
               }`}
             >
-              🎓 IELTS
+              🎨 Ảnh Studio
             </button>
             <button
               type="button"
-              onClick={() => { setActiveCategory('sat'); setSearchQuery(''); }}
+              onClick={() => { setActiveCategory('copy-mmo'); setSearchQuery(''); }}
               className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
-                activeCategory === 'sat'
+                activeCategory === 'copy-mmo'
                   ? 'bg-purple-600 text-white border-purple-600'
                   : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-purple-500 text-purple-700 dark:text-purple-300'
               }`}
             >
-              🇺🇸 SAT
+              ✍️ Kịch Bản MMO
             </button>
             <button
               type="button"
-              onClick={() => { setActiveCategory('english-core'); setSearchQuery(''); }}
+              onClick={() => { setActiveCategory('skills-automation'); setSearchQuery(''); }}
               className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors cursor-pointer border ${
-                activeCategory === 'english-core'
+                activeCategory === 'skills-automation'
                   ? 'bg-emerald-600 text-white border-emerald-600'
                   : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 hover:border-emerald-500 text-emerald-700 dark:text-emerald-300'
               }`}
             >
-              💬 Cốt Lõi
+              ⚡ N8N & Auto
             </button>
           </div>
         </div>
@@ -619,14 +607,13 @@ export default function MarketplaceView({
         {/* Tier 1: Category Selection Tabs */}
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           {[
-            { id: 'all', name: `📋 Tất cả chợ (${decks.length})` },
-            { id: 'toeic', name: '🇬🇧 TOEIC (6 bộ)' },
-            { id: 'ielts', name: '🎓 IELTS (7 bộ)' },
-            { id: 'sat', name: '🇺🇸 SAT (5 bộ)' },
-            { id: 'english-core', name: '💬 Tiếng Anh Cốt Lõi (7 bộ)' },
-            { id: 'pass', name: `🔁 Góc Pass Lại (${passDecks.length})` },
-            { id: 'it-tech', name: '💻 IT & Lập Trình' },
-            { id: 'other', name: '🏛️ Lịch Sử & Khác' }
+            { id: 'all', name: `📋 Tất cả Prompt (${decks.length})` },
+            { id: 'video-ai', name: '🎬 Video AI Triệu View' },
+            { id: 'image-ai', name: '🎨 Ảnh Studio Midjourney/Flux' },
+            { id: 'copy-mmo', name: '✍️ Kịch Bản & Content MMO' },
+            { id: 'skills-automation', name: '⚡ N8N & Automation' },
+            { id: 'acc-tools', name: '🔑 Tool & Tài Nguyên MMO' },
+            { id: 'pass', name: `🔁 Góc Pass Lại C2C (${passDecks.length})` }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -649,7 +636,7 @@ export default function MarketplaceView({
             <Search className="w-3.5 h-3.5 text-[#9b9a97] dark:text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Tìm kiếm bộ thẻ hoặc người pass..."
+              placeholder="Tìm kiếm gói prompt, AI tool hoặc Creator..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-8 pr-7 py-1.5 text-xs bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 focus:bg-white dark:focus:bg-slate-800 text-[#37352f] dark:text-white border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] dark:focus:border-sky-400 transition-colors placeholder:text-[#9b9a97] dark:placeholder:text-slate-400"
@@ -682,7 +669,7 @@ export default function MarketplaceView({
             <button
               onClick={handleManualSync}
               disabled={isSyncing}
-              title="Đồng bộ danh sách bộ thẻ từ đám mây thời gian thực"
+              title="Đồng bộ danh sách gói Prompt từ đám mây thời gian thực"
               className={`px-3 py-1.5 rounded-lg border border-[#e9e9e8] dark:border-white/15 bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#f0efed] dark:hover:bg-slate-700 text-[#37352f] dark:text-white transition-colors flex items-center space-x-1.5 shrink-0 text-xs font-semibold cursor-pointer ${
                 isSyncing ? 'opacity-60 cursor-not-allowed' : ''
               }`}
@@ -711,12 +698,12 @@ export default function MarketplaceView({
             </div>
             <div>
               <h4 className="text-base font-bold text-[#37352f] dark:text-white">
-                {searchQuery ? `Không tìm thấy bộ thẻ nào khớp với "${searchQuery}"` : 'Chưa có bộ thẻ nào trong danh mục này'}
+                {searchQuery ? `Không tìm thấy gói Prompt nào khớp với "${searchQuery}"` : 'Chưa có gói Prompt nào trong danh mục này'}
               </h4>
               <p className="text-xs text-[#787774] dark:text-slate-300 mt-1 max-w-md mx-auto">
                 {searchQuery
                   ? 'Hãy thử kiểm tra lại từ khóa hoặc xóa bộ lọc để xem toàn bộ danh mục.'
-                  : 'Hãy là người tiên phong đăng bán hoặc pass lại bộ thẻ đầu tiên để nhận Xu từ cộng đồng!'}
+                  : 'Hãy là người tiên phong đăng bán hoặc pass lại gói Prompt đầu tiên để nhận Xu từ cộng đồng!'}
               </p>
             </div>
 
@@ -740,14 +727,14 @@ export default function MarketplaceView({
                 className="px-3.5 py-1.5 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-xs font-bold text-white transition-colors shadow-2xs flex items-center space-x-1.5 cursor-pointer"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Tạo Bộ Thẻ Mới</span>
+                <span>Đăng Bán Prompt Mới</span>
               </button>
             </div>
           </div>
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-xs text-[#787774] dark:text-slate-300 px-1">
-              <span>Đang hiển thị <strong className="text-[#37352f] dark:text-white">{filtered.length}</strong> bộ thẻ ôn tập</span>
+              <span>Đang hiển thị <strong className="text-[#37352f] dark:text-white">{filtered.length}</strong> gói Prompt & Skills</span>
               {(activeCategory !== 'all' || searchQuery) && (
                 <button
                   type="button"
@@ -782,7 +769,7 @@ export default function MarketplaceView({
                       <div className="mb-2">
                         <span className="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-500/40 text-[10px] font-bold inline-flex items-center space-x-1">
                           <Repeat className="w-2.5 h-2.5" />
-                          <span>HỌC VIÊN PASS LẠI</span>
+                          <span>CREATOR PASS LẠI</span>
                         </span>
                       </div>
                     ) : (
@@ -819,7 +806,7 @@ export default function MarketplaceView({
                           <button
                             onClick={(e) => handleDeleteDeck(e, deck)}
                             className="p-1 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/60 text-rose-500 transition-colors cursor-pointer"
-                            title="Xóa bộ thẻ này khỏi Chợ Thẻ"
+                            title="Xóa gói Prompt này khỏi Chợ C2C"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -895,7 +882,7 @@ export default function MarketplaceView({
                           }
                         }}
                         className="p-1 rounded-md text-slate-400 hover:text-[#2383e2] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                        title="Chia sẻ đường dẫn bộ thẻ này"
+                        title="Chia sẻ đường dẫn gói prompt này"
                       >
                         <Share2 className="w-3.5 h-3.5" />
                       </button>
@@ -910,8 +897,8 @@ export default function MarketplaceView({
                               (deck.authorName && deck.authorName.includes('Ban Quản Trị'));
                             if (isAdminAuthor) {
                               onOpenDirectChat({
-                                id: 'admin_onthi',
-                                name: 'Ban Quản Trị OnThiHub',
+                                id: 'admin_promptmmo',
+                                name: 'Ban Quản Trị PromptMMO',
                                 email: 'thaitraicau123@gmail.com',
                                 avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
                                 role: 'admin',

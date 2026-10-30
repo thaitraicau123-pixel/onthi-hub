@@ -463,7 +463,7 @@ function drawRoyalSeal(ctx, cx, cy, radius = 78, isGoldTheme = true, passed = tr
   // Chữ trên
   ctx.fillStyle = '#FEF08A';
   ctx.font = '900 12px "Times New Roman", Georgia, serif';
-  ctx.fillText('HỆ THỐNG KHẢO THÍ', 0, -32);
+  ctx.fillText('HỆ THỐNG CHỨNG NHẬN PROMPTMMO', 0, -32);
 
   // 5 Ngôi sao vàng
   [-28, -14, 0, 14, 28].forEach((starX) => {
@@ -478,7 +478,7 @@ function drawRoyalSeal(ctx, cx, cy, radius = 78, isGoldTheme = true, passed = tr
   // Chữ dưới
   ctx.fillStyle = '#FEF08A';
   ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-  ctx.fillText('★ ONTHIHUB 2026 ★', 0, 30);
+  ctx.fillText('★ PROMPTMMO 2026 ★', 0, 30);
 
   ctx.restore();
 }
@@ -496,8 +496,8 @@ export async function generateAchievementCanvas({
   percentage = 93,
   passed = true,
   streak = 15,
-  rank = 'Học Viên Xuất Sắc',
-  candidateName = 'Học Viên OnThiHub',
+  rank = 'Creator Xuất Sắc',
+  candidateName = 'Creator PromptMMO',
   certCode = 'VN-2026-CERT',
   dateString = null
 }) {
@@ -591,7 +591,7 @@ export async function generateAchievementCanvas({
   drawCornerFiligree(ctx, width - 58, height - 58, 48, true, true, primaryColor);
   ctx.restore();
 
-  // 4. Header: Logo & Quốc Huy Khảo Thí ÔnThiHub
+  // 4. Header: Logo & Quốc Huy PromptMMO
   ctx.save();
   ctx.textAlign = 'center';
 
@@ -604,12 +604,12 @@ export async function generateAchievementCanvas({
   ctx.fillStyle = brightColor;
   ctx.font = '900 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.letterSpacing = '5px';
-  ctx.fillText('ONTHIHUB • NỀN TẢNG ÔN THI QUỐC GIA 2026', width / 2, 130);
+  ctx.fillText('PROMPTMMO • HỆ SINH THÁI PROMPT AI & MMO 2026', width / 2, 130);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
   ctx.font = '600 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   ctx.letterSpacing = '2px';
-  ctx.fillText('HỆ THỐNG KHẢO THÍ CHUẨN HÓA & BỘ THẺ ANKI SM-2 CHUYÊN SÂU', width / 2, 156);
+  ctx.fillText('SÀN GIAO DỊCH PROMPT SKILLS & CỘNG ĐỒNG CREATOR THỰC CHIẾN', width / 2, 156);
 
   // Dải ruy băng phân cách mạ vàng
   ctx.strokeStyle = mainAccentGrad;
@@ -638,17 +638,17 @@ export async function generateAchievementCanvas({
     ctx.fillStyle = '#F59E0B';
     ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     ctx.letterSpacing = '1px';
-    ctx.fillText('🔥 CHUỖI ÔN THI BÁCH CHIẾN BÁCH THẮNG • KHÔNG NGỪNG NGHỈ 🔥', width / 2, 276);
+    ctx.fillText('🔥 CHUỖI THỰC CHIẾN BÁCH CHIẾN BÁCH THẮNG • KHÔNG NGỪNG NGHỈ 🔥', width / 2, 276);
   } else {
     ctx.fillStyle = createGoldGradient(ctx, 200, 210, width - 200, 260);
     ctx.font = '900 48px "Times New Roman", Georgia, serif';
     ctx.letterSpacing = '2px';
-    ctx.fillText(passed ? 'BẢNG VÀNG CÔNG DANH ĐẠT CHUẨN' : 'PHIẾU XÁC NHẬN KẾT QUẢ KHẢO THÍ', width / 2, 238);
+    ctx.fillText(passed ? 'BẢNG VÀNG CHỨNG NHẬN MASTER PROMPT' : 'PHIẾU XÁC NHẬN KẾT QUẢ ĐÁNH GIÁ', width / 2, 238);
 
     ctx.fillStyle = passed ? '#34D399' : '#F87171';
     ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     ctx.letterSpacing = '1px';
-    ctx.fillText(`★ ${(subtitle || 'KỲ THI SÁT HẠCH QUỐC GIA').toUpperCase()} ★`, width / 2, 276);
+    ctx.fillText(`★ ${(subtitle || 'CHỨNG CHỈ PROMPT & MMO THỰC CHIẾN').toUpperCase()} ★`, width / 2, 276);
   }
   ctx.restore();
 
@@ -696,7 +696,7 @@ export async function generateAchievementCanvas({
   ctx.letterSpacing = '3px';
   ctx.fillText(`— ❖  ${candidateName.toUpperCase()}  ❖ —`, width / 2, 555);
 
-  // Tên môn thi / kỳ thi
+  // Tên gói Prompt / Kỹ năng thực chiến
   ctx.fillStyle = primaryColor;
   ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
   ctx.fillText(title, width / 2, 600);
@@ -768,7 +768,7 @@ export async function generateAchievementCanvas({
     ctx.font = 'bold 19px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     ctx.fillText(`👑 CẤP BẬC: ${rank.toUpperCase()}`, width / 2, pillY + 28);
   } else {
-    // LAYOUT KẾT QUẢ KHẢO THÍ ĐẠT CHUẨN
+    // LAYOUT KẾT QUẢ ĐÁNH GIÁ ĐẠT CHUẨN PROMPTMMO
     const col1X = cardX + cardW * 0.25;
     const col2X = cardX + cardW * 0.5;
     const col3X = cardX + cardW * 0.75;
@@ -826,7 +826,7 @@ export async function generateAchievementCanvas({
     // Cột 3: Xếp hạng danh dự
     ctx.fillStyle = '#94A3B8';
     ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-    ctx.fillText('XẾP HẠNG KHẢO THÍ', col3X, cardY + 60);
+    ctx.fillText('CẤP ĐỘ CREATOR', col3X, cardY + 60);
 
     const grade = percentage >= 95 ? 'THỦ KHOA' : percentage >= 90 ? 'XUẤT SẮC' : percentage >= 80 ? 'GIỎI' : passed ? 'ĐẠT CHUẨN' : 'CHƯA ĐẠT';
     ctx.fillStyle = percentage >= 90 ? '#38BDF8' : passed ? '#34D399' : '#F87171';
@@ -839,7 +839,7 @@ export async function generateAchievementCanvas({
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.font = '13px sans-serif';
-    ctx.fillText('Hệ thống Khảo thí', col3X, cardY + 215);
+    ctx.fillText('Hệ thống PromptMMO', col3X, cardY + 215);
   }
   ctx.restore();
 
@@ -870,16 +870,16 @@ export async function generateAchievementCanvas({
 
   ctx.fillStyle = '#94A3B8';
   ctx.font = '600 16px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-  ctx.fillText('Bảo chứng khảo thí:', 105, 1045);
+  ctx.fillText('Bảo chứng chất lượng:', 105, 1045);
 
   ctx.fillStyle = '#34D399';
   ctx.font = 'bold 17px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-  ctx.fillText('Hệ thống Khảo thí OnThiHub Realtime Engine (SHA-256 Verified)', 320, 1045);
+  ctx.fillText('Hệ thống PromptMMO Cloud Engine (SHA-256 Verified)', 320, 1045);
 
   // Chữ ký điện tử của Ban Tổ Chức
   ctx.fillStyle = '#94A3B8';
   ctx.font = 'italic 16px "Times New Roman", Georgia, serif';
-  ctx.fillText('Đại diện Hội đồng Khảo thí:', 105, 1085);
+  ctx.fillText('Ban Giám Đốc PromptMMO:', 105, 1085);
 
   // Nét ký nghệ thuật số
   ctx.strokeStyle = primaryColor;
@@ -893,7 +893,7 @@ export async function generateAchievementCanvas({
 
   ctx.fillStyle = '#E2E8F0';
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-  ctx.fillText('Ban Quản Trị OnThiHub (Đã Ký Số)', 495, 1085);
+  ctx.fillText('Ban Quản Trị PromptMMO (Đã Ký Số)', 495, 1085);
   ctx.restore();
 
   // 11. Thanh Chân Trang Thương Hiệu & Chia Sẻ Cộng Đồng
@@ -912,11 +912,11 @@ export async function generateAchievementCanvas({
   ctx.textAlign = 'center';
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('🌐 Luyện Thi Trực Tuyến Miễn Phí Tại: ONTHIHUB.VN', width / 2, footerY + 50);
+  ctx.fillText('🌐 Khám Phá Kho Prompt AI Thực Chiến Tại: PROMPTMMO.COM', width / 2, footerY + 50);
 
   ctx.fillStyle = '#94A3B8';
   ctx.font = '500 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-  ctx.fillText('Kho đề chuẩn hóa Công chức 2026 • IT System Design • Ngoại ngữ IELTS/TOEIC/JLPT', width / 2, footerY + 86);
+  ctx.fillText('Higgsfield & Kling Video • Midjourney Studio • TikTok Shop • N8N Automation', width / 2, footerY + 86);
 
   ctx.fillStyle = primaryColor;
   ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -940,7 +940,7 @@ export function exportCanvasAsBlob(canvas) {
 /**
  * Tải ảnh trực tiếp về thiết bị người dùng
  */
-export function downloadCanvasImage(canvas, filename = 'onthihub-thanh-tich.png') {
+export function downloadCanvasImage(canvas, filename = 'promptmmo-chung-nhan.png') {
   const dataUrl = canvas.toDataURL('image/png');
   const link = document.createElement('a');
   link.download = filename;
@@ -988,13 +988,13 @@ export async function shareCanvasImageNative(canvas, { title, text, url }) {
     const blob = await exportCanvasAsBlob(canvas);
     if (!blob) return { success: false, message: 'Lỗi tạo dữ liệu chia sẻ' };
 
-    const file = new File([blob], 'onthihub-thanh-tich.png', { type: 'image/png' });
+    const file = new File([blob], 'promptmmo-chung-nhan.png', { type: 'image/png' });
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       await navigator.share({
         files: [file],
-        title: title || 'Thành tích ÔnThiHub',
-        text: text || 'Mình vừa hoàn thành xuất sắc kỳ thi thử trên ÔnThiHub!',
+        title: title || 'Thành tích PromptMMO',
+        text: text || 'Mình vừa xác lập kỷ lục mới trên PromptMMO!',
         url: url || window.location.origin
       });
       return { success: true, message: 'Đã mở bảng chia sẻ ứng dụng' };
@@ -1002,8 +1002,8 @@ export async function shareCanvasImageNative(canvas, { title, text, url }) {
 
     if (navigator.share) {
       await navigator.share({
-        title: title || 'Thành tích ÔnThiHub',
-        text: text || 'Mình vừa hoàn thành xuất sắc kỳ thi thử trên ÔnThiHub!',
+        title: title || 'Thành tích PromptMMO',
+        text: text || 'Mình vừa xác lập kỷ lục mới trên PromptMMO!',
         url: url || window.location.origin
       });
       return { success: true, message: 'Đã mở bảng chia sẻ ứng dụng' };

@@ -190,7 +190,7 @@ export function formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEm
     extra = `\n💳 Cú pháp quét mã: ${code}\n💰 Số tiền chuyển khoản: ${vndText}đ`;
   }
 
-  return `🔔 [ÔNTHIHUB] THÔNG BÁO ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} MỚI!
+  return `🔔 [PROMPTMMO] THÔNG BÁO ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} MỚI!
 ----------------------------------
 • Mã GD: ${code}
 • Loại lệnh: ${typeText}
@@ -243,7 +243,7 @@ export async function sendRealEmailToAdmin({ type, code, amountXu, amountVnd, us
   const vndText = (amountVnd || amountXu * COIN_RATE_VND).toLocaleString('vi-VN') + ' VNĐ';
 
   const payload = {
-    _subject: `[ÔnThiHub] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} - Mã: ${code} (${amountXu} Xu)`,
+    _subject: `[PromptMMO] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} - Mã: ${code} (${amountXu} Xu)`,
     _template: 'table',
     _captcha: 'false',
     'Mã Giao Dịch': code,
@@ -289,7 +289,7 @@ export async function sendTelegramNotification({ type, code, amountXu, amountVnd
     extra = `\n💳 <b>Cú pháp CK:</b> <code>${code}</code>`;
   }
 
-  const text = `🔔 <b>[ÔNTHIHUB] CÓ LỆNH ${type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'} MỚI!</b>
+  const text = `🔔 <b>[PROMPTMMO] CÓ LỆNH ${type === 'deposit' ? 'NẠP XU' : 'RÚT TIỀN'} MỚI!</b>
 ━━━━━━━━━━━━━━━━━
 • <b>Mã đơn:</b> <code>${code}</code>
 • <b>Loại:</b> ${typeText}
@@ -327,7 +327,7 @@ export async function sendNtfyNotification({ title, message, priority = 5, tags 
       },
       body: JSON.stringify({
         topic: 'Onthihubbbbb',
-        title: title || '[OnThiHub] Thông Báo Mới',
+        title: title || '[PromptMMO] Thông Báo Mới',
         message: message || '',
         priority: priority || 5,
         tags: Array.isArray(tags) ? tags : [tags],
@@ -345,7 +345,7 @@ export async function sendNtfyNotification({ title, message, priority = 5, tags 
 export function notifyAdmin({ type, code, amountXu, amountVnd, userEmail, details }) {
   const timestamp = new Date().toLocaleString('vi-VN');
   const zaloMessage = formatAdminZaloMessage({ type, code, amountXu, amountVnd, userEmail, details, timestamp });
-  const subject = `[ÔnThiHub] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} Mới - Mã: ${code}`;
+  const subject = `[PromptMMO] Yêu Cầu ${type === 'deposit' ? 'NẠP TIỀN' : 'RÚT TIỀN'} Mới - Mã: ${code}`;
   const body = `
 Xin chào Admin (${ADMIN_PHONE} - ${ADMIN_EMAIL}),
 
@@ -361,7 +361,7 @@ Hệ thống ghi nhận một yêu cầu ${type === 'deposit' ? 'NẠP XU' : 'R�
 
 Vui lòng kiểm tra và duyệt giao dịch này.
 Trân trọng,
-Hệ thống ÔnThiHub Automation
+Hệ thống PromptMMO Automation
   `.trim();
 
   // 1. Gửi EMAIL THẬT trực tiếp đến thaitraicau123@gmail.com qua FormSubmit API
@@ -369,7 +369,7 @@ Hệ thống ÔnThiHub Automation
 
   // 2. Gửi PUSH RUNG ĐIỆN THOẠI tức thì qua ntfy.sh (JSON UTF-8 Payload)
   sendNtfyNotification({
-    title: `[OnThiHub] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
+    title: `[PromptMMO] ${type === 'deposit' ? 'Nạp Xu' : 'Rút Tiền'}: ${code} (${amountXu} Xu)`,
     message: zaloMessage,
     priority: 5,
     tags: type === 'deposit' ? ['moneybag', 'inbox'] : ['warning', 'bank']
@@ -755,7 +755,7 @@ export async function createDepositRequest({ xuAmount, userEmail, userId }) {
     status: 'pending', // 'pending' | 'approved' | 'rejected'
     xuAmount: Number(xuAmount),
     amountVnd,
-    userEmail: userEmail || 'user@onthihub.vn',
+    userEmail: userEmail || 'user@promptmmo.com',
     userId: userId || null,
     createdAt: new Date().toISOString(),
     details: {
@@ -837,7 +837,7 @@ export async function createWithdrawalRequest({ xuAmount, bankName, accountNo, a
     feeVnd: feeInfo.feeVnd,
     netVnd: feeInfo.netVnd,
     feePercent: feeInfo.feePercent,
-    userEmail: userEmail || 'creator@onthihub.vn',
+    userEmail: userEmail || 'creator@promptmmo.com',
     userId: userId || null,
     createdAt: new Date().toISOString(),
     details: {
@@ -1620,7 +1620,7 @@ export async function adminDirectAdjustUserBalance({ email, amountChange, type =
     newBalance = currentBal + absAmount;
   } else {
     if (currentBal < absAmount) {
-      return { success: false, message: `Số dư học viên chỉ còn ${currentBal} Xu, không đủ để trừ ${absAmount} Xu!` };
+      return { success: false, message: `Số dư thành viên chỉ còn ${currentBal} Xu, không đủ để trừ ${absAmount} Xu!` };
     }
     newBalance = Math.max(0, currentBal - absAmount);
   }
@@ -1688,7 +1688,7 @@ export function sendBrowserDesktopNotification({ title, body, icon, tag }) {
     return false;
   }
   try {
-    new Notification(title || '[OnThiHub] Thông Báo Mới', {
+    new Notification(title || '[PromptMMO] Thông Báo Mới', {
       body: body || '',
       icon: icon || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
       tag: tag || String(Date.now()),

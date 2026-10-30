@@ -55,24 +55,24 @@
   ],
   "shortcuts": [
     {
-      "name": "Thư Viện Thẻ",
-      "short_name": "Thư Viện",
+      "name": "Kho Prompt AI",
+      "short_name": "Kho Prompt",
       "url": "/#catalog-section",
-      "description": "Xem danh mục đề thi và bộ thẻ Anki",
+      "description": "Xem danh mục Prompt AI và kỹ năng MMO",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "AI Studio",
-      "short_name": "AI Studio",
+      "name": "Studio Đăng Bán",
+      "short_name": "Studio",
       "url": "/#create",
-      "description": "Tạo thẻ tự động bằng AI",
+      "description": "Studio đăng bán Prompt & AI Skills",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Diễn Đàn Học Tập",
+      "name": "Cộng Đồng MMO",
       "short_name": "Cộng Đồng",
       "url": "/#community",
-      "description": "Hỏi đáp và giao lưu cùng bạn học",
+      "description": "Giao lưu chia sẻ thủ thuật và kết nối đối tác",
       "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ]

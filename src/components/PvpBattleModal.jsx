@@ -41,7 +41,7 @@ export default function PvpBattleModal({
   onOpenDirectChat
 }) {
   const currentUserId = currentUser?.uid || currentUser?.email || 'my_user';
-  const currentUserName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Học Viên';
+  const currentUserName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Creator';
   const currentUserAvatar =
     currentUser?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentUserName)}`;
 
@@ -71,7 +71,7 @@ export default function PvpBattleModal({
   // Số dư Xu hiện tại của người chơi
   const userCoins = useMemo(() => getCurrentUserCoins(currentUser), [currentUser, battle]);
 
-  // Bộ thẻ được chọn để thách đấu
+  // Gói Prompt / Kiến thức được chọn để thách đấu
   const selectedDeck = useMemo(() => {
     return allCourses.find((c) => c.id === selectedDeckId) || allCourses[0] || null;
   }, [allCourses, selectedDeckId]);
@@ -190,20 +190,20 @@ export default function PvpBattleModal({
   // Tạo trận thách đấu mới
   const handleCreateChallenge = async () => {
     if (!targetPartner) {
-      setErrorMsg('Vui lòng chọn bạn học để gửi lời thách đấu!');
+      setErrorMsg('Vui lòng chọn bạn đấu Creator để gửi lời thách đấu!');
       return;
     }
     if (!selectedDeck) {
-      setErrorMsg('Vui lòng chọn một bộ thẻ ôn thi!');
+      setErrorMsg('Vui lòng chọn một gói kiến thức & Prompt MMO!');
       return;
     }
 
-    // Trích xuất câu hỏi từ bộ đề (Ưu tiên ngân hàng trắc nghiệm chuẩn, kết hợp thẻ Flashcard)
+    // Trích xuất câu hỏi từ bộ đề (Ưu tiên ngân hàng trắc nghiệm chuẩn, kết hợp câu hỏi Prompt)
     const existingQuiz = selectedDeck.quiz || selectedDeck.previewQuiz || selectedDeck.questions || [];
     const rawCards = selectedDeck.cards || selectedDeck.previewCards || selectedDeck.sampleCards || selectedDeck.flashcards || [];
 
     if (existingQuiz.length === 0 && rawCards.length === 0) {
-      setErrorMsg('Bộ thẻ này chưa có đủ nội dung câu hỏi!');
+      setErrorMsg('Gói kiến thức này chưa có đủ nội dung câu hỏi!');
       return;
     }
 
@@ -229,13 +229,13 @@ export default function PvpBattleModal({
         });
       }
 
-      // 2. Nếu câu hỏi trắc nghiệm chưa đủ số lượng yêu cầu, bổ sung thêm từ ngân hàng Flashcard
+      // 2. Nếu câu hỏi trắc nghiệm chưa đủ số lượng yêu cầu, bổ sung thêm từ ngân hàng Prompt
       if (generatedQuestions.length < questionCount && rawCards.length > 0) {
         const needed = questionCount - generatedQuestions.length;
         const shuffledCards = [...rawCards].sort(() => 0.5 - Math.random()).slice(0, needed);
 
         const cardQuestions = shuffledCards.map((card, idx) => {
-          const correctText = card.back || card.answer || 'Đáp án chính xác theo tài liệu ôn thi.';
+          const correctText = card.back || card.answer || 'Đáp án chính xác theo tài liệu chuẩn PromptMMO.';
           // Lấy phương án nhiễu từ các thẻ khác trong cùng bộ
           const otherCards = rawCards.filter((c) => c !== card);
           const poolDistractors = otherCards
@@ -259,7 +259,7 @@ export default function PvpBattleModal({
             prompt: card.front || card.question || `Câu hỏi kiến thức số ${generatedQuestions.length + idx + 1}`,
             options: allOpts,
             correctIndex: allOpts.indexOf(correctText),
-            explanation: card.note || card.explanation || card.back || 'Theo tài liệu ôn thi trọng tâm.'
+            explanation: card.note || card.explanation || card.back || 'Theo tài liệu kỹ thuật PromptMMO thực chiến.'
           };
         });
 
@@ -391,9 +391,9 @@ export default function PvpBattleModal({
               </div>
             </div>
 
-            {/* Chọn bộ đề */}
+            {/* Chọn gói kiến thức */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-300">Chọn Bộ Đề Thi Đấu:</label>
+              <label className="text-xs font-bold text-slate-300">Chọn Gói Prompt & Kỹ Năng Thi Đấu:</label>
               <select
                 value={selectedDeckId}
                 onChange={(e) => setSelectedDeckId(e.target.value)}
@@ -461,7 +461,7 @@ export default function PvpBattleModal({
               {wagerXu > 0 && (
                 <p className="text-[11px] text-amber-300/80 bg-amber-950/30 p-2.5 rounded-xl border border-amber-800/40">
                   ⚡ <strong>Quy tắc cược:</strong> Người thắng ẵm trọn {Math.round(wagerXu * 2 * 0.9)} Xu (đã trừ 10%
-                  phí sàn duy trì máy chủ OnThiHub). Nếu hòa điểm & thời gian, hệ thống hoàn trả 100% Xu cho cả 2 bên.
+                  phí sàn duy trì máy chủ PromptMMO). Nếu hòa điểm & thời gian, hệ thống hoàn trả 100% Xu cho cả 2 bên.
                 </p>
               )}
             </div>
@@ -715,7 +715,7 @@ export default function PvpBattleModal({
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <div>
-                  <h4 className="text-base font-black text-white">Bạn Đã Hoàn Thành Bài Thi!</h4>
+                  <h4 className="text-base font-black text-white">Bạn Đã Hoàn Thành Thách Đấu!</h4>
                   <p className="text-xs text-slate-400 mt-1">
                     Điểm số của bạn: <strong>{myPlayer?.score || 0}</strong>/{battle.totalQuestions}. Đang chờ đối thủ{' '}
                     <strong>{opponentPlayer?.name}</strong> nộp bài để công bố kết quả...

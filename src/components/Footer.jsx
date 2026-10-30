@@ -19,45 +19,45 @@ function Footer({ onOpenAdmin }) {
             <div className="flex items-center space-x-2.5 text-[#37352f] dark:text-white mb-3">
               <BrandLogo size={28} className="shadow-xs" />
               <span className="text-base font-extrabold text-[#37352f] dark:text-white tracking-tight">
-                Ôn Thi Hub
+                PromptMMO
               </span>
-              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/80 text-[#2383e2] dark:text-sky-300 border border-sky-200 dark:border-sky-500/40">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/40">
                 {APP_VERSION}
               </span>
             </div>
             <p className="text-[#787774] dark:text-slate-400 text-xs max-w-sm leading-relaxed mb-4">
-              Nền tảng kho tài liệu số, bộ đề thi chuẩn hóa và Flashcard Anki ứng dụng thuật toán lặp lại ngắt quãng Spaced Repetition (SM-2). Đồng hành cùng sỹ tử thi đỗ công chức, nâng band ngoại ngữ và chinh phục phỏng vấn IT.
+              Chợ Prompt & AI Skills thực chiến hàng đầu cho Creator, Video Editor & Dân MMO. Tuyển tập Prompt Higgsfield, Kling 1.5 video 8K, Flux/Midjourney ảnh studio thương mại và Workflow N8N tự động hóa kiếm tiền 24/7.
             </p>
             <div className="flex items-center space-x-2 text-[#448361] dark:text-emerald-400 font-semibold text-[11px]">
               <ShieldCheck className="w-4 h-4 shrink-0" />
-              <span>Thanh toán tự động qua VietQR • Bảo hành cập nhật trọn đời</span>
+              <span>Thanh toán tự động qua VietQR • Nhận Prompt & Cập nhật trọn đời</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h4 className="text-[#37352f] dark:text-white font-bold text-xs mb-3 uppercase tracking-wider">
-              Danh Mục Trọng Tâm
+              Danh Mục Prompt
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-[#2383e2] dark:hover:text-sky-400 transition-colors">
-                  🏛️ Đề Thi Công Chức 2026
+                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                  🎬 Video AI Triệu View (Higgsfield & Kling)
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-[#2383e2] dark:hover:text-sky-400 transition-colors">
-                  💻 Phỏng Vấn IT & System Design
+                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                  🎨 Ảnh AI Studio (Flux.1 & Midjourney)
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-[#2383e2] dark:hover:text-sky-400 transition-colors">
-                  🌍 Từ Vựng IELTS 7.5+ & TOEIC
+                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                  ✍️ Kịch Bản TikTok Shop & Livestream
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-[#2383e2] dark:hover:text-sky-400 transition-colors">
-                  🇯🇵 Kanji JLPT N3 - N2 Siêu Tốc
+                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                  ⚡ AI Skills & Auto N8N
                 </a>
               </li>
             </ul>
@@ -97,7 +97,7 @@ function Footer({ onOpenAdmin }) {
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-[#e9e9e8] dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-[#9b9a97] dark:text-slate-500 text-[11px] gap-2">
           <p className="flex items-center space-x-1.5">
-            <span>© 2026 ÔnThiHub {APP_VERSION}. Thiết kế tối ưu cho trải nghiệm học tập tập trung.</span>
+            <span>© 2026 PromptMMO {APP_VERSION}. Nền tảng mua bán Prompt & AI Skills thực chiến.</span>
             {onOpenAdmin && (
               <button
                 type="button"

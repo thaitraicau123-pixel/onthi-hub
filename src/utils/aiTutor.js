@@ -1,4 +1,5 @@
-// AI Tutor Assistant for Flashcards & Quizzes
+// AI Tutor & Prompt Advisor Assistant
+// Provides deep breakdowns for Prompts and Skill Quizzes
 // Powered by Google Gemini Multi-Model API + OpenAI Platform + Offline Smart Tutor Fallback
 
 import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey.js';
@@ -10,24 +11,24 @@ export async function explainFlashcardWithAi({ front, back, tag, title }) {
   const geminiKey = getGeminiApiKey();
   const openaiKey = getOpenAIApiKey();
 
-  const prompt = `Bạn là Trợ lý Gia sư Học thuật AI của nền tảng ÔnThiHub.
-Nhiệm vụ: Giải thích chi tiết, chuyên sâu và dễ hiểu nhất nội dung thẻ ghi nhớ (Flashcard) dưới đây cho học viên:
+  const prompt = `Bạn là Trợ lý Chuyên gia Prompt AI & MMO của nền tảng PromptMMO.
+Nhiệm vụ: Giải thích chi tiết, chuyên sâu và phân tích cách dùng gói Prompt dưới đây cho Creator:
 
-THÔNG TIN THẺ:
-- Bộ thẻ: ${title || 'Ôn tập kiến thức'}
-- Mặt trước (Khái niệm / Câu hỏi): "${front}"
-- Mặt sau (Đáp án tóm tắt): "${back}"
+THÔNG TIN PROMPT:
+- Gói Prompt: ${title || 'Prompt MMO Thực Chiến'}
+- Kịch bản / Hook 3s: "${front}"
+- Cú pháp Prompt & Tham số: "${back}"
 - Nhãn phân loại: "${tag || 'Tổng quát'}"
 
 HÃY TRÌNH BÀY ĐÚNG 3 PHẦN SAU (súc tích, có biểu tượng cảm xúc sinh động, viết bằng Markdown):
-### 💡 1. Bản Chất & Phân Tích Cốt Lõi
-(Giải thích cặn kẽ vì sao lại như vậy, định nghĩa hoặc cơ chế hoạt động đằng sau bằng ngôn từ dễ hiểu)
+### 🎬 1. Phân Tích Cú Pháp & Hiệu Ứng Hình Ảnh
+(Giải thích chi tiết các từ khóa chính, góc máy, ánh sáng và cơ chế tạo ra hình ảnh/video chất lượng cao)
 
-### 🧠 2. Mẹo Ghi Nhớ Siêu Tốc (Mnemonic)
-(Đưa ra kỹ thuật liên tưởng, mẹo nhớ từ khóa hoặc câu vần giúp não bộ ghi nhớ vĩnh viễn theo phương pháp Spaced Repetition)
+### ⚡ 2. Thiết Lập Tham Số Công Cụ (Kling, Higgsfield, Midjourney, Flux)
+(Hướng dẫn chọn model, motion scale, tỷ lệ khung hình và negative prompt tối ưu nhất)
 
-### 📝 3. Tình Huống Thực Chiến & Bẫy Đề Thi
-(Đưa ra 1 ví dụ thực tế hoặc chỉ ra lỗi sai phổ biến mà 80% thí sinh hay bị đánh lừa trong bài thi thật)`;
+### 💰 3. Ý Tưởng Ứng Dụng MMO & Kênh Triệu View
+(Đề xuất cách làm video TikTok, Reels, YouTube Shorts hoặc tạo sản phẩm bán hàng mang lại chuyển đổi cao)`;
 
   let lastError = '';
 
@@ -94,7 +95,7 @@ HÃY TRÌNH BÀY ĐÚNG 3 PHẦN SAU (súc tích, có biểu tượng cảm xúc
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: 'Bạn là Trợ lý Gia sư Học thuật AI của ÔnThiHub. Giải thích ngắn gọn, chuyên sâu, đúng 3 phần theo yêu cầu.' },
+            { role: 'system', content: 'Bạn là Chuyên gia Cố vấn AI Prompt & Kỹ năng MMO của PromptMMO. Hướng dẫn ngắn gọn, chuyên sâu, đúng 3 phần theo yêu cầu.' },
             { role: 'user', content: prompt }
           ],
           temperature: 0.35
@@ -131,8 +132,8 @@ Nắm vững nguyên lý này giúp bạn hiểu sâu bản chất vấn đề t
 • **Kỹ thuật Neo Từ Khóa (Keyword Anchoring):** Gắn kết từ khóa then chốt trong câu hỏi với đáp án đầu tiên nảy ra trong đầu.
 • **Khoảng cách ngắt quãng (Spaced Repetition):** Lật lại thẻ này sau 1 ngày, 3 ngày và 7 ngày để kiến thức chuyển từ trí nhớ ngắn hạn vào dài hạn.
 
-### 📝 3. Tình Huống Thực Chiến & Bẫy Đề Thi
-⚠️ **Bẫy thi thường gặp:** Thí sinh hay đọc lướt các điều kiện ngoại lệ hoặc từ ngữ loại trừ (chỉ, luôn luôn, bắt buộc). Hãy luôn đối chiếu kỹ lưỡng trước khi chọn đáp án!`;
+### 📝 3. Tình Huống Thực Chiến & Sai Lầm Cần Tránh
+⚠️ **Lưu ý thực chiến:** Creator hay bỏ qua các tham số kỹ thuật hoặc dùng sai model prompt. Hãy luôn đối chiếu kỹ lưỡng trước khi áp dụng!`;
 
   return {
     success: true,
@@ -157,10 +158,10 @@ export async function explainQuizQuestionWithAi({ question, options = [], correc
     return `${String.fromCharCode(65 + idx)}. ${opt}${badge}`;
   }).join('\n');
 
-  const prompt = `Bạn là Giảng viên Khảo thí & Luyện thi hàng đầu của ÔnThiHub.
-Học viên đang cần giải thích chi tiết câu hỏi trắc nghiệm này:
+  const prompt = `Bạn là Chuyên gia Cố vấn AI & Kỹ năng MMO thực chiến của PromptMMO.
+Creator đang cần phân tích chuyên sâu tình huống / câu hỏi này:
 
-ĐỀ THI: ${title || 'Trắc nghiệm kiến thức'}
+CHUYÊN ĐỀ: ${title || 'Kỹ năng & Prompt thực chiến'}
 CÂU HỎI:
 "${question}"
 
@@ -245,7 +246,7 @@ HÃY PHÂN TÍCH RÕ RÀNG THEO CẤU TRÚC SAU (bằng Markdown, phong cách s�
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: 'Bạn là Giảng viên Khảo thí & Luyện thi ÔnThiHub. Phân tích chi tiết câu hỏi trắc nghiệm theo 3 phần.' },
+            { role: 'system', content: 'Bạn là Chuyên gia Cố vấn AI & Kỹ năng MMO của PromptMMO. Phân tích chi tiết câu hỏi theo 3 phần.' },
             { role: 'user', content: prompt }
           ],
           temperature: 0.35

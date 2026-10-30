@@ -1,5 +1,5 @@
-// AI Flashcard Generator Engine
-// Converts topic / notes into Anki/Quizlet formatted flashcards
+// AI Prompt & MMO Content Generator Engine
+// Converts topic / notes / formulas into high-converting Prompts and Creator workflows
 // Supports Real Gemini Multi-Model API + OpenAI GPT-4o-mini API + Offline Smart Semantic Heuristics Fallback
 
 import { getGeminiApiKey, getOpenAIApiKey, GEMINI_MODELS } from './aiApiKey.js';
@@ -38,7 +38,7 @@ async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt =
       case 'balanced':
       default:
         return `YÊU CẦU ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (KHOẢNG 25 - 50 TỪ).
-- Trường "back" súc tích, rõ ràng, gạch đầu dòng mạch lạc, kèm mẹo nhớ hoặc căn cứ ngắn gọn chuẩn phương pháp Anki SM-2.`;
+- Trường "back" súc tích, rõ ràng, gạch đầu dòng mạch lạc, kèm mẹo tối ưu prompt hoặc căn cứ ngắn gọn chuẩn PromptMMO.`;
     }
   })();
 
@@ -49,7 +49,7 @@ async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt =
 - Tài liệu đính kèm đã có sẵn các cặp Hỏi & Đáp (hoặc dạng Câu 1:... Trả lời:..., Q:... A:..., hoặc số thứ tự kèm gạch đầu dòng).
 - Nhiệm vụ của bạn: Tách chính xác phần CÂU HỎI đặt vào trường "front", phần CÂU TRẢ LỜI/GIẢI THÍCH đặt vào trường "back".
 - TUYỆT ĐỐI KHÔNG đảo lộn vị trí (không lấy câu trả lời làm câu hỏi và ngược lại).
-- Giữ trọn vẹn đáp án gốc của người dùng, có thể gọt giũa lại cho sáng rõ theo chuẩn Anki.`;
+- Giữ trọn vẹn cú pháp/prompt gốc của người dùng, có thể gọt giũa lại cho sáng rõ theo chuẩn PromptMMO.`;
       case 'questions_only':
         return `CHẾ ĐỘ: TÀI LIỆU CHỈ LÀ DANH SÁCH CÂU HỎI (CHƯA CÓ TRẢ LỜI).
 - Lấy từng câu hỏi đưa vào trường "front".
@@ -73,21 +73,21 @@ async function callGeminiApi({ apiKey, topic, rawText, cardCount, customPrompt =
     ? `\n🎯 LỜI NHẮC TÙY CHỈNH TỪ NGƯỜI DÙNG (CUSTOM PROMPT - ƯU TIÊN TUÂN THỦ CAO NHẤT):\n"${customPrompt.trim()}"\n`
     : '';
 
-  const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu hàng đầu theo phương pháp Lặp lại ngắt quãng (Spaced Repetition / Anki).
-Nhiệm vụ: Dựa vào chủ đề và tài liệu dưới đây, biên soạn chính xác ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao, súc tích và đắt giá bằng tiếng Việt.
+  const prompt = `Bạn là chuyên gia Prompt Engineering và sáng tạo nội dung MMO thực chiến hàng đầu.
+Nhiệm vụ: Dựa vào chủ đề và yêu cầu dưới đây, biên soạn chính xác ${effectiveCount} gói Prompt AI / Kịch bản thực chiến chất lượng cao, tối ưu cho các công cụ AI hiện đại (Higgsfield, Kling AI, Midjourney, Flux, ChatGPT).
 
-CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
-TÀI LIỆU / GHI CHÚ ĐÍNH KÈM:
-${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm phổ biến và công thức/khái niệm cốt lõi của chủ đề này.'}
+CHỦ ĐỀ: ${topic || 'Prompt AI Kiếm Tiền MMO'}
+TÀI LIỆU / YÊU CẦU ĐÍNH KÈM:
+${rawText || 'Hãy tổng hợp các prompt video triệu view, prompt ảnh studio thương mại hoặc kịch bản bán hàng hot trend nhất.'}
 
 ${modeGuidance}
 ${answerLengthGuidance}
 ${customPromptSection}
 
-TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (THEO CHUẨN ANKI FLASHCARD):
-- "front": Câu hỏi sắc bén, ngắn gọn, đi thẳng vào trọng tâm (khoảng 10-25 từ). Tuyệt đối không viết câu hỏi dài dòng, lan man.
-- "back": Tuân thủ đúng tiêu chuẩn độ dài đã quy định ở trên. Sử dụng gạch đầu dòng rõ ràng, kèm mẹo nhớ hoặc ví dụ nếu có.
-- "tag": Nhãn ngắn gọn phân loại thẻ (tối đa 3-4 từ).
+TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG PROMPT THỰC CHIẾN:
+- "front": Tên kịch bản / Tình huống ứng dụng thực tế (khoảng 10-25 từ).
+- "back": Cú pháp Prompt tiếng Anh chuẩn + Mẹo tham số (Camera, Aspect ratio, Negative prompt) và hướng dẫn sử dụng tiếng Việt.
+- "tag": Nhãn ngắn gọn phân loại (tối đa 3-4 từ).
 - NGUYÊN TẮC BẤT DI BẤT DỊCH: Mỗi thẻ phải là MỘT đơn vị kiến thức riêng biệt, TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi ở các thẻ khác.
 - Nếu tài liệu ngắn hơn số lượng thẻ yêu cầu, hãy chia tách thành các khía cạnh logic: Thẻ 1 (Khái niệm/Mục tiêu), Thẻ 2 (Nguyên lý/Cơ chế hoạt động), Thẻ 3 (Lợi ích/Ứng dụng thực tế), thay vì lặp lại cùng một câu chữ.
 
@@ -156,7 +156,7 @@ Ví dụ:
           id: idx + 1,
           front: String(item.front || item.question || '').trim(),
           back: String(item.back || item.answer || '').trim(),
-          tag: String(item.tag || item.category || 'AI Flashcard').trim()
+          tag: String(item.tag || item.category || 'AI Prompt MMO').trim()
         })).filter(c => c.front && c.back);
       }
     } catch (err) {
@@ -187,7 +187,7 @@ async function callOpenAiApi({ apiKey, topic, rawText, cardCount, customPrompt =
         return `ĐỘ DÀI CÂU TRẢ LỜI: NGẮN GỌN (Khoảng 10-25 từ). Trường "back" siêu cô đọng, đi thẳng vào đáp án/định nghĩa cốt lõi trong 1-2 dòng ngắn gọn.`;
       case 'balanced':
       default:
-        return `ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (Khoảng 25-50 từ). Trường "back" súc tích, gạch đầu dòng rõ ràng, chuẩn phương pháp Anki SM-2.`;
+        return `ĐỘ DÀI CÂU TRẢ LỜI: VỪA ĐỦ (Khoảng 25-50 từ). Trường "back" súc tích, gạch đầu dòng rõ ràng, chuẩn phương pháp PromptMMO.`;
     }
   })();
 
@@ -195,25 +195,25 @@ async function callOpenAiApi({ apiKey, topic, rawText, cardCount, customPrompt =
     ? `\n🎯 LỜI NHẮC TÙY CHỈNH TỪ NGƯỜI DÙNG: "${customPrompt.trim()}"\n`
     : '';
 
-  const prompt = `Bạn là chuyên gia khảo thí và biên soạn học liệu theo phương pháp Spaced Repetition (Anki).
-Biên soạn đúng ${effectiveCount} thẻ flashcard ghi nhớ chất lượng cao bằng tiếng Việt dựa trên:
-CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
-GHI CHÚ / TÀI LIỆU: ${rawText || 'Hãy tổng hợp những câu hỏi hay thi nhất, bẫy trắc nghiệm và khái niệm cốt lõi.'}
-CHẾ ĐỘ TRÍCH XUẤT: ${extractionMode === 'qa' ? 'Phân biệt rõ Câu hỏi đưa vào front, Câu trả lời đưa vào back.' : extractionMode === 'questions_only' ? 'Tài liệu là câu hỏi, AI giải chi tiết vào back.' : 'Tự động phân biệt câu hỏi vs trả lời.'}
+  const prompt = `Bạn là chuyên gia Prompt Engineering & Chiến lược gia MMO Video/Image AI (PromptMMO).
+Biên soạn đúng ${effectiveCount} mẫu prompt / kỹ năng thực chiến chất lượng cao bằng tiếng Việt dựa trên:
+CHỦ ĐỀ: ${topic || 'Bộ Prompt & Kỹ năng MMO thực chiến'}
+GHI CHÚ / TÀI LIỆU: ${rawText || 'Hãy tổng hợp những prompt video Kling/Higgsfield, Midjourney hoặc kịch bản kiếm tiền thực tế nhất.'}
+CHẾ ĐỘ TRÍCH XUẤT: ${extractionMode === 'qa' ? 'Phân biệt rõ Yêu cầu/Case đưa vào front, Cú pháp Prompt/Giải pháp đưa vào back.' : extractionMode === 'questions_only' ? 'Tài liệu là yêu cầu, AI cung cấp prompt tối ưu vào back.' : 'Tự động phân biệt yêu cầu vs nội dung prompt.'}
 ${answerLengthGuidance}
 ${customPromptSection}
 
-TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (CHUẨN ANKI):
-- "front": Câu hỏi sắc bén, ngắn gọn (10-25 từ).
-- "back": Tuân thủ đúng tiêu chuẩn độ dài đã quy định ở trên.
-- TUYỆT ĐỐI KHÔNG lặp lại nội dung đã hỏi giữa các thẻ.
+TIÊU CHUẨN ĐỘ DÀI & NỘI DUNG (CHUẨN PROMPTMMO):
+- "front": Yêu cầu / Use case / Góc máy / Concept (10-25 từ).
+- "back": Cú pháp Prompt chi tiết (English + negative prompt + parameters) hoặc kịch bản hành động cụ thể.
+- TUYỆT ĐỐI KHÔNG lặp lại nội dung giữa các thẻ.
 
 YÊU CẦU:
 Trả về ĐÚNG 1 MẢNG JSON dạng:
 [
   {
-    "front": "Câu hỏi / Thuật ngữ",
-    "back": "Câu trả lời chuẩn xác kèm căn cứ / mẹo nhớ",
+    "front": "Yêu cầu / Tên Prompt / Use case",
+    "back": "Cú pháp prompt hoặc giải pháp chi tiết",
     "tag": "Nhãn phân loại (tối đa 3 từ)"
   }
 ]
@@ -232,7 +232,7 @@ Không kèm theo văn bản giải thích nào ngoài mảng JSON.`;
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'Bạn là chuyên gia biên soạn flashcard giáo dục hàng đầu. Luôn trả về mảng JSON hợp lệ.' },
+          { role: 'system', content: 'Bạn là chuyên gia Prompt Engineering và MMO thực chiến hàng đầu. Luôn trả về mảng JSON hợp lệ.' },
           { role: 'user', content: prompt }
         ],
         temperature: 0.3
@@ -410,9 +410,9 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
         },
         {
           id: extractedCards.length + 2,
-          front: `[${title}] Sai lầm hoặc bẫy đề thi hay gặp nhất?`,
-          back: `⚠️ Bẫy đề thi:\nThí sinh hay quên các điều kiện đi kèm hoặc nhầm lẫn giữa định nghĩa và ngoại lệ. Hãy đọc kỹ các từ khóa hạn định!`,
-          tag: 'Bẫy đề thi'
+          front: `[${title}] Sai lầm hoặc lỗi thực chiến hay gặp nhất?`,
+          back: `⚠️ Lỗi thực chiến:\nCreator hay quên các tham số định dạng hoặc nhầm lẫn giữa syntax các model. Hãy đọc kỹ hướng dẫn cấu hình!`,
+          tag: 'Lỗi thực chiến'
         }
       ];
       return [...extractedCards, ...moreCards].slice(0, effectiveCount);
@@ -485,32 +485,27 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
     ].slice(0, cardCount);
   }
 
-  if (lowerText.includes('ielts') || lowerText.includes('tiếng anh') || lowerText.includes('english') || lowerText.includes('vocab') || lowerText.includes('toeic')) {
+  if (lowerText.includes('video') || lowerText.includes('kling') || lowerText.includes('higgsfield') || lowerText.includes('midjourney') || lowerText.includes('prompt') || lowerText.includes('tiktok') || lowerText.includes('mmo')) {
     return [
       {
-        front: `exacerbate /ɪɡˈzæs.ə.beɪt/ (v)`,
-        back: `Định nghĩa: Làm trầm trọng thêm, làm tồi tệ hơn (to make a bad situation worse).\n\n📌 Collocations: exacerbate the crisis, exacerbate poverty.\n📝 Ví dụ: The drought has further exacerbated the country's food shortage.`,
-        tag: 'Academic Vocab'
+        front: `Cú pháp Prompt Camera Cinematic 8K cho Kling AI & Higgsfield`,
+        back: `Prompt: "Cinematic medium close-up, dramatic side rim light, dynamic camera push-in, shallow depth of field, photorealistic 8k, hyper-detailed texture --motion 5 --camera zoom-in"\n\n📌 Lưu ý: Luôn kèm thông số motion scale (1-10) để kiểm soát chuyển động mượt mà.`,
+        tag: 'Video AI Prompt'
       },
       {
-        front: `ubiquitous /juːˈbɪk.wə.təs/ (adj)`,
-        back: `Định nghĩa: Có mặt ở khắp nơi, phổ biến (present everywhere).\n\n📌 Collocations: ubiquitous presence, become ubiquitous.\n📝 Ví dụ: Mobile payment apps have become ubiquitous in Asian metropolitan cities.`,
-        tag: 'Advanced Adj'
+        front: `Công thức viết Negative Prompt chống biến dạng trong Flux & Midjourney`,
+        back: `Negative Prompt: "bad anatomy, distorted fingers, extra limbs, blurry face, oversaturated, plastic skin, low resolution, watermark, bad lighting"\n\n📌 Tác dụng: Giúp hình ảnh nhân vật sắc nét, giữ nguyên tỉ lệ giải phẫu học tự nhiên.`,
+        tag: 'Negative Prompt'
       },
       {
-        front: `detrimental /ˌdet.rɪˈmen.təl/ (adj)`,
-        back: `Định nghĩa: Gây hại, có tác động tiêu cực (causing harm or damage).\n\n📌 Collocations: detrimental effect on, detrimental impact.\n📝 Ví dụ: Chronic stress poses a detrimental threat to both mental and physical well-being.`,
-        tag: 'Band 8.0'
+        front: `Công thức Hook 3 giây giữ chân người xem TikTok Shop & Reels`,
+        back: `Cấu trúc: [Gây tò mò / Đánh vào nỗi sợ] + [Giải pháp bất ngờ] + [Kêu gọi hành động].\n\nVí dụ: "Đừng dại gì mua tool này giá 500k nếu bạn chưa biết bí mật lấy slot bản quyền chỉ với 50k sau đây..."`,
+        tag: 'TikTok Hooks'
       },
       {
-        front: `mitigate /ˈmɪt.ɪ.ɡeɪt/ (v)`,
-        back: `Định nghĩa: Giảm nhẹ, xoa dịu (to make something less severe).\n\n📌 Collocations: mitigate risks, mitigate environmental impact.\n📝 Ví dụ: Strategic infrastructure planning is vital to mitigate flood hazards.`,
-        tag: 'Writing Task 2'
-      },
-      {
-        front: `pivotal /ˈpɪv.ə.təl/ (adj)`,
-        back: `Định nghĩa: Có tính chất then chốt, mang tính bước ngoặt quyết định (crucial / turning point).\n\n📌 Collocations: play a pivotal role, a pivotal moment.\n📝 Ví dụ: Renewable energy adoption will play a pivotal role in tackling climate change.`,
-        tag: 'Academic Collocation'
+        front: `Workflow tự động hóa N8N: Auto SEO Content đăng WordPress`,
+        back: `Nodes: Webhook Listener -> RSS Feed Trigger -> Gemini 3.8 Flash (tạo bài chuẩn SEO 1500 từ) -> WordPress REST API (Đăng nháp) -> Telegram Bot thông báo kết quả.`,
+        tag: 'N8N Automation'
       }
     ].slice(0, cardCount);
   }
@@ -524,13 +519,13 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
       tag: 'Bản chất cốt lõi'
     },
     {
-      front: `3 Điểm bẫy dễ nhầm lẫn hoặc lỗi phổ biến nhất khi thi về "${title}"?`,
-      back: `BẪY THI CẦN TRÁNH:\n1. Nhầm lẫn giữa khái niệm cơ bản và các trường hợp ngoại lệ.\n2. Quên kiểm tra điều kiện tiên quyết trước khi áp dụng quy tắc.\n3. Đọc lướt bỏ qua các từ chỉ giới hạn như: "chỉ", "luôn luôn", "trừ trường hợp".`,
-      tag: 'Bẫy đề thi'
+      front: `3 Sai lầm dễ nhầm lẫn hoặc lỗi phổ biến nhất khi áp dụng "${title}"?`,
+      back: `LỖI CẦN TRÁNH:\n1. Nhầm lẫn giữa prompt mô tả và tham số kỹ thuật (aspect ratio, motion scale).\n2. Quên kiểm tra cấu hình workflow trước khi chạy số lượng lớn.\n3. Viết prompt quá lan man thiếu các từ khóa then chốt.`,
+      tag: 'Lỗi thực chiến'
     },
     {
       front: `Trường hợp ngoại lệ & Điều kiện biên bắt buộc phải nhớ của "${title}"?`,
-      back: `ĐIỀU KIỆN BIÊN & NGOẠI LỆ:\nTrong hầu hết đề thi phân loại, câu hỏi điểm 9-10 thường xoay quanh điều kiện biên khi quy tắc thông thường không còn đúng. Hãy chú ý các mốc thời gian, số lượng tối thiểu và thẩm quyền quyết định.`,
+      back: `ĐIỀU KIỆN BIÊN & NGOẠI LỆ:\nTrong các tình huống thực chiến tạo nội dung, chuyển đổi cao thường xoay quanh điều kiện biên khi model AI không hiểu prompt thông thường. Hãy chú ý các mốc fps, negative prompt và seed.`,
       tag: 'Ngoại lệ quan trọng'
     },
     {
@@ -539,8 +534,8 @@ function generateSmartSemanticCards({ topic, rawText = '', cardCount = 5, custom
       tag: 'Kỹ thuật ghi nhớ'
     },
     {
-      front: `Dạng bài tập thực chiến hoặc câu hỏi trắc nghiệm hay gặp về "${title}"?`,
-      back: `DẠNG BÀI THỰC CHIẾN:\nĐề bài thường đưa ra một tình huống thực tế hoặc một bảng số liệu, yêu cầu học viên nhận diện đúng bản chất của "${title}" và chỉ ra phương án xử lý tối ưu.`,
+      front: `Dạng bài tập thực chiến hoặc tình huống hay gặp về "${title}"?`,
+      back: `DẠNG BÀI THỰC CHIẾN:\nĐề bài đưa ra một tình huống triển khai MMO hoặc tạo nội dung thực tế, yêu cầu Creator nhận diện đúng bản chất của "${title}" và áp dụng đúng cấu trúc prompt tối ưu.`,
       tag: 'Thực chiến'
     },
     {
@@ -620,18 +615,18 @@ export async function generateQuizQuestionsWithAI({ topic, rawText = '', questio
     ? cards.map((c, i) => `${i + 1}. Câu hỏi/Khái niệm: ${c.front} | Đáp án: ${c.back}`).join('\n')
     : '';
 
-  const prompt = `Bạn là Trưởng ban Đề thi Quốc Gia và Chuyên gia Khảo thí hàng đầu.
-Nhiệm vụ: Hãy biên soạn chính xác ${questionCount} câu hỏi trắc nghiệm 4 lựa chọn (A, B, C, D) có tính phân loại cao, cài cắm bẫy tinh vi và kèm lời giải chi tiết.
+  const prompt = `Bạn là Chuyên gia Cố vấn Prompt Engineering & MMO Content Architect hàng đầu (PromptMMO).
+Nhiệm vụ: Hãy biên soạn chính xác ${questionCount} câu hỏi / tình huống trắc nghiệm 4 lựa chọn (A, B, C, D) có tính thực chiến cao về tham số, công thức và kỹ năng kiếm tiền MMO, kèm lời giải chi tiết.
 
-CHỦ ĐỀ: ${topic || 'Ôn tập kiến thức trọng tâm'}
-TÀI LIỆU / THẺ GHI NHỚ NGUỒN:
+CHỦ ĐỀ: ${topic || 'Bộ Prompt & Kỹ năng MMO thực chiến'}
+TÀI LIỆU / PROMPT NGUỒN:
 ${cardsContext || rawText || 'Biên soạn các câu hỏi thi thực chiến hay gặp nhất.'}
 
 YÊU CẦU ĐỊNH DẠNG:
 - Trả về ĐÚNG 1 MẢNG JSON (JSON Array), KHÔNG bọc trong markdown và KHÔNG có lời giải thích ngoài mảng JSON.
 - Mỗi object có 4 trường:
-  - "question": Câu hỏi rõ ràng, bám sát đề thi thật.
-  - "options": Mảng 4 chuỗi phương án [A, B, C, D]. Các phương án gây nhiễu phải logic, dễ bẫy thí sinh nếu không nắm chắc bài.
+  - "question": Tình huống / Câu hỏi rõ ràng, bám sát thực tế MMO.
+  - "options": Mảng 4 chuỗi phương án [A, B, C, D]. Các phương án gây nhiễu phải logic, dễ bẫy Creator nếu không nắm chắc kỹ thuật.
   - "correct": Số nguyên từ 0 đến 3 (chỉ số index của đáp án đúng trong mảng options).
   - "explanation": Lời giải thích ngắn gọn, nêu rõ căn cứ pháp luật/công thức hoặc vì sao các đáp án khác sai.
 
@@ -717,7 +712,7 @@ Ví dụ:
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: 'Bạn là chuyên gia ra đề thi trắc nghiệm. Luôn trả về 1 mảng JSON các câu hỏi.' },
+            { role: 'system', content: 'Bạn là chuyên gia tình huống kỹ thuật và Prompt MMO. Luôn trả về 1 mảng JSON các câu hỏi.' },
             { role: 'user', content: prompt }
           ],
           temperature: 0.35

@@ -64,41 +64,11 @@ export default function CommandPaletteModal({
 
   const quickActions = [
     {
-      id: 'action-live-exam',
-      title: 'Phòng Thi Đấu Trực Tiếp Toàn Quốc (Live ICT)',
-      desc: 'Thi thử trực tiếp theo lịch hẹn, cấp SBD, chống rời tab & cạnh tranh Bảng Vàng',
-      icon: Trophy,
-      category: 'Khảo thí & Thi đấu',
-      badge: '🔴 Live ICT',
-      onSelect: () => {
-        onOpenLiveExamRoom?.();
-        onClose();
-      }
-    },
-    {
-      id: 'action-share-achievement',
-      title: 'Khoe Thẻ Thành Tích & Chứng Nhận (Story / MXH)',
-      desc: 'Tự động xuất ảnh chứng chỉ đồ họa chuẩn 4:5 để chia sẻ lên Facebook, Zalo, Story',
-      icon: Sparkles,
-      category: 'Cá nhân & Thành tích',
-      badge: 'Xuất Ảnh',
-      onSelect: () => {
-        onOpenShareAchievement?.({
-          type: 'streak',
-          title: 'Kỷ Lục Chuỗi Ngày Học Tập ÔnThiHub 2026',
-          streak: 15,
-          rank: 'Học Viên Xuất Sắc',
-          candidateName: 'Học Viên ÔnThiHub'
-        });
-        onClose();
-      }
-    },
-    {
       id: 'action-direct-chat',
       title: 'Tin Nhắn Trực Tiếp & Hỏi Đáp 1-1',
-      desc: 'Nhắn tin riêng giữa các bạn học, trao đổi với tác giả bộ thẻ hoặc Trợ lý AI',
+      desc: 'Nhắn tin riêng giữa người mua & người bán, trao đổi prompt hoặc hỗ trợ kỹ thuật',
       icon: MessageCircle,
-      category: 'Giao tiếp & Cộng đồng',
+      category: 'Giao tiếp & Hỗ trợ',
       badge: 'Chat 1-1',
       onSelect: () => {
         onOpenDirectChat?.();
@@ -106,48 +76,12 @@ export default function CommandPaletteModal({
       }
     },
     {
-      id: 'action-target-clock',
-      title: 'Đồng Hồ Mục Tiêu & Vết Thời Gian (Giờ Hà Nội)',
-      desc: 'Xem giờ thực tế Việt Nam, đặt mục tiêu học và xem nhật ký vết thời gian',
-      icon: Clock,
-      category: 'Thời gian & Mục tiêu',
-      badge: 'Giờ Hà Nội',
-      onSelect: () => {
-        onOpenTargetClock?.();
-        onClose();
-      }
-    },
-    {
-      id: 'action-study-room',
-      title: 'Phòng Tự Học Chung Ảo (Study With Me)',
-      desc: 'Cày đề cùng 40+ sĩ tử toàn quốc, bấm chuông Pomodoro và gửi lời cổ vũ',
-      icon: Users,
-      category: 'Cộng đồng',
-      badge: '🟢 Live',
-      onSelect: () => {
-        onOpenStudyRoom?.();
-        onClose();
-      }
-    },
-    {
-      id: 'action-cheatsheet',
-      title: 'Bảng Cheatsheet Cứu Sinh 1 Trang (High-Yield Summary)',
-      desc: 'Tóm tắt các con số thời hạn vàng, mốc năm và bẫy đề thi trước giờ thi',
-      icon: FileText,
-      category: 'Ôn tập cấp tốc',
-      badge: '1 Trang',
-      onSelect: () => {
-        onOpenCheatSheet?.();
-        onClose();
-      }
-    },
-    {
       id: 'action-theme',
       title: 'Đổi Chủ Đề Nền & Giao Diện (16 Phong Cách)',
-      desc: 'Thay đổi hình nền, bảng màu và icon nhỏ (như Messenger & Instagram)',
+      desc: 'Thay đổi hình nền Cyberpunk, Lofi, Neon và bảng màu yêu thích',
       icon: Palette,
       category: 'Giao diện',
-      badge: '10 Themes',
+      badge: '16 Themes',
       onSelect: () => {
         onOpenThemePicker?.();
         onClose();
@@ -155,23 +89,11 @@ export default function CommandPaletteModal({
     },
     {
       id: 'action-library',
-      title: 'Tủ Thẻ & Tài Liệu Của Tôi',
-      desc: 'Xem các bộ flashcard đã sở hữu và ôn tập theo SM-2',
+      title: 'Kho Prompt & AI Skills Của Tôi',
+      desc: 'Xem các bộ Prompt đã mở khóa và 1-Click sao chép',
       icon: FolderHeart,
-      category: 'Không gian học',
-      badge: 'Khuyên dùng',
-      onSelect: () => {
-        onSelectTab('library');
-        onClose();
-      }
-    },
-    {
-      id: 'action-due',
-      title: 'Ôn Toàn Bộ Thẻ Đến Hạn (Spaced Repetition)',
-      desc: 'Củng cố trí nhớ ngắt quãng chống quên lãng',
-      icon: Layers,
-      category: 'Học tập',
-      badge: 'SM-2',
+      category: 'Kho cá nhân',
+      badge: 'Đã mua',
       onSelect: () => {
         onSelectTab('library');
         onClose();
@@ -179,32 +101,20 @@ export default function CommandPaletteModal({
     },
     {
       id: 'action-create',
-      title: 'Studio Tạo Thẻ Bằng AI (Gemini & OpenAI)',
-      desc: 'Dán tài liệu hoặc nhập chủ đề để tạo thẻ tự động trong 5 giây',
+      title: 'Studio Đăng Bán Prompt (Hưởng 80% Lãi)',
+      desc: 'Đăng bán câu lệnh Prompt AI hoặc Workflow N8N để kiếm Xu thụ động',
       icon: PlusSquare,
-      category: 'Công cụ AI',
-      badge: 'AI 3.5',
+      category: 'Công cụ Creator',
+      badge: '80% LÃI',
       onSelect: () => {
         onSelectTab('create');
         onClose();
       }
     },
     {
-      id: 'action-analytics',
-      title: 'Trung Tâm Phân Tích & Tiến Độ Học Tập',
-      desc: 'Xem biểu đồ nhớ sâu, chuỗi streak và dự báo ôn tập 7 ngày',
-      icon: BarChart2,
-      category: 'Thống kê',
-      badge: 'Mới',
-      onSelect: () => {
-        onOpenAnalytics?.();
-        onClose();
-      }
-    },
-    {
       id: 'action-marketplace',
-      title: 'Chợ Thẻ Flashcard C2C',
-      desc: 'Tìm mua bộ đề thi chuẩn từ cộng đồng hoặc tự đăng bán kiếm Xu',
+      title: 'Chợ Prompt & AI Skills C2C',
+      desc: 'Tìm mua Prompt từ cộng đồng hoặc giao dịch trực tiếp giữa thành viên',
       icon: Store,
       category: 'Sàn C2C',
       badge: 'HOT',
@@ -214,22 +124,11 @@ export default function CommandPaletteModal({
       }
     },
     {
-      id: 'action-mistakes',
-      title: 'Sổ Tay Câu Sai & Điểm Yếu',
-      desc: 'Xem lại các câu trắc nghiệm làm sai và AI chẩn đoán lỗ hổng',
-      icon: BookMarked,
-      category: 'Ôn luyện',
-      onSelect: () => {
-        onOpenMistakes?.();
-        onClose();
-      }
-    },
-    {
       id: 'action-leaderboard',
-      title: 'Bảng Vàng Thi Đua & Chuỗi Học Tập (Streak)',
-      desc: 'Xem thứ hạng tuần, tích lũy XP và nhận huy hiệu danh giá',
+      title: 'Bảng Vàng Doanh Thu Creator',
+      desc: 'Xem thứ hạng Creator bán chạy nhất và giữ chuỗi hoạt động',
       icon: Trophy,
-      category: 'Cộng đồng',
+      category: 'Bảng xếp hạng',
       onSelect: () => {
         onOpenLeaderboard?.();
         onClose();
@@ -237,10 +136,11 @@ export default function CommandPaletteModal({
     },
     {
       id: 'action-blindbox',
-      title: 'Túi Mù Tri Thức (Blind Box)',
-      desc: '100% có quà: Xu hoàn lại, vé AI Studio và bộ thẻ hiếm',
+      title: 'Túi Mù May Mắn (Nhận Xu Free)',
+      desc: '100% trúng Xu thưởng mỗi ngày để mở khóa prompt',
       icon: Gift,
-      category: 'Minigame',
+      category: 'Phần thưởng',
+      badge: 'Free Xu',
       onSelect: () => {
         onOpenBlindBox?.();
         onClose();
@@ -248,10 +148,11 @@ export default function CommandPaletteModal({
     },
     {
       id: 'action-wallet',
-      title: 'Ví Xu & Nạp Tiền VietQR',
-      desc: 'Quản lý số dư Xu, lịch sử giao dịch và nạp tiền tự động',
-      icon: Coins,
+      title: 'Ví Xu PromptMMO (Nạp & Rút Tiền)',
+      desc: 'Nạp tiền tự động qua VietQR hoặc yêu cầu rút tiền về tài khoản ngân hàng',
+      icon: Wallet,
       category: 'Tài chính',
+      badge: 'VietQR',
       onSelect: () => {
         onOpenWallet?.();
         onClose();
@@ -287,9 +188,9 @@ export default function CommandPaletteModal({
     ...filteredCourses.map((c) => ({
       id: `course-${c.id}`,
       title: c.title,
-      desc: `${c.categoryLabel || 'Tài liệu'} • ${c.previewCards?.length || 0} thẻ Anki • ${c.previewQuiz?.length || 0} trắc nghiệm`,
+      desc: `${c.categoryLabel || 'Prompt'} • ${c.previewCards?.length || 0} Prompts thực chiến`,
       icon: Layers,
-      category: 'Khóa học & Bộ thẻ',
+      category: 'Gói Prompt & Skills MMO',
       courseData: c,
       itemType: 'course',
       onSelect: () => {
@@ -351,7 +252,7 @@ export default function CommandPaletteModal({
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Tìm bộ thẻ, câu hỏi hoặc thao tác nhanh (gõ để tìm)..."
+            placeholder="Tìm gói prompt, công cụ hoặc thao tác nhanh (gõ để tìm)..."
             className="w-full text-sm bg-transparent outline-none placeholder:text-[#9b9a97] dark:placeholder:text-slate-500 text-[#37352f] dark:text-white"
           />
           {query && (
@@ -377,7 +278,7 @@ export default function CommandPaletteModal({
             <div className="py-12 text-center text-[#787774] dark:text-slate-400 space-y-2">
               <Search className="w-8 h-8 text-[#9b9a97] dark:text-slate-600 mx-auto opacity-50" />
               <p className="text-sm font-medium">Không tìm thấy kết quả nào khớp với "{query}"</p>
-              <p className="text-xs text-[#9b9a97] dark:text-slate-500">Hãy thử tìm kiếm với từ khóa khác như "Công chức", "IELTS", "AI", "Ví Xu"</p>
+              <p className="text-xs text-[#9b9a97] dark:text-slate-500">Hãy thử tìm kiếm với từ khóa khác như "Kling", "Midjourney", "TikTok", "Ví Xu"</p>
             </div>
           ) : (
             <div className="space-y-1">
@@ -455,7 +356,7 @@ export default function CommandPaletteModal({
           </div>
 
           <span className="text-[10px] text-[#9b9a97] dark:text-slate-500">
-            Notion Quick Command • OnThiHub
+            Quick Command • PromptMMO
           </span>
         </div>
 

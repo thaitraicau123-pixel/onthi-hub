@@ -216,8 +216,8 @@ export default function LibraryView({
             <Repeat className="w-3.5 h-3.5" />
           </div>
           <div className="text-[11px] leading-relaxed">
-            <span className="font-bold text-[#37352f] dark:text-white">Đã thi đỗ hoặc học xong tài liệu? </span>
-            <span className="text-[#787774] dark:text-slate-300">Bạn có thể bấm nút <strong>&ldquo;Tiện ích ➔ Pass Lại Thẻ Cũ&rdquo;</strong> ở mỗi bộ thẻ bên dưới để nhượng lại cho bạn học khác trên Sàn C2C và nhận Xu vào ví!</span>
+            <span className="font-bold text-[#37352f] dark:text-white">Đã khai thác xong giá trị của gói Prompt? </span>
+            <span className="text-[#787774] dark:text-slate-300">Bạn có thể bấm nút <strong>&ldquo;Tiện ích ➔ Pass Lại Prompt&rdquo;</strong> ở mỗi gói bên dưới để nhượng lại cho Creator khác trên Chợ C2C và nhận Xu vào ví!</span>
           </div>
         </div>
       </div>
@@ -225,16 +225,16 @@ export default function LibraryView({
       {unlockedList.length === 0 ? (
         <ActionableEmptyState
           icon={BookOpen}
-          badge="TỦ TÀI LIỆU TRỐNG"
-          title="Tủ tài liệu ôn tập của bạn đang chờ đón bộ thẻ đầu tiên"
-          description="Bạn chưa mở khóa bộ đề nào. Hãy ghé qua Chợ Thẻ C2C để tìm bộ đề chuẩn thi giá chỉ từ 2 Xu hoặc tự tạo bộ flashcard miễn phí bằng AI!"
+          badge="KHO PROMPT TRỐNG"
+          title="Kho Prompt của bạn đang chờ đón bộ đầu tiên"
+          description="Bạn chưa mở khóa gói Prompt nào. Hãy ghé qua Chợ Prompt C2C để tìm gói prompt chất lượng giá chỉ từ 2 Xu hoặc tự tạo prompt bằng AI!"
           primaryAction={{
-            label: 'Vào Chợ Flashcard C2C',
+            label: 'Vào Chợ Prompt C2C',
             onClick: () => onSwitchTab('marketplace'),
             icon: Store
           }}
           secondaryAction={{
-            label: 'Tự Tạo Thẻ Bằng AI',
+            label: 'Tạo Prompt Bằng AI',
             onClick: () => onSwitchTab('create'),
             icon: Sparkles
           }}
@@ -313,7 +313,7 @@ export default function LibraryView({
           {/* Results count & quick clear */}
           {(selectedCategory !== 'all' || searchLibrary) && (
             <div className="flex items-center justify-between text-xs text-[#787774] dark:text-slate-300 px-1 font-medium">
-              <span>Đang hiển thị {filteredUnlockedList.length} / {unlockedList.length} bộ thẻ</span>
+              <span>Đang hiển thị {filteredUnlockedList.length} / {unlockedList.length} gói Prompt</span>
               <button
                 type="button"
                 onClick={() => { setSelectedCategory('all'); setSearchLibrary(''); }}
@@ -329,8 +329,8 @@ export default function LibraryView({
             <ActionableEmptyState
               icon={Search}
               badge="KHÔNG TÌM THẤY"
-              title={searchLibrary ? `Không tìm thấy bộ thẻ nào khớp với "${searchLibrary}"` : 'Không có bộ thẻ nào trong danh mục này'}
-              description={`Tủ của bạn hiện có ${unlockedList.length} bộ thẻ. Hãy thử kiểm tra lại chính tả hoặc đặt lại bộ lọc.`}
+              title={searchLibrary ? `Không tìm thấy gói Prompt nào khớp với "${searchLibrary}"` : 'Không có gói Prompt nào trong danh mục này'}
+              description={`Kho của bạn hiện có ${unlockedList.length} gói Prompt. Hãy thử kiểm tra lại chính tả hoặc đặt lại bộ lọc.`}
               primaryAction={{
                 label: 'Xóa bộ lọc tìm kiếm',
                 onClick: () => { setSelectedCategory('all'); setSearchLibrary(''); },
@@ -395,7 +395,7 @@ export default function LibraryView({
                               }
                             }}
                             className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#2383e2] transition-colors cursor-pointer"
-                            title="Sao chép đường dẫn chia sẻ bộ thẻ này"
+                            title="Sao chép đường dẫn chia sẻ gói Prompt này"
                           >
                             <Share2 className="w-3 h-3" />
                             <span className="hidden sm:inline">Link</span>
@@ -409,7 +409,7 @@ export default function LibraryView({
                                 onOpenDirectChat(null, course);
                               }}
                               className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-indigo-50 dark:hover:bg-indigo-950/60 text-[#787774] dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
-                              title="Gửi thẻ này vào đoạn chat với bạn học"
+                              title="Gửi gói Prompt này vào đoạn chat với Creator"
                               aria-label="Chia sẻ qua tin nhắn"
                             >
                               <MessageCircle className="w-3 h-3" />
@@ -421,7 +421,7 @@ export default function LibraryView({
                             type="button"
                             onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
                             className="inline-flex items-center space-x-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium hover:bg-[#efefed] dark:hover:bg-slate-800 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white transition-colors cursor-pointer"
-                            title="Tùy chọn khác (In, Tải Anki, Pass lại, Bán thẻ)"
+                            title="Tùy chọn khác (Xuất file, Pass lại C2C, Bán Prompt)"
                           >
                             <MoreHorizontal className="w-3.5 h-3.5" />
                             <span className="hidden md:inline">Tùy chọn</span>
@@ -489,21 +489,10 @@ export default function LibraryView({
                                     className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
                                   >
                                     <Repeat className="w-3.5 h-3.5 text-[#9065b0] dark:text-purple-400" />
-                                    <span>🔁 Pass Lại Thẻ Cũ</span>
+                                    <span>🔁 Pass Lại Prompt C2C</span>
                                   </button>
                                 </div>
                                 <div className="py-1">
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setOpenMenuDeckId(null);
-                                      exportAnkiDeckFile(course.title, course.previewCards);
-                                    }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
-                                  >
-                                    <Download className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
-                                    <span>📥 Xuất File Anki (.txt)</span>
-                                  </button>
                                   <button
                                     type="button"
                                     onClick={() => {
@@ -513,7 +502,7 @@ export default function LibraryView({
                                     className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
                                   >
                                     <FileSpreadsheet className="w-3.5 h-3.5 text-[#0f7b6c] dark:text-teal-400" />
-                                    <span>📊 Xuất File CSV (Quizlet / Excel)</span>
+                                    <span>📊 Xuất File Excel / CSV</span>
                                   </button>
                                   <button
                                     type="button"
@@ -530,34 +519,12 @@ export default function LibraryView({
                                     type="button"
                                     onClick={() => {
                                       setOpenMenuDeckId(null);
-                                      onOpenCheatSheet?.(course);
-                                    }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors text-emerald-700 dark:text-emerald-300 font-semibold"
-                                  >
-                                    <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                                    <span>📄 Xem Cheatsheet 1 Trang</span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setOpenMenuDeckId(null);
                                       printSummaryGuide(course);
                                     }}
                                     className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
                                   >
                                     <Printer className="w-3.5 h-3.5 text-[#448361] dark:text-emerald-400" />
-                                    <span>🖨️ In Tài Liệu / Xuất PDF</span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setOpenMenuDeckId(null);
-                                      printFlashcardCutoutSheet(course);
-                                    }}
-                                    className="w-full text-left px-3 py-1.5 hover:bg-[#f7f6f5] dark:hover:bg-slate-700 flex items-center space-x-2 cursor-pointer transition-colors"
-                                  >
-                                    <Scissors className="w-3.5 h-3.5 text-[#d44c47] dark:text-rose-400" />
-                                    <span>✂️ In Thẻ Giấy A4 (Học Offline)</span>
+                                    <span>🖨️ Xuất File PDF Kịch Bản</span>
                                   </button>
                                 </div>
                               </div>
@@ -574,7 +541,7 @@ export default function LibraryView({
                       </p>
                       <div className="mt-2.5 text-[11px] text-[#9b9a97] dark:text-slate-400 flex items-center space-x-1.5">
                         <Layers className="w-3 h-3" />
-                        <span>{course.previewCards?.length || 0} thẻ Anki • {course.previewQuiz?.length || 0} câu trắc nghiệm</span>
+                        <span>{course.previewCards?.length || 0} Prompts thực chiến</span>
                       </div>
                     </div>
 
@@ -584,39 +551,21 @@ export default function LibraryView({
                         <button
                           type="button"
                           onClick={() => onOpenFlashcards(course)}
-                          className="py-2 px-3 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer touch-3d"
+                          className="py-2 px-3 rounded-lg bg-[#2383e2] hover:bg-[#1a73e8] text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-2xs transition-colors cursor-pointer touch-3d col-span-2"
                         >
-                          <Layers className="w-3.5 h-3.5" />
-                          <span>Học Thẻ 3D</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => onOpenQuiz(course)}
-                          className="py-2 px-3 rounded-lg bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer touch-3d"
-                        >
-                          <PlayCircle className="w-3.5 h-3.5 text-[#cc782f] dark:text-amber-400" />
-                          <span>Thi Thử</span>
+                          <Zap className="w-3.5 h-3.5" />
+                          <span>Xem & Sao Chép Prompt Siêu Tốc</span>
                         </button>
                       </div>
 
                       <div className="flex items-center space-x-2">
                         <button
                           type="button"
-                          onClick={() => onOpenMatchGame(course)}
-                          className="flex-1 py-1.5 px-2.5 rounded-lg bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white text-xs font-semibold flex items-center justify-center space-x-1.5 transition-colors cursor-pointer touch-3d"
-                        >
-                          <Gamepad2 className="w-3.5 h-3.5 text-[#2383e2] dark:text-sky-400" />
-                          <span>Ghép Thẻ (Match)</span>
-                        </button>
-
-                        <button
-                          type="button"
                           onClick={() => setOpenMenuDeckId(isMenuOpen ? null : course.id)}
-                          className="py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white text-xs font-medium flex items-center space-x-1 transition-colors cursor-pointer touch-3d"
-                          title="In, Xuất Anki, Pass lại, Bán thẻ"
+                          className="w-full py-1.5 px-2.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-[#efefed] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#787774] dark:text-slate-300 hover:text-[#37352f] dark:hover:text-white text-xs font-medium flex items-center justify-center space-x-1 transition-colors cursor-pointer touch-3d"
+                          title="Xuất file, Pass lại, Bán gói prompt"
                         >
-                          <span>Tiện ích</span>
+                          <span>Tiện ích mở rộng</span>
                           <ChevronDown className="w-3 h-3" />
                         </button>
                       </div>

@@ -129,17 +129,17 @@ export function purgeTestCommunityData() {
             // Normalize old bot-inflated likes on initial posts
             if (p.id === 'post_init_1' && (p.likes > 20 || !p.likedBy)) {
               p.likes = 0;
-              p.role = 'Ban Quản Trị OnThiHub';
+              p.role = 'Ban Quản Trị PromptMMO';
               p.likedBy = [];
             }
             if (p.id === 'post_init_2' && (p.likes > 20 || !p.likedBy)) {
               p.likes = 0;
-              p.role = 'Ban Quản Trị OnThiHub';
+              p.role = 'Ban Quản Trị PromptMMO';
               p.likedBy = [];
             }
             if (p.id === 'post_init_3' && (p.likes > 20 || !p.likedBy)) {
               p.likes = 0;
-              p.role = 'Ban Quản Trị OnThiHub';
+              p.role = 'Ban Quản Trị PromptMMO';
               p.likedBy = [];
             }
             return {

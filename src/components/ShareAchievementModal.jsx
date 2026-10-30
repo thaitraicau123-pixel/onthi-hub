@@ -94,7 +94,7 @@ export default function ShareAchievementModal({
       .toLowerCase()
       .replace(/[^a-z0-9]/g, '-')
       .replace(/-+/g, '-');
-    downloadCanvasImage(canvasRef, `onthihub-${selectedTheme}-${slug}.png`);
+    downloadCanvasImage(canvasRef, `promptmmo-${selectedTheme}-${slug}.png`);
     onShowToast?.('📥 Đã tải chứng nhận hoàng gia 4K về máy!');
   };
 
@@ -116,8 +116,8 @@ export default function ShareAchievementModal({
     if (!canvasRef) return;
     playSound('flip');
     const res = await shareCanvasImageNative(canvasRef, {
-      title: achievementData?.title || 'Thành tích Kỷ Lục ÔnThiHub',
-      text: `🏆 Bảng vàng vinh danh thành tích trong ${achievementData?.title || 'ÔnThiHub'}! Cùng thử sức nhé!`
+      title: achievementData?.title || 'Bảng Vàng Kỷ Lục PromptMMO',
+      text: `🏆 Bảng vàng vinh danh thành tích trong ${achievementData?.title || 'PromptMMO'}! Cùng thử sức nhé!`
     });
     if (res.success) {
       playSound('success');

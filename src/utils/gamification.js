@@ -20,11 +20,11 @@ export function getStreakInfo() {
           lastDate: '',
           highestStreak: 0,
           xp: 0,
-          level: 'Học Viên Mới 🌱'
+          level: 'Creator Mới Khởi Nghiệp 🚀'
         };
     return data;
   } catch {
-    return { streak: 0, lastDate: '', highestStreak: 0, xp: 0, level: 'Học Viên Mới 🌱' };
+    return { streak: 0, lastDate: '', highestStreak: 0, xp: 0, level: 'Creator Mới Khởi Nghiệp 🚀' };
   }
 }
 
@@ -32,7 +32,7 @@ export function broadcastUserLeaderboardEntry(streakData) {
   try {
     const u = getCurrentUser();
     const clientId = u?.uid || u?.email || localStorage.getItem('onthi_studyroom_client_id_v3') || 'local_user';
-    const name = u?.displayName || (u?.email ? u.email.split('@')[0] : 'Học viên ÔnThiHub');
+    const name = u?.displayName || (u?.email ? u.email.split('@')[0] : 'Creator PromptMMO');
     const avatar = u?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
 
     const entry = {
@@ -42,8 +42,8 @@ export function broadcastUserLeaderboardEntry(streakData) {
       avatar,
       xp: streakData.xp || 0,
       streak: streakData.streak || 0,
-      badge: streakData.level || 'Học Viên Chăm Chỉ 🎓',
-      goal: 'Chinh phục kỳ thi 2026',
+      badge: streakData.level || 'Creator Bền Bỉ 🔥',
+      goal: 'Bứt phá doanh thu MMO 2026',
       updatedAt: Date.now()
     };
 
@@ -76,7 +76,7 @@ export function broadcastUserLeaderboardEntry(streakData) {
   } catch {}
 }
 
-export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên học tập ôn thi') {
+export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên sáng tạo & tối ưu Prompt') {
   try {
     const today = getHanoiDateString();
     const current = getStreakInfo();
@@ -94,11 +94,11 @@ export function recordStudyAction(xpGained = 25, activityTitle = 'Phiên học t
       xp: (current.xp || 0) + xpGained
     };
 
-    if (updated.xp > 2000) updated.level = 'Học Bá Tối Cao 👑';
-    else if (updated.xp > 1000) updated.level = 'Thủ Khoa Đề Thi 🏆';
-    else if (updated.xp > 500) updated.level = 'Chuyên Viên Cấp Cao 🚀';
-    else if (updated.xp > 0) updated.level = 'Học Viên Chăm Chỉ 🎓';
-    else updated.level = 'Học Viên Mới 🌱';
+    if (updated.xp > 2000) updated.level = 'Top Creator MMO 👑';
+    else if (updated.xp > 1000) updated.level = 'Bậc Thầy Prompt 🏆';
+    else if (updated.xp > 500) updated.level = 'Chuyên Gia Nội Dung 🚀';
+    else if (updated.xp > 0) updated.level = 'Creator Tích Cực ⚡';
+    else updated.level = 'Creator Mới 🌱';
 
     localStorage.setItem(STREAK_KEY, JSON.stringify(updated));
 
@@ -184,9 +184,9 @@ const QUESTS_KEY = 'onthi_daily_quests';
 
 const DEFAULT_QUESTS = [
   { id: 'checkin', title: 'Điểm Danh Hàng Ngày', desc: 'Mở web và bấm nhận quà điểm danh', xp: 25, rewardXu: 5, icon: 'Gift' },
-  { id: 'review_cards', title: 'Ôn Tập 5 Thẻ Flashcard', desc: 'Lật và đánh giá mức độ nhớ 5 thẻ', xp: 25, rewardXu: 0, icon: 'Layers' },
+  { id: 'review_cards', title: 'Thực Hành 5 Prompt Thực Chiến', desc: 'Xem và thử nghiệm cú pháp 5 Prompt', xp: 25, rewardXu: 0, icon: 'Layers' },
   { id: 'match_game', title: 'Hoàn Thành 1 Trận Ghép Thẻ', desc: 'Chơi chế độ Match Game siêu tốc dưới 45s', xp: 50, rewardXu: 2, icon: 'Gamepad2' },
-  { id: 'pomodoro', title: 'Tập Trung 1 Phiên Pomodoro', desc: 'Học tập 25 phút không ngắt quãng', xp: 50, rewardXu: 0, icon: 'Timer' }
+  { id: 'pomodoro', title: 'Tập Trung 1 Phiên Pomodoro', desc: 'Làm việc tập trung 25 phút không ngắt quãng', xp: 50, rewardXu: 0, icon: 'Timer' }
 ];
 
 export function getDailyQuests() {

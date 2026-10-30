@@ -4,8 +4,10 @@
 import { maskApiKey } from './adminGuard.js';
 export { maskApiKey };
 
-const GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';
-const OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
+const GEMINI_KEY_STORAGE = 'promptmmo_ai_gemini_api_key';
+const LEGACY_GEMINI_KEY_STORAGE = 'onthi_ai_gemini_api_key';
+const OPENAI_KEY_STORAGE = 'promptmmo_ai_openai_api_key';
+const LEGACY_OPENAI_KEY_STORAGE = 'onthi_ai_openai_api_key';
 
 // Protected obfuscated fallback token
 const _CHUNK_G = ['AQ.Ab8RN6IBy', 'FdwC74B6m7P6', 'RX9TPSczZLw3', 'FipL6eN4HNER11VUA'];
@@ -27,7 +29,7 @@ export const GEMINI_MODELS = [
  */
 export function getGeminiApiKey() {
   try {
-    const saved = localStorage.getItem(GEMINI_KEY_STORAGE);
+    const saved = localStorage.getItem(GEMINI_KEY_STORAGE) || localStorage.getItem(LEGACY_GEMINI_KEY_STORAGE);
     if (saved && saved.trim()) return saved.trim();
   } catch (e) {}
 
@@ -48,6 +50,7 @@ export function saveGeminiApiKey(key) {
       localStorage.setItem(GEMINI_KEY_STORAGE, key.trim());
     } else {
       localStorage.removeItem(GEMINI_KEY_STORAGE);
+      localStorage.removeItem(LEGACY_GEMINI_KEY_STORAGE);
     }
     return true;
   } catch (e) {
@@ -60,7 +63,7 @@ export function saveGeminiApiKey(key) {
  */
 export function getOpenAIApiKey() {
   try {
-    const saved = localStorage.getItem(OPENAI_KEY_STORAGE);
+    const saved = localStorage.getItem(OPENAI_KEY_STORAGE) || localStorage.getItem(LEGACY_OPENAI_KEY_STORAGE);
     if (saved && saved.trim()) return saved.trim();
   } catch (e) {}
 
@@ -81,6 +84,7 @@ export function saveOpenAIApiKey(key) {
       localStorage.setItem(OPENAI_KEY_STORAGE, key.trim());
     } else {
       localStorage.removeItem(OPENAI_KEY_STORAGE);
+      localStorage.removeItem(LEGACY_OPENAI_KEY_STORAGE);
     }
     return true;
   } catch (e) {

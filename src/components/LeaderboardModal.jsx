@@ -81,7 +81,7 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
   const rankedUsers = useMemo(() => {
     const currentUser = getCurrentUser();
     const myId = currentUser?.uid || currentUser?.email || localStorage.getItem('onthi_studyroom_client_id_v3') || 'local_user';
-    const myName = currentUser?.displayName || (currentUser?.email ? currentUser.email.split('@')[0] : 'Bạn (Học viên)');
+    const myName = currentUser?.displayName || (currentUser?.email ? currentUser.email.split('@')[0] : 'Bạn (Creator)');
     const myAvatar = currentUser?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(myName)}`;
 
     const combined = { ...cloudEntriesMap };
@@ -92,8 +92,8 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
         avatar: myAvatar,
         xp: streakInfo.xp || 0,
         streak: streakInfo.streak || 0,
-        badge: streakInfo.level || 'Học Viên Mới 🌱',
-        goal: 'Chinh phục kỳ thi 2026',
+        badge: streakInfo.level || 'Creator Mới Khởi Nghiệp 🚀',
+        goal: 'Chinh phục doanh thu MMO 2026',
         isCurrentUser: true
       };
     }
@@ -123,8 +123,8 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
               <Trophy className="w-5 h-5 text-yellow-200" />
             </div>
             <div>
-              <h4 className="text-base font-black">Bảng Vàng & Nhiệm Vụ Thực Tế</h4>
-              <p className="text-xs text-amber-100">Xếp hạng học viên thật theo điểm XP & chuỗi Streak</p>
+              <h4 className="text-base font-black">Bảng Vàng Doanh Thu & Creator Thực Chiến</h4>
+              <p className="text-xs text-amber-100">Xếp hạng Creator & Dân MMO thực chiến theo điểm XP & chuỗi ngày làm việc</p>
             </div>
           </div>
 
@@ -197,12 +197,12 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
                   type="button"
                   onClick={() => {
                     const currentUser = getCurrentUser();
-                    const myName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Học Viên ÔnThiHub';
+                    const myName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Creator PromptMMO';
                     onOpenShareAchievement({
                       type: 'streak',
-                      title: 'Chuỗi Ngày Học Tập ÔnThiHub 2026',
+                      title: 'Bảng Vàng Doanh Thu PromptMMO 2026',
                       streak: streakInfo.streak,
-                      rank: streakInfo.level || 'Học Viên Bền Bỉ',
+                      rank: streakInfo.level || 'Creator Bền Bỉ 🔥',
                       candidateName: myName,
                       certCode: `STREAK-${streakInfo.streak}D-${Math.floor(1000 + Math.random() * 9000)}`
                     });
@@ -221,7 +221,7 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
         {activeSubTab === 'leaderboard' && (
           <div className="p-5 overflow-y-auto flex-1 space-y-3">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block px-1">
-              Bảng Xếp Hạng Học Viên Thực Tế (Không Bot):
+              Bảng Xếp Hạng Creator & Dân MMO Thực Tế:
             </span>
 
             {rankedUsers.map((u) => {
@@ -262,7 +262,7 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
                       </span>
                     </div>
                     <span className="text-[11px] text-slate-400 block truncate">
-                      {u.goal || 'Đang ôn luyện trên ÔnThiHub'}
+                      {u.goal || 'Đang thực chiến kiếm tiền trên PromptMMO'}
                     </span>
                   </div>
 
@@ -329,7 +329,7 @@ export default function LeaderboardModal({ onClose, onOpenShareAchievement }) {
 
         {/* Footer */}
         <div className="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-white/10 text-center text-xs text-slate-500 dark:text-slate-400">
-          Điểm XP được tính trực tiếp từ số thẻ bạn đã lật, bài thi thử và thời gian học thực tế.
+          Điểm XP được tính trực tiếp từ số prompt bạn đã thực hành, thách đấu kỹ năng và thời gian sáng tạo thực tế.
         </div>
       </div>
     </div>

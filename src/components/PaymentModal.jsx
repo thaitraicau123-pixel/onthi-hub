@@ -118,7 +118,7 @@ export default function PaymentModal({
     setIsSimulatingTopup(true);
     // Create official deposit request so Admin receives phone push and email notification
     const activeUser = user || getCurrentUser();
-    const emailToUse = activeUser?.email || 'khach_nap@onthihub.vn';
+    const emailToUse = activeUser?.email || 'khach_nap@promptmmo.com';
     await createDepositRequest({
       xuAmount: topupAmount,
       userEmail: emailToUse,
@@ -132,7 +132,7 @@ export default function PaymentModal({
       setIsTopupOpen(false);
       playSound('success');
       confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
-      alert(`🎉 Đã xác nhận chuyển khoản! Lệnh nạp ${topupAmount} Xu đã được tạo và gửi thông báo tới Admin. Ví của bạn đã được cộng ${topupAmount} Xu để mở khóa bộ thẻ ngay.`);
+      alert(`🎉 Đã xác nhận chuyển khoản! Lệnh nạp ${topupAmount} Xu đã được tạo và gửi thông báo tới Admin. Ví của bạn đã được cộng ${topupAmount} Xu để mở khóa gói Prompt ngay.`);
     }, 1200);
   };
 
@@ -316,7 +316,7 @@ export default function PaymentModal({
                   <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-xs text-amber-900 dark:text-amber-200 flex items-start space-x-2">
                     <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                     <p className="leading-relaxed">
-                      Trang web chỉ chấp nhận Tiền Xu để bảo vệ bản quyền. Bạn có thể nạp thêm Xu qua VietQR để mở khóa ngay bộ thẻ.
+                      Trang web chỉ chấp nhận Tiền Xu để bảo vệ bản quyền. Bạn có thể nạp thêm Xu qua VietQR để mở khóa ngay gói Prompt.
                     </p>
                   </div>
 

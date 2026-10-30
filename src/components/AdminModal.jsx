@@ -437,8 +437,8 @@ export default function AdminModal({ onClose }) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">Quản Lý Bộ Thẻ Do Cộng Đồng Đăng Bán</h4>
-                  <p className="text-xs text-slate-500">Admin có thể ẩn/hiện hoặc kiểm duyệt các bộ thẻ trên sàn.</p>
+                  <h4 className="text-sm font-bold text-slate-900">Quản Lý Gói Prompt Do Cộng Đồng Đăng Bán</h4>
+                  <p className="text-xs text-slate-500">Admin có thể ẩn/hiện hoặc kiểm duyệt các gói prompt trên sàn.</p>
                 </div>
               </div>
 

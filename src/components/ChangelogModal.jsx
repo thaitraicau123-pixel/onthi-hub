@@ -86,7 +86,7 @@ export default function ChangelogModal({
                 </span>
               </div>
               <p className="text-[11px] text-[#787774]">
-                Nhật ký nâng cấp và lộ trình hoàn thiện ÔnThiHub 2026
+                Nhật ký nâng cấp và lộ trình hoàn thiện PromptMMO 2026
               </p>
             </div>
           </div>

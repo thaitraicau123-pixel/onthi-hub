@@ -1,5 +1,5 @@
 // =========================================================================
-// ONTHIHUB REAL-TIME 1v1 PVP BATTLE ENGINE (Đấu Trường Trắc Nghiệm Đối Kháng)
+// PROMPTMMO REAL-TIME 1v1 PVP BATTLE ENGINE (Đấu Trường Prompt & Kỹ Năng Đối Kháng)
 // Đồng bộ thời gian thực qua Cloud Relay (ntfy.sh SSE ~100ms) + BroadcastChannel
 // =========================================================================
 
@@ -122,7 +122,7 @@ export async function createPvpChallenge({
 }) {
   if (!sender || !receiver) throw new Error('Thiếu thông tin người chơi!');
   if (!Array.isArray(questions) || questions.length === 0) {
-    throw new Error('Bộ đề thi đấu cần có ít nhất 1 câu hỏi!');
+    throw new Error('Gói câu hỏi thách đấu cần có ít nhất 1 câu hỏi!');
   }
 
   const wager = Math.max(0, parseInt(wagerXu, 10) || 0);
@@ -267,8 +267,8 @@ export async function switchToAiSparringBattle(battleId, senderUser) {
 
   battle.player2 = {
     id: 'ai_sparring_partner',
-    name: 'Gia Sư AI (Đấu Tập)',
-    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=ai_tutor_onthi',
+    name: 'Bot Cố Vấn AI (Đấu Tập)',
+    avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=ai_tutor_promptmmo',
     score: 0,
     currentQuestion: 0,
     timeSpentMs: 0,
@@ -361,7 +361,7 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
     }
   }
 
-  // Nếu cả 2 người chơi đều đã hoàn thành bài thi -> Phân định thắng bại
+  // Nếu cả 2 người chơi đều đã hoàn thành phần thi đấu -> Phân định thắng bại
   if (battle.player1.isFinished && battle.player2.isFinished && battle.status !== 'finished') {
     battle.status = 'finished';
     battle.finishedAt = new Date().toISOString();
@@ -406,7 +406,7 @@ export async function submitPvpProgress(battleId, userId, { questionIndex, isCor
           type: 'pvp_win',
           amountXu: rewardXu,
           title: `🏆 Thắng Thách Đấu 1v1: ${battle.deckTitle}`,
-          description: `Chiến thắng rực rỡ trước đối thủ! Nhận ${rewardXu} Xu thưởng (Đã trừ 10% phí sàn OnThiHub).`
+          description: `Chiến thắng rực rỡ trước đối thủ! Nhận ${rewardXu} Xu thưởng (Đã trừ 10% phí sàn PromptMMO).`
         });
       }
     }

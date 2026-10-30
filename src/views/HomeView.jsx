@@ -100,13 +100,12 @@ export default function HomeView({
     e.preventDefault();
     try {
       if (quickPrompt.trim()) {
-        localStorage.setItem(
-          'onthi_quick_studio_draft',
-          JSON.stringify({
-            topic: quickPrompt.trim(),
-            category: quickSubject || 'video-ai'
-          })
-        );
+        const draftPayload = JSON.stringify({
+          topic: quickPrompt.trim(),
+          category: quickSubject || 'video-ai'
+        });
+        localStorage.setItem('promptmmo_quick_studio_draft', draftPayload);
+        localStorage.setItem('onthi_quick_studio_draft', draftPayload);
       }
     } catch {
       // ignore storage errors

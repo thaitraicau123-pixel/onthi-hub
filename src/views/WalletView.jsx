@@ -78,7 +78,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
 
   const handleCreateDeposit = async () => {
     setIsDepositing(true);
-    const targetEmail = depositEmail.trim() || user?.email || 'khach_nap@onthihub.vn';
+    const targetEmail = depositEmail.trim() || user?.email || 'khach_nap@promptmmo.com';
     try {
       const res = await createDepositRequest({
         xuAmount: depositXu,
@@ -113,7 +113,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
     }
     if (withdrawableBalance < amount) {
       setWithdrawMsg({
-        text: `Số dư Xu đủ điều kiện rút của bạn hiện là ${withdrawableBalance} Xu. Các khoản Xu khuyến mãi (tân thủ 20 Xu, điểm danh, giải thưởng) là Xu học tập nội bộ chỉ dùng để mở khóa bộ thẻ trên web, không quy đổi thành tiền mặt!`,
+        text: `Số dư Xu đủ điều kiện rút của bạn hiện là ${withdrawableBalance} Xu. Các khoản Xu khuyến mãi (tân thủ 20 Xu, điểm danh, giải thưởng) là Xu nội bộ chỉ dùng để mở khóa các gói Prompt trên web, không quy đổi thành tiền mặt!`,
         isError: true
       });
       return;
@@ -126,7 +126,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
         bankName,
         accountNo: accountNo.trim(),
         accountName: accountName.trim().toUpperCase(),
-        userEmail: user?.email || depositEmail || 'creator@onthihub.vn',
+        userEmail: user?.email || depositEmail || 'creator@promptmmo.com',
         userId: user?.uid || null
       });
 
@@ -415,7 +415,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
                 <ul className="text-amber-800 dark:text-amber-300 text-[11px] list-disc list-inside space-y-1">
                   <li>Hạn mức rút: Tối thiểu <strong className="font-bold underline text-amber-900 dark:text-white">{MIN_WITHDRAW_XU} Xu</strong> (= {(MIN_WITHDRAW_XU * COIN_RATE_VND).toLocaleString()}đ), tối đa <strong>{MAX_WITHDRAW_DAILY_XU} Xu / lần / ngày</strong>.</li>
                   <li>Tỷ lệ quy đổi: <strong>1 Xu = 1.000 VNĐ</strong> • Phí nền tảng & xử lý Napas: <strong className="font-bold text-rose-600 dark:text-rose-400">{WITHDRAW_FEE_PERCENT}%</strong> (tối thiểu 5.000đ).</li>
-                  <li>Phân loại nguồn Xu: Chỉ áp dụng rút tiền cho <strong>Xu doanh thu bán thẻ C2C</strong> hoặc <strong>Xu nạp thực tế</strong>. Các khoản Xu tặng tân thủ (20 Xu), điểm danh mỗi ngày, giải thưởng là Xu học tập nội bộ chỉ dùng để mở khóa bộ thẻ trên web.</li>
+                  <li>Phân loại nguồn Xu: Chỉ áp dụng rút tiền cho <strong>Xu doanh thu bán Prompt C2C</strong> hoặc <strong>Xu nạp thực tế</strong>. Các khoản Xu tặng tân thủ (20 Xu), điểm danh mỗi ngày, giải thưởng là Xu nội bộ chỉ dùng để mở khóa gói Prompt trên web.</li>
                   <li>Thời gian xét duyệt: Ban Quản Trị đối soát và duyệt chuyển khoản thủ công trong <strong>12h - 24h</strong> ngày làm việc.</li>
                 </ul>
               </div>
@@ -428,7 +428,7 @@ export default function WalletView({ user, onBalanceUpdated }) {
                       Số dư Xu đủ điều kiện rút hiện tại của bạn là <strong className="text-amber-600 dark:text-amber-400">{withdrawableBalance} Xu</strong> (yêu cầu tối thiểu <strong>{MIN_WITHDRAW_XU} Xu</strong>).
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                      💡 Xu khuyến mãi (tân thủ 20 Xu, điểm danh, mở hộp mù, giải đấu) là Xu học tập nội bộ. Hãy chia sẻ và bán thêm bộ thẻ trên Sàn C2C để tích lũy Xu doanh thu có thể rút!
+                      💡 Xu khuyến mãi (tân thủ 20 Xu, điểm danh, mở hộp mù, giải đấu) là Xu nội bộ. Hãy chia sẻ và bán thêm gói Prompt trên Chợ C2C để tích lũy Xu doanh thu có thể rút!
                     </p>
                   </div>
                 </div>

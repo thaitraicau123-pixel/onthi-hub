@@ -74,7 +74,7 @@ export default function PlansView({ onTierUpgraded, onPayVietQR, onOpenWallet })
             <span>Gói Hội Viên & Quyền Lợi Đặc Quyền</span>
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-            Mở rộng hạn mức tạo Flashcard AI, mở khóa toàn bộ kho đề thi chính quy và đặc quyền Creator bán thẻ trên Sàn C2C.
+            Mở rộng hạn mức tạo Prompt AI Studio, mở khóa toàn bộ kho Prompt thực chiến và đặc quyền Creator bán Prompt nhận 80% Xu trên Chợ C2C.
           </p>
         </div>
       </div>

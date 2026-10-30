@@ -82,14 +82,14 @@ export default function PwaInstallPrompt() {
         {/* App Icon */}
         <img
           src="/icons/icon-192x192.png"
-          alt="ÔnThiHub App"
+          alt="PromptMMO App"
           className="w-11 h-11 rounded-xl shadow-xs shrink-0 object-cover border border-[#e9e9e8] dark:border-white/10"
         />
 
         <div className="flex-1 min-w-0 pr-6">
           <div className="flex items-center space-x-1.5 flex-wrap">
             <h4 className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white truncate">
-              Cài Đặt ÔnThiHub Cho Điện Thoại
+              Cài Đặt PromptMMO Cho Điện Thoại
             </h4>
             <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-50 dark:bg-sky-950/70 text-[#2383e2] dark:text-sky-300 border border-blue-200 dark:border-sky-700/50">
               PWA App
@@ -102,7 +102,7 @@ export default function PwaInstallPrompt() {
                 Bấm nút <Share className="w-3 h-3 inline text-[#2383e2] mx-0.5" /> <strong>Chia sẻ</strong> trên Safari ➔ Chọn <strong>"Thêm vào MH chính"</strong> để dùng app toàn màn hình.
               </>
             ) : (
-              'Mở thẻ ôn thi tức thì từ màn hình chính, học offline không cần mạng & mượt mà như app gốc.'
+              'Truy cập kho Prompt tức thì từ màn hình chính, sao chép prompt 1 chạm & mượt mà như app gốc.'
             )}
           </p>
 

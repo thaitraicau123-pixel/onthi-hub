@@ -50,10 +50,10 @@ export default function PassDeckModal({
       const res = passDeckToMarketplace({
         originalCourse: course,
         passPriceXu: resellPriceXu,
-        passNote: passNote.trim() || 'Học viên đã hoàn thành khóa ôn tập và pass lại cho bạn hữu cùng chí hướng!',
+        passNote: passNote.trim() || 'Creator/Dân MMO đã test ra doanh thu và pass lại cho anh em cùng chí hướng!',
         sellerUser: {
-          name: user?.displayName || 'Học Bá Ôn Thi',
-          displayName: user?.displayName || 'Học Bá Ôn Thi',
+          name: user?.displayName || 'Pro Creator MMO',
+          displayName: user?.displayName || 'Pro Creator MMO',
           email: user?.email || '',
           photoURL: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
           avatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
@@ -71,7 +71,7 @@ export default function PassDeckModal({
       onPassSuccess?.(res);
       onClose();
     } catch (err) {
-      alert('Có lỗi xảy ra khi niêm yết pass bộ thẻ.');
+      alert('Có lỗi xảy ra khi niêm yết pass gói prompt.');
     } finally {
       setIsSubmitting(false);
     }
@@ -101,10 +101,10 @@ export default function PassDeckModal({
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-bold text-[#37352f] dark:text-white">
-                Pass Lại Bộ Thẻ Đã Học (C2C Resale)
+                Bán Lại Gói Prompt C2C (Pass Prompt)
               </h3>
               <p className="text-[11px] text-[#787774] dark:text-slate-400">
-                Dành cho người mua: Đã thi xong, pass lại kiếm Xu nạp ví
+                Dành cho Creator: Pass lại gói prompt đã mua để nhận Xu về ví
               </p>
             </div>
           </div>
@@ -127,7 +127,7 @@ export default function PassDeckModal({
           {/* Deck Summary Card */}
           <div className="p-4 rounded-lg bg-[#f7f6f5] dark:bg-slate-800/80 border border-[#e9e9e8] dark:border-white/10">
             <span className="notion-tag notion-tag-green text-[10px] font-semibold">
-              BỘ THẺ BẠN ĐÃ MUA & SỞ HỮU
+              GÓI PROMPT BẠN ĐÃ MUA & SỞ HỮU
             </span>
             <h4 className="text-sm font-bold text-[#37352f] dark:text-white mt-1.5 leading-snug">
               {course.title}
@@ -136,9 +136,9 @@ export default function PassDeckModal({
               {course.subtitle || course.description}
             </p>
             <div className="mt-2 text-[11px] text-[#787774] dark:text-slate-400 flex items-center space-x-2">
-              <span>{course.previewCards?.length || course.cardCount || 50} thẻ ôn tập</span>
+              <span>{course.previewCards?.length || course.cardCount || 50} Prompts thực chiến</span>
               <span>•</span>
-              <span>Bản quyền gốc: {course.authorName || 'Ban Quản Trị OnThiHub'}</span>
+              <span>Bản quyền gốc: {course.authorName || 'Ban Quản Trị PromptMMO'}</span>
             </div>
           </div>
 
@@ -162,20 +162,20 @@ export default function PassDeckModal({
               </span>
             </div>
             <p className="text-[11px] text-[#787774] dark:text-slate-400 mt-1">
-              💡 Gợi ý: Đặt giá từ 40% - 70% giá gốc để có học viên khác mua ngay trong ngày!
+              💡 Gợi ý: Đặt giá từ 40% - 70% giá gốc để có Creator khác mua ngay trong ngày!
             </p>
           </div>
 
           {/* Pass Note / Motivation */}
           <div>
             <label className="text-xs font-semibold text-[#37352f] dark:text-slate-200 block mb-1.5">
-              Lời nhắn pass lại / Review kết quả ôn thi:
+              Lời nhắn pass lại / Review kết quả ứng dụng MMO:
             </label>
             <textarea
               rows="3"
               value={passNote}
               onChange={(e) => setPassNote(e.target.value)}
-              placeholder="VD: Mình vừa thi đậu công chức đợt vừa rồi được 56 điểm! Bộ thẻ này tóm tắt cực sát đề thi thật, pass lại cho các bạn khóa sau ôn gấp..."
+              placeholder="VD: Mình dùng bộ prompt video này lên kênh TikTok 50k follower trong 2 tuần, video nào cũng trên 100k view! Nay share lại giá rẻ cho anh em..."
               className="w-full p-3 bg-white dark:bg-slate-800 border border-[#e9e9e8] dark:border-white/10 rounded-lg text-xs text-[#37352f] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none focus:border-[#2383e2] dark:focus:border-blue-400 focus:ring-1 focus:ring-[#2383e2] resize-none"
             />
           </div>
@@ -200,7 +200,7 @@ export default function PassDeckModal({
           <div className="flex items-start space-x-2 text-[11px] text-[#787774] dark:text-slate-400 p-2.5 bg-[#fbfbfa] dark:bg-slate-800/50 rounded-lg border border-[#e9e9e8] dark:border-white/10">
             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
             <span>
-              Quy tắc cộng đồng: Chỉ học viên đã mua khóa mới được quyền pass lại. Bộ thẻ sẽ được đăng tải công khai trên Chợ C2C với nhãn "Học viên Pass lại".
+              Quy tắc cộng đồng: Chỉ thành viên đã mua gói mới được quyền pass lại. Gói Prompt sẽ được đăng tải công khai trên Chợ C2C với nhãn "Creator Pass lại".
             </span>
           </div>
 

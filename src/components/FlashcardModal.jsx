@@ -39,12 +39,12 @@ import confetti from 'canvas-confetti';
  * e.g. "[Logistics] Công thức là gì?" -> { tag: "Logistics", cleanQuestion: "Công thức là gì?" }
  */
 function parseFrontText(text, fallbackTag) {
-  if (!text) return { tag: fallbackTag || 'Anki', cleanQuestion: '' };
+  if (!text) return { tag: fallbackTag || 'Prompt', cleanQuestion: '' };
   const match = text.match(/^\[(.*?)\]\s*(.*)$/s);
   if (match) {
     return { tag: match[1], cleanQuestion: match[2] };
   }
-  return { tag: fallbackTag || 'Anki', cleanQuestion: text };
+  return { tag: fallbackTag || 'Prompt', cleanQuestion: text };
 }
 
 export default function FlashcardModal({
@@ -703,7 +703,7 @@ export default function FlashcardModal({
 
                   <div className="border-t border-slate-700/60 my-1" />
 
-                  {/* Anki Export */}
+                  {/* File Export */}
                   {isPurchased && (
                     <button
                       onClick={() => {
@@ -713,11 +713,11 @@ export default function FlashcardModal({
                       className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
                     >
                       <Download className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span>Xuất File .txt Nhập Anki</span>
+                      <span>Xuất File .txt / Prompt List</span>
                     </button>
                   )}
 
-                  {/* In Thẻ Giấy A4 */}
+                  {/* In Kịch Bản / Prompt */}
                   {isPurchased && (
                     <button
                       onClick={() => {
@@ -727,7 +727,7 @@ export default function FlashcardModal({
                       className="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl hover:bg-slate-800 text-slate-200 transition-colors text-left cursor-pointer"
                     >
                       <Scissors className="w-4 h-4 text-rose-400 shrink-0" />
-                      <span>In Bảng Cắt Thẻ Giấy A4</span>
+                      <span>In Kịch Bản / Prompt Ra Giấy</span>
                     </button>
                   )}
                 </div>
@@ -952,7 +952,7 @@ export default function FlashcardModal({
                 {/* Question Text (Large, crisp, legible) */}
                 <div className="my-auto text-center px-4 py-3 max-h-[190px] overflow-y-auto">
                   <p className="text-xl sm:text-2xl font-extrabold text-white leading-relaxed tracking-tight whitespace-pre-line">
-                    {parsedFront.cleanQuestion || (cards.length === 0 ? 'Bộ thẻ chưa có nội dung' : 'Thẻ trống')}
+                    {parsedFront.cleanQuestion || (cards.length === 0 ? 'Gói Prompt chưa có nội dung' : 'Prompt trống')}
                   </p>
                 </div>
 
@@ -1154,13 +1154,13 @@ export default function FlashcardModal({
                 </div>
                 <div>
                   <h4 className="text-sm font-bold uppercase tracking-tight flex items-center space-x-1.5">
-                    <span>Trợ Lý Gia Sư AI OnThiHub</span>
+                    <span>Trợ Lý Chuyên Gia Prompt AI</span>
                     <span className="px-2 py-0.2 rounded-full text-[10px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
                       Pro Turbo
                     </span>
                   </h4>
                   <p className="text-[11px] text-slate-400 font-normal">
-                    Phân tích bản chất, mẹo nhớ siêu tốc & bẫy đề thi
+                    Phân tích góc quay, thông số camera & mẹo lên triệu view
                   </p>
                 </div>
               </div>
@@ -1188,7 +1188,7 @@ export default function FlashcardModal({
             <div className="p-5 overflow-y-auto space-y-3.5 flex-1 text-xs sm:text-sm">
               <div className="p-3.5 bg-slate-900/80 rounded-2xl border border-slate-800">
                 <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 uppercase tracking-wider">
-                  NỘI DUNG THẺ ĐANG HỌC
+                  NỘI DUNG PROMPT ĐANG XEM
                 </span>
                 <p className="mt-2 font-bold text-white text-sm">
                   {currentCard.front}
@@ -1203,7 +1203,7 @@ export default function FlashcardModal({
                 <div className="py-10 flex flex-col items-center justify-center space-y-2.5">
                   <div className="w-8 h-8 border-3 border-indigo-400 border-t-transparent rounded-full animate-spin" />
                   <p className="text-xs text-slate-400 animate-pulse">
-                    Đang kết nối hệ thống AI OnThiHub phân tích bẫy thi & sáng tác mẹo nhớ...
+                    Đang kết nối hệ thống AI PromptMMO phân tích cú pháp & tối ưu hóa kịch bản...
                   </p>
                 </div>
               )}
@@ -1256,7 +1256,7 @@ export default function FlashcardModal({
                 <div>
                   <h4 className="text-sm font-bold text-white">Mục Lục & Sơ Đồ Chủ Đề</h4>
                   <p className="text-[11px] text-slate-400">
-                    Tổng cộng {cards.length} thẻ ghi nhớ
+                    Tổng cộng {cards.length} Prompt & Kịch bản
                   </p>
                 </div>
               </div>

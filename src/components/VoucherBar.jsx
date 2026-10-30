@@ -40,7 +40,7 @@ export default function VoucherBar() {
           </div>
           <div className="flex items-center space-x-2">
             <span className="text-xs sm:text-sm font-bold text-[#37352f] dark:text-white">
-              Ưu Đãi Trợ Giá Ôn Thi (Tự động áp dụng khi thanh toán)
+              Mã Giảm Giá & Trợ Giá PromptMMO (Tự động áp dụng khi thanh toán)
             </span>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-[#faece3] dark:bg-amber-950/70 text-[#cc782f] dark:text-amber-300 border border-[#f3d6c1] dark:border-amber-600/40">
               ⚡ Giờ Vàng

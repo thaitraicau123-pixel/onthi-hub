@@ -54,7 +54,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
   const handleCreateDeposit = async () => {
     const { tx, emailData } = await createDepositRequest({
       xuAmount: depositXu,
-      userEmail: user?.email || 'khach_nap@onthihub.vn',
+      userEmail: user?.email || 'khach_nap@promptmmo.com',
       userId: user?.uid || null
     });
     setDepositResult({ tx, emailData });
@@ -87,7 +87,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
       bankName,
       accountNo: accountNo.trim(),
       accountName: accountName.trim().toUpperCase(),
-      userEmail: user?.email || 'creator@onthihub.vn',
+      userEmail: user?.email || 'creator@promptmmo.com',
       userId: user?.uid || null
     });
 
@@ -131,7 +131,7 @@ export default function WalletModal({ user, onClose, onBalanceUpdated }) {
             </div>
             <div>
               <h4 className="text-sm sm:text-base font-bold text-slate-900">
-                Ví Xu ÔnThiHub
+                Ví Xu PromptMMO
               </h4>
               <p className="text-[11px] text-slate-500">
                 1 Xu = 1.000 VNĐ • Dùng mua bán trên Sàn và nâng cấp gói

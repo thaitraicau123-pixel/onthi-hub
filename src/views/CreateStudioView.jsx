@@ -134,7 +134,7 @@ export default function CreateStudioView({
   const [quota, setQuota] = useState(() => getUserQuota());
   const [formError, setFormError] = useState('');
 
-  // Bulk Flashcards Importer state
+  // Bulk Prompts Importer state
   const [showImporterModal, setShowImporterModal] = useState(false);
   const [importRawText, setImportRawText] = useState('');
   const [importSeparator, setImportSeparator] = useState('auto'); // 'auto' | 'tab' | 'dash' | 'colon'
@@ -148,16 +148,17 @@ export default function CreateStudioView({
   // Hydrate quick draft passed from HomeView AI Studio box
   useEffect(() => {
     try {
-      const rawDraft = localStorage.getItem('onthi_quick_studio_draft');
+      const rawDraft = localStorage.getItem('promptmmo_quick_studio_draft') || localStorage.getItem('onthi_quick_studio_draft');
       if (rawDraft) {
         const parsed = JSON.parse(rawDraft);
         if (parsed?.topic) {
           setAiTopic(parsed.topic);
-          setTitle(`Bộ Thẻ: ${parsed.topic.slice(0, 65)}`);
+          setTitle(`Gói Prompt: ${parsed.topic.slice(0, 65)}`);
         }
         if (parsed?.category) {
           setCategory(parsed.category);
         }
+        localStorage.removeItem('promptmmo_quick_studio_draft');
         localStorage.removeItem('onthi_quick_studio_draft');
       }
     } catch {
@@ -165,7 +166,7 @@ export default function CreateStudioView({
     }
   }, []);
 
-  // Parse raw text into flashcard objects
+  // Parse raw text into prompt objects
   const parseImportedCards = (text, sepMode) => {
     if (!text || !text.trim()) return [];
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -221,7 +222,7 @@ export default function CreateStudioView({
     playSound('success');
     setShowImporterModal(false);
     setImportRawText('');
-    alert(`🎉 Đã nhập thành công ${parsed.length} thẻ flashcard vào danh sách!`);
+    alert(`🎉 Đã nhập thành công ${parsed.length} câu lệnh Prompt vào danh sách!`);
   };
 
   const refreshQuota = () => {
@@ -277,7 +278,7 @@ export default function CreateStudioView({
           ? `${prev}\n\n[Trích xuất từ ảnh ${file.name}]:\n1. Câu hỏi trọng tâm từ tài liệu ảnh: Các nguyên tắc và điều khoản cốt lõi.\n2. Căn cứ pháp lý: Quy định hiện hành tại văn bản được chụp.`
           : `[Trích xuất từ ảnh ${file.name}]:\n1. Câu hỏi trọng tâm từ tài liệu ảnh: Các nguyên tắc và điều khoản cốt lõi.\n2. Căn cứ pháp lý: Quy định hiện hành tại văn bản được chụp.`
       );
-      if (!title) setTitle(`Bộ Thẻ: Trích xuất từ ảnh ${file.name.split('.')[0]}`);
+      if (!title) setTitle(`Gói Prompt: Trích xuất từ ảnh ${file.name.split('.')[0]}`);
       alert(`📸 Đã nạp thành công ảnh "${file.name}"! AI đã nhận diện vùng tài liệu và điền vào ô ghi chú.`);
       return;
     }
@@ -288,7 +289,7 @@ export default function CreateStudioView({
       if (typeof content === 'string') {
         playSound('success');
         setAiNotes((prev) => (prev ? `${prev}\n\n${content}` : content));
-        if (!title) setTitle(`Bộ Thẻ: ${file.name.replace(/\.[^/.]+$/, '')}`);
+        if (!title) setTitle(`Gói Prompt: ${file.name.replace(/\.[^/.]+$/, '')}`);
         alert(`🎉 Đã đọc thành công tệp "${file.name}" (${content.length} ký tự)!`);
       }
     };
@@ -350,7 +351,7 @@ export default function CreateStudioView({
 
       if (Array.isArray(generated) && generated.length > 0) {
         if (!title) {
-          setTitle(`Bộ Thẻ: ${aiTopic}`);
+          setTitle(`Gói Prompt: ${aiTopic}`);
         }
         setCards(generated);
         consumeUserQuota(1);
@@ -441,7 +442,7 @@ export default function CreateStudioView({
     try {
       await navigator.clipboard.writeText(tsv);
       playSound('success');
-      alert(`📋 Đã copy ${valid.length} thẻ định dạng TSV (chuẩn Anki/Quizlet) vào Clipboard!`);
+      alert(`📋 Đã copy ${valid.length} Prompt định dạng TSV/Excel vào Clipboard!`);
     } catch (e) {
       alert('Không thể copy vào clipboard: ' + e.message);
     }
@@ -465,7 +466,7 @@ export default function CreateStudioView({
 
     if (!title.trim()) {
       playSound('flip');
-      setFormError('Vui lòng nhập tiêu đề bộ thẻ!');
+      setFormError('Vui lòng nhập tiêu đề gói Prompt!');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -473,7 +474,7 @@ export default function CreateStudioView({
     const validCards = cards.filter(c => c.front.trim() && c.back.trim());
     if (validCards.length === 0) {
       playSound('flip');
-      setFormError('Bộ thẻ phải có ít nhất 1 thẻ có đầy đủ nội dung mặt trước và mặt sau!');
+      setFormError('Gói Prompt phải có ít nhất 1 câu lệnh có đầy đủ nội dung!');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
@@ -481,17 +482,17 @@ export default function CreateStudioView({
     const newDeck = {
       id: 'custom_' + Date.now(),
       title,
-      description: description || `Bộ tài liệu ôn tập gồm ${validCards.length} thẻ ghi nhớ.`,
+      description: description || `Gói Prompt & Kịch bản thực chiến gồm ${validCards.length} câu lệnh.`,
       category,
-      categoryLabel: category === 'cong-chuc' ? 'Công Chức' : category === 'it-tech' ? 'IT Lập Trình' : 'Ngoại Ngữ',
+      categoryLabel: category === 'video-ai' ? 'Video AI' : category === 'image-ai' ? 'Ảnh Studio' : category === 'copy-mmo' ? 'Kịch Bản MMO' : category === 'skills-automation' ? 'N8N & Auto' : 'Tool & Tài Nguyên',
       price: 0,
       originalPrice: 99000,
-      badge: 'Bộ Thẻ Tự Tạo',
+      badge: 'Gói Prompt Tự Tạo',
       rating: 5.0,
       reviewsCount: 1,
       studentsCount: 1,
-      format: ['Anki Deck', 'Tự Tạo'],
-      highlights: [`${validCards.length} Thẻ ôn tập do người học tự biên soạn`],
+      format: ['Prompt MMO', 'Tự Tạo'],
+      highlights: [`${validCards.length} Prompts thực chiến do Creator tự biên soạn`],
       previewCards: validCards,
       previewQuiz: validCards.slice(0, 5).map((c, i) => {
         const otherBacks = validCards.filter((_, idx) => idx !== i).map(o => o.back.split('\n')[0]);
@@ -530,12 +531,12 @@ export default function CreateStudioView({
     if (publishToMarket) {
       publishDeckToMarketplace({
         title,
-        description: description || `Bộ thẻ do ${user?.displayName || 'Cộng đồng'} chia sẻ.`,
+        description: description || `Gói Prompt do ${user?.displayName || 'Creator'} chia sẻ.`,
         category,
         categoryName: newDeck.categoryLabel,
         priceXu: Math.max(2, parseInt(priceXu, 10) || 3),
         cardCount: validCards.length,
-        authorName: user?.displayName || 'Ban Quản Trị OnThiHub',
+        authorName: user?.displayName || 'Ban Quản Trị PromptMMO',
         authorEmail: user?.email || 'thaitraicau123@gmail.com',
         authorAvatar: user?.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
         authorTier: quota.tier,
@@ -563,10 +564,10 @@ export default function CreateStudioView({
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#37352f] dark:text-white tracking-tight">
-              Studio Biên Soạn & Tạo Flashcard AI
+              Studio Biên Soạn & Đăng Bán Prompt MMO
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-              Tạo nhanh bộ thẻ từ tài liệu, câu hỏi hoặc ghi chú bằng AI, hoặc nhập thủ công theo chuẩn Anki.
+              Tạo nhanh gói Prompt video AI, kịch bản hoặc ảnh studio bằng AI, đăng bán lên Chợ Prompt C2C nhận 80% Xu hoa hồng.
             </p>
           </div>
 
@@ -614,11 +615,11 @@ export default function CreateStudioView({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="sm:col-span-2">
             <label className="text-xs font-semibold text-[#37352f] dark:text-slate-200 block mb-1">
-              Tiêu đề bộ thẻ:
+              Tiêu đề gói Prompt:
             </label>
             <input
               type="text"
-              placeholder="VD: 50 Điều Luật Công Chức Hay Hỏi Vòng 1..."
+              placeholder="VD: 50+ Prompt Video 8K Higgsfield & Kling 1.5 Siêu Thực..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full px-3.5 py-2 text-xs sm:text-sm border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white dark:bg-slate-800 font-medium text-[#37352f] dark:text-white"
@@ -685,11 +686,11 @@ export default function CreateStudioView({
 
             <div>
               <label className="font-semibold text-[#37352f] dark:text-slate-200 block mb-1">
-                Chủ đề / Từ khóa trọng tâm cần ôn tập:
+                Chủ đề / Mục tiêu gói Prompt & Kỹ năng MMO:
               </label>
               <input
                 type="text"
-                placeholder="VD: Luật Viên Chức 2010, React 19 Hooks, Từ vựng IELTS Collocations môi trường..."
+                placeholder="VD: Video AI Kling 1.5, Midjourney v6 Studio, TikTok Shop 3 Giây, N8N Auto SEO..."
                 value={aiTopic}
                 onChange={(e) => setAiTopic(e.target.value)}
                 className="w-full px-3.5 py-2 text-xs border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white dark:bg-slate-800 font-medium text-[#37352f] dark:text-white"
@@ -699,10 +700,10 @@ export default function CreateStudioView({
               <div className="flex flex-wrap items-center gap-1.5 pt-2">
                 <span className="text-[10px] text-[#787774] dark:text-slate-400 font-medium">Gợi ý chủ đề hot:</span>
                 {[
-                  { label: '🏛️ Nghị định 138/2020', topic: 'Nghị định 138/2020/NĐ-CP về tuyển dụng công chức', cat: 'cong-chuc' },
-                  { label: '⚖️ Luật CBCC 2026', topic: 'Trọng tâm Luật Cán bộ, công chức 2008 (sđbs 2019)', cat: 'cong-chuc' },
-                  { label: '💻 System Design & IT', topic: '50 Câu hỏi phỏng vấn System Design & React Virtual DOM', cat: 'it-tech' },
-                  { label: '🌍 IELTS 7.5 Academic', topic: 'Từ vựng học thuật IELTS band 7.5 chủ đề Công nghệ & Môi trường', cat: 'ngoai-ngu' }
+                  { label: '🎬 Video AI Higgsfield & Kling', topic: 'Prompt Video Điện Ảnh 8K Hyperlapse & Slow-Motion', cat: 'video-ai' },
+                  { label: '🎨 Midjourney Studio E-Commerce', topic: 'Prompt Chụp Ảnh Sản Phẩm Mỹ Phẩm & Thời Trang Cao Cấp', cat: 'image-ai' },
+                  { label: '✍️ Hook 3 Giây TikTok Shop', topic: '100+ Hook Giữ Chân 3 Giây Đầu & Kịch Bản Nổ Đơn', cat: 'copy-mmo' },
+                  { label: '⚡ N8N Auto SEO WordPress', topic: 'Workflow N8N & Prompt ChatGPT Auto Viết Bài Chuẩn SEO', cat: 'skills-automation' }
                 ].map((chip) => (
                   <button
                     key={chip.label}
@@ -710,7 +711,7 @@ export default function CreateStudioView({
                     onClick={() => {
                       setAiTopic(chip.topic);
                       setCategory(chip.cat);
-                      if (!title) setTitle(`Bộ Thẻ: ${chip.topic}`);
+                      if (!title) setTitle(`Gói Prompt: ${chip.topic}`);
                       playSound('click');
                     }}
                     className="px-2 py-0.5 text-[10px] font-medium bg-white dark:bg-slate-800 hover:bg-[#e9e9e8] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-slate-200 rounded-md transition-colors"
@@ -839,7 +840,7 @@ export default function CreateStudioView({
 
               <textarea
                 rows={isExpandedNotes ? 9 : 4}
-                placeholder="Dán câu hỏi, bài giảng hoặc ghi chú ôn tập vào đây. Hệ thống sẽ phân tích độ dài và trích xuất thành bộ thẻ câu hỏi - đáp án sắc bén..."
+                placeholder="Dán câu hỏi, kịch bản, ý tưởng nội dung hoặc ghi chú MMO vào đây. Hệ thống AI Studio sẽ phân tích và trích xuất thành gói Prompt sắc bén..."
                 value={aiNotes}
                 onChange={(e) => setAiNotes(e.target.value)}
                 className="w-full px-3.5 py-2.5 text-xs border border-[#e9e9e8] dark:border-white/15 rounded-lg outline-none focus:border-[#2383e2] focus:ring-1 focus:ring-[#2383e2] bg-white dark:bg-slate-800 text-[#37352f] dark:text-white transition-all"
@@ -918,7 +919,7 @@ export default function CreateStudioView({
                     ? 'Chi tiết (50 - 100 từ • Đầy đủ căn cứ & ví dụ)'
                     : answerLength === 'concise'
                     ? 'Ngắn gọn (10 - 25 từ • 1-2 dòng ôn phản xạ)'
-                    : 'Vừa đủ (25 - 50 từ • Chuẩn Anki SM-2)'}
+                    : 'Vừa đủ (25 - 50 từ • Chuẩn AI Prompt)'}
                 </span>
               </div>
 
@@ -934,7 +935,7 @@ export default function CreateStudioView({
                   {
                     id: 'balanced',
                     label: 'Vừa Đủ',
-                    desc: 'Chuẩn Anki SM-2',
+                    desc: 'Chuẩn AI Prompt',
                     icon: '⚖️',
                     badge: 'Khuyên dùng'
                   },
@@ -1136,7 +1137,7 @@ export default function CreateStudioView({
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-2 text-[#37352f] dark:text-white font-semibold">
                     <Sparkles className="w-4 h-4 text-[#2383e2] dark:text-sky-400 animate-spin" />
-                    <span>Trí Tuệ Nhân Tạo Đang Xử Lý & Trích Xuất Flashcard...</span>
+                    <span>Trí Tuệ Nhân Tạo Đang Xử Lý & Trích Xuất Gói Prompt MMO...</span>
                   </div>
                   <span className="notion-tag notion-tag-blue text-[11px] font-semibold">
                     {generatingStep === 0 ? 'Bước 1/3 (35%)' : generatingStep === 1 ? 'Bước 2/3 (75%)' : 'Bước 3/3 (95%)'}
@@ -1168,7 +1169,7 @@ export default function CreateStudioView({
                     <span className={generatingStep === 1 ? 'animate-bounce text-[#2383e2] dark:text-sky-400' : generatingStep > 1 ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-slate-400'}>
                       {generatingStep > 1 ? '✓' : '2.'}
                     </span>
-                    <span className="truncate">Trích xuất cặp Hỏi-Đáp SM-2</span>
+                    <span className="truncate">Trích xuất Prompt & Use Case</span>
                   </div>
 
                   <div className={`p-2 rounded-md flex items-center space-x-1.5 transition-colors ${
@@ -1177,7 +1178,7 @@ export default function CreateStudioView({
                     <span className={generatingStep === 2 ? 'animate-bounce text-[#2383e2] dark:text-sky-400' : 'text-slate-400'}>
                       {generatingStep === 2 ? '⚡' : '3.'}
                     </span>
-                    <span className="truncate">Đóng gói & định dạng Anki</span>
+                    <span className="truncate">Đóng gói & chuẩn hóa Prompt</span>
                   </div>
                 </div>
               </div>
@@ -1238,7 +1239,7 @@ export default function CreateStudioView({
                 type="button"
                 onClick={handleExportCards}
                 className="px-3 py-1.5 text-xs font-medium text-[#787774] dark:text-slate-300 bg-[#f7f6f5] dark:bg-slate-800 hover:bg-[#e9e9e8] dark:hover:bg-slate-700 border border-[#e9e9e8] dark:border-white/15 rounded-lg flex items-center space-x-1.5 transition-colors shadow-2xs"
-                title="Copy dạng TSV để dán vào Excel hoặc Anki"
+                title="Copy dạng TSV/Excel để dán vào công cụ quản lý Prompt"
               >
                 <Download className="w-3.5 h-3.5 text-[#787774] dark:text-slate-300" />
                 <span>📋 Xuất TSV</span>
@@ -1353,7 +1354,7 @@ export default function CreateStudioView({
                   {card.front.length > 120 && (
                     <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
                       <span>💡</span>
-                      <span>Mẹo Anki: Câu hỏi nên ngắn gọn (&lt;100 ký tự) để phản xạ tức thì.</span>
+                      <span>Mẹo Prompt: Tiêu đề hoặc Use Case nên ngắn gọn (&lt;100 ký tự) để dễ quản lý.</span>
                     </p>
                   )}
                 </div>
@@ -1377,7 +1378,7 @@ export default function CreateStudioView({
                   {card.back.length > 300 && (
                     <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
                       <span>💡</span>
-                      <span>Mẹo Anki: Nội dung dài nên tách thành gạch đầu dòng hoặc chia thành nhiều thẻ nhỏ.</span>
+                      <span>Mẹo Prompt: Kèm tham số kỹ thuật (--ar 16:9, camera motion) để AI render chuẩn nhất.</span>
                     </p>
                   )}
                 </div>
@@ -1411,7 +1412,7 @@ export default function CreateStudioView({
                       ? `Cảnh Báo Trùng Lặp ${liveDupCheck.similarityScore}% (Có Nguy Cơ Đạo Văn)`
                       : liveDupCheck.similarityScore >= 30
                       ? `Tương Đồng ${liveDupCheck.similarityScore}% so với bộ "${liveDupCheck.matchedDeck?.title}"`
-                      : `Bộ Thẻ Độc Bản (${liveDupCheck.similarityScore}% trùng) - Hoàn Toàn Hợp Lệ!`}
+                      : `Gói Prompt Độc Bản (${liveDupCheck.similarityScore}% trùng) - Hoàn Toàn Hợp Lệ!`}
                   </span>
                   <span className="text-[11px] opacity-80 block mt-0.5">
                     {liveDupCheck.reason}
@@ -1443,7 +1444,7 @@ export default function CreateStudioView({
 
           {publishToMarket && (
             <div className="pt-2 pl-6 flex items-center space-x-3">
-              <span className="text-[11px] text-[#787774] dark:text-slate-400">Đặt giá bán bộ thẻ:</span>
+              <span className="text-[11px] text-[#787774] dark:text-slate-400">Đặt giá bán gói Prompt:</span>
               <div className="flex items-center space-x-1.5">
                 <input
                   type="number"
@@ -1528,10 +1529,10 @@ export default function CreateStudioView({
                   <button
                     type="button"
                     onClick={() => {
-                      setImportRawText(`comprehend\thiểu rõ, lĩnh hội sâu sắc\tTừ vựng C1
-resilience\tkhả năng phục hồi, kiên cường\tTừ vựng C1
-collaborate\thợp tác, cùng làm việc\tGiao tiếp
-meticulous\ttỉ mỉ, cẩn trọng từng chi tiết\tIELTS 7.0`);
+                      setImportRawText(`Cinematic Street View\tCyberpunk Tokyo neon lights, rain reflections, 8k cinematic shot --ar 16:9 --v 6.0\tMidjourney
+Slow Motion Splash\tPerfume bottle falling in crystal clear water, high speed camera 1000fps --motion 5\tKling AI
+Hook 3s TikTok\t"Đừng lướt qua nếu bạn chưa biết cách làm video AI kiếm 10 củ/tháng này..."\tTikTok Script
+Workflow N8N\tWebhook trigger -> Gemini parse RSS -> Post WordPress auto SEO\tAutomation`);
                       setImportSeparator('tab');
                     }}
                     className="px-2 py-1 rounded-md bg-blue-50 dark:bg-sky-950/70 hover:bg-blue-100 text-[#2383e2] dark:text-sky-300 font-medium text-[10px] border border-blue-200 dark:border-sky-500/40 transition-colors"

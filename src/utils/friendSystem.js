@@ -1,6 +1,6 @@
 // =========================================================================
-// ONTHIHUB FRIEND SYSTEM & SOCIAL STUDY CONNECTIONS
-// Quản lý cơ chế Kết bạn, Lời mời kết bạn, Danh sách bạn bè & Gợi ý bạn học
+// PROMPTMMO FRIEND SYSTEM & CREATOR NETWORK
+// Quản lý cơ chế Kết bạn, Lời mời kết bạn, Danh sách bạn bè & Gợi ý Creator
 // Tương thích trải nghiệm mạng xã hội hiện đại (Facebook / Zalo / Discord)
 // Đồng bộ đa tầng: LocalStorage + Cross-tab Broadcast + Cloud SSE Relay (ntfy.sh)
 // =========================================================================
@@ -176,7 +176,7 @@ export function getFriendshipStatus(currentUserId, targetUserId) {
   if (!currentUserId || !targetUserId) return 'none';
   if (isSameUser(currentUserId, targetUserId)) return 'self';
 
-  // Ban Quản Trị OnThiHub luôn luôn kết nối chính thức không cần kết bạn
+  // Ban Quản Trị PromptMMO luôn luôn kết nối chính thức không cần kết bạn
   if (isSameUser(currentUserId, ADMIN_PARTICIPANT) || isSameUser(targetUserId, ADMIN_PARTICIPANT)) {
     return 'admin';
   }
@@ -256,7 +256,7 @@ export function sendFriendRequest({ sender, receiver, message = '' }) {
       sendDirectMessage({
         sender: receiver,
         receiver: sender,
-        text: `🤝 Chào ${sender.name || 'bạn'}! Mình là ${receiver.name} (${receiver.studyGoal || 'Học viên ÔnThiHub'}). Mình đã đồng ý kết bạn rồi, cùng ôn tập và bấm [⚔️ Thách Đấu 1v1] so tài nhé! 🔥`,
+        text: `🤝 Chào ${sender.name || 'bạn'}! Mình là ${receiver.name} (${receiver.studyGoal || 'Creator PromptMMO'}). Mình đã đồng ý kết bạn rồi, cùng kết nối trao đổi prompt & bí quyết làm MMO nhé! 🚀`,
         isAutoReply: true
       });
     } catch (e) {}
@@ -271,27 +271,27 @@ export function sendFriendRequest({ sender, receiver, message = '' }) {
     sender: {
       id: sender.id || sender.email,
       uid: sender.uid || null,
-      name: sender.name || (sender.email ? sender.email.split('@')[0] : 'Bạn Học'),
-      email: sender.email || `${sender.id}@onthihub.vn`,
-      avatar: sender.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sender.id || 'student')}`,
-      role: sender.role || 'student',
+      name: sender.name || (sender.email ? sender.email.split('@')[0] : 'Creator'),
+      email: sender.email || `${sender.id}@creator.promptmmo.com`,
+      avatar: sender.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sender.id || 'creator')}`,
+      role: sender.role || 'creator',
       tier: sender.tier || 'free',
-      badge: sender.badge || '🎓 Học Viên',
+      badge: sender.badge || '⚡ Creator',
       studyGoal: sender.studyGoal || ''
     },
     receiverId: receiver.id || receiver.email,
     receiver: {
       id: receiver.id || receiver.email,
       uid: receiver.uid || null,
-      name: receiver.name || (receiver.email ? receiver.email.split('@')[0] : 'Bạn Học'),
-      email: receiver.email || `${receiver.id}@onthihub.vn`,
-      avatar: receiver.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(receiver.id || 'student')}`,
-      role: receiver.role || 'student',
+      name: receiver.name || (receiver.email ? receiver.email.split('@')[0] : 'Creator'),
+      email: receiver.email || `${receiver.id}@creator.promptmmo.com`,
+      avatar: receiver.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(receiver.id || 'creator')}`,
+      role: receiver.role || 'creator',
       tier: receiver.tier || 'free',
-      badge: receiver.badge || '🎓 Học Viên',
+      badge: receiver.badge || '⚡ Creator',
       studyGoal: receiver.studyGoal || ''
     },
-    message: (message || '').trim() || 'Chào bạn! Mình muốn kết bạn cùng ôn thi trên OnThiHub nhé! 📚',
+    message: (message || '').trim() || 'Chào bạn! Mình muốn kết bạn cùng làm MMO trên PromptMMO nhé! ⚡',
     createdAt: new Date().toISOString(),
     status: 'pending'
   };
@@ -433,12 +433,12 @@ export function getFriendsList(currentUserId, allDirectoryUsers = []) {
       const matched = allDirectoryUsers.find((u) => isSameUser(u, partner));
       const finalObj = matched || {
         id: partner.id || partner.email,
-        name: partner.name || (partner.email ? partner.email.split('@')[0] : 'Bạn Học'),
-        email: partner.email || `${partner.id}@onthihub.vn`,
+        name: partner.name || (partner.email ? partner.email.split('@')[0] : 'Creator'),
+        email: partner.email || `${partner.id}@promptmmo.com`,
         avatar: partner.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(partner.id || 'friend')}`,
-        role: partner.role || 'student',
+        role: partner.role || 'creator',
         tier: partner.tier || 'free',
-        badge: partner.badge || '🎓 Học Viên',
+        badge: partner.badge || '🚀 Creator',
         studyGoal: partner.studyGoal || ''
       };
 
@@ -475,13 +475,13 @@ export function getIncomingRequestsCount(currentUserId) {
 }
 
 /**
- * Lấy danh sách gợi ý bạn học (Những học viên chưa kết bạn và chưa gửi lời mời)
+ * Lấy danh sách gợi ý bạn bè (Những Creator chưa kết bạn và chưa gửi lời mời)
  */
 export function getSuggestedFriends(currentUserId, allDirectoryUsers = []) {
   if (!currentUserId) return [];
   const curObj = typeof currentUserId === 'object' ? currentUserId : { id: currentUserId, email: currentUserId };
 
-  // Tự động nâng cấp các lời mời đã gửi cho Học Viên Năng Động trên web thành Bạn Bè chính thức
+  // Tự động nâng cấp các lời mời đã gửi cho Creator Năng Động trên web thành Bạn Bè chính thức
   try {
     const pendingReqs = getAllFriendRequests();
     pendingReqs.forEach((r) => {

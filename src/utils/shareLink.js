@@ -1,18 +1,18 @@
 // =========================================================================
-// ONTHIHUB FLASHCARD SHARE LINK & URL ROUTING ENGINE
-// Hỗ trợ tạo đường dẫn chia sẻ bộ thẻ trực tiếp, chia sẻ từng câu thẻ,
-// và tự động mở modal bộ thẻ khi truy cập bằng link ?deck=...
+// PROMPTMMO PROMPT SHARE LINK & URL ROUTING ENGINE
+// Hỗ trợ tạo đường dẫn chia sẻ gói Prompt trực tiếp, chia sẻ từng câu prompt,
+// và tự động mở modal xem prompt khi truy cập bằng link ?deck=...
 // =========================================================================
 
 /**
- * Tạo URL chia sẻ trực tiếp tới một bộ thẻ hoặc một thẻ cụ thể
- * @param {string} deckId - Mã định danh bộ thẻ (ví dụ: 'cbcc-2026', 'pldc')
- * @param {number|null} [cardIndex=null] - Thứ tự thẻ tùy chọn (bắt đầu từ 0)
+ * Tạo URL chia sẻ trực tiếp tới một gói Prompt hoặc một prompt cụ thể
+ * @param {string} deckId - Mã định danh gói Prompt
+ * @param {number|null} [cardIndex=null] - Thứ tự prompt tùy chọn (bắt đầu từ 0)
  * @returns {string} URL hoàn chỉnh có thể chia sẻ
  */
 export function getFlashcardShareUrl(deckId, cardIndex = null) {
   if (!deckId) return '';
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://onthihub.vn';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'https://onthi-hub.vercel.app';
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
   
   const params = new URLSearchParams();
@@ -25,32 +25,32 @@ export function getFlashcardShareUrl(deckId, cardIndex = null) {
 }
 
 /**
- * Sao chép đường dẫn bộ thẻ vào bộ nhớ tạm (Clipboard)
+ * Sao chép đường dẫn gói Prompt vào bộ nhớ tạm (Clipboard)
  * Hỗ trợ Web Share API trên di động (Zalo, Messenger, Telegram)
  * @param {Object} options
- * @param {string} options.deckId - ID bộ thẻ
- * @param {string} [options.deckTitle] - Tên bộ thẻ
- * @param {number|null} [options.cardIndex] - Vị trí thẻ
+ * @param {string} options.deckId - ID gói Prompt
+ * @param {string} [options.deckTitle] - Tên gói Prompt
+ * @param {number|null} [options.cardIndex] - Vị trí prompt
  * @param {boolean} [options.useNativeShare=false] - Sử dụng hộp thoại chia sẻ di động nếu khả dụng
  * @returns {Promise<{success: boolean, url: string, message: string}>}
  */
 export async function copyFlashcardShareLink({
   deckId,
-  deckTitle = 'Bộ Thẻ Ôn Thi Chuẩn Hóa',
+  deckTitle = 'Gói Prompt MMO Thực Chiến',
   cardIndex = null,
   useNativeShare = false
 }) {
   const url = getFlashcardShareUrl(deckId, cardIndex);
   if (!url) {
-    return { success: false, url: '', message: 'Mã bộ thẻ không hợp lệ' };
+    return { success: false, url: '', message: 'Mã gói prompt không hợp lệ' };
   }
 
   // 1. Thử dùng Web Share API nếu trên mobile và người dùng yêu cầu
   if (useNativeShare && typeof navigator !== 'undefined' && navigator.share) {
     try {
       await navigator.share({
-        title: `Ôn Thi Hub • ${deckTitle}`,
-        text: `Học bộ thẻ Anki "${deckTitle}" với phương pháp Spaced Repetition SM-2 trên Ôn Thi Hub:`,
+        title: `PromptMMO • ${deckTitle}`,
+        text: `Khám phá & sao chép gói Prompt "${deckTitle}" trên PromptMMO:`,
         url
       });
       return { success: true, url, message: 'Đã mở hộp thoại chia sẻ' };
@@ -84,7 +84,7 @@ export async function copyFlashcardShareLink({
       url,
       message: cardIndex !== null && cardIndex !== undefined
         ? `Đã sao chép liên kết Thẻ #${Number(cardIndex) + 1} vào bộ nhớ tạm!`
-        : `Đã sao chép liên kết bộ thẻ "${deckTitle}" vào bộ nhớ tạm!`
+        : `Đã sao chép liên kết gói Prompt "${deckTitle}" vào bộ nhớ tạm!`
     };
   } catch (err) {
     console.error('Không thể sao chép liên kết:', err);
@@ -147,7 +147,7 @@ export function parseUrlParameters() {
 }
 
 /**
- * Cập nhật thanh địa chỉ trình duyệt với ID bộ thẻ và vị trí thẻ hiện tại
+ * Cập nhật thanh địa chỉ trình duyệt với ID gói Prompt và vị trí prompt hiện tại
  * (sử dụng replaceState để không làm tải lại trang hoặc làm bẩn history)
  * @param {string|null} deckId
  * @param {number|null} cardIndex
@@ -174,7 +174,7 @@ export function syncUrlWithDeck(deckId, cardIndex = null) {
 }
 
 /**
- * Xóa các tham số bộ thẻ khỏi URL khi đóng modal
+ * Xóa các tham số gói Prompt khỏi URL khi đóng modal
  */
 export function clearUrlDeckParams() {
   syncUrlWithDeck(null, null);

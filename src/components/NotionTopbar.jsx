@@ -167,13 +167,13 @@ export default function NotionTopbar({
 
   // Tab Breadcrumb Configuration
   const breadcrumbMap = {
-    home: { emoji: '🏠', title: 'Trang Chủ & Đề Thi Chuẩn' },
-    library: { emoji: '📚', title: 'Tủ Thẻ Của Tôi' },
-    create: { emoji: '✍️', title: 'Studio Tạo Thẻ AI' },
-    marketplace: { emoji: '🏪', title: 'Chợ Thẻ C2C' },
-    community: { emoji: '💬', title: 'Cộng Đồng Học Viên' },
-    wallet: { emoji: '🪙', title: 'Ví Xu ÔnThiHub' },
-    plans: { emoji: '⚡', title: 'Gói Hội Viên' },
+    home: { emoji: '⚡', title: 'Trang Chủ & Kho Prompt' },
+    library: { emoji: '📁', title: 'Kho Prompt Của Tôi' },
+    create: { emoji: '✍️', title: 'Studio Đăng Bán Prompt' },
+    marketplace: { emoji: '🏪', title: 'Chợ Prompt C2C' },
+    community: { emoji: '💬', title: 'Cộng Đồng Creator MMO' },
+    wallet: { emoji: '🪙', title: 'Ví Xu PromptMMO' },
+    plans: { emoji: '⚡', title: 'Gói Hội Viên VIP' },
     admin: { emoji: '👑', title: 'Cửa Sổ Quản Trị Hệ Thống' }
   };
 
@@ -229,7 +229,7 @@ export default function NotionTopbar({
             onClick={() => onSelectTab('home')}
             className="text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white font-semibold cursor-pointer transition-colors truncate"
           >
-            🎓 Ôn Thi Hub
+            ⚡ PromptMMO
           </span>
           <span className="text-slate-400 dark:text-slate-500">/</span>
           <span className="font-extrabold text-slate-900 dark:text-white flex items-center space-x-1 truncate">
@@ -250,7 +250,7 @@ export default function NotionTopbar({
             onOpenSearch?.();
           }}
           className="px-2 sm:px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/15 flex items-center space-x-1.5 transition-all cursor-pointer shadow-2xs"
-          title="Tìm nhanh tài liệu, đề thi & lệnh (Ctrl+K)"
+          title="Tìm nhanh Prompt, AI tool & lệnh (Ctrl+K)"
           aria-label="Tìm nhanh (Ctrl+K)"
         >
           <Search className="w-3.5 h-3.5 text-slate-500 dark:text-sky-400 shrink-0" />
@@ -457,7 +457,7 @@ export default function NotionTopbar({
             onSelectTab('wallet');
           }}
           className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/80 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/40 transition-all shadow-2xs cursor-pointer shrink-0"
-          title={`Ví Xu OnThiHub: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
+          title={`Ví Xu PromptMMO: ${walletBalance} Xu (Bấm để nạp/rút tiền)`}
           aria-label="Ví Xu"
         >
           <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-400 shrink-0" />

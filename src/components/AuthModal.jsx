@@ -62,8 +62,8 @@ export default function AuthModal({
 
   // Preferences State
   const [soundEnabled, setSoundEnabled] = useState(() => !isSoundMuted());
-  const [autoFlip, setAutoFlip] = useState(() => localStorage.getItem('onthi_pref_autoflip') === 'true');
-  const [studyReminder, setStudyReminder] = useState(() => localStorage.getItem('onthi_pref_reminder') !== 'false');
+  const [autoFlip, setAutoFlip] = useState(() => (localStorage.getItem('promptmmo_pref_autoflip') ?? localStorage.getItem('onthi_pref_autoflip')) === 'true');
+  const [studyReminder, setStudyReminder] = useState(() => (localStorage.getItem('promptmmo_pref_reminder') ?? localStorage.getItem('onthi_pref_reminder')) !== 'false');
 
   const isRealFirebase = isRealFirebaseConfigured();
   const currentTier = getUserTier();
@@ -77,14 +77,14 @@ export default function AuthModal({
     free: {
       title: 'Free',
       badge: 'TIÊU CHUẨN',
-      tagline: 'Gói học tập cơ bản khởi đầu',
+      tagline: 'Gói Creator cơ bản khởi đầu',
       expiry: 'Vĩnh viễn',
       isTop: false
     },
     plus: {
       title: 'Plus',
       badge: 'PHỔ BIẾN ⭐',
-      tagline: 'Cày đề & luyện thi mở rộng',
+      tagline: 'Sáng tạo Prompt & MMO mở rộng',
       expiry: '30 ngày tới',
       isTop: false
     },
@@ -115,14 +115,14 @@ export default function AuthModal({
   const handleToggleAutoFlip = () => {
     const next = !autoFlip;
     setAutoFlip(next);
-    localStorage.setItem('onthi_pref_autoflip', String(next));
+    localStorage.setItem('promptmmo_pref_autoflip', String(next));
     playSound('click');
   };
 
   const handleToggleReminder = () => {
     const next = !studyReminder;
     setStudyReminder(next);
-    localStorage.setItem('onthi_pref_reminder', String(next));
+    localStorage.setItem('promptmmo_pref_reminder', String(next));
     playSound('click');
   };
 
@@ -689,7 +689,7 @@ export default function AuthModal({
                     <Volume2 className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                     <span>Hiệu ứng âm thanh (Lật thẻ & Âm đúng/sai)</span>
                   </div>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Phát âm thanh sinh động khi lật flashcard và hoàn thành bài thi</span>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Phát âm thanh sinh động khi tương tác, sao chép prompt và nạp Xu</span>
                 </div>
                 <button
                   onClick={handleToggleSound}

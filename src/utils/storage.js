@@ -70,7 +70,7 @@ export function getSavedEmail() {
 }
 
 // Generate VietQR payment URL
-export function generateVietQRUrl({ bank = 'MB', accountNo = '0388999888', accountName = 'HOANG MINH DUC', amount = 69000, memo = 'ONTHI123' }) {
+export function generateVietQRUrl({ bank = 'MB', accountNo = '0388999888', accountName = 'HOANG MINH DUC', amount = 69000, memo = 'PROMPT123' }) {
   const encodedName = encodeURIComponent(accountName);
   const encodedMemo = encodeURIComponent(memo);
   return `https://img.vietqr.io/image/${bank}-${accountNo}-compact2.png?amount=${amount}&addInfo=${encodedMemo}&accountName=${encodedName}`;
@@ -92,14 +92,14 @@ export function validateCoupon(code, currentAmount) {
   return { valid: false, discount: 0, message: 'Mã giảm giá không hợp lệ hoặc đã hết hạn.' };
 }
 
-// Export Flashcards as Anki compatible tab-delimited text file (with UTF-8 BOM)
+// Export Prompts as tab-delimited text file (with UTF-8 BOM)
 export function exportAnkiDeckFile(courseTitle, cards = []) {
   // UTF-8 BOM \uFEFF ensures Vietnamese diacritics render perfectly
   let content = '\uFEFF#separator:tab\n#html:true\n#tags column:3\n';
   cards.forEach((card) => {
     const front = (card.front || '').replace(/\t/g, ' ').replace(/\n/g, '<br>');
     const back = (card.back || '').replace(/\t/g, ' ').replace(/\n/g, '<br>');
-    const tag = (card.tag || 'OnThiHub').replace(/\s+/g, '_');
+    const tag = (card.tag || 'PromptMMO').replace(/\s+/g, '_');
     content += `${front}\t${back}\t${tag}\n`;
   });
 
@@ -108,20 +108,20 @@ export function exportAnkiDeckFile(courseTitle, cards = []) {
   const link = document.createElement('a');
   const safeName = courseTitle.replace(/[^a-zA-Z0-9_\u00C0-\u1EF9]/g, '_');
   link.href = url;
-  link.download = `AnkiDeck_${safeName}.txt`;
+  link.download = `PromptMMO_${safeName}.txt`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
 
-// Export Flashcards as Quizlet & Excel compatible CSV file (with UTF-8 BOM)
+// Export Prompts as Excel compatible CSV file (with UTF-8 BOM)
 export function exportCsvFile(courseTitle, cards = []) {
   let csvContent = '\uFEFF"Câu Hỏi / Thuật Ngữ","Câu Trả Lời / Giải Thích","Chủ Đề"\n';
   cards.forEach((card) => {
     const front = (card.front || '').replace(/"/g, '""');
     const back = (card.back || '').replace(/"/g, '""');
-    const tag = (card.tag || 'OnThiHub').replace(/"/g, '""');
+    const tag = (card.tag || 'PromptMMO').replace(/"/g, '""');
     csvContent += `"${front}","${back}","${tag}"\n`;
   });
 
@@ -143,14 +143,14 @@ export function exportMarkdownFile(course) {
   const quizzes = course.previewQuiz || [];
   
   let md = `# ${course.title}\n\n`;
-  md += `> **Mô tả:** ${course.subtitle || course.description || 'Bộ tài liệu ôn thi chuẩn OnThiHub'}\n`;
-  md += `> **Danh mục:** ${course.categoryLabel || 'Kiến thức trọng tâm'} | **Tổng số:** ${cards.length} thẻ ghi nhớ\n\n`;
-  md += `---\n\n## 📚 Danh Sách Thẻ Ghi Nhớ (Flashcards)\n\n`;
+  md += `> **Mô tả:** ${course.subtitle || course.description || 'Gói Prompt & Kịch bản thực chiến PromptMMO'}\n`;
+  md += `> **Danh mục:** ${course.categoryLabel || 'Kiến thức trọng tâm'} | **Tổng số:** ${cards.length} câu lệnh\n\n`;
+  md += `---\n\n## 📋 Danh Sách Prompts & Kịch Bản\n\n`;
 
   cards.forEach((card, idx) => {
-    md += `### Thẻ ${idx + 1}: ${card.front}\n`;
+    md += `### Prompt ${idx + 1}: ${card.front}\n`;
     md += `**Chủ đề:** \`${card.tag || 'Trọng tâm'}\`\n\n`;
-    md += `<details>\n<summary><b>👉 Xem đáp án & giải thích</b></summary>\n\n`;
+    md += `<details>\n<summary><b>👉 Xem cú pháp câu lệnh & hướng dẫn</b></summary>\n\n`;
     md += `${card.back}\n\n`;
     md += `</details>\n\n---\n\n`;
   });
@@ -168,7 +168,7 @@ export function exportMarkdownFile(course) {
     });
   }
 
-  md += `\n\n*Tạo tự động từ [OnThiHub](https://onthihub.vn) - Nền tảng Flashcard & Ôn thi trắc nghiệm thông minh*\n`;
+  md += `\n\n*Tạo tự động từ [PromptMMO](https://onthi-hub.vercel.app/) - Sàn Prompt AI & Video Content Creator*\n`;
 
   const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -211,10 +211,10 @@ export function printSummaryGuide(course) {
       </head>
       <body>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h1>ÔnThiHub | ${course.title}</h1>
+          <h1>PromptMMO | ${course.title}</h1>
           <button onclick="window.print()" style="padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">In hoặc Lưu PDF</button>
         </div>
-        <div class="header-meta">Biên soạn bởi Ban Học Thuật ÔnThiHub • Định dạng tóm tắt ghi nhớ nhanh • Cập nhật: ${course.updatedAt || '2026'}</div>
+        <div class="header-meta">Biên soạn bởi Creator PromptMMO • Định dạng prompt chuẩn • Cập nhật: ${course.updatedAt || '2026'}</div>
         <div>${cardsHtml}</div>
       </body>
     </html>
@@ -239,14 +239,14 @@ export function toggleSoundMute() {
   return !current;
 }
 
-// Export Flashcards as Printable Cut-out Sheet (In thẻ giấy A4 cắt rời)
+// Export Prompts as Printable Sheet (In kịch bản & prompt ra giấy)
 export function printFlashcardCutoutSheet(course) {
   const printWindow = window.open('', '_blank');
   if (!printWindow) return;
 
   const cardsHtml = (course.previewCards || []).map((c, i) => `
     <div style="border: 2px dashed #94a3b8; border-radius: 12px; padding: 14px; margin-bottom: 12px; page-break-inside: avoid; display: flex; flex-direction: column; justify-content: space-between; min-height: 140px; background: #fff;">
-      <div style="font-size: 11px; font-weight: bold; color: #6366f1; text-transform: uppercase;">Thẻ #${i + 1} • ${c.tag || 'Kiến thức cốt lõi'}</div>
+      <div style="font-size: 11px; font-weight: bold; color: #6366f1; text-transform: uppercase;">Prompt #${i + 1} • ${c.tag || 'Kiến thức cốt lõi'}</div>
       <div style="font-size: 14px; font-weight: bold; color: #0f172a; margin: 8px 0;">${c.front}</div>
       <div style="border-top: 1px dotted #cbd5e1; padding-top: 8px; font-size: 12px; color: #475569; white-space: pre-line;">${c.back}</div>
     </div>
@@ -256,7 +256,7 @@ export function printFlashcardCutoutSheet(course) {
     <!DOCTYPE html>
     <html>
       <head>
-        <title>${course.title} - Thẻ Giấy In A4</title>
+        <title>${course.title} - Kịch Bản & Prompt In A4</title>
         <style>
           body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; color: #0f172a; }
           h2 { font-size: 18px; color: #1e1b4b; border-bottom: 2px solid #6366f1; padding-bottom: 6px; }
@@ -266,10 +266,10 @@ export function printFlashcardCutoutSheet(course) {
       </head>
       <body>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-          <h2>ÔnThiHub | Bảng In Thẻ Cắt Giấy A4: ${course.title}</h2>
+          <h2>PromptMMO | Bản In Kịch Bản & Prompt: ${course.title}</h2>
           <button onclick="window.print()" style="padding: 8px 16px; background: #6366f1; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">Bấm In Ngay</button>
         </div>
-        <p style="font-size: 11px; color: #64748b; margin-bottom: 16px;">💡 Mẹo: In ra giấy và cắt theo đường nét đứt để có ngay bộ Flashcard cầm tay học mọi lúc mọi nơi!</p>
+        <p style="font-size: 11px; color: #64748b; margin-bottom: 16px;">💡 Mẹo: Lưu file PDF hoặc in để theo dõi kịch bản khi quay dựng video!</p>
         <div class="grid">${cardsHtml}</div>
       </body>
     </html>

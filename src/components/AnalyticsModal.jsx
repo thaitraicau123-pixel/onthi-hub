@@ -57,9 +57,9 @@ export default function AnalyticsModal({
 
   // Category Breakdown
   const categories = [
-    { id: 'cong-chuc', label: 'Công Chức & Viên Chức', emoji: '🏛️', color: 'bg-emerald-500' },
-    { id: 'it-tech', label: 'IT, Frontend & Backend', emoji: '💻', color: 'bg-blue-500' },
-    { id: 'ngoai-ngu', label: 'Ngoại Ngữ (IELTS, TOEIC)', emoji: '🌍', color: 'bg-purple-500' }
+    { id: 'video-ai', label: 'Video AI (Higgsfield & Kling)', emoji: '🎬', color: 'bg-emerald-500' },
+    { id: 'image-ai', label: 'Ảnh AI (Midjourney & Flux)', emoji: '🎨', color: 'bg-blue-500' },
+    { id: 'copy-mmo', label: 'Kịch Bản TikTok & Automation', emoji: '✍️', color: 'bg-purple-500' }
   ];
 
   const categoryStats = categories.map((cat) => {

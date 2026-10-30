@@ -194,7 +194,7 @@ export function getHanoiNowComponents() {
  */
 export function recordStudyTimeLog({
   type = 'study',
-  title = 'Phiên học tập OnThiHub',
+  title = 'Phiên làm việc & sáng tạo PromptMMO',
   durationMinutes = 1,
   xpGained = 10,
   metadata = {}
