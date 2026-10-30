@@ -25,7 +25,8 @@ import {
   FileSpreadsheet,
   FileText,
   Share2,
-  MessageCircle
+  MessageCircle,
+  FolderGit2
 } from 'lucide-react';
 import {
   exportAnkiDeckFile,
@@ -518,8 +519,8 @@ export default function LibraryView({
                         onClick={() => onOpenFlashcards(course)}
                         className="apple-btn-prominent w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
                       >
-                        <Zap className="w-3.5 h-3.5" />
-                        <span>Xem & Sao Chép Prompt Siêu Tốc</span>
+                        <FolderGit2 className="w-3.5 h-3.5" />
+                        <span>Mở Repo & Sao Chép Prompt</span>
                       </button>
 
                       <button

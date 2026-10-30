@@ -633,7 +633,7 @@ export default function App() {
 
       {/* OVERLAY MODALS FOR FOCUSED INTERACTION */}
       <Suspense fallback={<ModalLoadingFallback />}>
-        {/* 1. 3D Flashcard Player */}
+        {/* 1. GitHub & Skill Prompt Repository Hub */}
         {activeFlashcardCourse && (
           <FlashcardModal
             course={activeFlashcardCourse}

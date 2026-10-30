@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins, Share2, MessageCircle } from 'lucide-react';
+import { Star, CheckCircle, FileText, Layers, PlayCircle, Download, Check, Coins, Share2, MessageCircle, FolderGit2, Code } from 'lucide-react';
 import { getSelectedTheme } from '../utils/themeManager';
 import { copyFlashcardShareLink } from '../utils/shareLink';
 import { playSound } from '../utils/storage';
@@ -215,10 +215,10 @@ function CourseCard({
             type="button"
             onClick={() => onOpenFlashcards(course)}
             className="apple-btn-secondary py-2 px-2.5 text-[11px] font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
-            title="Xem trước mẫu prompt và thông số kỹ thuật"
+            title="Mở GitHub-style Repository xem code prompt và thông số kỹ thuật"
           >
-            <Layers className="w-3.5 h-3.5 text-amber-500" />
-            <span>Xem Mẫu</span>
+            <FolderGit2 className="w-3.5 h-3.5 text-indigo-500" />
+            <span>Repo Prompt</span>
           </button>
 
           <button
@@ -239,8 +239,8 @@ function CourseCard({
             onClick={() => onOpenFlashcards(course)}
             className="apple-pill-emerald w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer active:scale-[0.98] transition-transform"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Vào Kho & Copy Prompt</span>
+            <Code className="w-3.5 h-3.5" />
+            <span>Mở Repo & Copy Prompt</span>
           </button>
         ) : (
           <button
