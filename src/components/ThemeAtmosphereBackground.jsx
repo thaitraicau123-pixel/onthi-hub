@@ -6,15 +6,38 @@ import React from 'react';
  * Features charming kawaii character mascots (like the Avocado theme in Messenger),
  * soft glowing auras, rich color fills, and delightful thematic personality.
  */
-export default function ThemeAtmosphereBackground({ theme }) {
-  if (!theme) return null;
-  const themeId = theme.id || 'default';
+export default function ThemeAtmosphereBackground({ theme, currentTheme }) {
+  const activeTheme = theme || currentTheme;
+  if (!activeTheme) return null;
+  const themeId = activeTheme.id || 'bui-thai-cream';
 
   return (
     <div
       aria-hidden="true"
       className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 transition-opacity duration-700 ease-in-out"
     >
+      {/* =========================================================================
+          0. BÙI THÁI STUDIO WARM CREAM HAUTE-COUTURE BACKDROP
+          ========================================================================= */}
+      {(themeId === 'bui-thai-cream' || themeId === 'default') && (
+        <div className="absolute inset-0 bg-[#fbf9f5] transition-opacity duration-700">
+          {/* Subtle Studio Cream Grid */}
+          <div
+            className="absolute inset-0 opacity-80"
+            style={{
+              backgroundImage: 'linear-gradient(to right, rgba(28, 25, 23, 0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(28, 25, 23, 0.035) 1px, transparent 1px)',
+              backgroundSize: '40px 40px'
+            }}
+          />
+          {/* Warm Amber Halo Aura from top */}
+          <div
+            className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full pointer-events-none opacity-40 blur-3xl"
+            style={{
+              background: 'radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(251, 249, 245, 0) 70%)'
+            }}
+          />
+        </div>
+      )}
       {/* =========================================================================
           1. BOTANICAL GARDEN / AVOCADO THEME (EXACT MATCH TO MESSENGER AVOCADO CHAT)
           ========================================================================= */}

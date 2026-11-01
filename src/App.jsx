@@ -4,6 +4,7 @@ import NotionTopbar from './components/NotionTopbar';
 import HomeView from './views/HomeView';
 import PromptEditorialDeck from './components/PromptEditorialDeck';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
+import StudioLoadingScreen from './components/StudioLoadingScreen';
 import Footer from './components/Footer';
 
 // Lazy loaded views (Zero initial bundle cost)
@@ -103,6 +104,7 @@ export default function App() {
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -221,8 +223,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 relative text-stone-900 dark:text-stone-100 bg-[#fbfbfa] dark:bg-[#121214]">
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 relative text-stone-900 selection:bg-[#FF2E00] selection:text-white bg-[#fbf9f5] cream-grid">
       
+      {/* ─── BÙI THÁI STUDIO HAUTE-COUTURE LOADING SCREEN TRANSITION ─── */}
+      {showLoadingScreen && (
+        <StudioLoadingScreen onFinish={() => setShowLoadingScreen(false)} />
+      )}
+
       {/* ─── THEME ATMOSPHERE BACKGROUND ─── */}
       <ThemeAtmosphereBackground currentTheme={currentTheme} />
 
@@ -265,6 +272,7 @@ export default function App() {
             onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
             activeTab={activeTab}
             onSelectTab={(tab) => {
+              playSound('flip');
               setActiveTab(tab);
               window.scrollTo({ top: 0, behavior: 'smooth' });
               if (typeof window !== 'undefined' && window.innerWidth < 768) {
@@ -275,15 +283,8 @@ export default function App() {
             walletBalance={walletBalance}
             user={user}
             onOpenAuth={() => setIsAuthOpen(true)}
-            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
-            onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-            onOpenChangelog={() => setIsChangelogOpen(true)}
             onOpenSearch={() => setIsCommandPaletteOpen(true)}
-            onOpenAnalytics={() => setIsAnalyticsOpen(true)}
             currentTheme={currentTheme}
-            onOpenThemePicker={() => setIsThemePickerOpen(true)}
-            onOpenDirectChat={() => setIsDirectChatOpen(true)}
-            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
             onSwitchToDeck={() => handleSwitchToDeck(0)}
           />
 
@@ -317,7 +318,8 @@ export default function App() {
 
             {/* MAIN NOTION PAGE CANVAS */}
             <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
-              <Suspense fallback={<ViewLoadingFallback />}>
+              <div key={activeTab} className="animate-studio-rise">
+                <Suspense fallback={<ViewLoadingFallback />}>
                 
                 {/* TAB 1: TRANG CHỦ & DỊCH VỤ BÙI THÁI + PROMPT THỰC CHIẾN */}
                 {activeTab === 'home' && (
@@ -429,6 +431,7 @@ export default function App() {
                 )}
 
               </Suspense>
+              </div>
             </main>
 
             {/* NOTION FOOTER */}

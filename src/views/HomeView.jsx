@@ -154,17 +154,6 @@ export default function HomeView({
               <Coins className="w-3.5 h-3.5 text-amber-400 fill-amber-400 dark:text-amber-500 dark:fill-amber-500" />
               <span>Nạp Xu Siêu Tốc</span>
             </button>
-
-            {onOpenBlindBox && (
-              <button
-                type="button"
-                onClick={onOpenBlindBox}
-                className="apple-btn-secondary px-3.5 py-2.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 cursor-pointer"
-              >
-                <Gift className="w-3.5 h-3.5 text-purple-500" />
-                <span>Nhận Xu Free</span>
-              </button>
-            )}
           </div>
         </div>
 

@@ -1,40 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Home,
   Store,
   FolderHeart,
-  PlusSquare,
   Users,
   Wallet,
-  Sparkles,
   ShieldCheck,
-  BookMarked,
-  Trophy,
-  Gift,
-  Clock,
   Search,
-  ChevronDown,
   ChevronsUpDown,
   ChevronsLeft,
-  ChevronsRight,
-  LogOut,
-  User,
-  ExternalLink,
-  HelpCircle,
   Settings,
-  Bell,
-  PanelLeftClose,
-  Coins,
-  Cpu,
-  Sliders,
   Tv
 } from 'lucide-react';
 import { isUserAdmin } from '../utils/adminGuard';
-import { getUserTier } from '../utils/userTier';
-import { getStreakInfo, getDailyQuests } from '../utils/gamification';
-import { APP_VERSION, isChangelogUnread } from '../data/changelogData';
+import { APP_VERSION } from '../data/changelogData';
 import { playSound } from '../utils/storage';
-import { getUnreadDirectMessagesCount, subscribeToDirectMessages, getCurrentUserParticipant } from '../utils/directMessaging';
 import BrandLogo from './BrandLogo';
 
 function NotionSidebar({
@@ -46,38 +26,12 @@ function NotionSidebar({
   walletBalance = 0,
   user,
   onOpenAuth,
-  onOpenLeaderboard,
-  onOpenBlindBox,
-  onOpenChangelog,
   onOpenSearch,
-  onOpenAnalytics,
   currentTheme,
-  onOpenThemePicker,
-  onOpenDirectChat,
-  onOpenShareAchievement,
   onSwitchToDeck
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
-  const curParticipant = getCurrentUserParticipant(user);
-  const [unreadDmCount, setUnreadDmCount] = useState(() => getUnreadDirectMessagesCount(curParticipant));
-
-  useEffect(() => {
-    const updateDm = () => {
-      setUnreadDmCount(getUnreadDirectMessagesCount(curParticipant));
-    };
-    updateDm();
-    const unsub = subscribeToDirectMessages(curParticipant, updateDm);
-    return () => {
-      if (typeof unsub === 'function') unsub();
-    };
-  }, [user]);
-
   const userIsAdmin = isUserAdmin(user);
-  const currentTier = getUserTier();
-  const streakInfo = getStreakInfo();
-  const dailyQuests = getDailyQuests();
-  const completedQuestsCount = dailyQuests.filter((q) => q.completed).length;
-  const questProgressPercent = Math.round((completedQuestsCount / Math.max(1, dailyQuests.length)) * 100);
 
   const handleNavClick = (tabId) => {
     playSound('flip');
@@ -89,58 +43,8 @@ function NotionSidebar({
   const workspaceNavItems = [
     { id: 'home', label: 'Trang Chủ & Dịch Vụ', icon: Home, emoji: icons.home || '⚡', desc: 'Dịch vụ Bùi Thái & Prompt thực chiến' },
     { id: 'marketplace', label: 'Chợ Prompts C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán Prompt & Workflow cộng đồng' },
-    { id: 'skills', label: 'Kho 238+ AI Skills', icon: Cpu, emoji: '🤖', badge: '238+', badgeColor: 'notion-pill-blue', desc: 'Vũ khí đặc nhiệm Argon Sovereign OS' },
-    { id: 'studio', label: 'Prompt Studio & Ideator', icon: Sliders, emoji: '💡', badge: 'STUDIO', badgeColor: 'notion-pill-yellow', desc: 'Phác thảo prompt & scope dự án trực tiếp' },
     { id: 'library', label: 'Kho Của Tôi', icon: FolderHeart, emoji: icons.library || '📁', count: purchasedCount, desc: 'Prompts & Dịch vụ đã sở hữu' },
     { id: 'community', label: 'Cộng Đồng MMO & AI', icon: Users, emoji: icons.community || '💬', desc: 'Thủ thuật, kinh nghiệm & case studies' },
-  ];
-
-  const toolsNavItems = [
-    {
-      id: 'direct-messages',
-      label: 'Tin Nhắn Trực Tiếp',
-      emoji: '💬',
-      badge: unreadDmCount > 0 ? `${unreadDmCount} tin mới` : 'Chat 1-1',
-      badgeColor: unreadDmCount > 0 ? 'notion-pill-red' : 'notion-pill-blue',
-      action: onOpenDirectChat,
-      desc: 'Nhắn tin riêng & trao đổi prompt giữa thành viên'
-    },
-    {
-      id: 'blindbox',
-      label: 'Túi Mù May Mắn',
-      emoji: icons.blindbox || '🎁',
-      badge: 'Nhận Xu Free',
-      badgeColor: 'notion-pill-yellow',
-      action: onOpenBlindBox,
-      desc: 'Nhận Xu miễn phí mỗi ngày & nổ hũ'
-    },
-    {
-      id: 'leaderboard',
-      label: 'Bảng Vàng Doanh Thu',
-      emoji: icons.leaderboard || '🏆',
-      badge: `🔥 ${streakInfo.streak}d`,
-      badgeColor: 'notion-pill-orange',
-      action: onOpenLeaderboard,
-      desc: 'Top Creator kiếm Xu nhiều nhất'
-    },
-    {
-      id: 'theme',
-      label: 'Đổi Giao Diện Nền',
-      emoji: '🎨',
-      badge: currentTheme?.name ? currentTheme.name.split(' ')[0] : '16 Themes',
-      badgeColor: 'notion-pill-blue',
-      action: onOpenThemePicker,
-      desc: '16 chủ đề Cyber, Lofi & Neon'
-    },
-    {
-      id: 'changelog',
-      label: `Bản Tin Cập Nhật`,
-      emoji: icons.changelog || '✨',
-      badge: isChangelogUnread() ? 'NEW' : APP_VERSION,
-      badgeColor: 'notion-pill-blue',
-      action: onOpenChangelog,
-      desc: `Phiên bản ${APP_VERSION}`
-    }
   ];
 
   const accountNavItems = [
@@ -150,14 +54,6 @@ function NotionSidebar({
       icon: Wallet,
       emoji: icons.wallet || '🪙',
       highlight: `${walletBalance} Xu`
-    },
-    {
-      id: 'plans',
-      label: 'Gói Hội Viên VIP',
-      icon: Sparkles,
-      emoji: '⚡',
-      badge: currentTier.name !== 'FREE' ? currentTier.name : 'Nâng cấp',
-      badgeColor: 'notion-pill-purple'
     }
   ];
 
@@ -288,7 +184,7 @@ function NotionSidebar({
         <div className="px-2.5 pt-2.5 pb-1">
           <div className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-slate-400 dark:text-zinc-500 uppercase flex items-center justify-between">
             <span>Không gian làm việc MMO</span>
-            <span className="text-[10px] font-medium text-slate-400 dark:text-zinc-500">5 mục</span>
+            <span className="text-[10px] font-medium text-slate-400 dark:text-zinc-500">4 mục</span>
           </div>
           <nav className="space-y-0.5">
             {workspaceNavItems.map((item) => {
@@ -327,40 +223,7 @@ function NotionSidebar({
           </nav>
         </div>
 
-        {/* SECTION 2: TOOLS & GAMIFICATION */}
-        <div className="px-2.5 pt-3 pb-1">
-          <div className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-slate-400 dark:text-zinc-500 uppercase">
-            Công cụ & Thử thách
-          </div>
-          <nav className="space-y-0.5">
-            {toolsNavItems.map((item) => {
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    playSound('flip');
-                    item.action ? item.action() : handleNavClick(item.id);
-                  }}
-                  title={item.desc}
-                  className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-[13px] font-medium text-slate-700 dark:text-zinc-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-slate-950 dark:hover:text-white transition-all group text-left cursor-pointer active:scale-[0.98]"
-                >
-                  <div className="flex items-center space-x-2.5 truncate">
-                    <span className="text-base shrink-0 leading-none">{item.emoji}</span>
-                    <span className="truncate">{item.label}</span>
-                  </div>
-
-                  {item.badge && (
-                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/[0.05] dark:bg-white/[0.08] text-slate-600 dark:text-zinc-300 shrink-0">
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* SECTION 3: ACCOUNT & FINANCE */}
+        {/* SECTION 2: ACCOUNT & FINANCE */}
         <div className="px-2.5 pt-3 pb-2">
           <div className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-slate-400 dark:text-zinc-500 uppercase">
             Tài khoản & Thanh toán
@@ -398,35 +261,6 @@ function NotionSidebar({
               );
             })}
           </nav>
-        </div>
-
-        {/* DAILY QUEST MINI WIDGET (Apple Widget Aesthetic) */}
-        <div className="mx-3 my-2 p-3 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] shadow-xs space-y-2">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-semibold text-slate-900 dark:text-white flex items-center space-x-1.5">
-              <span>🎯</span>
-              <span>Mục Tiêu Hôm Nay</span>
-            </span>
-            <span className="font-bold text-[#007aff] dark:text-[#0a84ff]">
-              {completedQuestsCount}/{dailyQuests.length}
-            </span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-black/[0.06] dark:bg-white/[0.1] overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-[#007aff] to-emerald-500 transition-all duration-500"
-              style={{ width: `${Math.max(15, questProgressPercent)}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between text-[10px] text-slate-500 dark:text-zinc-400 font-medium pt-0.5">
-            <span>⚡ {streakInfo.xp} XP</span>
-            <button
-              type="button"
-              onClick={onOpenLeaderboard}
-              className="text-[#007aff] dark:text-[#0a84ff] font-semibold hover:underline cursor-pointer"
-            >
-              Xem Bảng Vàng →
-            </button>
-          </div>
         </div>
 
       </div>

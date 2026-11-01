@@ -3,6 +3,62 @@
 
 export const THEMES = [
   // =========================================================================
+  // 0. BÙI THÁI STUDIO HAUTE-COUTURE WARM CREAM (SIGNATURE DEFAULT THEME)
+  // =========================================================================
+  {
+    id: 'bui-thai-cream',
+    name: 'Bùi Thái Warm Cream',
+    subtitle: 'Haute-Couture Editorial • Warm Cream #fbf9f5',
+    description: 'Chủ đề Be Kem Bùi Thái Studio: Tone be ấm cao cấp, vi tương tác 60fps Emil Kowalski, typography Be Vietnam Pro & Playfair Display.',
+    category: 'Bùi Thái Studio',
+    artDetail: '✨ Be Kem Haute-Couture Bùi Thái Studio #fbf9f5',
+    bgImageUrl: '',
+    bgOverlayClass: 'bg-[#fbf9f5]',
+    weatherType: 'none',
+    isDark: false,
+    previewGradient: 'from-amber-100 via-stone-100 to-amber-200',
+    primaryColor: '#d97706',
+    primaryHover: '#b45309',
+    primaryText: '#1c1917',
+    bgClass: 'bg-[#fbf9f5]',
+    canvasBgClass: 'bg-[#fbf9f5]',
+    sidebarBgClass: 'bg-[#f5f1e8]/95 backdrop-blur-xl',
+    topbarBgClass: 'bg-[#fbf9f5]/95 backdrop-blur-xl',
+    cardBgClass: 'bg-white/95 backdrop-blur-md',
+    cardAltBgClass: 'bg-[#f5f1e8]',
+    textClass: 'text-stone-900 font-medium',
+    subtextClass: 'text-stone-600',
+    borderClass: 'border-stone-200/90',
+    accentPillClass: 'bg-[#d97706] text-white font-bold shadow-amber-500/20',
+    accentTagClass: 'bg-amber-100 text-amber-900 border-amber-300',
+    wallpaperGlow: 'radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.08) 0%, transparent 60%)',
+    icons: {
+      logo: '✨',
+      workspace: '⚡',
+      home: '⚡',
+      library: '📁',
+      create: '🛠️',
+      marketplace: '🏪',
+      community: '💬',
+      analytics: '📊',
+      mistakes: '🐢',
+      leaderboard: '🏆',
+      blindbox: '🎁',
+      changelog: '✨',
+      wallet: '🪙',
+      due: '⏰',
+      mastered: '⭐',
+      newCard: '✨',
+      streak: '🔥',
+      checkin: '✨',
+      sparkle: '⭐',
+      study3D: '🎮',
+      quiz: '🎯',
+      match: '✨'
+    }
+  },
+
+  // =========================================================================
   // 1. SUPER MARIO 3D CINEMA (3D 4K WALLPAPER - AS REQUESTED)
   // =========================================================================
   {
@@ -908,6 +964,7 @@ export function subscribeToWeatherToggle(callback) {
 // =========================================================================
 
 export const DAY_THEMES = [
+  'bui-thai-cream',    // Bùi Thái Studio Warm Cream #fbf9f5
   'default',           // Notion Tối Giản
   'sakura-blossom',    // Mùa Hoa Anh Đào
   'botanical-garden',  // Khu Vườn Bơ Xanh
@@ -979,11 +1036,12 @@ export function subscribeToSleepMode(callback) {
 export function getSelectedThemeId() {
   try {
     const saved = localStorage.getItem(THEME_STORAGE_KEY);
-    if (saved && THEMES.some(t => t.id === saved)) {
+    // If the saved theme was the old mario default, migrate to bui-thai-cream
+    if (saved && saved !== 'super-mario-3d' && THEMES.some(t => t.id === saved)) {
       return saved;
     }
   } catch (e) {}
-  return 'super-mario-3d'; // Default to exciting Mario 3D 4K theme!
+  return 'bui-thai-cream'; // Signature Bùi Thái Studio Warm Cream #fbf9f5
 }
 
 export function getSelectedTheme() {

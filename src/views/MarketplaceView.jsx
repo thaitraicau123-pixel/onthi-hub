@@ -231,15 +231,6 @@ export default function MarketplaceView({
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
-              onClick={onOpenBlindBox}
-              className="px-3 py-1.5 bg-[#fbf3db] dark:bg-amber-950/80 hover:bg-[#f6ebd0] dark:hover:bg-amber-900 text-[#976d57] dark:text-amber-300 border border-[#f4e4b7] dark:border-amber-500/40 rounded-lg text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
-            >
-              <Gift className="w-3.5 h-3.5 text-[#cc782f] dark:text-amber-400" />
-              <span>🎁 Túi Mù May Mắn (5 Xu)</span>
-            </button>
-
-            <button
-              type="button"
               onClick={onOpenCreateDeck}
               className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-lg text-xs font-bold shadow-2xs flex items-center space-x-1.5 transition-colors cursor-pointer"
             >
