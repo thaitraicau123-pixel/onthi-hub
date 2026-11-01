@@ -5,6 +5,7 @@ import HomeView from './views/HomeView';
 import PromptEditorialDeck from './components/PromptEditorialDeck';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import StudioLoadingScreen from './components/StudioLoadingScreen';
+import TabTransitionOverlay from './components/TabTransitionOverlay';
 import Footer from './components/Footer';
 
 // Lazy loaded views (Zero initial bundle cost)
@@ -75,6 +76,18 @@ import {
 import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
+const TAB_INFO_MAP = {
+  home: { id: 'home', emoji: '⚡', label: 'Trang Chủ & Dịch Vụ Bùi Thái' },
+  marketplace: { id: 'marketplace', emoji: '🏪', label: 'Chợ Prompts & Sàn C2C' },
+  skills: { id: 'skills', emoji: '🤖', label: 'Kho 238+ AI Skills' },
+  studio: { id: 'studio', emoji: '💡', label: 'Prompt Studio & Ideator' },
+  library: { id: 'library', emoji: '📁', label: 'Kho Prompt Của Tôi' },
+  community: { id: 'community', emoji: '💬', label: 'Cộng Đồng MMO & Creator' },
+  wallet: { id: 'wallet', emoji: '🪙', label: 'Ví Xu PromptMMO' },
+  plans: { id: 'plans', emoji: '⚡', label: 'Gói Hội Viên VIP' },
+  admin: { id: 'admin', emoji: '👑', label: 'Cửa Sổ Quản Trị Hệ Thống' }
+};
+
 export default function App() {
   // ─── 1. CHẾ ĐỘ 2-IN-1: 'scroll' (Notion Workspace chuẩn onthi-hub.vercel.app) | 'slide' (Lookbook 60fps Bùi Thái Studio) ───
   const [viewMode, setViewMode] = useState('scroll');
@@ -105,6 +118,30 @@ export default function App() {
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
   const [showLoadingScreen, setShowLoadingScreen] = useState(true);
+  const [isTabTransitioning, setIsTabTransitioning] = useState(false);
+  const [targetTabInfo, setTargetTabInfo] = useState(null);
+
+  const handleSelectTab = (newTab) => {
+    if (!newTab || newTab === activeTab) return;
+
+    playFlip();
+    const info = TAB_INFO_MAP[newTab] || { id: newTab, emoji: '⚡', label: 'Không Gian Làm Việc' };
+    setTargetTabInfo(info);
+    setIsTabTransitioning(true);
+
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+
+    setTimeout(() => {
+      setActiveTab(newTab);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }, 140);
+
+    setTimeout(() => {
+      setIsTabTransitioning(false);
+    }, 320);
+  };
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -230,6 +267,12 @@ export default function App() {
         <StudioLoadingScreen onFinish={() => setShowLoadingScreen(false)} />
       )}
 
+      {/* ─── BÙI THÁI STUDIO TAB TRANSITION SCREEN ─── */}
+      <TabTransitionOverlay
+        isTransitioning={isTabTransitioning}
+        targetTabInfo={targetTabInfo}
+      />
+
       {/* ─── THEME ATMOSPHERE BACKGROUND ─── */}
       <ThemeAtmosphereBackground currentTheme={currentTheme} />
 
@@ -271,14 +314,7 @@ export default function App() {
             isOpen={isSidebarOpen}
             onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
             activeTab={activeTab}
-            onSelectTab={(tab) => {
-              playSound('flip');
-              setActiveTab(tab);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              if (typeof window !== 'undefined' && window.innerWidth < 768) {
-                setIsSidebarOpen(false);
-              }
-            }}
+            onSelectTab={handleSelectTab}
             purchasedCount={purchasedCourses.length}
             walletBalance={walletBalance}
             user={user}
@@ -296,10 +332,7 @@ export default function App() {
               sidebarOpen={isSidebarOpen}
               onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
               activeTab={activeTab}
-              onSelectTab={(tab) => {
-                setActiveTab(tab);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onSelectTab={handleSelectTab}
               walletBalance={walletBalance}
               user={user}
               onOpenAuth={() => setIsAuthOpen(true)}
@@ -327,9 +360,8 @@ export default function App() {
                     onOpenFlashcards={(c) => setActivePaymentItem(c)}
                     onBuyCourse={(c) => setActivePaymentItem(c)}
                     onBuyCombo={(combo) => setActivePaymentItem(combo)}
-                    onSwitchTab={setActiveTab}
+                    onSwitchTab={handleSelectTab}
                     onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
-                    onOpenBlindBox={() => setIsBlindBoxOpen(true)}
                     allCourses={COURSES_DATA}
                     onShowToast={showToast}
                     onOpenDirectChat={() => setIsDirectChatOpen(true)}
@@ -341,13 +373,12 @@ export default function App() {
                   <MarketplaceView
                     user={user}
                     marketplaceDecks={marketplaceDecks}
-                    onOpenCreateDeck={() => setActiveTab('studio')}
+                    onOpenCreateDeck={() => handleSelectTab('studio')}
                     onOpenFlashcardSample={(sampleDeck) => {
                       showToast(`Prompt: ${sampleDeck.title}`);
                     }}
                     onBalanceUpdated={refreshState}
-                    onOpenWallet={() => setActiveTab('wallet')}
-                    onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+                    onOpenWallet={() => handleSelectTab('wallet')}
                     onOpenDirectChat={() => setIsDirectChatOpen(true)}
                     onShowToast={showToast}
                   />
@@ -364,7 +395,7 @@ export default function App() {
                 {activeTab === 'studio' && (
                   <PromptStudioView
                     onShowToast={showToast}
-                    onSwitchTab={setActiveTab}
+                    onSwitchTab={handleSelectTab}
                   />
                 )}
 
@@ -372,15 +403,14 @@ export default function App() {
                 {activeTab === 'library' && (
                   <LibraryView
                     purchasedCourses={purchasedCourses}
-                    customDecks={[]}
-                    onOpenFlashcardCourse={(c) => {
-                      showToast(`Mở: ${c.title}`);
+                    allCourses={COURSES_DATA}
+                    onOpenFlashcards={(c) => {
+                      if (c) setActivePaymentItem(c);
                     }}
-                    onOpenSellCourse={(c) => setActiveSellCourse(c)}
+                    onOpenSellDeck={(c) => setActiveSellCourse(c)}
                     onShowToast={showToast}
-                    onSwitchTab={setActiveTab}
+                    onSwitchTab={handleSelectTab}
                     onOpenDirectChat={() => setIsDirectChatOpen(true)}
-                    onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
                   />
                 )}
 
@@ -413,7 +443,7 @@ export default function App() {
                     user={user}
                     walletBalance={walletBalance}
                     onOpenAuth={() => setIsAuthOpen(true)}
-                    onOpenWallet={() => setActiveTab('wallet')}
+                    onOpenWallet={() => handleSelectTab('wallet')}
                     onShowToast={showToast}
                     onBalanceUpdated={refreshState}
                   />
@@ -423,7 +453,7 @@ export default function App() {
                 {activeTab === 'admin' && (
                   <AdminView
                     user={user}
-                    onCloseAdmin={() => setActiveTab('home')}
+                    onCloseAdmin={() => handleSelectTab('home')}
                     onShowToast={showToast}
                     onBalanceUpdated={refreshState}
                     onOpenAuth={() => setIsAuthOpen(true)}
@@ -437,8 +467,8 @@ export default function App() {
             {/* NOTION FOOTER */}
             <Footer
               currentTheme={currentTheme}
-              onOpenAdmin={() => setActiveTab('admin')}
-              onSwitchTab={setActiveTab}
+              onOpenAdmin={() => handleSelectTab('admin')}
+              onSwitchTab={handleSelectTab}
             />
 
           </div>
@@ -560,7 +590,7 @@ export default function App() {
               if (tab === 'slide') {
                 handleSwitchToDeck(0);
               } else {
-                setActiveTab(tab);
+                handleSelectTab(tab);
               }
             }}
           />

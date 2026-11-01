@@ -41,10 +41,11 @@ import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../util
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import { getSelectedTheme, subscribeToTheme } from '../utils/themeManager';
+import { COURSES_DATA } from '../data/coursesData';
 
 export default function LibraryView({
-  purchasedCourses,
-  allCourses,
+  purchasedCourses = [],
+  allCourses = COURSES_DATA,
   onOpenFlashcards,
   onOpenQuiz,
   onOpenMatchGame,
@@ -71,13 +72,23 @@ export default function LibraryView({
     };
   }, []);
 
-  const isComboUser = purchasedCourses.includes('combo-all-access');
+  const safePurchased = Array.isArray(purchasedCourses) ? purchasedCourses : [];
+  const safeAllCourses = Array.isArray(allCourses) && allCourses.length > 0 ? allCourses : COURSES_DATA;
+  const isComboUser = safePurchased.includes('combo-all-access');
   const unlockedList = isComboUser
-    ? allCourses
-    : allCourses.filter((c) => purchasedCourses.includes(c.id));
+    ? safeAllCourses
+    : safeAllCourses.filter((c) => safePurchased.includes(c?.id));
 
   const srsStats = getAllDecksDueStats(unlockedList);
   const unmasteredMistakesCount = getUnmasteredMistakesCount();
+
+  const handleOpenCourse = (c) => {
+    if (typeof onOpenFlashcards === 'function') {
+      onOpenFlashcards(c);
+    } else {
+      onShowToast?.(`Đã mở bộ Prompt: ${c?.title || 'Prompt'}`);
+    }
+  };
 
   const filteredUnlockedList = unlockedList
     .filter((c) => {
@@ -162,7 +173,7 @@ export default function LibraryView({
             {srsStats.totalDue > 0 ? (
               <button
                 type="button"
-                onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
+                onClick={() => handleOpenCourse(buildDueCardsDeck(unlockedList))}
                 className="apple-btn-prominent w-full md:w-auto px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <Flame className="w-4 h-4 text-white fill-white" />
@@ -171,7 +182,7 @@ export default function LibraryView({
             ) : (
               <button
                 type="button"
-                onClick={() => onOpenFlashcards(buildDueCardsDeck(unlockedList))}
+                onClick={() => handleOpenCourse(buildDueCardsDeck(unlockedList))}
                 className="apple-btn-secondary w-full md:w-auto px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <CheckCircle className="w-4 h-4 text-emerald-500" />
@@ -516,7 +527,7 @@ export default function LibraryView({
                     <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-white/[0.08] space-y-2">
                       <button
                         type="button"
-                        onClick={() => onOpenFlashcards(course)}
+                        onClick={() => handleOpenCourse(course)}
                         className="apple-btn-prominent w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
                       >
                         <FolderGit2 className="w-3.5 h-3.5" />
