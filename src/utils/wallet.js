@@ -31,12 +31,49 @@ export const MIN_WITHDRAW_XU = 100; // Hạn mức rút tiền tối thiểu 100
 export const MAX_WITHDRAW_DAILY_XU = 500; // Hạn mức rút tối đa 500 Xu / lần / ngày = 500.000 VNĐ (Chống xả quỹ đột biến)
 export const WITHDRAW_FEE_PERCENT = 10; // Phí nền tảng & xử lý chuyển tiền qua cổng Napas/VietQR: 10% (Tối thiểu 5.000đ)
 export const WITHDRAWABLE_BALANCE_KEY = 'onthi_withdrawable_balance';
+const WALLET_SEAL_KEY = 'onthi_wallet_seal_v2';
+const WALLET_SALT = 'ARGON_VAULT_SEAL_9941_PROMPTMMO';
 
-// Get current wallet balance (Default 20 Xu tặng tân thủ - chỉ dùng để học bài)
+function computeWalletSeal(balanceVal) {
+  const str = `${WALLET_SALT}:${Number(balanceVal) || 0}:ONTHIHUB`;
+  let h1 = 0xdeadbeef ^ str.length;
+  let h2 = 0x41c6ce57 ^ str.length;
+  for (let i = 0; i < str.length; i++) {
+    const ch = str.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+
+// Get current wallet balance (Default 20 Xu tặng tân thủ - có khóa niêm phong chống sửa F12)
 export function getWalletBalance() {
   try {
     const raw = localStorage.getItem(WALLET_BALANCE_KEY);
-    return raw !== null ? parseInt(raw, 10) : 20; // 20 Xu = 20k chào mừng học tập
+    if (raw === null) return 20;
+    const parsed = parseInt(raw, 10);
+    if (isNaN(parsed) || parsed < 0) return 20;
+
+    const storedSeal = localStorage.getItem(WALLET_SEAL_KEY);
+    const expectedSeal = computeWalletSeal(parsed);
+    if (!storedSeal) {
+      // Khởi tạo niêm phong cho số dư hợp lệ ban đầu (nếu <= 500 Xu)
+      if (parsed <= 500) {
+        localStorage.setItem(WALLET_SEAL_KEY, expectedSeal);
+        return parsed;
+      }
+      // Nếu vượt ngưỡng mà không có niêm phong -> Reset chống gian lận F12
+      setWalletBalance(20);
+      return 20;
+    }
+    if (storedSeal !== expectedSeal) {
+      console.warn('[AppSec Vault] Phát hiện can thiệp số dư trái phép qua F12 DevTools! Đã khôi phục số dư an toàn.');
+      setWalletBalance(20);
+      return 20;
+    }
+    return parsed;
   } catch (e) {
     return 20;
   }
@@ -72,10 +109,12 @@ export function recordCoinTransaction({ type, amountXu, title, description }) {
   return newTx;
 }
 
-// Set wallet balance
+// Set wallet balance (kèm chữ ký niêm phong)
 export function setWalletBalance(amount) {
   try {
-    localStorage.setItem(WALLET_BALANCE_KEY, amount.toString());
+    const safeAmount = Math.max(0, parseInt(amount, 10) || 0);
+    localStorage.setItem(WALLET_BALANCE_KEY, safeAmount.toString());
+    localStorage.setItem(WALLET_SEAL_KEY, computeWalletSeal(safeAmount));
   } catch (e) {
     console.error('Failed to set balance', e);
   }

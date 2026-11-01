@@ -3,11 +3,13 @@ import { ShieldCheck, Mail, Phone } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import { APP_VERSION } from '../data/changelogData';
 
-function Footer({ onOpenAdmin }) {
-  const scrollToCatalog = (e) => {
+function Footer({ onOpenAdmin, onSwitchTab }) {
+  const handleNav = (tab) => (e) => {
     e.preventDefault();
-    const el = document.getElementById('catalog-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (onSwitchTab) {
+      onSwitchTab(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -41,23 +43,23 @@ function Footer({ onOpenAdmin }) {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                <a href="#marketplace" onClick={handleNav('marketplace')} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer">
                   🎬 Video AI Triệu View (Higgsfield & Kling)
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                <a href="#marketplace" onClick={handleNav('marketplace')} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer">
                   🎨 Ảnh AI Studio (Flux.1 & Midjourney)
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
+                <a href="#marketplace" onClick={handleNav('marketplace')} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer">
                   ✍️ Kịch Bản TikTok Shop & Livestream
                 </a>
               </li>
               <li>
-                <a href="#catalog-section" onClick={scrollToCatalog} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
-                  ⚡ AI Skills & Auto N8N
+                <a href="#skills" onClick={handleNav('skills')} className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors cursor-pointer">
+                  ⚡ Kho 238+ AI Skills & Agents
                 </a>
               </li>
             </ul>
