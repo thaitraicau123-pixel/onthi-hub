@@ -16,7 +16,8 @@ import {
   Sparkles,
   Trophy,
   X,
-  FileText
+  FileText,
+  Tv
 } from 'lucide-react';
 import { performDailyCheckIn } from '../utils/userTier';
 import { getStreakInfo, getUserNotifications, markNotificationsAsRead } from '../utils/gamification';
@@ -45,7 +46,8 @@ export default function NotionTopbar({
   onOpenThemePicker,
   isWeatherEnabled = true,
   onToggleWeather,
-  onOpenDirectChat
+  onOpenDirectChat,
+  onSwitchToDeck
 }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showToolsMenu, setShowToolsMenu] = useState(false);
@@ -407,6 +409,22 @@ export default function NotionTopbar({
             </div>
           )}
         </div>
+
+        {/* BÙI THÁI STUDIO SIGNATURE: LOOKBOOK 60FPS DECK */}
+        {onSwitchToDeck && (
+          <button
+            type="button"
+            onClick={() => {
+              playSound('flip');
+              onSwitchToDeck();
+            }}
+            className="h-8 px-2.5 sm:px-3 rounded-full bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-amber-500/15 border border-amber-500/40 text-amber-700 dark:text-amber-300 hover:bg-amber-500 hover:text-black active:scale-[0.97] transition-all cursor-pointer flex items-center space-x-1.5 shrink-0 shadow-xs"
+            title="Mở Chế Độ Trình Chiếu Lookbook 60fps (Bùi Thái Studio)"
+          >
+            <Tv className="w-3.5 h-3.5" />
+            <span className="text-[11px] font-bold font-mono hidden sm:inline">Lookbook 60fps</span>
+          </button>
+        )}
 
         {/* APPLE AMBER PILL: VÍ XU */}
         <button

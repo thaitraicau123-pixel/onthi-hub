@@ -1,23 +1,31 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
-import MarketNavbar from './components/MarketNavbar';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import NotionSidebar from './components/NotionSidebar';
+import NotionTopbar from './components/NotionTopbar';
+import HomeView from './views/HomeView';
 import PromptEditorialDeck from './components/PromptEditorialDeck';
 import ThemeAtmosphereBackground from './components/ThemeAtmosphereBackground';
 import Footer from './components/Footer';
 
-// Lazy loaded views
+// Lazy loaded views (Zero initial bundle cost)
 const MarketplaceView = lazy(() => import('./views/MarketplaceView'));
 const SkillsArmoryView = lazy(() => import('./views/SkillsArmoryView'));
 const PromptStudioView = lazy(() => import('./views/PromptStudioView'));
+const CommunityView = lazy(() => import('./views/CommunityView'));
 const LibraryView = lazy(() => import('./views/LibraryView'));
 const WalletView = lazy(() => import('./views/WalletView'));
+const PlansView = lazy(() => import('./views/PlansView'));
 const AdminView = lazy(() => import('./views/AdminView'));
 
 // Lazy loaded interactive modals
+const LeaderboardModal = lazy(() => import('./components/LeaderboardModal'));
 const PaymentModal = lazy(() => import('./components/PaymentModal'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const BlindBoxModal = lazy(() => import('./components/BlindBoxModal'));
 const SellDeckModal = lazy(() => import('./components/SellDeckModal'));
+const ChangelogModal = lazy(() => import('./components/ChangelogModal'));
 const CommandPaletteModal = lazy(() => import('./components/CommandPaletteModal'));
+const AnalyticsModal = lazy(() => import('./components/AnalyticsModal'));
+const ThemePickerModal = lazy(() => import('./components/ThemePickerModal'));
 const DirectChatModal = lazy(() => import('./components/DirectChatModal'));
 const ShareAchievementModal = lazy(() => import('./components/ShareAchievementModal'));
 
@@ -32,7 +40,7 @@ function ViewLoadingFallback() {
 
 function ModalLoadingFallback() {
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center animate-fade-in">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center animate-fade-in">
       <div className="bg-white dark:bg-stone-900 px-6 py-4 rounded-2xl shadow-xl flex items-center space-x-3 border border-stone-200 dark:border-stone-800">
         <div className="w-5 h-5 rounded-full border-2 border-amber-500/30 border-t-amber-500 animate-spin"></div>
         <span className="text-xs font-semibold text-stone-900 dark:text-white font-mono">Đang mở...</span>
@@ -41,8 +49,9 @@ function ModalLoadingFallback() {
   );
 }
 
-import { COURSES_DATA } from './data/coursesData';
-import { getMarketplaceDecks } from './data/marketplaceData';
+import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
+import { getMarketplaceDecks, subscribeToMarketplaceDecks } from './data/marketplaceData';
+import { isChangelogUnread } from './data/changelogData';
 import { getPurchasedCourses } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
 import {
@@ -53,40 +62,44 @@ import {
   sendBrowserDesktopNotification,
   requestBrowserNotificationPermission
 } from './utils/wallet';
-import { playSound, playSuccess } from './utils/soundEngine';
+import { playSound, playSuccess, playFlip } from './utils/soundEngine';
 import { isUserAdmin } from './utils/adminGuard';
 import {
   getSelectedTheme,
   applyTheme,
   subscribeToTheme,
   getSleepMode,
-  subscribeToSleepMode,
-  toggleSleepMode
+  subscribeToSleepMode
 } from './utils/themeManager';
 import confetti from 'canvas-confetti';
-import { CheckCircle2, Tv } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function App() {
-  // ─── 1. CHẾ ĐỘ 2-IN-1: 'slide' (Trình Chiếu Lookbook 60fps) | 'scroll' (Chợ Prompts Cuộn) ───
+  // ─── 1. CHẾ ĐỘ 2-IN-1: 'scroll' (Notion Workspace chuẩn onthi-hub.vercel.app) | 'slide' (Lookbook 60fps Bùi Thái Studio) ───
   const [viewMode, setViewMode] = useState('scroll');
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Active Tab in Scroll Mode: 'marketplace' | 'skills' | 'studio' | 'library' | 'wallet' | 'admin'
-  const [activeTab, setActiveTab] = useState('marketplace');
+  // Active Tab: 'home' | 'marketplace' | 'skills' | 'studio' | 'library' | 'community' | 'wallet' | 'plans' | 'admin'
+  const [activeTab, setActiveTab] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
 
   const [purchasedCourses, setPurchasedCourses] = useState([]);
   const [user, setUser] = useState(null);
   const [walletBalance, setWalletBalance] = useState(20);
   const [marketplaceDecks, setMarketplaceDecks] = useState(() => getMarketplaceDecks());
 
-  // Modals
+  // Focused Overlay Modals
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [activePaymentItem, setActivePaymentItem] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isBlindBoxOpen, setIsBlindBoxOpen] = useState(false);
   const [activeSellCourse, setActiveSellCourse] = useState(null);
+  const [isChangelogOpen, setIsChangelogOpen] = useState(() => isChangelogUnread());
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [currentTheme, setCurrentTheme] = useState(() => getSelectedTheme());
+  const [isThemePickerOpen, setIsThemePickerOpen] = useState(false);
   const [sleepMode, setSleepMode] = useState(() => getSleepMode());
   const [isDirectChatOpen, setIsDirectChatOpen] = useState(false);
   const [activeShareAchievement, setActiveShareAchievement] = useState(null);
@@ -118,16 +131,20 @@ export default function App() {
       setSleepMode(mode);
     });
 
-    // Hotkeys:
-    // 1. Ctrl + K / Cmd + K opens Spotlight Command Palette
-    // 2. Ctrl + Shift + A toggles Admin tab
+    // Notion Hotkeys:
+    // 1. Ctrl + \ toggles Notion Sidebar
+    // 2. Ctrl + K / Cmd + K opens Spotlight Command Palette
+    // 3. Ctrl + Shift + A switches to Admin Tab
     const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      if (e.ctrlKey && (e.key === '\\' || e.code === 'Backslash')) {
+        e.preventDefault();
+        setIsSidebarOpen((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
         e.preventDefault();
         setIsCommandPaletteOpen((prev) => !prev);
       } else if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
-        setActiveTab((prev) => (prev === 'admin' ? 'marketplace' : 'admin'));
+        setActiveTab((prev) => (prev === 'admin' ? 'home' : 'admin'));
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -183,10 +200,6 @@ export default function App() {
     };
   }, []);
 
-  const handleToggleTheme = () => {
-    toggleSleepMode();
-  };
-
   // Switch to Scroll View
   const handleSwitchToScroll = (targetCategory = null) => {
     setViewMode('scroll');
@@ -194,22 +207,23 @@ export default function App() {
     if (targetCategory === 'skills') {
       setActiveTab('skills');
     } else {
-      setActiveTab('marketplace');
+      setActiveTab('home');
     }
   };
 
-  // Switch to Lookbook Deck View
+  // Switch to Lookbook Deck View (Bùi Thái Studio)
   const handleSwitchToDeck = (slideIndex = 0) => {
+    playFlip();
     setCurrentSlide(slideIndex);
     setViewMode('slide');
     window.scrollTo({ top: 0, behavior: 'instant' });
-    showToast('Đang mở Chế Độ Trình Chiếu Lookbook 60fps!');
+    showToast('Đang mở Chế Độ Trình Chiếu Lookbook 60fps (Bùi Thái Studio)!');
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 relative text-stone-900 dark:text-stone-100 bg-[#fbf9f5] dark:bg-stone-950 cream-grid">
+    <div className="min-h-screen flex flex-col font-sans transition-colors duration-300 relative text-stone-900 dark:text-stone-100 bg-[#fbfbfa] dark:bg-[#121214]">
       
-      {/* ─── ATMOSPHERE BACKGROUND ACCENT ─── */}
+      {/* ─── THEME ATMOSPHERE BACKGROUND ─── */}
       <ThemeAtmosphereBackground currentTheme={currentTheme} />
 
       {/* ─── TOAST NOTIFICATION ─── */}
@@ -221,7 +235,7 @@ export default function App() {
       )}
 
       {/* ══════════════════════════════════════════════════════════════════════
-          1. CHẾ ĐỘ SLIDE TRÌNH CHIẾU LOOKBOOK (BÙI THÁI STUDIO)
+          1. CHẾ ĐỘ SLIDE TRÌNH CHIẾU LOOKBOOK 60FPS (BÙI THÁI STUDIO)
          ══════════════════════════════════════════════════════════════════════ */}
       {viewMode === 'slide' ? (
         <PromptEditorialDeck
@@ -229,117 +243,202 @@ export default function App() {
           setCurrentSlide={setCurrentSlide}
           onSwitchToScroll={handleSwitchToScroll}
           onNotify={showToast}
-          onSelectCategory={(cat) => {
-            handleSwitchToScroll(cat);
-          }}
+          onSelectCategory={(cat) => handleSwitchToScroll(cat)}
         />
       ) : (
         /* ══════════════════════════════════════════════════════════════════════
-            2. CHẾ ĐỘ CUỘN CHỢ KHÁM PHÁ (STREAMLINED UNIFIED MARKETPLACE)
+            2. CHẾ ĐỘ NOTION WORKSPACE (CHUẨN ONTHI-HUB.VERCEL.APP)
            ══════════════════════════════════════════════════════════════════════ */
-        <div className="flex-1 flex flex-col min-h-screen relative z-10 animate-studio-rise">
+        <div className="flex-1 flex min-h-screen relative z-10 animate-studio-rise">
           
-          {/* TOPBAR NAVIGATION BAR */}
-          <MarketNavbar
+          {/* Mobile Backdrop for Sidebar */}
+          {isSidebarOpen && (
+            <div
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 z-30 bg-black/20 backdrop-blur-2xs md:hidden"
+            />
+          )}
+
+          {/* NOTION COLLAPSIBLE SIDEBAR (LEFT) */}
+          <NotionSidebar
+            isOpen={isSidebarOpen}
+            onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
             activeTab={activeTab}
-            onSwitchTab={(tab) => {
+            onSelectTab={(tab) => {
               setActiveTab(tab);
               window.scrollTo({ top: 0, behavior: 'smooth' });
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                setIsSidebarOpen(false);
+              }
             }}
+            purchasedCount={purchasedCourses.length}
             walletBalance={walletBalance}
-            onOpenWallet={() => setActiveTab('wallet')}
-            onSwitchToDeck={() => handleSwitchToDeck(0)}
-            sleepMode={sleepMode}
-            onToggleTheme={handleToggleTheme}
-            onShowToast={showToast}
-          />
-
-          {/* MAIN PAGE CANVAS */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-            <Suspense fallback={<ViewLoadingFallback />}>
-              
-              {/* TAB 1: CHỢ PROMPTS */}
-              {activeTab === 'marketplace' && (
-                <MarketplaceView
-                  user={user}
-                  marketplaceDecks={marketplaceDecks}
-                  onOpenCreateDeck={() => setActiveTab('studio')}
-                  onOpenFlashcardSample={(sampleDeck) => {
-                    showToast(`Prompt: ${sampleDeck.title}`);
-                  }}
-                  onBalanceUpdated={refreshState}
-                  onOpenWallet={() => setActiveTab('wallet')}
-                  onOpenBlindBox={() => setIsBlindBoxOpen(true)}
-                  onOpenDirectChat={(partner) => {
-                    setIsDirectChatOpen(true);
-                  }}
-                  onShowToast={showToast}
-                />
-              )}
-
-              {/* TAB 2: KHO 238+ AI SKILLS */}
-              {activeTab === 'skills' && (
-                <SkillsArmoryView
-                  onShowToast={showToast}
-                />
-              )}
-
-              {/* TAB 3: PROMPT STUDIO & IDEATOR */}
-              {activeTab === 'studio' && (
-                <PromptStudioView
-                  onShowToast={showToast}
-                  onSwitchTab={setActiveTab}
-                />
-              )}
-
-              {/* TAB 4: KHO CỦA TÔI */}
-              {activeTab === 'library' && (
-                <LibraryView
-                  purchasedCourses={purchasedCourses}
-                  customDecks={[]}
-                  onOpenFlashcardCourse={(c) => {
-                    showToast(`Mở prompt: ${c.title}`);
-                  }}
-                  onOpenSellCourse={(c) => setActiveSellCourse(c)}
-                  onShowToast={showToast}
-                  onSwitchTab={setActiveTab}
-                  onOpenDirectChat={() => setIsDirectChatOpen(true)}
-                  onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
-                />
-              )}
-
-              {/* TAB 5: VÍ XU & NẠP/RÚT */}
-              {activeTab === 'wallet' && (
-                <WalletView
-                  walletBalance={walletBalance}
-                  user={user}
-                  onOpenAuth={() => setIsAuthOpen(true)}
-                  onShowToast={showToast}
-                  onBalanceUpdated={refreshState}
-                />
-              )}
-
-              {/* TAB 6: ADMIN QUẢN TRỊ */}
-              {activeTab === 'admin' && (
-                <AdminView
-                  user={user}
-                  onCloseAdmin={() => setActiveTab('marketplace')}
-                  onShowToast={showToast}
-                  onBalanceUpdated={refreshState}
-                  onOpenAuth={() => setIsAuthOpen(true)}
-                />
-              )}
-
-            </Suspense>
-          </main>
-
-          {/* FOOTER */}
-          <Footer
+            user={user}
+            onOpenAuth={() => setIsAuthOpen(true)}
+            onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+            onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+            onOpenChangelog={() => setIsChangelogOpen(true)}
+            onOpenSearch={() => setIsCommandPaletteOpen(true)}
+            onOpenAnalytics={() => setIsAnalyticsOpen(true)}
             currentTheme={currentTheme}
-            onOpenThemePicker={() => {}}
-            onSwitchTab={setActiveTab}
+            onOpenThemePicker={() => setIsThemePickerOpen(true)}
+            onOpenDirectChat={() => setIsDirectChatOpen(true)}
+            onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
+            onSwitchToDeck={() => handleSwitchToDeck(0)}
           />
 
+          {/* RIGHT CANVAS: NOTION TOPBAR + MAIN CANVAS + FOOTER */}
+          <div className="flex-1 min-w-0 flex flex-col min-h-screen bg-transparent relative z-10 transition-colors duration-500">
+            
+            {/* NOTION TOPBAR */}
+            <NotionTopbar
+              sidebarOpen={isSidebarOpen}
+              onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+              activeTab={activeTab}
+              onSelectTab={(tab) => {
+                setActiveTab(tab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              walletBalance={walletBalance}
+              user={user}
+              onOpenAuth={() => setIsAuthOpen(true)}
+              onCheckInCompleted={refreshState}
+              onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+              onOpenChangelog={() => setIsChangelogOpen(true)}
+              onOpenSearch={() => setIsCommandPaletteOpen(true)}
+              onOpenAnalytics={() => setIsAnalyticsOpen(true)}
+              currentTheme={currentTheme}
+              onOpenThemePicker={() => setIsThemePickerOpen(true)}
+              isWeatherEnabled={false}
+              onToggleWeather={() => {}}
+              onOpenDirectChat={() => setIsDirectChatOpen(true)}
+              onSwitchToDeck={() => handleSwitchToDeck(0)}
+            />
+
+            {/* MAIN NOTION PAGE CANVAS */}
+            <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-8 py-6 sm:py-8">
+              <Suspense fallback={<ViewLoadingFallback />}>
+                
+                {/* TAB 1: TRANG CHỦ & DỊCH VỤ BÙI THÁI + PROMPT THỰC CHIẾN */}
+                {activeTab === 'home' && (
+                  <HomeView
+                    onOpenFlashcards={(c) => setActivePaymentItem(c)}
+                    onBuyCourse={(c) => setActivePaymentItem(c)}
+                    onBuyCombo={(combo) => setActivePaymentItem(combo)}
+                    onSwitchTab={setActiveTab}
+                    onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+                    onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+                    allCourses={COURSES_DATA}
+                    onShowToast={showToast}
+                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
+                  />
+                )}
+
+                {/* TAB 2: CHỢ PROMPT C2C */}
+                {activeTab === 'marketplace' && (
+                  <MarketplaceView
+                    user={user}
+                    marketplaceDecks={marketplaceDecks}
+                    onOpenCreateDeck={() => setActiveTab('studio')}
+                    onOpenFlashcardSample={(sampleDeck) => {
+                      showToast(`Prompt: ${sampleDeck.title}`);
+                    }}
+                    onBalanceUpdated={refreshState}
+                    onOpenWallet={() => setActiveTab('wallet')}
+                    onOpenBlindBox={() => setIsBlindBoxOpen(true)}
+                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
+                    onShowToast={showToast}
+                  />
+                )}
+
+                {/* TAB 3: KHO 238+ AI SKILLS & SUBAGENTS */}
+                {activeTab === 'skills' && (
+                  <SkillsArmoryView
+                    onShowToast={showToast}
+                  />
+                )}
+
+                {/* TAB 4: PROMPT STUDIO & IDEATOR SANDBOX */}
+                {activeTab === 'studio' && (
+                  <PromptStudioView
+                    onShowToast={showToast}
+                    onSwitchTab={setActiveTab}
+                  />
+                )}
+
+                {/* TAB 5: KHO PROMPT CỦA TÔI */}
+                {activeTab === 'library' && (
+                  <LibraryView
+                    purchasedCourses={purchasedCourses}
+                    customDecks={[]}
+                    onOpenFlashcardCourse={(c) => {
+                      showToast(`Mở: ${c.title}`);
+                    }}
+                    onOpenSellCourse={(c) => setActiveSellCourse(c)}
+                    onShowToast={showToast}
+                    onSwitchTab={setActiveTab}
+                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
+                    onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
+                  />
+                )}
+
+                {/* TAB 6: CỘNG ĐỒNG MMO & AI */}
+                {activeTab === 'community' && (
+                  <CommunityView
+                    user={user}
+                    onOpenAuth={() => setIsAuthOpen(true)}
+                    onShowToast={showToast}
+                    onBalanceUpdated={refreshState}
+                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
+                    onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
+                  />
+                )}
+
+                {/* TAB 7: VÍ XU & NẠP TIỀN VIETQR */}
+                {activeTab === 'wallet' && (
+                  <WalletView
+                    walletBalance={walletBalance}
+                    user={user}
+                    onOpenAuth={() => setIsAuthOpen(true)}
+                    onShowToast={showToast}
+                    onBalanceUpdated={refreshState}
+                  />
+                )}
+
+                {/* TAB 8: GÓI HỘI VIÊN VIP */}
+                {activeTab === 'plans' && (
+                  <PlansView
+                    user={user}
+                    walletBalance={walletBalance}
+                    onOpenAuth={() => setIsAuthOpen(true)}
+                    onOpenWallet={() => setActiveTab('wallet')}
+                    onShowToast={showToast}
+                    onBalanceUpdated={refreshState}
+                  />
+                )}
+
+                {/* TAB 9: QUẢN TRỊ VIÊN ADMIN */}
+                {activeTab === 'admin' && (
+                  <AdminView
+                    user={user}
+                    onCloseAdmin={() => setActiveTab('home')}
+                    onShowToast={showToast}
+                    onBalanceUpdated={refreshState}
+                    onOpenAuth={() => setIsAuthOpen(true)}
+                  />
+                )}
+
+              </Suspense>
+            </main>
+
+            {/* NOTION FOOTER */}
+            <Footer
+              currentTheme={currentTheme}
+              onOpenAdmin={() => setActiveTab('admin')}
+              onSwitchTab={setActiveTab}
+            />
+
+          </div>
         </div>
       )}
 
@@ -355,7 +454,7 @@ export default function App() {
             onSuccess={() => {
               setActivePaymentItem(null);
               refreshState();
-              showToast('🎉 Mở khóa Prompt thành công!');
+              showToast('🎉 Mở khóa thành công!');
             }}
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenWallet={() => {
@@ -369,11 +468,28 @@ export default function App() {
         {isAuthOpen && (
           <AuthModal
             isOpen={isAuthOpen}
+            user={user}
+            onAuthChange={(newUser) => {
+              setUser(newUser);
+              refreshState();
+            }}
             onClose={() => setIsAuthOpen(false)}
             onSuccess={() => {
               setIsAuthOpen(false);
               refreshState();
               showToast('🎉 Đăng nhập thành công!');
+            }}
+            onOpenPricing={() => {
+              setIsAuthOpen(false);
+              setIsPricingOpen(true);
+            }}
+            onOpenWallet={() => {
+              setIsAuthOpen(false);
+              setActiveTab('wallet');
+            }}
+            onOpenAdmin={() => {
+              setIsAuthOpen(false);
+              setActiveTab('admin');
             }}
           />
         )}
@@ -395,6 +511,23 @@ export default function App() {
           />
         )}
 
+        {/* LEADERBOARD MODAL (BẢNG VÀNG DOANH THU) */}
+        {isLeaderboardOpen && (
+          <LeaderboardModal
+            isOpen={isLeaderboardOpen}
+            onClose={() => setIsLeaderboardOpen(false)}
+            user={user}
+          />
+        )}
+
+        {/* CHANGELOG MODAL */}
+        {isChangelogOpen && (
+          <ChangelogModal
+            isOpen={isChangelogOpen}
+            onClose={() => setIsChangelogOpen(false)}
+          />
+        )}
+
         {/* SELL DECK MODAL */}
         {activeSellCourse && (
           <SellDeckModal
@@ -404,7 +537,7 @@ export default function App() {
             onSellSuccess={() => {
               setActiveSellCourse(null);
               refreshState();
-              showToast('🎉 Đăng bán Prompt lên Chợ thành công!');
+              showToast('🎉 Đăng bán thành công!');
             }}
           />
         )}
@@ -417,7 +550,7 @@ export default function App() {
             courses={COURSES_DATA}
             onSelectCourse={(c) => {
               setIsCommandPaletteOpen(false);
-              setActiveTab('marketplace');
+              setActivePaymentItem(c);
             }}
             onSelectTab={(tab) => {
               setIsCommandPaletteOpen(false);
@@ -426,6 +559,28 @@ export default function App() {
               } else {
                 setActiveTab(tab);
               }
+            }}
+          />
+        )}
+
+        {/* ANALYTICS MODAL */}
+        {isAnalyticsOpen && (
+          <AnalyticsModal
+            isOpen={isAnalyticsOpen}
+            onClose={() => setIsAnalyticsOpen(false)}
+          />
+        )}
+
+        {/* THEME PICKER MODAL */}
+        {isThemePickerOpen && (
+          <ThemePickerModal
+            isOpen={isThemePickerOpen}
+            onClose={() => setIsThemePickerOpen(false)}
+            currentTheme={currentTheme}
+            onSelectTheme={(theme) => {
+              setCurrentTheme(theme);
+              applyTheme(theme.id);
+              showToast(`Đã áp dụng chủ đề: ${theme.name}`);
             }}
           />
         )}

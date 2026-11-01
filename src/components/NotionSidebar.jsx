@@ -24,7 +24,10 @@ import {
   Settings,
   Bell,
   PanelLeftClose,
-  Coins
+  Coins,
+  Cpu,
+  Sliders,
+  Tv
 } from 'lucide-react';
 import { isUserAdmin } from '../utils/adminGuard';
 import { getUserTier } from '../utils/userTier';
@@ -51,7 +54,8 @@ function NotionSidebar({
   currentTheme,
   onOpenThemePicker,
   onOpenDirectChat,
-  onOpenShareAchievement
+  onOpenShareAchievement,
+  onSwitchToDeck
 }) {
   const [isWorkspaceMenuOpen, setIsWorkspaceMenuOpen] = useState(false);
   const curParticipant = getCurrentUserParticipant(user);
@@ -83,11 +87,12 @@ function NotionSidebar({
   const icons = currentTheme?.icons || {};
 
   const workspaceNavItems = [
-    { id: 'home', label: 'Trang Chủ & Kho Prompt', icon: Home, emoji: icons.home || '⚡', desc: 'Prompt AI & Kịch bản MMO' },
-    { id: 'library', label: 'Kho Prompt Của Tôi', icon: FolderHeart, emoji: icons.library || '📁', count: purchasedCount, desc: 'Prompt đã mua & 1-Click Copy' },
-    { id: 'create', label: 'Studio Đăng Bán Prompt', icon: PlusSquare, emoji: icons.create || '✍️', badge: '80% LÃI', badgeColor: 'notion-pill-purple', desc: 'Creator đăng bán Prompt kiếm Xu' },
-    { id: 'marketplace', label: 'Chợ Prompt C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán Prompt cộng đồng' },
-    { id: 'community', label: 'Cộng Đồng MMO & AI', icon: Users, emoji: icons.community || '💬', desc: 'Thủ thuật, kinh nghiệm & kết bạn' },
+    { id: 'home', label: 'Trang Chủ & Dịch Vụ', icon: Home, emoji: icons.home || '⚡', desc: 'Dịch vụ Bùi Thái & Prompt thực chiến' },
+    { id: 'marketplace', label: 'Chợ Prompts C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán Prompt & Workflow cộng đồng' },
+    { id: 'skills', label: 'Kho 238+ AI Skills', icon: Cpu, emoji: '🤖', badge: '238+', badgeColor: 'notion-pill-blue', desc: 'Vũ khí đặc nhiệm Argon Sovereign OS' },
+    { id: 'studio', label: 'Prompt Studio & Ideator', icon: Sliders, emoji: '💡', badge: 'STUDIO', badgeColor: 'notion-pill-yellow', desc: 'Phác thảo prompt & scope dự án trực tiếp' },
+    { id: 'library', label: 'Kho Của Tôi', icon: FolderHeart, emoji: icons.library || '📁', count: purchasedCount, desc: 'Prompts & Dịch vụ đã sở hữu' },
+    { id: 'community', label: 'Cộng Đồng MMO & AI', icon: Users, emoji: icons.community || '💬', desc: 'Thủ thuật, kinh nghiệm & case studies' },
   ];
 
   const toolsNavItems = [
@@ -239,7 +244,7 @@ function NotionSidebar({
         </div>
 
         {/* Apple Style Quick Search Bar */}
-        <div className="px-3 pt-3 pb-1.5">
+        <div className="px-3 pt-3 pb-1.5 space-y-1.5">
           <button
             type="button"
             onClick={() => {
@@ -256,6 +261,27 @@ function NotionSidebar({
               ⌘K
             </kbd>
           </button>
+
+          {/* BÙI THÁI STUDIO LOOKBOOK SLIDE DECK TRIGGER */}
+          {onSwitchToDeck && (
+            <button
+              type="button"
+              onClick={() => {
+                playSound('flip');
+                onSwitchToDeck();
+              }}
+              className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/15 to-amber-500/25 border border-amber-500/40 text-amber-800 dark:text-amber-300 hover:bg-amber-500 hover:text-black transition-all cursor-pointer font-mono text-[11px] font-bold shadow-xs active:scale-[0.98]"
+              title="Mở Chế Độ Trình Chiếu Lookbook 60fps (Bùi Thái Studio)"
+            >
+              <div className="flex items-center space-x-2">
+                <Tv className="w-3.5 h-3.5 text-amber-500" />
+                <span>Lookbook Trình Chiếu</span>
+              </div>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-500/20 text-amber-700 dark:text-amber-300 font-extrabold uppercase">
+                60FPS
+              </span>
+            </button>
+          )}
         </div>
 
         {/* SECTION 1: WORKSPACE */}

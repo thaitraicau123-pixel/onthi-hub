@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 *.zip
-*.py
-.env
-.env.*
 onthihub/
 
 # Editor directories and files

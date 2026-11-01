@@ -8,6 +8,11 @@ export const CATEGORIES = [
     icon: "Sparkles"
   },
   {
+    id: "web-craft",
+    name: "🛠️ Dịch Vụ Web Bùi Thái",
+    icon: "Code2"
+  },
+  {
     id: "video-ai",
     name: "🎬 Video AI Triệu View",
     icon: "Gamepad2"
@@ -26,15 +31,62 @@ export const CATEGORIES = [
     id: "skills-automation",
     name: "⚡ AI Skills & Auto",
     icon: "Activity"
-  },
-  {
-    id: "acc-tools",
-    name: "🔑 Tool & Tài Khoản MMO",
-    icon: "Languages"
   }
 ];
 
 export const COURSES_DATA = [
+  // =========================================================================
+  // 0. BÙI THÁI STUDIO - DỊCH VỤ LẬP TRÌNH WEB THEO YÊU CẦU & CỐ VẤN Ý TƯỞNG
+  // =========================================================================
+  {
+    id: 'bui-thai-custom-web-service',
+    title: 'Dịch Vụ Lập Trình Web Theo Yêu Cầu & Cố Vấn Ý Tưởng (Bùi Thái Studio)',
+    subtitle: 'Đồng hành cùng sinh viên NCKH AEP NEU, Founders Startup và Chủ Shop. Xây dựng Web Fullstack React 19, Supabase RLS, VietQR và UI Thượng Lưu 60fps',
+    category: 'web-craft',
+    categoryLabel: 'Dịch Vụ Web Bùi Thái',
+    badge: 'Bùi Thái Signature 🌟',
+    priceXu: 50,
+    originalPriceXu: 120,
+    rating: 5.0,
+    reviewsCount: 320,
+    studentsCount: 890,
+    salesCount: 890,
+    updatedAt: 'Tháng 11/2026',
+    format: ['Tư Vấn Kiến Trúc 1-1', 'Bàn Giao Mã Nguồn 100%', 'Bảo Mật Ngân Hàng'],
+    description: 'Chuyên gia biến mọi ý tưởng từ nghiên cứu khoa học, khởi nghiệp đến kinh doanh online thành sản phẩm phần mềm thực chiến chạy thật 100%. Không chỉ viết mã máy móc mà đồng hành phản biện, tối ưu hóa ý tưởng và xây dựng giải pháp công nghệ tinh gọn, bền vững đạt chuẩn Haute Couture.',
+    tags: ['Web NCKH', 'Startup SaaS', 'React 19', 'Supabase RLS', 'UI 60fps'],
+    cardsCount: 25,
+    previewContent: [
+      'Giai đoạn 1: Thẩm vấn sâu nhu cầu, bóc tách bài toán và lên kiến trúc module tinh gọn.',
+      'Giai đoạn 2: Thiết kế giao diện Haute Couture chuẩn phong cách Apple Minimalist & Editorial, chống 100% lỗi nhảy font tiếng Việt.',
+      'Giai đoạn 3: Tích hợp Backend Supabase PostgreSQL, phân quyền RLS chống rò rỉ dữ liệu và cổng nạp VietQR tự động.',
+      'Giai đoạn 4: Kiểm định chất lượng 4 tầng (Zero-Glitch Quality Gate) và bàn giao toàn bộ mã nguồn sạch.'
+    ]
+  },
+  {
+    id: 'bui-thai-case-study-edutech',
+    title: 'Case Study Thực Chiến: Sàn Giao Dịch & Ví Xu PromptMMO (Bùi Thái Studio)',
+    subtitle: 'Bản đặc tả kiến trúc vi dịch vụ bảo mật cấp ngân hàng, chống Race Condition rút tiền đúp, âm thanh Web Audio 0MB và tối ưu hóa chuyển đổi C2C',
+    category: 'web-craft',
+    categoryLabel: 'Dịch Vụ Web Bùi Thái',
+    badge: 'Case Study #01 💎',
+    priceXu: 30,
+    originalPriceXu: 75,
+    rating: 4.99,
+    reviewsCount: 215,
+    studentsCount: 650,
+    salesCount: 650,
+    updatedAt: 'Tháng 11/2026',
+    format: ['Bản Vẽ Kiến Trúc Toàn Diện', 'Mã Nguồn Hàm RPC Supabase', 'Kịch Bản Chống Hack F12'],
+    description: 'Chia sẻ toàn bộ kiến trúc thực chiến đứng sau nền tảng PromptMMO: Cơ chế khóa dòng FOR UPDATE bảo vệ tài chính, hàm băm niêm phong ví computeWalletSeal, hệ thống âm thanh Web Audio không tốn băng thông và tối ưu hiệu suất tải trang dưới 300ms.',
+    tags: ['Kiến Trúc EduTech', 'Ví Tiền Tệ', 'PostgreSQL RPC', 'AppSec Master'],
+    cardsCount: 18,
+    previewContent: [
+      'Cơ chế tách bạch Xu thưởng và Xu doanh thu nhằm triệt tiêu lạm phát trong nền kinh tế số.',
+      'Hàm PostgreSQL SECURITY DEFINER có khóa dòng FOR UPDATE ngăn chặn hoàn toàn tấn công rút tiền đúp.',
+      'Bộ synthesizer Web Audio API 0MB tái tạo tiếng click taptic và tiếng rơi Xu kim loại cực nhạy.'
+    ]
+  },
   // =========================================================================
   // 1. HIGGSFIELD & KLING 1.5 - VIDEO AI TRIỆU VIEW TIKTOK / REELS
   // =========================================================================
