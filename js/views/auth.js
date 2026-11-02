@@ -272,10 +272,10 @@
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
                 <span class="text-slate-600 dark:text-slate-400 font-medium shrink-0">Hạ tầng:</span>
-                <span class="font-bold text-[#8A5F26] dark:text-[#BE9455]">Sovereign Engine (Siêu Tốc)</span>
+                <span class="font-bold text-[#8A5F26] dark:text-[#BE9455]">Firebase (promtmmo)</span>
               </div>
               <span class="shrink-0 whitespace-nowrap text-[10px] bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold border border-emerald-200/60 flex items-center gap-1">
-                <span>✓ Sẵn Sàng</span>
+                <span>✓ Live Cloud Auth</span>
               </span>
             </div>
 
