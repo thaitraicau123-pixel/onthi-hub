@@ -41,7 +41,7 @@ import { getAllDecksDueStats, buildDueCardsDeck, getDeckDueStats } from '../util
 import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import { getSelectedTheme, subscribeToTheme } from '../utils/themeManager';
-import { COURSES_DATA } from '../data/coursesData';
+import { COURSES_DATA, CATEGORIES } from '../data/coursesData';
 
 export default function LibraryView({
   purchasedCourses = [],
@@ -229,14 +229,7 @@ export default function LibraryView({
           <div className="bg-white/95 dark:bg-slate-900/90 p-3 rounded-xl border border-[#e9e9e8] dark:border-white/15 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 text-[#37352f] dark:text-white">
             {/* Apple Segmented Category Pills */}
             <div className="apple-segmented-container flex flex-wrap items-center gap-1">
-              {[
-                { id: 'all', label: 'Tất Cả' },
-                { id: 'video-ai', label: '🎬 Video AI' },
-                { id: 'image-ai', label: '🎨 Ảnh Studio' },
-                { id: 'copy-mmo', label: '✍️ Kịch Bản MMO' },
-                { id: 'skills-automation', label: '⚡ N8N & Auto' },
-                { id: 'acc-tools', label: '🔑 Tool & Tài Nguyên' }
-              ].map((cat) => {
+              {CATEGORIES.map((cat) => {
                 const count = cat.id === 'all'
                   ? unlockedList.length
                   : unlockedList.filter(c => c.category === cat.id).length;
@@ -250,7 +243,7 @@ export default function LibraryView({
                       active ? 'active' : ''
                     }`}
                   >
-                    <span>{cat.label}</span>
+                    <span>{cat.name}</span>
                     <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
                       active ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400' : 'bg-black/[0.04] dark:bg-white/[0.08] text-slate-400 dark:text-zinc-500'
                     }`}>

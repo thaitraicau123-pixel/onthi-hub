@@ -34,10 +34,21 @@ export function saveBankConfig(config) {
 export function getPurchasedCourses() {
   try {
     const raw = localStorage.getItem(PURCHASED_KEY);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) {
+      const initial = ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
+      localStorage.setItem(PURCHASED_KEY, JSON.stringify(initial));
+      return initial;
+    }
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed) && parsed.length === 0) {
+      const initial = ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
+      localStorage.setItem(PURCHASED_KEY, JSON.stringify(initial));
+      return initial;
+    }
+    return parsed;
   } catch (e) {
     console.error('Failed to get purchased items', e);
-    return [];
+    return ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
   }
 }
 

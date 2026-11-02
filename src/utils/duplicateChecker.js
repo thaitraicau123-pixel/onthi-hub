@@ -50,7 +50,7 @@ export function checkDeckDuplication(candidate, excludeDeckId = null) {
       id: c.id,
       title: c.title,
       description: c.subtitle || c.description,
-      cards: c.previewCards || [],
+      cards: c.cards || c.previewCards || [],
       source: 'Chính Quy PromptMMO'
     })),
     ...getMarketplaceDecks().map(m => ({

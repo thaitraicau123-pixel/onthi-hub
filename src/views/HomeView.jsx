@@ -25,7 +25,10 @@ import {
   Video,
   Camera,
   Layers,
-  FileText
+  FileText,
+  GraduationCap,
+  BookOpen,
+  Crown
 } from 'lucide-react';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 
@@ -45,8 +48,8 @@ export default function HomeView({
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchHome, setSearchHome] = useState('');
   const [sortBy, setSortBy] = useState('popular'); // 'popular' | 'rating' | 'price_asc' | 'price_desc'
-  const [quickPrompt, setQuickPrompt] = useState('Cinematic slow drone hyperlapse qua thành phố Tokyo cyberpunk mưa đêm ánh đèn neon phản chiếu 8k');
-  const [quickSubject, setQuickSubject] = useState('video-ai');
+  const [quickPrompt, setQuickPrompt] = useState('Hero section Haute-Couture tỷ lệ 7:5 với Song Font Be Vietnam Pro và thẻ kính Apple Liquid Glass');
+  const [quickSubject, setQuickSubject] = useState('web-design');
 
   const sortedAndFiltered = useMemo(() => {
     const term = searchHome.toLowerCase().trim();
@@ -84,8 +87,16 @@ export default function HomeView({
         return <Gamepad2 className={`w-4 h-4 ${iconColor}`} />;
       case 'Code2':
         return <Code2 className={`w-4 h-4 ${iconColor}`} />;
+      case 'ShieldCheck':
+        return <ShieldCheck className={`w-4 h-4 ${iconColor}`} />;
       case 'TrendingUp':
         return <TrendingUp className={`w-4 h-4 ${iconColor}`} />;
+      case 'GraduationCap':
+        return <GraduationCap className={`w-4 h-4 ${iconColor}`} />;
+      case 'BookOpen':
+        return <BookOpen className={`w-4 h-4 ${iconColor}`} />;
+      case 'Crown':
+        return <Crown className={`w-4 h-4 ${iconColor}`} />;
       case 'Activity':
         return <Activity className={`w-4 h-4 ${iconColor}`} />;
       case 'Languages':
@@ -101,7 +112,7 @@ export default function HomeView({
       if (quickPrompt.trim()) {
         const draftPayload = JSON.stringify({
           topic: quickPrompt.trim(),
-          category: quickSubject || 'video-ai'
+          category: quickSubject || 'web-design'
         });
         localStorage.setItem('promptmmo_quick_studio_draft', draftPayload);
         localStorage.setItem('onthi_quick_studio_draft', draftPayload);
@@ -332,11 +343,12 @@ export default function HomeView({
                 onChange={(e) => setQuickSubject(e.target.value)}
                 className="py-2 px-3 text-xs bg-black/[0.03] dark:bg-white/[0.06] text-slate-900 dark:text-white border border-black/[0.06] dark:border-white/[0.08] rounded-xl outline-none cursor-pointer font-semibold"
               >
-                <option value="video-ai">🎬 Video AI (Higgsfield/Kling)</option>
-                <option value="image-ai">🎨 Ảnh Studio (Flux/Midjourney)</option>
-                <option value="copy-mmo">✍️ Kịch Bản & Content</option>
-                <option value="skills-automation">⚡ AI Skills & Auto N8N</option>
-                <option value="acc-tools">🔑 Tool & Tài Khoản MMO</option>
+                <option value="web-design">🎨 Web Thượng Lưu (Haute-Couture)</option>
+                <option value="fullstack-dev">🛡️ Fullstack & Bảo Mật (AppSec)</option>
+                <option value="marketing-seo">🔥 Content SEO & Viral Video</option>
+                <option value="academic-research">🎓 Nghiên Cứu Học Thuật (A+)</option>
+                <option value="starter-edu">🌱 Sinh Viên Lập Trình (Starter)</option>
+                <option value="all-in-one">👑 Đại Hộp Công Cụ (VIP)</option>
               </select>
 
               <button
@@ -352,21 +364,21 @@ export default function HomeView({
 
         {/* Right: 4 Quick Mini Tiles (5 cols) */}
         <section className="lg:col-span-5 grid grid-cols-2 gap-3">
-          {/* Card 1: Video AI Hot */}
+          {/* Card 1: Web Haute-Couture */}
           <div
             onClick={() => {
-              setSelectedCategory('video-ai');
+              setSelectedCategory('web-design');
               const el = document.getElementById('catalog-section');
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
-            className="p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
+            className="p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-indigo-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
-            <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-2">
-              <Video className="w-4 h-4" />
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-2">
+              <Code2 className="w-4 h-4" />
             </div>
             <div>
-              <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Video AI 8K</h4>
-              <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">Higgsfield & Kling</p>
+              <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Web Thượng Lưu</h4>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">UI 60fps & Liquid Glass</p>
             </div>
           </div>
 
