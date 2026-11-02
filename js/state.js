@@ -1237,6 +1237,11 @@
               } catch (e) {}
             }
           }
+
+          // Đồng bộ tức thì các lệnh nạp và duyệt tiền xu thời gian thực từ ntfy.sh
+          try {
+            await self.syncTopupsFromCloud(false);
+          } catch (eTopups) {}
         } catch (err) {
           // Bỏ qua lỗi ngầm
         } finally {
@@ -1562,27 +1567,56 @@
       return topup;
     },
 
-    // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực từ Cloud (ntfy.sh & Firebase)
-    syncTopupsFromCloud: async function () {
+    // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực & Số dư ví đa thiết bị từ Cloud (ntfy.sh & Firebase)
+    syncTopupsFromCloud: async function (isManual = false) {
       let cloudTopups = [];
-      if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.fetchRecentTopupRequests === 'function') {
-        cloudTopups = await window.BuiThaiNtfy.fetchRecentTopupRequests();
+      let approvedList = [];
+
+      if (window.BuiThaiNtfy) {
+        if (typeof window.BuiThaiNtfy.fetchRecentTopupRequests === 'function') {
+          cloudTopups = await window.BuiThaiNtfy.fetchRecentTopupRequests().catch(() => []);
+        }
+        if (typeof window.BuiThaiNtfy.fetchApprovedTopups === 'function') {
+          approvedList = await window.BuiThaiNtfy.fetchApprovedTopups().catch(() => []);
+        }
       }
 
       let approvedIds = [];
       let rejectedIds = [];
+      let syncedApprovalIds = [];
       try {
         approvedIds = JSON.parse(localStorage.getItem('shopviet_approved_topup_ids') || '[]');
         rejectedIds = JSON.parse(localStorage.getItem('shopviet_rejected_topup_ids') || '[]');
+        syncedApprovalIds = JSON.parse(localStorage.getItem('shopviet_synced_approval_ids') || '[]');
       } catch (e) {}
 
+      // 1. Cập nhật các ID nạp đã duyệt từ ntfy.sh
+      let approvedIdsChanged = false;
+      approvedList.forEach(app => {
+        if (app.id && !approvedIds.includes(app.id)) {
+          approvedIds.push(app.id);
+          approvedIdsChanged = true;
+        }
+      });
+      if (approvedIdsChanged) {
+        try {
+          localStorage.setItem('shopviet_approved_topup_ids', JSON.stringify(approvedIds));
+        } catch (e) {}
+      }
+
+      // 2. Cập nhật danh sách yêu cầu nạp tiền (topups)
       this.state.topups = this.state.topups || [];
       const existingMap = new Map();
       this.state.topups.forEach(t => existingMap.set(t.id, t));
 
-      let hasNew = false;
+      let hasNewTopups = false;
       cloudTopups.forEach(ct => {
-        if (approvedIds.includes(ct.id) || approvedIds.includes(ct.rawNtfyId)) {
+        const ctEmail = (ct.userEmail || '').trim().toLowerCase();
+        const isAlreadyApproved = approvedIds.includes(ct.id) || 
+                                  approvedIds.includes(ct.rawNtfyId) ||
+                                  approvedList.some(app => app.userEmail === ctEmail && app.amount === ct.amount);
+
+        if (isAlreadyApproved) {
           ct.status = 'completed';
           ct.statusText = 'Đã duyệt';
         } else if (rejectedIds.includes(ct.id) || rejectedIds.includes(ct.rawNtfyId)) {
@@ -1595,15 +1629,19 @@
           if (cur.status === 'completed' || cur.status === 'rejected') {
             ct.status = cur.status;
             ct.statusText = cur.statusText;
+          } else if (isAlreadyApproved) {
+            cur.status = 'completed';
+            cur.statusText = 'Đã duyệt';
+            hasNewTopups = true;
           }
         } else {
           this.state.topups.unshift(ct);
           existingMap.set(ct.id, ct);
-          hasNew = true;
+          hasNewTopups = true;
         }
       });
 
-      // Lọc bỏ trùng lặp
+      // Lọc bỏ trùng lặp trong topups
       const seenMemos = new Set();
       this.state.topups = this.state.topups.filter(t => {
         const key = (t.memo || t.id) + '_' + t.amount;
@@ -1612,10 +1650,104 @@
         return true;
       });
 
+      // 3. ĐỒNG BỘ SỐ DƯ TÀI KHOẢN ĐA THIẾT BỊ TỪ CÁC THÔNG BÁO DUYỆT (approvedList)
+      const approvedByEmail = {};
+      approvedList.forEach(app => {
+        const email = (app.userEmail || '').trim().toLowerCase();
+        if (!email) return;
+        if (!approvedByEmail[email]) {
+          approvedByEmail[email] = { total: 0, items: [] };
+        }
+        approvedByEmail[email].total += app.amount;
+        approvedByEmail[email].items.push(app);
+      });
+
+      const users = this.getUsersDB();
+      let usersDbChanged = false;
+      let balanceToastMsg = null;
+
+      Object.keys(approvedByEmail).forEach(email => {
+        const userApprovedData = approvedByEmail[email];
+        let uIdx = users.findIndex(u => u.email && u.email.trim().toLowerCase() === email);
+
+        if (uIdx > -1) {
+          if (typeof users[uIdx].balance !== 'number' || users[uIdx].balance < userApprovedData.total) {
+            users[uIdx].balance = userApprovedData.total;
+            usersDbChanged = true;
+          }
+        } else {
+          users.push({
+            id: 'usr_' + Date.now().toString(36),
+            name: email.split('@')[0],
+            email: email,
+            balance: userApprovedData.total,
+            role: 'member',
+            createdAt: new Date().toISOString()
+          });
+          usersDbChanged = true;
+        }
+      });
+
+      if (usersDbChanged) {
+        this.saveUsersDB(users);
+      }
+
+      // 4. Nếu người dùng hiện tại đang đăng nhập, đồng bộ tức thì số dư vào this.state.user
+      if (this.state.user && this.state.user.email) {
+        const currentEmail = this.state.user.email.trim().toLowerCase();
+        const currentApprovedData = approvedByEmail[currentEmail];
+
+        if (currentApprovedData) {
+          let newlyCredited = 0;
+          let hasNewSync = false;
+
+          currentApprovedData.items.forEach(item => {
+            if (!syncedApprovalIds.includes(item.id)) {
+              newlyCredited += item.amount;
+              syncedApprovalIds.push(item.id);
+              hasNewSync = true;
+            }
+          });
+
+          if (hasNewSync) {
+            try {
+              localStorage.setItem('shopviet_synced_approval_ids', JSON.stringify(syncedApprovalIds));
+            } catch (e) {}
+
+            if ((this.state.user.balance || 0) < currentApprovedData.total) {
+              this.state.user.balance = currentApprovedData.total;
+            } else {
+              this.state.user.balance = (this.state.user.balance || 0) + newlyCredited;
+            }
+
+            if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
+              window.BuiThaiNtfy.playChime('deposit');
+            }
+
+            balanceToastMsg = `🎉 Chúc mừng bạn! Admin Bùi Thái vừa duyệt nạp thành công +${newlyCredited.toLocaleString('vi-VN')} Xu vào ví!`;
+          } else if ((this.state.user.balance || 0) < currentApprovedData.total) {
+            this.state.user.balance = currentApprovedData.total;
+          }
+        }
+      }
+
       this.save();
-      if (hasNew) {
+
+      if (hasNewTopups) {
         this.notify('topups_updated', this.state.topups);
       }
+
+      if (this.state.user) {
+        this.notify('user_balance_updated', this.state.user);
+      }
+
+      if (balanceToastMsg && this.showToast) {
+        this.showToast(balanceToastMsg, 'success');
+      } else if (isManual && this.showToast) {
+        const curBal = (this.state.user && this.state.user.balance) || 0;
+        this.showToast(`✅ Đã đồng bộ số dư mới nhất từ hệ thống: ${curBal.toLocaleString('vi-VN')} Xu`, 'success');
+      }
+
       return this.state.topups;
     },
 
@@ -1826,9 +1958,11 @@
 
       this.save();
       this.notify('user_login', this.state.user);
+      this.notify('user_balance_updated', this.state.user);
       if (window.ShopVietApp && typeof window.ShopVietApp.updateHeaderAuthUI === 'function') {
         window.ShopVietApp.updateHeaderAuthUI();
       }
+      this.syncTopupsFromCloud().catch(function () {});
     },
 
     // Đăng xuất an toàn khỏi hệ thống (xóa session người dùng)
@@ -1879,16 +2013,19 @@
       this.setupFirestoreRealtimeListener();
       this.startRealtimeDaemon(2000);
       this.syncAllFromCloud().catch(function () {});
+      this.syncTopupsFromCloud(false).catch(function () {});
 
       // Auto-Sync on Focus & Tab Visibility Change (Đồng bộ tức thì khi chuyển tab / mở lại màn hình)
       if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
         const self = this;
         window.addEventListener('focus', function () {
           self.syncAllFromCloud(false).catch(function () {});
+          self.syncTopupsFromCloud(false).catch(function () {});
         });
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') {
             self.syncAllFromCloud(false).catch(function () {});
+            self.syncTopupsFromCloud(false).catch(function () {});
           }
         });
         // Lắng nghe thay đổi sản phẩm giữa các tab cùng trình duyệt tức thì trong 1 mili-giây

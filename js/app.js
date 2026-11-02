@@ -580,11 +580,12 @@ function updateHeaderAuthUI() {
       <div class="relative flex items-center gap-1.5 sm:gap-2">
         <!-- Số dư Ví Xu Cá Nhân & Nút Nạp Xu 1-Chạm Techcombank -->
         <div class="flex items-center gap-1.5 p-1 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 text-xs font-bold font-mono shadow-2xs">
-          <div onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1 px-2 py-0.5 cursor-pointer hover:underline" title="Bấm để Nạp Xu">
+          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1 px-2 py-0.5 cursor-pointer hover:bg-amber-500/20 rounded-lg transition" title="Bấm để đồng bộ số dư mới nhất từ hệ thống">
             <span class="text-amber-600">🪙</span>
-            <span>${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
+            <span id="headerUserBalanceText">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
+            <span class="text-[10px] text-amber-600/70 hover:rotate-180 transition-transform">🔄</span>
           </div>
-          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[10px] font-extrabold uppercase transition shadow-xs cursor-pointer">
+          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[10px] font-extrabold uppercase transition shadow-xs cursor-pointer" title="Nạp thêm Xu Techcombank">
             + Nạp
           </button>
         </div>
@@ -620,8 +621,10 @@ function updateHeaderAuthUI() {
 
           <!-- Ví Xu Cá Nhân -->
           <div class="px-4 py-2.5 bg-amber-500/10 border-b border-amber-200/60 dark:border-amber-900/40 flex items-center justify-between">
-            <div>
-              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Số dư Ví Xu:</span>
+            <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); }" class="cursor-pointer group" title="Bấm để đồng bộ số dư">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
+                Số dư Ví Xu <span class="group-hover:rotate-180 transition-transform duration-300">🔄</span>
+              </span>
               <p class="text-sm font-black text-amber-700 dark:text-amber-400">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</p>
             </div>
             <button onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2.5 py-1 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white font-bold text-[10px] transition-colors cursor-pointer">

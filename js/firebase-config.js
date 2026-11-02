@@ -94,11 +94,18 @@
             this.auth.onAuthStateChanged((user) => {
               if (user) {
                 const isAdmin = (user.email === 'thaitraicau123@gmail.com');
+                const existingUser = (window.ShopVietState && typeof window.ShopVietState.findUserByEmail === 'function')
+                  ? window.ShopVietState.findUserByEmail(user.email)
+                  : null;
+                const userBal = (existingUser && typeof existingUser.balance === 'number')
+                  ? existingUser.balance
+                  : (isAdmin ? 500000 : 0);
                 this.currentUser = {
                   uid: user.uid,
                   name: user.displayName || user.email.split('@')[0],
                   email: user.email,
                   avatar: user.photoURL || (user.displayName || user.email).charAt(0).toUpperCase(),
+                  balance: userBal,
                   isLoggedIn: true,
                   isOnline: true,
                   role: isAdmin ? 'admin' : 'member',
@@ -106,8 +113,11 @@
                 };
                 console.log('[ShopVietFirebase] Auth promtmmo kết nối thành công:', this.currentUser.email);
 
-                if (window.ShopVietState && (!window.ShopVietState.state.user || !window.ShopVietState.state.user.isLoggedIn)) {
+                if (window.ShopVietState) {
                   window.ShopVietState.login(this.currentUser);
+                  if (typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+                    window.ShopVietState.syncTopupsFromCloud(false).catch(function () {});
+                  }
                 }
               } else {
                 if (this.userUnsubscribe) {
@@ -153,17 +163,26 @@
             const userCred = await this.auth.signInWithEmailAndPassword(email, password);
             const user = userCred.user;
             const isAdmin = (user.email === 'thaitraicau123@gmail.com');
+            const existingUser = (window.ShopVietState && typeof window.ShopVietState.findUserByEmail === 'function')
+              ? window.ShopVietState.findUserByEmail(email)
+              : null;
+            const userBal = (existingUser && typeof existingUser.balance === 'number')
+              ? existingUser.balance
+              : (isAdmin ? 500000 : 0);
             const userData = {
               uid: user.uid,
               name: user.displayName || email.split('@')[0],
               email: user.email,
               avatar: (user.displayName || email).charAt(0).toUpperCase(),
-              balance: isAdmin ? 500000 : 0,
+              balance: userBal,
               isLoggedIn: true,
               isOnline: true,
               role: isAdmin ? 'admin' : 'member'
             };
             this.syncUserToCloud(userData);
+            if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+              window.ShopVietState.syncTopupsFromCloud(false).catch(function () {});
+            }
             return { success: true, user: userData, isCloud: true };
           } catch (firebaseErr) {
             console.warn('[ShopVietFirebase] Firebase Login:', firebaseErr.code);
@@ -200,18 +219,27 @@
               await user.updateProfile({ displayName: name });
             }
             const isAdmin = (user.email === 'thaitraicau123@gmail.com');
+            const existingUser = (window.ShopVietState && typeof window.ShopVietState.findUserByEmail === 'function')
+              ? window.ShopVietState.findUserByEmail(email)
+              : null;
+            const userBal = (existingUser && typeof existingUser.balance === 'number')
+              ? existingUser.balance
+              : (isAdmin ? 500000 : 0);
             const userData = {
               uid: user.uid,
               name: name || email.split('@')[0],
               email: user.email,
               avatar: (name || email).charAt(0).toUpperCase(),
-              balance: isAdmin ? 500000 : 0,
+              balance: userBal,
               isLoggedIn: true,
               isOnline: true,
               role: isAdmin ? 'admin' : 'member',
               createdAt: new Date().toISOString()
             };
             this.syncUserToCloud(userData);
+            if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+              window.ShopVietState.syncTopupsFromCloud(false).catch(function () {});
+            }
             return { success: true, user: userData, isCloud: true };
           } catch (firebaseErr) {
             console.warn('[ShopVietFirebase] Firebase Register error:', firebaseErr.code, firebaseErr.message);
@@ -238,17 +266,27 @@
             const result = await this.auth.signInWithPopup(provider);
             const user = result.user;
             const isAdmin = (user.email === 'thaitraicau123@gmail.com');
+            const existingUser = (window.ShopVietState && typeof window.ShopVietState.findUserByEmail === 'function')
+              ? window.ShopVietState.findUserByEmail(user.email)
+              : null;
+            const userBal = (existingUser && typeof existingUser.balance === 'number')
+              ? existingUser.balance
+              : (isAdmin ? 500000 : 0);
             const userData = {
               uid: user.uid,
               name: user.displayName || 'Bùi Thái',
               email: user.email,
               avatar: user.photoURL || (user.displayName || user.email).charAt(0).toUpperCase(),
+              balance: userBal,
               isLoggedIn: true,
               isOnline: true,
               role: isAdmin ? 'admin' : 'member',
               authProvider: 'google'
             };
             this.syncUserToCloud(userData);
+            if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+              window.ShopVietState.syncTopupsFromCloud(false).catch(function () {});
+            }
             return { success: true, user: userData, isCloud: true };
           } catch (err) {
             console.warn('[ShopVietFirebase] Google Popup notice:', err.message);

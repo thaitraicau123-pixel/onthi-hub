@@ -215,6 +215,76 @@
     },
 
     /**
+     * Phát âm thanh chime Web Audio API 0MB (deposit, success, ping)
+     */
+    playChime: function (type) {
+      playNotificationChime(type || 'deposit');
+    },
+
+    /**
+     * Kéo danh sách nạp Xu ĐÃ ĐƯỢC DUYỆT từ kênh ntfy.sh
+     * Giúp mọi thiết bị của khách hàng và Admin nhận tiền Xu tức thì không cần Firestore
+     */
+    fetchApprovedTopups: async function () {
+      const topic = this.getTopic();
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        const res = await fetch(`https://ntfy.sh/${topic}/json?poll=1`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) return [];
+        const text = await res.text();
+        const lines = text.trim().split('\n').filter(Boolean);
+        const approvals = [];
+
+        lines.forEach(l => {
+          try {
+            const item = JSON.parse(l);
+            if (item.event === 'message') {
+              const title = item.title || '';
+              const msg = item.message || '';
+              const isDepositRequest = (title.includes('YÊU CẦU NẠP') || title.includes('CẦN DUYỆT')) && !title.includes('ĐÃ DUYỆT');
+              const isApproval = !isDepositRequest && (title.includes('ĐÃ DUYỆT') || title.includes('DA DUYET') || msg.includes('Đã cộng thành công'));
+
+              if (isApproval) {
+                const amountMatch = title.match(/\+([\d.]+)\s*XU/i) || msg.match(/cộng thành công\s*([\d.]+)\s*Xu/i);
+                const emailMatch = msg.match(/tài khoản\s*([^\s.]+@[^\s.]+\.[^\s.]+)/i) ||
+                                   msg.match(/tài khoản\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i) ||
+                                   msg.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+
+                const amount = amountMatch ? parseInt(amountMatch[1].replace(/\./g, ''), 10) : 0;
+                const userEmail = emailMatch ? emailMatch[1].replace(/[.,]$/, '').trim().toLowerCase() : '';
+
+                if (amount > 0 && userEmail) {
+                  approvals.push({
+                    id: item.id || ('APP-' + item.time),
+                    amount: amount,
+                    userEmail: userEmail,
+                    time: item.time || Math.floor(Date.now() / 1000),
+                    createdAt: new Date((item.time || Math.floor(Date.now() / 1000)) * 1000).toISOString(),
+                    title: title,
+                    message: msg
+                  });
+                }
+              }
+            }
+          } catch (e) {}
+        });
+
+        return approvals;
+      } catch (err) {
+        console.warn('[BuiThaiNtfy] fetchApprovedTopups error:', err);
+        return [];
+      }
+    },
+
+    /**
      * Kéo danh sách yêu cầu nạp Xu thời gian thực từ kênh ntfy.sh
      * Giúp Admin trên máy tính thấy ngay các lệnh nạp từ điện thoại/máy khách
      */
@@ -239,11 +309,14 @@
         lines.forEach(l => {
           try {
             const item = JSON.parse(l);
-            if (item.event === 'message' && item.title && (item.title.includes('YÊU CẦU NẠP') || item.title.includes('XU'))) {
-              const msg = item.message || '';
+            const title = item.title || '';
+            const msg = item.message || '';
+            const isDepositRequest = (title.includes('YÊU CẦU NẠP') || title.includes('CẦN DUYỆT')) && !title.includes('ĐÃ DUYỆT');
+
+            if (item.event === 'message' && isDepositRequest) {
               const emailMatch = msg.match(/Khách:.*?\((.*?)\)/) || msg.match(/Khách:\s*([^\n\r]+)/);
               const nameMatch = msg.match(/Khách:\s*([^(]+)/);
-              const amountMatch = msg.match(/Số tiền:\s*([\d.]+)/) || item.title.match(/\+([\d.]+)\s*XU/);
+              const amountMatch = msg.match(/Số tiền:\s*([\d.]+)/) || title.match(/\+([\d.]+)\s*XU/);
               const memoMatch = msg.match(/Nội dung:\s*([^\n\r]+)/);
 
               const amount = amountMatch ? parseInt(amountMatch[1].replace(/\./g, ''), 10) : 0;
