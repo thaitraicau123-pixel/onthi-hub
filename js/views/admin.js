@@ -39,10 +39,13 @@
     brandColor: '#E92429'
   };
 
-  // Hàm kiểm tra quyền Admin tối cao: Chỉ email thaitraicau123@gmail.com
+  // Hàm kiểm tra quyền Admin tối cao: Email thaitraicau123@gmail.com hoặc mã PIN đã xác thực
   function isAllowedAdminUser() {
     const u = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
-    return Boolean(u && u.isLoggedIn && u.email === 'thaitraicau123@gmail.com');
+    if (u && u.isLoggedIn && (u.email === 'thaitraicau123@gmail.com' || u.role === 'admin')) {
+      return true;
+    }
+    return isAuthenticated();
   }
 
   // Danh sách ngân hàng hỗ trợ VietQR
@@ -329,6 +332,8 @@
     const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
     const vouchers = (window.ShopVietState && window.ShopVietState.getVouchers) ? window.ShopVietState.getVouchers() : [];
     const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
+    const topups = (window.ShopVietState && window.ShopVietState.getTopupRequests) ? window.ShopVietState.getTopupRequests() : [];
+    const pendingTopupsCount = topups.filter(t => t.status === 'pending_approval').length;
     const vietqr = getVietQRConfig();
     const curUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || {};
     const adminDisplayName = curUser.name || (curUser.email === 'thaitraicau123@gmail.com' ? 'Bùi Thái (Admin)' : (curUser.email || 'Bùi Thái (Admin)'));
@@ -376,7 +381,7 @@
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshData()" 
                 title="Làm mới dữ liệu (Refresh)"
-                class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold flex items-center gap-1.5"
+                class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
               >
                 <svg class="w-4 h-4 text-slate-500 hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
@@ -391,7 +396,7 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.close()" 
-                class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-1.5"
+                class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -404,7 +409,7 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.logout()" 
-                class="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-semibold transition flex items-center gap-1.5"
+                class="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -415,6 +420,22 @@
               </button>
             </div>
 
+          </div>
+
+          <!-- ==================== BANNER CẢNH BÁO YÊU CẦU NẠP XU MỚI ==================== -->
+          <div id="adminTopupAlertBanner" class="${pendingTopupsCount > 0 ? 'flex' : 'hidden'} px-5 py-3 bg-gradient-to-r from-amber-500/20 via-orange-500/25 to-amber-500/15 border-b border-amber-500/30 items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold shrink-0 animate-fade-in">
+            <div class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
+              <span>🔔 <strong>CÓ <span id="adminPendingTopupCountText">${pendingTopupsCount}</span> YÊU CẦU NẠP XU MỚI TỪ TECHCOMBANK 6688686866688 ĐANG CHỜ DUYỆT!</strong></span>
+            </div>
+            <button 
+              type="button" 
+              onclick="window.ShopVietViews.admin.switchTab('orders')" 
+              class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 shrink-0 transition active:scale-95"
+            >
+              <span>Vào Duyệt Ngay</span>
+              <span>→</span>
+            </button>
           </div>
 
           <!-- ==================== THANH TAB ĐIỀU HƯỚNG NGANG ==================== -->
@@ -431,7 +452,7 @@
               <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">${products.length}</span>
             </button>
 
-            <!-- Tab 2: Thanh toán VietQR & Đơn hàng -->
+            <!-- Tab 2: Thanh toán VietQR & Duyệt nạp xu -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('orders')" 
@@ -439,8 +460,10 @@
               class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'orders' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              <span>Thanh toán VietQR & Đơn hàng</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold" id="adminOrderTabBadge">${orders.length}</span>
+              <span>Thanh toán & Duyệt Nạp Xu</span>
+              <span class="px-2 py-0.5 rounded-md ${pendingTopupsCount > 0 ? 'bg-amber-500 text-white font-extrabold animate-pulse shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold'} text-[10px]" id="adminOrderTabBadge">
+                ${orders.length} đơn${pendingTopupsCount > 0 ? ` • ${pendingTopupsCount} chờ duyệt` : ''}
+              </span>
             </button>
 
             <!-- Tab 3: Cấu hình VietQR -->
@@ -804,9 +827,18 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.manualAddCoins && window.ShopVietViews.admin.manualAddCoins()"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer"
               >
                 + Cộng Xu
+              </button>
+              <button 
+                type="button" 
+                onclick="window.ShopVietViews.admin.refreshData && window.ShopVietViews.admin.refreshData()"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/80 hover:bg-amber-200 border border-amber-300/80 transition flex items-center gap-1 cursor-pointer"
+                title="Kéo các yêu cầu nạp mới nhất từ ntfy.sh"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                <span>🔄 Kéo ntfy Mới</span>
               </button>
             </div>
           </div>
@@ -3056,16 +3088,6 @@
     },
     // 1. Mở Cổng Portal Admin
     open: function () {
-      // Kiểm tra bảo mật tài khoản admin
-      if (!isAllowedAdminUser()) {
-        notify('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
-        if (window.location.hash === '#admin') {
-          window.location.hash = '#home';
-        }
-        this.close();
-        return;
-      }
-
       let modalMount = document.getElementById('adminMount');
       if (!modalMount) {
         modalMount = document.createElement('div');
@@ -3073,11 +3095,30 @@
         document.body.appendChild(modalMount);
       }
 
-      // Khi là thaitraicau123@gmail.com, cấp quyền xác thực và mở thẳng phiên quản trị
+      // Nếu chưa xác thực và không phải tài khoản admin, mở modal nhập PIN buithai123
+      if (!isAllowedAdminUser() && !isAuthenticated()) {
+        modalMount.innerHTML = renderPinAuthModal();
+        return;
+      }
+
+      // Khi là thaitraicau123@gmail.com hoặc đã có PIN, cấp quyền xác thực và mở thẳng phiên quản trị
       setAuthenticated(true);
       window.ShopVietViews.admin.isOpen = true;
       modalMount.innerHTML = renderAdminPortalModal();
       this.startSessionTimer();
+
+      // Tự động kiểm tra và sync yêu cầu nạp xu từ ntfy.sh & Cloud
+      if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+        window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
+          const pending = (topups || []).filter(t => t.status === 'pending_approval').length;
+          if (pending > 0) {
+            currentActiveTab = 'orders';
+          }
+          if (modalMount && window.ShopVietViews.admin.isOpen) {
+            modalMount.innerHTML = renderAdminPortalModal();
+          }
+        }).catch(function () {});
+      }
     },
 
     // 2. Đóng Cổng Portal Admin
@@ -3095,23 +3136,8 @@
 
     // 3. Render hỗ trợ SPA View Router nếu gọi qua ShopVietState.navigate('admin')
     render: function () {
-      if (!isAllowedAdminUser()) {
-        notify('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
-        setTimeout(() => {
-          if (window.ShopVietState) window.ShopVietState.navigate('home');
-        }, 50);
-        return `
-          <div class="max-w-lg mx-auto my-12 p-8 bg-white dark:bg-slate-900 rounded-3xl border border-rose-200 dark:border-rose-900/50 text-center space-y-4 shadow-xl">
-            <div class="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            </div>
-            <h3 class="text-lg font-black text-slate-900 dark:text-white">Truy Cập Bị Từ Chối</h3>
-            <p class="text-xs text-slate-500 leading-relaxed">Cổng quản trị Portal Admin chỉ dành riêng cho tài khoản quản trị viên tối cao: <br><strong class="text-rose-600 dark:text-rose-400 font-mono">thaitraicau123@gmail.com</strong></p>
-            <div class="pt-2">
-              <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-indigo-600 font-semibold text-xs">Về Trang Chủ</button>
-            </div>
-          </div>
-        `;
+      if (!isAllowedAdminUser() && !isAuthenticated()) {
+        return renderPinAuthModal();
       }
       setAuthenticated(true);
       return renderAdminPortalModal();
@@ -3193,17 +3219,27 @@
       }
     },
 
-    // 9. Làm mới dữ liệu kèm đồng bộ từ Đám Mây
+    // 9. Làm mới dữ liệu kèm đồng bộ từ Đám Mây & ntfy.sh
     refreshData: async function () {
-      if (window.ShopVietState && typeof window.ShopVietState.syncAllFromCloud === 'function') {
-        await window.ShopVietState.syncAllFromCloud().catch(function () {});
+      if (window.ShopVietState) {
+        if (typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+          await window.ShopVietState.syncTopupsFromCloud().catch(function () {});
+        }
+        if (typeof window.ShopVietState.syncAllFromCloud === 'function') {
+          await window.ShopVietState.syncAllFromCloud().catch(function () {});
+        }
       }
       restoreProductsFromStorage();
-      const tabContent = document.getElementById('adminTabContent');
-      if (tabContent) {
-        tabContent.innerHTML = renderTabBody(currentActiveTab);
+      const modalMount = document.getElementById('adminMount');
+      if (modalMount && window.ShopVietViews.admin.isOpen) {
+        modalMount.innerHTML = renderAdminPortalModal();
+      } else {
+        const tabContent = document.getElementById('adminTabContent');
+        if (tabContent) {
+          tabContent.innerHTML = renderTabBody(currentActiveTab);
+        }
       }
-      notify('Đã làm mới dữ liệu và đồng bộ với Đám Mây!', 'info');
+      notify('Đã làm mới dữ liệu và đồng bộ yêu cầu nạp Xu từ Cloud (ntfy.sh)!', 'success');
     },
 
     // 9b. Đồng bộ Đám Mây 2 chiều tức thì cho Toàn Hệ Thống (Sản phẩm, Voucher, Excel, Đơn hàng)
@@ -5335,8 +5371,37 @@
       });
     }
 
-    // 1. Quét định kỳ mỗi 2.5 giây khi Admin đang mở app
-    setInterval(checkPendingReviewOrders, 2500);
+    // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ ntfy.sh)
+    setInterval(function () {
+      checkPendingReviewOrders();
+      if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+        window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
+          const pending = (topups || []).filter(t => t.status === 'pending_approval').length;
+          const badge = document.getElementById('adminOrderTabBadge');
+          if (badge) {
+            const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
+            badge.textContent = `${orders.length} đơn${pending > 0 ? ` • ${pending} chờ duyệt` : ''}`;
+            if (pending > 0) {
+              badge.className = 'px-2 py-0.5 rounded-md bg-amber-500 text-white font-extrabold animate-pulse shadow-xs text-[10px]';
+            }
+          }
+          const banner = document.getElementById('adminTopupAlertBanner');
+          const countText = document.getElementById('adminPendingTopupCountText');
+          if (banner) {
+            if (pending > 0) {
+              banner.classList.remove('hidden');
+              banner.classList.add('flex');
+            } else {
+              banner.classList.remove('flex');
+              banner.classList.add('hidden');
+            }
+          }
+          if (countText) {
+            countText.textContent = pending;
+          }
+        }).catch(function () {});
+      }
+    }, 3500);
 
     // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
     function setupFirestoreOrderListener() {

@@ -215,6 +215,70 @@
     },
 
     /**
+     * Kéo danh sách yêu cầu nạp Xu thời gian thực từ kênh ntfy.sh
+     * Giúp Admin trên máy tính thấy ngay các lệnh nạp từ điện thoại/máy khách
+     */
+    fetchRecentTopupRequests: async function () {
+      const topic = this.getTopic();
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        const res = await fetch(`https://ntfy.sh/${topic}/json?poll=1`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) return [];
+        const text = await res.text();
+        const lines = text.trim().split('\n').filter(Boolean);
+        const topups = [];
+
+        lines.forEach(l => {
+          try {
+            const item = JSON.parse(l);
+            if (item.event === 'message' && item.title && (item.title.includes('YÊU CẦU NẠP') || item.title.includes('XU'))) {
+              const msg = item.message || '';
+              const emailMatch = msg.match(/Khách:.*?\((.*?)\)/) || msg.match(/Khách:\s*([^\n\r]+)/);
+              const nameMatch = msg.match(/Khách:\s*([^(]+)/);
+              const amountMatch = msg.match(/Số tiền:\s*([\d.]+)/) || item.title.match(/\+([\d.]+)\s*XU/);
+              const memoMatch = msg.match(/Nội dung:\s*([^\n\r]+)/);
+
+              const amount = amountMatch ? parseInt(amountMatch[1].replace(/\./g, ''), 10) : 0;
+              const userEmail = emailMatch ? emailMatch[1].trim() : 'khachhang@gmail.com';
+              const userName = nameMatch ? nameMatch[1].trim() : userEmail.split('@')[0];
+              const memo = memoMatch ? memoMatch[1].trim() : 'NAPXU';
+              const topupId = 'TOPUP-NTFY-' + (item.id || item.time);
+
+              topups.push({
+                id: topupId,
+                amount: amount,
+                userEmail: userEmail,
+                userName: userName,
+                memo: memo,
+                bank: 'Techcombank (6688686866688)',
+                accountNumber: '6688686866688',
+                accountName: 'BUI THAI',
+                method: 'Techcombank VietQR 24/7',
+                status: 'pending_approval',
+                statusText: 'Chờ Admin duyệt',
+                createdAt: new Date(item.time * 1000).toISOString(),
+                rawNtfyId: item.id
+              });
+            }
+          } catch (e) {}
+        });
+
+        return topups;
+      } catch (err) {
+        console.warn('[BuiThaiNtfy] fetchRecentTopupRequests error:', err);
+        return [];
+      }
+    },
+
+    /**
      * Kiểm tra kết nối ntfy
      */
     testNotification: async function () {
