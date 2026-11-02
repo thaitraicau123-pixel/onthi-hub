@@ -517,9 +517,9 @@ export default function LibraryView({
                       <p className="text-xs text-[#787774] dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
                         {course.subtitle || course.description}
                       </p>
-                      <div className="mt-2.5 text-[11px] text-[#9b9a97] dark:text-slate-400 flex items-center space-x-1.5">
+                      <div className="mt-2.5 text-[11px] text-[#9b9a97] dark:text-slate-400 flex items-center space-x-1.5 font-mono">
                         <Layers className="w-3 h-3" />
-                        <span>{course.previewCards?.length || 0} Prompts thực chiến</span>
+                        <span className="tabular-nums font-semibold">{course.cards?.length || course.previewCards?.length || course.cardsCount || 0} Prompts thực chiến</span>
                       </div>
                     </div>
 

@@ -61,6 +61,20 @@ export const COURSES_DATA = [
       'Giai đoạn 2: Thiết kế giao diện Haute Couture chuẩn phong cách Apple Minimalist & Editorial, chống 100% lỗi nhảy font tiếng Việt.',
       'Giai đoạn 3: Tích hợp Backend Supabase PostgreSQL, phân quyền RLS chống rò rỉ dữ liệu và cổng nạp VietQR tự động.',
       'Giai đoạn 4: Kiểm định chất lượng 4 tầng (Zero-Glitch Quality Gate) và bàn giao toàn bộ mã nguồn sạch.'
+    ],
+    cards: [
+      {
+        id: 1,
+        front: "🏛️ Kiến Trúc Hệ Thống Fullstack React 19 & Supabase RLS Cấp Ngân Hàng",
+        back: "PROMPT:\nBản thiết kế kiến trúc vi dịch vụ & lược đồ cơ sở dữ liệu bảo mật cấp ngân hàng. Tích hợp React 19 Client, Supabase PostgreSQL RLS (Row Level Security) tối ưu theo công thức (select auth.uid()) = user_id, chống rò rỉ dữ liệu C2C, tích hợp chữ ký HMAC và băm SHA-256 niêm phong ví chống F12 DevTools tampering.\n\n📌 THAM SỐ GỢI Ý:\n- Công nghệ: React 19, Vite, Tailwind CSS Studio, Supabase PostgreSQL RLS\n- Bảo mật: Khóa dòng FOR UPDATE, Chống Race Condition nạp rút\n- Tốc độ: First Contentful Paint < 350ms, 60fps micro-interactions\n- Bàn giao: Toàn bộ mã nguồn sạch 100%, Dockerfile & Vercel deployment.",
+        tag: "System Architecture"
+      },
+      {
+        id: 2,
+        front: "🎨 Quy Chuẩn Haute-Couture UI/UX & Thiết Kế Apple Liquid Glass 60fps",
+        back: "PROMPT:\nQuy chuẩn thiết kế giao diện thượng lưu Haute-Couture: Loại bỏ triệt để AI slop (bento box vụn vặt, pill badge, viền neon). Ứng dụng Song Font bản địa Be Vietnam Pro + Playfair Display chống lỗi nhảy dấu tiếng Việt, bố cục phân cấp tương phản cao, đổ bóng mờ phân tầng Apple Liquid Glass và Web Audio API synthesizer tái tạo âm thanh xúc giác Taptic Click 0MB.\n\n📌 THAM SỐ GỢI Ý:\n- Typography: Be Vietnam Pro (400, 600, 800) + Playfair Display (Serif Luxury)\n- Hiệu ứng: Emil Kowalski Spring Motion, GPU-accelerated 60fps\n- Bố cục: 12-cột bất đối xứng tự tin, khoảng thở thoáng đạt\n- Mobile: Tối ưu 100% cảm ứng vuốt chạm Swipe Gesture.",
+        tag: "Haute-Couture UI"
+      }
     ]
   },
   {
@@ -85,6 +99,20 @@ export const COURSES_DATA = [
       'Cơ chế tách bạch Xu thưởng và Xu doanh thu nhằm triệt tiêu lạm phát trong nền kinh tế số.',
       'Hàm PostgreSQL SECURITY DEFINER có khóa dòng FOR UPDATE ngăn chặn hoàn toàn tấn công rút tiền đúp.',
       'Bộ synthesizer Web Audio API 0MB tái tạo tiếng click taptic và tiếng rơi Xu kim loại cực nhạy.'
+    ],
+    cards: [
+      {
+        id: 1,
+        front: "🛡️ Kịch Bản Chống Rút Tiền Đúp & Khóa Dòng PostgreSQL FOR UPDATE",
+        back: "PROMPT:\nHàm PostgreSQL RPC SECURITY DEFINER có khóa dòng vật lý FOR UPDATE ngăn chặn Race Condition. Khi người dùng thực hiện giao dịch, hệ thống tự động khóa bản ghi ví trong một microsecond, thẩm định số dư khả dụng, tính toán thuế phí và niêm phong bản ghi mới trước khi nhả khóa.\n\n📌 THAM SỐ GỢI Ý:\n- Công nghệ: PostgreSQL PL/pgSQL, Supabase RPC\n- Bảo mật: SECURITY DEFINER, search_path = public\n- Chống gian lận: Hàm băm chữ ký computeWalletSeal\n- Xử lý: Tự động hoàn tiền nếu giao dịch bị gián đoạn.",
+        tag: "FinTech Security"
+      },
+      {
+        id: 2,
+        front: "🎵 Bộ Tổng Hợp Âm Thanh Xúc Giác Web Audio API (0MB Không Cần Tải MP3)",
+        back: "PROMPT:\nModule tổng hợp âm thanh sinh học tương tác thời gian thực bằng Web Audio API thuần của trình duyệt. Không sử dụng bất kỳ file .mp3 bên ngoài nào, độ trễ phản hồi < 1ms, tạo âm thanh Taptic mechanical click, tiếng coin lách cách khi nạp Xu và hợp âm thành công tươi sáng.\n\n📌 THAM SỐ GỢI Ý:\n- Công nghệ: Native Web Audio API AudioContext, OscillatorNode, GainNode\n- Tần số: 440Hz -> 880Hz exponential ramp\n- Dung lượng: 0 byte tải về, chạy mượt trên cả Safari iOS và Chrome Android.",
+        tag: "Web Audio Synthesizer"
+      }
     ]
   },
   // =========================================================================

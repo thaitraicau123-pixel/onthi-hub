@@ -41,10 +41,8 @@ function NotionSidebar({
   const icons = currentTheme?.icons || {};
 
   const workspaceNavItems = [
-    { id: 'home', label: 'Trang Chủ & Dịch Vụ', icon: Home, emoji: icons.home || '⚡', desc: 'Dịch vụ Bùi Thái & Prompt thực chiến' },
-    { id: 'marketplace', label: 'Chợ Prompts C2C', icon: Store, emoji: icons.marketplace || '🏪', badge: 'HOT', desc: 'Sàn mua bán Prompt & Workflow cộng đồng' },
+    { id: 'home', label: 'Trang Chủ & Kho Prompt', icon: Home, emoji: icons.home || '⚡', desc: 'Dịch vụ Bùi Thái & Prompt thực chiến' },
     { id: 'library', label: 'Kho Của Tôi', icon: FolderHeart, emoji: icons.library || '📁', count: purchasedCount, desc: 'Prompts & Dịch vụ đã sở hữu' },
-    { id: 'community', label: 'Cộng Đồng MMO & AI', icon: Users, emoji: icons.community || '💬', desc: 'Thủ thuật, kinh nghiệm & case studies' },
   ];
 
   const accountNavItems = [

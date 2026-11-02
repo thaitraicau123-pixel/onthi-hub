@@ -370,20 +370,20 @@ export default function HomeView({
             </div>
           </div>
 
-          {/* Card 2: Chợ Prompt C2C */}
+          {/* Card 2: Kho Của Tôi */}
           <div
-            onClick={() => onSwitchTab('marketplace')}
+            onClick={() => onSwitchTab('library')}
             className="p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-emerald-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98] transition-all duration-200 cursor-pointer flex flex-col justify-between select-none"
           >
             <div className="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-2">
-              <Store className="w-4 h-4" />
+              <Layers className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center space-x-1.5">
-                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Chợ Prompt C2C</h4>
-                <span className="apple-pill-amber text-[9px] font-bold px-1.5 py-0.2 rounded-full">HOT</span>
+                <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Kho Của Tôi</h4>
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">PRO</span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">Sàn mua bán Creator</p>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">Prompt & Code đã mở khóa</p>
             </div>
           </div>
 

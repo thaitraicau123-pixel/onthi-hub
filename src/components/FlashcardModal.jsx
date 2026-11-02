@@ -128,9 +128,12 @@ export default function FlashcardModal({
   onOpenDirectChat
 }) {
   const allDeckCards = useMemo(() => {
+    if (course?.cards?.length) {
+      return course.cards;
+    }
     return course?.previewCards?.length
       ? course.previewCards
-      : (course?.cards?.length ? course.cards : (course?.flashcards?.length ? course.flashcards : (course?.sampleCards || [])));
+      : (course?.flashcards?.length ? course.flashcards : (course?.sampleCards || []));
   }, [course]);
 
   // Starred Cards State with localStorage persistence

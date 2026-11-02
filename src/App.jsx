@@ -19,6 +19,7 @@ const PlansView = lazy(() => import('./views/PlansView'));
 const AdminView = lazy(() => import('./views/AdminView'));
 
 // Lazy loaded interactive modals
+const FlashcardModal = lazy(() => import('./components/FlashcardModal'));
 const LeaderboardModal = lazy(() => import('./components/LeaderboardModal'));
 const PaymentModal = lazy(() => import('./components/PaymentModal'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
@@ -77,12 +78,10 @@ import confetti from 'canvas-confetti';
 import { CheckCircle2 } from 'lucide-react';
 
 const TAB_INFO_MAP = {
-  home: { id: 'home', emoji: '⚡', label: 'Trang Chủ & Dịch Vụ Bùi Thái' },
-  marketplace: { id: 'marketplace', emoji: '🏪', label: 'Chợ Prompts & Sàn C2C' },
+  home: { id: 'home', emoji: '⚡', label: 'Trang Chủ & Kho Prompt' },
   skills: { id: 'skills', emoji: '🤖', label: 'Kho 238+ AI Skills' },
   studio: { id: 'studio', emoji: '💡', label: 'Prompt Studio & Ideator' },
   library: { id: 'library', emoji: '📁', label: 'Kho Prompt Của Tôi' },
-  community: { id: 'community', emoji: '💬', label: 'Cộng Đồng MMO & Creator' },
   wallet: { id: 'wallet', emoji: '🪙', label: 'Ví Xu PromptMMO' },
   plans: { id: 'plans', emoji: '⚡', label: 'Gói Hội Viên VIP' },
   admin: { id: 'admin', emoji: '👑', label: 'Cửa Sổ Quản Trị Hệ Thống' }
@@ -103,6 +102,7 @@ export default function App() {
   const [marketplaceDecks, setMarketplaceDecks] = useState(() => getMarketplaceDecks());
 
   // Focused Overlay Modals
+  const [activeFlashcardCourse, setActiveFlashcardCourse] = useState(null);
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [activePaymentItem, setActivePaymentItem] = useState(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -354,10 +354,10 @@ export default function App() {
               <div key={activeTab} className="animate-studio-rise">
                 <Suspense fallback={<ViewLoadingFallback />}>
                 
-                {/* TAB 1: TRANG CHỦ & DỊCH VỤ BÙI THÁI + PROMPT THỰC CHIẾN */}
+                {/* TAB 1: TRANG CHỦ & KHO PROMPT THỰC CHIẾN */}
                 {activeTab === 'home' && (
                   <HomeView
-                    onOpenFlashcards={(c) => setActivePaymentItem(c)}
+                    onOpenFlashcards={(c) => setActiveFlashcardCourse(c)}
                     onBuyCourse={(c) => setActivePaymentItem(c)}
                     onBuyCombo={(combo) => setActivePaymentItem(combo)}
                     onSwitchTab={handleSelectTab}
@@ -368,30 +368,14 @@ export default function App() {
                   />
                 )}
 
-                {/* TAB 2: CHỢ PROMPT C2C */}
-                {activeTab === 'marketplace' && (
-                  <MarketplaceView
-                    user={user}
-                    marketplaceDecks={marketplaceDecks}
-                    onOpenCreateDeck={() => handleSelectTab('studio')}
-                    onOpenFlashcardSample={(sampleDeck) => {
-                      showToast(`Prompt: ${sampleDeck.title}`);
-                    }}
-                    onBalanceUpdated={refreshState}
-                    onOpenWallet={() => handleSelectTab('wallet')}
-                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
-                    onShowToast={showToast}
-                  />
-                )}
-
-                {/* TAB 3: KHO 238+ AI SKILLS & SUBAGENTS */}
+                {/* TAB 2: KHO 238+ AI SKILLS & SUBAGENTS */}
                 {activeTab === 'skills' && (
                   <SkillsArmoryView
                     onShowToast={showToast}
                   />
                 )}
 
-                {/* TAB 4: PROMPT STUDIO & IDEATOR SANDBOX */}
+                {/* TAB 3: PROMPT STUDIO & IDEATOR SANDBOX */}
                 {activeTab === 'studio' && (
                   <PromptStudioView
                     onShowToast={showToast}
@@ -399,30 +383,18 @@ export default function App() {
                   />
                 )}
 
-                {/* TAB 5: KHO PROMPT CỦA TÔI */}
+                {/* TAB 4: KHO PROMPT CỦA TÔI */}
                 {activeTab === 'library' && (
                   <LibraryView
                     purchasedCourses={purchasedCourses}
                     allCourses={COURSES_DATA}
                     onOpenFlashcards={(c) => {
-                      if (c) setActivePaymentItem(c);
+                      if (c) setActiveFlashcardCourse(c);
                     }}
                     onOpenSellDeck={(c) => setActiveSellCourse(c)}
                     onShowToast={showToast}
                     onSwitchTab={handleSelectTab}
                     onOpenDirectChat={() => setIsDirectChatOpen(true)}
-                  />
-                )}
-
-                {/* TAB 6: CỘNG ĐỒNG MMO & AI */}
-                {activeTab === 'community' && (
-                  <CommunityView
-                    user={user}
-                    onOpenAuth={() => setIsAuthOpen(true)}
-                    onShowToast={showToast}
-                    onBalanceUpdated={refreshState}
-                    onOpenDirectChat={() => setIsDirectChatOpen(true)}
-                    onOpenShareAchievement={(data) => setActiveShareAchievement(data)}
                   />
                 )}
 
@@ -477,6 +449,20 @@ export default function App() {
 
       {/* ─── MODALS ─── */}
       <Suspense fallback={<ModalLoadingFallback />}>
+        {/* FLASHCARD REPO PROMPT MODAL (FULL THOUSANDS-CHARACTERS PROMPT VIEWER & COPY) */}
+        {activeFlashcardCourse && (
+          <FlashcardModal
+            course={activeFlashcardCourse}
+            isPurchased={purchasedCourses.includes('combo-all-access') || purchasedCourses.includes(activeFlashcardCourse.id)}
+            onClose={() => setActiveFlashcardCourse(null)}
+            onBuy={(c) => {
+              setActiveFlashcardCourse(null);
+              setActivePaymentItem(c);
+            }}
+            onOpenDirectChat={() => setIsDirectChatOpen(true)}
+          />
+        )}
+
         {/* PAYMENT MODAL */}
         {activePaymentItem && (
           <PaymentModal
@@ -583,7 +569,7 @@ export default function App() {
             courses={COURSES_DATA}
             onSelectCourse={(c) => {
               setIsCommandPaletteOpen(false);
-              setActivePaymentItem(c);
+              setActiveFlashcardCourse(c);
             }}
             onSelectTab={(tab) => {
               setIsCommandPaletteOpen(false);

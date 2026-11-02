@@ -168,8 +168,6 @@ export default function NotionTopbar({
     home: { emoji: '⚡', title: 'Trang Chủ & Kho Prompt' },
     library: { emoji: '📁', title: 'Kho Prompt Của Tôi' },
     create: { emoji: '✍️', title: 'Studio Đăng Bán Prompt' },
-    marketplace: { emoji: '🏪', title: 'Chợ Prompt C2C' },
-    community: { emoji: '💬', title: 'Cộng Đồng Creator MMO' },
     wallet: { emoji: '🪙', title: 'Ví Xu PromptMMO' },
     plans: { emoji: '⚡', title: 'Gói Hội Viên VIP' },
     admin: { emoji: '👑', title: 'Cửa Sổ Quản Trị Hệ Thống' }
