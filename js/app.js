@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (event === 'cart_updated') {
       window.ShopVietState.updateCartBadge();
     }
-    if (event === 'user_login' || event === 'user_logout' || event === 'view_changed') {
+    if (event === 'user_login' || event === 'user_logout' || event === 'user_balance_updated' || event === 'topups_updated' || event === 'view_changed') {
       updateHeaderAuthUI();
     }
     if (event === 'view_changed' && payload) {

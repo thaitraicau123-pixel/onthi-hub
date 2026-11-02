@@ -1,22 +1,22 @@
-/**
+﻿/**
  * BuiThai AI Studio - Secret Admin Portal View Module
- * Tệp: js/views/admin.js
+ * Tá»‡p: js/views/admin.js
  * 
- * Cổng Quản Trị Bí Mật (buithai123) chuẩn xác theo phong cách Ảnh 3:
- * - Bảo mật truy cập: Phím tắt Ctrl + Shift + A, Hash #admin, Mã PIN xác thực (buithai123 / admin2026)
- * - Header Modal chuẩn Ảnh 3: Icon bánh răng gradient tím/xanh, Tiêu đề "Phiên quản trị (buithai123)", Badge "Admin Session", Dòng phụ "Bạn vẫn đang dùng tài khoản Minh Cuong • Phiên: 59:54 • Cấu hình: v12", nút Làm mới, Về Trang chủ, Đăng xuất
- * - Tab 1: Giá & gói (Quản lý sản phẩm: thêm/sửa/xóa, giá bán, giá gốc, tồn kho, trạng thái, ảnh/icon, lưu localStorage, realtime cập nhật view Home)
- * - Tab 2: Thanh toán VietQR & Đơn hàng (Duyệt đơn, xem ảnh bill, thống kê doanh thu)
- * - Tab 3: Cấu hình VietQR (Cấu hình STK, Chủ TK, Ngân hàng, Live VietQR Preview)
+ * Cá»•ng Quáº£n Trá»‹ BÃ­ Máº­t (buithai123) chuáº©n xÃ¡c theo phong cÃ¡ch áº¢nh 3:
+ * - Báº£o máº­t truy cáº­p: PhÃ­m táº¯t Ctrl + Shift + A, Hash #admin, MÃ£ PIN xÃ¡c thá»±c (buithai123 / admin2026)
+ * - Header Modal chuáº©n áº¢nh 3: Icon bÃ¡nh rÄƒng gradient tÃ­m/xanh, TiÃªu Ä‘á» "PhiÃªn quáº£n trá»‹ (buithai123)", Badge "Admin Session", DÃ²ng phá»¥ "Báº¡n váº«n Ä‘ang dÃ¹ng tÃ i khoáº£n Minh Cuong â€¢ PhiÃªn: 59:54 â€¢ Cáº¥u hÃ¬nh: v12", nÃºt LÃ m má»›i, Vá» Trang chá»§, ÄÄƒng xuáº¥t
+ * - Tab 1: GiÃ¡ & gÃ³i (Quáº£n lÃ½ sáº£n pháº©m: thÃªm/sá»­a/xÃ³a, giÃ¡ bÃ¡n, giÃ¡ gá»‘c, tá»“n kho, tráº¡ng thÃ¡i, áº£nh/icon, lÆ°u localStorage, realtime cáº­p nháº­t view Home)
+ * - Tab 2: Thanh toÃ¡n VietQR & ÄÆ¡n hÃ ng (Duyá»‡t Ä‘Æ¡n, xem áº£nh bill, thá»‘ng kÃª doanh thu)
+ * - Tab 3: Cáº¥u hÃ¬nh VietQR (Cáº¥u hÃ¬nh STK, Chá»§ TK, NgÃ¢n hÃ ng, Live VietQR Preview)
  */
 
 (function () {
   'use strict';
 
-  // Khởi tạo namespace toàn cục
+  // Khá»Ÿi táº¡o namespace toÃ n cá»¥c
   window.ShopVietViews = window.ShopVietViews || {};
 
-  // Hằng số bảo mật và lưu trữ
+  // Háº±ng sá»‘ báº£o máº­t vÃ  lÆ°u trá»¯
   const STORAGE_KEYS = {
     ADMIN_AUTH: 'shopviet_admin_authenticated',
     PRODUCTS: 'shopviet_admin_products',
@@ -24,14 +24,14 @@
     ACTIVE_TAB: 'shopviet_admin_active_tab'
   };
 
-  // Mã PIN quản trị hợp lệ
+  // MÃ£ PIN quáº£n trá»‹ há»£p lá»‡
   const VALID_PINS = ['buithai123', 'admin2026'];
 
-  // Cấu hình VietQR mặc định - Chuẩn Techcombank 6688686866688 BUI THAI
+  // Cáº¥u hÃ¬nh VietQR máº·c Ä‘á»‹nh - Chuáº©n Techcombank 6688686866688 BUI THAI
   const DEFAULT_VIETQR_CONFIG = {
     bankId: '970407', // Techcombank BIN 970407
     bin: '970407',
-    bankName: 'Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)',
+    bankName: 'Techcombank (NgÃ¢n hÃ ng TMCP Ká»¹ ThÆ°Æ¡ng Viá»‡t Nam)',
     shortName: 'Techcombank',
     accountNumber: '6688686866688',
     accountName: 'BUI THAI',
@@ -39,27 +39,27 @@
     brandColor: '#E92429'
   };
 
-  // Hàm kiểm tra quyền Admin tối cao: Chỉ email thaitraicau123@gmail.com
+  // HÃ m kiá»ƒm tra quyá»n Admin tá»‘i cao: Chá»‰ email thaitraicau123@gmail.com
   function isAllowedAdminUser() {
     const u = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
     return Boolean(u && u.isLoggedIn && u.email === 'thaitraicau123@gmail.com');
   }
 
-  // Danh sách ngân hàng hỗ trợ VietQR
+  // Danh sÃ¡ch ngÃ¢n hÃ ng há»— trá»£ VietQR
   const SUPPORTED_BANKS = [
-    { id: '970422', code: 'MB', name: 'MB Bank (Ngân hàng Quân Đội)' },
+    { id: '970422', code: 'MB', name: 'MB Bank (NgÃ¢n hÃ ng QuÃ¢n Äá»™i)' },
     { id: '970407', code: 'TCB', name: 'Techcombank' },
     { id: '970436', code: 'VCB', name: 'Vietcombank' },
     { id: '970415', code: 'CTG', name: 'VietinBank' },
     { id: '970418', code: 'BIDV', name: 'BIDV' },
-    { id: '970416', code: 'ACB', name: 'ACB (Ngân hàng Á Châu)' },
+    { id: '970416', code: 'ACB', name: 'ACB (NgÃ¢n hÃ ng Ã ChÃ¢u)' },
     { id: '970432', code: 'VPB', name: 'VPBank' },
     { id: '970423', code: 'TPB', name: 'TPBank' },
-    { id: '970454', code: 'VIB', name: 'VIB (Quốc Tế)' },
+    { id: '970454', code: 'VIB', name: 'VIB (Quá»‘c Táº¿)' },
     { id: '970407', code: 'STB', name: 'Techcombank' }
   ];
 
-  // Khôi phục sản phẩm từ LocalStorage nếu đã có trước đó
+  // KhÃ´i phá»¥c sáº£n pháº©m tá»« LocalStorage náº¿u Ä‘Ã£ cÃ³ trÆ°á»›c Ä‘Ã³
   function restoreProductsFromStorage() {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.PRODUCTS) || localStorage.getItem('shopviet_custom_products');
@@ -79,16 +79,16 @@
     }
   }
 
-  // Khởi động khôi phục dữ liệu
+  // Khá»Ÿi Ä‘á»™ng khÃ´i phá»¥c dá»¯ liá»‡u
   restoreProductsFromStorage();
 
-  // Biến trạng thái nội bộ của Admin Module
+  // Biáº¿n tráº¡ng thÃ¡i ná»™i bá»™ cá»§a Admin Module
   let currentActiveTab = 'pricing'; // 'pricing' | 'orders' | 'vietqr' | 'vouchers' | 'schedules'
   let sessionCountdownSeconds = 59 * 60 + 54; // 59:54
   let sessionIntervalTimer = null;
-  let editingProductId = null; // null = tạo mới, string = sửa
+  let editingProductId = null; // null = táº¡o má»›i, string = sá»­a
 
-  // Lịch sử & Trạng thái Trạm Phát Sóng Thời Gian Thực (Realtime Sync Hub)
+  // Lá»‹ch sá»­ & Tráº¡ng thÃ¡i Tráº¡m PhÃ¡t SÃ³ng Thá»i Gian Thá»±c (Realtime Sync Hub)
   function getBroadcastHistory() {
     try {
       const saved = localStorage.getItem('shopviet_broadcast_history');
@@ -101,8 +101,8 @@
       {
         id: 'hist-init',
         type: 'system_init',
-        title: 'Khởi động trạm phát sóng',
-        detail: 'Trạm Realtime Sync Hub đã sẵn sàng hoạt động (shopviet_realtime_sync)',
+        title: 'Khá»Ÿi Ä‘á»™ng tráº¡m phÃ¡t sÃ³ng',
+        detail: 'Tráº¡m Realtime Sync Hub Ä‘Ã£ sáºµn sÃ ng hoáº¡t Ä‘á»™ng (shopviet_realtime_sync)',
         time: new Date().toLocaleTimeString('vi-VN'),
         date: new Date().toLocaleDateString('vi-VN'),
         timestamp: Date.now(),
@@ -113,13 +113,13 @@
 
   function getBroadcastTypeTitle(type) {
     switch (type) {
-      case 'products_updated': return '📦 Cập nhật Sản phẩm';
-      case 'vietqr_updated': return '💳 Cập nhật Cấu hình VietQR';
-      case 'orders_updated': return '📋 Cập nhật Đơn hàng & License';
-      case 'vouchers_updated': return '🎁 Cập nhật Mã giảm giá';
-      case 'schedules_updated': return '📅 Cập nhật Lịch hẹn khách';
-      case 'test_ping': return '⚡ Phát Tín Hiệu Thử Nghiệm (Ping)';
-      default: return '📡 Tín hiệu Realtime';
+      case 'products_updated': return 'ðŸ“¦ Cáº­p nháº­t Sáº£n pháº©m';
+      case 'vietqr_updated': return 'ðŸ’³ Cáº­p nháº­t Cáº¥u hÃ¬nh VietQR';
+      case 'orders_updated': return 'ðŸ“‹ Cáº­p nháº­t ÄÆ¡n hÃ ng & License';
+      case 'vouchers_updated': return 'ðŸŽ Cáº­p nháº­t MÃ£ giáº£m giÃ¡';
+      case 'schedules_updated': return 'ðŸ“… Cáº­p nháº­t Lá»‹ch háº¹n khÃ¡ch';
+      case 'test_ping': return 'âš¡ PhÃ¡t TÃ­n Hiá»‡u Thá»­ Nghiá»‡m (Ping)';
+      default: return 'ðŸ“¡ TÃ­n hiá»‡u Realtime';
     }
   }
 
@@ -135,7 +135,7 @@
         id: 'bc-' + ts,
         type: type,
         title: getBroadcastTypeTitle(type),
-        detail: detail || 'Đồng bộ dữ liệu thời gian thực lên mọi máy khách',
+        detail: detail || 'Äá»“ng bá»™ dá»¯ liá»‡u thá»i gian thá»±c lÃªn má»i mÃ¡y khÃ¡ch',
         time: timeStr,
         date: dateStr,
         timestamp: ts,
@@ -156,10 +156,10 @@
         }
       }
     } catch (e) {}
-    return 'Vừa mới đây (Live)';
+    return 'Vá»«a má»›i Ä‘Ã¢y (Live)';
   }
 
-  // Lấy cấu hình VietQR hiện tại
+  // Láº¥y cáº¥u hÃ¬nh VietQR hiá»‡n táº¡i
   function getVietQRConfig() {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.VIETQR_CONFIG);
@@ -170,7 +170,7 @@
     return DEFAULT_VIETQR_CONFIG;
   }
 
-  // Lưu cấu hình VietQR
+  // LÆ°u cáº¥u hÃ¬nh VietQR
   function saveVietQRConfig(config) {
     try {
       localStorage.setItem(STORAGE_KEYS.VIETQR_CONFIG, JSON.stringify(config));
@@ -179,14 +179,14 @@
     }
   }
 
-  // Kiểm tra trạng thái xác thực Admin (hỗ trợ kiểm tra trực tiếp quyền từ ShopVietState.isAdmin)
+  // Kiá»ƒm tra tráº¡ng thÃ¡i xÃ¡c thá»±c Admin (há»— trá»£ kiá»ƒm tra trá»±c tiáº¿p quyá»n tá»« ShopVietState.isAdmin)
   function isAuthenticated() {
     return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' ||
            localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' ||
            (window.ShopVietState && typeof window.ShopVietState.isAdmin === 'function' && window.ShopVietState.isAdmin());
   }
 
-  // Đặt trạng thái xác thực
+  // Äáº·t tráº¡ng thÃ¡i xÃ¡c thá»±c
   function setAuthenticated(status) {
     if (status) {
       sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true');
@@ -197,19 +197,19 @@
     }
   }
 
-  // Helper định dạng tiền VNĐ
+  // Helper Ä‘á»‹nh dáº¡ng tiá»n VNÄ
   function formatVND(num) {
-    return (Number(num) || 0).toLocaleString('vi-VN') + ' đ';
+    return (Number(num) || 0).toLocaleString('vi-VN') + ' Ä‘';
   }
 
-  // Helper định dạng thời gian phiên
+  // Helper Ä‘á»‹nh dáº¡ng thá»i gian phiÃªn
   function formatSessionTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // Helper định dạng ngày giờ chuẩn Việt Nam
+  // Helper Ä‘á»‹nh dáº¡ng ngÃ y giá» chuáº©n Viá»‡t Nam
   function formatDateTime(dateStr) {
     if (!dateStr) return '-';
     try {
@@ -231,7 +231,7 @@
   }
 
   // =========================================================================
-  // GIAO DIỆN MODAL NHẬP MÃ PIN XÁC THỰC BẢO MẬT
+  // GIAO DIá»†N MODAL NHáº¬P MÃƒ PIN XÃC THá»°C Báº¢O Máº¬T
   // =========================================================================
   function renderPinAuthModal() {
     return `
@@ -251,20 +251,20 @@
               </svg>
             </div>
             <div>
-              <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Cổng Quản Trị Bí Mật</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Vui lòng nhập mã PIN quản trị viên (buithai123)</p>
+              <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">Cá»•ng Quáº£n Trá»‹ BÃ­ Máº­t</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Vui lÃ²ng nháº­p mÃ£ PIN quáº£n trá»‹ viÃªn (buithai123)</p>
             </div>
           </div>
 
           <!-- PIN Form -->
           <form id="adminPinForm" class="mt-6 space-y-4 relative z-10" onsubmit="event.preventDefault(); window.ShopVietViews.admin.submitPin();">
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Mã PIN xác thực</label>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">MÃ£ PIN xÃ¡c thá»±c</label>
               <div class="relative">
                 <input 
                   type="password" 
                   id="adminPinInput" 
-                  placeholder="Nhập mã PIN bí mật..." 
+                  placeholder="Nháº­p mÃ£ PIN bÃ­ máº­t..." 
                   autocomplete="current-password"
                   autofocus
                   class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] text-sm tracking-widest font-mono"
@@ -283,13 +283,13 @@
               </div>
               <p id="adminPinError" class="text-xs text-rose-500 font-medium mt-1.5 hidden flex items-center gap-1">
                 <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span>Mã PIN không chính xác! Vui lòng thử lại.</span>
+                <span>MÃ£ PIN khÃ´ng chÃ­nh xÃ¡c! Vui lÃ²ng thá»­ láº¡i.</span>
               </p>
             </div>
 
             <!-- Hint Box -->
             <div class="p-3 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 text-[11px] text-indigo-700 dark:text-indigo-300 flex items-center justify-between">
-              <span>Gợi ý mã PIN mặc định:</span>
+              <span>Gá»£i Ã½ mÃ£ PIN máº·c Ä‘á»‹nh:</span>
               <code class="font-mono font-bold bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 cursor-pointer" onclick="document.getElementById('adminPinInput').value='buithai123'">buithai123</code>
             </div>
 
@@ -300,7 +300,7 @@
                 onclick="window.ShopVietViews.admin.close()" 
                 class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition"
               >
-                Hủy bỏ
+                Há»§y bá»
               </button>
               <button 
                 type="submit" 
@@ -311,7 +311,7 @@
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" x2="3" y1="12" y2="12"/>
                 </svg>
-                <span>Vào Quản Trị</span>
+                <span>VÃ o Quáº£n Trá»‹</span>
               </button>
             </div>
           </form>
@@ -322,7 +322,7 @@
   }
 
   // =========================================================================
-  // GIAO DIỆN PHIÊN QUẢN TRỊ MODAL CHUẨN XÁC THEO PHONG CÁCH ẢNH 3
+  // GIAO DIá»†N PHIÃŠN QUáº¢N TRá»Š MODAL CHUáº¨N XÃC THEO PHONG CÃCH áº¢NH 3
   // =========================================================================
   function renderAdminPortalModal() {
     const products = (window.ShopVietData && window.ShopVietData.products) || [];
@@ -335,12 +335,12 @@
       <div id="adminPortalBackdrop" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 lg:p-6 animate-fade-in">
         <div id="adminPortalContainer" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-7xl h-[92vh] max-h-[920px] flex flex-col overflow-hidden animate-slide-up">
           
-          <!-- ==================== HEADER MODAL CHUẨN ẢNH 3 ==================== -->
+          <!-- ==================== HEADER MODAL CHUáº¨N áº¢NH 3 ==================== -->
           <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-950/70 shrink-0">
             
             <!-- Left Info Cluster -->
             <div class="flex items-center gap-3.5">
-              <!-- Icon Bánh Răng Cài Đặt Tím/Xanh -->
+              <!-- Icon BÃ¡nh RÄƒng CÃ i Äáº·t TÃ­m/Xanh -->
               <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-amber-900/15 shrink-0">
                 <svg class="w-6 h-6 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
@@ -348,11 +348,11 @@
                 </svg>
               </div>
 
-              <!-- Tiêu đề lớn & Dòng phụ -->
+              <!-- TiÃªu Ä‘á» lá»›n & DÃ²ng phá»¥ -->
               <div>
                 <div class="flex items-center gap-2">
                   <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>Phiên quản trị (buithai123)</span>
+                    <span>PhiÃªn quáº£n trá»‹ (buithai123)</span>
                   </h2>
                   <!-- Badge xanh Admin Session -->
                   <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
@@ -360,20 +360,20 @@
                     Admin Session
                   </span>
                 </div>
-                <!-- Dòng phụ chuẩn Ảnh 3 -->
+                <!-- DÃ²ng phá»¥ chuáº©n áº¢nh 3 -->
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Bạn vẫn đang dùng tài khoản <strong class="text-slate-700 dark:text-slate-200">Minh Cuong</strong> • Phiên: <span id="adminSessionTimer" class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${formatSessionTime(sessionCountdownSeconds)}</span> • Cấu hình: <span class="font-semibold text-slate-700 dark:text-slate-300">v12</span>
+                  Báº¡n váº«n Ä‘ang dÃ¹ng tÃ i khoáº£n <strong class="text-slate-700 dark:text-slate-200">Minh Cuong</strong> â€¢ PhiÃªn: <span id="adminSessionTimer" class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${formatSessionTime(sessionCountdownSeconds)}</span> â€¢ Cáº¥u hÃ¬nh: <span class="font-semibold text-slate-700 dark:text-slate-300">v12</span>
                 </p>
               </div>
             </div>
 
-            <!-- Cụm Nút Phải: Làm Mới, Về Trang Chủ, Đăng Xuất (Đã tinh gọn chuẩn Clean SaaS, bảo toàn 100% logic ngầm) -->
+            <!-- Cá»¥m NÃºt Pháº£i: LÃ m Má»›i, Vá» Trang Chá»§, ÄÄƒng Xuáº¥t (ÄÃ£ tinh gá»n chuáº©n Clean SaaS, báº£o toÃ n 100% logic ngáº§m) -->
             <div class="flex items-center gap-2">
-              <!-- Nút Làm Mới -->
+              <!-- NÃºt LÃ m Má»›i -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshData()" 
-                title="Làm mới dữ liệu (Refresh)"
+                title="LÃ m má»›i dá»¯ liá»‡u (Refresh)"
                 class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold flex items-center gap-1.5"
               >
                 <svg class="w-4 h-4 text-slate-500 hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -382,10 +382,10 @@
                   <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
                   <path d="M16 21h5v-5"/>
                 </svg>
-                <span class="hidden sm:inline">Làm mới</span>
+                <span class="hidden sm:inline">LÃ m má»›i</span>
               </button>
 
-              <!-- Nút Về Trang Chủ -->
+              <!-- NÃºt Vá» Trang Chá»§ -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.close()" 
@@ -395,10 +395,10 @@
                   <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                   <polyline points="9 22 9 12 15 12 15 22"/>
                 </svg>
-                <span>Về Trang chủ</span>
+                <span>Vá» Trang chá»§</span>
               </button>
 
-              <!-- Nút Đăng Xuất (Thoát Admin) -->
+              <!-- NÃºt ÄÄƒng Xuáº¥t (ThoÃ¡t Admin) -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.logout()" 
@@ -409,15 +409,15 @@
                   <polyline points="16 17 21 12 16 7"/>
                   <line x1="21" x2="9" y1="12" y2="12"/>
                 </svg>
-                <span>Đăng xuất</span>
+                <span>ÄÄƒng xuáº¥t</span>
               </button>
             </div>
 
           </div>
 
-          <!-- ==================== THANH TAB ĐIỀU HƯỚNG NGANG ==================== -->
+          <!-- ==================== THANH TAB ÄIá»€U HÆ¯á»šNG NGANG ==================== -->
           <div class="px-5 pt-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-2 overflow-x-auto shrink-0">
-            <!-- Tab 1: Giá & gói -->
+            <!-- Tab 1: GiÃ¡ & gÃ³i -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('pricing')" 
@@ -425,11 +425,11 @@
               class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'pricing' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-              <span>Giá & gói</span>
+              <span>GiÃ¡ & gÃ³i</span>
               <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">${products.length}</span>
             </button>
 
-            <!-- Tab 2: Thanh toán VietQR & Đơn hàng -->
+            <!-- Tab 2: Thanh toÃ¡n VietQR & ÄÆ¡n hÃ ng -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('orders')" 
@@ -437,11 +437,11 @@
               class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'orders' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              <span>Thanh toán VietQR & Đơn hàng</span>
+              <span>Thanh toÃ¡n VietQR & ÄÆ¡n hÃ ng</span>
               <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold" id="adminOrderTabBadge">${orders.length}</span>
             </button>
 
-            <!-- Tab 3: Cấu hình VietQR -->
+            <!-- Tab 3: Cáº¥u hÃ¬nh VietQR -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('vietqr')" 
@@ -449,10 +449,10 @@
               class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'vietqr' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-              <span>Cấu hình VietQR</span>
+              <span>Cáº¥u hÃ¬nh VietQR</span>
             </button>
 
-            <!-- Tab 4: Mã quà tặng & Giảm giá -->
+            <!-- Tab 4: MÃ£ quÃ  táº·ng & Giáº£m giÃ¡ -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('vouchers')" 
@@ -466,11 +466,11 @@
                 <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
               </svg>
-              <span>Mã quà tặng & Giảm giá</span>
+              <span>MÃ£ quÃ  táº·ng & Giáº£m giÃ¡</span>
               <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold" id="adminVoucherTabBadge">${vouchers.length}</span>
             </button>
 
-            <!-- Tab 5: Quản lý khách & Hẹn lịch (Excel) -->
+            <!-- Tab 5: Quáº£n lÃ½ khÃ¡ch & Háº¹n lá»‹ch (Excel) -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('schedules')" 
@@ -484,7 +484,7 @@
                 <path d="M9 3v18" />
                 <path d="M15 3v18" />
               </svg>
-              <span>Hẹn lịch khách (Excel)</span>
+              <span>Háº¹n lá»‹ch khÃ¡ch (Excel)</span>
               <span class="px-1.5 py-0.2 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-[10px] text-emerald-700 dark:text-emerald-300 font-bold" id="adminScheduleTabBadge">${schedules.length}</span>
             </button>
           </div>
@@ -516,7 +516,7 @@
   }
 
   // =========================================================================
-  // TAB 1: GIÁ & GÓI (QUẢN LÝ SẢN PHẨM)
+  // TAB 1: GIÃ & GÃ“I (QUáº¢N LÃ Sáº¢N PHáº¨M)
   // =========================================================================
   function renderTabPricing() {
     const products = (window.ShopVietData && window.ShopVietData.products) || [];
@@ -524,11 +524,11 @@
     return `
       <div class="space-y-5">
         
-        <!-- Toolbar Phía Trên: Nút Thêm Sản Phẩm Mới & Ô Tìm Kiếm -->
+        <!-- Toolbar PhÃ­a TrÃªn: NÃºt ThÃªm Sáº£n Pháº©m Má»›i & Ã” TÃ¬m Kiáº¿m -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           
           <div class="flex items-center gap-2">
-            <!-- Nút + Thêm sản phẩm mới theo đúng yêu cầu đề bài -->
+            <!-- NÃºt + ThÃªm sáº£n pháº©m má»›i theo Ä‘Ãºng yÃªu cáº§u Ä‘á» bÃ i -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openProductModal(null)" 
@@ -538,21 +538,21 @@
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
-              <span>Thêm sản phẩm mới</span>
+              <span>ThÃªm sáº£n pháº©m má»›i</span>
             </button>
 
-            <!-- Nút Khôi phục dữ liệu gốc -->
+            <!-- NÃºt KhÃ´i phá»¥c dá»¯ liá»‡u gá»‘c -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultProducts()" 
-              title="Khôi phục danh sách sản phẩm mẫu ban đầu"
+              title="KhÃ´i phá»¥c danh sÃ¡ch sáº£n pháº©m máº«u ban Ä‘áº§u"
               class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition"
             >
-              Khôi phục mẫu
+              KhÃ´i phá»¥c máº«u
             </button>
           </div>
 
-          <!-- Ô Tìm kiếm sản phẩm -->
+          <!-- Ã” TÃ¬m kiáº¿m sáº£n pháº©m -->
           <div class="relative flex-1 max-w-sm">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="8"/>
@@ -562,27 +562,27 @@
               type="text" 
               id="adminProductSearchInput" 
               oninput="window.ShopVietViews.admin.filterProductTable(this.value)" 
-              placeholder="Tìm kiếm sản phẩm theo tên, danh mục..." 
+              placeholder="TÃ¬m kiáº¿m sáº£n pháº©m theo tÃªn, danh má»¥c..." 
               class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
             >
           </div>
 
         </div>
 
-        <!-- Bảng Danh Sách Sản Phẩm Trực Quan -->
+        <!-- Báº£ng Danh SÃ¡ch Sáº£n Pháº©m Trá»±c Quan -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
               <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                 <tr>
-                  <th class="py-3 px-3.5 w-16 text-center">ẢNH / ICON</th>
-                  <th class="py-3 px-4">TÊN SẢN PHẨM</th>
-                  <th class="py-3 px-3.5">DANH MỤC</th>
-                  <th class="py-3 px-3.5">GIÁ BÁN (VNĐ)</th>
-                  <th class="py-3 px-3.5">GIÁ GỐC (VNĐ)</th>
-                  <th class="py-3 px-3 text-center">TỒN KHO</th>
-                  <th class="py-3 px-3 text-center">TRẠNG THÁI</th>
-                  <th class="py-3 px-4 text-right">THAO TÁC</th>
+                  <th class="py-3 px-3.5 w-16 text-center">áº¢NH / ICON</th>
+                  <th class="py-3 px-4">TÃŠN Sáº¢N PHáº¨M</th>
+                  <th class="py-3 px-3.5">DANH Má»¤C</th>
+                  <th class="py-3 px-3.5">GIÃ BÃN (VNÄ)</th>
+                  <th class="py-3 px-3.5">GIÃ Gá»C (VNÄ)</th>
+                  <th class="py-3 px-3 text-center">Tá»’N KHO</th>
+                  <th class="py-3 px-3 text-center">TRáº NG THÃI</th>
+                  <th class="py-3 px-4 text-right">THAO TÃC</th>
                 </tr>
               </thead>
               <tbody id="adminProductTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -593,7 +593,7 @@
 
           ${products.length === 0 ? `
             <div class="py-12 text-center text-slate-400 text-sm">
-              Chưa có sản phẩm nào. Hãy bấm "+ Thêm sản phẩm mới" để bắt đầu!
+              ChÆ°a cÃ³ sáº£n pháº©m nÃ o. HÃ£y báº¥m "+ ThÃªm sáº£n pháº©m má»›i" Ä‘á»ƒ báº¯t Ä‘áº§u!
             </div>
           ` : ''}
         </div>
@@ -602,7 +602,7 @@
     `;
   }
 
-  // Render 1 dòng trong bảng sản phẩm
+  // Render 1 dÃ²ng trong báº£ng sáº£n pháº©m
   function renderProductTableRow(prod) {
     const iconSvg = (window.ShopVietData && typeof window.ShopVietData.getBrandIcon === 'function') 
       ? window.ShopVietData.getBrandIcon(prod.iconType || 'gemini') 
@@ -610,23 +610,23 @@
 
     let statusBadge = '';
     if (prod.status === 'out_of_stock' || prod.stock <= 0) {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">Hết hàng</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">Háº¿t hÃ ng</span>`;
     } else if (prod.status === 'low_stock' || prod.stock <= 5) {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">Sắp hết</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">Sáº¯p háº¿t</span>`;
     } else {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">Còn hàng</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">CÃ²n hÃ ng</span>`;
     }
 
     return `
       <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors group">
-        <!-- ẢNH / ICON -->
+        <!-- áº¢NH / ICON -->
         <td class="py-3 px-3.5 text-center">
           <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-2 mx-auto border border-slate-200 dark:border-slate-700 shadow-sm">
             ${iconSvg}
           </div>
         </td>
 
-        <!-- TÊN SẢN PHẨM -->
+        <!-- TÃŠN Sáº¢N PHáº¨M -->
         <td class="py-3 px-4">
           <div class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${prod.name}</div>
           <div class="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
@@ -635,34 +635,34 @@
           </div>
         </td>
 
-        <!-- DANH MỤC -->
+        <!-- DANH Má»¤C -->
         <td class="py-3 px-3.5">
           <span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
             ${prod.tag || 'AI Tool'}
           </span>
         </td>
 
-        <!-- GIÁ BÁN -->
+        <!-- GIÃ BÃN -->
         <td class="py-3 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">
           ${formatVND(prod.price)}
         </td>
 
-        <!-- GIÁ GỐC -->
+        <!-- GIÃ Gá»C -->
         <td class="py-3 px-3.5 text-slate-400 line-through text-xs">
           ${formatVND(prod.oldPrice || prod.price * 2)}
         </td>
 
-        <!-- TỒN KHO -->
+        <!-- Tá»’N KHO -->
         <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-200">
           ${prod.stock}
         </td>
 
-        <!-- TRẠNG THÁI -->
+        <!-- TRáº NG THÃI -->
         <td class="py-3 px-3 text-center">
           ${statusBadge}
         </td>
 
-        <!-- THAO TÁC -->
+        <!-- THAO TÃC -->
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
             <button 
@@ -671,13 +671,13 @@
               class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition flex items-center gap-1"
             >
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              <span>Sửa</span>
+              <span>Sá»­a</span>
             </button>
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.deleteProduct('${prod.id}')" 
               class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-semibold transition"
-              title="Xóa sản phẩm"
+              title="XÃ³a sáº£n pháº©m"
             >
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
@@ -688,12 +688,12 @@
   }
 
   // =========================================================================
-  // TAB 2: THANH TOÁN VIETQR & ĐƠN HÀNG
+  // TAB 2: THANH TOÃN VIETQR & ÄÆ N HÃ€NG
   // =========================================================================
   function renderTabOrders() {
     const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
     
-    // Tính toán thống kê nhanh chuẩn xác
+    // TÃ­nh toÃ¡n thá»‘ng kÃª nhanh chuáº©n xÃ¡c
     const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.amount || o.total) || 0), 0);
     const completedCount = orders.filter(o => o.status === 'completed').length;
     const pendingReviewCount = orders.filter(o => o.status === 'pending_review').length;
@@ -702,15 +702,15 @@
     return `
       <div class="space-y-5">
         
-        <!-- Thống Kê 3 Khối -->
+        <!-- Thá»‘ng KÃª 3 Khá»‘i -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             </div>
             <div>
-              <div class="text-xs font-medium text-slate-500">Tổng Đơn Hàng</div>
-              <div class="text-xl font-black text-slate-900 dark:text-white mt-0.5">${orders.length} đơn</div>
+              <div class="text-xs font-medium text-slate-500">Tá»•ng ÄÆ¡n HÃ ng</div>
+              <div class="text-xl font-black text-slate-900 dark:text-white mt-0.5">${orders.length} Ä‘Æ¡n</div>
             </div>
           </div>
 
@@ -719,8 +719,8 @@
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
-              <div class="text-xs font-medium text-slate-500">Đã Hoàn Tất</div>
-              <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${completedCount} đơn</div>
+              <div class="text-xs font-medium text-slate-500">ÄÃ£ HoÃ n Táº¥t</div>
+              <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${completedCount} Ä‘Æ¡n</div>
             </div>
           </div>
 
@@ -729,13 +729,13 @@
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <div class="text-xs font-medium text-slate-500">Chờ Duyệt Giao Dịch</div>
-              <div class="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${pendingReviewCount} đơn</div>
+              <div class="text-xs font-medium text-slate-500">Chá» Duyá»‡t Giao Dá»‹ch</div>
+              <div class="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${pendingReviewCount} Ä‘Æ¡n</div>
             </div>
           </div>
         </div>
 
-        <!-- KHU VỰC 1: TRẠM THÔNG BÁO ĐẨY NTFY (ZERO-CONFIG MOBILE PUSH) -->
+        <!-- KHU Vá»°C 1: TRáº M THÃ”NG BÃO Äáº¨Y NTFY (ZERO-CONFIG MOBILE PUSH) -->
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-900/90 rounded-2xl p-4 sm:p-5 border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-start gap-3">
@@ -744,17 +744,17 @@
               </div>
               <div>
                 <div class="flex items-center gap-2">
-                  <h4 class="font-bold text-slate-900 dark:text-white text-sm">Trạm Thông Báo Đẩy Điện Thoại (ntfy.sh)</h4>
+                  <h4 class="font-bold text-slate-900 dark:text-white text-sm">Tráº¡m ThÃ´ng BÃ¡o Äáº©y Äiá»‡n Thoáº¡i (ntfy.sh)</h4>
                   <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
                     Realtime Active
                   </span>
                 </div>
                 <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Mỗi khi có khách nạp xu hoặc đặt mua skill, máy điện thoại của anh Thái sẽ rung chuông ngay tức khắc!
+                  Má»—i khi cÃ³ khÃ¡ch náº¡p xu hoáº·c Ä‘áº·t mua skill, mÃ¡y Ä‘iá»‡n thoáº¡i cá»§a anh ThÃ¡i sáº½ rung chuÃ´ng ngay tá»©c kháº¯c!
                 </p>
                 <div class="flex items-center gap-2 mt-2 text-[11px] font-mono text-amber-800 dark:text-amber-300">
-                  <span>Topic cá nhân:</span>
+                  <span>Topic cÃ¡ nhÃ¢n:</span>
                   <code class="px-2 py-0.5 rounded-md bg-white/80 dark:bg-slate-800 border border-amber-200 dark:border-amber-800/60 font-bold">buithai_studio_0986019623</code>
                 </div>
               </div>
@@ -767,49 +767,49 @@
                 class="flex-1 md:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#8A5F26] hover:bg-[#704B2A] shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                <span>🔔 Bắn Thông Báo Thử</span>
+                <span>ðŸ”” Báº¯n ThÃ´ng BÃ¡o Thá»­</span>
               </button>
               <a 
                 href="https://ntfy.sh/buithai_studio_0986019623" 
                 target="_blank" 
                 class="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 border border-slate-200 dark:border-slate-700 shadow-xs transition flex items-center justify-center gap-1.5"
-                title="Mở ntfy.sh để đăng ký nhận thông báo trên điện thoại hoặc trình duyệt"
+                title="Má»Ÿ ntfy.sh Ä‘á»ƒ Ä‘Äƒng kÃ½ nháº­n thÃ´ng bÃ¡o trÃªn Ä‘iá»‡n thoáº¡i hoáº·c trÃ¬nh duyá»‡t"
               >
                 <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                <span>Mở App ntfy</span>
+                <span>Má»Ÿ App ntfy</span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- KHU VỰC 2: DUYỆT NẠP TIỀN XU TECHCOMBANK VIETQR (FIREBASE CLOUD SYNC) -->
+        <!-- KHU Vá»°C 2: DUYá»†T Náº P TIá»€N XU TECHCOMBANK VIETQR (FIREBASE CLOUD SYNC) -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2.5">
               <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                💰
+                ðŸ’°
               </div>
               <div>
-                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Duyệt Yêu Cầu Nạp Xu Techcombank 6688686866688 (Firebase Cloud)</h4>
-                <span class="text-xs text-slate-500">Khách chuyển khoản VietQR xong, anh Thái bấm Duyệt để kích hoạt xu</span>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Duyá»‡t YÃªu Cáº§u Náº¡p Xu Techcombank 6688686866688 (Firebase Cloud)</h4>
+                <span class="text-xs text-slate-500">KhÃ¡ch chuyá»ƒn khoáº£n VietQR xong, anh ThÃ¡i báº¥m Duyá»‡t Ä‘á»ƒ kÃ­ch hoáº¡t xu</span>
               </div>
             </div>
             
-            <!-- Form nạp xu nhanh cho khách -->
+            <!-- Form náº¡p xu nhanh cho khÃ¡ch -->
             <div class="flex items-center gap-2 flex-wrap">
-              <input type="text" id="adminManualCoinEmail" placeholder="Email khách..." class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-40 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-              <input type="number" id="adminManualCoinAmount" placeholder="Số xu..." value="100000" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-24 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <input type="text" id="adminManualCoinEmail" placeholder="Email khÃ¡ch..." class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-40 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <input type="number" id="adminManualCoinAmount" placeholder="Sá»‘ xu..." value="100000" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-24 focus:outline-none focus:ring-1 focus:ring-emerald-500">
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.manualAddCoins && window.ShopVietViews.admin.manualAddCoins()"
                 class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition"
               >
-                + Cộng Xu
+                + Cá»™ng Xu
               </button>
             </div>
           </div>
 
-          <!-- Danh sách yêu cầu nạp xu -->
+          <!-- Danh sÃ¡ch yÃªu cáº§u náº¡p xu -->
           <div class="p-4">
             ${(function() {
               const topups = (window.ShopVietState && typeof window.ShopVietState.getTopupRequests === 'function') ? window.ShopVietState.getTopupRequests() : [];
@@ -817,7 +817,7 @@
                 return `
                   <div class="py-6 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-1.5">
                     <svg class="w-7 h-7 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                    <span>Hiện chưa có yêu cầu nạp xu nào mới. Khi khách quét mã VietQR nạp tiền, danh sách sẽ hiện ở đây để anh duyệt!</span>
+                    <span>Hiá»‡n chÆ°a cÃ³ yÃªu cáº§u náº¡p xu nÃ o má»›i. Khi khÃ¡ch quÃ©t mÃ£ VietQR náº¡p tiá»n, danh sÃ¡ch sáº½ hiá»‡n á»Ÿ Ä‘Ã¢y Ä‘á»ƒ anh duyá»‡t!</span>
                   </div>
                 `;
               }
@@ -826,12 +826,12 @@
                   <table class="w-full text-xs text-left">
                     <thead class="text-slate-400 uppercase font-bold border-b border-slate-100 dark:border-slate-800 pb-2">
                       <tr>
-                        <th class="py-2 px-2">MÃ YÊU CẦU</th>
-                        <th class="py-2 px-2">KHÁCH HÀNG</th>
-                        <th class="py-2 px-2">SỐ XU NẠP</th>
-                        <th class="py-2 px-2">NỘI DUNG CK</th>
-                        <th class="py-2 px-2">TRẠNG THÁI</th>
-                        <th class="py-2 px-2 text-right">THAO TÁC</th>
+                        <th class="py-2 px-2">MÃƒ YÃŠU Cáº¦U</th>
+                        <th class="py-2 px-2">KHÃCH HÃ€NG</th>
+                        <th class="py-2 px-2">Sá» XU Náº P</th>
+                        <th class="py-2 px-2">Ná»˜I DUNG CK</th>
+                        <th class="py-2 px-2">TRáº NG THÃI</th>
+                        <th class="py-2 px-2 text-right">THAO TÃC</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -850,26 +850,38 @@
                               ${isPending ? `
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200">
                                   <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                  Chờ duyệt
+                                  Chá» duyá»‡t
                                 </span>
                               ` : `
                                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                                  ✓ Đã duyệt
+                                  âœ“ ÄÃ£ duyá»‡t
                                 </span>
                               `}
                             </td>
                             <td class="py-2.5 px-2 text-right">
                               ${isPending ? `
-                                <button 
-                                  type="button" 
-                                  onclick="window.ShopVietViews.admin.approveTopup && window.ShopVietViews.admin.approveTopup('${t.id}')"
-                                  class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer"
-                                >
-                                  ✓ Duyệt Nạp Xu
-                                </button>
+                                <div class="flex items-center justify-end gap-1.5">
+                                  <button 
+                                    type="button" 
+                                    onclick="window.ShopVietViews.admin.approveTopup && window.ShopVietViews.admin.approveTopup('${t.id}')"
+                                    class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer"
+                                  >
+                                    ✓ Duyệt Nạp Xu
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onclick="window.ShopVietViews.admin.rejectTopup && window.ShopVietViews.admin.rejectTopup('${t.id}')"
+                                    class="px-2 py-1 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer"
+                                    title="Từ chối yêu cầu"
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
+                              ` : (t.status === 'rejected' ? `
+                                <span class="text-[11px] text-rose-500 font-medium">Đã từ chối</span>
                               ` : `
                                 <span class="text-[11px] text-slate-400">Đã cộng vào ví</span>
-                              `}
+                              `)}
                             </td>
                           </tr>
                         `;
@@ -882,12 +894,12 @@
           </div>
         </div>
 
-        <!-- Bảng Danh Sách Đơn Hàng -->
+        <!-- Báº£ng Danh SÃ¡ch ÄÆ¡n HÃ ng -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2">
             <div>
-              <h4 class="font-bold text-slate-900 dark:text-white text-sm">Danh Sách Đơn Hàng VietQR Mới Nhất</h4>
-              <span class="text-xs text-slate-500">Đồng bộ tự động từ hệ thống thanh toán</span>
+              <h4 class="font-bold text-slate-900 dark:text-white text-sm">Danh SÃ¡ch ÄÆ¡n HÃ ng VietQR Má»›i Nháº¥t</h4>
+              <span class="text-xs text-slate-500">Äá»“ng bá»™ tá»± Ä‘á»™ng tá»« há»‡ thá»‘ng thanh toÃ¡n</span>
             </div>
             <div class="flex items-center gap-2 flex-wrap">
               <button 
@@ -895,30 +907,30 @@
                 onclick="window.ShopVietViews.admin.refreshOrdersTab && window.ShopVietViews.admin.refreshOrdersTab()" 
                 id="adminRefreshOrdersBtn"
                 class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-400 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
-                title="Bấm để tải lại đơn hàng mới nhất tức thì"
+                title="Báº¥m Ä‘á»ƒ táº£i láº¡i Ä‘Æ¡n hÃ ng má»›i nháº¥t tá»©c thÃ¬"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                <span>Làm mới đơn hàng</span>
+                <span>LÃ m má»›i Ä‘Æ¡n hÃ ng</span>
               </button>
               <button 
                 type="button" 
                 onclick="window.requestAdminNotificationPermission && window.requestAdminNotificationPermission(true)" 
                 id="adminPushNotifToggleBtn"
                 class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'}"
-                title="Bật/Kiểm tra thông báo PWA trên màn hình khóa iPhone (iOS 16.4+) và Desktop"
+                title="Báº­t/Kiá»ƒm tra thÃ´ng bÃ¡o PWA trÃªn mÃ n hÃ¬nh khÃ³a iPhone (iOS 16.4+) vÃ  Desktop"
               >
-                <span>🔔</span>
-                <span id="adminPushNotifStatusText">${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'Thông báo iPhone: Đang bật' : 'Bật Thông Báo iPhone'}</span>
+                <span>ðŸ””</span>
+                <span id="adminPushNotifStatusText">${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'ThÃ´ng bÃ¡o iPhone: Äang báº­t' : 'Báº­t ThÃ´ng BÃ¡o iPhone'}</span>
               </button>
               <button 
                 type="button" 
                 onclick="window.testAdminPushNotification && window.testAdminPushNotification()" 
                 id="adminPushNotifTestBtn"
                 class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 shadow-sm transition flex items-center gap-1.5 cursor-pointer"
-                title="Bấm để kiểm tra iPhone nhận thông báo tức thì trên màn hình khóa"
+                title="Báº¥m Ä‘á»ƒ kiá»ƒm tra iPhone nháº­n thÃ´ng bÃ¡o tá»©c thÃ¬ trÃªn mÃ n hÃ¬nh khÃ³a"
               >
-                <span>⚡</span>
-                <span>Thử nghiệm thông báo iPhone</span>
+                <span>âš¡</span>
+                <span>Thá»­ nghiá»‡m thÃ´ng bÃ¡o iPhone</span>
               </button>
             </div>
           </div>
@@ -927,20 +939,20 @@
             <table class="w-full text-left text-xs sm:text-sm">
               <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                 <tr>
-                  <th class="py-3 px-4">MÃ ĐƠN</th>
-                  <th class="py-3 px-3.5">NGÀY TẠO</th>
-                  <th class="py-3 px-3.5">KHÁCH HÀNG</th>
-                  <th class="py-3 px-4">GÓI SẢN PHẨM</th>
-                  <th class="py-3 px-3.5">SỐ TIỀN</th>
-                  <th class="py-3 px-3 text-center">TRẠNG THÁI</th>
-                  <th class="py-3 px-3 text-center">BILL CHUYỂN KHOẢN</th>
-                  <th class="py-3 px-4 text-right">THAO TÁC</th>
+                  <th class="py-3 px-4">MÃƒ ÄÆ N</th>
+                  <th class="py-3 px-3.5">NGÃ€Y Táº O</th>
+                  <th class="py-3 px-3.5">KHÃCH HÃ€NG</th>
+                  <th class="py-3 px-4">GÃ“I Sáº¢N PHáº¨M</th>
+                  <th class="py-3 px-3.5">Sá» TIá»€N</th>
+                  <th class="py-3 px-3 text-center">TRáº NG THÃI</th>
+                  <th class="py-3 px-3 text-center">BILL CHUYá»‚N KHOáº¢N</th>
+                  <th class="py-3 px-4 text-right">THAO TÃC</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
                 ${orders.length > 0 ? orders.map(renderOrderTableRow).join('') : `
                   <tr>
-                    <td colspan="8" class="py-12 text-center text-slate-400">Chưa có đơn hàng nào phát sinh</td>
+                    <td colspan="8" class="py-12 text-center text-slate-400">ChÆ°a cÃ³ Ä‘Æ¡n hÃ ng nÃ o phÃ¡t sinh</td>
                   </tr>
                 `}
               </tbody>
@@ -952,64 +964,64 @@
     `;
   }
 
-  // Render 1 dòng trong bảng đơn hàng
+  // Render 1 dÃ²ng trong báº£ng Ä‘Æ¡n hÃ ng
   function renderOrderTableRow(order, index) {
     let rawCode = order.orderCode || order.memo || order.paymentMemo || order.id || `DJ2026${index + 100}`;
     if (rawCode === 'ORD-TEST-999' || rawCode.startsWith('ORD-TEST')) {
       rawCode = 'DJ2026889';
     }
     const code = rawCode.startsWith('#') ? rawCode : '#' + rawCode;
-    const dateStr = order.createdAtFormatted || order.date || 'Hôm nay';
+    const dateStr = order.createdAtFormatted || order.date || 'HÃ´m nay';
     const customerEmail = order.userEmail || (order.user && order.user.email) || (order.customer && order.customer.email) || (order.email) || 'thaitraicau123@gmail.com';
-    const customerName = order.customerName || (order.user && order.user.name) || (order.customer && order.customer.name) || 'Bùi Thái';
+    const customerName = order.customerName || (order.user && order.user.name) || (order.customer && order.customer.name) || 'BÃ¹i ThÃ¡i';
     const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Antigravity + Gemini Pro';
     const amount = order.amount || order.total || order.price || 69000;
     const isCompleted = order.status === 'completed';
 
     return `
       <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
-        <!-- MÃ ĐƠN -->
+        <!-- MÃƒ ÄÆ N -->
         <td class="py-3 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
           ${code}
         </td>
 
-        <!-- NGÀY TẠO -->
+        <!-- NGÃ€Y Táº O -->
         <td class="py-3 px-3.5 text-xs text-slate-500">
           ${dateStr}
         </td>
 
-        <!-- KHÁCH HÀNG -->
+        <!-- KHÃCH HÃ€NG -->
         <td class="py-3 px-3">
           <div class="font-bold text-slate-900 dark:text-white text-xs truncate max-w-[200px]" title="${customerEmail}">
             ${customerEmail}
           </div>
           <div class="text-[10px] text-slate-400 font-medium">
-            ${customerName} • VietQR Techcombank
+            ${customerName} â€¢ VietQR Techcombank
           </div>
         </td>
 
-        <!-- GÓI SẢN PHẨM -->
+        <!-- GÃ“I Sáº¢N PHáº¨M -->
         <td class="py-3 px-4 max-w-xs">
           <div class="font-medium text-slate-800 dark:text-slate-200 line-clamp-1">${productName}</div>
           ${order.licenseKey ? `<div class="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 line-clamp-1 mt-0.5">Key: ${order.licenseKey}</div>` : ''}
         </td>
 
-        <!-- SỐ TIỀN -->
+        <!-- Sá» TIá»€N -->
         <td class="py-3 px-3.5 font-bold text-slate-900 dark:text-white">
           ${formatVND(amount)}
         </td>
 
-        <!-- TRẠNG THÁI -->
+        <!-- TRáº NG THÃI -->
         <td class="py-3 px-3 text-center">
           ${order.status === 'completed' ? `
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              ✓ Hoàn tất
+              âœ“ HoÃ n táº¥t
             </span>
           ` : order.status === 'rejected' ? `
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">
               <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-              ✕ Đã từ chối
+              âœ• ÄÃ£ tá»« chá»‘i
             </span>
           ` : order.status === 'pending_review' ? `
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 backdrop-blur-xs shadow-xs">
@@ -1017,17 +1029,17 @@
                 <circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="4 2"/>
                 <polyline points="12 6 12 12 15 14" stroke-width="2" stroke-linecap="round"/>
               </svg>
-              <span>Chờ duyệt</span>
+              <span>Chá» duyá»‡t</span>
             </span>
           ` : `
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">
               <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
-              Chờ thanh toán
+              Chá» thanh toÃ¡n
             </span>
           `}
         </td>
 
-        <!-- BILL CHUYỂN KHOẢN -->
+        <!-- BILL CHUYá»‚N KHOáº¢N -->
         <td class="py-3 px-3 text-center">
           <button 
                 type="button" 
@@ -1039,7 +1051,7 @@
           </button>
         </td>
 
-        <!-- THAO TÁC -->
+        <!-- THAO TÃC -->
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5 flex-wrap">
             ${!isCompleted ? `
@@ -1049,17 +1061,17 @@
                 class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1 cursor-pointer"
               >
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Duyệt đơn</span>
+                <span>Duyá»‡t Ä‘Æ¡n</span>
               </button>
               ${order.status !== 'rejected' ? `
                 <button 
                   type="button" 
                   onclick="window.ShopVietViews.admin.rejectOrder('${code}')" 
                   class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs shadow-sm transition flex items-center gap-1 cursor-pointer"
-                  title="Từ chối đơn hàng & hoàn trả lại số lượng vào kho"
+                  title="Tá»« chá»‘i Ä‘Æ¡n hÃ ng & hoÃ n tráº£ láº¡i sá»‘ lÆ°á»£ng vÃ o kho"
                 >
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  <span>✕ Từ chối</span>
+                  <span>âœ• Tá»« chá»‘i</span>
                 </button>
               ` : ''}
             ` : `
@@ -1067,27 +1079,27 @@
                 type="button" 
                 onclick="window.ShopVietViews.admin.openDeliveryModal('${code}')" 
                 class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs shadow-sm transition flex items-center gap-1 cursor-pointer" 
-                title="Sửa link bản quyền riêng hoặc gửi lại tin nhắn dặn dò"
+                title="Sá»­a link báº£n quyá»n riÃªng hoáº·c gá»­i láº¡i tin nháº¯n dáº·n dÃ²"
               >
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                <span>Tùy chỉnh gửi link</span>
+                <span>TÃ¹y chá»‰nh gá»­i link</span>
               </button>
             `}
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.deleteOrder('${order.id || code}')" 
-              title="Xóa đơn hàng" 
+              title="XÃ³a Ä‘Æ¡n hÃ ng" 
               class="p-2 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-xl transition-all cursor-pointer shrink-0 ml-1.5"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
             </button>
           </div>
           ${order.customDeliveryLink ? `
-            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 block font-mono mt-1">Đã gửi link riêng</span>
+            <span class="text-[10px] text-emerald-600 dark:text-emerald-400 block font-mono mt-1">ÄÃ£ gá»­i link riÃªng</span>
           ` : order.status === 'rejected' ? `
-            <span class="text-[10px] text-rose-500 dark:text-rose-400 block font-medium mt-1">Đã từ chối đơn</span>
+            <span class="text-[10px] text-rose-500 dark:text-rose-400 block font-medium mt-1">ÄÃ£ tá»« chá»‘i Ä‘Æ¡n</span>
           ` : isCompleted ? `
-            <span class="text-[10px] text-slate-400 block font-medium mt-1">Đã kích hoạt</span>
+            <span class="text-[10px] text-slate-400 block font-medium mt-1">ÄÃ£ kÃ­ch hoáº¡t</span>
           ` : ''}
         </td>
       </tr>
@@ -1095,7 +1107,7 @@
   }
 
   // =========================================================================
-  // TAB 3: CẤU HÌNH VIETQR
+  // TAB 3: Cáº¤U HÃŒNH VIETQR
   // =========================================================================
   function renderTabVietQR() {
     const config = getVietQRConfig();
@@ -1106,21 +1118,21 @@
         
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
           
-          <!-- Cột Trái: Form Chỉnh Sửa Thông Tin Ngân Hàng -->
+          <!-- Cá»™t TrÃ¡i: Form Chá»‰nh Sá»­a ThÃ´ng Tin NgÃ¢n HÃ ng -->
           <div class="md:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
             <div>
               <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                <span>Cấu hình tài khoản nhận tiền VietQR</span>
+                <span>Cáº¥u hÃ¬nh tÃ i khoáº£n nháº­n tiá»n VietQR</span>
               </h3>
-              <p class="text-xs text-slate-500 mt-1">Thông tin này sẽ được gắn tự động vào mã QR tạo ra khi khách bấm Đặt Hàng.</p>
+              <p class="text-xs text-slate-500 mt-1">ThÃ´ng tin nÃ y sáº½ Ä‘Æ°á»£c gáº¯n tá»± Ä‘á»™ng vÃ o mÃ£ QR táº¡o ra khi khÃ¡ch báº¥m Äáº·t HÃ ng.</p>
             </div>
 
             <form id="adminVietQRForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveVietQRSettings();" class="space-y-4 pt-2">
               
-              <!-- Chọn Ngân Hàng -->
+              <!-- Chá»n NgÃ¢n HÃ ng -->
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Ngân hàng thụ hưởng</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">NgÃ¢n hÃ ng thá»¥ hÆ°á»Ÿng</label>
                 <select 
                   id="adminVietQRBank" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
@@ -1132,63 +1144,63 @@
                 </select>
               </div>
 
-              <!-- Số Tài Khoản (STK) -->
+              <!-- Sá»‘ TÃ i Khoáº£n (STK) -->
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Số tài khoản (STK)</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Sá»‘ tÃ i khoáº£n (STK)</label>
                 <input 
                   type="text" 
                   id="adminVietQRAccountNumber" 
                   value="${config.accountNumber}" 
-                  placeholder="Ví dụ: 00223366888" 
+                  placeholder="VÃ­ dá»¥: 00223366888" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono font-bold"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
               </div>
 
-              <!-- Tên Chủ Tài Khoản -->
+              <!-- TÃªn Chá»§ TÃ i Khoáº£n -->
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tên chủ tài khoản (In hoa không dấu)</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">TÃªn chá»§ tÃ i khoáº£n (In hoa khÃ´ng dáº¥u)</label>
                 <input 
                   type="text" 
                   id="adminVietQRAccountName" 
                   value="${config.accountName}" 
-                  placeholder="Ví dụ: NGUYEN VAN HUY" 
+                  placeholder="VÃ­ dá»¥: NGUYEN VAN HUY" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] uppercase font-semibold"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
               </div>
 
-              <!-- Tiền Tố Lời Nhắn Chuyển Khoản -->
+              <!-- Tiá»n Tá»‘ Lá»i Nháº¯n Chuyá»ƒn Khoáº£n -->
               <div>
-                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tiền tố cú pháp chuyển khoản</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tiá»n tá»‘ cÃº phÃ¡p chuyá»ƒn khoáº£n</label>
                 <input 
                   type="text" 
                   id="adminVietQRMemoPrefix" 
                   value="${config.memoPrefix}" 
-                  placeholder="Ví dụ: THAIBUI" 
+                  placeholder="VÃ­ dá»¥: THAIBUI" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono font-bold uppercase"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
-                <span class="text-[11px] text-slate-400 mt-1 block">Ví dụ tạo nội dung: <code>${config.memoPrefix} DJ202688</code></span>
+                <span class="text-[11px] text-slate-400 mt-1 block">VÃ­ dá»¥ táº¡o ná»™i dung: <code>${config.memoPrefix} DJ202688</code></span>
               </div>
 
-              <!-- Nút Lưu -->
+              <!-- NÃºt LÆ°u -->
               <div class="pt-2">
                 <button 
                   type="submit" 
                   class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-amber-900/15 transition flex items-center justify-center gap-2"
                 >
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                  <span>Lưu Cấu Hình VietQR</span>
+                  <span>LÆ°u Cáº¥u HÃ¬nh VietQR</span>
                 </button>
               </div>
 
             </form>
           </div>
 
-          <!-- Cột Phải: Live VietQR Preview -->
+          <!-- Cá»™t Pháº£i: Live VietQR Preview -->
           <div class="md:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Xem Trước Mã VietQR Live</span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Xem TrÆ°á»›c MÃ£ VietQR Live</span>
             
             <div class="p-3 bg-white rounded-2xl shadow-lg border border-slate-200 max-w-[240px] w-full">
               <img 
@@ -1214,12 +1226,12 @@
   }
 
   // =========================================================================
-  // TAB 4: MÃ QUÀ TẶNG & GIẢM GIÁ (VOUCHERS & GIFTS)
+  // TAB 4: MÃƒ QUÃ€ Táº¶NG & GIáº¢M GIÃ (VOUCHERS & GIFTS)
   // =========================================================================
   function renderTabVouchers() {
     const vouchers = (window.ShopVietState && window.ShopVietState.getVouchers) ? window.ShopVietState.getVouchers() : [];
     
-    // Thống kê nhanh
+    // Thá»‘ng kÃª nhanh
     const totalCount = vouchers.length;
     const usedCount = vouchers.filter(v => v.isUsed).length;
     const availableCount = totalCount - usedCount;
@@ -1228,9 +1240,9 @@
     return `
       <div class="space-y-5">
         
-        <!-- Thống Kê 4 Khối Thẻ Hiện Đại -->
+        <!-- Thá»‘ng KÃª 4 Khá»‘i Tháº» Hiá»‡n Äáº¡i -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <!-- Tổng mã -->
+          <!-- Tá»•ng mÃ£ -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1242,50 +1254,50 @@
               </svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng mã voucher</div>
-              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5" id="adminVoucherTotalCount">${totalCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tá»•ng mÃ£ voucher</div>
+              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5" id="adminVoucherTotalCount">${totalCount} mÃ£</div>
             </div>
           </div>
 
-          <!-- Sẵn sàng dùng -->
+          <!-- Sáºµn sÃ ng dÃ¹ng -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Chưa sử dụng</div>
-              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="adminVoucherAvailableCount">${availableCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">ChÆ°a sá»­ dá»¥ng</div>
+              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="adminVoucherAvailableCount">${availableCount} mÃ£</div>
             </div>
           </div>
 
-          <!-- Đã dùng -->
+          <!-- ÄÃ£ dÃ¹ng -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đã sử dụng</div>
-              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5" id="adminVoucherUsedCount">${usedCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">ÄÃ£ sá»­ dá»¥ng</div>
+              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5" id="adminVoucherUsedCount">${usedCount} mÃ£</div>
             </div>
           </div>
 
-          <!-- Tổng tiền đã giảm -->
+          <!-- Tá»•ng tiá»n Ä‘Ã£ giáº£m -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng tiền đã giảm</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tá»•ng tiá»n Ä‘Ã£ giáº£m</div>
               <div class="text-lg sm:text-xl font-black text-indigo-600 dark:text-indigo-400 mt-0.5" id="adminVoucherTotalDiscount">${formatVND(totalDiscountGiven)}</div>
             </div>
           </div>
         </div>
 
-        <!-- Toolbar Phía Trên: Nút + Tạo mã mới & Ô Tìm kiếm -->
+        <!-- Toolbar PhÃ­a TrÃªn: NÃºt + Táº¡o mÃ£ má»›i & Ã” TÃ¬m kiáº¿m -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           
           <div class="flex items-center gap-2">
-            <!-- Nút + Tạo mã mới -->
+            <!-- NÃºt + Táº¡o mÃ£ má»›i -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openVoucherModal()" 
@@ -1295,21 +1307,21 @@
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
-              <span>Tạo mã mới</span>
+              <span>Táº¡o mÃ£ má»›i</span>
             </button>
 
-            <!-- Nút Nạp mã mặc định mẫu -->
+            <!-- NÃºt Náº¡p mÃ£ máº·c Ä‘á»‹nh máº«u -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultVouchers()" 
-              title="Khôi phục mã mẫu nếu rỗng"
+              title="KhÃ´i phá»¥c mÃ£ máº«u náº¿u rá»—ng"
               class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition"
             >
-              Khôi phục mẫu
+              KhÃ´i phá»¥c máº«u
             </button>
           </div>
 
-          <!-- Ô Tìm kiếm voucher -->
+          <!-- Ã” TÃ¬m kiáº¿m voucher -->
           <div class="relative flex-1 max-w-sm">
             <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="8"/>
@@ -1319,14 +1331,14 @@
               type="text" 
               id="adminVoucherSearchInput" 
               oninput="window.ShopVietViews.admin.filterVouchers(this.value)" 
-              placeholder="Tìm mã voucher, người dùng, loại mã..." 
+              placeholder="TÃ¬m mÃ£ voucher, ngÆ°á»i dÃ¹ng, loáº¡i mÃ£..." 
               class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
             >
           </div>
 
         </div>
 
-        <!-- Bảng Danh Sách Voucher -->
+        <!-- Báº£ng Danh SÃ¡ch Voucher -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
             <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
@@ -1337,24 +1349,24 @@
                 <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
               </svg>
-              <span>Kho mã quà tặng & giảm giá</span>
-              <span class="text-xs px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold" id="adminVoucherTableBadge">${vouchers.length} mã</span>
+              <span>Kho mÃ£ quÃ  táº·ng & giáº£m giÃ¡</span>
+              <span class="text-xs px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold" id="adminVoucherTableBadge">${vouchers.length} mÃ£</span>
             </h4>
-            <span class="text-xs text-slate-500">Mã có hiệu lực áp dụng tại trang Đặt hàng & Nạp ví</span>
+            <span class="text-xs text-slate-500">MÃ£ cÃ³ hiá»‡u lá»±c Ã¡p dá»¥ng táº¡i trang Äáº·t hÃ ng & Náº¡p vÃ­</span>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm" id="adminVoucherTable">
               <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
                 <tr>
-                  <th class="py-3 px-4">MÃ VOUCHER</th>
-                  <th class="py-3 px-3.5">LOẠI MÃ</th>
-                  <th class="py-3 px-3.5">GIÁ TRỊ GIẢM</th>
-                  <th class="py-3 px-3.5 text-center">TRẠNG THÁI</th>
-                  <th class="py-3 px-4">NGƯỜI ĐÃ DÙNG (EMAIL)</th>
-                  <th class="py-3 px-3.5">ĐƠN HÀNG</th>
-                  <th class="py-3 px-3.5">THỜI GIAN</th>
-                  <th class="py-3 px-4 text-right">THAO TÁC</th>
+                  <th class="py-3 px-4">MÃƒ VOUCHER</th>
+                  <th class="py-3 px-3.5">LOáº I MÃƒ</th>
+                  <th class="py-3 px-3.5">GIÃ TRá»Š GIáº¢M</th>
+                  <th class="py-3 px-3.5 text-center">TRáº NG THÃI</th>
+                  <th class="py-3 px-4">NGÆ¯á»œI ÄÃƒ DÃ™NG (EMAIL)</th>
+                  <th class="py-3 px-3.5">ÄÆ N HÃ€NG</th>
+                  <th class="py-3 px-3.5">THá»œI GIAN</th>
+                  <th class="py-3 px-4 text-right">THAO TÃC</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80" id="adminVoucherTableTbody">
@@ -1363,7 +1375,7 @@
                     <td colspan="8" class="py-12 text-center text-slate-400">
                       <div class="flex flex-col items-center justify-center gap-2">
                         <svg class="w-10 h-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /></svg>
-                        <span>Chưa có mã voucher nào. Hãy bấm "+ Tạo mã mới" để thêm mã đầu tiên!</span>
+                        <span>ChÆ°a cÃ³ mÃ£ voucher nÃ o. HÃ£y báº¥m "+ Táº¡o mÃ£ má»›i" Ä‘á»ƒ thÃªm mÃ£ Ä‘áº§u tiÃªn!</span>
                       </div>
                     </td>
                   </tr>
@@ -1377,13 +1389,13 @@
     `;
   }
 
-  // Render 1 dòng trong bảng voucher
+  // Render 1 dÃ²ng trong báº£ng voucher
   function renderVoucherTableRow(v) {
     const isUsed = !!v.isUsed;
     const isPercent = v.type === 'percent_discount' || (v.percent !== undefined && v.percent !== null);
     const typeLabel = v.type === 'wallet_gift' 
-      ? 'Nạp tiền vào ví' 
-      : (isPercent ? 'Giảm theo % đơn hàng' : 'Giảm số tiền cố định (VNĐ)');
+      ? 'Náº¡p tiá»n vÃ o vÃ­' 
+      : (isPercent ? 'Giáº£m theo % Ä‘Æ¡n hÃ ng' : 'Giáº£m sá»‘ tiá»n cá»‘ Ä‘á»‹nh (VNÄ)');
     const typeBadge = v.type === 'wallet_gift' 
       ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border-purple-200 dark:border-purple-800'
       : (isPercent 
@@ -1394,14 +1406,14 @@
 
     return `
       <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors" data-code="${(v.code || '').toLowerCase()}" data-user="${(v.usedBy || '').toLowerCase()}">
-        <!-- MÃ VOUCHER -->
+        <!-- MÃƒ VOUCHER -->
         <td class="py-3 px-4">
           <div class="flex items-center gap-2">
             <span class="font-mono font-bold text-sm text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60">${v.code}</span>
             <button 
               type="button" 
-              onclick="navigator.clipboard.writeText('${v.code}'); window.ShopVietState.showToast('Đã sao chép mã ${v.code}!', 'info');" 
-              title="Sao chép mã"
+              onclick="navigator.clipboard.writeText('${v.code}'); window.ShopVietState.showToast('ÄÃ£ sao chÃ©p mÃ£ ${v.code}!', 'info');" 
+              title="Sao chÃ©p mÃ£"
               class="text-slate-400 hover:text-indigo-600 transition p-1"
             >
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
@@ -1409,34 +1421,34 @@
           </div>
         </td>
 
-        <!-- LOẠI MÃ -->
+        <!-- LOáº I MÃƒ -->
         <td class="py-3 px-3.5">
           <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${typeBadge}">
             ${typeLabel}
           </span>
         </td>
 
-        <!-- GIÁ TRỊ GIẢM -->
+        <!-- GIÃ TRá»Š GIáº¢M -->
         <td class="py-3 px-3.5 font-bold text-emerald-600 dark:text-emerald-400 text-sm">
           ${discountText}
         </td>
 
-        <!-- TRẠNG THÁI -->
+        <!-- TRáº NG THÃI -->
         <td class="py-3 px-3.5 text-center">
           ${isUsed ? `
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
               <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-              Đã sử dụng
+              ÄÃ£ sá»­ dá»¥ng
             </span>
           ` : `
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Chưa sử dụng
+              ChÆ°a sá»­ dá»¥ng
             </span>
           `}
         </td>
 
-        <!-- NGƯỜI ĐÃ DÙNG (EMAIL) -->
+        <!-- NGÆ¯á»œI ÄÃƒ DÃ™NG (EMAIL) -->
         <td class="py-3 px-4">
           ${isUsed && v.usedBy ? `
             <div class="flex items-center gap-1.5">
@@ -1445,13 +1457,13 @@
               </div>
               <span class="font-medium text-slate-800 dark:text-slate-200 text-xs">${v.usedBy}</span>
             </div>
-            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Đã được giảm ${discountText}</div>
+            <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">ÄÃ£ Ä‘Æ°á»£c giáº£m ${discountText}</div>
           ` : `
             <span class="text-slate-400 text-xs">-</span>
           `}
         </td>
 
-        <!-- ĐƠN HÀNG -->
+        <!-- ÄÆ N HÃ€NG -->
         <td class="py-3 px-3.5">
           ${v.orderCode ? `
             <span class="font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400">${v.orderCode}</span>
@@ -1460,22 +1472,22 @@
           `}
         </td>
 
-        <!-- THỜI GIAN -->
+        <!-- THá»œI GIAN -->
         <td class="py-3 px-3.5 text-xs text-slate-500">
           ${isUsed && v.usedAt ? `
             <div class="font-medium text-slate-700 dark:text-slate-300">${formatDateTime(v.usedAt)}</div>
-            <div class="text-[10px] text-slate-400">Tạo: ${formatDateTime(v.createdAt)}</div>
+            <div class="text-[10px] text-slate-400">Táº¡o: ${formatDateTime(v.createdAt)}</div>
           ` : `
-            <div>Tạo: ${formatDateTime(v.createdAt)}</div>
+            <div>Táº¡o: ${formatDateTime(v.createdAt)}</div>
           `}
         </td>
 
-        <!-- THAO TÁC -->
+        <!-- THAO TÃC -->
         <td class="py-3 px-4 text-right">
           <button 
             type="button" 
             onclick="window.ShopVietViews.admin.deleteVoucher('${v.code}')" 
-            title="Xóa voucher" 
+            title="XÃ³a voucher" 
             class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
@@ -1486,12 +1498,12 @@
   }
 
   // =========================================================================
-  // TAB 5: QUẢN LÝ KHÁCH & HẸN LỊCH (EXCEL / SPREADSHEET)
+  // TAB 5: QUáº¢N LÃ KHÃCH & Háº¸N Lá»ŠCH (EXCEL / SPREADSHEET)
   // =========================================================================
   function renderTabSchedules() {
     const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
     
-    // Thống kê hạn dùng
+    // Thá»‘ng kÃª háº¡n dÃ¹ng
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -1516,58 +1528,58 @@
     return `
       <div class="space-y-5">
         
-        <!-- Thống Kê 4 Khối Thẻ Hiện Đại -->
+        <!-- Thá»‘ng KÃª 4 Khá»‘i Tháº» Hiá»‡n Äáº¡i -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <!-- Tổng khách hẹn lịch -->
+          <!-- Tá»•ng khÃ¡ch háº¹n lá»‹ch -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng khách hẹn lịch</div>
-              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">${schedules.length} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tá»•ng khÃ¡ch háº¹n lá»‹ch</div>
+              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">${schedules.length} khÃ¡ch</div>
             </div>
           </div>
 
-          <!-- Đang hoạt động -->
+          <!-- Äang hoáº¡t Ä‘á»™ng -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đang sử dụng (>7 ngày)</div>
-              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${activeCount} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Äang sá»­ dá»¥ng (>7 ngÃ y)</div>
+              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${activeCount} khÃ¡ch</div>
             </div>
           </div>
 
-          <!-- Sắp hết hạn -->
+          <!-- Sáº¯p háº¿t háº¡n -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Sắp hết hạn (≤7 ngày)</div>
-              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${expiringCount} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Sáº¯p háº¿t háº¡n (â‰¤7 ngÃ y)</div>
+              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${expiringCount} khÃ¡ch</div>
             </div>
           </div>
 
-          <!-- Đã hết hạn -->
+          <!-- ÄÃ£ háº¿t háº¡n -->
           <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đã hết hạn</div>
-              <div class="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400 mt-0.5">${expiredCount} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">ÄÃ£ háº¿t háº¡n</div>
+              <div class="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400 mt-0.5">${expiredCount} khÃ¡ch</div>
             </div>
           </div>
         </div>
 
-        <!-- Toolbar Phía Trên: Nút + Thêm email khách hàng, Xuất Excel & Ô Tìm kiếm -->
+        <!-- Toolbar PhÃ­a TrÃªn: NÃºt + ThÃªm email khÃ¡ch hÃ ng, Xuáº¥t Excel & Ã” TÃ¬m kiáº¿m -->
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
           
           <div class="flex items-center flex-wrap gap-2">
-            <!-- Nút + Thêm email khách hàng -->
+            <!-- NÃºt + ThÃªm email khÃ¡ch hÃ ng -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openScheduleModal(null)" 
@@ -1577,15 +1589,15 @@
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
-              <span>Thêm email khách hàng</span>
+              <span>ThÃªm email khÃ¡ch hÃ ng</span>
             </button>
 
-            <!-- Nút Xuất Excel (CSV) -->
+            <!-- NÃºt Xuáº¥t Excel (CSV) -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.exportSchedulesToExcel()" 
               class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors shrink-0"
-              title="Xuất bảng tính hiện tại ra file CSV tương thích Microsoft Excel"
+              title="Xuáº¥t báº£ng tÃ­nh hiá»‡n táº¡i ra file CSV tÆ°Æ¡ng thÃ­ch Microsoft Excel"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -1593,21 +1605,21 @@
                 <line x1="12" y1="18" x2="12" y2="12"/>
                 <polyline points="9 15 12 18 15 15"/>
               </svg>
-              <span>Xuất Excel</span>
+              <span>Xuáº¥t Excel</span>
             </button>
 
-            <!-- Nút Khôi phục dữ liệu mẫu -->
+            <!-- NÃºt KhÃ´i phá»¥c dá»¯ liá»‡u máº«u -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultSchedules()" 
-              title="Khôi phục danh sách hẹn lịch mẫu" 
+              title="KhÃ´i phá»¥c danh sÃ¡ch háº¹n lá»‹ch máº«u" 
               class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition shrink-0"
             >
-              Khôi phục mẫu
+              KhÃ´i phá»¥c máº«u
             </button>
           </div>
 
-          <!-- Ô Tìm Kiếm Email khách, Quản lý, Gói -->
+          <!-- Ã” TÃ¬m Kiáº¿m Email khÃ¡ch, Quáº£n lÃ½, GÃ³i -->
           <div class="relative w-full sm:w-72">
             <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="8"/>
@@ -1617,14 +1629,14 @@
               type="text" 
               id="adminScheduleSearchInput"
               oninput="window.ShopVietViews.admin.filterSchedules(this.value)" 
-              placeholder="Tìm email khách, slot, gói..." 
+              placeholder="TÃ¬m email khÃ¡ch, slot, gÃ³i..." 
               class="w-full pl-9 pr-4 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] transition-all"
             >
           </div>
 
         </div>
 
-        <!-- Bảng Tính Excel Thông Minh (Smart Spreadsheet Table) -->
+        <!-- Báº£ng TÃ­nh Excel ThÃ´ng Minh (Smart Spreadsheet Table) -->
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-950/50">
             <div class="flex items-center gap-2">
@@ -1632,15 +1644,15 @@
                 <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/>
                 </svg>
-                <span>Bảng tính Excel quản lý khách & hẹn lịch slot</span>
+                <span>Báº£ng tÃ­nh Excel quáº£n lÃ½ khÃ¡ch & háº¹n lá»‹ch slot</span>
               </span>
               <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 text-xs font-semibold" id="adminScheduleTableBadge">
-                ${schedules.length} bản ghi
+                ${schedules.length} báº£n ghi
               </span>
             </div>
             <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Click trực tiếp vào ô để sửa & ấn nút <b>Lưu</b> (hoặc Enter) để đồng bộ tức thì lên Đám Mây Cloud</span>
+              <span>Click trá»±c tiáº¿p vÃ o Ã´ Ä‘á»ƒ sá»­a & áº¥n nÃºt <b>LÆ°u</b> (hoáº·c Enter) Ä‘á»ƒ Ä‘á»“ng bá»™ tá»©c thÃ¬ lÃªn ÄÃ¡m MÃ¢y Cloud</span>
             </div>
           </div>
 
@@ -1649,19 +1661,19 @@
               <thead>
                 <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-[11px] text-slate-500 uppercase tracking-wider font-bold">
                   <th class="py-3 px-3 text-center w-12">STT</th>
-                  <th class="py-3 px-3.5">Email Khách Hàng</th>
-                  <th class="py-3 px-3.5">Email Quản Lý / Slot</th>
-                  <th class="py-3 px-3.5">Gói Dịch Vụ</th>
-                  <th class="py-3 px-3 text-center">Ngày Bắt Đầu</th>
-                  <th class="py-3 px-3 text-center">Ngày Hết Hạn</th>
-                  <th class="py-3 px-3.5 text-center">Trạng Thái Hạn Dùng</th>
-                  <th class="py-3 px-3 text-right">Thao Tác</th>
+                  <th class="py-3 px-3.5">Email KhÃ¡ch HÃ ng</th>
+                  <th class="py-3 px-3.5">Email Quáº£n LÃ½ / Slot</th>
+                  <th class="py-3 px-3.5">GÃ³i Dá»‹ch Vá»¥</th>
+                  <th class="py-3 px-3 text-center">NgÃ y Báº¯t Äáº§u</th>
+                  <th class="py-3 px-3 text-center">NgÃ y Háº¿t Háº¡n</th>
+                  <th class="py-3 px-3.5 text-center">Tráº¡ng ThÃ¡i Háº¡n DÃ¹ng</th>
+                  <th class="py-3 px-3 text-right">Thao TÃ¡c</th>
                 </tr>
               </thead>
               <tbody id="adminScheduleTableTbody" class="divide-y divide-slate-100 dark:divide-slate-800/60">
                 ${schedules.length > 0 ? schedules.map((s, idx) => renderScheduleTableRow(s, idx)).join('') : `
                   <tr>
-                    <td colspan="8" class="py-12 text-center text-slate-400">Chưa có lịch hẹn khách hàng nào được tạo</td>
+                    <td colspan="8" class="py-12 text-center text-slate-400">ChÆ°a cÃ³ lá»‹ch háº¹n khÃ¡ch hÃ ng nÃ o Ä‘Æ°á»£c táº¡o</td>
                   </tr>
                 `}
               </tbody>
@@ -1673,7 +1685,7 @@
     `;
   }
 
-  // Render 1 dòng trong Bảng Excel Hẹn Lịch với Inline Editable & Nút Lưu Cloud
+  // Render 1 dÃ²ng trong Báº£ng Excel Háº¹n Lá»‹ch vá»›i Inline Editable & NÃºt LÆ°u Cloud
   function renderScheduleTableRow(s, index) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -1684,17 +1696,17 @@
 
     let statusBadge = '';
     if (daysLeft > 7) {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Còn ${daysLeft} ngày</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>CÃ²n ${daysLeft} ngÃ y</span>`;
     } else if (daysLeft > 0) {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sắp hết (${daysLeft} ngày)</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sáº¯p háº¿t (${daysLeft} ngÃ y)</span>`;
     } else {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Đã hết hạn</span>`;
+      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>ÄÃ£ háº¿t háº¡n</span>`;
     }
 
     const customerEmail = s.customerEmail || 'thaitraicau123@gmail.com';
-    const customerName = s.customerName || 'Bùi Thái';
+    const customerName = s.customerName || 'BÃ¹i ThÃ¡i';
     const managerEmail = s.managerEmail || 'slot1-pro@shopviet.vip';
-    const serviceName = s.serviceName || '[1 Tháng] Gemini Argon 4 Pro + 5TB Drive';
+    const serviceName = s.serviceName || '[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive';
     const notes = s.notes || '';
 
     return `
@@ -1704,7 +1716,7 @@
           ${index + 1}
         </td>
 
-        <!-- EMAIL KHÁCH HÀNG (INLINE EDITABLE) -->
+        <!-- EMAIL KHÃCH HÃ€NG (INLINE EDITABLE) -->
         <td class="py-2 px-3">
           <input 
             type="text" 
@@ -1712,7 +1724,7 @@
             value="${customerEmail}" 
             placeholder="thaitraicau123@gmail.com"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
-            title="Click trực tiếp vào ô để sửa Email Khách Hàng (Enter để Lưu)"
+            title="Click trá»±c tiáº¿p vÃ o Ã´ Ä‘á»ƒ sá»­a Email KhÃ¡ch HÃ ng (Enter Ä‘á»ƒ LÆ°u)"
             class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 dark:text-white focus:outline-none transition-all"
           />
           <div class="px-2 text-[10px] text-slate-400 font-medium truncate max-w-[200px]" title="${customerName}">
@@ -1720,7 +1732,7 @@
           </div>
         </td>
 
-        <!-- EMAIL QUẢN LÝ / SLOT (INLINE EDITABLE) -->
+        <!-- EMAIL QUáº¢N LÃ / SLOT (INLINE EDITABLE) -->
         <td class="py-2 px-3">
           <input 
             type="text" 
@@ -1728,26 +1740,26 @@
             value="${managerEmail}" 
             placeholder="slot1-pro@shopviet.vip"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
-            title="Click trực tiếp vào ô để sửa Email Slot (Enter để Lưu)"
+            title="Click trá»±c tiáº¿p vÃ o Ã´ Ä‘á»ƒ sá»­a Email Slot (Enter Ä‘á»ƒ LÆ°u)"
             class="w-full bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 hover:border-indigo-400 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400 focus:outline-none transition-all"
           />
         </td>
 
-        <!-- GÓI DỊCH VỤ (INLINE EDITABLE) -->
+        <!-- GÃ“I Dá»ŠCH Vá»¤ (INLINE EDITABLE) -->
         <td class="py-2 px-3 max-w-[220px]">
           <input 
             type="text" 
             id="sched-service-${s.id}" 
             value="${serviceName}" 
-            placeholder="Tên gói dịch vụ..."
+            placeholder="TÃªn gÃ³i dá»‹ch vá»¥..."
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
-            title="Click trực tiếp vào ô để sửa Gói Dịch Vụ (Enter để Lưu)"
+            title="Click trá»±c tiáº¿p vÃ o Ã´ Ä‘á»ƒ sá»­a GÃ³i Dá»‹ch Vá»¥ (Enter Ä‘á»ƒ LÆ°u)"
             class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none transition-all"
           />
           ${notes ? `<div class="px-2 text-[10px] text-slate-400 line-clamp-1 italic">${notes}</div>` : ''}
         </td>
 
-        <!-- NGÀY BẮT ĐẦU (INLINE EDITABLE) -->
+        <!-- NGÃ€Y Báº®T Äáº¦U (INLINE EDITABLE) -->
         <td class="py-2 px-2 text-center">
           <input 
             type="date" 
@@ -1755,12 +1767,12 @@
             value="${s.startDate || ''}" 
             onchange="window.ShopVietViews.admin.updateScheduleDaysLeftBadge('${s.id}')"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
-            title="Click để chọn Ngày bắt đầu"
+            title="Click Ä‘á»ƒ chá»n NgÃ y báº¯t Ä‘áº§u"
             class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-1.5 py-1 text-xs font-mono text-slate-600 dark:text-slate-400 focus:outline-none transition-all"
           />
         </td>
 
-        <!-- NGÀY HẾT HẠN (INLINE EDITABLE) -->
+        <!-- NGÃ€Y Háº¾T Háº N (INLINE EDITABLE) -->
         <td class="py-2 px-2 text-center">
           <input 
             type="date" 
@@ -1768,24 +1780,24 @@
             value="${s.expireDate || ''}" 
             onchange="window.ShopVietViews.admin.updateScheduleDaysLeftBadge('${s.id}')"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
-            title="Click để chọn Ngày hết hạn"
+            title="Click Ä‘á»ƒ chá»n NgÃ y háº¿t háº¡n"
             class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none transition-all"
           />
         </td>
 
-        <!-- TRẠNG THÁI HẠN DÙNG (TỰ ĐỘNG CẬP NHẬT TỨC THÌ) -->
+        <!-- TRáº NG THÃI Háº N DÃ™NG (Tá»° Äá»˜NG Cáº¬P NHáº¬T Tá»¨C THÃŒ) -->
         <td class="py-2 px-3.5 text-center whitespace-nowrap" id="sched-badge-cell-${s.id}">
           ${statusBadge}
         </td>
 
-        <!-- THAO TÁC: NÚT LƯU CLOUD (THAY NÚT BÚT CHÌ) & NÚT XÓA -->
+        <!-- THAO TÃC: NÃšT LÆ¯U CLOUD (THAY NÃšT BÃšT CHÃŒ) & NÃšT XÃ“A -->
         <td class="py-2 px-3 text-right whitespace-nowrap">
           <div class="flex items-center justify-end gap-1.5">
             <button 
               type="button" 
               id="btn-save-sched-${s.id}" 
               onclick="window.ShopVietViews.admin.saveInlineSchedule('${s.id}')" 
-              title="Lưu thay đổi dòng này lên Đám mây Cloud (không mất khi reset hoặc đổi máy)" 
+              title="LÆ°u thay Ä‘á»•i dÃ²ng nÃ y lÃªn ÄÃ¡m mÃ¢y Cloud (khÃ´ng máº¥t khi reset hoáº·c Ä‘á»•i mÃ¡y)" 
               class="px-2.5 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-800 rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
             >
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1793,12 +1805,12 @@
                 <polyline points="17 21 17 13 7 13 7 21"/>
                 <polyline points="7 3 7 8 15 8"/>
               </svg>
-              <span>Lưu</span>
+              <span>LÆ°u</span>
             </button>
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.deleteSchedule('${s.id}')" 
-              title="Xóa lịch hẹn" 
+              title="XÃ³a lá»‹ch háº¹n" 
               class="p-1.5 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-lg transition-all"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
@@ -1810,7 +1822,7 @@
   }
 
   // =========================================================================
-  // MODAL THÊM / SỬA KHÁCH HÀNG HẸN LỊCH EXCEL (#adminAddScheduleModal)
+  // MODAL THÃŠM / Sá»¬A KHÃCH HÃ€NG Háº¸N Lá»ŠCH EXCEL (#adminAddScheduleModal)
   // =========================================================================
   function renderScheduleModal(scheduleId) {
     let schedule = null;
@@ -1821,9 +1833,9 @@
 
     const isEdit = !!schedule;
     const customerEmail = schedule ? schedule.customerEmail : 'thaitraicau123@gmail.com';
-    const customerName = schedule ? schedule.customerName : 'Bùi Thái';
+    const customerName = schedule ? schedule.customerName : 'BÃ¹i ThÃ¡i';
     const managerEmail = schedule ? schedule.managerEmail : 'slot1-pro@shopviet.vip';
-    const serviceName = schedule ? schedule.serviceName : '[1 Tháng] Gemini Argon 4 Pro + 5TB Drive';
+    const serviceName = schedule ? schedule.serviceName : '[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive';
     const startDate = schedule ? schedule.startDate : new Date().toISOString().split('T')[0];
     const defaultExpire = new Date();
     defaultExpire.setMonth(defaultExpire.getMonth() + 1);
@@ -1846,8 +1858,8 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${isEdit ? 'Cập Nhật Lịch Hẹn Khách Hàng' : 'Thêm Email Khách Hàng Vào Bảng Excel'}</h3>
-                <p class="text-xs text-slate-500">${isEdit ? `Mã lịch: ${schedule.id}` : 'Quản lý lịch hẹn slot bản quyền trực tiếp trên bảng tính'}</p>
+                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${isEdit ? 'Cáº­p Nháº­t Lá»‹ch Háº¹n KhÃ¡ch HÃ ng' : 'ThÃªm Email KhÃ¡ch HÃ ng VÃ o Báº£ng Excel'}</h3>
+                <p class="text-xs text-slate-500">${isEdit ? `MÃ£ lá»‹ch: ${schedule.id}` : 'Quáº£n lÃ½ lá»‹ch háº¹n slot báº£n quyá»n trá»±c tiáº¿p trÃªn báº£ng tÃ­nh'}</p>
               </div>
             </div>
 
@@ -1863,10 +1875,10 @@
           <!-- Body Form -->
           <form id="scheduleForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveScheduleFromModal('${scheduleId || ''}');" class="p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Email & Tên khách hàng -->
+            <!-- Email & TÃªn khÃ¡ch hÃ ng -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Khách Hàng (*)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email KhÃ¡ch HÃ ng (*)</label>
                 <input 
                   type="email" 
                   id="modalSchCustomerEmail" 
@@ -1877,52 +1889,52 @@
                 >
               </div>
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Tên Khách Hàng</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">TÃªn KhÃ¡ch HÃ ng</label>
                 <input 
                   type="text" 
                   id="modalSchCustomerName" 
                   value="${customerName}"
-                  placeholder="Bùi Thái" 
+                  placeholder="BÃ¹i ThÃ¡i" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
               </div>
             </div>
 
-            <!-- Email Quản Lý (Slot) -->
+            <!-- Email Quáº£n LÃ½ (Slot) -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Quản Lý Slot (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Quáº£n LÃ½ Slot (*)</label>
               <input 
                 type="text" 
                 id="modalSchManagerEmail" 
                 required 
                 value="${managerEmail}"
-                placeholder="slot1-pro@shopviet.vip hoặc admin-slot@shopviet.vip" 
+                placeholder="slot1-pro@shopviet.vip hoáº·c admin-slot@shopviet.vip" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-mono font-semibold text-indigo-600 dark:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
               >
-              <p class="text-[11px] text-slate-400 mt-1">Dùng để phân chia slot quản trị và thông báo khi gia hạn.</p>
+              <p class="text-[11px] text-slate-400 mt-1">DÃ¹ng Ä‘á»ƒ phÃ¢n chia slot quáº£n trá»‹ vÃ  thÃ´ng bÃ¡o khi gia háº¡n.</p>
             </div>
 
-            <!-- Gói Dịch Vụ -->
+            <!-- GÃ³i Dá»‹ch Vá»¥ -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Gói Dịch Vụ (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">GÃ³i Dá»‹ch Vá»¥ (*)</label>
               <select 
                 id="modalSchService" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold"
               >
-                <option value="[1 Tháng] Gemini Argon 4 Pro + 5TB Drive" ${serviceName.includes('Argon') || serviceName.includes('Gemini') ? 'selected' : ''}>[1 Tháng] Gemini Argon 4 Pro + 5TB Drive</option>
-                <option value="[1 Năm] Gemini Argon 4 Pro + 2TB Google One" ${serviceName.includes('1 Năm] Gemini') ? 'selected' : ''}>[1 Năm] Gemini Argon 4 Pro + 2TB Google One</option>
-                <option value="Cursor Pro 1 Tháng Chính Chủ" ${serviceName.includes('Cursor') ? 'selected' : ''}>Cursor Pro 1 Tháng Chính Chủ</option>
-                <option value="ChatGPT Plus Chính Chủ GPT-4o" ${serviceName.includes('ChatGPT') ? 'selected' : ''}>ChatGPT Plus Chính Chủ GPT-4o</option>
-                <option value="Canva Pro Edu 1 Năm Vĩnh Viễn" ${serviceName.includes('Canva') ? 'selected' : ''}>Canva Pro Edu 1 Năm Vĩnh Viễn</option>
-                <option value="CapCut Pro 1 Năm Bản Quyền" ${serviceName.includes('CapCut') ? 'selected' : ''}>CapCut Pro 1 Năm Bản Quyền</option>
+                <option value="[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive" ${serviceName.includes('Argon') || serviceName.includes('Gemini') ? 'selected' : ''}>[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive</option>
+                <option value="[1 NÄƒm] Gemini Argon 4 Pro + 2TB Google One" ${serviceName.includes('1 NÄƒm] Gemini') ? 'selected' : ''}>[1 NÄƒm] Gemini Argon 4 Pro + 2TB Google One</option>
+                <option value="Cursor Pro 1 ThÃ¡ng ChÃ­nh Chá»§" ${serviceName.includes('Cursor') ? 'selected' : ''}>Cursor Pro 1 ThÃ¡ng ChÃ­nh Chá»§</option>
+                <option value="ChatGPT Plus ChÃ­nh Chá»§ GPT-4o" ${serviceName.includes('ChatGPT') ? 'selected' : ''}>ChatGPT Plus ChÃ­nh Chá»§ GPT-4o</option>
+                <option value="Canva Pro Edu 1 NÄƒm VÄ©nh Viá»…n" ${serviceName.includes('Canva') ? 'selected' : ''}>Canva Pro Edu 1 NÄƒm VÄ©nh Viá»…n</option>
+                <option value="CapCut Pro 1 NÄƒm Báº£n Quyá»n" ${serviceName.includes('CapCut') ? 'selected' : ''}>CapCut Pro 1 NÄƒm Báº£n Quyá»n</option>
                 <option value="Claude 3.5 Sonnet / Opus Pro" ${serviceName.includes('Claude') ? 'selected' : ''}>Claude 3.5 Sonnet / Opus Pro</option>
               </select>
             </div>
 
-            <!-- Ngày bắt đầu & Ngày hết hạn -->
+            <!-- NgÃ y báº¯t Ä‘áº§u & NgÃ y háº¿t háº¡n -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ngày Bắt Đầu</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">NgÃ y Báº¯t Äáº§u</label>
                 <input 
                   type="date" 
                   id="modalSchStartDate" 
@@ -1931,7 +1943,7 @@
                 >
               </div>
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ngày Hết Hạn (*)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">NgÃ y Háº¿t Háº¡n (*)</label>
                 <input 
                   type="date" 
                   id="modalSchExpireDate" 
@@ -1942,25 +1954,25 @@
               </div>
             </div>
 
-            <!-- Nút chọn nhanh thời hạn -->
+            <!-- NÃºt chá»n nhanh thá»i háº¡n -->
             <div>
-              <span class="block text-[11px] font-bold text-slate-500 mb-1.5">Chọn nhanh thời hạn (tính từ ngày bắt đầu):</span>
+              <span class="block text-[11px] font-bold text-slate-500 mb-1.5">Chá»n nhanh thá»i háº¡n (tÃ­nh tá»« ngÃ y báº¯t Ä‘áº§u):</span>
               <div class="flex flex-wrap gap-1.5">
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(1)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(3)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+3 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(6)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+6 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(12)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 Năm</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(18)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+18 Tháng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(1)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 ThÃ¡ng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(3)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+3 ThÃ¡ng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(6)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+6 ThÃ¡ng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(12)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 NÄƒm</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(18)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+18 ThÃ¡ng</button>
               </div>
             </div>
 
-            <!-- Ghi Chú -->
+            <!-- Ghi ChÃº -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ghi Chú</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ghi ChÃº</label>
               <textarea 
                 id="modalSchNotes" 
                 rows="2" 
-                placeholder="Khách VIP nâng cấp chính chủ, cần gọi nhắc trước 3 ngày..." 
+                placeholder="KhÃ¡ch VIP nÃ¢ng cáº¥p chÃ­nh chá»§, cáº§n gá»i nháº¯c trÆ°á»›c 3 ngÃ y..." 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
               >${notes}</textarea>
             </div>
@@ -1972,7 +1984,7 @@
                 onclick="window.ShopVietViews.admin.closeScheduleModal()" 
                 class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition text-xs"
               >
-                Hủy
+                Há»§y
               </button>
               <button 
                 type="submit" 
@@ -1983,7 +1995,7 @@
                   <polyline points="17 21 17 13 7 13 7 21"/>
                   <polyline points="7 3 7 8 15 8"/>
                 </svg>
-                <span>Lưu vào bảng Excel</span>
+                <span>LÆ°u vÃ o báº£ng Excel</span>
               </button>
             </div>
 
@@ -1995,7 +2007,7 @@
   }
 
   // =========================================================================
-  // TAB 6: TRẠM PHÁT SÓNG THỜI GIAN THỰC (REALTIME SYNC HUB)
+  // TAB 6: TRáº M PHÃT SÃ“NG THá»œI GIAN THá»°C (REALTIME SYNC HUB)
   // =========================================================================
   function renderTabRealtime() {
     const products = (window.ShopVietData && window.ShopVietData.products) || [];
@@ -2007,7 +2019,7 @@
     return `
       <div class="max-w-5xl mx-auto space-y-6 animate-fade-in">
         
-        <!-- BANNER TRẠM PHÁT SÓNG REALTIME CHÍNH -->
+        <!-- BANNER TRáº M PHÃT SÃ“NG REALTIME CHÃNH -->
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#18110A] via-slate-900 to-emerald-950 p-6 sm:p-8 text-white border border-amber-700/25 shadow-2xl">
           <!-- Background Glow Effect -->
           <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
@@ -2027,38 +2039,38 @@
                 </div>
                 <div>
                   <h3 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-                    <span>Trạm Phát Sóng Thời Gian Thực (Realtime Sync Hub)</span>
+                    <span>Tráº¡m PhÃ¡t SÃ³ng Thá»i Gian Thá»±c (Realtime Sync Hub)</span>
                   </h3>
-                  <p class="text-xs text-slate-300 font-medium">Trung tâm phát tín hiệu đồng bộ đa tab, đa thiết bị và Cloud Realtime tức thì</p>
+                  <p class="text-xs text-slate-300 font-medium">Trung tÃ¢m phÃ¡t tÃ­n hiá»‡u Ä‘á»“ng bá»™ Ä‘a tab, Ä‘a thiáº¿t bá»‹ vÃ  Cloud Realtime tá»©c thÃ¬</p>
                 </div>
               </div>
 
               <!-- Badges -->
               <div class="flex flex-wrap items-center gap-2 pt-1">
-                <!-- Huy hiệu 🟢 Phát sóng Live Active -->
+                <!-- Huy hiá»‡u ðŸŸ¢ PhÃ¡t sÃ³ng Live Active -->
                 <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 backdrop-blur-sm shadow-sm">
                   <span class="relative flex h-2.5 w-2.5">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
                   </span>
-                  <span>🟢 Phát sóng Live Active</span>
+                  <span>ðŸŸ¢ PhÃ¡t sÃ³ng Live Active</span>
                 </span>
 
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-slate-200 border border-white/10">
                   <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                  <span>Kênh: shopviet_realtime_sync</span>
+                  <span>KÃªnh: shopviet_realtime_sync</span>
                 </span>
 
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-slate-200 border border-white/10">
                   <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span>Độ trễ: &lt; 30ms</span>
+                  <span>Äá»™ trá»…: &lt; 30ms</span>
                 </span>
               </div>
             </div>
 
-            <!-- Nút Hành Động Phát Sóng Nổi Bật -->
+            <!-- NÃºt HÃ nh Äá»™ng PhÃ¡t SÃ³ng Ná»•i Báº­t -->
             <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
-              <!-- NÚT MASTER PHỤ TRONG TRẠM REALTIME HUB -->
+              <!-- NÃšT MASTER PHá»¤ TRONG TRáº M REALTIME HUB -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.masterPublish()" 
@@ -2074,7 +2086,7 @@
                   <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
                   <path d="M12 9V4s3.03.55 4 2c1.08 1.62 0 5 0 5"/>
                 </svg>
-                <span>🚀 XUẤT BẢN &amp; ĐỒNG BỘ TOÀN CẦU TỨC THÌ</span>
+                <span>ðŸš€ XUáº¤T Báº¢N &amp; Äá»’NG Bá»˜ TOÃ€N Cáº¦U Tá»¨C THÃŒ</span>
               </button>
 
               <button 
@@ -2085,7 +2097,7 @@
                 <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
-                <span>⚡ Phát Tín Hiệu Đồng Bộ Thử Nghiệm (Broadcast Test Ping)</span>
+                <span>âš¡ PhÃ¡t TÃ­n Hiá»‡u Äá»“ng Bá»™ Thá»­ Nghiá»‡m (Broadcast Test Ping)</span>
               </button>
 
               <button 
@@ -2099,18 +2111,18 @@
                   <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
                   <path d="M16 21h5v-5"/>
                 </svg>
-                <span>Phát sóng đồng bộ lại toàn bộ Sản phẩm</span>
+                <span>PhÃ¡t sÃ³ng Ä‘á»“ng bá»™ láº¡i toÃ n bá»™ Sáº£n pháº©m</span>
               </button>
             </div>
           </div>
         </div>
 
-        <!-- BENTO THÔNG SỐ TRẠM PHÁT SÓNG (4 CARD) -->
+        <!-- BENTO THÃ”NG Sá» TRáº M PHÃT SÃ“NG (4 CARD) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1: Số lượng sản phẩm đang đồng bộ -->
+          <!-- Card 1: Sá»‘ lÆ°á»£ng sáº£n pháº©m Ä‘ang Ä‘á»“ng bá»™ -->
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sản phẩm đồng bộ</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sáº£n pháº©m Ä‘á»“ng bá»™</span>
               <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
               </div>
@@ -2119,15 +2131,15 @@
               <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" id="adminRealtimeProductCount">${products.length}</div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>Đang phát trực tiếp tới tất cả máy khách</span>
+                <span>Äang phÃ¡t trá»±c tiáº¿p tá»›i táº¥t cáº£ mÃ¡y khÃ¡ch</span>
               </p>
             </div>
           </div>
 
-          <!-- Card 2: Thời gian phát sóng cuối cùng -->
+          <!-- Card 2: Thá»i gian phÃ¡t sÃ³ng cuá»‘i cÃ¹ng -->
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lần phát sóng cuối</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Láº§n phÃ¡t sÃ³ng cuá»‘i</span>
               <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
@@ -2135,12 +2147,12 @@
             <div class="mt-4">
               <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-mono" id="adminRealtimeLastBroadcast">${lastTimeDisplay}</div>
               <p class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
-                <span>⚡ Cập nhật tự động khi Admin lưu</span>
+                <span>âš¡ Cáº­p nháº­t tá»± Ä‘á»™ng khi Admin lÆ°u</span>
               </p>
             </div>
           </div>
 
-          <!-- Card 3: Cấu hình VietQR hiện thời -->
+          <!-- Card 3: Cáº¥u hÃ¬nh VietQR hiá»‡n thá»i -->
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">VietQR Live Target</span>
@@ -2154,36 +2166,36 @@
             </div>
           </div>
 
-          <!-- Card 4: Gói Voucher & Đơn hàng -->
+          <!-- Card 4: GÃ³i Voucher & ÄÆ¡n hÃ ng -->
           <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Hệ sinh thái đồng bộ</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Há»‡ sinh thÃ¡i Ä‘á»“ng bá»™</span>
               <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-base font-bold text-slate-900 dark:text-white">${vouchers.length} Vouchers • ${orders.length} Đơn</div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Đồng bộ đa luồng 2 chiều</p>
+              <div class="text-base font-bold text-slate-900 dark:text-white">${vouchers.length} Vouchers â€¢ ${orders.length} ÄÆ¡n</div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Äá»“ng bá»™ Ä‘a luá»“ng 2 chiá»u</p>
             </div>
           </div>
         </div>
 
-        <!-- CỘT CHỨC NĂNG PHÁT SÓNG NHANH & NHẬT KÝ BROADCAST -->
+        <!-- Cá»˜T CHá»¨C NÄ‚NG PHÃT SÃ“NG NHANH & NHáº¬T KÃ BROADCAST -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          <!-- Trái: Khối điều khiển phát sóng thủ công -->
+          <!-- TrÃ¡i: Khá»‘i Ä‘iá»u khiá»ƒn phÃ¡t sÃ³ng thá»§ cÃ´ng -->
           <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
             <div>
               <h4 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                <span>Khối Điều Khiển Tín Hiệu Thủ Công</span>
+                <span>Khá»‘i Äiá»u Khiá»ƒn TÃ­n Hiá»‡u Thá»§ CÃ´ng</span>
               </h4>
-              <p class="text-xs text-slate-500 mt-0.5">Bấm để ép phát sóng tín hiệu tới tất cả tab & client đang mở trang.</p>
+              <p class="text-xs text-slate-500 mt-0.5">Báº¥m Ä‘á»ƒ Ã©p phÃ¡t sÃ³ng tÃ­n hiá»‡u tá»›i táº¥t cáº£ tab & client Ä‘ang má»Ÿ trang.</p>
             </div>
 
             <div class="space-y-2.5 pt-1">
-              <!-- Nút 1: Test Ping -->
+              <!-- NÃºt 1: Test Ping -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastTestPing()" 
@@ -2191,12 +2203,12 @@
               >
                 <div class="flex items-center gap-2.5">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>⚡ Phát Tín Hiệu Đồng Bộ Thử Nghiệm</span>
+                  <span>âš¡ PhÃ¡t TÃ­n Hiá»‡u Äá»“ng Bá»™ Thá»­ Nghiá»‡m</span>
                 </div>
                 <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-800/60">Test Ping</span>
               </button>
 
-              <!-- Nút 2: Phát sóng Sản phẩm -->
+              <!-- NÃºt 2: PhÃ¡t sÃ³ng Sáº£n pháº©m -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastProductsSync()" 
@@ -2204,12 +2216,12 @@
               >
                 <div class="flex items-center gap-2.5">
                   <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                  <span>📦 Phát Sóng Đồng Bộ Lại Sản Phẩm</span>
+                  <span>ðŸ“¦ PhÃ¡t SÃ³ng Äá»“ng Bá»™ Láº¡i Sáº£n Pháº©m</span>
                 </div>
-                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-800/60">${products.length} Gói</span>
+                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-800/60">${products.length} GÃ³i</span>
               </button>
 
-              <!-- Nút 3: Phát sóng VietQR -->
+              <!-- NÃºt 3: PhÃ¡t sÃ³ng VietQR -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastVietQRSync()" 
@@ -2217,12 +2229,12 @@
               >
                 <div class="flex items-center gap-2.5">
                   <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                  <span>💳 Phát Sóng Cấu Hình VietQR Mới</span>
+                  <span>ðŸ’³ PhÃ¡t SÃ³ng Cáº¥u HÃ¬nh VietQR Má»›i</span>
                 </div>
                 <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-800/60">Techcombank</span>
               </button>
 
-              <!-- Nút 4: Đồng bộ Cloud 2 chiều toàn hệ thống -->
+              <!-- NÃºt 4: Äá»“ng bá»™ Cloud 2 chiá»u toÃ n há»‡ thá»‘ng -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.syncCloudAll()" 
@@ -2230,42 +2242,42 @@
               >
                 <div class="flex items-center gap-2.5">
                   <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-                  <span>☁️ Đồng Bộ 2 Chiều Cloud REST API</span>
+                  <span>â˜ï¸ Äá»“ng Bá»™ 2 Chiá»u Cloud REST API</span>
                 </div>
                 <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700">REST Sync</span>
               </button>
             </div>
 
-            <!-- Giải thích cơ chế -->
+            <!-- Giáº£i thÃ­ch cÆ¡ cháº¿ -->
             <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/60 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5 leading-relaxed">
-              <p class="font-semibold text-slate-700 dark:text-slate-300">💡 Cơ chế Tự Động Phát Sóng:</p>
-              <p>Mỗi khi bạn Lưu/Sửa/Xóa sản phẩm, Cập nhật VietQR, Tạo Voucher hoặc Duyệt Đơn trong Admin Portal, hệ thống sẽ <strong>tự động phát tín hiệu</strong> qua BroadcastChannel & Cloud Event Bus.</p>
-              <p>Tất cả khách hàng đang xem trang chủ, giỏ hàng hoặc cổng thanh toán sẽ nhận được dữ liệu mới nhất mà <strong>không cần bấm F5</strong> tải lại trang!</p>
+              <p class="font-semibold text-slate-700 dark:text-slate-300">ðŸ’¡ CÆ¡ cháº¿ Tá»± Äá»™ng PhÃ¡t SÃ³ng:</p>
+              <p>Má»—i khi báº¡n LÆ°u/Sá»­a/XÃ³a sáº£n pháº©m, Cáº­p nháº­t VietQR, Táº¡o Voucher hoáº·c Duyá»‡t ÄÆ¡n trong Admin Portal, há»‡ thá»‘ng sáº½ <strong>tá»± Ä‘á»™ng phÃ¡t tÃ­n hiá»‡u</strong> qua BroadcastChannel & Cloud Event Bus.</p>
+              <p>Táº¥t cáº£ khÃ¡ch hÃ ng Ä‘ang xem trang chá»§, giá» hÃ ng hoáº·c cá»•ng thanh toÃ¡n sáº½ nháº­n Ä‘Æ°á»£c dá»¯ liá»‡u má»›i nháº¥t mÃ  <strong>khÃ´ng cáº§n báº¥m F5</strong> táº£i láº¡i trang!</p>
             </div>
           </div>
 
-          <!-- Phải: Nhật ký phát sóng trực quan (Broadcast History) -->
+          <!-- Pháº£i: Nháº­t kÃ½ phÃ¡t sÃ³ng trá»±c quan (Broadcast History) -->
           <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div>
                   <h4 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    <span>Nhật Ký Tín Hiệu Phát Sóng Gần Nhất</span>
+                    <span>Nháº­t KÃ½ TÃ­n Hiá»‡u PhÃ¡t SÃ³ng Gáº§n Nháº¥t</span>
                   </h4>
-                  <p class="text-xs text-slate-500 mt-0.5">Lưu vết các đợt phát sóng tự động và thủ công của Admin Portal</p>
+                  <p class="text-xs text-slate-500 mt-0.5">LÆ°u váº¿t cÃ¡c Ä‘á»£t phÃ¡t sÃ³ng tá»± Ä‘á»™ng vÃ  thá»§ cÃ´ng cá»§a Admin Portal</p>
                 </div>
                 <button 
                   type="button" 
                   onclick="window.ShopVietViews.admin.clearBroadcastHistory()" 
                   class="text-[11px] font-semibold text-slate-400 hover:text-rose-500 transition"
-                  title="Xóa lịch sử"
+                  title="XÃ³a lá»‹ch sá»­"
                 >
-                  Xóa log
+                  XÃ³a log
                 </button>
               </div>
 
-              <!-- Danh sách log -->
+              <!-- Danh sÃ¡ch log -->
               <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
                 ${history.map(item => `
                   <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-slate-800/80 flex items-start justify-between gap-3 text-xs">
@@ -2302,7 +2314,7 @@
   }
 
   // =========================================================================
-  // MODAL TẠO MÃ QUÀ TẶNG & GIẢM GIÁ MỚI (#adminCreateVoucherModal)
+  // MODAL Táº O MÃƒ QUÃ€ Táº¶NG & GIáº¢M GIÃ Má»šI (#adminCreateVoucherModal)
   // =========================================================================
   function renderCreateVoucherModal() {
     return `
@@ -2322,8 +2334,8 @@
                 </svg>
               </div>
               <div>
-                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Tạo Mã Quà Tặng & Giảm Giá Mới</h3>
-                <p class="text-xs text-slate-500">Mã có hiệu lực sử dụng ngay lập tức</p>
+                <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Táº¡o MÃ£ QuÃ  Táº·ng & Giáº£m GiÃ¡ Má»›i</h3>
+                <p class="text-xs text-slate-500">MÃ£ cÃ³ hiá»‡u lá»±c sá»­ dá»¥ng ngay láº­p tá»©c</p>
               </div>
             </div>
 
@@ -2339,15 +2351,15 @@
           <!-- Body Form -->
           <form id="createVoucherForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.createVoucherSubmit(event);" class="p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Mã Code & Nút Random -->
+            <!-- MÃ£ Code & NÃºt Random -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Mã Voucher (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">MÃ£ Voucher (*)</label>
               <div class="flex gap-2">
                 <input 
                   type="text" 
                   id="voucherCodeInput" 
                   required 
-                  placeholder="Ví dụ: DISCOUNT20K, VIP100K..." 
+                  placeholder="VÃ­ dá»¥: DISCOUNT20K, VIP100K..." 
                   class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white uppercase font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
                 <button 
@@ -2356,29 +2368,29 @@
                   class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 transition shrink-0"
                 >
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                  <span>Sinh ngẫu nhiên</span>
+                  <span>Sinh ngáº«u nhiÃªn</span>
                 </button>
               </div>
-              <p class="text-[11px] text-slate-400 mt-1">Mã tự động chuyển thành chữ HOA không dấu.</p>
+              <p class="text-[11px] text-slate-400 mt-1">MÃ£ tá»± Ä‘á»™ng chuyá»ƒn thÃ nh chá»¯ HOA khÃ´ng dáº¥u.</p>
             </div>
 
-            <!-- Loại Mã -->
+            <!-- Loáº¡i MÃ£ -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Loại mã (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Loáº¡i mÃ£ (*)</label>
               <select 
                 id="voucherTypeInput" 
                 onchange="window.ShopVietViews.admin.onVoucherTypeChange(this.value)"
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
               >
-                <option value="percent_discount" selected>Giảm theo phần trăm (%) - Mặc định</option>
-                <option value="order_discount">Giảm số tiền cố định (VNĐ)</option>
-                <option value="wallet_gift">Mã quà tặng nạp tiền vào Ví</option>
+                <option value="percent_discount" selected>Giáº£m theo pháº§n trÄƒm (%) - Máº·c Ä‘á»‹nh</option>
+                <option value="order_discount">Giáº£m sá»‘ tiá»n cá»‘ Ä‘á»‹nh (VNÄ)</option>
+                <option value="wallet_gift">MÃ£ quÃ  táº·ng náº¡p tiá»n vÃ o VÃ­</option>
               </select>
             </div>
 
-            <!-- Giá trị giảm -->
+            <!-- GiÃ¡ trá»‹ giáº£m -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1" id="voucherValueLabel">Giá trị giảm (% hoặc VNĐ) (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1" id="voucherValueLabel">GiÃ¡ trá»‹ giáº£m (% hoáº·c VNÄ) (*)</label>
               <input 
                 type="number" 
                 id="voucherValueInput" 
@@ -2387,12 +2399,12 @@
                 max="99" 
                 step="1" 
                 value="20" 
-                placeholder="Nhập số % (VD: 20 tức giảm 20%) hoặc số tiền VNĐ (VD: 20000)" 
+                placeholder="Nháº­p sá»‘ % (VD: 20 tá»©c giáº£m 20%) hoáº·c sá»‘ tiá»n VNÄ (VD: 20000)" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-bold text-emerald-600 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] text-base"
               >
-              <!-- Các nút chọn nhanh -->
+              <!-- CÃ¡c nÃºt chá»n nhanh -->
               <div class="flex items-center gap-1.5 mt-2 flex-wrap" id="voucherQuickSelectBtns">
-                <span class="text-[11px] text-slate-400">Chọn nhanh:</span>
+                <span class="text-[11px] text-slate-400">Chá»n nhanh:</span>
                 <button type="button" onclick="document.getElementById('voucherValueInput').value = 10; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">10%</button>
                 <button type="button" onclick="document.getElementById('voucherValueInput').value = 20; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">20%</button>
                 <button type="button" onclick="document.getElementById('voucherValueInput').value = 30; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">30%</button>
@@ -2402,11 +2414,11 @@
               </div>
             </div>
 
-            <!-- Thiết lập dùng 1 lần -->
+            <!-- Thiáº¿t láº­p dÃ¹ng 1 láº§n -->
             <div class="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
               <div>
-                <div class="font-bold text-slate-800 dark:text-slate-200 text-xs">Giới hạn sử dụng 1 lần</div>
-                <div class="text-[11px] text-slate-500">Mỗi mã chỉ được 1 khách nhập thành công 1 lần duy nhất</div>
+                <div class="font-bold text-slate-800 dark:text-slate-200 text-xs">Giá»›i háº¡n sá»­ dá»¥ng 1 láº§n</div>
+                <div class="text-[11px] text-slate-500">Má»—i mÃ£ chá»‰ Ä‘Æ°á»£c 1 khÃ¡ch nháº­p thÃ nh cÃ´ng 1 láº§n duy nháº¥t</div>
               </div>
               <input type="checkbox" id="voucherSingleUseInput" checked class="w-4 h-4 text-indigo-600 rounded">
             </div>
@@ -2418,14 +2430,14 @@
                 onclick="window.ShopVietViews.admin.closeVoucherModal()" 
                 class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition"
               >
-                Hủy bỏ
+                Há»§y bá»
               </button>
               <button 
                 type="submit" 
                 class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Tạo mã ngay</span>
+                <span>Táº¡o mÃ£ ngay</span>
               </button>
             </div>
 
@@ -2437,7 +2449,7 @@
   }
 
   // =========================================================================
-  // MODAL POPUP: CHỈNH SỬA & THÊM MỚI SẢN PHẨM
+  // MODAL POPUP: CHá»ˆNH Sá»¬A & THÃŠM Má»šI Sáº¢N PHáº¨M
   // =========================================================================
   function renderProductEditModal(productId) {
     const isEdit = !!productId;
@@ -2453,16 +2465,16 @@
       status: 'in_stock',
       iconType: 'gemini',
       imageUrl: '',
-      badge: 'Bán chạy nhất',
-      warranty: '18 tháng (1 đổi 1)',
-      desc: 'Mô tả tính năng gói sản phẩm bản quyền tự động 24/7...',
+      badge: 'BÃ¡n cháº¡y nháº¥t',
+      warranty: '18 thÃ¡ng (1 Ä‘á»•i 1)',
+      desc: 'MÃ´ táº£ tÃ­nh nÄƒng gÃ³i sáº£n pháº©m báº£n quyá»n tá»± Ä‘á»™ng 24/7...',
       benefits: [
-        'Kích hoạt qua link mời chính chủ Google',
-        'Tích hợp Antigravity 2.0 & Veo Video AI',
-        'Bảo hành chính chủ 1 đổi 1',
-        'Tự động cấp link ngay sau khi thanh toán'
+        'KÃ­ch hoáº¡t qua link má»i chÃ­nh chá»§ Google',
+        'TÃ­ch há»£p Antigravity 2.0 & Veo Video AI',
+        'Báº£o hÃ nh chÃ­nh chá»§ 1 Ä‘á»•i 1',
+        'Tá»± Ä‘á»™ng cáº¥p link ngay sau khi thanh toÃ¡n'
       ],
-      usageGuide: 'Sau khi thanh toán thành công, hệ thống tự động gửi link kích hoạt bản quyền trực tiếp vào email đăng ký của bạn. Chỉ cần click vào link để tham gia nhóm gia đình chính chủ của Google. Thời gian kích hoạt từ 1-5 phút 24/7.'
+      usageGuide: 'Sau khi thanh toÃ¡n thÃ nh cÃ´ng, há»‡ thá»‘ng tá»± Ä‘á»™ng gá»­i link kÃ­ch hoáº¡t báº£n quyá»n trá»±c tiáº¿p vÃ o email Ä‘Äƒng kÃ½ cá»§a báº¡n. Chá»‰ cáº§n click vÃ o link Ä‘á»ƒ tham gia nhÃ³m gia Ä‘Ã¬nh chÃ­nh chá»§ cá»§a Google. Thá»i gian kÃ­ch hoáº¡t tá»« 1-5 phÃºt 24/7.'
     };
 
     if (isEdit && window.ShopVietData && window.ShopVietData.products) {
@@ -2471,10 +2483,10 @@
         prod = Object.assign({}, found);
         if (!prod.benefits || !Array.isArray(prod.benefits) || prod.benefits.length === 0) {
           prod.benefits = [
-            'Kích hoạt qua link mời chính chủ Google',
-            'Tích hợp Antigravity 2.0 & Veo Video AI',
-            'Bảo hành chính chủ 1 đổi 1',
-            'Tự động cấp link ngay sau khi thanh toán'
+            'KÃ­ch hoáº¡t qua link má»i chÃ­nh chá»§ Google',
+            'TÃ­ch há»£p Antigravity 2.0 & Veo Video AI',
+            'Báº£o hÃ nh chÃ­nh chá»§ 1 Ä‘á»•i 1',
+            'Tá»± Ä‘á»™ng cáº¥p link ngay sau khi thanh toÃ¡n'
           ];
         }
         if (!prod.usageGuide) {
@@ -2483,12 +2495,12 @@
       }
     }
 
-    // Nhận diện Badge chuẩn & chế độ tùy chỉnh
-    const standardBadges = ['Bán chạy nhất', 'HOT', 'Rẻ vô địch', 'Mới ra mắt', 'Khuyên dùng', 'Flash Sale'];
-    const currentBadge = (prod.badge || 'Bán chạy nhất').trim();
+    // Nháº­n diá»‡n Badge chuáº©n & cháº¿ Ä‘á»™ tÃ¹y chá»‰nh
+    const standardBadges = ['BÃ¡n cháº¡y nháº¥t', 'HOT', 'Ráº» vÃ´ Ä‘á»‹ch', 'Má»›i ra máº¯t', 'KhuyÃªn dÃ¹ng', 'Flash Sale'];
+    const currentBadge = (prod.badge || 'BÃ¡n cháº¡y nháº¥t').trim();
     const matchedStandard = standardBadges.find(b => b.toLowerCase() === currentBadge.toLowerCase());
     const isCustom = !matchedStandard && currentBadge !== '';
-    const badgeSelectValue = isCustom ? 'custom' : (matchedStandard || 'Bán chạy nhất');
+    const badgeSelectValue = isCustom ? 'custom' : (matchedStandard || 'BÃ¡n cháº¡y nháº¥t');
 
     return `
       <div id="productEditBackdrop" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
@@ -2499,8 +2511,8 @@
             <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span class="flex items-center gap-1.5">
                 ${isEdit 
-                  ? `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Chỉnh Sửa Sản Phẩm</span>` 
-                  : `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Thêm Sản Phẩm Mới</span>`
+                  ? `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Chá»‰nh Sá»­a Sáº£n Pháº©m</span>` 
+                  : `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>ThÃªm Sáº£n Pháº©m Má»›i</span>`
                 }
               </span>
               <code class="text-xs font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded">${prod.id}</code>
@@ -2517,23 +2529,23 @@
           <!-- Body Form -->
           <form id="productEditForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveProduct('${prod.id}', ${isEdit});" class="flex-1 overflow-y-auto p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Tên sản phẩm -->
+            <!-- TÃªn sáº£n pháº©m -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Tên sản phẩm (*)</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">TÃªn sáº£n pháº©m (*)</label>
               <input 
                 type="text" 
                 id="editProdName" 
                 value="${prod.name.replace(/"/g, '&quot;')}" 
                 required 
-                placeholder="Ví dụ: [LINK] Antigravity + Gemini Pro 18 Tháng" 
+                placeholder="VÃ­ dá»¥: [LINK] Antigravity + Gemini Pro 18 ThÃ¡ng" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold"
               >
             </div>
 
-            <!-- Giá Bán & Giá Gốc -->
+            <!-- GiÃ¡ BÃ¡n & GiÃ¡ Gá»‘c -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Giá bán (VNĐ) (*)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">GiÃ¡ bÃ¡n (VNÄ) (*)</label>
                 <input 
                   type="number" 
                   id="editProdPrice" 
@@ -2541,29 +2553,29 @@
                   required 
                   min="0" 
                   step="1000" 
-                  placeholder="Ví dụ: 69000" 
+                  placeholder="VÃ­ dá»¥: 69000" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-bold text-indigo-600 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
               </div>
 
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Giá gốc niêm yết (VNĐ)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">GiÃ¡ gá»‘c niÃªm yáº¿t (VNÄ)</label>
                 <input 
                   type="number" 
                   id="editProdOldPrice" 
                   value="${prod.oldPrice || prod.price * 2}" 
                   min="0" 
                   step="1000" 
-                  placeholder="Ví dụ: 250000" 
+                  placeholder="VÃ­ dá»¥: 250000" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
               </div>
             </div>
 
-            <!-- Danh Mục & Tag -->
+            <!-- Danh Má»¥c & Tag -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Danh mục sản phẩm</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Danh má»¥c sáº£n pháº©m</label>
                 <select 
                   id="editProdCategory" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
@@ -2578,21 +2590,21 @@
               </div>
 
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nhãn Tag bộ lọc</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">NhÃ£n Tag bá»™ lá»c</label>
                 <input 
                   type="text" 
                   id="editProdTag" 
-                  value="${prod.tag || 'Tất cả'}" 
-                  placeholder="Ví dụ: Cursor New, Capcut, Canva..." 
+                  value="${prod.tag || 'Táº¥t cáº£'}" 
+                  placeholder="VÃ­ dá»¥: Cursor New, Capcut, Canva..." 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
               </div>
             </div>
 
-            <!-- Tồn Kho & Trạng Thái -->
+            <!-- Tá»“n Kho & Tráº¡ng ThÃ¡i -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Số lượng tồn kho</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Sá»‘ lÆ°á»£ng tá»“n kho</label>
                 <input 
                   type="number" 
                   id="editProdStock" 
@@ -2603,19 +2615,19 @@
               </div>
 
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Trạng thái kho hàng</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Tráº¡ng thÃ¡i kho hÃ ng</label>
                 <select 
                   id="editProdStatus" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
-                  <option value="in_stock" ${prod.status === 'in_stock' ? 'selected' : ''}>Còn hàng (In Stock)</option>
-                  <option value="low_stock" ${prod.status === 'low_stock' ? 'selected' : ''}>Sắp hết hàng (Low Stock)</option>
-                  <option value="out_of_stock" ${prod.status === 'out_of_stock' ? 'selected' : ''}>Hết hàng (Out of Stock)</option>
+                  <option value="in_stock" ${prod.status === 'in_stock' ? 'selected' : ''}>CÃ²n hÃ ng (In Stock)</option>
+                  <option value="low_stock" ${prod.status === 'low_stock' ? 'selected' : ''}>Sáº¯p háº¿t hÃ ng (Low Stock)</option>
+                  <option value="out_of_stock" ${prod.status === 'out_of_stock' ? 'selected' : ''}>Háº¿t hÃ ng (Out of Stock)</option>
                 </select>
               </div>
             </div>
 
-            <!-- ẢNH ĐẠI DIỆN SẢN PHẨM (TẢI LÊN FILE HOẶC DÁN URL) -->
+            <!-- áº¢NH Äáº I DIá»†N Sáº¢N PHáº¨M (Táº¢I LÃŠN FILE HOáº¶C DÃN URL) -->
             <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
               <div class="flex items-center justify-between">
                 <label class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
@@ -2624,27 +2636,27 @@
                     <circle cx="8.5" cy="8.5" r="1.5"/>
                     <polyline points="21 15 16 10 5 21"/>
                   </svg>
-                  <span>Ảnh đại diện sản phẩm (Tải lên hoặc URL)</span>
+                  <span>áº¢nh Ä‘áº¡i diá»‡n sáº£n pháº©m (Táº£i lÃªn hoáº·c URL)</span>
                 </label>
-                <span class="text-[11px] text-slate-400">Ưu tiên ảnh vuông 1:1 hoặc 16:9</span>
+                <span class="text-[11px] text-slate-400">Æ¯u tiÃªn áº£nh vuÃ´ng 1:1 hoáº·c 16:9</span>
               </div>
 
               <div class="flex items-center gap-4">
-                <!-- Khung Preview Ảnh Trực Quan -->
+                <!-- Khung Preview áº¢nh Trá»±c Quan -->
                 <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
                   <img 
                     id="adminProdImagePreview" 
                     src="${prod.imageUrl || ''}" 
-                    alt="Xem trước ảnh" 
+                    alt="Xem trÆ°á»›c áº£nh" 
                     class="${prod.imageUrl ? '' : 'hidden'} w-full h-full object-cover"
                   />
                   <div id="adminProdImagePlaceholder" class="${prod.imageUrl ? 'hidden' : 'flex'} flex-col items-center justify-center text-slate-400 p-2 text-center">
                     <svg class="w-6 h-6 mb-1 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-                    <span class="text-[9px] font-medium leading-tight">Chưa có ảnh</span>
+                    <span class="text-[9px] font-medium leading-tight">ChÆ°a cÃ³ áº£nh</span>
                   </div>
                 </div>
 
-                <!-- Cột Nút Hành Động & Input URL -->
+                <!-- Cá»™t NÃºt HÃ nh Äá»™ng & Input URL -->
                 <div class="flex-1 space-y-2">
                   <div class="flex items-center gap-2">
                     <input type="file" id="adminProdFileInput" accept="image/*" class="hidden" onchange="window.ShopVietViews.admin.handleProductImageUpload(this)">
@@ -2654,15 +2666,15 @@
                       class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold text-xs border border-indigo-200/60 dark:border-indigo-800 transition flex items-center gap-1.5 cursor-pointer"
                     >
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                      <span>Chọn ảnh từ máy...</span>
+                      <span>Chá»n áº£nh tá»« mÃ¡y...</span>
                     </button>
                     <button 
                       type="button" 
                       onclick="window.ShopVietViews.admin.clearProductImage()" 
                       class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium text-xs transition cursor-pointer"
-                      title="Xóa ảnh về mặc định"
+                      title="XÃ³a áº£nh vá» máº·c Ä‘á»‹nh"
                     >
-                      Xóa ảnh
+                      XÃ³a áº£nh
                     </button>
                   </div>
                   
@@ -2671,7 +2683,7 @@
                       type="text" 
                       id="editProdImageUrl" 
                       value="${prod.imageUrl || ''}" 
-                      placeholder="Hoặc dán link URL ảnh (https://...)" 
+                      placeholder="Hoáº·c dÃ¡n link URL áº£nh (https://...)" 
                       oninput="window.ShopVietViews.admin.handleProductImageUrlInput(this.value)"
                       class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono"
                     >
@@ -2680,9 +2692,9 @@
               </div>
             </div>
 
-            <!-- Icon Loại Thương Hiệu -->
+            <!-- Icon Loáº¡i ThÆ°Æ¡ng Hiá»‡u -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Thương hiệu / Icon nhận diện</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">ThÆ°Æ¡ng hiá»‡u / Icon nháº­n diá»‡n</label>
               <select 
                 id="editProdIconType" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
@@ -2698,29 +2710,29 @@
               </select>
             </div>
 
-            <!-- Badge & Bảo hành -->
+            <!-- Badge & Báº£o hÃ nh -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
-                <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">Huy hiệu nổi bật (Top-Right Bookmark Ribbon)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">Huy hiá»‡u ná»•i báº­t (Top-Right Bookmark Ribbon)</label>
                 <select 
                   id="editProdBadgeSelect" 
                   onchange="const c = document.getElementById('editProdBadgeCustomWrap'); if(c) { c.classList.toggle('hidden', this.value !== 'custom'); const hid = document.getElementById('editProdBadge'); if(hid && this.value !== 'custom') hid.value = this.value; }"
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold text-xs sm:text-sm cursor-pointer"
                 >
-                  <option value="Bán chạy nhất" ${badgeSelectValue === 'Bán chạy nhất' ? 'selected' : ''}>⭐ Bán chạy nhất (Best Seller - Vàng Gold hoàng gia)</option>
-                  <option value="HOT" ${badgeSelectValue === 'HOT' ? 'selected' : ''}>🔥 HOT (Cực hot - Đỏ Cam rực lửa AI)</option>
-                  <option value="Rẻ vô địch" ${badgeSelectValue === 'Rẻ vô địch' ? 'selected' : ''}>🏷️ Rẻ vô địch (Siêu tiết kiệm - Xanh Emerald & Tag kim cương)</option>
-                  <option value="Mới ra mắt" ${badgeSelectValue === 'Mới ra mắt' ? 'selected' : ''}>✨ Mới ra mắt (New Arrival - Xanh Sky Cyber & Sparkle)</option>
-                  <option value="Khuyên dùng" ${badgeSelectValue === 'Khuyên dùng' ? 'selected' : ''}>👑 Khuyên dùng (Đặc quyền VIP - Tím hoàng gia & Vương miện)</option>
-                  <option value="Flash Sale" ${badgeSelectValue === 'Flash Sale' ? 'selected' : ''}>⚡ Flash Sale (Giảm sốc - Hồng Đỏ & Tia chớp)</option>
-                  <option value="custom" ${badgeSelectValue === 'custom' ? 'selected' : ''}>✍️ Tùy chỉnh chữ riêng...</option>
+                  <option value="BÃ¡n cháº¡y nháº¥t" ${badgeSelectValue === 'BÃ¡n cháº¡y nháº¥t' ? 'selected' : ''}>â­ BÃ¡n cháº¡y nháº¥t (Best Seller - VÃ ng Gold hoÃ ng gia)</option>
+                  <option value="HOT" ${badgeSelectValue === 'HOT' ? 'selected' : ''}>ðŸ”¥ HOT (Cá»±c hot - Äá» Cam rá»±c lá»­a AI)</option>
+                  <option value="Ráº» vÃ´ Ä‘á»‹ch" ${badgeSelectValue === 'Ráº» vÃ´ Ä‘á»‹ch' ? 'selected' : ''}>ðŸ·ï¸ Ráº» vÃ´ Ä‘á»‹ch (SiÃªu tiáº¿t kiá»‡m - Xanh Emerald & Tag kim cÆ°Æ¡ng)</option>
+                  <option value="Má»›i ra máº¯t" ${badgeSelectValue === 'Má»›i ra máº¯t' ? 'selected' : ''}>âœ¨ Má»›i ra máº¯t (New Arrival - Xanh Sky Cyber & Sparkle)</option>
+                  <option value="KhuyÃªn dÃ¹ng" ${badgeSelectValue === 'KhuyÃªn dÃ¹ng' ? 'selected' : ''}>ðŸ‘‘ KhuyÃªn dÃ¹ng (Äáº·c quyá»n VIP - TÃ­m hoÃ ng gia & VÆ°Æ¡ng miá»‡n)</option>
+                  <option value="Flash Sale" ${badgeSelectValue === 'Flash Sale' ? 'selected' : ''}>âš¡ Flash Sale (Giáº£m sá»‘c - Há»“ng Äá» & Tia chá»›p)</option>
+                  <option value="custom" ${badgeSelectValue === 'custom' ? 'selected' : ''}>âœï¸ TÃ¹y chá»‰nh chá»¯ riÃªng...</option>
                 </select>
                 <div id="editProdBadgeCustomWrap" class="${isCustom ? '' : 'hidden'} mt-1.5">
                   <input 
                     type="text" 
                     id="editProdBadgeCustom" 
                     value="${isCustom ? currentBadge.replace(/"/g, '&quot;') : ''}"
-                    placeholder="Nhập tên huy hiệu riêng (VD: Phiên bản VIP, Limited...)" 
+                    placeholder="Nháº­p tÃªn huy hiá»‡u riÃªng (VD: PhiÃªn báº£n VIP, Limited...)" 
                     oninput="const hid = document.getElementById('editProdBadge'); if(hid) hid.value = this.value.trim();"
                     class="w-full px-3.5 py-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#8A5F26]"
                   />
@@ -2729,20 +2741,20 @@
               </div>
 
               <div>
-                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Thời hạn bảo hành</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Thá»i háº¡n báº£o hÃ nh</label>
                 <input 
                   type="text" 
                   id="editProdWarranty" 
-                  value="${prod.warranty || '18 tháng (1 đổi 1)'}" 
-                  placeholder="Ví dụ: 18 tháng (1 đổi 1)" 
+                  value="${prod.warranty || '18 thÃ¡ng (1 Ä‘á»•i 1)'}" 
+                  placeholder="VÃ­ dá»¥: 18 thÃ¡ng (1 Ä‘á»•i 1)" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
               </div>
             </div>
 
-            <!-- Mô tả sản phẩm -->
+            <!-- MÃ´ táº£ sáº£n pháº©m -->
             <div>
-              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Mô tả chi tiết</label>
+              <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">MÃ´ táº£ chi tiáº¿t</label>
               <textarea 
                 id="editProdDesc" 
                 rows="3" 
@@ -2750,49 +2762,49 @@
               >${prod.desc || ''}</textarea>
             </div>
 
-            <!-- Đặc quyền khi mua tại Bùi Thái AI Studio (Mỗi dòng một đặc quyền) -->
+            <!-- Äáº·c quyá»n khi mua táº¡i BÃ¹i ThÃ¡i AI Studio (Má»—i dÃ²ng má»™t Ä‘áº·c quyá»n) -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span>Đặc quyền khi mua tại Bùi Thái AI Studio (Mỗi dòng một đặc quyền)</span>
+                <span>Äáº·c quyá»n khi mua táº¡i BÃ¹i ThÃ¡i AI Studio (Má»—i dÃ²ng má»™t Ä‘áº·c quyá»n)</span>
               </label>
               <textarea 
                 id="editProdBenefits" 
                 rows="3" 
-                placeholder="Ví dụ:&#10;Kích hoạt qua link mời chính chủ Google&#10;Tích hợp Antigravity 2.0 & Veo Video AI&#10;Bảo hành chính chủ 1 đổi 1&#10;Tự động cấp link ngay sau khi thanh toán"
+                placeholder="VÃ­ dá»¥:&#10;KÃ­ch hoáº¡t qua link má»i chÃ­nh chá»§ Google&#10;TÃ­ch há»£p Antigravity 2.0 & Veo Video AI&#10;Báº£o hÃ nh chÃ­nh chá»§ 1 Ä‘á»•i 1&#10;Tá»± Ä‘á»™ng cáº¥p link ngay sau khi thanh toÃ¡n"
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-sans text-xs sm:text-sm"
               >${(Array.isArray(prod.benefits) ? prod.benefits.join('\n') : (prod.benefits || ''))}</textarea>
             </div>
 
-            <!-- Mô tả & Hướng dẫn sử dụng -->
+            <!-- MÃ´ táº£ & HÆ°á»›ng dáº«n sá»­ dá»¥ng -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
                 <svg class="w-4 h-4 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                <span>Mô tả & Hướng dẫn sử dụng</span>
+                <span>MÃ´ táº£ & HÆ°á»›ng dáº«n sá»­ dá»¥ng</span>
               </label>
               <textarea 
                 id="editProdUsageGuide" 
                 rows="3" 
-                placeholder="Nhập thông tin hướng dẫn sử dụng, điều kiện bảo hành hoặc cách nhận tài khoản..."
+                placeholder="Nháº­p thÃ´ng tin hÆ°á»›ng dáº«n sá»­ dá»¥ng, Ä‘iá»u kiá»‡n báº£o hÃ nh hoáº·c cÃ¡ch nháº­n tÃ i khoáº£n..."
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-sans text-xs sm:text-sm"
               >${prod.usageGuide || prod.desc || ''}</textarea>
             </div>
 
-            <!-- Nút Hành Động -->
+            <!-- NÃºt HÃ nh Äá»™ng -->
             <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2.5">
               <button 
                 type="button" 
                 onclick="document.getElementById('productEditBackdrop').remove()" 
                 class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition"
               >
-                Hủy bỏ
+                Há»§y bá»
               </button>
               <button 
                 type="submit" 
                 class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-amber-900/15 transition flex items-center gap-1.5"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span>Lưu Sản Phẩm</span>
+                <span>LÆ°u Sáº£n Pháº©m</span>
               </button>
             </div>
 
@@ -2804,7 +2816,7 @@
   }
 
   // =========================================================================
-  // MODAL XEM ẢNH BILL CHUYỂN KHOẢN
+  // MODAL XEM áº¢NH BILL CHUYá»‚N KHOáº¢N
   // =========================================================================
   function renderBillModal(orderCode, amount) {
     const config = getVietQRConfig();
@@ -2816,27 +2828,27 @@
           </div>
 
           <div>
-            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Hóa đơn điện tử VietQR</span>
-            <h4 class="text-lg font-black text-slate-900 dark:text-white mt-1">Đã Xác Thực Thanh Toán</h4>
+            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">HÃ³a Ä‘Æ¡n Ä‘iá»‡n tá»­ VietQR</span>
+            <h4 class="text-lg font-black text-slate-900 dark:text-white mt-1">ÄÃ£ XÃ¡c Thá»±c Thanh ToÃ¡n</h4>
             <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-2">${formatVND(amount)}</div>
           </div>
 
-          <!-- Thông tin chuyển khoản -->
+          <!-- ThÃ´ng tin chuyá»ƒn khoáº£n -->
           <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 text-left text-xs space-y-2 border border-slate-100 dark:border-slate-800">
             <div class="flex justify-between">
-              <span class="text-slate-400">Mã đơn hàng:</span>
+              <span class="text-slate-400">MÃ£ Ä‘Æ¡n hÃ ng:</span>
               <span class="font-mono font-bold text-slate-800 dark:text-slate-200">${orderCode}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Ngân hàng nhận:</span>
+              <span class="text-slate-400">NgÃ¢n hÃ ng nháº­n:</span>
               <span class="font-semibold text-slate-800 dark:text-slate-200">${config.bankName.split(' ')[0]} Bank</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Chủ tài khoản:</span>
+              <span class="text-slate-400">Chá»§ tÃ i khoáº£n:</span>
               <span class="font-semibold text-slate-800 dark:text-slate-200">${config.accountName}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-slate-400">Nội dung CK:</span>
+              <span class="text-slate-400">Ná»™i dung CK:</span>
               <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">${config.memoPrefix} ${orderCode.replace('#', '')}</span>
             </div>
           </div>
@@ -2846,22 +2858,22 @@
             onclick="document.getElementById('adminBillBackdrop').remove()" 
             class="w-full py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 font-semibold text-xs transition"
           >
-            Đóng
+            ÄÃ³ng
           </button>
         </div>
       </div>
     `;
   }
 
-  // Modal Admin Duyệt Đơn & Gửi Link Riêng Cho Khách
+  // Modal Admin Duyá»‡t ÄÆ¡n & Gá»­i Link RiÃªng Cho KhÃ¡ch
   function renderDeliveryModal(order) {
     const code = order.orderCode || order.id || 'ORDER';
     const customerEmail = order.userEmail || (order.customer && order.customer.email) || (order.user && order.user.email) || (order.email) || 'thaitraicau123@gmail.com';
-    const customerName = order.customerName || (order.user && order.user.name) || (order.customer && order.customer.name) || 'Bùi Thái';
-    const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Gói Bản Quyền Pro';
+    const customerName = order.customerName || (order.user && order.user.name) || (order.customer && order.customer.name) || 'BÃ¹i ThÃ¡i';
+    const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'GÃ³i Báº£n Quyá»n Pro';
     const amount = order.amount || order.total || order.price || 69000;
     const currentLink = order.customDeliveryLink || (order.licenseKey && order.licenseKey.startsWith('http') ? order.licenseKey : '') || 'https://one.google.com/inv/gemini-pro-shopskill247-vip';
-    const currentMsg = order.adminMessage || (order.deliveryInfo && order.deliveryInfo.guide) || 'Cảm ơn bạn đã mua hàng tại Bùi Thái AI Studio! Bạn bấm vào đường link trên để kích hoạt bản quyền nhé.';
+    const currentMsg = order.adminMessage || (order.deliveryInfo && order.deliveryInfo.guide) || 'Cáº£m Æ¡n báº¡n Ä‘Ã£ mua hÃ ng táº¡i BÃ¹i ThÃ¡i AI Studio! Báº¡n báº¥m vÃ o Ä‘Æ°á»ng link trÃªn Ä‘á»ƒ kÃ­ch hoáº¡t báº£n quyá»n nhÃ©.';
 
     return `
       <div id="adminDeliveryBackdrop" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onclick="if(event.target === this) this.remove()">
@@ -2872,7 +2884,7 @@
             onclick="document.getElementById('adminDeliveryBackdrop').remove()" 
             class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer text-sm"
           >
-            ✕
+            âœ•
           </button>
 
           <!-- Header -->
@@ -2883,28 +2895,28 @@
               </svg>
             </div>
             <div>
-              <h3 class="text-base font-bold text-slate-900 dark:text-white">Duyệt Đơn & Gửi Link Riêng Cho Khách</h3>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">Duyá»‡t ÄÆ¡n & Gá»­i Link RiÃªng Cho KhÃ¡ch</h3>
               <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">#${code}</div>
             </div>
           </div>
 
-          <!-- Tóm tắt đơn hàng -->
+          <!-- TÃ³m táº¯t Ä‘Æ¡n hÃ ng -->
           <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 space-y-1.5 text-xs">
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Khách hàng:</span>
+              <span class="text-slate-500">KhÃ¡ch hÃ ng:</span>
               <span class="font-semibold text-slate-800 dark:text-slate-200">${customerName} <span class="text-slate-400 font-normal">(${customerEmail})</span></span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Gói sản phẩm:</span>
+              <span class="text-slate-500">GÃ³i sáº£n pháº©m:</span>
               <span class="font-medium text-slate-800 dark:text-slate-200 line-clamp-1">${productName}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Số tiền thanh toán:</span>
+              <span class="text-slate-500">Sá»‘ tiá»n thanh toÃ¡n:</span>
               <span class="font-bold text-emerald-600 dark:text-emerald-400">${formatVND(amount)}</span>
             </div>
           </div>
 
-          <!-- Form nhập liệu -->
+          <!-- Form nháº­p liá»‡u -->
           <div class="space-y-4">
             <div>
               <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
@@ -2912,7 +2924,7 @@
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                 </svg>
-                <span>Link kích hoạt bản quyền riêng:</span>
+                <span>Link kÃ­ch hoáº¡t báº£n quyá»n riÃªng:</span>
               </label>
               <input 
                 type="text" 
@@ -2921,7 +2933,7 @@
                 placeholder="https://one.google.com/inv/gemini-..." 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-[#8A5F26] outline-none"
               />
-              <p class="text-[11px] text-slate-400 mt-1">Đường dẫn này sẽ hiển thị trực tiếp cho khách hàng trong trang Đơn hàng / Bản quyền để họ kích hoạt ngay.</p>
+              <p class="text-[11px] text-slate-400 mt-1">ÄÆ°á»ng dáº«n nÃ y sáº½ hiá»ƒn thá»‹ trá»±c tiáº¿p cho khÃ¡ch hÃ ng trong trang ÄÆ¡n hÃ ng / Báº£n quyá»n Ä‘á»ƒ há» kÃ­ch hoáº¡t ngay.</p>
             </div>
 
             <div>
@@ -2932,12 +2944,12 @@
                   <circle cx="12" cy="10" r="1" fill="currentColor"/>
                   <circle cx="15" cy="10" r="1" fill="currentColor"/>
                 </svg>
-                <span>Lời nhắn / Hướng dẫn dặn dò riêng cho khách:</span>
+                <span>Lá»i nháº¯n / HÆ°á»›ng dáº«n dáº·n dÃ² riÃªng cho khÃ¡ch:</span>
               </label>
               <textarea 
                 id="adminDeliveryMessageInput" 
                 rows="3" 
-                placeholder="Lời nhắn kèm theo cho khách..." 
+                placeholder="Lá»i nháº¯n kÃ¨m theo cho khÃ¡ch..." 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#8A5F26] outline-none resize-none"
               >${currentMsg}</textarea>
             </div>
@@ -2950,7 +2962,7 @@
               onclick="document.getElementById('adminDeliveryBackdrop').remove()" 
               class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition cursor-pointer"
             >
-              Hủy
+              Há»§y
             </button>
             <button 
               type="button" 
@@ -2960,7 +2972,7 @@
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
-              <span>Phê duyệt & gửi ngay</span>
+              <span>PhÃª duyá»‡t & gá»­i ngay</span>
             </button>
           </div>
         </div>
@@ -2969,15 +2981,15 @@
   }
 
   // =========================================================================
-  // CONTROLLER LOGIC: CÁC HÀM XỬ LÝ SỰ KIỆN ADMIN
+  // CONTROLLER LOGIC: CÃC HÃ€M Xá»¬ LÃ Sá»° KIá»†N ADMIN
   // =========================================================================
   window.ShopVietViews.admin = {
-    // Duyệt yêu cầu nạp xu từ Firebase Cloud
+    // Duyá»‡t yÃªu cáº§u náº¡p xu tá»« Firebase Cloud
     approveTopup: function (topupId) {
       if (window.ShopVietState && typeof window.ShopVietState.approveTopupRequest === 'function') {
         const ok = window.ShopVietState.approveTopupRequest(topupId);
         if (ok) {
-          notify(`Đã duyệt nạp xu thành công cho yêu cầu #${topupId}! Tiền đã cộng vào ví khách và đồng bộ lên Firebase.`, 'success');
+          notify(`✅ Đã duyệt nạp xu thành công cho #${topupId}! Tiền đã cộng vào ví khách.`, 'success');
           const tabContent = document.getElementById('adminTabContent');
           if (tabContent && currentActiveTab === 'orders') {
             tabContent.innerHTML = renderTabOrders();
@@ -2986,20 +2998,33 @@
       }
     },
 
-    // Bắn thông báo ntfy thử nghiệm
-    testNtfyNotification: async function () {
-      notify('Đang gửi tín hiệu thông báo ntfy về điện thoại anh Thái...', 'info');
-      if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.testNotification === 'function') {
-        const ok = await window.BuiThaiNtfy.testNotification();
+    rejectTopup: function (topupId) {
+      if (window.ShopVietState && typeof window.ShopVietState.rejectTopupRequest === 'function') {
+        const ok = window.ShopVietState.rejectTopupRequest(topupId);
         if (ok) {
-          notify('🔔 Đã bắn thông báo ntfy thành công! Hãy kiểm tra điện thoại của anh ngay nhé.', 'success');
-        } else {
-          notify('Không thể kết nối ntfy.sh lúc này. Hãy kiểm tra lại kết nối mạng.', 'warning');
+          notify(`Đã từ chối yêu cầu nạp #${topupId}!`, 'info');
+          const tabContent = document.getElementById('adminTabContent');
+          if (tabContent && currentActiveTab === 'orders') {
+            tabContent.innerHTML = renderTabOrders();
+          }
         }
       }
     },
 
-    // Nạp xu thủ công cho khách hàng
+    // Báº¯n thÃ´ng bÃ¡o ntfy thá»­ nghiá»‡m
+    testNtfyNotification: async function () {
+      notify('Äang gá»­i tÃ­n hiá»‡u thÃ´ng bÃ¡o ntfy vá» Ä‘iá»‡n thoáº¡i anh ThÃ¡i...', 'info');
+      if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.testNotification === 'function') {
+        const ok = await window.BuiThaiNtfy.testNotification();
+        if (ok) {
+          notify('ðŸ”” ÄÃ£ báº¯n thÃ´ng bÃ¡o ntfy thÃ nh cÃ´ng! HÃ£y kiá»ƒm tra Ä‘iá»‡n thoáº¡i cá»§a anh ngay nhÃ©.', 'success');
+        } else {
+          notify('KhÃ´ng thá»ƒ káº¿t ná»‘i ntfy.sh lÃºc nÃ y. HÃ£y kiá»ƒm tra láº¡i káº¿t ná»‘i máº¡ng.', 'warning');
+        }
+      }
+    },
+
+    // Náº¡p xu thá»§ cÃ´ng cho khÃ¡ch hÃ ng
     manualAddCoins: function () {
       const emailInput = document.getElementById('adminManualCoinEmail');
       const amountInput = document.getElementById('adminManualCoinAmount');
@@ -3007,7 +3032,7 @@
       const amount = Number(amountInput ? amountInput.value : 0);
 
       if (!email || !amount || amount <= 0) {
-        notify('Vui lòng nhập email hợp lệ và số xu lớn hơn 0!', 'warning');
+        notify('Vui lÃ²ng nháº­p email há»£p lá»‡ vÃ  sá»‘ xu lá»›n hÆ¡n 0!', 'warning');
         return;
       }
 
@@ -3018,7 +3043,7 @@
 
       if (window.ShopVietState && typeof window.ShopVietState.updateUserBalance === 'function') {
         window.ShopVietState.updateUserBalance(email, newBalance);
-        notify(`Đã nạp thành công +${amount.toLocaleString('vi-VN')} Xu cho tài khoản ${email}! Số dư mới: ${newBalance.toLocaleString('vi-VN')} Xu.`, 'success');
+        notify(`ÄÃ£ náº¡p thÃ nh cÃ´ng +${amount.toLocaleString('vi-VN')} Xu cho tÃ i khoáº£n ${email}! Sá»‘ dÆ° má»›i: ${newBalance.toLocaleString('vi-VN')} Xu.`, 'success');
         if (emailInput) emailInput.value = '';
         if (amountInput) amountInput.value = '100000';
         const tabContent = document.getElementById('adminTabContent');
@@ -3027,11 +3052,11 @@
         }
       }
     },
-    // 1. Mở Cổng Portal Admin
+    // 1. Má»Ÿ Cá»•ng Portal Admin
     open: function () {
-      // Kiểm tra bảo mật tài khoản admin
+      // Kiá»ƒm tra báº£o máº­t tÃ i khoáº£n admin
       if (!isAllowedAdminUser()) {
-        notify('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        notify('Truy cáº­p bá»‹ tá»« chá»‘i: Cá»•ng quáº£n trá»‹ chá»‰ dÃ nh riÃªng cho tÃ i khoáº£n thaitraicau123@gmail.com!', 'error');
         if (window.location.hash === '#admin') {
           window.location.hash = '#home';
         }
@@ -3046,30 +3071,30 @@
         document.body.appendChild(modalMount);
       }
 
-      // Khi là thaitraicau123@gmail.com, cấp quyền xác thực và mở thẳng phiên quản trị
+      // Khi lÃ  thaitraicau123@gmail.com, cáº¥p quyá»n xÃ¡c thá»±c vÃ  má»Ÿ tháº³ng phiÃªn quáº£n trá»‹
       setAuthenticated(true);
       window.ShopVietViews.admin.isOpen = true;
       modalMount.innerHTML = renderAdminPortalModal();
       this.startSessionTimer();
     },
 
-    // 2. Đóng Cổng Portal Admin
+    // 2. ÄÃ³ng Cá»•ng Portal Admin
     close: function () {
       window.ShopVietViews.admin.isOpen = false;
       const modalMount = document.getElementById('adminMount');
       if (modalMount) modalMount.innerHTML = '';
       if (sessionIntervalTimer) clearInterval(sessionIntervalTimer);
 
-      // Nếu URL đang là #admin thì reset hash về trang hiện tại
+      // Náº¿u URL Ä‘ang lÃ  #admin thÃ¬ reset hash vá» trang hiá»‡n táº¡i
       if (window.location.hash === '#admin') {
         history.replaceState(null, null, ' ');
       }
     },
 
-    // 3. Render hỗ trợ SPA View Router nếu gọi qua ShopVietState.navigate('admin')
+    // 3. Render há»— trá»£ SPA View Router náº¿u gá»i qua ShopVietState.navigate('admin')
     render: function () {
       if (!isAllowedAdminUser()) {
-        notify('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        notify('Truy cáº­p bá»‹ tá»« chá»‘i: Cá»•ng quáº£n trá»‹ chá»‰ dÃ nh riÃªng cho tÃ i khoáº£n thaitraicau123@gmail.com!', 'error');
         setTimeout(() => {
           if (window.ShopVietState) window.ShopVietState.navigate('home');
         }, 50);
@@ -3078,10 +3103,10 @@
             <div class="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto">
               <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             </div>
-            <h3 class="text-lg font-black text-slate-900 dark:text-white">Truy Cập Bị Từ Chối</h3>
-            <p class="text-xs text-slate-500 leading-relaxed">Cổng quản trị Portal Admin chỉ dành riêng cho tài khoản quản trị viên tối cao: <br><strong class="text-rose-600 dark:text-rose-400 font-mono">thaitraicau123@gmail.com</strong></p>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white">Truy Cáº­p Bá»‹ Tá»« Chá»‘i</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">Cá»•ng quáº£n trá»‹ Portal Admin chá»‰ dÃ nh riÃªng cho tÃ i khoáº£n quáº£n trá»‹ viÃªn tá»‘i cao: <br><strong class="text-rose-600 dark:text-rose-400 font-mono">thaitraicau123@gmail.com</strong></p>
             <div class="pt-2">
-              <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-indigo-600 font-semibold text-xs">Về Trang Chủ</button>
+              <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-indigo-600 font-semibold text-xs">Vá» Trang Chá»§</button>
             </div>
           </div>
         `;
@@ -3100,7 +3125,7 @@
       }
     },
 
-    // 5. Xác thực mã PIN
+    // 5. XÃ¡c thá»±c mÃ£ PIN
     submitPin: function () {
       const pinInput = document.getElementById('adminPinInput');
       const errEl = document.getElementById('adminPinError');
@@ -3111,7 +3136,7 @@
 
       if (VALID_PINS.includes(entered)) {
         setAuthenticated(true);
-        notify('Xác thực quyền Quản trị viên (buithai123) thành công!', 'success');
+        notify('XÃ¡c thá»±c quyá»n Quáº£n trá»‹ viÃªn (buithai123) thÃ nh cÃ´ng!', 'success');
         if (typeof window.requestAdminNotificationPermission === 'function') {
           window.requestAdminNotificationPermission();
         }
@@ -3127,7 +3152,7 @@
       }
     },
 
-    // 6. Ẩn/Hiện PIN
+    // 6. áº¨n/Hiá»‡n PIN
     togglePinVisibility: function () {
       const pinInput = document.getElementById('adminPinInput');
       if (!pinInput) return;
@@ -3138,14 +3163,14 @@
       }
     },
 
-    // 7. Đăng xuất Admin
+    // 7. ÄÄƒng xuáº¥t Admin
     logout: function () {
       setAuthenticated(false);
       this.close();
-      notify('Đã đăng xuất khỏi Phiên Quản Trị an toàn!', 'info');
+      notify('ÄÃ£ Ä‘Äƒng xuáº¥t khá»i PhiÃªn Quáº£n Trá»‹ an toÃ n!', 'info');
     },
 
-    // 8. Chuyển Tab (5 Tab kinh doanh cốt lõi, tự động fallback mượt về pricing nếu gọi realtime hoặc overview)
+    // 8. Chuyá»ƒn Tab (5 Tab kinh doanh cá»‘t lÃµi, tá»± Ä‘á»™ng fallback mÆ°á»£t vá» pricing náº¿u gá»i realtime hoáº·c overview)
     switchTab: function (tabKey) {
       if (tabKey === 'realtime' || tabKey === 'overview' || !tabKey) {
         tabKey = 'pricing';
@@ -3156,7 +3181,7 @@
         tabContent.innerHTML = renderTabBody(tabKey);
       }
 
-      // Cập nhật style tab button
+      // Cáº­p nháº­t style tab button
       document.querySelectorAll('.admin-nav-tab').forEach(btn => {
         btn.className = 'admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
       });
@@ -3166,7 +3191,7 @@
       }
     },
 
-    // 9. Làm mới dữ liệu kèm đồng bộ từ Đám Mây
+    // 9. LÃ m má»›i dá»¯ liá»‡u kÃ¨m Ä‘á»“ng bá»™ tá»« ÄÃ¡m MÃ¢y
     refreshData: async function () {
       if (window.ShopVietState && typeof window.ShopVietState.syncAllFromCloud === 'function') {
         await window.ShopVietState.syncAllFromCloud().catch(function () {});
@@ -3176,16 +3201,16 @@
       if (tabContent) {
         tabContent.innerHTML = renderTabBody(currentActiveTab);
       }
-      notify('Đã làm mới dữ liệu và đồng bộ với Đám Mây!', 'info');
+      notify('ÄÃ£ lÃ m má»›i dá»¯ liá»‡u vÃ  Ä‘á»“ng bá»™ vá»›i ÄÃ¡m MÃ¢y!', 'info');
     },
 
-    // 9b. Đồng bộ Đám Mây 2 chiều tức thì cho Toàn Hệ Thống (Sản phẩm, Voucher, Excel, Đơn hàng)
+    // 9b. Äá»“ng bá»™ ÄÃ¡m MÃ¢y 2 chiá»u tá»©c thÃ¬ cho ToÃ n Há»‡ Thá»‘ng (Sáº£n pháº©m, Voucher, Excel, ÄÆ¡n hÃ ng)
     syncCloudAll: async function () {
       const btn = document.getElementById('adminCloudSyncBtn');
       const icon = document.getElementById('adminCloudSyncIcon');
       const text = document.getElementById('adminCloudSyncText');
       if (icon) icon.classList.add('animate-spin');
-      if (text) text.textContent = 'Đang đồng bộ...';
+      if (text) text.textContent = 'Äang Ä‘á»“ng bá»™...';
       if (btn) btn.disabled = true;
 
       try {
@@ -3200,18 +3225,18 @@
         if (tabContent) {
           tabContent.innerHTML = renderTabBody(currentActiveTab);
         }
-        notify('Đã đồng bộ toàn hệ thống (Sản phẩm, Voucher, Excel, Đơn hàng) lên Cloud thành công!', 'success');
+        notify('ÄÃ£ Ä‘á»“ng bá»™ toÃ n há»‡ thá»‘ng (Sáº£n pháº©m, Voucher, Excel, ÄÆ¡n hÃ ng) lÃªn Cloud thÃ nh cÃ´ng!', 'success');
       } catch (err) {
         console.error('[Admin Cloud Sync Error]:', err);
-        notify('Lỗi trong quá trình đồng bộ Cloud: ' + (err.message || err), 'error');
+        notify('Lá»—i trong quÃ¡ trÃ¬nh Ä‘á»“ng bá»™ Cloud: ' + (err.message || err), 'error');
       } finally {
         if (icon) icon.classList.remove('animate-spin');
-        if (text) text.textContent = 'Đồng bộ Cloud';
+        if (text) text.textContent = 'Äá»“ng bá»™ Cloud';
         if (btn) btn.disabled = false;
       }
     },
 
-    // 9c. Làm mới đơn hàng VietQR tức thì từ Đám Mây
+    // 9c. LÃ m má»›i Ä‘Æ¡n hÃ ng VietQR tá»©c thÃ¬ tá»« ÄÃ¡m MÃ¢y
     refreshOrdersTab: async function () {
       const btn = document.getElementById('adminRefreshOrdersBtn');
       let svg = null;
@@ -3244,10 +3269,10 @@
         if (svg) svg.classList.remove('animate-spin');
       }
 
-      notify('Đã cập nhật danh sách đơn hàng mới nhất!', 'success');
+      notify('ÄÃ£ cáº­p nháº­t danh sÃ¡ch Ä‘Æ¡n hÃ ng má»›i nháº¥t!', 'success');
     },
 
-    // 10. Mở Modal Thêm / Sửa Sản phẩm
+    // 10. Má»Ÿ Modal ThÃªm / Sá»­a Sáº£n pháº©m
     openProductModal: function (productId) {
       const existing = document.getElementById('productEditBackdrop');
       if (existing) existing.remove();
@@ -3257,7 +3282,7 @@
       document.body.appendChild(container.firstElementChild);
     },
 
-    // 10.0 Nén ảnh bằng HTML5 Canvas siêu nhẹ (< 25KB WebP/JPEG)
+    // 10.0 NÃ©n áº£nh báº±ng HTML5 Canvas siÃªu nháº¹ (< 25KB WebP/JPEG)
     compressImage: function (file, maxWidth, maxHeight, quality) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -3282,7 +3307,7 @@
             canvas.height = height;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
-            // Xuất ra WebP hoặc JPEG dung lượng siêu nhẹ < 25KB
+            // Xuáº¥t ra WebP hoáº·c JPEG dung lÆ°á»£ng siÃªu nháº¹ < 25KB
             const compressedDataUrl = canvas.toDataURL('image/webp', quality || 0.85);
             resolve(compressedDataUrl);
           };
@@ -3290,7 +3315,7 @@
       });
     },
 
-    // 10.1 Xử lý Tải ảnh sản phẩm từ máy (Tự động nén Canvas siêu nhẹ)
+    // 10.1 Xá»­ lÃ½ Táº£i áº£nh sáº£n pháº©m tá»« mÃ¡y (Tá»± Ä‘á»™ng nÃ©n Canvas siÃªu nháº¹)
     handleProductImageUpload: async function (input) {
       if (!input || !input.files || !input.files[0]) return;
       const file = input.files[0];
@@ -3310,13 +3335,13 @@
         if (urlInput) {
           urlInput.value = compressedDataUrl;
         }
-        console.log('[ShopVietAdmin] Đã nén ảnh thành công với Canvas WebP 256x256 siêu nhẹ!');
+        console.log('[ShopVietAdmin] ÄÃ£ nÃ©n áº£nh thÃ nh cÃ´ng vá»›i Canvas WebP 256x256 siÃªu nháº¹!');
       } catch (err) {
-        console.warn('[ShopVietAdmin] Lỗi nén ảnh:', err);
+        console.warn('[ShopVietAdmin] Lá»—i nÃ©n áº£nh:', err);
       }
     },
 
-    // 10.2 Xử lý Nhập URL ảnh trực tiếp
+    // 10.2 Xá»­ lÃ½ Nháº­p URL áº£nh trá»±c tiáº¿p
     handleProductImageUrlInput: function (url) {
       const preview = document.getElementById('adminProdImagePreview');
       const placeholder = document.getElementById('adminProdImagePlaceholder');
@@ -3342,7 +3367,7 @@
       }
     },
 
-    // 10.3 Xóa ảnh đại diện sản phẩm
+    // 10.3 XÃ³a áº£nh Ä‘áº¡i diá»‡n sáº£n pháº©m
     clearProductImage: function () {
       const urlInput = document.getElementById('editProdImageUrl');
       const fileInput = document.getElementById('adminProdFileInput');
@@ -3360,7 +3385,7 @@
       }
     },
 
-    // 11. Lưu Sản Phẩm (Thêm hoặc Sửa)
+    // 11. LÆ°u Sáº£n Pháº©m (ThÃªm hoáº·c Sá»­a)
     saveProduct: function (productId, isEdit) {
       const name = document.getElementById('editProdName').value.trim();
       const price = Number(document.getElementById('editProdPrice').value) || 0;
@@ -3371,46 +3396,46 @@
       const status = document.getElementById('editProdStatus').value;
       const iconType = document.getElementById('editProdIconType').value;
       
-      // Đọc giá trị badge thông minh từ Dropdown & Custom Input
+      // Äá»c giÃ¡ trá»‹ badge thÃ´ng minh tá»« Dropdown & Custom Input
       const badgeSelect = document.getElementById('editProdBadgeSelect');
       const badgeCustom = document.getElementById('editProdBadgeCustom');
-      let badge = 'Bán chạy nhất';
+      let badge = 'BÃ¡n cháº¡y nháº¥t';
       if (badgeSelect) {
         if (badgeSelect.value === 'custom') {
-          badge = (badgeCustom && badgeCustom.value.trim()) ? badgeCustom.value.trim() : 'Tùy chỉnh';
+          badge = (badgeCustom && badgeCustom.value.trim()) ? badgeCustom.value.trim() : 'TÃ¹y chá»‰nh';
         } else {
           badge = badgeSelect.value;
         }
       } else if (document.getElementById('editProdBadge')) {
-        badge = document.getElementById('editProdBadge').value.trim() || 'Bán chạy nhất';
+        badge = document.getElementById('editProdBadge').value.trim() || 'BÃ¡n cháº¡y nháº¥t';
       }
 
-      // Tự động gán badgeColor theo loại Mark chuẩn Bùi Thái AI Studio
+      // Tá»± Ä‘á»™ng gÃ¡n badgeColor theo loáº¡i Mark chuáº©n BÃ¹i ThÃ¡i AI Studio
       function getMarkBadgeColor(bName) {
         const b = (bName || '').toLowerCase();
-        if (b.includes('hot') || b.includes('thịnh hành')) {
+        if (b.includes('hot') || b.includes('thá»‹nh hÃ nh')) {
           return 'bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 text-white shadow-rose-500/30';
         }
-        if (b.includes('rẻ') || b.includes('tiết kiệm')) {
+        if (b.includes('ráº»') || b.includes('tiáº¿t kiá»‡m')) {
           return 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-emerald-500/30';
         }
-        if (b.includes('mới') || b.includes('new')) {
+        if (b.includes('má»›i') || b.includes('new')) {
           return 'bg-gradient-to-r from-amber-600 via-[#8A5F26] to-[#6e4b1e] text-white shadow-amber-500/30';
         }
-        if (b.includes('khuyên dùng') || b.includes('pro') || b.includes('vip')) {
+        if (b.includes('khuyÃªn dÃ¹ng') || b.includes('pro') || b.includes('vip')) {
           return 'bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-600 text-white shadow-violet-500/30';
         }
         if (b.includes('flash') || b.includes('sale')) {
           return 'bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 text-white shadow-pink-500/30';
         }
-        if (b.includes('bán chạy') || b.includes('best seller')) {
+        if (b.includes('bÃ¡n cháº¡y') || b.includes('best seller')) {
           return 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-amber-500/30';
         }
         return 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-slate-800 text-white shadow-amber-900/25';
       }
 
       const badgeColor = getMarkBadgeColor(badge);
-      const isBestSeller = Boolean(badge.toLowerCase().includes('bán chạy') || badge.toLowerCase().includes('best seller'));
+      const isBestSeller = Boolean(badge.toLowerCase().includes('bÃ¡n cháº¡y') || badge.toLowerCase().includes('best seller'));
 
       const warranty = document.getElementById('editProdWarranty').value.trim();
       const desc = document.getElementById('editProdDesc').value.trim();
@@ -3422,11 +3447,11 @@
       const usageGuide = document.getElementById('editProdUsageGuide') ? document.getElementById('editProdUsageGuide').value.trim() : '';
 
       if (!name) {
-        notify('Vui lòng nhập tên sản phẩm!', 'warning');
+        notify('Vui lÃ²ng nháº­p tÃªn sáº£n pháº©m!', 'warning');
         return;
       }
 
-      // Tính % discount
+      // TÃ­nh % discount
       let discount = '';
       if (oldPrice > price) {
         const pct = Math.round((1 - price / oldPrice) * 100);
@@ -3437,7 +3462,7 @@
       window.ShopVietData.products = window.ShopVietData.products || [];
 
       if (isEdit) {
-        // Cập nhật sản phẩm cũ
+        // Cáº­p nháº­t sáº£n pháº©m cÅ©
         const idx = window.ShopVietData.products.findIndex(p => p.id === productId);
         if (idx > -1) {
           window.ShopVietData.products[idx] = Object.assign({}, window.ShopVietData.products[idx], {
@@ -3457,21 +3482,21 @@
             desc,
             imageUrl,
             benefits: benefits.length > 0 ? benefits : (window.ShopVietData.products[idx].benefits || [
-              'Kích hoạt qua link mời chính chủ Google',
-              'Tích hợp Antigravity 2.0 & Veo Video AI',
-              'Bảo hành chính chủ 1 đổi 1',
-              'Tự động cấp link ngay sau khi thanh toán'
+              'KÃ­ch hoáº¡t qua link má»i chÃ­nh chá»§ Google',
+              'TÃ­ch há»£p Antigravity 2.0 & Veo Video AI',
+              'Báº£o hÃ nh chÃ­nh chá»§ 1 Ä‘á»•i 1',
+              'Tá»± Ä‘á»™ng cáº¥p link ngay sau khi thanh toÃ¡n'
             ]),
             usageGuide: usageGuide || desc || ''
           });
         }
       } else {
-        // Tạo sản phẩm mới
+        // Táº¡o sáº£n pháº©m má»›i
         const newProd = {
           id: productId,
           name,
           category,
-          tag: tag || 'Tất cả',
+          tag: tag || 'Táº¥t cáº£',
           price,
           oldPrice,
           discount,
@@ -3480,31 +3505,31 @@
           rating: 5.0,
           reviewsCount: 1,
           soldCount: 0,
-          badge: badge || 'Bán chạy nhất',
+          badge: badge || 'BÃ¡n cháº¡y nháº¥t',
           badgeColor: badgeColor,
           isBestSeller: isBestSeller,
           autoDelivery: false,
-          warranty: warranty || '12 tháng (1 đổi 1)',
+          warranty: warranty || '12 thÃ¡ng (1 Ä‘á»•i 1)',
           desc,
           benefits: benefits.length > 0 ? benefits : [
-            'Kích hoạt qua link mời chính chủ Google',
-            'Tích hợp Antigravity 2.0 & Veo Video AI',
-            'Bảo hành chính chủ 1 đổi 1',
-            'Tự động cấp link ngay sau khi thanh toán'
+            'KÃ­ch hoáº¡t qua link má»i chÃ­nh chá»§ Google',
+            'TÃ­ch há»£p Antigravity 2.0 & Veo Video AI',
+            'Báº£o hÃ nh chÃ­nh chá»§ 1 Ä‘á»•i 1',
+            'Tá»± Ä‘á»™ng cáº¥p link ngay sau khi thanh toÃ¡n'
           ],
           usageGuide: usageGuide || desc || '',
           iconType: iconType || 'gemini',
           imageUrl: imageUrl || '',
           features: benefits.length > 0 ? benefits : [
-            'Bản quyền kích hoạt nhanh chóng 24/7',
-            'Bảo hành 1 đổi 1 nhanh chóng',
-            'Hỗ trợ kỹ thuật qua Zalo 0986019623'
+            'Báº£n quyá»n kÃ­ch hoáº¡t nhanh chÃ³ng 24/7',
+            'Báº£o hÃ nh 1 Ä‘á»•i 1 nhanh chÃ³ng',
+            'Há»— trá»£ ká»¹ thuáº­t qua Zalo 0986019623'
           ]
         };
         window.ShopVietData.products.unshift(newProd);
       }
 
-      // Lưu trữ xuống localStorage và đồng bộ Đám Mây Đa Thiết Bị
+      // LÆ°u trá»¯ xuá»‘ng localStorage vÃ  Ä‘á»“ng bá»™ ÄÃ¡m MÃ¢y Äa Thiáº¿t Bá»‹
       try {
         const jsonStr = JSON.stringify(window.ShopVietData.products);
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, jsonStr);
@@ -3523,22 +3548,22 @@
         });
       }
 
-      // Đóng modal sửa
+      // ÄÃ³ng modal sá»­a
       const editModal = document.getElementById('productEditBackdrop');
       if (editModal) editModal.remove();
 
-      // Cập nhật lại bảng tab pricing trong admin
+      // Cáº­p nháº­t láº¡i báº£ng tab pricing trong admin
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'pricing') {
         tabContent.innerHTML = renderTabPricing();
       }
 
-      // NẾU NGƯỜI DÙNG ĐANG Ở TRANG CHỦ (HOME), TỰ ĐỘNG RE-RENDER NGAY LẬP TỨC
+      // Náº¾U NGÆ¯á»œI DÃ™NG ÄANG á»ž TRANG CHá»¦ (HOME), Tá»° Äá»˜NG RE-RENDER NGAY Láº¬P Tá»¨C
       if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.currentView === 'home') {
         window.ShopVietState.navigate('home');
       }
 
-      // PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ MÁY KHÁCH
+      // PHÃT SÃ“NG TÃN HIá»†U Äá»’NG Bá»˜ REALTIME Tá»šI Táº¤T Cáº¢ MÃY KHÃCH
       if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
         window.ShopVietState.broadcastAdminChange('products_updated', {
           productId: productId,
@@ -3548,15 +3573,15 @@
           timestamp: Date.now()
         });
       }
-      recordBroadcast('products_updated', `Lưu sản phẩm "${name}"`);
+      recordBroadcast('products_updated', `LÆ°u sáº£n pháº©m "${name}"`);
 
-      notify(`Đã lưu sản phẩm "${name.slice(0, 30)}..." và đồng bộ Cloud thành công!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`ÄÃ£ lÆ°u sáº£n pháº©m "${name.slice(0, 30)}..." vÃ  Ä‘á»“ng bá»™ Cloud thÃ nh cÃ´ng!`, 'success');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
     },
 
-    // 12. Xóa Sản Phẩm
+    // 12. XÃ³a Sáº£n Pháº©m
     deleteProduct: function (productId) {
-      if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi hệ thống không?')) return;
+      if (!confirm('Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a sáº£n pháº©m nÃ y khá»i há»‡ thá»‘ng khÃ´ng?')) return;
 
       if (window.ShopVietData && window.ShopVietData.products) {
         window.ShopVietData.products = window.ShopVietData.products.filter(p => p.id !== productId);
@@ -3574,18 +3599,18 @@
           });
         }
 
-        // Cập nhật lại bảng tab pricing
+        // Cáº­p nháº­t láº¡i báº£ng tab pricing
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent && currentActiveTab === 'pricing') {
           tabContent.innerHTML = renderTabPricing();
         }
 
-        // Cập nhật lại view home nếu đang mở
+        // Cáº­p nháº­t láº¡i view home náº¿u Ä‘ang má»Ÿ
         if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.currentView === 'home') {
           window.ShopVietState.navigate('home');
         }
 
-        // PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ MÁY KHÁCH
+        // PHÃT SÃ“NG TÃN HIá»†U Äá»’NG Bá»˜ REALTIME Tá»šI Táº¤T Cáº¢ MÃY KHÃCH
         if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
           window.ShopVietState.broadcastAdminChange('products_updated', {
             productId: productId,
@@ -3594,21 +3619,21 @@
             timestamp: Date.now()
           });
         }
-        recordBroadcast('products_updated', `Xóa sản phẩm ID: ${productId}`);
+        recordBroadcast('products_updated', `XÃ³a sáº£n pháº©m ID: ${productId}`);
 
-        notify('Đã xóa sản phẩm và đồng bộ Cloud thành công!', 'info');
-        notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+        notify('ÄÃ£ xÃ³a sáº£n pháº©m vÃ  Ä‘á»“ng bá»™ Cloud thÃ nh cÃ´ng!', 'info');
+        notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
       }
     },
 
-    // 13. Khôi phục sản phẩm mặc định
+    // 13. KhÃ´i phá»¥c sáº£n pháº©m máº·c Ä‘á»‹nh
     resetDefaultProducts: function () {
-      if (!confirm('Khôi phục toàn bộ danh sách sản phẩm về mẫu mặc định ban đầu?')) return;
+      if (!confirm('KhÃ´i phá»¥c toÃ n bá»™ danh sÃ¡ch sáº£n pháº©m vá» máº«u máº·c Ä‘á»‹nh ban Ä‘áº§u?')) return;
       localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
       location.reload();
     },
 
-    // 14. Lọc bảng sản phẩm theo từ khóa
+    // 14. Lá»c báº£ng sáº£n pháº©m theo tá»« khÃ³a
     filterProductTable: function (keyword) {
       const tbody = document.getElementById('adminProductTableBody');
       if (!tbody) return;
@@ -3626,13 +3651,13 @@
       tbody.innerHTML = matched.map(renderProductTableRow).join('');
     },
 
-    // 15. Duyệt hoàn tất đơn hàng
+    // 15. Duyá»‡t hoÃ n táº¥t Ä‘Æ¡n hÃ ng
     approveOrder: function (orderCode) {
       if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) {
         const ord = window.ShopVietState.state.orders.find(o => (o.orderCode === orderCode || o.id === orderCode || o.orderCode === '#' + orderCode || ('#' + o.orderCode) === orderCode));
         if (ord) {
           ord.status = 'completed';
-          ord.statusText = 'Đã hoàn tất';
+          ord.statusText = 'ÄÃ£ hoÃ n táº¥t';
           ord.unlockedAt = new Date().toISOString();
           ord.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
           if (!ord.licenseKey) {
@@ -3664,15 +3689,15 @@
           timestamp: Date.now()
         });
       }
-      recordBroadcast('orders_updated', `Duyệt đơn hàng ${orderCode}`);
+      recordBroadcast('orders_updated', `Duyá»‡t Ä‘Æ¡n hÃ ng ${orderCode}`);
 
-      notify(`Đã duyệt hoàn tất và kích hoạt license cho đơn hàng ${orderCode}!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`ÄÃ£ duyá»‡t hoÃ n táº¥t vÃ  kÃ­ch hoáº¡t license cho Ä‘Æ¡n hÃ ng ${orderCode}!`, 'success');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
     },
 
-    // 15a. Từ chối đơn hàng & Tự động hoàn trả số lượng vào kho
+    // 15a. Tá»« chá»‘i Ä‘Æ¡n hÃ ng & Tá»± Ä‘á»™ng hoÃ n tráº£ sá»‘ lÆ°á»£ng vÃ o kho
     rejectOrder: function (orderCode) {
-      if (!confirm(`Bạn có chắc chắn muốn từ chối đơn hàng #${orderCode}?\n\nNếu đơn đã được ghi nhận trừ kho, số lượng sản phẩm sẽ được tự động hoàn trả lại vào kho ngay lập tức.`)) {
+      if (!confirm(`Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n tá»« chá»‘i Ä‘Æ¡n hÃ ng #${orderCode}?\n\nNáº¿u Ä‘Æ¡n Ä‘Ã£ Ä‘Æ°á»£c ghi nháº­n trá»« kho, sá»‘ lÆ°á»£ng sáº£n pháº©m sáº½ Ä‘Æ°á»£c tá»± Ä‘á»™ng hoÃ n tráº£ láº¡i vÃ o kho ngay láº­p tá»©c.`)) {
         return;
       }
 
@@ -3688,10 +3713,10 @@
 
       if (ord) {
         ord.status = 'rejected';
-        ord.statusText = 'Đã từ chối';
+        ord.statusText = 'ÄÃ£ tá»« chá»‘i';
         ord.rejectedAt = new Date().toISOString();
 
-        // Tự động hoàn trả số lượng lại cho sản phẩm tương ứng trong kho nếu trước đó đã bị trừ kho
+        // Tá»± Ä‘á»™ng hoÃ n tráº£ sá»‘ lÆ°á»£ng láº¡i cho sáº£n pháº©m tÆ°Æ¡ng á»©ng trong kho náº¿u trÆ°á»›c Ä‘Ã³ Ä‘Ã£ bá»‹ trá»« kho
         if (ord.stockDeducted) {
           const boughtItem = (ord.items && ord.items[0]) || null;
           const prodId = boughtItem ? boughtItem.id : (ord.productId || (ord.product && ord.product.id));
@@ -3706,7 +3731,7 @@
                 targetProd.status = 'in_stock';
               }
 
-              // 1. Lưu đồng bộ vào LocalStorage
+              // 1. LÆ°u Ä‘á»“ng bá»™ vÃ o LocalStorage
               const jsonStr = JSON.stringify(window.ShopVietData.products);
               try {
                 localStorage.setItem('shopviet_custom_products', jsonStr);
@@ -3714,17 +3739,17 @@
                 localStorage.setItem('shopviet247_custom_products_v1', jsonStr);
               } catch (e) {}
 
-              // 2. Cập nhật State
+              // 2. Cáº­p nháº­t State
               if (window.ShopVietState && typeof window.ShopVietState.saveCustomProducts === 'function') {
                 window.ShopVietState.saveCustomProducts(window.ShopVietData.products);
               }
 
-              // 3. Đẩy lên GitHub Cloud Storage
+              // 3. Äáº©y lÃªn GitHub Cloud Storage
               if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
                 window.ShopVietState.pushAllToCloud(true).catch(() => {});
               }
 
-              // 4. Phát sóng Realtime cập nhật tồn kho
+              // 4. PhÃ¡t sÃ³ng Realtime cáº­p nháº­t tá»“n kho
               if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
                 window.ShopVietState.broadcastAdminChange('products_updated', {
                   productId: targetProd.id,
@@ -3734,23 +3759,23 @@
                 });
               }
 
-              // 5. Cập nhật lại view home nếu đang mở
+              // 5. Cáº­p nháº­t láº¡i view home náº¿u Ä‘ang má»Ÿ
               if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
                 window.ShopVietViews.home.renderProducts();
               }
 
-              restoredStockInfo = ` (Đã hoàn lại +${buyQty} vào kho: hiện còn ${targetProd.stock} gói)`;
+              restoredStockInfo = ` (ÄÃ£ hoÃ n láº¡i +${buyQty} vÃ o kho: hiá»‡n cÃ²n ${targetProd.stock} gÃ³i)`;
             }
           }
           ord.stockDeducted = false;
         }
 
-        // Lưu đơn hàng vào State
+        // LÆ°u Ä‘Æ¡n hÃ ng vÃ o State
         if (window.ShopVietState && typeof window.ShopVietState.save === 'function') {
           window.ShopVietState.save();
         }
 
-        // Đồng bộ Firebase Firestore & Cloud
+        // Äá»“ng bá»™ Firebase Firestore & Cloud
         if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncOrderToCloud === 'function') {
           window.ShopVietFirebase.syncOrderToCloud(ord).catch(() => {});
         }
@@ -3759,13 +3784,13 @@
         }
       }
 
-      // Re-render lại tab orders trong Admin
+      // Re-render láº¡i tab orders trong Admin
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'orders') {
         tabContent.innerHTML = renderTabOrders();
       }
 
-      // Phát sóng orders_updated
+      // PhÃ¡t sÃ³ng orders_updated
       if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
         window.ShopVietState.broadcastAdminChange('orders_updated', {
           orderCode: orderCode,
@@ -3773,13 +3798,13 @@
           timestamp: Date.now()
         });
       }
-      recordBroadcast('orders_updated', `Từ chối đơn hàng #${orderCode}`);
+      recordBroadcast('orders_updated', `Tá»« chá»‘i Ä‘Æ¡n hÃ ng #${orderCode}`);
 
-      notify(`Đã từ chối đơn hàng #${orderCode}!${restoredStockInfo}`, 'info');
-      notify('⚡ Đã cập nhật trạng thái đơn hàng và phát sóng Realtime Cloud thành công!', 'success');
+      notify(`ÄÃ£ tá»« chá»‘i Ä‘Æ¡n hÃ ng #${orderCode}!${restoredStockInfo}`, 'info');
+      notify('âš¡ ÄÃ£ cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng vÃ  phÃ¡t sÃ³ng Realtime Cloud thÃ nh cÃ´ng!', 'success');
     },
 
-    // 15b. Mở Modal Admin Duyệt Đơn & Gửi Link Riêng Cho Khách
+    // 15b. Má»Ÿ Modal Admin Duyá»‡t ÄÆ¡n & Gá»­i Link RiÃªng Cho KhÃ¡ch
     openDeliveryModal: function (orderCode) {
       let ord = null;
       if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) {
@@ -3789,8 +3814,8 @@
         ord = {
           orderCode: orderCode,
           id: orderCode,
-          customerName: 'Khách hàng',
-          productName: 'Gói Bản Quyền VIP',
+          customerName: 'KhÃ¡ch hÃ ng',
+          productName: 'GÃ³i Báº£n Quyá»n VIP',
           amount: 69000
         };
       }
@@ -3803,7 +3828,7 @@
       document.body.appendChild(container.firstElementChild);
     },
 
-    // 15c. Xác nhận Phê Duyệt & Gửi Link
+    // 15c. XÃ¡c nháº­n PhÃª Duyá»‡t & Gá»­i Link
     submitApproveWithDelivery: function (orderCode) {
       const linkInput = document.getElementById('adminDeliveryLinkInput');
       const msgInput = document.getElementById('adminDeliveryMessageInput');
@@ -3814,7 +3839,7 @@
         let ord = window.ShopVietState.state.orders.find(o => (o.orderCode === orderCode || o.id === orderCode || o.orderCode === '#' + orderCode || ('#' + o.orderCode) === orderCode));
         if (ord) {
           ord.status = 'completed';
-          ord.statusText = 'Đã hoàn tất';
+          ord.statusText = 'ÄÃ£ hoÃ n táº¥t';
           ord.customDeliveryLink = deliveryLink;
           ord.adminMessage = message;
           ord.licenseKey = deliveryLink || ord.licenseKey || 'KEY-PRO-ACTIVE';
@@ -3837,7 +3862,7 @@
 
           window.ShopVietState.save();
 
-          // Đồng bộ nếu có Cloud Sync / Firebase
+          // Äá»“ng bá»™ náº¿u cÃ³ Cloud Sync / Firebase
           if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncOrderToCloud === 'function') {
             window.ShopVietFirebase.syncOrderToCloud(ord).catch(() => {});
           }
@@ -3847,11 +3872,11 @@
         }
       }
 
-      // Đóng modal #adminDeliveryBackdrop
+      // ÄÃ³ng modal #adminDeliveryBackdrop
       const modal = document.getElementById('adminDeliveryBackdrop');
       if (modal) modal.remove();
 
-      // Re-render lại tab orders trong admin
+      // Re-render láº¡i tab orders trong admin
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'orders') {
         tabContent.innerHTML = renderTabOrders();
@@ -3864,16 +3889,16 @@
           timestamp: Date.now()
         });
       }
-      recordBroadcast('orders_updated', `Giao link đơn hàng #${orderCode}`);
+      recordBroadcast('orders_updated', `Giao link Ä‘Æ¡n hÃ ng #${orderCode}`);
 
-      notify(`Đã phê duyệt đơn hàng #${orderCode} và bàn giao link riêng thành công!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`ÄÃ£ phÃª duyá»‡t Ä‘Æ¡n hÃ ng #${orderCode} vÃ  bÃ n giao link riÃªng thÃ nh cÃ´ng!`, 'success');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
     },
 
-    // Xóa vĩnh viễn đơn hàng
+    // XÃ³a vÄ©nh viá»…n Ä‘Æ¡n hÃ ng
     deleteOrder: function (orderId) {
       if (!orderId) return;
-      if (!confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn đơn hàng #${orderId} khỏi hệ thống?`)) {
+      if (!confirm(`Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a vÄ©nh viá»…n Ä‘Æ¡n hÃ ng #${orderId} khá»i há»‡ thá»‘ng?`)) {
         return;
       }
       if (window.ShopVietState && window.ShopVietState.deleteOrder) {
@@ -3889,7 +3914,7 @@
               timestamp: Date.now()
             });
           }
-          recordBroadcast('orders_updated', `Xóa đơn hàng #${orderId}`);
+          recordBroadcast('orders_updated', `XÃ³a Ä‘Æ¡n hÃ ng #${orderId}`);
 
           const tabContent = document.getElementById('adminTabContent');
           if (tabContent && currentActiveTab === 'orders') {
@@ -3903,15 +3928,15 @@
             tabBadge.textContent = window.ShopVietState.getOrders().length;
           }
 
-          notify(`Đã xóa đơn hàng #${orderId} thành công!`, 'success');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify(`ÄÃ£ xÃ³a Ä‘Æ¡n hÃ ng #${orderId} thÃ nh cÃ´ng!`, 'success');
+          notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
         } else {
-          notify((res && res.message) || 'Không thể xóa đơn hàng!', 'error');
+          notify((res && res.message) || 'KhÃ´ng thá»ƒ xÃ³a Ä‘Æ¡n hÃ ng!', 'error');
         }
       }
     },
 
-    // 16. Xem hóa đơn / Bill
+    // 16. Xem hÃ³a Ä‘Æ¡n / Bill
     viewBillModal: function (orderCode, amount) {
       const existing = document.getElementById('adminBillBackdrop');
       if (existing) existing.remove();
@@ -3921,7 +3946,7 @@
       document.body.appendChild(container.firstElementChild);
     },
 
-    // 17. Cập nhật preview VietQR khi gõ form
+    // 17. Cáº­p nháº­t preview VietQR khi gÃµ form
     updateQRPreview: function () {
       const bankSelect = document.getElementById('adminVietQRBank');
       const accountInput = document.getElementById('adminVietQRAccountNumber');
@@ -3949,7 +3974,7 @@
       }
     },
 
-    // 18. Lưu cấu hình VietQR
+    // 18. LÆ°u cáº¥u hÃ¬nh VietQR
     saveVietQRSettings: function () {
       const bankSelect = document.getElementById('adminVietQRBank');
       const accountInput = document.getElementById('adminVietQRAccountNumber');
@@ -3971,20 +3996,20 @@
 
       saveVietQRConfig(config);
 
-      // PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ MÁY KHÁCH
+      // PHÃT SÃ“NG TÃN HIá»†U Äá»’NG Bá»˜ REALTIME Tá»šI Táº¤T Cáº¢ MÃY KHÃCH
       if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
         window.ShopVietState.broadcastAdminChange('vietqr_updated', {
           config: config,
           timestamp: Date.now()
         });
       }
-      recordBroadcast('vietqr_updated', `Cập nhật VietQR ${config.shortName} - ${config.accountNumber} (${config.accountName})`);
+      recordBroadcast('vietqr_updated', `Cáº­p nháº­t VietQR ${config.shortName} - ${config.accountNumber} (${config.accountName})`);
 
-      notify('Đã lưu cấu hình tài khoản VietQR thành công! Các luồng thanh toán sẽ cập nhật tức thì.', 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify('ÄÃ£ lÆ°u cáº¥u hÃ¬nh tÃ i khoáº£n VietQR thÃ nh cÃ´ng! CÃ¡c luá»“ng thanh toÃ¡n sáº½ cáº­p nháº­t tá»©c thÃ¬.', 'success');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
     },
 
-    // 19. Bộ đếm thời gian phiên (Session Countdown)
+    // 19. Bá»™ Ä‘áº¿m thá»i gian phiÃªn (Session Countdown)
     startSessionTimer: function () {
       if (sessionIntervalTimer) clearInterval(sessionIntervalTimer);
       sessionIntervalTimer = setInterval(() => {
@@ -3999,7 +4024,7 @@
       }, 1000);
     },
 
-    // 20. Quản lý mã quà tặng & giảm giá (Vouchers)
+    // 20. Quáº£n lÃ½ mÃ£ quÃ  táº·ng & giáº£m giÃ¡ (Vouchers)
     openVoucherModal: function () {
       const existing = document.getElementById('adminCreateVoucherModal');
       if (existing) existing.remove();
@@ -4019,22 +4044,22 @@
       const valInput = document.getElementById('voucherValueInput');
       const label = document.getElementById('voucherValueLabel');
       if (type === 'percent_discount') {
-        if (label) label.textContent = 'Giá trị giảm (% phần trăm) (*)';
+        if (label) label.textContent = 'GiÃ¡ trá»‹ giáº£m (% pháº§n trÄƒm) (*)';
         if (valInput) {
           valInput.min = '1';
           valInput.max = '99';
           valInput.step = '1';
           valInput.value = '20';
-          valInput.placeholder = 'Ví dụ: 20 tức giảm 20%';
+          valInput.placeholder = 'VÃ­ dá»¥: 20 tá»©c giáº£m 20%';
         }
       } else {
-        if (label) label.textContent = 'Số tiền giảm (VNĐ) (*)';
+        if (label) label.textContent = 'Sá»‘ tiá»n giáº£m (VNÄ) (*)';
         if (valInput) {
           valInput.min = '1000';
           valInput.removeAttribute('max');
           valInput.step = '1000';
           valInput.value = '20000';
-          valInput.placeholder = 'Ví dụ: 20000, 50000, 100000...';
+          valInput.placeholder = 'VÃ­ dá»¥: 20000, 50000, 100000...';
         }
       }
       this.generateRandomVoucherCode();
@@ -4077,16 +4102,16 @@
       const singleUse = singleUseInput ? singleUseInput.checked : true;
 
       if (!code) {
-        notify('Vui lòng nhập mã voucher!', 'error');
+        notify('Vui lÃ²ng nháº­p mÃ£ voucher!', 'error');
         return;
       }
       if (rawVal <= 0) {
-        notify('Giá trị giảm phải lớn hơn 0!', 'error');
+        notify('GiÃ¡ trá»‹ giáº£m pháº£i lá»›n hÆ¡n 0!', 'error');
         return;
       }
 
       if (type === 'percent_discount' && (rawVal < 1 || rawVal > 99)) {
-        notify('Mã giảm theo phần trăm phải từ 1% đến 99%!', 'error');
+        notify('MÃ£ giáº£m theo pháº§n trÄƒm pháº£i tá»« 1% Ä‘áº¿n 99%!', 'error');
         return;
       }
 
@@ -4095,7 +4120,7 @@
         return v.code && v.code.trim().toUpperCase() === code;
       });
       if (exists) {
-        notify(`Mã voucher "${code}" đã tồn tại trong hệ thống!`, 'error');
+        notify(`MÃ£ voucher "${code}" Ä‘Ã£ tá»“n táº¡i trong há»‡ thá»‘ng!`, 'error');
         return;
       }
 
@@ -4128,22 +4153,22 @@
         };
       }
 
-      // Lưu state cục bộ ngay lập tức (0ms)
+      // LÆ°u state cá»¥c bá»™ ngay láº­p tá»©c (0ms)
       vouchers.unshift(newVoucher);
       if (window.ShopVietState && window.ShopVietState.saveVouchers) {
         window.ShopVietState.saveVouchers(vouchers);
       }
 
       // =======================================================================
-      // PHƯƠNG PHÁP 1: Optimistic UI 0ms - Đóng modal ngay lập tức & bắn thông báo
+      // PHÆ¯Æ NG PHÃP 1: Optimistic UI 0ms - ÄÃ³ng modal ngay láº­p tá»©c & báº¯n thÃ´ng bÃ¡o
       // =======================================================================
       this.closeVoucherModal();
 
       const labelText = type === 'percent_discount' ? `${newVoucher.percent}%` : formatVND(rawVal);
-      notify(`Đã tạo thành công mã voucher "${code}" giảm ${labelText}! Tự động đồng bộ toàn hệ thống.`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`ÄÃ£ táº¡o thÃ nh cÃ´ng mÃ£ voucher "${code}" giáº£m ${labelText}! Tá»± Ä‘á»™ng Ä‘á»“ng bá»™ toÃ n há»‡ thá»‘ng.`, 'success');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
 
-      // Phát sóng realtime broadcast nội bộ
+      // PhÃ¡t sÃ³ng realtime broadcast ná»™i bá»™
       if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
         window.ShopVietState.broadcastAdminChange('vouchers_updated', {
           action: 'create',
@@ -4151,10 +4176,10 @@
           timestamp: Date.now()
         });
       }
-      recordBroadcast('vouchers_updated', `Tạo voucher ${code}`);
+      recordBroadcast('vouchers_updated', `Táº¡o voucher ${code}`);
 
       // =======================================================================
-      // PHƯƠNG PHÁP 3: Targeted Micro-DOM Update - 0ms mượt mà không giật lag
+      // PHÆ¯Æ NG PHÃP 3: Targeted Micro-DOM Update - 0ms mÆ°á»£t mÃ  khÃ´ng giáº­t lag
       // =======================================================================
       const tabBadge = document.getElementById('adminVoucherTabBadge');
       if (tabBadge) {
@@ -4162,33 +4187,33 @@
       }
       const tableBadge = document.getElementById('adminVoucherTableBadge');
       if (tableBadge) {
-        tableBadge.textContent = `${vouchers.length} mã`;
+        tableBadge.textContent = `${vouchers.length} mÃ£`;
       }
       const totalCountEl = document.getElementById('adminVoucherTotalCount');
       if (totalCountEl) {
-        totalCountEl.textContent = `${vouchers.length} mã`;
+        totalCountEl.textContent = `${vouchers.length} mÃ£`;
       }
       const availableCountEl = document.getElementById('adminVoucherAvailableCount');
       if (availableCountEl) {
         const avail = vouchers.filter(v => !v.isUsed).length;
-        availableCountEl.textContent = `${avail} mã`;
+        availableCountEl.textContent = `${avail} mÃ£`;
       }
 
-      // Cập nhật bảng trực tiếp nếu đang hiển thị
+      // Cáº­p nháº­t báº£ng trá»±c tiáº¿p náº¿u Ä‘ang hiá»ƒn thá»‹
       const tbody = document.getElementById('adminVoucherTableTbody') || document.getElementById('adminVouchersTableBody');
       if (tbody) {
-        // Xóa dòng thông báo rỗng nếu có
+        // XÃ³a dÃ²ng thÃ´ng bÃ¡o rá»—ng náº¿u cÃ³
         const emptyRow = tbody.querySelector('td[colspan]');
         if (emptyRow && emptyRow.closest('tr')) {
           emptyRow.closest('tr').remove();
         }
 
-        // Tạo dòng DOM mới
+        // Táº¡o dÃ²ng DOM má»›i
         const tempTable = document.createElement('tbody');
         tempTable.innerHTML = renderVoucherTableRow(newVoucher);
         const newRow = tempTable.firstElementChild;
         if (newRow) {
-          // Hiệu ứng highlight tím nhẹ êm ái
+          // Hiá»‡u á»©ng highlight tÃ­m nháº¹ Ãªm Ã¡i
           newRow.classList.add('bg-indigo-100/70', 'dark:bg-indigo-950/70', 'transition-all', 'duration-700');
           tbody.prepend(newRow);
           setTimeout(() => {
@@ -4196,7 +4221,7 @@
           }, 1200);
         }
       } else {
-        // Nếu không có bảng trên DOM nhưng đang ở tab vouchers thì render lại tab body
+        // Náº¿u khÃ´ng cÃ³ báº£ng trÃªn DOM nhÆ°ng Ä‘ang á»Ÿ tab vouchers thÃ¬ render láº¡i tab body
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent && currentActiveTab === 'vouchers') {
           tabContent.innerHTML = renderTabVouchers();
@@ -4204,7 +4229,7 @@
       }
 
       // =======================================================================
-      // PHƯƠNG PHÁP 2: Non-blocking Async I/O - Chạy ngầm 100%, không await chặn luồng UI
+      // PHÆ¯Æ NG PHÃP 2: Non-blocking Async I/O - Cháº¡y ngáº§m 100%, khÃ´ng await cháº·n luá»“ng UI
       // =======================================================================
       if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
         window.ShopVietState.pushAllToCloud().catch(function (err) {
@@ -4214,13 +4239,13 @@
     },
 
     deleteVoucher: function (code) {
-      if (!confirm(`Bạn có chắc chắn muốn xóa mã voucher "${code}" khỏi hệ thống?`)) {
+      if (!confirm(`Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a mÃ£ voucher "${code}" khá»i há»‡ thá»‘ng?`)) {
         return;
       }
       if (window.ShopVietState && window.ShopVietState.deleteVoucher) {
         const res = window.ShopVietState.deleteVoucher(code);
         if (res.success) {
-          // PHƯƠNG PHÁP 2: Non-blocking Cloud push chạy ngầm
+          // PHÆ¯Æ NG PHÃP 2: Non-blocking Cloud push cháº¡y ngáº§m
           if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
             window.ShopVietState.pushAllToCloud().catch(function (err) {
               console.warn('[Admin] Background pushAllToCloud error:', err);
@@ -4233,27 +4258,27 @@
               timestamp: Date.now()
             });
           }
-          recordBroadcast('vouchers_updated', `Xóa voucher ${code}`);
+          recordBroadcast('vouchers_updated', `XÃ³a voucher ${code}`);
 
           const vouchers = (window.ShopVietState && window.ShopVietState.getVouchers) ? window.ShopVietState.getVouchers() : [];
 
-          // PHƯƠNG PHÁP 3: Targeted Micro-DOM Update
+          // PHÆ¯Æ NG PHÃP 3: Targeted Micro-DOM Update
           const tabBadge = document.getElementById('adminVoucherTabBadge');
           if (tabBadge) {
             tabBadge.textContent = vouchers.length;
           }
           const tableBadge = document.getElementById('adminVoucherTableBadge');
           if (tableBadge) {
-            tableBadge.textContent = `${vouchers.length} mã`;
+            tableBadge.textContent = `${vouchers.length} mÃ£`;
           }
           const totalCountEl = document.getElementById('adminVoucherTotalCount');
           if (totalCountEl) {
-            totalCountEl.textContent = `${vouchers.length} mã`;
+            totalCountEl.textContent = `${vouchers.length} mÃ£`;
           }
           const availableCountEl = document.getElementById('adminVoucherAvailableCount');
           if (availableCountEl) {
             const avail = vouchers.filter(v => !v.isUsed).length;
-            availableCountEl.textContent = `${avail} mã`;
+            availableCountEl.textContent = `${avail} mÃ£`;
           }
 
           const tbody = document.getElementById('adminVoucherTableTbody') || document.getElementById('adminVouchersTableBody');
@@ -4271,7 +4296,7 @@
                       <td colspan="8" class="py-12 text-center text-slate-400">
                         <div class="flex flex-col items-center justify-center gap-2">
                           <svg class="w-10 h-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /></svg>
-                          <span>Chưa có mã voucher nào. Hãy bấm "+ Tạo mã mới" để thêm mã đầu tiên!</span>
+                          <span>ChÆ°a cÃ³ mÃ£ voucher nÃ o. HÃ£y báº¥m "+ Táº¡o mÃ£ má»›i" Ä‘á»ƒ thÃªm mÃ£ Ä‘áº§u tiÃªn!</span>
                         </div>
                       </td>
                     </tr>
@@ -4283,10 +4308,10 @@
             this.switchTab('vouchers');
           }
 
-          notify(`Đã xóa mã voucher "${code}" thành công!`, 'info');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify(`ÄÃ£ xÃ³a mÃ£ voucher "${code}" thÃ nh cÃ´ng!`, 'info');
+          notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
         } else {
-          notify(res.message || 'Không thể xóa mã!', 'error');
+          notify(res.message || 'KhÃ´ng thá»ƒ xÃ³a mÃ£!', 'error');
         }
       }
     },
@@ -4338,7 +4363,7 @@
         if (tabBadge) {
           tabBadge.textContent = list.length;
         }
-        notify('Đã khôi phục danh sách voucher mẫu ban đầu!', 'success');
+        notify('ÄÃ£ khÃ´i phá»¥c danh sÃ¡ch voucher máº«u ban Ä‘áº§u!', 'success');
       }
     },
 
@@ -4359,11 +4384,11 @@
       });
       const badge = document.getElementById('adminVoucherTableBadge');
       if (badge) {
-        badge.textContent = `${matchCount} mã`;
+        badge.textContent = `${matchCount} mÃ£`;
       }
     },
 
-    // ==================== QUẢN LÝ LỊCH HẸN KHÁCH & SLOT EXCEL ====================
+    // ==================== QUáº¢N LÃ Lá»ŠCH Háº¸N KHÃCH & SLOT EXCEL ====================
     openScheduleModal: function (scheduleId) {
       this.closeScheduleModal();
       const div = document.createElement('div');
@@ -4410,17 +4435,17 @@
       const customerEmail = emailInput.value.trim().toLowerCase();
       const customerName = (nameInput ? nameInput.value : '').trim() || customerEmail.split('@')[0];
       const managerEmail = (managerInput ? managerInput.value : '').trim() || 'admin-slot@shopviet.vip';
-      const serviceName = (serviceInput ? serviceInput.value : '').trim() || '[1 Tháng] Gemini Argon 4 Pro + 5TB Drive';
+      const serviceName = (serviceInput ? serviceInput.value : '').trim() || '[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive';
       const startDate = (startInput ? startInput.value : '').trim() || new Date().toISOString().split('T')[0];
       const expireDate = expInput.value.trim();
       const notes = (notesInput ? notesInput.value : '').trim();
 
       if (!customerEmail || !customerEmail.includes('@')) {
-        notify('Vui lòng nhập địa chỉ email khách hàng hợp lệ!', 'error');
+        notify('Vui lÃ²ng nháº­p Ä‘á»‹a chá»‰ email khÃ¡ch hÃ ng há»£p lá»‡!', 'error');
         return;
       }
       if (!expireDate) {
-        notify('Vui lòng chọn ngày hết hạn cho khách!', 'error');
+        notify('Vui lÃ²ng chá»n ngÃ y háº¿t háº¡n cho khÃ¡ch!', 'error');
         return;
       }
 
@@ -4437,10 +4462,10 @@
       if (window.ShopVietState) {
         if (scheduleId) {
           window.ShopVietState.updateSchedule(scheduleId, scheduleData);
-          notify(`Đã cập nhật lịch hẹn cho ${customerEmail}!`, 'success');
+          notify(`ÄÃ£ cáº­p nháº­t lá»‹ch háº¹n cho ${customerEmail}!`, 'success');
         } else {
           window.ShopVietState.addSchedule(scheduleData);
-          notify(`Đã thêm ${customerEmail} vào bảng tính Excel!`, 'success');
+          notify(`ÄÃ£ thÃªm ${customerEmail} vÃ o báº£ng tÃ­nh Excel!`, 'success');
         }
 
         if (typeof window.ShopVietState.pushAllToCloud === 'function') {
@@ -4454,8 +4479,8 @@
             timestamp: Date.now()
           });
         }
-        recordBroadcast('schedules_updated', `Lịch hẹn: ${customerEmail}`);
-        notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+        recordBroadcast('schedules_updated', `Lá»‹ch háº¹n: ${customerEmail}`);
+        notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
 
         this.closeScheduleModal();
         this.switchTab('schedules');
@@ -4468,7 +4493,7 @@
     },
 
     deleteSchedule: function (id) {
-      if (!confirm('Bạn có chắc chắn muốn xóa lịch hẹn này khỏi bảng Excel không?')) {
+      if (!confirm('Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a lá»‹ch háº¹n nÃ y khá»i báº£ng Excel khÃ´ng?')) {
         return;
       }
       if (window.ShopVietState && window.ShopVietState.deleteSchedule) {
@@ -4484,16 +4509,16 @@
               timestamp: Date.now()
             });
           }
-          recordBroadcast('schedules_updated', `Xóa lịch hẹn ID: ${id}`);
+          recordBroadcast('schedules_updated', `XÃ³a lá»‹ch háº¹n ID: ${id}`);
           this.switchTab('schedules');
           const tabBadge = document.getElementById('adminScheduleTabBadge');
           if (tabBadge && window.ShopVietState.getSchedules) {
             tabBadge.textContent = window.ShopVietState.getSchedules().length;
           }
-          notify('Đã xóa lịch hẹn khỏi bảng Excel thành công!', 'info');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify('ÄÃ£ xÃ³a lá»‹ch háº¹n khá»i báº£ng Excel thÃ nh cÃ´ng!', 'info');
+          notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
         } else {
-          notify('Không tìm thấy lịch hẹn cần xóa!', 'error');
+          notify('KhÃ´ng tÃ¬m tháº¥y lá»‹ch háº¹n cáº§n xÃ³a!', 'error');
         }
       }
     },
@@ -4516,17 +4541,17 @@
       const expireDate = expireInput.value.trim();
 
       if (!customerEmail || !customerEmail.includes('@')) {
-        notify('Vui lòng nhập Email Khách Hàng hợp lệ!', 'error');
+        notify('Vui lÃ²ng nháº­p Email KhÃ¡ch HÃ ng há»£p lá»‡!', 'error');
         customerInput.focus();
         return;
       }
       if (!managerEmail) {
-        notify('Vui lòng nhập Email Quản Lý / Slot!', 'error');
+        notify('Vui lÃ²ng nháº­p Email Quáº£n LÃ½ / Slot!', 'error');
         managerInput.focus();
         return;
       }
       if (!expireDate) {
-        notify('Vui lòng chọn Ngày Hết Hạn!', 'error');
+        notify('Vui lÃ²ng chá»n NgÃ y Háº¿t Háº¡n!', 'error');
         expireInput.focus();
         return;
       }
@@ -4534,18 +4559,18 @@
       const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
       const item = schedules.find(s => s.id === id);
       if (!item) {
-        notify('Không tìm thấy bản ghi cần lưu!', 'error');
+        notify('KhÃ´ng tÃ¬m tháº¥y báº£n ghi cáº§n lÆ°u!', 'error');
         return;
       }
 
-      // Cập nhật giá trị
+      // Cáº­p nháº­t giÃ¡ trá»‹
       item.customerEmail = customerEmail;
       item.managerEmail = managerEmail;
       if (serviceName) item.serviceName = serviceName;
       if (startDate) item.startDate = startDate;
       item.expireDate = expireDate;
 
-      // Cập nhật thuộc tính dataset dòng để tìm kiếm chuẩn xác
+      // Cáº­p nháº­t thuá»™c tÃ­nh dataset dÃ²ng Ä‘á»ƒ tÃ¬m kiáº¿m chuáº©n xÃ¡c
       const tr = document.querySelector(`tr[data-id="${id}"]`);
       if (tr) {
         tr.setAttribute('data-customer', customerEmail.toLowerCase());
@@ -4553,15 +4578,15 @@
         tr.setAttribute('data-service', serviceName.toLowerCase());
       }
 
-      // 1. Lưu LocalStorage ngay lập tức
+      // 1. LÆ°u LocalStorage ngay láº­p tá»©c
       if (window.ShopVietState && window.ShopVietState.saveSchedules) {
         window.ShopVietState.saveSchedules(schedules);
       }
 
-      // 2. Cập nhật badge hạn dùng tức thì trên giao diện
+      // 2. Cáº­p nháº­t badge háº¡n dÃ¹ng tá»©c thÃ¬ trÃªn giao diá»‡n
       this.updateScheduleDaysLeftBadge(id);
 
-      // 3. Hiệu ứng nút Lưu Đám Mây: Đang lưu... -> Đã lưu ✓
+      // 3. Hiá»‡u á»©ng nÃºt LÆ°u ÄÃ¡m MÃ¢y: Äang lÆ°u... -> ÄÃ£ lÆ°u âœ“
       let originalBtnHTML = '';
       if (saveBtn) {
         originalBtnHTML = saveBtn.innerHTML;
@@ -4573,11 +4598,11 @@
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
           </svg>
-          <span>Đang lưu...</span>
+          <span>Äang lÆ°u...</span>
         `;
       }
 
-      // 4. Đẩy ngay lên Cloud REST để không bị mất khi reset trang web hoặc đăng nhập trên máy khác
+      // 4. Äáº©y ngay lÃªn Cloud REST Ä‘á»ƒ khÃ´ng bá»‹ máº¥t khi reset trang web hoáº·c Ä‘Äƒng nháº­p trÃªn mÃ¡y khÃ¡c
       try {
         if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
           await window.ShopVietState.pushAllToCloud();
@@ -4589,7 +4614,7 @@
             <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            <span>Đã lưu ✓</span>
+            <span>ÄÃ£ lÆ°u âœ“</span>
           `;
           setTimeout(() => {
             saveBtn.disabled = false;
@@ -4598,7 +4623,7 @@
             saveBtn.innerHTML = originalBtnHTML;
           }, 2000);
         }
-        notify(`Đã lưu "${managerEmail}" lên Đám mây Cloud thành công! Không bị mất dữ liệu khi đổi máy.`, 'success');
+        notify(`ÄÃ£ lÆ°u "${managerEmail}" lÃªn ÄÃ¡m mÃ¢y Cloud thÃ nh cÃ´ng! KhÃ´ng bá»‹ máº¥t dá»¯ liá»‡u khi Ä‘á»•i mÃ¡y.`, 'success');
       } catch (err) {
         console.warn('[Save Inline Schedule Cloud Sync Error]:', err);
         if (saveBtn) {
@@ -4607,7 +4632,7 @@
           saveBtn.classList.add('bg-emerald-50', 'text-emerald-700', 'dark:bg-emerald-950/60', 'dark:text-emerald-400', 'border-emerald-300', 'dark:border-emerald-800');
           saveBtn.innerHTML = originalBtnHTML;
         }
-        notify(`Đã lưu cục bộ! Đám mây sẽ tự đồng bộ khi có kết nối mạng.`, 'info');
+        notify(`ÄÃ£ lÆ°u cá»¥c bá»™! ÄÃ¡m mÃ¢y sáº½ tá»± Ä‘á»“ng bá»™ khi cÃ³ káº¿t ná»‘i máº¡ng.`, 'info');
       }
     },
 
@@ -4625,11 +4650,11 @@
 
       let statusBadge = '';
       if (daysLeft > 7) {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Còn ${daysLeft} ngày</span>`;
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>CÃ²n ${daysLeft} ngÃ y</span>`;
       } else if (daysLeft > 0) {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sắp hết (${daysLeft} ngày)</span>`;
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sáº¯p háº¿t (${daysLeft} ngÃ y)</span>`;
       } else {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Đã hết hạn</span>`;
+        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>ÄÃ£ háº¿t háº¡n</span>`;
       }
       badgeCell.innerHTML = statusBadge;
     },
@@ -4640,24 +4665,24 @@
       if (!item) return;
 
       if (field === 'managerEmail') {
-        const newVal = prompt('Nhập Email Quản Lý / Slot mới:', item.managerEmail);
+        const newVal = prompt('Nháº­p Email Quáº£n LÃ½ / Slot má»›i:', item.managerEmail);
         if (newVal !== null && newVal.trim()) {
           window.ShopVietState.updateSchedule(id, { managerEmail: newVal.trim() });
           if (typeof window.ShopVietState.pushAllToCloud === 'function') {
             window.ShopVietState.pushAllToCloud().catch(function () {});
           }
           this.switchTab('schedules');
-          notify('Đã cập nhật Email Quản Lý!', 'success');
+          notify('ÄÃ£ cáº­p nháº­t Email Quáº£n LÃ½!', 'success');
         }
       } else if (field === 'expireDate') {
-        const newVal = prompt('Nhập Ngày Hết Hạn mới (YYYY-MM-DD):', item.expireDate);
+        const newVal = prompt('Nháº­p NgÃ y Háº¿t Háº¡n má»›i (YYYY-MM-DD):', item.expireDate);
         if (newVal !== null && newVal.trim()) {
           window.ShopVietState.updateSchedule(id, { expireDate: newVal.trim() });
           if (typeof window.ShopVietState.pushAllToCloud === 'function') {
             window.ShopVietState.pushAllToCloud().catch(function () {});
           }
           this.switchTab('schedules');
-          notify('Đã cập nhật Ngày Hết Hạn!', 'success');
+          notify('ÄÃ£ cáº­p nháº­t NgÃ y Háº¿t Háº¡n!', 'success');
         }
       }
     },
@@ -4665,12 +4690,12 @@
     exportSchedulesToExcel: function () {
       const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
       if (!schedules || schedules.length === 0) {
-        notify('Danh sách khách hàng đang trống, không thể xuất file!', 'warning');
+        notify('Danh sÃ¡ch khÃ¡ch hÃ ng Ä‘ang trá»‘ng, khÃ´ng thá»ƒ xuáº¥t file!', 'warning');
         return;
       }
 
       const BOM = '\uFEFF';
-      let csv = BOM + 'STT,Mã Lịch,Email Khách Hàng,Tên Khách Hàng,Email Quản Lý (Slot),Gói Dịch Vụ,Ngày Bắt Đầu,Ngày Hết Hạn,Số Ngày Còn Lại,Trạng Thái Hạn Dùng,Ghi Chú\r\n';
+      let csv = BOM + 'STT,MÃ£ Lá»‹ch,Email KhÃ¡ch HÃ ng,TÃªn KhÃ¡ch HÃ ng,Email Quáº£n LÃ½ (Slot),GÃ³i Dá»‹ch Vá»¥,NgÃ y Báº¯t Äáº§u,NgÃ y Háº¿t Háº¡n,Sá»‘ NgÃ y CÃ²n Láº¡i,Tráº¡ng ThÃ¡i Háº¡n DÃ¹ng,Ghi ChÃº\r\n';
       
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -4684,7 +4709,7 @@
         exp.setHours(0, 0, 0, 0);
         const diffMs = exp.getTime() - today.getTime();
         const daysLeft = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-        const status = daysLeft > 7 ? `Còn ${daysLeft} ngày` : (daysLeft > 0 ? `Sắp hết (${daysLeft} ngày)` : 'Đã hết hạn');
+        const status = daysLeft > 7 ? `CÃ²n ${daysLeft} ngÃ y` : (daysLeft > 0 ? `Sáº¯p háº¿t (${daysLeft} ngÃ y)` : 'ÄÃ£ háº¿t háº¡n');
 
         const row = [
           idx + 1,
@@ -4712,7 +4737,7 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      notify('Đã xuất danh sách khách hàng sang file Excel (CSV) thành công!', 'success');
+      notify('ÄÃ£ xuáº¥t danh sÃ¡ch khÃ¡ch hÃ ng sang file Excel (CSV) thÃ nh cÃ´ng!', 'success');
     },
 
     filterSchedules: function (query) {
@@ -4737,7 +4762,7 @@
       });
       const badge = document.getElementById('adminScheduleTableBadge');
       if (badge) {
-        badge.textContent = `${matchCount} bản ghi`;
+        badge.textContent = `${matchCount} báº£n ghi`;
       }
     },
 
@@ -4747,22 +4772,22 @@
           {
             id: 'SCH-001',
             customerEmail: 'thaitraicau123@gmail.com',
-            customerName: 'Bùi Thái',
+            customerName: 'BÃ¹i ThÃ¡i',
             managerEmail: 'slot1-pro@shopviet.vip',
-            serviceName: '[1 Tháng] Gemini Argon 4 Pro + 5TB Drive',
+            serviceName: '[1 ThÃ¡ng] Gemini Argon 4 Pro + 5TB Drive',
             startDate: '2026-10-29',
             expireDate: '2026-11-29',
-            notes: 'Khách VIP nâng cấp chính chủ'
+            notes: 'KhÃ¡ch VIP nÃ¢ng cáº¥p chÃ­nh chá»§'
           },
           {
             id: 'SCH-002',
             customerEmail: 'huy.dev99@gmail.com',
-            customerName: 'Nguyễn Huy',
+            customerName: 'Nguyá»…n Huy',
             managerEmail: 'slot2-cursor@shopviet.vip',
-            serviceName: 'Cursor Pro 1 Tháng Chính Chủ',
+            serviceName: 'Cursor Pro 1 ThÃ¡ng ChÃ­nh Chá»§',
             startDate: '2026-10-25',
             expireDate: '2026-11-01',
-            notes: 'Sắp hết hạn cần nhắc gia hạn'
+            notes: 'Sáº¯p háº¿t háº¡n cáº§n nháº¯c gia háº¡n'
           }
         ];
         window.ShopVietState.saveSchedules(DEFAULT_SCHEDULES);
@@ -4774,14 +4799,14 @@
         if (tabBadge) {
           tabBadge.textContent = DEFAULT_SCHEDULES.length;
         }
-        notify('Đã khôi phục danh sách hẹn lịch mẫu ban đầu!', 'success');
+        notify('ÄÃ£ khÃ´i phá»¥c danh sÃ¡ch háº¹n lá»‹ch máº«u ban Ä‘áº§u!', 'success');
       }
     },
 
-    // 21. Phát tín hiệu thử nghiệm Realtime Hub (Broadcast Test Ping)
+    // 21. PhÃ¡t tÃ­n hiá»‡u thá»­ nghiá»‡m Realtime Hub (Broadcast Test Ping)
     broadcastTestPing: function () {
       const payload = {
-        msg: 'Admin vừa gửi tín hiệu đồng bộ!',
+        msg: 'Admin vá»«a gá»­i tÃ­n hiá»‡u Ä‘á»“ng bá»™!',
         time: new Date().toLocaleTimeString('vi-VN'),
         timestamp: Date.now()
       };
@@ -4797,15 +4822,15 @@
         } catch (e) {}
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'test_ping', payload: payload } }));
       }
-      recordBroadcast('test_ping', 'Admin vừa gửi tín hiệu đồng bộ!');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      recordBroadcast('test_ping', 'Admin vá»«a gá»­i tÃ­n hiá»‡u Ä‘á»“ng bá»™!');
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
       }
     },
 
-    // 22. Phát sóng đồng bộ lại toàn bộ Sản phẩm
+    // 22. PhÃ¡t sÃ³ng Ä‘á»“ng bá»™ láº¡i toÃ n bá»™ Sáº£n pháº©m
     broadcastProductsSync: function () {
       const prods = (window.ShopVietData && window.ShopVietData.products) || [];
       const payload = {
@@ -4825,15 +4850,15 @@
         } catch (e) {}
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'products_updated', payload: payload } }));
       }
-      recordBroadcast('products_updated', `Đồng bộ toàn bộ ${prods.length} sản phẩm`);
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      recordBroadcast('products_updated', `Äá»“ng bá»™ toÃ n bá»™ ${prods.length} sáº£n pháº©m`);
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
       }
     },
 
-    // 23. Phát sóng đồng bộ Cấu hình VietQR
+    // 23. PhÃ¡t sÃ³ng Ä‘á»“ng bá»™ Cáº¥u hÃ¬nh VietQR
     broadcastVietQRSync: function () {
       const config = getVietQRConfig();
       const payload = {
@@ -4852,39 +4877,39 @@
         } catch (e) {}
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'vietqr_updated', payload: payload } }));
       }
-      recordBroadcast('vietqr_updated', `Cập nhật cấu hình VietQR (${config.accountName} - ${config.accountNumber})`);
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      recordBroadcast('vietqr_updated', `Cáº­p nháº­t cáº¥u hÃ¬nh VietQR (${config.accountName} - ${config.accountNumber})`);
+      notify('âš¡ ÄÃ£ phÃ¡t sÃ³ng dá»¯ liá»‡u thay Ä‘á»•i lÃªn Cloud Realtime thÃ nh cÃ´ng! Má»i mÃ¡y khÃ¡ch Ä‘ang cáº­p nháº­t tá»©c thÃ¬.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
       }
     },
 
-    // 24. Xóa nhật ký phát sóng
+    // 24. XÃ³a nháº­t kÃ½ phÃ¡t sÃ³ng
     clearBroadcastHistory: function () {
       localStorage.removeItem('shopviet_broadcast_history');
-      notify('Đã xóa sạch nhật ký phát sóng!', 'info');
+      notify('ÄÃ£ xÃ³a sáº¡ch nháº­t kÃ½ phÃ¡t sÃ³ng!', 'info');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
       }
     },
 
-    // 25. MASTER ACTION: XUẤT BẢN & ĐỒNG BỘ TOÀN CẦU TỨC THÌ
+    // 25. MASTER ACTION: XUáº¤T Báº¢N & Äá»’NG Bá»˜ TOÃ€N Cáº¦U Tá»¨C THÃŒ
     masterPublish: async function () {
       const btn = document.getElementById('adminMasterPublishBtn');
       const icon = document.getElementById('adminMasterPublishIcon');
       const text = document.getElementById('adminMasterPublishText');
 
       if (btn) btn.disabled = true;
-      if (text) text.textContent = 'Đang xuất bản lên Cloud...';
+      if (text) text.textContent = 'Äang xuáº¥t báº£n lÃªn Cloud...';
       if (icon) icon.classList.add('animate-spin');
 
       try {
         const now = Date.now();
         const isoNow = new Date(now).toISOString();
 
-        // 1. Lấy toàn bộ sản phẩm hiện tại, cập nhật updatedAt
+        // 1. Láº¥y toÃ n bá»™ sáº£n pháº©m hiá»‡n táº¡i, cáº­p nháº­t updatedAt
         const prods = (window.ShopVietData && window.ShopVietData.products) || [];
         if (window.ShopVietState) {
           window.ShopVietState.setLastUpdatedAt(now);
@@ -4893,13 +4918,13 @@
           }
         }
 
-        // 2. Đẩy toàn bộ dữ liệu trực tiếp lên GitHub Cloud Storage & Fallback REST
+        // 2. Äáº©y toÃ n bá»™ dá»¯ liá»‡u trá»±c tiáº¿p lÃªn GitHub Cloud Storage & Fallback REST
         let pushSuccess = false;
         if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
           pushSuccess = await window.ShopVietState.pushAllToCloud(false);
         }
 
-        // 3. Phát sóng realtime tín hiệu master_publish tới tất cả thiết bị
+        // 3. PhÃ¡t sÃ³ng realtime tÃ­n hiá»‡u master_publish tá»›i táº¥t cáº£ thiáº¿t bá»‹
         if (window.ShopVietState && typeof window.ShopVietState.broadcastAdminChange === 'function') {
           window.ShopVietState.broadcastAdminChange('master_publish', {
             action: 'master_publish',
@@ -4912,41 +4937,41 @@
           }, true);
         }
 
-        // 4. Ghi nhận nhật ký phát sóng trong Admin Portal
-        recordBroadcast('master_publish', `Xuất bản toàn cầu (${prods.length} sản phẩm)`);
+        // 4. Ghi nháº­n nháº­t kÃ½ phÃ¡t sÃ³ng trong Admin Portal
+        recordBroadcast('master_publish', `Xuáº¥t báº£n toÃ n cáº§u (${prods.length} sáº£n pháº©m)`);
 
-        // 5. Hiển thị Toast / Modal thành công rực rỡ
-        notify('🎉 Đã phát sóng cập nhật dữ liệu tới toàn bộ các thiết bị đang truy cập!', 'success');
+        // 5. Hiá»ƒn thá»‹ Toast / Modal thÃ nh cÃ´ng rá»±c rá»¡
+        notify('ðŸŽ‰ ÄÃ£ phÃ¡t sÃ³ng cáº­p nháº­t dá»¯ liá»‡u tá»›i toÃ n bá»™ cÃ¡c thiáº¿t bá»‹ Ä‘ang truy cáº­p!', 'success');
 
-        // Bắn CustomEvent shopviet_realtime_update để màn hình Home nhấp nháy phát sáng
+        // Báº¯n CustomEvent shopviet_realtime_update Ä‘á»ƒ mÃ n hÃ¬nh Home nháº¥p nhÃ¡y phÃ¡t sÃ¡ng
         if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
           try {
             window.dispatchEvent(new CustomEvent('shopviet_realtime_update', {
               detail: {
                 type: 'master_publish',
-                message: '🔔 Cửa hàng vừa cập nhật sản phẩm mới!',
+                message: 'ðŸ”” Cá»­a hÃ ng vá»«a cáº­p nháº­t sáº£n pháº©m má»›i!',
                 updatedAt: now
               }
             }));
           } catch (eEvt) {}
         }
 
-        // Cập nhật lại tab realtime nếu đang mở
+        // Cáº­p nháº­t láº¡i tab realtime náº¿u Ä‘ang má»Ÿ
         if (currentActiveTab === 'realtime') {
           const tabContent = document.getElementById('adminTabContent');
           if (tabContent) tabContent.innerHTML = renderTabRealtime();
         }
       } catch (err) {
         console.warn('[Admin Master Publish Error]:', err);
-        notify('Lỗi xuất bản lên Đám Mây: ' + (err.message || 'Vui lòng kiểm tra kết nối mạng!'), 'error');
+        notify('Lá»—i xuáº¥t báº£n lÃªn ÄÃ¡m MÃ¢y: ' + (err.message || 'Vui lÃ²ng kiá»ƒm tra káº¿t ná»‘i máº¡ng!'), 'error');
       } finally {
         if (btn) btn.disabled = false;
-        if (text) text.textContent = '🚀 XUẤT BẢN & ĐỒNG BỘ TOÀN CẦU TỨC THÌ';
+        if (text) text.textContent = 'ðŸš€ XUáº¤T Báº¢N & Äá»’NG Bá»˜ TOÃ€N Cáº¦U Tá»¨C THÃŒ';
         if (icon) icon.classList.remove('animate-spin');
       }
     },
 
-    // Helper export ra ngoài
+    // Helper export ra ngoÃ i
     getVietQRConfig: getVietQRConfig,
     isAllowedAdminUser: isAllowedAdminUser,
     requestAdminNotificationPermission: function(userInit) { return window.requestAdminNotificationPermission(userInit); },
@@ -4959,32 +4984,32 @@
   // =========================================================================
 
   /**
-   * Cập nhật UI nút trạng thái thông báo iPhone trong tab Đơn hàng
+   * Cáº­p nháº­t UI nÃºt tráº¡ng thÃ¡i thÃ´ng bÃ¡o iPhone trong tab ÄÆ¡n hÃ ng
    */
   function updateAdminNotifButtonUI(status) {
     const textEl = document.getElementById('adminPushNotifStatusText');
     const btnEl = document.getElementById('adminPushNotifToggleBtn');
     if (!textEl || !btnEl) return;
     if (status === 'granted') {
-      textEl.textContent = 'Thông báo iPhone: Đang bật';
+      textEl.textContent = 'ThÃ´ng bÃ¡o iPhone: Äang báº­t';
       btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
     } else if (status === 'denied') {
-      textEl.textContent = 'Thông báo iPhone: Đã bị chặn';
+      textEl.textContent = 'ThÃ´ng bÃ¡o iPhone: ÄÃ£ bá»‹ cháº·n';
       btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
     } else {
-      textEl.textContent = 'Bật Thông Báo iPhone';
+      textEl.textContent = 'Báº­t ThÃ´ng BÃ¡o iPhone';
       btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
     }
   }
 
   /**
-   * Tự động xin quyền Push Notification cho Admin khi đăng nhập hoặc truy cập Admin
-   * Chỉ kích hoạt cho tài khoản thaitraicau123@gmail.com hoặc có role admin
+   * Tá»± Ä‘á»™ng xin quyá»n Push Notification cho Admin khi Ä‘Äƒng nháº­p hoáº·c truy cáº­p Admin
+   * Chá»‰ kÃ­ch hoáº¡t cho tÃ i khoáº£n thaitraicau123@gmail.com hoáº·c cÃ³ role admin
    */
   window.requestAdminNotificationPermission = async function (userInitiated = false) {
     if (typeof window === 'undefined' || !('Notification' in window)) {
       if (userInitiated && window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast('Trình duyệt không hỗ trợ Web Notification API.', 'info');
+        window.ShopVietState.showToast('TrÃ¬nh duyá»‡t khÃ´ng há»— trá»£ Web Notification API.', 'info');
       }
       return false;
     }
@@ -4994,14 +5019,14 @@
     const isAdmin = Boolean(currentUser && (currentUser.email === 'thaitraicau123@gmail.com' || currentUser.role === 'admin'));
 
     if (!isAdmin) {
-      console.log('[PWA-Admin-Notify] Bỏ qua xin quyền vì tài khoản hiện tại không phải là Admin (thaitraicau123@gmail.com).');
+      console.log('[PWA-Admin-Notify] Bá» qua xin quyá»n vÃ¬ tÃ i khoáº£n hiá»‡n táº¡i khÃ´ng pháº£i lÃ  Admin (thaitraicau123@gmail.com).');
       return false;
     }
 
     if (Notification.permission === 'granted') {
       updateAdminNotifButtonUI('granted');
       if (userInitiated && window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast('🔔 Thông báo PWA iPhone Admin đã được bật sẵn sàng!', 'success');
+        window.ShopVietState.showToast('ðŸ”” ThÃ´ng bÃ¡o PWA iPhone Admin Ä‘Ã£ Ä‘Æ°á»£c báº­t sáºµn sÃ ng!', 'success');
       }
       return true;
     }
@@ -5009,7 +5034,7 @@
     if (Notification.permission === 'denied') {
       updateAdminNotifButtonUI('denied');
       if (userInitiated && window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast('Bạn đã tắt quyền thông báo trên trình duyệt. Hãy vào Cài đặt để cho phép!', 'warning');
+        window.ShopVietState.showToast('Báº¡n Ä‘Ã£ táº¯t quyá»n thÃ´ng bÃ¡o trÃªn trÃ¬nh duyá»‡t. HÃ£y vÃ o CÃ i Ä‘áº·t Ä‘á»ƒ cho phÃ©p!', 'warning');
       }
       return false;
     }
@@ -5019,19 +5044,19 @@
       updateAdminNotifButtonUI(permission);
       if (permission === 'granted') {
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('🔔 Đã kích hoạt thông báo đơn hàng PWA cho iPhone của Admin!', 'success');
+          window.ShopVietState.showToast('ðŸ”” ÄÃ£ kÃ­ch hoáº¡t thÃ´ng bÃ¡o Ä‘Æ¡n hÃ ng PWA cho iPhone cá»§a Admin!', 'success');
         }
         return true;
       }
       return false;
     } catch (err) {
-      console.warn('[PWA-Admin-Notify] Lỗi khi xin quyền Notification:', err);
+      console.warn('[PWA-Admin-Notify] Lá»—i khi xin quyá»n Notification:', err);
       return false;
     }
   };
 
   /**
-   * Thử nghiệm Native Push Notification trên màn hình khóa iPhone và Desktop
+   * Thá»­ nghiá»‡m Native Push Notification trÃªn mÃ n hÃ¬nh khÃ³a iPhone vÃ  Desktop
    */
   window.testAdminPushNotification = async function () {
     if (typeof window.requestAdminNotificationPermission === 'function') {
@@ -5049,24 +5074,24 @@
       await window.triggerAdminOrderNotification(mockOrder, true);
     }
     if (window.ShopVietState && window.ShopVietState.showToast) {
-      window.ShopVietState.showToast('🚀 Đã gửi thông báo iPhone thử nghiệm! Hãy kiểm tra màn hình khóa hoặc Notification Center.', 'success');
+      window.ShopVietState.showToast('ðŸš€ ÄÃ£ gá»­i thÃ´ng bÃ¡o iPhone thá»­ nghiá»‡m! HÃ£y kiá»ƒm tra mÃ n hÃ¬nh khÃ³a hoáº·c Notification Center.', 'success');
     }
   };
 
   /**
-   * Kích hoạt Native PWA Push Notification cho iPhone của Admin (iOS 16.4+) & Desktop
-   * Chỉ phát khi tài khoản hiện tại là thaitraicau123@gmail.com hoặc có role admin (hoặc khi admin test trực tiếp)
+   * KÃ­ch hoáº¡t Native PWA Push Notification cho iPhone cá»§a Admin (iOS 16.4+) & Desktop
+   * Chá»‰ phÃ¡t khi tÃ i khoáº£n hiá»‡n táº¡i lÃ  thaitraicau123@gmail.com hoáº·c cÃ³ role admin (hoáº·c khi admin test trá»±c tiáº¿p)
    */
   window.triggerAdminOrderNotification = async function (order, isTest = false) {
     if (!order) return;
 
-    // 1. Kiểm tra quyền: Chỉ tài khoản admin (thaitraicau123@gmail.com) mới nhận thông báo (trừ khi test trực tiếp)
+    // 1. Kiá»ƒm tra quyá»n: Chá»‰ tÃ i khoáº£n admin (thaitraicau123@gmail.com) má»›i nháº­n thÃ´ng bÃ¡o (trá»« khi test trá»±c tiáº¿p)
     const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) ||
                         (window.ShopVietState && window.ShopVietState.currentUser);
     const isAdmin = Boolean(currentUser && (currentUser.email === 'thaitraicau123@gmail.com' || currentUser.role === 'admin'));
 
     if (!isAdmin && !isTest) {
-      console.log('[PWA-Admin-Notify] Bỏ qua vì tài khoản hiện tại không phải là Admin (thaitraicau123@gmail.com).');
+      console.log('[PWA-Admin-Notify] Bá» qua vÃ¬ tÃ i khoáº£n hiá»‡n táº¡i khÃ´ng pháº£i lÃ  Admin (thaitraicau123@gmail.com).');
       return;
     }
 
@@ -5078,13 +5103,13 @@
       ? new Intl.NumberFormat('vi-VN').format(rawAmount) 
       : rawAmount;
 
-    // Tiêu đề & nội dung chuẩn chỉ theo yêu cầu
-    const title = `🔔 Đơn hàng mới ${orderCode} - Chờ duyệt!`;
-    const body = `Khách vừa báo chuyển khoản ${amountStr}đ. Bấm để vào duyệt đơn ngay!`;
+    // TiÃªu Ä‘á» & ná»™i dung chuáº©n chá»‰ theo yÃªu cáº§u
+    const title = `ðŸ”” ÄÆ¡n hÃ ng má»›i ${orderCode} - Chá» duyá»‡t!`;
+    const body = `KhÃ¡ch vá»«a bÃ¡o chuyá»ƒn khoáº£n ${amountStr}Ä‘. Báº¥m Ä‘á»ƒ vÃ o duyá»‡t Ä‘Æ¡n ngay!`;
 
-    console.log('[PWA-Admin-Notify] Phát thông báo PWA Admin:', title, body);
+    console.log('[PWA-Admin-Notify] PhÃ¡t thÃ´ng bÃ¡o PWA Admin:', title, body);
 
-    // Phát âm thanh chuông báo tinh tế (Web Audio API)
+    // PhÃ¡t Ã¢m thanh chuÃ´ng bÃ¡o tinh táº¿ (Web Audio API)
     try {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (AudioCtx) {
@@ -5103,7 +5128,7 @@
       }
     } catch (e) {}
 
-    // Rung phản hồi haptic nếu hỗ trợ
+    // Rung pháº£n há»“i haptic náº¿u há»— trá»£
     if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
       try {
         navigator.vibrate([200, 100, 200, 100, 200]);
@@ -5111,11 +5136,11 @@
     }
 
     if (!('Notification' in window)) {
-      console.warn('[PWA-Admin-Notify] Không hỗ trợ Notification API.');
+      console.warn('[PWA-Admin-Notify] KhÃ´ng há»— trá»£ Notification API.');
       return;
     }
 
-    // Nếu chưa xin quyền, thử xin quyền
+    // Náº¿u chÆ°a xin quyá»n, thá»­ xin quyá»n
     if (Notification.permission === 'default') {
       try {
         await Notification.requestPermission();
@@ -5123,7 +5148,7 @@
     }
 
     if (Notification.permission !== 'granted') {
-      console.warn('[PWA-Admin-Notify] Quyền thông báo chưa được cấp.');
+      console.warn('[PWA-Admin-Notify] Quyá»n thÃ´ng bÃ¡o chÆ°a Ä‘Æ°á»£c cáº¥p.');
       return;
     }
 
@@ -5141,13 +5166,13 @@
       }
     };
 
-    // Ưu tiên ServiceWorker showNotification (iOS 16.4+ standalone Home Screen & Desktop)
+    // Æ¯u tiÃªn ServiceWorker showNotification (iOS 16.4+ standalone Home Screen & Desktop)
     try {
       if ('serviceWorker' in navigator) {
         const reg = await navigator.serviceWorker.ready;
         if (reg && typeof reg.showNotification === 'function') {
           await reg.showNotification(title, options);
-          console.log('[PWA-Admin-Notify] Đã gửi thông báo qua ServiceWorker showNotification.');
+          console.log('[PWA-Admin-Notify] ÄÃ£ gá»­i thÃ´ng bÃ¡o qua ServiceWorker showNotification.');
           return;
         }
       }
@@ -5175,7 +5200,7 @@
   };
 
   // =========================================================================
-  // ADMIN CLOUD ORDER WATCHER: LẮNG NGHE ĐƠN HÀNG MỚI CHỜ DUYỆT TỨC THÌ
+  // ADMIN CLOUD ORDER WATCHER: Láº®NG NGHE ÄÆ N HÃ€NG Má»šI CHá»œ DUYá»†T Tá»¨C THÃŒ
   // =========================================================================
   (function initAdminCloudOrderWatcher() {
     function getNotifiedList() {
@@ -5200,13 +5225,13 @@
       } catch (e) {}
     }
 
-    // Nạp đơn hàng mới vào State, kích hoạt notification và cập nhật giao diện Admin nếu đang mở
+    // Náº¡p Ä‘Æ¡n hÃ ng má»›i vÃ o State, kÃ­ch hoáº¡t notification vÃ  cáº­p nháº­t giao diá»‡n Admin náº¿u Ä‘ang má»Ÿ
     function ingestOrderIntoStateAndNotify(ord, changeDocId) {
       if (!ord) return;
       const rawCode = ord.orderCode || ord.memo || ord.paymentMemo || ord.id || changeDocId;
       const cleanCode = rawCode ? String(rawCode).replace(/^#/, '') : '';
 
-      // 1. Tự động nạp hoặc cập nhật vào State
+      // 1. Tá»± Ä‘á»™ng náº¡p hoáº·c cáº­p nháº­t vÃ o State
       if (window.ShopVietState && window.ShopVietState.state) {
         window.ShopVietState.state.orders = window.ShopVietState.state.orders || [];
         const existingIdx = window.ShopVietState.state.orders.findIndex(function (o) {
@@ -5220,7 +5245,7 @@
           window.ShopVietState.state.orders.unshift(ord);
         }
 
-        // Cập nhật cả mảng root nếu có
+        // Cáº­p nháº­t cáº£ máº£ng root náº¿u cÃ³
         if (Array.isArray(window.ShopVietState.orders)) {
           const rootIdx = window.ShopVietState.orders.findIndex(function (o) {
             const oCode = String(o.orderCode || o.memo || o.paymentMemo || o.rawCode || o.id || '').replace(/^#/, '');
@@ -5238,17 +5263,17 @@
         }
       }
 
-      // 2. Phát thông báo iPhone nếu chưa thông báo
+      // 2. PhÃ¡t thÃ´ng bÃ¡o iPhone náº¿u chÆ°a thÃ´ng bÃ¡o
       const notifiedList = getNotifiedList();
       if (cleanCode && !notifiedList.includes(cleanCode)) {
-        console.log('[AdminWatcher] Phát hiện đơn hàng mới qua Realtime Watcher:', cleanCode);
+        console.log('[AdminWatcher] PhÃ¡t hiá»‡n Ä‘Æ¡n hÃ ng má»›i qua Realtime Watcher:', cleanCode);
         markAsNotified(cleanCode);
         if (typeof window.triggerAdminOrderNotification === 'function') {
           window.triggerAdminOrderNotification(ord);
         }
       }
 
-      // 3. Nếu admin đang ở tab orders thì tự động re-render bảng đơn hàng ngay lập tức
+      // 3. Náº¿u admin Ä‘ang á»Ÿ tab orders thÃ¬ tá»± Ä‘á»™ng re-render báº£ng Ä‘Æ¡n hÃ ng ngay láº­p tá»©c
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'orders') {
         tabContent.innerHTML = renderTabOrders();
@@ -5260,7 +5285,7 @@
     }
 
     function checkPendingReviewOrders() {
-      // Cho phép chạy kiểm tra thông báo nếu Admin Portal đang mở hoặc session timer đang chạy hoặc user là admin
+      // Cho phÃ©p cháº¡y kiá»ƒm tra thÃ´ng bÃ¡o náº¿u Admin Portal Ä‘ang má»Ÿ hoáº·c session timer Ä‘ang cháº¡y hoáº·c user lÃ  admin
       const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) ||
                           (window.ShopVietState && window.ShopVietState.currentUser);
       const isUserAdmin = Boolean(currentUser && (currentUser.email === 'thaitraicau123@gmail.com' || currentUser.role === 'admin'));
@@ -5275,7 +5300,7 @@
 
       if (!isUserAdmin && !isAdminPortalActive) return;
 
-      // Đồng bộ từ Cloud Orders Cache nếu có đơn hàng mới
+      // Äá»“ng bá»™ tá»« Cloud Orders Cache náº¿u cÃ³ Ä‘Æ¡n hÃ ng má»›i
       try {
         const rawCloud = localStorage.getItem('shopviet247_cloud_orders_sync');
         if (rawCloud) {
@@ -5298,7 +5323,7 @@
           const rawCode = ord.orderCode || ord.memo || ord.paymentMemo || ord.id;
           const cleanCode = rawCode ? String(rawCode).replace(/^#/, '') : '';
           if (cleanCode && !notifiedList.includes(cleanCode)) {
-            console.log('[AdminWatcher] Phát hiện đơn hàng mới chờ duyệt chưa thông báo:', cleanCode);
+            console.log('[AdminWatcher] PhÃ¡t hiá»‡n Ä‘Æ¡n hÃ ng má»›i chá» duyá»‡t chÆ°a thÃ´ng bÃ¡o:', cleanCode);
             markAsNotified(cleanCode);
             if (typeof window.triggerAdminOrderNotification === 'function') {
               window.triggerAdminOrderNotification(ord);
@@ -5308,10 +5333,10 @@
       });
     }
 
-    // 1. Quét định kỳ mỗi 2.5 giây khi Admin đang mở app
+    // 1. QuÃ©t Ä‘á»‹nh ká»³ má»—i 2.5 giÃ¢y khi Admin Ä‘ang má»Ÿ app
     setInterval(checkPendingReviewOrders, 2500);
 
-    // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
+    // 2. Láº¯ng nghe Firestore Realtime onSnapshot náº¿u cÃ³ ShopVietFirebase
     function setupFirestoreOrderListener() {
       try {
         if (window.ShopVietFirebase && window.ShopVietFirebase.db && typeof window.ShopVietFirebase.db.collection === 'function') {
@@ -5333,7 +5358,7 @@
     }
     setTimeout(setupFirestoreOrderListener, 2000);
 
-    // 3. Lắng nghe Storage Event (khi khách hàng đặt đơn trên cùng trình duyệt hoặc tab khác)
+    // 3. Láº¯ng nghe Storage Event (khi khÃ¡ch hÃ ng Ä‘áº·t Ä‘Æ¡n trÃªn cÃ¹ng trÃ¬nh duyá»‡t hoáº·c tab khÃ¡c)
     window.addEventListener('storage', function (e) {
       if (e.key === 'shopviet247_cloud_orders_sync' || e.key === 'shopviet_orders' || e.key === 'shopviet247_state_v1') {
         checkPendingReviewOrders();
@@ -5344,7 +5369,7 @@
       }
     });
 
-    // 4. Lắng nghe BroadcastChannel / Custom Event
+    // 4. Láº¯ng nghe BroadcastChannel / Custom Event
     window.addEventListener('shopviet_realtime_update', function (e) {
       if (e && e.detail && e.detail.payload) {
         const p = e.detail.payload;
@@ -5360,7 +5385,7 @@
       }
     });
 
-    // 5. Lắng nghe orders_updated trực tiếp
+    // 5. Láº¯ng nghe orders_updated trá»±c tiáº¿p
     window.addEventListener('orders_updated', function (e) {
       const order = e && e.detail && (e.detail.order || e.detail);
       if (order && order.status === 'pending_review') {
@@ -5375,9 +5400,9 @@
     });
   })();
 
-  // Tự động lắng nghe phím tắt toàn cục và Hash khi file script được nạp
+  // Tá»± Ä‘á»™ng láº¯ng nghe phÃ­m táº¯t toÃ n cá»¥c vÃ  Hash khi file script Ä‘Æ°á»£c náº¡p
   window.addEventListener('keydown', function (e) {
-    // Ctrl + Shift + A hoặc Cmd + Shift + A -> Mở Portal Admin Bí Mật
+    // Ctrl + Shift + A hoáº·c Cmd + Shift + A -> Má»Ÿ Portal Admin BÃ­ Máº­t
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
       e.preventDefault();
       window.ShopVietViews.admin.open();
@@ -5390,7 +5415,7 @@
     }
   });
 
-  // Kiểm tra ngay khi tải trang nếu URL có hash #admin
+  // Kiá»ƒm tra ngay khi táº£i trang náº¿u URL cÃ³ hash #admin
   if (window.location.hash === '#admin') {
     window.addEventListener('DOMContentLoaded', function () {
       setTimeout(() => window.ShopVietViews.admin.open(), 200);

@@ -1,6 +1,7 @@
 /**
- * BuiThai AI Studio - ntfy.sh Instant Push Notification Module
- * Đẩy thông báo tức thì về điện thoại & trình duyệt của Admin Bùi Thái (Zero Config, 100% Free)
+ * BuiThai AI Studio (PromptMMO) - ntfy.sh & Web Audio Instant Push Notification Module
+ * Đẩy thông báo tức thì về điện thoại & trình duyệt của Admin Bùi Thái (Non-blocking, 0% Treo)
+ * Kèm âm thanh thông báo xúc giác Web Audio API (0MB) và Web Notification
  */
 
 (function () {
@@ -8,6 +9,73 @@
 
   const DEFAULT_TOPIC = 'buithai_studio_0986019623';
   const STORAGE_KEY = 'buithai_ntfy_topic_v1';
+
+  // Âm thanh thông báo Web Audio API (Chime/Bell 0MB)
+  function playNotificationChime(type) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      if (type === 'deposit') {
+        // Âm tiền leng keng vui tươi (Ding-ding)
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(880, now); // A5
+        osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.12);
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(1320, now + 0.08);
+
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      } else if (type === 'success') {
+        // Âm thành công du dương
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(523.25, now); // C5
+        osc1.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc1.frequency.setValueAtTime(783.99, now + 0.2); // G5
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      } else {
+        // Âm ping nhẹ
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(987.77, now);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      }
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.5);
+      osc2.stop(now + 0.5);
+    } catch (e) {
+      // Bỏ qua nếu trình duyệt chặn autoplay
+    }
+  }
+
+  // Hiển thị Web Notification nếu được cấp quyền
+  function showDesktopNotification(title, body) {
+    try {
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, {
+          body: body,
+          icon: '/favicon.svg'
+        });
+      }
+    } catch (e) {}
+  }
 
   window.BuiThaiNtfy = {
     getTopic: function () {
@@ -31,48 +99,59 @@
     },
 
     /**
-     * Gửi notification đến ntfy.sh bằng JSON API (Hỗ trợ 100% Tiếng Việt có dấu & Emoji)
+     * Gửi notification đến ntfy.sh bất đồng bộ với Timeout 1.8s (Không bao giờ làm nghẽn UI)
      */
     sendNotification: async function ({ title, message, priority = 'default', tags = [], clickUrl = '', actions = [] }) {
       const topic = this.getTopic();
 
-      // Ánh xạ mức độ ưu tiên
+      // Phát âm thanh chime cục bộ ngay lập tức để người dùng có phản hồi tức thì
+      if (tags && tags.includes('moneybag')) {
+        playNotificationChime('deposit');
+      } else {
+        playNotificationChime('success');
+      }
+
+      // Hiện Desktop Notification nếu có quyền
+      showDesktopNotification(title, message);
+
       let priorityLevel = 3;
       if (priority === 'urgent' || priority === 'max') priorityLevel = 5;
       else if (priority === 'high') priorityLevel = 4;
       else if (priority === 'low' || priority === 'min') priorityLevel = 1;
 
-      try {
-        const payload = {
-          topic: topic,
-          title: title || 'Bùi Thái Prompt & Skill Studio',
-          message: message || '',
-          priority: priorityLevel,
-          tags: tags || []
-        };
+      // Gửi ngầm không đợi (Fire-and-forget với AbortController chống nghẽn)
+      (async () => {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-        if (clickUrl) {
-          payload.click = clickUrl;
+          const payload = {
+            topic: topic,
+            title: title || 'Bùi Thái Prompt & Skill Studio',
+            message: message || '',
+            priority: priorityLevel,
+            tags: tags || []
+          };
+
+          if (clickUrl) payload.click = clickUrl;
+          if (actions && actions.length) payload.actions = actions;
+
+          await fetch('https://ntfy.sh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+
+          clearTimeout(timeoutId);
+          console.log(`[BuiThaiNtfy] Đã gửi thông báo thành công đến topic '${topic}'`);
+        } catch (err) {
+          // Bắt lỗi âm thầm, không ảnh hưởng đến luồng chính
+          console.info('[BuiThaiNtfy] ntfy.sh offline hoặc timeout:', err.name);
         }
+      })();
 
-        if (actions && actions.length) {
-          payload.actions = actions;
-        }
-
-        const res = await fetch('https://ntfy.sh', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-
-        console.log(`[BuiThaiNtfy] Đã gửi thông báo đến topic '${topic}': HTTP ${res.status}`);
-        return res.ok;
-      } catch (err) {
-        console.warn('[BuiThaiNtfy] Lỗi gửi thông báo ntfy:', err.message);
-        return false;
-      }
+      return true;
     },
 
     /**
@@ -85,12 +164,12 @@
       const memo = topup.memo || '';
       const bank = topup.bank || 'Techcombank (6688686866688)';
 
-      const currentOrigin = window.location.origin || 'http://localhost:8080';
-      const adminUrl = currentOrigin + window.location.pathname + '#admin';
+      const currentOrigin = (typeof window !== 'undefined' && window.location.origin) || 'https://promptmmo.vercel.app';
+      const adminUrl = currentOrigin + '/#admin';
 
       return this.sendNotification({
-        title: `💰 [BÙI THÁI STUDIO] YÊU CẦU NẠP ${amount.toLocaleString('vi-VN')} XU CẦN DUYỆT!`,
-        message: `Khách hàng: ${customer}\nSố tiền: ${amount.toLocaleString('vi-VN')} VNĐ (+${amount.toLocaleString('vi-VN')} Xu)\nNgân hàng: ${bank} - BUI THAI\nNội dung CK: ${memo}\n👉 Bấm vào đây để vào Admin đối soát và Duyệt Xu ngay!`,
+        title: `💰 [BÙI THÁI STUDIO] YÊU CẦU NẠP +${amount.toLocaleString('vi-VN')} XU CẦN DUYỆT!`,
+        message: `Khách: ${customer}\nSố tiền: ${amount.toLocaleString('vi-VN')} VNĐ (+${amount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 - BUI THAI\nNội dung: ${memo}\n👉 Bấm để vào Admin Duyệt Xu tức thì!`,
         priority: 'urgent',
         tags: ['moneybag', 'bell', 'rotating_light', 'white_check_mark'],
         clickUrl: adminUrl
@@ -98,7 +177,7 @@
     },
 
     /**
-     * Bắn thông báo khi có đơn hàng mới (mua skill hoặc chờ duyệt)
+     * Bắn thông báo khi có đơn hàng mới (mở khóa Prompt Toolkit)
      */
     notifyNewOrder: function (order) {
       if (!order) return;
@@ -106,61 +185,49 @@
       const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Kỹ năng Prompt AI';
       const amount = order.total || order.amount || 0;
       const customer = order.userEmail || (order.customer && order.customer.email) || 'Khách hàng';
-      const statusText = order.status === 'completed' ? 'ĐÃ TRỪ XU & MỞ KHÓA 24H' : 'CHỜ DUYỆT';
 
-      const currentOrigin = window.location.origin || 'http://localhost:8080';
-      const adminUrl = currentOrigin + window.location.pathname + '#admin';
+      const currentOrigin = (typeof window !== 'undefined' && window.location.origin) || 'https://promptmmo.vercel.app';
+      const adminUrl = currentOrigin + '/#admin';
 
       return this.sendNotification({
-        title: `🛒 [Bùi Thái Studio] Đơn hàng #${orderId} (${statusText})`,
-        message: `Khách ${customer} vừa mua: "${productName}" - Giá trị: ${amount.toLocaleString('vi-VN')} Xu.\nTrạng thái: ${statusText}.\nBấm để kiểm tra chi tiết.`,
-        priority: order.status === 'completed' ? 'default' : 'high',
-        tags: ['shopping_cart', 'tada'],
+        title: `🛒 [Bùi Thái Studio] Đơn #${orderId} (ĐÃ TRỪ XU)`,
+        message: `Khách ${customer} vừa mở khóa: "${productName}"\nGiá trị: ${amount.toLocaleString('vi-VN')} Xu.\nKho vũ khí đã cấp bản quyền vĩnh viễn!`,
+        priority: 'high',
+        tags: ['shopping_cart', 'tada', 'sparkles'],
         clickUrl: adminUrl
       });
     },
 
     /**
-     * Bắn thông báo khi Admin đã duyệt nạp Xu
+     * Bắn thông báo khi Admin duyệt nạp Xu
      */
     notifyApprovedDeposit: function (topup) {
       if (!topup) return;
       const amount = topup.amount || 0;
       const customer = topup.userEmail || 'Khách hàng';
 
-      const currentOrigin = window.location.origin || 'http://localhost:8080';
-      const adminUrl = currentOrigin + window.location.pathname + '#admin';
-
       return this.sendNotification({
-        title: `✅ [Bùi Thái Studio] Đã duyệt nạp +${amount.toLocaleString('vi-VN')} Xu!`,
-        message: `Đã cộng thành công ${amount.toLocaleString('vi-VN')} Xu vào ví tài khoản ${customer}.`,
+        title: `✅ [Bùi Thái Studio] ĐÃ DUYỆT NẠP +${amount.toLocaleString('vi-VN')} XU!`,
+        message: `Đã cộng thành công ${amount.toLocaleString('vi-VN')} Xu vào ví của tài khoản ${customer}.`,
         priority: 'default',
-        tags: ['white_check_mark', 'sparkles'],
-        clickUrl: adminUrl
+        tags: ['white_check_mark', 'sparkles']
       });
     },
 
     /**
-     * Bắn thông báo Test
+     * Kiểm tra kết nối ntfy
      */
     testNotification: async function () {
       const topic = this.getTopic();
-      const res = await this.sendNotification({
-        title: `🚀 [Bùi Thái Studio] Kiểm tra kết nối ntfy thành công!`,
-        message: `Chào anh Bùi Thái! Điện thoại anh đã kết nối thành công với trạm thông báo ntfy topic "${topic}". Khi có khách nạp tiền Techcombank 6688686866688 hoặc mua skill, máy sẽ báo chuông ngay tức khắc!`,
+      return this.sendNotification({
+        title: `🚀 [Bùi Thái Studio] Kiểm tra thông báo thành công!`,
+        message: `Chào anh Bùi Thái! Kênh ntfy "${topic}" đã kết nối. Khi có khách nạp Xu Techcombank 6688686866688 hoặc mở khóa Prompt, chuông sẽ reo ngay!`,
         priority: 'high',
         tags: ['fire', 'bell', 'white_check_mark']
       });
-      return res;
     }
   };
 
-  // Alias tương thích ngược nếu có hàm gọi ShopVietNtfy
-  window.ShopVietNtfy = {
-    send: function (title, message) {
-      return window.BuiThaiNtfy.sendNotification({ title: title, message: message, priority: 'urgent' });
-    }
-  };
-
-  console.log('[BuiThaiNtfy] Module thông báo ntfy.sh sẵn sàng. Topic:', window.BuiThaiNtfy.getTopic());
+  window.ShopVietNtfy = window.BuiThaiNtfy;
+  console.log('[BuiThaiNtfy] Module thông báo ntfy.sh siêu tốc sẵn sàng. Topic:', window.BuiThaiNtfy.getTopic());
 })();

@@ -18,23 +18,24 @@
     id: 'usr_admin_buithai',
     email: 'thaitraicau123@gmail.com',
     password: 'buithai123',
-    name: 'Bùi Thái',
+    name: 'Bùi Thái (Admin)',
     role: 'admin',
-    balance: 250000,
+    balance: 500000,
     phone: '0986019623',
     avatar: 'BT',
     createdAt: '2026-01-01T00:00:00.000Z'
   };
 
-  // Tài khoản Khách hàng mặc định sẵn sàng đăng nhập trên mọi thiết bị
-  const DEFAULT_USER_THAI = {
-    id: 'usr_buithai',
-    name: 'Bùi Thái',
-    email: 'thaitraicau123@gmail.com',
+  // Tài khoản Khách hàng trải nghiệm mặc định sẵn sàng đăng nhập trên mọi thiết bị
+  const DEFAULT_USER_DEMO = {
+    id: 'usr_khachhang',
+    name: 'Khách Hàng Trải Nghiệm',
+    email: 'khachhang@gmail.com',
     phone: '0986019623',
     role: 'user',
     password: '123456',
-    balance: 250000,
+    balance: 100000,
+    avatar: 'KH',
     createdAt: '2026-03-20T10:00:00.000Z'
   };
 
@@ -109,6 +110,7 @@
     user: null,
     currentOrder: null,
     orders: [],
+    topups: [],
     discountCode: { code: '', percent: 0, amount: 0 },
     theme: 'light',
     lang: 'VI',
@@ -129,7 +131,7 @@
         const raw = localStorage.getItem(USERS_DB_KEY);
         let list = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(list) || list.length === 0) {
-          list = [Object.assign({}, DEFAULT_ADMIN), Object.assign({}, DEFAULT_USER_THAI)];
+          list = [Object.assign({}, DEFAULT_ADMIN), Object.assign({}, DEFAULT_USER_DEMO)];
           localStorage.setItem(USERS_DB_KEY, JSON.stringify(list));
         } else {
           // Luôn đảm bảo tài khoản Admin chuẩn tồn tại và có quyền admin
@@ -138,33 +140,26 @@
           });
           if (adminIdx === -1) {
             list.unshift(Object.assign({}, DEFAULT_ADMIN));
-            localStorage.setItem(USERS_DB_KEY, JSON.stringify(list));
           } else {
-            if (list[adminIdx].role !== 'admin') {
-              list[adminIdx].role = 'admin';
-            }
+            list[adminIdx].role = 'admin';
             if (typeof list[adminIdx].balance !== 'number') {
               list[adminIdx].balance = DEFAULT_ADMIN.balance;
             }
           }
 
-          // Luôn đảm bảo tài khoản người dùng mặc định thaitraicau123@gmail.com tồn tại
-          const thaiIdx = list.findIndex(function (u) {
-            return u.email && u.email.trim().toLowerCase() === DEFAULT_USER_THAI.email.toLowerCase();
+          // Luôn đảm bảo tài khoản khách mẫu tồn tại
+          const demoIdx = list.findIndex(function (u) {
+            return u.email && u.email.trim().toLowerCase() === DEFAULT_USER_DEMO.email.toLowerCase();
           });
-          if (thaiIdx === -1) {
-            list.push(Object.assign({}, DEFAULT_USER_THAI));
-            localStorage.setItem(USERS_DB_KEY, JSON.stringify(list));
-          } else {
-            if (typeof list[thaiIdx].balance !== 'number') {
-              list[thaiIdx].balance = DEFAULT_USER_THAI.balance;
-            }
+          if (demoIdx === -1) {
+            list.push(Object.assign({}, DEFAULT_USER_DEMO));
           }
+          localStorage.setItem(USERS_DB_KEY, JSON.stringify(list));
         }
         return list;
       } catch (e) {
         console.warn('[ShopVietState] Lỗi đọc users_db:', e);
-        return [Object.assign({}, DEFAULT_ADMIN), Object.assign({}, DEFAULT_USER_THAI)];
+        return [Object.assign({}, DEFAULT_ADMIN), Object.assign({}, DEFAULT_USER_DEMO)];
       }
     },
 
@@ -1568,7 +1563,39 @@
     },
 
     getTopupRequests: function () {
-      return this.state.topups || [];
+      if (Array.isArray(this.state.topups) && this.state.topups.length > 0) {
+        return this.state.topups;
+      }
+      try {
+        const raw = localStorage.getItem('shopviet_topups');
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list)) {
+            this.state.topups = list;
+            return list;
+          }
+        }
+      } catch (e) {}
+      return [];
+    },
+
+    rejectTopupRequest: function (topupId, reason) {
+      this.state.topups = this.state.topups || [];
+      const topup = this.state.topups.find(t => t.id === topupId);
+      if (!topup) return false;
+
+      topup.status = 'rejected';
+      topup.statusText = 'Từ chối';
+      topup.rejectedAt = new Date().toISOString();
+      topup.rejectReason = reason || 'Thông tin chuyển khoản chưa khớp';
+      this.save();
+
+      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncTopupToCloud === 'function') {
+        window.ShopVietFirebase.syncTopupToCloud(topup);
+      }
+
+      this.notify('topups_updated', this.state.topups);
+      return true;
     },
 
     approveTopupRequest: function (topupId) {
@@ -1735,12 +1762,14 @@
           cart: this.state.cart,
           user: this.state.user,
           orders: this.state.orders,
+          topups: this.state.topups || [],
           theme: this.state.theme,
           lang: this.state.lang,
           discountCode: this.state.discountCode
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
         localStorage.setItem('shopviet_orders', JSON.stringify(this.state.orders || []));
+        localStorage.setItem('shopviet_topups', JSON.stringify(this.state.topups || []));
       } catch (e) {
         console.warn('[ShopVietState] Không thể lưu vào LocalStorage:', e);
       }
@@ -1871,6 +1900,13 @@
           this.state.theme = parsed.theme || 'light';
           this.state.lang = parsed.lang || 'VI';
           this.state.discountCode = parsed.discountCode || { code: '', percent: 0, amount: 0 };
+          this.state.topups = Array.isArray(parsed.topups) ? parsed.topups : [];
+          if (this.state.topups.length === 0) {
+            try {
+              const rawT = localStorage.getItem('shopviet_topups');
+              if (rawT) this.state.topups = JSON.parse(rawT) || [];
+            } catch (e) {}
+          }
         } else {
           // Chưa có dữ liệu lưu trữ -> Mặc định là Khách vãng lai
           this.state.user = null;
