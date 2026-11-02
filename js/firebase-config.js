@@ -158,6 +158,7 @@
               name: user.displayName || email.split('@')[0],
               email: user.email,
               avatar: (user.displayName || email).charAt(0).toUpperCase(),
+              balance: isAdmin ? 500000 : 0,
               isLoggedIn: true,
               isOnline: true,
               role: isAdmin ? 'admin' : 'member'
@@ -204,7 +205,7 @@
               name: name || email.split('@')[0],
               email: user.email,
               avatar: (name || email).charAt(0).toUpperCase(),
-              balance: 0,
+              balance: isAdmin ? 500000 : 0,
               isLoggedIn: true,
               isOnline: true,
               role: isAdmin ? 'admin' : 'member',
@@ -213,11 +214,8 @@
             this.syncUserToCloud(userData);
             return { success: true, user: userData, isCloud: true };
           } catch (firebaseErr) {
-            console.warn('[ShopVietFirebase] Firebase Register:', firebaseErr.code);
-            if (['auth/email-already-in-use', 'auth/weak-password'].includes(firebaseErr.code)) {
-              return { success: false, message: getFriendlyErrorMessage(firebaseErr) };
-            }
-            return this._mockRegister(email, password, name);
+            console.warn('[ShopVietFirebase] Firebase Register error:', firebaseErr.code, firebaseErr.message);
+            return { success: false, error: firebaseErr.code, message: getFriendlyErrorMessage(firebaseErr) };
           }
         } else {
           return this._mockRegister(email, password, name);

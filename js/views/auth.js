@@ -68,7 +68,7 @@
   }
 
   // Submit form Đăng nhập / Đăng ký
-  const submitForm = function () {
+  const submitForm = async function () {
     const emailInput = document.getElementById('authEmailInput');
     const nameInput = document.getElementById('authNameInput');
     const passInput = document.getElementById('authPasswordInput');
@@ -122,32 +122,68 @@
 
     try {
       if (isRegisterMode) {
-        // ĐĂNG KÝ MỚI
+        // ĐĂNG KÝ MỚI TRỰC TIẾP LÊN FIREBASE AUTH CLOUD (promtmmo)
         let regRes = null;
-        if (window.ShopVietState && typeof window.ShopVietState.registerUser === 'function') {
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.registerWithEmail === 'function') {
+          regRes = await window.ShopVietFirebase.registerWithEmail(email, password, name);
+        } else if (window.ShopVietState && typeof window.ShopVietState.registerUser === 'function') {
           regRes = window.ShopVietState.registerUser({ email, password, name });
         }
 
         if (!regRes || !regRes.success) {
           if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast(regRes?.message || 'Email này đã được sử dụng!', 'error');
+            window.ShopVietState.showToast(regRes?.message || 'Không thể tạo tài khoản lúc này!', 'error');
           }
           return;
         }
 
-        if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
-          window.ShopVietState.login(regRes.user);
-        }
-        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('🎉 Đăng ký thành công! Chào mừng ' + regRes.user.name, 'success');
+        const isAdmin = (email.toLowerCase() === 'thaitraicau123@gmail.com');
+        const userData = regRes.user || {
+          uid: 'usr_' + Date.now(),
+          name: name || email.split('@')[0],
+          email: email,
+          balance: isAdmin ? 500000 : 0,
+          role: isAdmin ? 'admin' : 'member',
+          isLoggedIn: true
+        };
+
+        // Đồng bộ vào cơ sở dữ liệu State cục bộ
+        if (window.ShopVietState) {
+          if (typeof window.ShopVietState.registerUser === 'function') {
+            window.ShopVietState.registerUser({
+              id: userData.uid,
+              uid: userData.uid,
+              name: userData.name,
+              email: userData.email,
+              password: password,
+              role: userData.role,
+              balance: userData.balance
+            });
+          }
+          if (typeof window.ShopVietState.login === 'function') {
+            window.ShopVietState.login(userData);
+          }
+          if (typeof window.ShopVietState.showToast === 'function') {
+            window.ShopVietState.showToast('🎉 Đăng ký thành công! Đã kết nối Firebase promtmmo.', 'success');
+          }
         }
         handlePostAuthRedirect();
 
       } else {
-        // ĐĂNG NHẬP
+        // ĐĂNG NHẬP TRỰC TIẾP QUA FIREBASE AUTH CLOUD (promtmmo)
         let authRes = null;
-        if (window.ShopVietState && typeof window.ShopVietState.authenticateUser === 'function') {
-          authRes = window.ShopVietState.authenticateUser(email, password);
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.loginWithEmail === 'function') {
+          authRes = await window.ShopVietFirebase.loginWithEmail(email, password);
+        }
+
+        // Nếu Firebase Auth chưa có hoặc offline, thử tài khoản local/mock
+        if (!authRes || !authRes.success) {
+          if (window.ShopVietState && typeof window.ShopVietState.authenticateUser === 'function') {
+            const localRes = window.ShopVietState.authenticateUser(email, password);
+            if (localRes && localRes.success) {
+              authRes = localRes;
+            }
+          }
         }
 
         if (!authRes || !authRes.success) {
@@ -184,7 +220,25 @@
   };
 
   // Đăng nhập nhanh Google (1-Chạm)
-  const loginGoogle = function () {
+  const loginGoogle = async function () {
+    if (window.ShopVietFirebase && typeof window.ShopVietFirebase.loginWithGoogle === 'function') {
+      try {
+        const gRes = await window.ShopVietFirebase.loginWithGoogle();
+        if (gRes && gRes.success && gRes.user) {
+          if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
+            window.ShopVietState.login(gRes.user);
+          }
+          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+            window.ShopVietState.showToast('✅ Đăng nhập Google thành công! Chào mừng ' + (gRes.user.name || gRes.user.email), 'success');
+          }
+          handlePostAuthRedirect();
+          return;
+        }
+      } catch (e) {
+        console.warn('Google login popup error:', e);
+      }
+    }
+
     const gUser = {
       id: 'usr_admin_buithai',
       uid: 'usr_admin_buithai',
