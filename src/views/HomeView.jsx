@@ -137,26 +137,29 @@ export default function HomeView({
         <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] text-[11px] font-mono tracking-wider uppercase font-semibold text-slate-600 dark:text-zinc-300">
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-            <span>PromptMMO Studio • AI Skills & Workflows</span>
+            <span>Bùi Thái AI Studio • Master System Prompts v8.5</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.12]">
-            Chợ Prompt AI & Kỹ Nghệ Tự Động Hóa
+            Kho Vũ Khí Master Prompts Tác Chiến Độc Bản
           </h1>
 
           <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
-            Hơn 1,000+ Prompt Higgsfield & Kling Video 8K, Mẫu ảnh studio Flux & Midjourney, và AI Workflows N8N thực chiến được kiểm chứng chuyển đổi cho Creator & Solopreneurs.
+            Hệ sinh thái Master System Prompts v8.5 (từ 3,500 đến 8,200 ký tự) và 101 câu lệnh Cheat Sheet chuyên sâu độc quyền từ Bùi Thái AI Studio. Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet và Cursor IDE.
           </p>
 
           {/* Quick CTA Actions */}
           <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
-              onClick={() => allCourses[0] && onOpenFlashcards(allCourses[0])}
+              onClick={() => {
+                const el = document.getElementById('catalog-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="apple-btn-prominent px-6 py-3 rounded-full text-xs font-bold shadow-lg flex items-center space-x-2 cursor-pointer transition-transform active:scale-[0.98]"
             >
               <Zap className="w-4 h-4 fill-white text-white" />
-              <span>Khám Phá Prompt Bestseller</span>
+              <span>Khám Phá Các Hộp Công Cụ</span>
             </button>
 
             <button

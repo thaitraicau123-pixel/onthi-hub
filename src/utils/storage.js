@@ -34,38 +34,46 @@ export function saveBankConfig(config) {
 export function getPurchasedCourses() {
   try {
     const raw = localStorage.getItem(PURCHASED_KEY);
-    if (!raw) {
-      const initial = ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
-      localStorage.setItem(PURCHASED_KEY, JSON.stringify(initial));
-      return initial;
-    }
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed) && parsed.length === 0) {
-      const initial = ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
-      localStorage.setItem(PURCHASED_KEY, JSON.stringify(initial));
-      return initial;
+    if (!Array.isArray(parsed)) return [];
+    // Dọn dẹp bản mẫu tự động gán trước đó nếu người dùng chưa bấm mua thật
+    if (
+      parsed.length === 2 &&
+      parsed.includes('combo-web-ui-toolkit') &&
+      parsed.includes('combo-fullstack-vercel') &&
+      !localStorage.getItem('onthi_real_purchase_confirmed')
+    ) {
+      localStorage.removeItem(PURCHASED_KEY);
+      return [];
     }
     return parsed;
   } catch (e) {
     console.error('Failed to get purchased items', e);
-    return ['combo-web-ui-toolkit', 'combo-fullstack-vercel'];
+    return [];
   }
 }
 
 // Check if user owns a course
 export function isCoursePurchased(courseId) {
   const purchased = getPurchasedCourses();
-  if (purchased.includes('combo-all-access')) return true;
+  if (purchased.includes('combo-all-access') || localStorage.getItem('onthi_combo_all_access') === 'true') {
+    return true;
+  }
   return purchased.includes(courseId);
 }
 
 // Save purchased course ID
 export function savePurchasedCourse(courseId, email = '') {
   try {
+    localStorage.setItem('onthi_real_purchase_confirmed', 'true');
     const current = getPurchasedCourses();
     if (!current.includes(courseId)) {
       current.push(courseId);
       localStorage.setItem(PURCHASED_KEY, JSON.stringify(current));
+    }
+    if (courseId === 'combo-all-access') {
+      localStorage.setItem('onthi_combo_all_access', 'true');
     }
     if (email) {
       localStorage.setItem(USER_EMAIL_KEY, email);

@@ -12,7 +12,8 @@ import {
   Check,
   Layers,
   Zap,
-  BookOpen
+  BookOpen,
+  FolderGit2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
@@ -36,8 +37,10 @@ export default function PaymentModal({
   user = null,
   onClose,
   onPaymentSuccess,
+  onSuccess,
   onOpenWallet,
-  onGoToLibrary
+  onGoToLibrary,
+  onOpenFlashcards
 }) {
   // Close modal on Escape key
   useModalDismiss(onClose, !!item);
@@ -96,6 +99,9 @@ export default function PaymentModal({
     const deducted = deductWalletCoins(priceXu);
     if (deducted) {
       savePurchasedCourse(item.id);
+      if (item.id === 'combo-all-access' || isCombo) {
+        savePurchasedCourse('combo-all-access');
+      }
       const nextBal = getWalletBalance();
       setWalletBalance(nextBal);
       setIsPurchasedSuccess(true);
@@ -107,6 +113,9 @@ export default function PaymentModal({
       });
       if (onPaymentSuccess) {
         onPaymentSuccess(item.id);
+      }
+      if (onSuccess) {
+        onSuccess(item.id);
       }
     } else {
       alert('Số dư ví không đủ! Vui lòng nạp thêm Xu để tiếp tục.');
@@ -215,21 +224,30 @@ export default function PaymentModal({
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
                 <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    if (onOpenFlashcards) {
+                      onOpenFlashcards(item);
+                    } else if (onGoToLibrary) {
+                      onGoToLibrary();
+                    }
+                  }}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 transition-transform active:scale-95 cursor-pointer"
+                >
+                  <FolderGit2 className="w-4 h-4" />
+                  <span>Mở Repo & Copy Prompt Ngay ➔</span>
+                </button>
+
+                <button
+                  type="button"
                   onClick={() => {
                     onClose();
                     if (onGoToLibrary) onGoToLibrary();
                   }}
-                  className="w-full sm:w-auto px-5 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center space-x-1.5 transition-colors"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 hover:bg-black/5 dark:hover:bg-slate-700 text-[#787774] dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer"
                 >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Vào Kho & Copy Prompt</span>
-                </button>
-
-                <button
-                  onClick={onClose}
-                  className="w-full sm:w-auto px-4 py-2 rounded-lg border border-[#e9e9e8] dark:border-white/10 bg-white dark:bg-slate-800 hover:bg-black/5 dark:hover:bg-slate-700 text-[#787774] dark:text-slate-300 text-xs font-medium transition-colors"
-                >
-                  Đóng Lại
+                  Vào Kho Của Tôi
                 </button>
               </div>
             </div>

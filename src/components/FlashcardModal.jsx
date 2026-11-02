@@ -250,6 +250,14 @@ export default function FlashcardModal({
 
   // 1-Click Copy Raw Prompt (For Midjourney / Kling / Higgsfield / Flux)
   const handleCopyRawPrompt = () => {
+    if (!isPurchased) {
+      playSound('flip');
+      if (onBuy) {
+        onClose();
+        onBuy(course);
+      }
+      return;
+    }
     const text = parsedDetails.rawPrompt || currentCard.back || '';
     if (!text) return;
     navigator.clipboard.writeText(text).then(() => {
@@ -266,6 +274,14 @@ export default function FlashcardModal({
 
   // 1-Click Copy Full Documentation
   const handleCopyFullDocumentation = () => {
+    if (!isPurchased) {
+      playSound('flip');
+      if (onBuy) {
+        onClose();
+        onBuy(course);
+      }
+      return;
+    }
     const fullText = `# ${currentCard.front}\n\n## PROMPT:\n${parsedDetails.rawPrompt}\n\n## THAM SỐ:\n${parsedDetails.parametersText || 'Mặc định'}\n\n## HƯỚNG DẪN TRIỂN KHAI:\n${parsedDetails.tipsText || 'Chưa có ghi chú'}`;
     navigator.clipboard.writeText(fullText).then(() => {
       setCopiedFull(true);
@@ -277,6 +293,14 @@ export default function FlashcardModal({
 
   // AI Prompt Tuning / Customizer
   const handleAskAiOptimizer = async (customRequest = '') => {
+    if (!isPurchased) {
+      playSound('flip');
+      if (onBuy) {
+        onClose();
+        onBuy(course);
+      }
+      return;
+    }
     if (isAiLoading) return;
     setIsAiLoading(true);
     setAiError('');
@@ -576,11 +600,11 @@ export default function FlashcardModal({
 
         {/* Preview Notice Bar for Non-Purchased Courses */}
         {!isPurchased && (
-          <div className="px-4 sm:px-6 py-2 bg-gradient-to-r from-amber-500/20 via-orange-500/15 to-amber-500/20 border-b border-amber-500/30 flex items-center justify-between gap-3 text-xs text-amber-200">
+          <div className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500/20 via-orange-500/15 to-amber-500/20 border-b border-amber-500/30 flex items-center justify-between gap-3 text-xs text-amber-200">
             <div className="flex items-center space-x-2 min-w-0">
               <Lock className="w-4 h-4 text-amber-400 shrink-0" />
               <span className="truncate">
-                Đang xem thử <strong>{cards.length} prompts mẫu</strong> • Mở khóa full kho để xem trọn bộ <strong>350+ câu lệnh & kịch bản</strong>.
+                🔒 <strong>Bản Quyền Master Prompt Bùi Thái AI Studio</strong> • Mở khóa ({course?.priceXu || 25} Xu) để xem toàn văn và sao chép.
               </span>
             </div>
             {onBuy && (
@@ -590,9 +614,10 @@ export default function FlashcardModal({
                   onClose();
                   onBuy(course);
                 }}
-                className="px-3 py-1 font-bold text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 rounded-lg shrink-0 shadow-md active:scale-95 transition-all cursor-pointer text-xs"
+                className="px-3.5 py-1 font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg shrink-0 shadow-md active:scale-95 transition-all cursor-pointer text-xs flex items-center space-x-1.5"
               >
-                Mở Khóa Toàn Bộ ({course.priceXu || 25} Xu)
+                <Coins className="w-3.5 h-3.5 fill-slate-950" />
+                <span>Mở Khóa Toàn Bộ ({course?.priceXu || 25} Xu)</span>
               </button>
             )}
           </div>
@@ -704,7 +729,11 @@ export default function FlashcardModal({
                           : 'hover:bg-slate-800/60 text-slate-300 border-l-3 border-transparent'
                       }`}
                     >
-                      <FileCode className={`w-4 h-4 shrink-0 mt-0.5 ${isCurrent ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                      {isPurchased ? (
+                        <FileCode className={`w-4 h-4 shrink-0 mt-0.5 ${isCurrent ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                      ) : (
+                        <Lock className="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-400/80" />
+                      )}
                       
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between text-[10px] text-slate-400 font-mono mb-0.5">
@@ -756,19 +785,34 @@ export default function FlashcardModal({
               <div className="flex items-center space-x-1.5 shrink-0 ml-auto">
                 
                 {/* 1-CLICK COPY RAW PROMPT (HERO BUTTON) */}
-                <button
-                  type="button"
-                  onClick={handleCopyRawPrompt}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md active:scale-95 cursor-pointer ${
-                    copiedRaw
-                      ? 'bg-emerald-500 text-white ring-2 ring-emerald-400'
-                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white'
-                  }`}
-                  title="Sao chép cú pháp Prompt tiếng Anh chuẩn để paste thẳng vào AI tool"
-                >
-                  {copiedRaw ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copiedRaw ? 'Đã Copy Prompt!' : '1-Click Copy Prompt'}</span>
-                </button>
+                {isPurchased ? (
+                  <button
+                    type="button"
+                    onClick={handleCopyRawPrompt}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md active:scale-95 cursor-pointer ${
+                      copiedRaw
+                        ? 'bg-emerald-500 text-white ring-2 ring-emerald-400'
+                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white'
+                    }`}
+                    title="Sao chép cú pháp Prompt tiếng Anh chuẩn để paste thẳng vào AI tool"
+                  >
+                    {copiedRaw ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedRaw ? 'Đã Copy Prompt!' : '1-Click Copy Prompt'}</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      if (onBuy) onBuy(course);
+                    }}
+                    className="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all shadow-md bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white cursor-pointer active:scale-95"
+                    title="Mở khóa bản quyền để sao chép prompt"
+                  >
+                    <Lock className="w-3.5 h-3.5" />
+                    <span>Mở Khóa ({course?.priceXu || 25} Xu)</span>
+                  </button>
+                )}
 
                 {/* Copy All Button */}
                 <button
@@ -877,57 +921,94 @@ export default function FlashcardModal({
               {/* ================= TAB 1: CODE & SYNTAX ================= */}
               {activeTab === 'code' && (
                 <div className="space-y-4 animate-fade-in">
-                  
-                  {/* The Raw Code Block (GitHub Style) */}
-                  <div className="rounded-xl border border-slate-800 bg-[#090d16] overflow-hidden shadow-2xl">
-                    {/* Mac Window Header Bar */}
-                    <div className="px-4 py-2.5 bg-[#161b22] border-b border-slate-800 flex items-center justify-between text-xs font-mono">
-                      <div className="flex items-center space-x-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-                        <span className="text-slate-400 text-[11px] ml-2">prompt_execution_string.txt</span>
+                  {!isPurchased ? (
+                    <div className="rounded-xl border border-amber-500/30 bg-[#090d16] p-8 text-center space-y-4 shadow-2xl relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-b from-amber-500/5 via-transparent to-transparent pointer-events-none" />
+                      <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-inner">
+                        <Lock className="w-7 h-7" />
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-[10px] text-slate-500 uppercase">UTF-8</span>
+                      <div className="space-y-1.5 relative z-10">
+                        <span className="text-[10px] font-mono uppercase font-bold text-amber-400 tracking-wider bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                          BẢN QUYỀN MASTER SYSTEM PROMPT • BÙI THÁI AI STUDIO
+                        </span>
+                        <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                          {currentCard.front}
+                        </h3>
+                        <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                          Toàn văn câu lệnh Master System Prompt v8.5 và trọn bộ <strong>{cards.length} câu lệnh Cheat Sheet</strong> được niêm phong bản quyền. Vui lòng thanh toán mở khóa bằng Xu để xem toàn văn và kích hoạt tính năng 1-Click Copy.
+                        </p>
+                      </div>
+
+                      <div className="pt-2 relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+                        {onBuy && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onClose();
+                              onBuy(course);
+                            }}
+                            className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-extrabold text-xs shadow-lg transition-transform active:scale-95 cursor-pointer flex items-center justify-center space-x-2"
+                          >
+                            <Coins className="w-4 h-4 fill-slate-950" />
+                            <span>Mở Khóa Toàn Bộ Gói Này ({course?.priceXu || 25} Xu)</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* The Raw Code Block (GitHub Style) */}
+                      <div className="rounded-xl border border-slate-800 bg-[#090d16] overflow-hidden shadow-2xl">
+                        {/* Mac Window Header Bar */}
+                        <div className="px-4 py-2.5 bg-[#161b22] border-b border-slate-800 flex items-center justify-between text-xs font-mono">
+                          <div className="flex items-center space-x-2">
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                            <span className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                            <span className="text-slate-400 text-[11px] ml-2">prompt_execution_string.txt</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-[10px] text-slate-500 uppercase">UTF-8</span>
+                            <button
+                              type="button"
+                              onClick={handleCopyRawPrompt}
+                              className="text-slate-400 hover:text-white text-xs flex items-center space-x-1 cursor-pointer"
+                            >
+                              {copiedRaw ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                              <span>{copiedRaw ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Code Container */}
+                        <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-emerald-300 leading-relaxed overflow-x-auto whitespace-pre-wrap select-all">
+                          {parsedDetails.rawPrompt || (cards.length === 0 ? 'Chưa có prompt' : 'Trống')}
+                        </div>
+                      </div>
+
+                      {/* Quick Copy Action Banner */}
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 via-teal-950/30 to-slate-900 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="flex items-center space-x-2.5">
+                          <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                            <Zap className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold text-white">Sẵn sàng dán thẳng vào ChatGPT Plus / Claude 3.5 / Cursor</h4>
+                            <p className="text-[11px] text-slate-400">Đã tinh chỉnh thông số kỹ thuật và bộ quy tắc cấm kỵ Anti-AI Slop.</p>
+                          </div>
+                        </div>
+
                         <button
                           type="button"
                           onClick={handleCopyRawPrompt}
-                          className="text-slate-400 hover:text-white text-xs flex items-center space-x-1 cursor-pointer"
+                          className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95 cursor-pointer"
                         >
-                          {copiedRaw ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                          <span>{copiedRaw ? 'Copied' : 'Copy'}</span>
+                          {copiedRaw ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedRaw ? 'ĐÃ COPY THÀNH CÔNG!' : 'COPY CÚ PHÁP NGAY'}</span>
                         </button>
                       </div>
-                    </div>
-
-                    {/* Code Container */}
-                    <div className="p-4 sm:p-5 font-mono text-xs sm:text-sm text-emerald-300 leading-relaxed overflow-x-auto whitespace-pre-wrap select-all">
-                      {parsedDetails.rawPrompt || (cards.length === 0 ? 'Chưa có prompt' : 'Trống')}
-                    </div>
-                  </div>
-
-                  {/* Quick Copy Action Banner */}
-                  <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 via-teal-950/30 to-slate-900 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                        <Zap className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-white">Sẵn sàng dán thẳng vào Kling / Midjourney / Flux</h4>
-                        <p className="text-[11px] text-slate-400">Đã tinh chỉnh thông số tỷ lệ, ánh sáng và góc quay camera.</p>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleCopyRawPrompt}
-                      className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg transition-transform active:scale-95 cursor-pointer"
-                    >
-                      {copiedRaw ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copiedRaw ? 'ĐÃ COPY THÀNH CÔNG!' : 'COPY CÚ PHÁP NGAY'}</span>
-                    </button>
-                  </div>
+                    </>
+                  )}
 
                   {/* Technical Parameters Quick Grid */}
                   {Object.keys(parsedDetails.flags).length > 0 && (
@@ -962,7 +1043,9 @@ export default function FlashcardModal({
                     </h4>
 
                     <div className="text-xs sm:text-sm text-slate-300 whitespace-pre-line leading-relaxed font-mono bg-[#0d1117] p-3.5 rounded-lg border border-slate-800">
-                      {parsedDetails.parametersText || parsedDetails.rawFull}
+                      {isPurchased
+                        ? (parsedDetails.parametersText || parsedDetails.rawFull)
+                        : '🔒 [THÔNG SỐ KỸ THUẬT ĐƯỢC BẢO VỆ BẢN QUYỀN - VUI LÒNG MỞ KHÓA GÓI ĐỂ XEM CHI TIẾT]'}
                     </div>
                   </div>
 
@@ -974,7 +1057,9 @@ export default function FlashcardModal({
                         <span>Mẹo Giữ Chân Khán Giả & Kiếm Tiền MMO:</span>
                       </h4>
                       <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                        {parsedDetails.tipsText}
+                        {isPurchased
+                          ? parsedDetails.tipsText
+                          : '🔒 [MẸO TRIỂN KHAI & CÔNG THỨC CHUYỂN ĐỔI CHỈ HIỂN THỊ KHI ĐÃ MỞ KHÓA]'}
                       </p>
                     </div>
                   )}

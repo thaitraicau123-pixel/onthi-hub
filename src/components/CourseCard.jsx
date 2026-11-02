@@ -209,48 +209,55 @@ function CourseCard({
           )}
         </div>
 
-        {/* Interactive Preview Buttons */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => onOpenFlashcards(course)}
-            className="apple-btn-secondary py-2 px-2.5 text-[11px] font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
-            title="Mở GitHub-style Repository xem code prompt và thông số kỹ thuật"
-          >
-            <FolderGit2 className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Repo Prompt</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onOpenDirectChat?.(null, course)}
-            className="apple-btn-secondary py-2 px-2.5 text-[11px] font-semibold text-[#007aff] dark:text-[#0a84ff] rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
-            title="Nhắn tin với người bán hoặc hỗ trợ kỹ thuật"
-          >
-            <MessageCircle className="w-3.5 h-3.5 text-[#007aff] dark:text-[#0a84ff]" />
-            <span>Tư Vấn 1-1</span>
-          </button>
-        </div>
-
-        {/* Buy or Download Button */}
+        {/* Action Buttons: Clean & Secure Flow */}
         {isPurchased ? (
-          <button
-            type="button"
-            onClick={() => onOpenFlashcards(course)}
-            className="apple-pill-emerald w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer active:scale-[0.98] transition-transform"
-          >
-            <Code className="w-3.5 h-3.5" />
-            <span>Mở Repo & Copy Prompt</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onOpenFlashcards(course)}
+              className="apple-pill-emerald flex-1 py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer active:scale-[0.98] transition-transform shadow-sm"
+              title="Mở toàn bộ Prompt & Cheat Sheet đã mở khóa"
+            >
+              <FolderGit2 className="w-4 h-4" />
+              <span>Mở Repo & Copy Prompt</span>
+            </button>
+
+            {onOpenDirectChat && (
+              <button
+                type="button"
+                onClick={() => onOpenDirectChat(null, course)}
+                className="apple-btn-secondary py-2.5 px-3 text-[11px] font-semibold text-[#007aff] dark:text-[#0a84ff] rounded-xl flex items-center justify-center space-x-1 cursor-pointer shrink-0"
+                title="Hỗ trợ kỹ thuật 1-1"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Tư Vấn</span>
+              </button>
+            )}
+          </div>
         ) : (
-          <button
-            type="button"
-            onClick={() => onBuy(course)}
-            className="apple-btn-prominent w-full py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
-          >
-            <Coins className="w-3.5 h-3.5 text-white fill-white" />
-            <span>Mở Khóa Prompt ({priceXu} Xu)</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onBuy(course)}
+              className="apple-btn-prominent flex-1 py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer shadow-md active:scale-[0.98] transition-transform"
+              title={`Mở khóa bản quyền gói prompt với ${priceXu} Xu`}
+            >
+              <Coins className="w-3.5 h-3.5 text-white fill-white" />
+              <span>Mở Khóa Prompt ({priceXu} Xu)</span>
+            </button>
+
+            {onOpenDirectChat && (
+              <button
+                type="button"
+                onClick={() => onOpenDirectChat(null, course)}
+                className="apple-btn-secondary py-2.5 px-3 text-[11px] font-semibold text-[#007aff] dark:text-[#0a84ff] rounded-xl flex items-center justify-center space-x-1 cursor-pointer shrink-0"
+                title="Hỏi người bán trước khi mua"
+              >
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Tư Vấn</span>
+              </button>
+            )}
+          </div>
         )}
 
       </div>

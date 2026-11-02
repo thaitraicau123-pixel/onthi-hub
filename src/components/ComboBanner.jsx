@@ -20,11 +20,11 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-              Sở Hữu Trọn Đời Toàn Bộ Kho Prompt & AI Skills
+              Sở Hữu Trọn Đời Toàn Bộ Kho Master Prompts (Bùi Thái AI Studio)
             </h2>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed max-w-xl">
-              Mở khóa toàn bộ kho Prompt Video AI (Higgsfield & Kling 8K), Mẫu ảnh Studio (Flux & Midjourney), Kịch bản TikTok Shop và Workflow N8N tự động. Cập nhật prompt mới mỗi tuần trọn đời không phát sinh phí.
+              Mở khóa trọn đời toàn bộ 6 Hộp Công Cụ Master Prompts (101 Thẻ Prompt Thực Chiến): Web Haute-Couture UI 60fps, Siêu Lập Trình Viên Fullstack AppSec, Content SEO E-E-A-T, Luận Văn Điểm A+, Clean Code Starter. Cập nhật prompt v8.5 mới trọn đời không phát sinh phí.
             </p>
 
             {/* Checkmark List */}

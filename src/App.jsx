@@ -55,7 +55,7 @@ function ModalLoadingFallback() {
 import { COURSES_DATA, COMBO_PACKAGE } from './data/coursesData';
 import { getMarketplaceDecks, subscribeToMarketplaceDecks } from './data/marketplaceData';
 import { isChangelogUnread } from './data/changelogData';
-import { getPurchasedCourses } from './utils/storage';
+import { getPurchasedCourses, isCoursePurchased } from './utils/storage';
 import { getCurrentUser } from './utils/firebaseConfig';
 import {
   getWalletBalance,
@@ -453,7 +453,7 @@ export default function App() {
         {activeFlashcardCourse && (
           <FlashcardModal
             course={activeFlashcardCourse}
-            isPurchased={purchasedCourses.includes('combo-all-access') || purchasedCourses.includes(activeFlashcardCourse.id)}
+            isPurchased={isCoursePurchased(activeFlashcardCourse.id)}
             onClose={() => setActiveFlashcardCourse(null)}
             onBuy={(c) => {
               setActiveFlashcardCourse(null);
@@ -467,13 +467,29 @@ export default function App() {
         {activePaymentItem && (
           <PaymentModal
             item={activePaymentItem}
+            isCombo={activePaymentItem?.id === 'combo-all-access'}
             walletBalance={walletBalance}
             user={user}
             onClose={() => setActivePaymentItem(null)}
-            onSuccess={() => {
-              setActivePaymentItem(null);
+            onPaymentSuccess={(_boughtId) => {
+              const updated = getPurchasedCourses();
+              setPurchasedCourses(updated);
               refreshState();
-              showToast('🎉 Mở khóa thành công!');
+              showToast('🎉 Mở khóa thành công! Gói Prompt đã sẵn sàng sao chép.');
+            }}
+            onSuccess={(_boughtId) => {
+              const updated = getPurchasedCourses();
+              setPurchasedCourses(updated);
+              refreshState();
+              showToast('🎉 Mở khóa thành công! Gói Prompt đã sẵn sàng sao chép.');
+            }}
+            onOpenFlashcards={(courseToOpen) => {
+              setActivePaymentItem(null);
+              setActiveFlashcardCourse(courseToOpen);
+            }}
+            onGoToLibrary={() => {
+              setActivePaymentItem(null);
+              setActiveTab('library');
             }}
             onOpenAuth={() => setIsAuthOpen(true)}
             onOpenWallet={() => {

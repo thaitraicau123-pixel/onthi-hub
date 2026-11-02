@@ -42,6 +42,7 @@ import { getUnmasteredMistakesCount } from '../utils/mistakeTracker';
 import { ActionableEmptyState } from '../components/UIStateFeedback';
 import { getSelectedTheme, subscribeToTheme } from '../utils/themeManager';
 import { COURSES_DATA, CATEGORIES } from '../data/coursesData';
+import { isCoursePurchased } from '../utils/storage';
 
 export default function LibraryView({
   purchasedCourses = [],
@@ -74,10 +75,10 @@ export default function LibraryView({
 
   const safePurchased = Array.isArray(purchasedCourses) ? purchasedCourses : [];
   const safeAllCourses = Array.isArray(allCourses) && allCourses.length > 0 ? allCourses : COURSES_DATA;
-  const isComboUser = safePurchased.includes('combo-all-access');
+  const isComboUser = safePurchased.includes('combo-all-access') || isCoursePurchased('combo-all-access');
   const unlockedList = isComboUser
     ? safeAllCourses
-    : safeAllCourses.filter((c) => safePurchased.includes(c?.id));
+    : safeAllCourses.filter((c) => isCoursePurchased(c?.id) || safePurchased.includes(c?.id));
 
   const srsStats = getAllDecksDueStats(unlockedList);
   const unmasteredMistakesCount = getUnmasteredMistakesCount();
@@ -193,15 +194,15 @@ export default function LibraryView({
         </div>
       )}
 
-      {/* C2C PASS TIPS CALLOUT */}
+      {/* MASTER PROMPT TIPS CALLOUT */}
       <div className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] p-4 text-xs flex items-center justify-between gap-3 text-slate-900 dark:text-zinc-100 shadow-xs">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-            <Repeat className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4" />
           </div>
           <div className="text-xs leading-relaxed">
-            <span className="font-bold text-slate-900 dark:text-white">Đã khai thác xong giá trị của gói Prompt? </span>
-            <span className="text-slate-500 dark:text-zinc-400">Bạn có thể bấm nút <strong>&ldquo;Tùy chọn ➔ Pass Lại Prompt C2C&rdquo;</strong> ở mỗi gói bên dưới để nhượng lại cho Creator khác trên Chợ và nhận Xu vào ví!</span>
+            <span className="font-bold text-slate-900 dark:text-white">Mẹo khai thác Master Prompt v8.5: </span>
+            <span className="text-slate-500 dark:text-zinc-400">Sau khi mở khóa, bạn có thể bấm <strong>&ldquo;Mở Repo & Sao Chép Prompt&rdquo;</strong> ở mỗi gói bên dưới để 1-Click Copy toàn bộ câu lệnh và dán vào ChatGPT Plus, Claude 3.5 Sonnet hoặc Cursor IDE.</span>
           </div>
         </div>
       </div>
@@ -211,16 +212,16 @@ export default function LibraryView({
           icon={BookOpen}
           badge="KHO PROMPT TRỐNG"
           title="Kho Prompt của bạn đang chờ đón bộ đầu tiên"
-          description="Bạn chưa mở khóa gói Prompt nào. Hãy ghé qua Chợ Prompt C2C để tìm gói prompt chất lượng giá chỉ từ 2 Xu hoặc tự tạo prompt bằng AI!"
+          description="Bạn chưa mở khóa Hộp Công Cụ nào. Hãy ghé qua Trang Chủ để mở khóa các gói Master Prompts v8.5 độc quyền từ Bùi Thái AI Studio!"
           primaryAction={{
-            label: 'Vào Chợ Prompt C2C',
-            onClick: () => onSwitchTab('marketplace'),
-            icon: Store
+            label: 'Khám Phá Hộp Công Cụ',
+            onClick: () => onSwitchTab('home'),
+            icon: Sparkles
           }}
           secondaryAction={{
-            label: 'Tạo Prompt Bằng AI',
-            onClick: () => onSwitchTab('create'),
-            icon: Sparkles
+            label: 'Nạp Xu VietQR',
+            onClick: () => onSwitchTab('wallet'),
+            icon: Coins
           }}
         />
       ) : (
