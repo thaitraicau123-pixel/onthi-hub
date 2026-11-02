@@ -1,8 +1,9 @@
 {
-  "framework": "vite",
+  "outputDirectory": "dist",
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!js/|img/|favicon.svg|icon-192.png|icon-512.png|manifest.json|sw.js|cloud-db.json|MASTER_PROMPTS.md|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]
