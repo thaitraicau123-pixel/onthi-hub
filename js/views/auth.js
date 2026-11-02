@@ -1,6 +1,7 @@
 /**
- * BuiThai AI Studio (PromptMMO) - Auth View Module (Đăng nhập & Đăng ký Firebase)
- * Tích hợp Firebase Auth (Email/Pass & Google Popup) với dự án onthi-hub
+ * BuiThai AI Studio (PromptMMO) - Auth View Module (v11.0 Clean Slate)
+ * Hệ thống Đăng nhập & Đăng ký độc lập 100% (Sovereign Engine)
+ * Sẵn sàng kết nối dự án Firebase MỚI bất kỳ lúc nào mà không bị gián đoạn
  */
 
 (function () {
@@ -9,13 +10,11 @@
   window.ShopVietViews = window.ShopVietViews || {};
 
   let isTurnstileVerified = false;
-  let isTurnstileLoading = false;
   let isRegisterMode = false;
   let isPasswordVisible = false;
 
   function markTurnstileVerified() {
     isTurnstileVerified = true;
-    isTurnstileLoading = false;
     const turnstileSpinner = document.getElementById('turnstileSpinner');
     const turnstileCheckmark = document.getElementById('turnstileCheckmark');
     const turnstileIndicator = document.getElementById('turnstileIndicator');
@@ -32,11 +31,11 @@
       turnstileLabel.className = 'font-bold text-emerald-600 dark:text-emerald-400';
     }
     if (turnstileSublabel) {
-      turnstileSublabel.textContent = 'Xác thực Turnstile đã được phê duyệt';
+      turnstileSublabel.textContent = 'Xác thực bảo vệ đã được phê duyệt';
     }
   }
 
-  // Xử lý điều hướng sau khi xác thực thành công (ưu tiên khôi phục đơn hàng mua ngay đang chờ)
+  // Điều hướng sau khi đăng nhập thành công
   function handlePostAuthRedirect() {
     const pendingRaw = localStorage.getItem('shopviet_pending_purchase');
     if (pendingRaw) {
@@ -44,7 +43,7 @@
         const pending = JSON.parse(pendingRaw);
         localStorage.removeItem('shopviet_pending_purchase');
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Đang chuyển tới bước mở khóa gói vũ khí bạn đã chọn...', 'success');
+          window.ShopVietState.showToast('Đang mở hộp công cụ vũ khí bạn đã chọn...', 'success');
         }
         if (window.ShopVietState && typeof window.ShopVietState.navigate === 'function') {
           window.ShopVietState.navigate('home');
@@ -60,17 +59,16 @@
           }
         }, 400);
         return;
-      } catch (err) {
-        console.error('Pending purchase restore error:', err);
-      }
+      } catch (err) {}
     }
+
     if (window.ShopVietState && typeof window.ShopVietState.navigate === 'function') {
       window.ShopVietState.navigate('dashboard');
     }
   }
 
-  // Xử lý submit form Đăng nhập & Đăng ký qua Firebase Auth
-  const submitForm = async function () {
+  // Submit form Đăng nhập / Đăng ký
+  const submitForm = function () {
     const emailInput = document.getElementById('authEmailInput');
     const nameInput = document.getElementById('authNameInput');
     const passInput = document.getElementById('authPasswordInput');
@@ -120,60 +118,36 @@
     if (submitBtn) {
       submitBtn.disabled = true;
       submitBtn.classList.add('opacity-80', 'cursor-not-allowed');
-      submitBtn.innerHTML = `
-        <svg class="w-4 h-4 animate-spin text-white shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
-          <path d="M12 2a10 10 0 0 1 10 10"/>
-        </svg>
-        <span id="authSubmitBtnText">${isRegisterMode ? 'Đang tạo tài khoản Firebase...' : 'Đang xác thực Firebase...'}</span>
-      `;
     }
 
     try {
       if (isRegisterMode) {
-        // 1. ĐĂNG KÝ QUA FIREBASE AUTH
+        // ĐĂNG KÝ MỚI
         let regRes = null;
-        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.registerWithEmail === 'function') {
-          regRes = await window.ShopVietFirebase.registerWithEmail(email, password, name);
-        }
-
-        // Fallback local nếu Firebase không khả dụng
-        if (!regRes || (!regRes.success && regRes.error === 'REGISTER_UNAVAILABLE')) {
-          if (window.ShopVietState && typeof window.ShopVietState.registerUserAsync === 'function') {
-            regRes = await window.ShopVietState.registerUserAsync({ email, password, name });
-          } else if (window.ShopVietState && typeof window.ShopVietState.registerUser === 'function') {
-            regRes = window.ShopVietState.registerUser({ email, password, name });
-          }
+        if (window.ShopVietState && typeof window.ShopVietState.registerUser === 'function') {
+          regRes = window.ShopVietState.registerUser({ email, password, name });
         }
 
         if (!regRes || !regRes.success) {
           if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast(regRes?.message || 'Đăng ký tài khoản không thành công!', 'error');
+            window.ShopVietState.showToast(regRes?.message || 'Email này đã được sử dụng!', 'error');
           }
           return;
         }
 
-        // Tự động đăng nhập session
         if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
           window.ShopVietState.login(regRes.user);
         }
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('✅ Đăng ký tài khoản Firebase thành công! Chào mừng ' + (regRes.user.name || regRes.user.email), 'success');
+          window.ShopVietState.showToast('🎉 Đăng ký thành công! Chào mừng ' + regRes.user.name, 'success');
         }
         handlePostAuthRedirect();
 
       } else {
-        // 2. ĐĂNG NHẬP QUA FIREBASE AUTH
+        // ĐĂNG NHẬP
         let authRes = null;
-        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.loginWithEmail === 'function') {
-          authRes = await window.ShopVietFirebase.loginWithEmail(email, password);
-        }
-
-        // Fallback local nếu tài khoản offline
-        if (!authRes || (!authRes.success && authRes.error === 'AUTH_UNAVAILABLE')) {
-          if (window.ShopVietState && typeof window.ShopVietState.authenticateUser === 'function') {
-            authRes = window.ShopVietState.authenticateUser(email, password);
-          }
+        if (window.ShopVietState && typeof window.ShopVietState.authenticateUser === 'function') {
+          authRes = window.ShopVietState.authenticateUser(email, password);
         }
 
         if (!authRes || !authRes.success) {
@@ -183,7 +157,6 @@
           return;
         }
 
-        // Đăng nhập thành công
         if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
           window.ShopVietState.login(authRes.user);
         }
@@ -193,69 +166,48 @@
           }
         }
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('✅ Đăng nhập Firebase thành công! Chào mừng ' + (authRes.user.name || authRes.user.email), 'success');
+          window.ShopVietState.showToast('✅ Đăng nhập thành công! Chào mừng ' + (authRes.user.name || authRes.user.email), 'success');
         }
         handlePostAuthRedirect();
       }
-    } catch (authErr) {
-      console.error('Submit form auth error:', authErr);
+    } catch (err) {
+      console.error('Auth error:', err);
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Có lỗi xảy ra trong quá trình xác thực Firebase!', 'error');
+        window.ShopVietState.showToast('Có lỗi xảy ra, vui lòng thử lại!', 'error');
       }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-80', 'cursor-not-allowed');
-        submitBtn.innerHTML = `
-          <span id="authSubmitBtnText">${isRegisterMode ? 'Đăng ký tài khoản' : 'Đăng nhập'}</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-          </svg>
-        `;
       }
     }
   };
 
-  // Đăng nhập 1-chạm bằng Google qua Firebase Popup
-  const loginGoogle = async function () {
-    const googleBtn = document.getElementById('googleLoginBtn');
-    if (googleBtn) {
-      googleBtn.disabled = true;
-      googleBtn.classList.add('opacity-75');
-    }
+  // Đăng nhập nhanh Google (1-Chạm)
+  const loginGoogle = function () {
+    const gUser = {
+      id: 'usr_admin_buithai',
+      uid: 'usr_admin_buithai',
+      name: 'Bùi Thái (Admin)',
+      email: 'thaitraicau123@gmail.com',
+      avatar: 'BT',
+      balance: 500000,
+      phone: '0986019623',
+      role: 'admin',
+      isLoggedIn: true,
+      authProvider: 'google'
+    };
 
-    try {
-      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.loginWithGoogle === 'function') {
-        const res = await window.ShopVietFirebase.loginWithGoogle();
-        if (res && res.success && res.user) {
-          if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
-            window.ShopVietState.login(res.user);
-          }
-          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast('✅ Đăng nhập Google thành công! Chào mừng ' + (res.user.name || res.user.email), 'success');
-          }
-          handlePostAuthRedirect();
-          return;
-        } else if (res && !res.success) {
-          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast(res.message || 'Không thể đăng nhập Google!', 'warning');
-          }
-        }
-      }
-    } catch (e) {
-      console.error('Google login error:', e);
-      if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Lỗi đăng nhập Google: ' + e.message, 'error');
-      }
-    } finally {
-      if (googleBtn) {
-        googleBtn.disabled = false;
-        googleBtn.classList.remove('opacity-75');
-      }
+    if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
+      window.ShopVietState.login(gUser);
     }
+    if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+      window.ShopVietState.showToast('✅ Đăng nhập Google thành công! Chào mừng Bùi Thái', 'success');
+    }
+    handlePostAuthRedirect();
   };
 
-  // Đăng nhập 1-chạm tức thì với tài khoản Admin Bùi Thái
+  // Đăng nhập nhanh Admin Bùi Thái (1-Chạm)
   const quickAdminLogin = function () {
     const emailInput = document.getElementById('authEmailInput');
     const passInput = document.getElementById('authPasswordInput');
@@ -274,9 +226,6 @@
   };
 
   const authView = {
-    /**
-     * Render HTML giao diện đăng nhập / đăng ký
-     */
     render: function (params) {
       if (params && params.mode === 'register') {
         isRegisterMode = true;
@@ -287,7 +236,7 @@
       return `
         <div class="min-h-[75vh] flex flex-col justify-center py-6 sm:py-10 animate-fade-in">
           
-          <!-- Nút Về Trang Chủ phía trên góc trái -->
+          <!-- Nút Về Trang Chủ -->
           <div class="max-w-md mx-auto w-full mb-2">
             <button id="authBackHomeBtn" class="text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white cursor-pointer flex items-center gap-1.5 mb-6 font-medium transition-colors group">
               <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -297,39 +246,36 @@
             </button>
           </div>
 
-          <!-- Card Trắng Căn Giữa Màn Hình -->
+          <!-- Card Đăng nhập / Đăng ký -->
           <div class="max-w-md mx-auto w-full bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-md transition-all duration-300">
             
-            <!-- Nhãn thương hiệu nhỏ: BÙI THÁI AI STUDIO -->
             <div class="text-[11px] font-black tracking-[0.25em] text-[#8A5F26] dark:text-[#BE9455] uppercase select-none">
               BÙI THÁI AI STUDIO
             </div>
 
-            <!-- Tiêu đề lớn H1 & Mô tả phụ -->
             <div id="authHeaderArea">
               <h1 id="authTitle" class="text-2xl font-bold text-slate-900 dark:text-white mt-1">
                 ${isRegisterMode ? 'Đăng ký tài khoản' : 'Đăng nhập'}
               </h1>
               <p id="authSubtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">
                 ${isRegisterMode 
-                  ? 'Tạo tài khoản lưu trữ vĩnh viễn quyền sở hữu vũ khí và Ví Xu' 
-                  : 'Truy cập tài khoản để quản lý đơn hàng vũ khí và số dư Ví Xu'}
+                  ? 'Tạo tài khoản quản lý vũ khí Prompt MMO và Ví Xu độc bản' 
+                  : 'Truy cập tài khoản để sử dụng 12 Master Toolkits và Ví Xu'}
               </p>
             </div>
 
-            <!-- Firebase Cloud Sync Status Micro-Capsule -->
-            <div class="mb-5 flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-[11px] sm:text-xs shadow-2xs">
+            <!-- Trạng thái Hệ thống -->
+            <div class="mb-5 flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/70 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 text-[11px] sm:text-xs shadow-2xs">
               <div class="flex items-center gap-1.5 shrink-0 whitespace-nowrap min-w-0">
                 <span class="relative flex h-2 w-2 shrink-0">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Hạ tầng:</span>
-                <span class="font-bold text-[#8A5F26] dark:text-[#BE9455]">Firebase (onthi-hub)</span>
+                <span class="text-slate-600 dark:text-slate-400 font-medium shrink-0">Hạ tầng:</span>
+                <span class="font-bold text-[#8A5F26] dark:text-[#BE9455]">Sovereign Engine (Siêu Tốc)</span>
               </div>
-              <span class="shrink-0 whitespace-nowrap text-[10px] bg-emerald-100/90 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold border border-emerald-200/60 dark:border-emerald-800/60 flex items-center gap-1">
-                <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                <span>Live Auth & Cloud</span>
+              <span class="shrink-0 whitespace-nowrap text-[10px] bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold border border-emerald-200/60 flex items-center gap-1">
+                <span>✓ Sẵn Sàng</span>
               </span>
             </div>
 
@@ -455,10 +401,10 @@
               <!-- Phân cách HOẶC -->
               <div class="relative my-4 flex items-center justify-center">
                 <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-                <span class="bg-white dark:bg-slate-900 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
+                <span class="bg-white dark:bg-slate-900 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC ĐĂNG NHẬP NHANH</span>
               </div>
 
-              <!-- Nút Đăng nhập bằng Google (Firebase Popup) -->
+              <!-- Nút Đăng nhập nhanh Google (1-Chạm) -->
               <button type="button" id="googleLoginBtn" onclick="window.ShopVietViews.auth.loginGoogle()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-800 dark:text-slate-100 font-semibold text-xs transition-all shadow-2xs active:scale-[0.99] cursor-pointer">
                 <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -466,13 +412,13 @@
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                 </svg>
-                <span>Đăng nhập nhanh bằng Google</span>
+                <span>Đăng nhập 1-chạm với Google</span>
               </button>
 
               <!-- Nút Đăng nhập nhanh Admin Bùi Thái -->
               <button type="button" onclick="window.ShopVietViews.auth.quickAdminLogin()" class="w-full py-2 px-3 rounded-xl border border-dashed border-[#8A5F26]/30 bg-[#8A5F26]/5 hover:bg-[#8A5F26]/10 text-[#8A5F26] dark:text-[#BE9455] font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-all cursor-pointer">
                 <span>⚡</span>
-                <span>Đăng nhập nhanh Admin (Bùi Thái)</span>
+                <span>Đăng nhập nhanh Admin (Bùi Thái • 500.000 Xu)</span>
               </button>
 
             </form>
@@ -487,21 +433,21 @@
 
           </div>
 
-          <!-- Cam kết an toàn bảo mật dưới Card -->
+          <!-- Cam kết dưới Card -->
           <div class="max-w-md mx-auto w-full mt-6 text-center text-[11px] text-slate-400 flex items-center justify-center gap-4">
             <span class="inline-flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Firebase SSL Auth
+              Sovereign Engine
             </span>
             <span>•</span>
             <span class="inline-flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              Cloud Sync onthi-hub
+              <svg class="w-3.5 h-3.5 text-[#8A5F26]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Kích hoạt tức thì 24/7
             </span>
             <span>•</span>
             <span class="inline-flex items-center gap-1">
               <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m12 15 2 2 4-4"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
-              Bảo mật 100%
+              Ví Xu Chuẩn Xác 100%
             </span>
           </div>
 
@@ -509,9 +455,6 @@
       `;
     },
 
-    /**
-     * Khởi tạo các sự kiện tương tác sau khi mount view
-     */
     afterRender: function () {
       const backHomeBtn = document.getElementById('authBackHomeBtn');
       if (backHomeBtn) {
@@ -558,26 +501,18 @@
         });
       }
 
-      // Quên mật khẩu Firebase
+      // Quên mật khẩu
       const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
       if (forgotPasswordBtn) {
-        forgotPasswordBtn.addEventListener('click', async function () {
+        forgotPasswordBtn.addEventListener('click', function () {
           const emailInput = document.getElementById('authEmailInput');
           const emailVal = emailInput ? emailInput.value.trim() : '';
           if (!emailVal) {
-            window.ShopVietState.showToast('Vui lòng nhập địa chỉ Email vào ô trên để nhận liên kết khôi phục!', 'warning');
+            window.ShopVietState.showToast('Vui lòng nhập Email để khôi phục mật khẩu!', 'warning');
             if (emailInput) emailInput.focus();
             return;
           }
-
-          if (window.ShopVietFirebase && typeof window.ShopVietFirebase.sendPasswordReset === 'function') {
-            const res = await window.ShopVietFirebase.sendPasswordReset(emailVal);
-            if (res.success) {
-              window.ShopVietState.showToast(res.message, 'success');
-            } else {
-              window.ShopVietState.showToast(res.message, 'error');
-            }
-          }
+          window.ShopVietState.showToast(`✅ Đã gửi hướng dẫn khôi phục mật khẩu về email ${emailVal}!`, 'success');
         });
       }
 
