@@ -54,7 +54,7 @@ function CourseCard({
     : 0;
 
   return (
-    <div className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] hover:border-[#007aff]/40 dark:hover:border-[#0a84ff]/40 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group select-none relative text-slate-900 dark:text-zinc-100">
+    <div className="apple-card rounded-2xl border border-black/[0.06] dark:border-white/[0.08] hover:border-[#007aff]/50 dark:hover:border-[#0a84ff]/50 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group select-none relative text-slate-900 dark:text-zinc-100 bg-white/80 dark:bg-[#16161c]/80 backdrop-blur-xl">
       {/* Festive Winter Snow Cap Banner */}
       {hasSnowCaps && (
         <div className="absolute top-0 left-0 right-0 h-2 pointer-events-none z-10 overflow-hidden">
@@ -72,11 +72,11 @@ function CourseCard({
       <div className="p-4 sm:p-5 pb-3 flex-1 flex flex-col">
         
         <div className="flex items-center justify-between gap-1.5 mb-2.5">
-          <span className="apple-pill-blue text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+          <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] text-slate-700 dark:text-zinc-300 border border-black/[0.04] dark:border-white/[0.06]">
             {categoryLabel}
           </span>
           <div className="flex items-center space-x-1.5">
-            <span className="apple-pill-amber text-[10px] font-bold px-2.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               {badge}
             </span>
             <button
@@ -185,24 +185,24 @@ function CourseCard({
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline space-x-1.5">
             <Coins className="w-4 h-4 text-amber-500 fill-amber-400 self-center shrink-0" />
-            <span className="text-lg font-bold font-mono text-slate-900 dark:text-white tracking-tight">
+            <span className="text-xl font-extrabold font-mono text-slate-900 dark:text-white tracking-tight tabular-nums">
               {priceXu} Xu
             </span>
             {originalPriceXu > priceXu && (
-              <span className="text-xs text-slate-400 dark:text-zinc-500 font-mono line-through">
+              <span className="text-xs text-slate-400 dark:text-zinc-500 font-mono line-through tabular-nums">
                 {originalPriceXu} Xu
               </span>
             )}
           </div>
 
           {isPurchased ? (
-            <span className="apple-pill-emerald text-[11px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center space-x-1">
+            <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 inline-flex items-center space-x-1">
               <Check className="w-3 h-3" />
               <span>Đã Mở Khóa</span>
             </span>
           ) : (
             discountPercent > 0 && (
-              <span className="apple-pill-rose text-[10px] font-bold px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 tabular-nums">
                 -{discountPercent}%
               </span>
             )

@@ -1,34 +1,37 @@
 import React from 'react';
-import { Sparkles, CheckCircle2, ShieldCheck, ArrowRight, Zap, Coins, Check } from 'lucide-react';
+import { Sparkles, CheckCircle2, ArrowRight, Coins, Check } from 'lucide-react';
 import { COMBO_PACKAGE } from '../data/coursesData';
 
 export default function ComboBanner({ isPurchased, onBuyCombo }) {
   return (
-    <section className="w-full my-6 select-none">
-      <div className="relative rounded-2xl bg-[#fbfbfa] dark:bg-slate-900/90 border border-[#e9e9e8] dark:border-white/15 text-[#37352f] dark:text-white p-5 sm:p-7 shadow-2xs">
+    <section className="w-full my-8 select-none">
+      <div className="relative rounded-3xl bg-white/70 dark:bg-[#141419]/70 backdrop-blur-2xl border border-black/[0.06] dark:border-white/[0.08] text-slate-900 dark:text-zinc-100 p-6 sm:p-9 shadow-xl overflow-hidden">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        {/* Soft Ambient Glow */}
+        <div className="absolute -top-20 -right-20 w-80 h-80 bg-amber-500/10 dark:bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Left Column: Info & Features */}
-          <div className="lg:col-span-7 space-y-3">
-            <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-md bg-[#f4f0f7] dark:bg-purple-950/70 border border-[#e3d7ec] dark:border-purple-500/40 text-[#9065b0] dark:text-purple-300 text-[11px] font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-[#9065b0] dark:text-purple-300" />
-              <span>GÓI VIP ALL-ACCESS ĐƯỢC 85% DÂN MMO LỰA CHỌN</span>
+          <div className="lg:col-span-7 space-y-4">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] text-[11px] font-mono tracking-wider uppercase font-semibold text-slate-600 dark:text-zinc-300">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>GÓI VIP ALL-ACCESS • 85% CREATOR LỰA CHỌN</span>
             </div>
 
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#37352f] dark:text-white leading-snug">
-              Sở Hữu Trọn Đời Toàn Bộ Kho Prompt & AI Skills MMO
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Sở Hữu Trọn Đời Toàn Bộ Kho Prompt & AI Skills
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#787774] dark:text-slate-300 leading-relaxed">
-              Mở khóa toàn bộ kho Prompt Video AI (Higgsfield/Kling), Ảnh Studio (Flux/Midjourney), Kịch bản TikTok Shop và Workflow N8N với 1 lần thanh toán duy nhất 99 Xu. Nhận toàn bộ Prompt cập nhật hàng tuần trọn đời.
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed max-w-xl">
+              Mở khóa toàn bộ kho Prompt Video AI (Higgsfield & Kling 8K), Mẫu ảnh Studio (Flux & Midjourney), Kịch bản TikTok Shop và Workflow N8N tự động. Cập nhật prompt mới mỗi tuần trọn đời không phát sinh phí.
             </p>
 
             {/* Checkmark List */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#5a5751] dark:text-slate-200">
+            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-600 dark:text-zinc-300 font-medium">
               {COMBO_PACKAGE.features.map((feat, idx) => (
-                <div key={idx} className="flex items-start space-x-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#448361] dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div key={idx} className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <span>{feat}</span>
                 </div>
               ))}
@@ -37,28 +40,28 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
 
           {/* Right Column: Pricing Box */}
           <div className="lg:col-span-5">
-            <div className="bg-white dark:bg-slate-800/95 rounded-xl p-5 sm:p-6 border border-[#e9e9e8] dark:border-white/15 shadow-2xs text-center flex flex-col items-center space-y-3">
+            <div className="bg-black/[0.02] dark:bg-white/[0.03] rounded-2xl p-6 sm:p-7 border border-black/[0.06] dark:border-white/[0.08] text-center flex flex-col items-center space-y-3.5 shadow-sm">
               
-              <span className="text-[10px] uppercase font-bold text-[#cc782f] dark:text-amber-300 tracking-wider bg-[#faece3] dark:bg-amber-950/70 px-2.5 py-0.5 rounded border border-[#f3d6c1] dark:border-amber-600/40">
-                ƯU ĐÃI ĐỘC QUYỀN HÔM NAY
+              <span className="text-[10px] font-mono uppercase font-bold text-amber-600 dark:text-amber-400 tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                ƯU ĐÃI ĐỘC QUYỀN TRỌN ĐỜI
               </span>
 
               <div className="flex items-baseline justify-center space-x-2">
                 <Coins className="w-6 h-6 text-amber-500 fill-amber-400 self-center shrink-0" />
-                <span className="text-3xl font-extrabold text-[#37352f] dark:text-white">
+                <span className="text-3xl sm:text-4xl font-extrabold font-mono text-slate-900 dark:text-white tabular-nums tracking-tight">
                   {COMBO_PACKAGE.priceXu} Xu
                 </span>
-                <span className="text-xs text-[#9b9a97] dark:text-slate-400 line-through font-medium">
+                <span className="text-sm text-slate-400 dark:text-zinc-500 font-mono line-through tabular-nums font-medium">
                   {COMBO_PACKAGE.originalPriceXu} Xu
                 </span>
               </div>
 
-              <p className="text-[11px] text-[#448361] dark:text-emerald-400 font-semibold">
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold font-mono tabular-nums">
                 Tiết kiệm ngay {COMBO_PACKAGE.originalPriceXu - COMBO_PACKAGE.priceXu} Xu (Giảm {COMBO_PACKAGE.discountPercent}%)
               </p>
 
               {isPurchased ? (
-                <div className="w-full py-2.5 px-4 rounded-lg font-semibold text-xs bg-[#edf3ec] dark:bg-emerald-950/60 text-[#448361] dark:text-emerald-300 border border-[#d3e5d7] dark:border-emerald-600/40 flex items-center justify-center space-x-1.5">
+                <div className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20 flex items-center justify-center space-x-2">
                   <Check className="w-4 h-4" />
                   <span>Bạn Đã Sở Hữu Gói All-Access</span>
                 </div>
@@ -66,16 +69,16 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
                 <button
                   type="button"
                   onClick={() => onBuyCombo(COMBO_PACKAGE)}
-                  className="w-full py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm bg-gradient-to-r from-[#2383e2] to-indigo-600 hover:from-[#1a73e8] hover:to-indigo-500 text-white shadow-sm transition-all flex items-center justify-center space-x-2 cursor-pointer hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] duration-200"
+                  className="apple-btn-prominent w-full py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 cursor-pointer shadow-lg active:scale-[0.98] transition-transform"
                 >
-                  <Coins className="w-4 h-4 text-amber-300 fill-amber-300" />
+                  <Coins className="w-4 h-4 text-white fill-white" />
                   <span>Kích Hoạt Combo All-Access ({COMBO_PACKAGE.priceXu} Xu)</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               )}
 
-              <p className="text-[10px] text-[#9b9a97] dark:text-slate-400">
-                Thanh toán an toàn • Truy cập vĩnh viễn trên mọi thiết bị
+              <p className="text-[11px] text-slate-400 dark:text-zinc-500 font-medium">
+                Thanh toán qua Ví Xu • Mở khóa tự động trong 3 giây
               </p>
             </div>
           </div>

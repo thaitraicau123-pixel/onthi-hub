@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import CourseCard from '../components/CourseCard';
 import ComboBanner from '../components/ComboBanner';
-import TestimonialsFaq from '../components/TestimonialsFaq';
 import { CATEGORIES, COURSES_DATA, COMBO_PACKAGE } from '../data/coursesData';
 import { isCoursePurchased } from '../utils/storage';
 import {
@@ -114,117 +113,69 @@ export default function HomeView({
   };
 
   return (
-    <div className="space-y-6 animate-fade-in pb-16 text-slate-900 dark:text-zinc-100">
+    <div className="space-y-8 animate-fade-in pb-16 text-slate-900 dark:text-zinc-100 max-w-7xl mx-auto">
       
       {/* =========================================================
-          HERO APPLE SHOWCASE CARD: PROMPT & SKILL MMO MARKETPLACE
+          HERO: APPLE LIQUID GLASS PROMPT & AI SKILLS STUDIO
           ========================================================= */}
-      <div className="apple-card rounded-3xl p-6 sm:p-8 border border-black/[0.06] dark:border-white/[0.08] shadow-sm relative overflow-hidden space-y-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-          <div className="space-y-2">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full apple-pill-amber text-[11px] font-bold">
-              <span>🚀 PROMPTMMO v4.0 • CHỢ PROMPT & AI SKILLS THỰC CHIẾN</span>
-              <span className="opacity-60">•</span>
-              <span>1,000+ Prompt Đã Test Doanh Thu</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-              Chợ Prompt & AI Skills Kiếm Tiền MMO
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-300 leading-relaxed max-w-2xl">
-              Hơn 1,000+ Prompt Higgsfield & Kling Video 8K, Mẫu ảnh studio Flux & Midjourney, Kịch bản TikTok Shop triệu view và Workflow N8N tự động hóa kiếm tiền cho Creator & Dân MMO.
-            </p>
+      <div className="relative rounded-3xl p-6 sm:p-10 border border-black/[0.06] dark:border-white/[0.08] bg-white/70 dark:bg-[#141419]/70 backdrop-blur-2xl shadow-xl overflow-hidden">
+        {/* Subtle Ambient Refraction Highlight */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 dark:bg-amber-400/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#007aff]/10 dark:bg-[#0a84ff]/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] text-[11px] font-mono tracking-wider uppercase font-semibold text-slate-600 dark:text-zinc-300">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+            <span>PromptMMO Studio • AI Skills & Workflows</span>
           </div>
 
-          {/* Quick Action Buttons */}
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.12]">
+            Chợ Prompt AI & Kỹ Nghệ Tự Động Hóa
+          </h1>
+
+          <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
+            Hơn 1,000+ Prompt Higgsfield & Kling Video 8K, Mẫu ảnh studio Flux & Midjourney, và AI Workflows N8N thực chiến được kiểm chứng chuyển đổi cho Creator & Solopreneurs.
+          </p>
+
+          {/* Quick CTA Actions */}
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             <button
               type="button"
               onClick={() => allCourses[0] && onOpenFlashcards(allCourses[0])}
-              className="apple-btn-prominent px-4 py-2.5 rounded-full text-xs font-bold shadow-sm flex items-center space-x-1.5 cursor-pointer"
+              className="apple-btn-prominent px-6 py-3 rounded-full text-xs font-bold shadow-lg flex items-center space-x-2 cursor-pointer transition-transform active:scale-[0.98]"
             >
-              <Zap className="w-3.5 h-3.5 fill-white text-white" />
-              <span>Xem Prompt Bestseller</span>
+              <Zap className="w-4 h-4 fill-white text-white" />
+              <span>Khám Phá Prompt Bestseller</span>
             </button>
 
             <button
               type="button"
               onClick={() => onSwitchTab('wallet')}
-              className="px-4 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-zinc-200 text-white dark:text-slate-900 font-bold text-xs shadow-sm flex items-center space-x-1.5 transition-all cursor-pointer active:scale-[0.97]"
+              className="apple-btn-secondary px-6 py-3 rounded-full text-xs font-bold flex items-center space-x-2 cursor-pointer transition-transform active:scale-[0.98]"
             >
-              <Coins className="w-3.5 h-3.5 text-amber-400 fill-amber-400 dark:text-amber-500 dark:fill-amber-500" />
-              <span>Nạp Xu Siêu Tốc</span>
+              <Coins className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>Ví Xu & Nạp Tiền Siêu Tốc</span>
             </button>
           </div>
-        </div>
 
-        {/* 4 Apple Feature Highlight Tiles */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
-          <div
-            onClick={() => setSelectedCategory('video-ai')}
-            className="text-left p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-amber-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                <span>🎬 Video AI Triệu View</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-500 text-white animate-pulse">
-                HIGGSFIELD & KLING
-              </span>
+          {/* 4 Apple Liquid Glass Metric Indicators */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 w-full pt-6 mt-4 border-t border-black/[0.06] dark:border-white/[0.08]">
+            <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.04]">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 dark:text-white tabular-nums">1,200+</div>
+              <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5 font-medium">Prompt Kiểm Định</div>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-snug">
-              Prompt video 8K chuẩn điện ảnh, góc quay Drone, Hyperlapse và Hook 3s giữ chân người xem 95%.
-            </p>
-          </div>
-
-          <div
-            onClick={() => setSelectedCategory('image-ai')}
-            className="text-left p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-[#007aff]/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold text-[#007aff] dark:text-[#0a84ff] flex items-center gap-1.5">
-                <span>🎨 Ảnh Studio Chuẩn Mall</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-[#007aff] text-white">
-                FLUX & MIDJOURNEY
-              </span>
+            <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.04]">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-amber-600 dark:text-amber-400 tabular-nums">99.4%</div>
+              <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5 font-medium">Đánh Giá 5★</div>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-snug">
-              Mockup mỹ phẩm, người mẫu thời trang Á Đông, banner Shopee/TikTok Shop không tốn tiền studio.
-            </p>
-          </div>
-
-          <div
-            onClick={() => setSelectedCategory('copy-mmo')}
-            className="text-left p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-emerald-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                <span>✍️ Kịch Bản Chốt Đơn</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-500 text-white">
-                X3 CHUYỂN ĐỔI
-              </span>
+            <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.04]">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-emerald-600 dark:text-emerald-400 tabular-nums">&lt;0.4s</div>
+              <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5 font-medium">Mở Khóa Tức Thì</div>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-snug">
-              Prompt kịch bản 60s bảng 2 cột, 100 câu hook hút mắt và kịch bản MC Livestream đẩy đỉnh doanh số.
-            </p>
-          </div>
-
-          <div
-            onClick={() => setSelectedCategory('skills-automation')}
-            className="text-left p-4 rounded-2xl apple-card border border-black/[0.06] dark:border-white/[0.08] hover:border-purple-500/40 hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] transition-all duration-200 cursor-pointer group"
-          >
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                <span>⚡ AI Skills & Auto N8N</span>
-              </span>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-purple-500 text-white">
-                AUTO 24/7
-              </span>
+            <div className="p-3 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.04] dark:border-white/[0.04]">
+              <div className="text-xl sm:text-2xl font-extrabold font-mono text-[#007aff] dark:text-[#0a84ff] tabular-nums">100%</div>
+              <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5 font-medium">Bảo Mật Kép Anti-F12</div>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-zinc-400 leading-snug">
-              Bộ cỗ máy cào sản phẩm bán chạy, viết bài tự động và AI Agent trả lời inbox fanpage chốt đơn tự động.
-            </p>
           </div>
         </div>
       </div>
@@ -232,28 +183,29 @@ export default function HomeView({
       {/* =========================================================
           KHO PROMPT & AI SKILLS TIÊU CHUẨN (CATALOG SECTION)
           ========================================================= */}
-      <section id="catalog-section" className="space-y-4">
-        <div className="apple-card rounded-2xl p-4 sm:p-5 border border-black/[0.06] dark:border-white/[0.08] shadow-xs space-y-4">
-          {/* Row 1: Title & Verified Badge */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+      <section id="catalog-section" className="space-y-5">
+        <div className="apple-card rounded-2xl p-4 sm:p-6 border border-black/[0.06] dark:border-white/[0.08] shadow-sm space-y-4">
+          {/* Header Row */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                <span>🔥 Chợ Prompt & AI Skills Tiêu Chuẩn</span>
-                <span className="text-xs font-normal text-slate-400 dark:text-zinc-500">({sortedAndFiltered.length} sản phẩm)</span>
-              </h3>
+              <h2 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <span>Kho Prompt & AI Skills Tiêu Chuẩn</span>
+                <span className="text-xs font-mono font-medium text-slate-400 dark:text-zinc-500 tabular-nums">
+                  ({sortedAndFiltered.length} sản phẩm)
+                </span>
+              </h2>
               <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
-                Bấm <strong className="text-amber-500 font-semibold">&ldquo;Xem Mẫu&rdquo;</strong> trên từng gói để xem trước câu lệnh tiếng Anh & tham số kỹ thuật trước khi mở khóa.
+                Bấm vào từng gói để xem trước câu lệnh tiếng Anh & tham số kỹ thuật trước khi mở khóa.
               </p>
             </div>
-            <span className="apple-pill-emerald inline-flex items-center space-x-1.5 text-[11px] font-bold px-3 py-1 rounded-full self-start sm:self-center shrink-0">
+            <div className="inline-flex items-center space-x-1.5 text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shrink-0 self-start sm:self-center">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Prompt Test Chuẩn 100%</span>
-            </span>
+            </div>
           </div>
 
-          {/* Row 2: Apple Segmented Category Tabs + Search & Sort Controls */}
+          {/* Segmented Category Filter & Search Bar */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
-            {/* Apple Segmented Control Container */}
             <div className="apple-segmented-container flex flex-wrap items-center gap-1">
               {CATEGORIES.map((cat) => {
                 const active = selectedCategory === cat.id;
@@ -271,7 +223,7 @@ export default function HomeView({
                   >
                     {getCategoryIcon(cat.icon, active)}
                     <span>{cat.name}</span>
-                    <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold tabular-nums ${
                       active
                         ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400'
                         : 'bg-black/[0.04] dark:bg-white/[0.08] text-slate-400 dark:text-zinc-500'
@@ -283,7 +235,7 @@ export default function HomeView({
               })}
             </div>
 
-            {/* Search & Sort Controls */}
+            {/* Search & Sort */}
             <div className="flex items-center gap-2 w-full lg:w-auto shrink-0">
               <div className="relative flex-1 sm:w-64">
                 <Search className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -292,13 +244,13 @@ export default function HomeView({
                   placeholder="Tìm kiếm Prompt Higgsfield, Kling, Flux..."
                   value={searchHome}
                   onChange={(e) => setSearchHome(e.target.value)}
-                  className="w-full pl-8 pr-7 py-2 text-xs bg-black/[0.03] dark:bg-white/[0.06] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 border border-black/[0.06] dark:border-white/[0.08] rounded-full outline-none focus:bg-white dark:focus:bg-zinc-800 focus:border-amber-500 dark:focus:border-amber-400 transition-all"
+                  className="w-full pl-8 pr-7 py-2 text-xs bg-black/[0.03] dark:bg-white/[0.06] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 border border-black/[0.06] dark:border-white/[0.08] rounded-full outline-none focus:bg-white dark:focus:bg-zinc-800 focus:border-[#007aff] transition-all"
                 />
                 {searchHome && (
                   <button
                     type="button"
                     onClick={() => setSearchHome('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer"
                   >
                     ✕
                   </button>
@@ -310,10 +262,10 @@ export default function HomeView({
                 onChange={(e) => setSortBy(e.target.value)}
                 className="py-2 px-3 text-xs bg-black/[0.03] dark:bg-white/[0.06] text-slate-900 dark:text-white border border-black/[0.06] dark:border-white/[0.08] rounded-full outline-none cursor-pointer font-semibold"
               >
-                <option value="popular">Bán chạy nhất 🔥</option>
+                <option value="popular">Bestseller 🔥</option>
                 <option value="rating">Đánh giá cao ⭐</option>
-                <option value="price_asc">Giá Xu thấp ➔ cao</option>
-                <option value="price_desc">Giá Xu cao ➔ thấp</option>
+                <option value="price_asc">Giá Xu: Thấp ➔ Cao</option>
+                <option value="price_desc">Giá Xu: Cao ➔ Thấp</option>
               </select>
             </div>
           </div>
@@ -470,9 +422,6 @@ export default function HomeView({
         onBuyCombo={onBuyCombo}
         isPurchased={isCoursePurchased(COMBO_PACKAGE.id)}
       />
-
-      {/* Testimonials & FAQs */}
-      <TestimonialsFaq />
 
     </div>
   );
