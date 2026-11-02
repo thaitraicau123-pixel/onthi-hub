@@ -24,7 +24,7 @@ export default function ComboBanner({ isPurchased, onBuyCombo }) {
             </h2>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-300 leading-relaxed max-w-xl">
-              Mở khóa trọn đời toàn bộ 6 Hộp Công Cụ Master Prompts (101 Thẻ Prompt Thực Chiến): Web Haute-Couture UI 60fps, Siêu Lập Trình Viên Fullstack AppSec, Content SEO E-E-A-T, Luận Văn Điểm A+, Clean Code Starter. Cập nhật prompt v8.5 mới trọn đời không phát sinh phí.
+              Mở khóa trọn đời toàn bộ 12 Hộp Công Cụ Master Prompts (197 Thẻ Prompt Thực Chiến): Web Haute-Couture UI 60fps, Siêu Lập Trình Viên Fullstack AppSec, Content SEO E-E-A-T, N8N Automation, Dựng Video Phonk, Web Audio SFX, Tokenomics Game, Red Team Pentest... Cập nhật prompt v8.5 mới trọn đời không phát sinh phí.
             </p>
 
             {/* Checkmark List */}

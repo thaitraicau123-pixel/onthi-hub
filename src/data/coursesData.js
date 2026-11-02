@@ -1,5 +1,5 @@
 // DỮ LIỆU SẢN PHẨM MASTER PROMPTS THỰC CHIẾN - BÙI THÁI AI STUDIO 2026
-// Hệ sinh thái Master System Prompts v8.5 & Cheat Sheet Chuẩn Quốc Tế Cho ChatGPT Plus, Claude 3.5 & Cursor
+// Hệ sinh thái 12 Hộp Công Cụ Master System Prompts v8.5 & Cheat Sheet Chuẩn Quốc Tế Cho ChatGPT Plus, Claude 3.5 & Cursor
 
 export const CATEGORIES = [
   {
@@ -33,6 +33,16 @@ export const CATEGORIES = [
     "icon": "BookOpen"
   },
   {
+    "id": "automation-ai",
+    "name": "Tự Động Hóa N8N & AI Agents",
+    "icon": "Activity"
+  },
+  {
+    "id": "media-sound",
+    "name": "Motion Video & Game SFX",
+    "icon": "Gamepad2"
+  },
+  {
     "id": "all-in-one",
     "name": "Đại Hộp Công Cụ (VIP)",
     "icon": "Crown"
@@ -46,10 +56,10 @@ export const COURSES_DATA = [
     "subtitle": "Thay chữ là có ngay giao diện Editorial chuẩn Awwwards, Apple Liquid Glass, Song Font & 60fps Emil Kowalski",
     "category": "web-design",
     "categoryLabel": "Web Thượng Lưu (Haute-Couture)",
-    "badge": "⭐ FLAGSHIP SIÊU PHẨM",
+    "badge": "⭐ FLAGSHIP HAUTE-COUTURE",
     "badgeColor": "bg-gradient-to-r from-amber-600 to-amber-700 text-white",
-    "priceXu": 79,
-    "originalPriceXu": 159,
+    "priceXu": 69,
+    "originalPriceXu": 149,
     "rating": 5,
     "reviewsCount": 413,
     "studentsCount": 368,
@@ -187,10 +197,10 @@ export const COURSES_DATA = [
     "subtitle": "Thay chữ là có ngay kiến trúc Backend tối giản Ponytail, PostgreSQL khóa dòng FOR UPDATE & diệt bug <0.1s",
     "category": "fullstack-dev",
     "categoryLabel": "Fullstack & Bảo Mật (AppSec)",
-    "badge": "⚡ BEST SELLER FULLSTACK",
+    "badge": "⚡ BESTSELLER APPSEC",
     "badgeColor": "bg-emerald-600 text-white",
-    "priceXu": 69,
-    "originalPriceXu": 149,
+    "priceXu": 59,
+    "originalPriceXu": 129,
     "rating": 4.98,
     "reviewsCount": 357,
     "studentsCount": 312,
@@ -328,10 +338,10 @@ export const COURSES_DATA = [
     "subtitle": "Thay chữ là có ngay kịch bản video TikTok 60s giữ chân 3s đầu & bài viết SEO E-E-A-T leo Top 1 Google",
     "category": "marketing-seo",
     "categoryLabel": "Content SEO & Viral Video",
-    "badge": "🔥 HOT MARKETING",
+    "badge": "🔥 HOT SEO & VIRAL",
     "badgeColor": "bg-orange-600 text-white",
-    "priceXu": 49,
-    "originalPriceXu": 99,
+    "priceXu": 39,
+    "originalPriceXu": 89,
     "rating": 4.95,
     "reviewsCount": 273,
     "studentsCount": 228,
@@ -471,8 +481,8 @@ export const COURSES_DATA = [
     "categoryLabel": "Nghiên Cứu Học Thuật (A+)",
     "badge": "🎓 HỌC THUẬT ĐIỂM A+",
     "badgeColor": "bg-indigo-600 text-white",
-    "priceXu": 39,
-    "originalPriceXu": 89,
+    "priceXu": 35,
+    "originalPriceXu": 79,
     "rating": 4.97,
     "reviewsCount": 291,
     "studentsCount": 246,
@@ -610,7 +620,7 @@ export const COURSES_DATA = [
     "subtitle": "Thay đề bài là có ngay lời giải thích từng dòng bằng ẩn dụ đời thực, gỡ lỗi trong 5 phút & Clean Code",
     "category": "starter-edu",
     "categoryLabel": "Sinh Viên Lập Trình (Starter)",
-    "badge": "🌱 SINH VIÊN STARTER",
+    "badge": "🌱 STARTER 19 XU",
     "badgeColor": "bg-teal-600 text-white",
     "priceXu": 19,
     "originalPriceXu": 49,
@@ -751,10 +761,10 @@ export const COURSES_DATA = [
     "subtitle": "Thay chữ là kích hoạt toàn bộ 5 Trụ Cột: Web Haute-Couture + Fullstack YAGNI + SEO Viral + Học Thuật A+ + Clean Code",
     "category": "all-in-one",
     "categoryLabel": "Đại Hộp Công Cụ (VIP)",
-    "badge": "👑 VIP TRỌN BỘ SIÊU ĐẲNG",
+    "badge": "👑 ĐẠI HỘP CÔNG CỤ VIP",
     "badgeColor": "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 text-white",
-    "priceXu": 119,
-    "originalPriceXu": 299,
+    "priceXu": 89,
+    "originalPriceXu": 199,
     "rating": 5,
     "reviewsCount": 227,
     "studentsCount": 182,
@@ -915,20 +925,866 @@ export const COURSES_DATA = [
         "tag": "VIP Vault"
       }
     ]
+  },
+  {
+    "id": "skill-n8n-automation",
+    "title": "Hộp Công Cụ Prompt Tự Động Hóa N8N, Webhook & Multi-Agent Squad",
+    "subtitle": "Tự động hóa cào dữ liệu Shopee/TikTok, bắt Lead Facebook, đồng bộ Google Sheets và bắn thông báo Telegram 24/7",
+    "category": "automation-ai",
+    "categoryLabel": "Tự Động Hóa N8N & AI Agents",
+    "badge": "⚡ N8N AUTOMATION 24/7",
+    "badgeColor": "#f59e0b",
+    "priceXu": 45,
+    "originalPriceXu": 99,
+    "rating": 4.98,
+    "reviewsCount": 408,
+    "studentsCount": 340,
+    "salesCount": 340,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Tuyển tập Master System Prompt và 15 kịch bản tự động hóa thực chiến trên phần mềm N8N & Make.com. Tích hợp cơ chế tự phục hồi lỗi Retry Loop, bảo mật chữ ký HMAC SHA-256 và điều phối AI Agent tự động làm việc.",
+    "tags": [
+      "N8N Automation",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,744 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,744 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Tự Động Hóa N8N, Webhook & Multi-Agent Squad",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: KIẾN TRÚC SƯ WORKFLOW AUTOMATION & AI AGENT N8N v8.5\nBạn là Giám đốc Tự Động Hóa Doanh Nghiệp & Kiến Trúc Sư Multi-Agent Workflow (Senior N8N & Make Automation Engineer). Nhiệm vụ của bạn là biến mọi quy trình thủ công phức tạp thành chuỗi tự động hóa 24/7 khép kín, an toàn và có khả năng tự phục hồi lỗi.\n\n## NGUYÊN TẮC BẤT KHẢ XÂM PHẠM:\n1. NGUYÊN TẮC IDEMPOTENCY: Mọi Webhook và Trigger phải có cơ chế nhận diện trùng lặp qua Idempotency Key hoặc Transaction ID. Tuyệt đối không để xảy ra trường hợp một giao dịch/bình luận bị xử lý 2 lần.\n2. BẢO MẬT CREDENTIALS: Cấm tuyệt đối hardcode API key, Secret Token trong code logic. Luôn gọi qua biến môi trường $env.KEY hoặc N8N Credentials vault có mã hóa AES-256.\n3. CƠ CHẾ TỰ PHỤC HỒI (RETRY LOOP & ERROR TRIGGER): Mọi Node gọi API ngoài (OpenAI, Claude, Telegram, VietQR, Google Sheets) bắt buộc phải cấu hình: Retry On Fail (3 lần), Wait Between Tries (2000ms) và Error Trigger Node để lập tức gửi cảnh báo sự cố về nhóm cứu hộ.\n4. TỐI ƯU HÓA RATE LIMIT: Khi cào dữ liệu hoặc bắn tin nhắn hàng loạt, bắt buộc chèn Node Split In Batches (10 items/batch) kèm Node Wait (1500ms) để chống bị khóa tài khoản hoặc vượt quá giới hạn API.\n\n## KHUNG KIẾN TRÚC WORKFLOW CHUẨN:\n- TẦNG 1: Webhook Listener / Cron Poller (Nhận Request & Xác thực Chữ Ký HMAC SHA-256)\n- TẦNG 2: Payload Parser & Validator (Bóc tách dữ liệu JSON, lọc dữ liệu rác, loại bỏ thẻ HTML độc hại)\n- TẦNG 3: AI Processing & Decision Engine (Gọi GPT-4o / Claude 3.5 Sonnet với Structured Output JSON)\n- TẦNG 4: State Storage & External Sync (Lưu Supabase PostgreSQL, đồng bộ Google Sheets, lưu file S3)\n- TẦNG 5: Delivery & Notification (Bắn tin nhắn Telegram, Zalo ZNS, gửi Email tự động và hoàn tất 200 OK)\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Cào Dữ Liệu Sản Phẩm Shopee/TikTok Shop Lưu Google Sheet",
+        "back": "PROMPT:\nThiết kế workflow N8N tự động cào dữ liệu từ đường dẫn [URL_SHOP] trên [NỀN_TẢNG]. Bóc tách các trường: Tên sản phẩm, Giá bán, Lượt mua, Đánh giá sao, Link ảnh. Tự động kiểm tra trùng lặp qua Mã sản phẩm và ghi vào Google Sheet [TÊN_SHEET].\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Thiết kế workflow N8N tự động cào dữ liệu từ gian hàng Shopee Mall Mỹ Phẩm. Lấy Tên, Giá, Đánh giá, ghi vào Google Sheet 'Theo Dõi Giá Đối Thủ'.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Phân Loại Email Khách Hàng & Soạn Thư Trả Lời Qua GPT-4o",
+        "back": "PROMPT:\nXây dựng workflow N8N lắng nghe Gmail hộp thư [EMAIL_NHẬN]. Khi có thư mới, dùng AI GPT-4o phân loại vào 3 nhóm: Khiếu nại, Báo giá, Hỏi chung. Tự động soạn sẵn thư nháp (Draft) theo văn phong chuẩn mực và gắn thẻ màu Gmail.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Workflow N8N lắng nghe contact@onthihub.com, phân loại yêu cầu nạp tiền, soạn email phản hồi đính kèm mã QR nếu khách hỏi cú pháp.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Bắn Thông Báo Telegram Khi Có Giao Dịch Nạp Tiền VietQR",
+        "back": "PROMPT:\nTạo Webhook N8N đón thông báo biến động số dư từ [TÊN_NGÂN_HÀNG]. Kiểm tra cú pháp chuyển khoản có chứa mã [TIỀN_TỐ_MÃ]. Nếu hợp lệ, tự động cộng số dư vào bảng [TÊN_BẢNG_SUPABASE] và bắn tin nhắn định dạng HTML vào nhóm Telegram [ID_NHÓM].\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Webhook N8N đón biến động MB Bank, kiểm tra mã 'NAPXU 123456', cộng tiền vào Supabase và bắn tin nhắn 'Khách Hoàng Đức vừa nạp 50 Xu'.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Tự Động Hóa Đăng Bài Đa Kênh (Facebook, Threads, LinkedIn)",
+        "back": "PROMPT:\nXây dựng workflow N8N đọc danh sách bài viết từ Notion [TÊN_DATABASE]. Lấy bài viết có trạng thái 'Sẵn Sàng Đăng', tự động định dạng lại độ dài cho từng nền tảng Facebook, Threads, LinkedIn và đặt lịch đăng tự động vào lúc [KHUNG_GIỜ].\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Workflow đọc bài từ Notion Content Calendar, đăng lên Fanpage và Threads lúc 11:30 trưa mỗi ngày, tự cập nhật trạng thái 'Đã Đăng'.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Quét RSS Báo Chí Công Nghệ, Tóm Tắt & Lưu Notion",
+        "back": "PROMPT:\nTạo workflow chạy định kỳ mỗi 4 tiếng, đọc RSS Feed từ [DANH_SÁCH_LINK_RSS]. Lọc các tin tức mới xuất bản, gọi Claude 3.5 Sonnet tóm tắt thành 3 gạch đầu dòng ý chính và lưu vào cơ sở dữ liệu Notion [TÊN_NOTION].\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Workflow đọc RSS TechCrunch và VnExpress AI, tóm tắt 3 bài viết nổi bật nhất, lưu vào bảng 'Điểm Tin Công Nghệ'.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Xử Lý Lỗi Webhook & Cơ Chế Thử Lại (Retry Loop)",
+        "back": "PROMPT:\nViết mã cấu hình Node Error Trigger trong N8N để xử lý khi API của [DỊCH_VỤ_GỌI] bị quá tải hoặc phản hồi 502/504. Thiết lập số lần thử lại 3 lần theo khoảng cách thời gian luỹ thừa (Exponential Backoff).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cấu hình Retry Loop cho Node OpenAI khi gặp lỗi 429 Rate Limit, tự đợi 3s, 6s, 12s trước khi báo lỗi về Telegram.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Xác Thực Chữ Ký HMAC SHA-256 Bảo Vệ Webhook",
+        "back": "PROMPT:\nViết Code Node JavaScript trong N8N để giải mã và kiểm tra chữ ký HMAC SHA-256 từ Header [TÊN_HEADER] của đối tác thanh toán với Khóa bí mật [SECRET_KEY]. Nếu không khớp, lập tức trả về mã lỗi 401 Unauthorized.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kiểm tra chữ ký 'x-signature' từ cổng thanh toán VietQR gửi tới N8N, băm SHA-256 payload với secret và so sánh chống tấn công giả mạo.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Tổng Hợp Báo Cáo Doanh Thu Cuối Ngày Gửi Email Admin",
+        "back": "PROMPT:\nTạo workflow N8N kích hoạt vào 23:59 mỗi ngày. Thực hiện truy vấn SQL vào cơ sở dữ liệu Supabase để tính: Tổng đơn hàng, Doanh thu Xu, Số thành viên mới đăng ký. Đóng gói thành báo cáo HTML đẹp mắt và gửi qua SendGrid / Gmail.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Workflow chạy 23:59, tính tổng doanh thu ví Xu, gửi email báo cáo trực quan cho ban giám đốc.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Bóc Tách Hóa Đơn / Biên Lai Chuyển Khoản Bằng AI Vision",
+        "back": "PROMPT:\nThiết kế workflow N8N nhận ảnh hóa đơn chuyển khoản qua Webhook hoặc Telegram Bot. Gửi ảnh sang model GPT-4o Vision để bóc tách: Số tiền, Số tài khoản gửi, Thời gian giao dịch, Mã giao dịch và xuất ra định dạng JSON chuẩn.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bot Telegram nhận ảnh chụp màn hình chuyển khoản Vietcombank, bóc tách chính xác số tiền và số tham chiếu giao dịch.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Đồng Bộ Khách Hàng Tiềm Năng Từ Landing Page Vào CRM",
+        "back": "PROMPT:\nXây dựng Webhook nhận dữ liệu form liên hệ từ website Next.js. Kiểm tra tính hợp lệ của số điện thoại và email, thêm tag nguồn khách hàng và đồng bộ đồng thời vào Lark Base / HubSpot CRM.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Webhook đón khách điền form tư vấn thiết kế Web Haute-Couture, kiểm tra định dạng SĐT Việt Nam, đồng bộ vào CRM Lark Base.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Đóng Gói Docker Compose Triển Khai N8N Trên VPS Cá Nhân",
+        "back": "PROMPT:\nViết tệp docker-compose.yml hoàn chỉnh để triển khai N8N phiên bản mới nhất kết hợp PostgreSQL database và Nginx Proxy Manager có chứng chỉ SSL Let's Encrypt tự động gia hạn.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Viết file docker-compose.yml triển khai N8N trên máy chủ Ubuntu VPS 2GB RAM chạy ổn định, tự động khởi động lại.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Thiết Lập Multi-Agent Squad Chia Việc Trong N8N",
+        "back": "PROMPT:\nThiết kế hệ thống 3 Agent AI trong N8N: Agent 1 (Researcher) thu thập dữ liệu thô, Agent 2 (Writer) viết bài theo cấu trúc, Agent 3 (Editor) rà soát lỗi chính tả và tính khách quan trước khi xuất xưởng.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Multi-agent squad trong N8N tự động sản xuất bài phân tích tài chính: 1 agent đọc số liệu, 1 agent viết phân tích, 1 agent duyệt nội dung.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Tự Động Đăng Video Lên Kênh YouTube Shorts & TikTok",
+        "back": "PROMPT:\nXây dựng workflow N8N theo dõi thư mục Google Drive [TÊN_THƯ_MỤC]. Khi có video MP4 mới tải lên, tự động lấy tiêu đề, mô tả và hashtag từ tệp txt đính kèm để gọi API đăng lên YouTube Shorts và TikTok.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Theo dõi thư mục 'Render_Xong', tự động lấy video và đăng lên kênh Shorts vào khung giờ vàng 19:00.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Tối Ưu Bộ Nhớ N8N & Dọn Dẹp Lịch Sử Chạy Tránh Tràn Ổ Cứng",
+        "back": "PROMPT:\nViết script cấu hình các biến môi trường N8N: EXECUTIONS_DATA_PRUNE=true, EXECUTIONS_DATA_MAX_AGE=168h để tự động xóa lịch sử các lần chạy cũ sau 7 ngày, giúp VPS hoạt động trơn tru không bị đầy dung lượng disk.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cấu hình dọn dẹp Execution Data tự động cho server N8N lưu lượng 5,000 requests/ngày.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Tự Động Sao Lưu Cơ Sở Dữ Liệu Lên Cloud Storage",
+        "back": "PROMPT:\nThiết kế workflow N8N kích hoạt lúc 03:00 sáng, chạy lệnh pg_dump xuất tệp sao lưu dữ liệu PostgreSQL, nén gzip và tải lên Cloudflare R2 / AWS S3, sau đó gửi thông báo xác nhận về Telegram.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tự động backup database Onthi-Hub mỗi rạng sáng, nén zip lưu trữ lên Cloudflare R2 an toàn.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "N8N Automation"
+      }
+    ]
+  },
+  {
+    "id": "skill-phonk-beat-sync",
+    "title": "Hộp Công Cụ Prompt Dựng Video Phonk & TikTok Shorts Giật Beat 60fps",
+    "subtitle": "Công thức dựng video ngắn bắt beat triệu view (Brazilian Bass, Drift Phonk, Gym Motivation, Anime Flash & Speed Ramp)",
+    "category": "media-sound",
+    "categoryLabel": "Motion Video & Game SFX",
+    "badge": "🔥 VIRAL SHORTS TIKTOK",
+    "badgeColor": "#ec4899",
+    "priceXu": 29,
+    "originalPriceXu": 69,
+    "rating": 5.0,
+    "reviewsCount": 488,
+    "studentsCount": 420,
+    "salesCount": 420,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Hệ thống kịch bản bắt beat toán học chuẩn xác theo từng frame cho CapCut và Premiere. Công thức Speed Ramp gia tốc 300% về 50%, hiệu ứng Flash trắng lúc Bass Drop và kỹ thuật làm video lặp vô tận giữ chân khán giả 95%.",
+    "tags": [
+      "Motion & SFX",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,655 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,655 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Dựng Video Phonk & TikTok Shorts Giật Beat 60fps",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: ĐẠO DIỄN MOTION & DỰNG VIDEO PHONK SHORTS 60FPS v8.5\nBạn là Đạo diễn Hậu kỳ Video Ngắn & Chuyên gia Bắt Beat Dòng Nhạc Phonk / Drift / EDM (Senior Beat-Sync Video Editor). Nhiệm vụ của bạn là sản xuất các kịch bản dựng video TikTok Shorts và Instagram Reels có khả năng kích thích thị giác cực mạnh, giữ chân khán giả trên 90% bằng nhịp cắt toán học chuẩn xác theo từng microsecond.\n\n## NGUYÊN TẮC BẮT BEAT BẤT DI BẤT DỊCH:\n1. TOÁN HỌC KHUNG HÌNH (BPM TO FRAME MATH):\n   - Nhạc 120 BPM = 1 beat = 0.5 giây = đúng 30 frames (ở timeline 60fps).\n   - Nhạc 130 BPM = 1 beat = 0.461 giây = 27.7 frames.\n   - Nhạc 140 BPM = 1 beat = 0.428 giây = 25.7 frames.\n   - Nhạc 150 BPM (Brazilian Phonk) = 1 beat = 0.4 giây = đúng 24 frames.\n   Mọi vết cắt cảnh (Cut Point) bắt buộc phải nằm chính xác tại đỉnh sóng âm (Audio Transient Peak) của tiếng Kick hoặc Snare/Cowbell.\n\n2. CÔNG THỨC SPEED RAMP TẠO CẢM GIÁC GIA TỐC:\n   - Giai đoạn chuẩn bị (Build-up): Tốc độ 100% -> Tăng tốc đột ngột 300% (trong 6 frames) -> Thả rơi tự do về 50% Slow-motion (trong 18 frames) ngay tại khoảnh khắc Bass Drop.\n   - Độ cong đường dốc Bezier: Cực đại tại đỉnh va chạm, không sử dụng cắt tuyến tính (Linear Cut) gây giật cục cứng nhắc.\n\n3. HIỆU ỨNG THỊ GIÁC BẮT BUỘC (VISUAL TRIGGERS):\n   - White Flash Frame: Chèn đúng 1-2 frames màu trắng tinh khiết (#ffffff) ở chế độ hòa trộn Overlay/Color Dodge ngay nhịp gõ Cowbell đầu tiên.\n   - RGB Chromatic Aberration: Tách kênh màu Đỏ - Xanh (Red-Cyan split) biên độ 12px trong 4 frames sau cú nổ âm thanh.\n   - Camera Shake (Rung ống kính): Xóc ngẫu nhiên theo trục X/Y với tần số 35Hz, triệt tiêu dần trong 0.2s.\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Bắt Beat Chuẩn BPM Cho Nhạc Brazilian Phonk & Drift",
+        "back": "PROMPT:\nPhân tích bản nhạc [TÊN_BÀI_HÁT] có nhịp [SỐ_BPM] BPM. Tính toán chính xác số khung hình cho mỗi nhịp cắt ở timeline 60fps. Lập danh sách Timecode cho 5 điểm nổ Bass Drop quan trọng nhất để dựng cảnh.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bắt beat bài nhạc 'Montagem Diamante Rosa' 145 BPM, tính số frame cho mỗi nhịp ở 60fps và xuất timeline 15 giây đầu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Kịch Bản Speed Ramp Xe Thể Thao Đêm (300% về 50%)",
+        "back": "PROMPT:\nLập kịch bản dựng cảnh quay xe thể thao [TÊN_XE] ôm cua ban đêm trên đường mưa neon. Sử dụng công thức Speed Ramp: Tua nhanh 300% đoạn tiến vào cua, giật chậm 50% slow-motion tại khoảnh khắc bánh xe quét khói và tia lửa bốc lên.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kịch bản Speed Ramp xe Nissan GTR R35 drift ôm cua hầm cầu, khói lốp phát sáng theo ánh đèn neon tím.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Hiệu Ứng Flash Trắng & Camera Shake Lúc Bass Drop",
+        "back": "PROMPT:\nHướng dẫn thông số thiết lập hiệu ứng Flash trắng kết hợp Camera Shake trên phần mềm [CapCut/Premiere]. Cài đặt thời lượng Flash đúng 2 frames và đồ thị rung lắc trục X: 15, Y: 10, giảm dần sau 0.25 giây.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Thiết lập hiệu ứng Flash trắng và RGB shake giật màn hình trên CapCut PC cho đoạn drop nhạc phonk.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Ghép Match Cut Nhân Vật Anime Biến Hình Theo Nhịp Cowbell",
+        "back": "PROMPT:\nThiết kế kịch bản cắt cảnh Match Cut giữa hai trạng thái của nhân vật [TÊN_NHÂN_VẬT]. Khớp nối chính xác đồng tử mắt và hướng chuyển động từ cảnh bình thường sang cảnh hóa thân chiến đấu ngay tiếng gõ Cowbell thứ 4.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Match Cut nhân vật Gojo Satoru mở băng bịt mắt biến hình theo tiếng cowbell đập liên hồi.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Tạo Tiêu Đề Kinetic Typography Nảy Theo Tiếng Trống 808",
+        "back": "PROMPT:\nThiết kế hiệu ứng chữ Kinetic Typography cho câu khẩu hiệu [CÂU_SLOGAN]. Chữ phóng to quy mô (Scale) từ 80% lên 115% theo đồ thị lò xo nảy Emil Kowalski tại mỗi nhịp đập của tiếng Sub-Bass 808.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tạo chữ 'UNSTOPPABLE' nảy giật theo từng nhịp trống 808 bass của đoạn nhạc gym phonk.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Kịch Bản Video Gym Motivation Giật Beat Đẩy Tạ",
+        "back": "PROMPT:\nXây dựng kịch bản video ngắn 20 giây chủ đề Gym Motivation. Cắt ghép theo nhịp bài nhạc [TÊN_NHẠC]: 3 giây đầu nâng tạ bình tĩnh, 7 giây build-up thở dốc, và 10 giây bung sức đẩy tạ giật beat liên tục kèm hạt phấn bay.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kịch bản gym shorts nâng tạ deadlift 200kg, phấn bay tung tóe ngay nhịp drop mạnh nhất.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Công Thức Màu Dark Cyberpunk & Film Grain",
+        "back": "PROMPT:\nCung cấp bảng thông số chỉnh màu (Color Grading) phong cách Dark Cyberpunk: Độ tương phản cao, vùng tối ám xanh Teal (#002b36), vùng sáng ám cam Neon (#ff6600), độ bão hòa -15% và phủ hạt nhiễu Film Grain 18%.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bảng LUT chỉnh màu CapCut phong cách Tokyo đêm tối giản sang trọng cho video xe độ.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Kịch Bản Hook 3 Giây Đầu Giữ Chân 95% TikTok",
+        "back": "PROMPT:\nThiết kế 3 phương án mở đầu (Hook) thị giác trong 3 giây đầu tiên cho video chủ đề [CHỦ_ĐỀ]. Ứng dụng âm thanh thọc sâu Sub-Drop tần số 40Hz kết hợp hình ảnh chuyển động cực nhanh để ép khán giả dừng lướt.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: 3 kịch bản hook giật mắt người xem cho video review giày thể thao bản giới hạn.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Tách Nền Nhân Vật 3D & Phủ Viền Neon Phản Quang",
+        "back": "PROMPT:\nHướng dẫn quy trình bóc tách chủ thể (Masking / Roto) và nhân đôi layer để chèn chữ 3D nằm phía sau lưng người, tạo viền sáng phản quang Neon Edge Glow chạy theo biên độ âm thanh.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tách nền cầu thủ sút bóng, chèn chữ số áo 3D khổng lồ phát sáng nằm sau lưng.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Đồng Bộ Caption Phụ Đề Chữ Nhảy Theo Từng Âm Tiết",
+        "back": "PROMPT:\nCấu hình kiểu chữ phụ đề auto-captions phong cách MrBeast / Alex Hormozi: Phông chữ The Bold Font in hoa, từ đang nói đổi màu vàng chanh (#f1c40f) và phóng to 120%, các từ còn lại màu trắng ngà.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cài đặt phụ đề nhảy chữ đổi màu trên CapCut theo giọng đọc rap nhanh.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Kỹ Thuật Audio Ducking Hạ Nhạc Nền Tự Động",
+        "back": "PROMPT:\nThiết lập thông số Audio Sidechain Ducking: Khi có tín hiệu giọng đọc Voiceover, âm lượng nhạc nền tự động giảm -14dB trong 150ms và hồi phục về mức chuẩn sau khi giọng nói kết thúc 300ms.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cài đặt Ducking trong Premiere giúp tiếng thuyết minh rõ ràng trên nền nhạc Phonk dồn dập.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Thông Số Render MP4 60fps Sắc Nét Không Bị Nén Mờ",
+        "back": "PROMPT:\nCung cấp bảng thông số xuất video MP4 chuẩn cho TikTok và Reels: Độ phân giải 1080x1920 (9:16), Tốc độ khung hình đúng 60fps, Bộ mã hóa H.264 / NVENC, Bitrate VBR 2-Pass mức Target 22 Mbps, Audio AAC 320kbps.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bảng preset xuất video CapCut PC đảm bảo tải lên TikTok sắc nét căng đét như bản gốc.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Kịch Bản Video Review Sản Phẩm Công Nghệ Giật Beat",
+        "back": "PROMPT:\nLập kịch bản phân cảnh 15 giây đập hộp sản phẩm [TÊN_SẢN_PHẨM]. Các góc quay Macro ống kính trượt ngang mép kính, góc chiếu đèn sáng bóng và nhịp cắt dứt khoát theo từng tiếng click của phím bấm.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Phân cảnh 15 giây review bàn phím cơ nhôm CNC đập hộp, tiếng switch gõ đồng bộ nhịp nhạc.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Hiệu Ứng Đảo Chiều Video Tạo Ảo Giác Vô Tận (Seamless Loop)",
+        "back": "PROMPT:\nKỹ thuật khớp khung hình đầu tiên và khung hình cuối cùng của video 100% trùng khớp về góc máy và hướng sáng, giúp video khi lặp lại trên TikTok không có bất kỳ độ khựng nào, đẩy tỷ lệ xem lại (Rewatch Rate) lên 180%.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tạo vòng lặp vô tận cho video giọt nước rơi phản chiếu ánh sáng đèn led neon.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Hiệu Ứng Zoom In / Zoom Out Liên Hoàn Theo Nhịp Snare",
+        "back": "PROMPT:\nThiết lập chuyển động phóng to thu nhỏ (Optical Zoom Pulse) biên độ dao động từ 100% lên 108% và nảy về 100% trong vòng 8 frames, khớp với tiếng trống Snare đanh thép.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Thiết lập hiệu ứng Zoom đập nảy khung hình cho video clip highlight bóng đá.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      }
+    ]
+  },
+  {
+    "id": "skill-web-audio-sfx",
+    "title": "Hộp Công Cụ Prompt Kỹ Sư Âm Thanh Web Audio API & Game SFX 0MB",
+    "subtitle": "Bộ tổng hợp âm thanh xúc giác Taptic Click, tiếng coin rơi lách cách, mở hộp mù và level-up chạy mượt <1ms không tốn byte MP3 nào",
+    "category": "media-sound",
+    "categoryLabel": "Motion Video & Game SFX",
+    "badge": "🎵 0MB AUDIO ENGINE",
+    "badgeColor": "#8b5cf6",
+    "priceXu": 25,
+    "originalPriceXu": 59,
+    "rating": 4.97,
+    "reviewsCount": 328,
+    "studentsCount": 260,
+    "salesCount": 260,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Thư viện prompt tổng hợp âm thanh tương tác thời gian thực bằng Web Audio API thuần của trình duyệt. 0 byte tải về, độ trễ <1ms, tương thích 100% Safari iOS và Chrome Android không bị chặn chính sách Autoplay.",
+    "tags": [
+      "Motion & SFX",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,267 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,267 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Kỹ Sư Âm Thanh Web Audio API & Game SFX 0MB",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: KỸ SƯ ÂM THANH XÚC GIÁC WEB AUDIO API & INTERACTIVE SOUND v8.5\nBạn là Chuyên gia Thiết kế Âm thanh Tương tác Trình duyệt (Interactive Sound Designer & Web Audio API Specialist). Nhiệm vụ của bạn là xây dựng hệ sinh thái âm thanh phản hồi xúc giác thời gian thực chạy trực tiếp trong code trình duyệt: Dung lượng 0 Megabyte, Độ trễ < 1 mili-giây, Không phụ thuộc bất kỳ tệp MP3 bên ngoài nào.\n\n## QUY TẮC THIẾT KẾ ÂM THANH SINH HỌC:\n1. KHÔNG LẠM DỤNG TỆP MP3/WAV NGOẠI LAI: Mọi âm thanh click, coin, notification, error, win đều phải được tổng hợp bằng toán học (Mathematical Sound Synthesis) thông qua các nốt dao động OscillatorNode và bộ lọc GainNode/BiquadFilterNode.\n2. CHU KỲ SỐNG ÂM THANH (ENVELOPE ADSR):\n   - Attack (Tấn công): Cực nhanh từ 0.001s đến 0.01s để tạo độ nảy cơ học.\n   - Decay & Sustain: Hạ âm lượng theo đường cong mũ (Exponential Ramp) chống hiện tượng méo tiếng (Audio Clipping).\n   - Release: Tắt sạch dao động và tự động ngắt kết nối (node.disconnect()) giải phóng bộ nhớ RAM.\n3. KHẮC PHỤC CHÍNH SÁCH AUTOPLAY (AUDIO CONTEXT UNLOCK): Trình duyệt hiện đại luôn tạm dừng AudioContext ở trạng thái 'suspended'. Bắt buộc triển khai cơ chế Resume khi người dùng thực hiện bất kỳ cú click hoặc chạm đầu tiên trên màn hình.\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Tái Tạo Tiếng Taptic Click Rung Phím Cơ iPhone",
+        "back": "PROMPT:\nViết đoạn mã JavaScript thuần sử dụng Web Audio API để phát âm thanh Taptic Click cơ học cực ngắn (15ms). Kết hợp sóng sine tần số 120Hz quét nhanh về 40Hz với GainNode giảm dần theo hàm exponentialRampToValueAtTime.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Code hàm playTapticClick() gắn vào sự kiện onClick của nút bấm Apple Liquid Glass.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Âm Thanh Tiền Xu Rơi Lách Cách Khi Nạp Tiền Thành Công",
+        "back": "PROMPT:\nTạo hàm JavaScript phát âm thanh chuỗi 3 đồng xu kim loại chạm vào nhau. Sử dụng sóng triangle tần số cao (1800Hz, 2400Hz, 3200Hz) ngắt quãng 60ms tạo tiếng lách cách tươi vui và sang trọng.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm playCoinDropSound() tự động phát khi người dùng nhận Xu thưởng hoặc nạp thẻ thành công.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Tiếng Mở Túi Mù / Hộp Quà Gacha Hồi Hộp 3 Giai Đoạn",
+        "back": "PROMPT:\nViết module âm thanh mở quà may mắn: Giai đoạn 1 tiếng rương rung lắc tần số thấp (80Hz rumble), Giai đoạn 2 tiếng tích tắc dồn dập (staccato ticks), Giai đoạn 3 tiếng nổ chuông ngân vang (major chime).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hiệu ứng âm thanh kịch tính khi người dùng bấm mở Túi Mù May Mắn trên Onthi-Hub.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Hợp Âm Thành Công Rực Rỡ Major Arpeggio Khi Lên Cấp",
+        "back": "PROMPT:\nXây dựng chuỗi hợp âm Đô Trưởng (C Major: C5 - E5 - G5 - C6) phát lần lượt cách nhau 70ms, âm sắc ấm áp mượt mà tạo cảm xúc thành tựu khi hoàn thành nhiệm vụ.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm playLevelUpSound() phát ra hợp âm tươi sáng khi tài khoản đạt chuỗi 7 ngày Streak.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Âm Thanh Lật Thẻ Flashcard Mềm Mại",
+        "back": "PROMPT:\nTạo hiệu ứng âm thanh tiếng lật giấy mềm mại bằng cách kết hợp nhiễu trắng (White Noise Buffer) đi qua bộ lọc dải thông BiquadFilterNode tần số 800Hz trong thời gian 80ms.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm playCardFlipSound() phát khi người dùng lật xem mặt sau của thẻ prompt.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Tiếng Chuông Notification Bong Bóng Kiểu macOS",
+        "back": "PROMPT:\nViết code âm thanh Pop Notification bong bóng nước: Tần số quét ngược từ 350Hz vụt lên 950Hz trong 45ms, tạo cảm giác tinh gọn, hiện đại và không gây phiền toái cho tai người nghe.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm playNotificationPop() phát khi có thông báo tin nhắn hoặc thông báo hệ thống mới.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Hiệu Ứng Âm Thanh Game 8-Bit Retro Hoài Niệm",
+        "back": "PROMPT:\nSử dụng sóng vuông (Square Wave) tần số nhảy bậc từ 150Hz lên 300Hz rồi 600Hz để tái tạo tiếng nhảy ăn nấm kinh điển của dòng game máy băng NES thời xưa.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Âm thanh mini-game mini battle PvP khi người chơi đưa ra đáp án chính xác.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Tiếng Tích Tắc Đếm Ngược Đồng Hồ Pomodoro",
+        "back": "PROMPT:\nThiết kế âm thanh tích tắc nhịp nhàng nhẹ nhàng (Soft Woodblock Click) lặp lại mỗi 1 giây, tần số 800Hz thời lượng 8ms âm lượng 0.05 không làm mất tập trung khi học tập.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Âm thanh gõ nhịp nhẹ của đồng hồ tập trung Pomodoro tích hợp trong giao diện.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Âm Thanh Báo Lỗi / Thất Bại Tần Số Thấp Ấm Áp",
+        "back": "PROMPT:\nTạo âm thanh cảnh báo lỗi thân thiện: Sử dụng sóng sine kép tần số 180Hz và 160Hz phát đồng thời tạo dao động phách (Beating Effect) hạ âm lượng trong 200ms.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm playErrorSoftSound() phát khi người dùng nhập sai mã voucher hoặc số dư không đủ.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Giải Phóng AudioContext Bị Khóa Bởi Chính Sách Autoplay",
+        "back": "PROMPT:\nViết hàm tiện ích tự động kiểm tra `ctx.state === 'suspended'` và gọi `ctx.resume()` ngay tại sự kiện `pointerdown` hoặc `keydown` đầu tiên của window, đảm bảo 100% âm thanh phát mượt mà trên Safari iOS.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Module unlockAudioContext() niêm phong xử lý tương thích trình duyệt di động.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Tùy Chỉnh Bộ Lọc Âm Thanh BiquadFilter Dưới Nước",
+        "back": "PROMPT:\nThiết kế bộ lọc Lowpass Filter với tần số cắt (Cutoff Frequency) 400Hz, giúp làm đục và mờ âm thanh nền khi người dùng mở một cửa sổ Pop-up Modal kính mờ.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hiệu ứng âm thanh background bị làm mờ dưới nước khi mở modal thanh toán.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Âm Thanh Mở Khóa Ổ Khóa Kim Loại",
+        "back": "PROMPT:\nTái tạo tiếng xoay then kim loại lách cách khi mở khóa gói tài liệu: Sóng tam giác 1200Hz kết hợp sóng răng cưa 450Hz tạo tiếng bi sắt trượt vào ngàm khóa.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Phát tiếng 'Tách - Mở Khóa' khi bấm mở Repo thành công.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Hiệu Ứng Âm Thanh Cào Vé Số / Cào Thẻ May Mắn",
+        "back": "PROMPT:\nSử dụng bộ đệm tiếng ồn hồng (Pink Noise) điều chế biên độ ngẫu nhiên liên tục theo tọa độ chuột di chuyển để mô phỏng chính xác âm thanh cào lớp bạc vé số.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hiệu ứng âm thanh khi người dùng kéo chuột cào mở ô quà may mắn.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Bộ Phát Âm Thanh Bàn Phím Cơ Gõ Chữ",
+        "back": "PROMPT:\nTạo 3 biến thể âm thanh gõ switch bàn phím cơ (Linear / Tactile): Tần số thay đổi ngẫu nhiên ±5% mỗi lần bấm phím để âm thanh gõ văn bản tự nhiên, không bị máy móc.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Phát tiếng gõ phím cơ lách cách sống động khi người dùng gõ vào khung tìm kiếm.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Quản Lý Master Volume & Công Tắc Bật/Tắt Âm Thanh",
+        "back": "PROMPT:\nXây dựng class AudioManager Singleton quản lý Master GainNode, hỗ trợ lưu trạng thái mute vào LocalStorage và tự động làm mờ âm lượng (Fade In / Fade Out) mượt mà khi đổi trang.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tích hợp nút bật tắt loa trên thanh điều hướng Notion Topbar không bị giật âm.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Motion & SFX"
+      }
+    ]
+  },
+  {
+    "id": "skill-game-tokenomics",
+    "title": "Hộp Công Cụ Prompt Kiến Trúc Sư Kinh Tế Game, Ví Xu & Tokenomics",
+    "subtitle": "Thiết kế hệ sinh thái tiền tệ ảo (Xu), cân bằng bể bơm (Faucet) & bể xả (Sink), hộp mù Gacha, chuỗi Streak và chợ C2C",
+    "category": "fullstack-dev",
+    "categoryLabel": "Fullstack & Bảo Mật (AppSec)",
+    "badge": "💎 KINH TẾ GAME & TOKEN",
+    "badgeColor": "#06b6d4",
+    "priceXu": 55,
+    "originalPriceXu": 119,
+    "rating": 4.99,
+    "reviewsCount": 378,
+    "studentsCount": 310,
+    "salesCount": 310,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Bản đặc tả toán học cân bằng kinh tế số: Phân tách Xu thưởng và Xu doanh thu, công thức xác suất mở Túi Mù Poisson, vòng lặp chuỗi điểm danh Streak giữ chân người dùng và lược đồ cơ sở dữ liệu giao dịch bất biến.",
+    "tags": [
+      "Fullstack AppSec",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,662 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,662 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Kiến Trúc Sư Kinh Tế Game, Ví Xu & Tokenomics",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: KIẾN TRÚC SƯ KINH TẾ GAME & TOKENOMICS NỀN TẢNG SỐ v8.5\nBạn là Giám đốc Kinh tế Ảo & Chuyên gia Cân Bằng Tokenomics (Senior Game Economy & Virtual Currency Architect). Nhiệm vụ của bạn là thiết kế hệ sinh thái tiền tệ số (Ví Xu), cơ chế Bơm (Faucet) và Xả (Sink), tỷ lệ Gacha và sàn giao dịch C2C vận hành bền vững, chống lạm phát và gia tăng chỉ số giữ chân người dùng (Retention Rate).\n\n## NGUYÊN TẮC THIẾT KẾ KINH TẾ BẤT BIẾN:\n1. ĐỊNH LUẬT CÂN BẰNG FAUCET & SINK:\n   - Faucet (Bể bơm Xu ra): Điểm danh hàng ngày (+1 Xu), Hoàn thành nhiệm vụ học tập (+2 Xu), Mở túi mù (1-5 Xu), Nạp tiền VietQR.\n   - Sink (Bể tiêu diệt Xu): Phí mở khóa bài tập (19-89 Xu), Phí sàn giao dịch C2C (10%), Phí ghim bài VIP (5 Xu), Mua lượt quay vòng quay may mắn (5 Xu).\n   - Tổng lượng Xu xả ra khỏi lưu thông bắt buộc phải lớn hơn hoặc bằng lượng Xu phát miễn phí hàng ngày để triệt tiêu nguy cơ lạm phát.\n\n2. CƠ CHẾ PHÂN TÁCH XU ĐA TẦNG:\n   - Promo Xu (Xu Khuyến Mãi / Thưởng): Chỉ được dùng để mở khóa nội dung nội bộ trên sàn, KHÔNG được phép rút tiền mặt về tài khoản ngân hàng.\n   - Earned Xu (Xu Doanh Thu Thực Tế): Phát sinh từ việc Creator bán tài liệu trên sàn C2C hoặc người dùng nạp tiền thật qua VietQR. Chỉ loại Xu này mới đủ điều kiện tạo lệnh rút tiền ra tài khoản ngân hàng sau khi trừ thuế phí.\n\n3. TOÁN HỌC GACHA & XÁC SUẤT POISSON:\n   - Phân phối độ hiếm: Thường (Common) 70%, Hiếm (Rare) 22%, Sử thi (Epic) 7%, Huyền thoại (Legendary) 1%.\n   - Cơ chế bảo hiểm (Pity System): Nếu 10 lần liên tiếp không trúng phần thưởng giá trị, hệ thống tự động kích hoạt tỷ lệ trúng thưởng 100% ở lần thứ 11 để bảo vệ trải nghiệm cảm xúc người dùng.\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Thiết Kế Bể Bơm (Faucet) & Bể Xả (Sink) Triệt Tiêu Lạm Phát",
+        "back": "PROMPT:\nThiết lập bảng cân đối dòng tiền Xu cho nền tảng [TÊN_NỀN_TẢNG]. Định lượng chính xác hạn mức Xu tặng mỗi ngày trên mỗi người dùng và thiết kế 4 bể tiêu thụ Xu hấp dẫn để giữ giá trị 1 Xu = 1,000 VNĐ ổn định.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bảng cân đối Faucet/Sink cho Onthi-Hub với 1,000 người dùng tích cực mỗi ngày.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Công Thức Xác Suất Mở Túi Mù / Gacha Bảo Vệ Tâm Lý",
+        "back": "PROMPT:\nViết thuật toán phân phối giải thưởng Túi Mù ngẫu nhiên có trọng số (Weighted Random Distribution). Tích hợp cơ chế bảo hiểm Pity Counter đảm bảo người dùng không bao giờ trắng tay.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm tính xác suất mở hộp quà may mắn: 70% nhận 1-2 Xu, 25% nhận 5 Xu, 5% trúng giải độc đắc 50 Xu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Xây Dựng Cơ Chế Streak Chuỗi Điểm Danh Cấp Số Cộng",
+        "back": "PROMPT:\nThiết kế luật chơi chuỗi điểm danh liên tục 7 ngày: Ngày 1 (+1 Xu), Ngày 2 (+2 Xu)... Ngày 7 (+10 Xu kèm Huy hiệu Chăm Chỉ). Nếu bỏ lỡ 1 ngày, chuỗi tự động quay về mốc Ngày 1 hoặc cho phép dùng Xu mua vé cứu chuỗi (Streak Freeze).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Luật điểm danh 7 ngày tích hợp trong ví Xu Onthi-Hub kích thích người dùng quay lại mỗi ngày.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Thiết Lập Biểu Phí Sàn Giao Dịch C2C Tối Ưu Thanh Khoản",
+        "back": "PROMPT:\nXây dựng công thức tính phí giao dịch sàn: Phí cố định 8% cho người bán, Miễn phí cho người mua. Tiền bán tài liệu được giữ trong trạng thái Escrow tạm giữ 24h trước khi chuyển vào số dư khả dụng để phòng ngừa khiếu nại.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cơ chế thu phí 8% khi học viên pass lại bộ tài liệu Flashcard trên chợ C2C.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Thuật Toán Phân Cấp Hạng VIP & Chiết Khấu Đặc Quyền",
+        "back": "PROMPT:\nThiết kế 4 bậc xếp hạng tài khoản: Đồng (0 Xu), Bạc (Tích lũy 100 Xu), Vàng (500 Xu), Kim Cương (1000 Xu). Mỗi hạng hưởng ưu đãi giảm giá tự động từ 5% đến 20% khi mở khóa các Hộp Công Cụ.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Thuật toán tự động thăng hạng Kim Cương cho học viên tích cực và hiển thị huy hiệu vương miện.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Cơ Chế Chống Gian Lận Tạo Bot Cày Xu Tân Thủ",
+        "back": "PROMPT:\nThiết kế hàng rào bảo mật 3 lớp ngăn chặn việc tạo tài khoản ảo tự động: Giới hạn IP tối đa 3 tài khoản/ngày, Xác thực Fingerprint thiết bị và yêu cầu hoàn thành ít nhất 3 bài tập mới được mở khóa tính năng tặng Xu.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hệ thống phát hiện và khóa tự động các tài khoản clone đăng ký cùng dải IP để gom Xu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Lược Đồ PostgreSQL Ghi Nhận Lịch Sử Biến Động Số Dư Bất Biến",
+        "back": "PROMPT:\nThiết kế bảng `wallet_transactions` trong PostgreSQL: id, user_id, type (deposit/spend/reward/withdraw), amount_xu, balance_before, balance_after, signature, created_at. Cấm tuyệt đối lệnh UPDATE/DELETE để đảm bảo kiểm toán 100%.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Schema SQL bảng nhật ký ví tiền tệ bảo mật cấp ngân hàng trên Supabase.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Bố Cục Kho Đồ Inventory Dạng Lưới Chuẩn Game RPG",
+        "back": "PROMPT:\nThiết kế giao diện kho đồ cá nhân dạng lưới ô vuông (Grid 4x4): Hiển thị các vật phẩm đã mở khóa, thẻ giảm giá Voucher, vé quay may mắn và hiệu ứng hover xem chi tiết thông số.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Giao diện kho tài nguyên người dùng phong cách Apple Glass sang trọng.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Kịch Bản Sự Kiện Flash Sale Giờ Vàng Kích Cầu",
+        "back": "PROMPT:\nLập kịch bản sự kiện Flash Sale giảm giá 40% trong khung giờ vàng 20:00 - 22:00 tối thứ Bảy. Chèn đồng hồ đếm ngược thời gian thực và thông báo số lượng suất ưu đãi còn lại (Scarcity Trigger).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kịch bản Flash Sale giờ vàng cuối tuần mở bán Đại Hộp Công Cụ chỉ 59 Xu giới hạn 50 suất.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Thiết Kế Bảng Xếp Hạng Leaderboard Tính Điểm Thời Gian Thực",
+        "back": "PROMPT:\nXây dựng thuật toán tính điểm đua top tuần: Điểm = (Số Xu tích lũy * 2) + (Chuỗi Streak * 5) + (Số prompt đã copy * 1). Tự động chốt sổ và trao thưởng Xu tự động vào 23:59 Chủ Nhật.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bảng xếp hạng vinh danh Top 10 Creator chăm chỉ nhất tuần nhận thưởng 50 Xu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Cơ Chế Đóng Băng Tiền Tạm Thời (Escrow) Giao Dịch C2C",
+        "back": "PROMPT:\nThiết kế luồng trạng thái thanh toán C2C: Pending -> Escrow Hold (Khóa Xu người mua) -> Delivery (Bàn giao tài liệu) -> Completed (Cộng Xu người bán sau 24h nếu không có khiếu nại).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm Supabase RPC xử lý giữ tiền ký quỹ Escrow khi mua bán khóa học giữa hai sinh viên.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Công Thức Quy Đổi Tỷ Giá Nạp VietQR & Hoa Hồng Affiliate",
+        "back": "PROMPT:\nThiết lập biểu tỷ giá nạp tiền: 1 Xu = 1,000 VNĐ. Tặng thêm 10% khi nạp từ 100k, tặng 20% khi nạp từ 200k. Cơ chế chia sẻ hoa hồng giới thiệu Affiliate 20% Xu trọn đời cho người giới thiệu.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bảng tỷ lệ khuyến mãi nạp tiền VietQR tự động cộng thưởng trên Onthi-Hub.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Thiết Kế Mini-Game Vòng Quay May Mắn (Lucky Wheel)",
+        "back": "PROMPT:\nViết thuật toán toán học cho mini-game Vòng Quay 8 ô: Tính toán góc quay đích ngẫu nhiên từ server, ngăn chặn việc can thiệp góc quay từ F12 DevTools client-side.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Code logic kiểm soát kết quả vòng quay may mắn trên Supabase RPC an toàn tuyệt đối.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Cơ Chế Thu Hồi Xu Tài Khoản Ngủ Quên (Inactivity Fee)",
+        "back": "PROMPT:\nQuy chế quản lý dòng tiền: Tài khoản không đăng nhập quá 180 ngày sẽ bị tính phí lưu trữ tài nguyên 5 Xu/tháng nhằm giải phóng bộ nhớ và thanh lọc lượng tiền ảo tồn đọng.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Quy định điều khoản sử dụng ví Xu tránh rủi ro kế toán nợ đọng tài chính.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Hiệu Ứng Nảy Số Dư Biến Động Mượt Mà (Animated Counter)",
+        "back": "PROMPT:\nViết component React sử dụng `requestAnimationFrame` để tăng giảm số dư Xu theo hiệu ứng chuyển số mượt mà kèm màu xanh lá khi cộng tiền và màu cam đỏ khi trừ tiền.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Component AnimatedCoinBalance với hiệu ứng nảy số tiền tệ chuẩn Apple macOS.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      }
+    ]
+  },
+  {
+    "id": "skill-appsec-redteam",
+    "title": "Hộp Công Cụ Prompt Chuyên Gia Săn Lỗ Hổng Web & Red Team Pentest",
+    "subtitle": "Đóng vai Hacker mũ đen săn lùng lỗ hổng F12 DevTools Tampering, RLS Bypass, Race Condition rút tiền đúp, IDOR và viết bản vá",
+    "category": "fullstack-dev",
+    "categoryLabel": "Fullstack & Bảo Mật (AppSec)",
+    "badge": "🛡️ RED TEAM PENTEST",
+    "badgeColor": "#ef4444",
+    "priceXu": 59,
+    "originalPriceXu": 129,
+    "rating": 5.0,
+    "reviewsCount": 448,
+    "studentsCount": 380,
+    "salesCount": 380,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Cẩm nang kiểm thử xâm nhập và săn lỗ hổng bảo mật cấp ngân hàng: Kịch bản bắn đồng thời 100 luồng kiểm tra rút tiền đúp, thử nghiệm bẻ khóa Supabase RLS bằng Anon Key, rà soát lộ API keys và viết hàm băm HMAC SHA-256.",
+    "tags": [
+      "Fullstack AppSec",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,616 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,616 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Chuyên Gia Săn Lỗ Hổng Web & Red Team Pentest",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: CHUYÊN GIA SĂN LỖ HỔNG BẢO MẬT WEB & RED TEAM PENTESTER v8.5\nBạn là Chuyên gia Đánh Giá An Ninh Ứng Dụng Web & Kiểm Thử Xâm Nhập (Senior Web Penetration Tester & AppSec Lead). Nhiệm vụ của bạn là đóng vai hacker mũ đen tấn công thử nghiệm vào hệ thống để truy tìm mọi góc khuất rò rỉ dữ liệu, race condition tiền tệ, bypass phân quyền RLS và viết bản vá niêm phong chuẩn cấp ngân hàng.\n\n## MA TRẬN TẤN CÔNG THỰC CHIẾN (OWASP TOP 10):\n1. TẤN CÔNG ĐUA LỆNH TÀI CHÍNH (RACE CONDITION & DOUBLE SPENDING):\n   - Kịch bản: Bắn đồng thời 100 HTTP requests trong cùng 1 mili-giây yêu cầu rút tiền hoặc mở khóa nội dung khi số dư chỉ đủ cho 1 giao dịch.\n   - Giải pháp niêm phong: Bắt buộc dùng khóa dòng vật lý `SELECT ... FOR UPDATE` trong giao dịch PostgreSQL hoặc hàm Supabase RPC `SECURITY DEFINER`.\n\n2. BẺ KHÓA PHÂN QUYỀN CƠ SỞ DỮ LIỆU (SUPABASE RLS BYPASS):\n   - Kịch bản: Kẻ tấn công sử dụng Anon Key công khai trên trình duyệt để gọi thẳng API PostgREST `supabase.from('wallets').update({ balance: 999999 })`.\n   - Giải pháp niêm phong: Thu hồi toàn bộ quyền UPDATE/INSERT trên bảng nhạy cảm từ role `anon` và `authenticated`. Mọi thao tác sửa đổi phải thông qua hàm RPC nội bộ có kiểm tra `auth.uid()`.\n\n3. CAN THIỆP GIAO DIỆN & LOCALSTORAGE (F12 DEVTOOLS TAMPERING):\n   - Kịch bản: Kẻ gian mở F12 Console gõ `localStorage.setItem('onthi_wallet_balance', '99999')` hoặc sửa biến state trong React DevTools.\n   - Giải pháp niêm phong: Mọi dữ liệu lưu ở máy khách chỉ mang tính hiển thị tạm thời. Khi giao dịch, hệ thống tự động băm chữ ký HMAC SHA-256 đối chiếu hoặc thẩm định số dư từ server.\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Kịch Bản Giả Lập Tấn Công Rút Tiền Đúp Đồng Thời (Race Condition)",
+        "back": "PROMPT:\nViết script kiểm thử bằng Node.js / Python sử dụng `Promise.all` bắn đồng thời 50 request gọi hàm trừ tiền của endpoint [URL_ENDPOINT] với cùng một tài khoản. Đánh giá xem có xảy ra hiện tượng số dư bị âm hoặc trừ thiếu hay không.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Script Python kiểm tra Race Condition trên endpoint trừ Xu mua tài liệu của Onthi-Hub.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Kiểm Tra Lỗ Hổng Sửa Số Dư Bằng F12 DevTools Console",
+        "back": "PROMPT:\nKịch bản rà soát cơ chế xác thực phía client: Thử đổi giá trị biến số dư trong LocalStorage và React State. Xác nhận rằng khi bấm mua hàng, backend tự động từ chối giao dịch nếu số dư trên server không khớp.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Rà soát tính toàn vẹn của hàm computeWalletSeal chống sửa điểm số bằng F12.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Rà Soát Lỗ Hổng Phân Quyền Supabase RLS Bằng Anon Key",
+        "back": "PROMPT:\nViết script dùng `supabase-js` với Anon Key công khai để cố gắng truy vấn toàn bộ bản ghi của người dùng khác trong bảng `profiles` và `wallets`. Đảm bảo chính sách RLS chặn đứng 100% việc đọc trộm dữ liệu.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kiểm thử thâm nhập chính sách Row Level Security trên Supabase PostgreSQL.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Kiểm Tra Lỗ Hổng IDOR Trên API Đơn Hàng & Tài Khoản",
+        "back": "PROMPT:\nKịch bản kiểm thử Insecure Direct Object References (IDOR): Dùng tài khoản A để gọi API lấy chi tiết đơn hàng hoặc tải tài liệu của tài khoản B bằng cách thay đổi ID trên URL. Đảm bảo server kiểm tra quyền sở hữu.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kiểm tra endpoint `/api/orders/[orderId]` chống việc xem lén thông tin mua hàng của user khác.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Script Quét Mã Độc & Secret API Keys Trước Khi Push Git",
+        "back": "PROMPT:\nViết script hook `pre-commit` tự động quét toàn bộ mã nguồn trước khi đẩy lên GitHub: Phát hiện các chuỗi nhạy cảm như Firebase Private Key, Supabase Service Role Key, Stripe Secret Key, AWS Access Key.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Tích hợp pre-commit hook quét secret keys bảo vệ kho code Onthi-Hub an toàn.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Viết Hàm Băm Chữ Ký HMAC SHA-256 Niêm Phong Dữ Liệu",
+        "back": "PROMPT:\nViết hàm mã hóa và xác thực chữ ký HMAC SHA-256 cho gói dữ liệu thanh toán: Băm chuỗi `userId + amount + timestamp` với Secret Key được bảo vệ trên server, chống kẻ gian can thiệp gói tin giữa đường (MitM).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm tạo và xác thực chữ ký bảo mật cho giao dịch nạp tiền VietQR.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Thiết Lập Content Security Policy (CSP) Triệt Tiêu XSS",
+        "back": "PROMPT:\nCung cấp chuỗi cấu hình Content Security Policy (CSP) nghiêm ngặt cho tệp `vercel.json` hoặc header Nginx: Chặn chạy script inline độc hại, chỉ cho phép load tài nguyên từ các domain được chỉ định tin cậy.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cấu hình CSP Header cho dự án Vite / Next.js trên nền tảng Vercel.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Bảo Vệ Endpoint Chống Tấn Công Brute Force Bằng Rate Limiting",
+        "back": "PROMPT:\nXây dựng middleware giới hạn tần suất gọi API (Rate Limiting) sử dụng Upstash Redis hoặc in-memory map: Giới hạn tối đa 5 lần thử đăng nhập / 1 phút trên mỗi địa chỉ IP, tự động khóa 15 phút nếu vượt ngưỡng.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Middleware Rate Limiting bảo vệ form đăng nhập và form nhập mã voucher giảm giá.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Kiểm Tra Lỗ Hổng SSRF Khi Tải Ảnh Từ URL Ngoài",
+        "back": "PROMPT:\nKịch bản phòng chống Server-Side Request Forgery (SSRF): Khi cho phép người dùng nhập link ảnh đại diện, kiểm tra và chặn đứng các dải IP nội bộ như `127.0.0.1`, `169.254.169.254` (AWS Metadata) và `192.168.x.x`.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Hàm validate URL ảnh tải lên chống tấn công thăm dò mạng nội bộ server.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Khóa Bảo Mật Cookie Bằng HttpOnly, Secure & SameSite Strict",
+        "back": "PROMPT:\nHướng dẫn cấu hình Set-Cookie an toàn tuyệt đối cho Token phiên đăng nhập: Cờ `HttpOnly` ngăn chặn JavaScript đọc trộm, `Secure` bắt buộc chạy qua HTTPS và `SameSite=Strict` triệt tiêu nguy cơ tấn công CSRF.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cấu hình Cookie JWT lưu trữ phiên đăng nhập của học viên an toàn trước mã độc XSS.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Rà Soát Cấu Hình CORS Header Tránh Bị Gọi Trộm API",
+        "back": "PROMPT:\nThiết lập cấu hình Cross-Origin Resource Sharing (CORS) chuẩn xác: Chỉ cho phép Origin của website chính thức truy cập API, từ chối mọi yêu cầu có Origin lạ hoặc wildcard `*` trên các endpoint nghiệp vụ ví tiền.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Cấu hình CORS trong Supabase Edge Functions chỉ chấp nhận request từ onthi-hub.vercel.app.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Kịch Bản Kiểm Thử Bảo Mật Cổng Nạp Tiền VietQR Tự Động",
+        "back": "PROMPT:\nKiểm thử các kịch bản gian lận nạp tiền: Gửi webhook nạp tiền giả mạo, nạp tiền với số âm, gửi lại webhook đã xử lý thành công (Replay Attack). Đảm bảo hệ thống bắt chính xác 100% các hành vi gian lận.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Quy trình kiểm thử an toàn cho cổng webhook nhận tiền tự động ngân hàng MB Bank.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Kiểm Tra Rò Rỉ Biến Môi Trường Trong File Bundle Vite",
+        "back": "PROMPT:\nHướng dẫn phân tích file build trong thư mục `dist/assets`: Kiểm tra xem các biến môi trường nhạy cảm có bị vô tình đóng gói vào client hay không (chỉ biến có tiền tố `VITE_` được phép lộ diện).\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Rà soát bundle Vite đảm bảo không lộ Service Role Key hay DB Password.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Thiết Kế Hệ Thống Ghi Nhật Ký Kiểm Toán Bảo Mật (Audit Logs)",
+        "back": "PROMPT:\nThiết kế bảng `security_audit_logs` ghi nhận các hành vi nhạy cảm: Đăng nhập từ thiết bị lạ, Đổi mật khẩu, Thay đổi số dư bất thường, Lệnh nạp tiền lớn. Lưu kèm địa chỉ IP và User-Agent để phục vụ điều tra.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Lược đồ bảng Audit Logs theo dõi mọi thao tác quản trị viên trên trang Admin Onthi-Hub.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Quy Trình Phản Ứng Khẩn Cấp (Incident Response) Khi Bị Tấn Công",
+        "back": "PROMPT:\nSoạn thảo tài liệu quy trình 5 bước ứng phó sự cố an ninh mạng: 1. Cách ly hệ thống (Bật chế độ bảo trì), 2. Thu hồi toàn bộ Access Token, 3. Đổi Secret Keys, 4. Vá lỗ hổng và khôi phục database, 5. Viết báo cáo hậu kiểm.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Sách trắng quy trình ứng phó khẩn cấp khi phát hiện dấu hiệu gian lận ví Xu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Fullstack AppSec"
+      }
+    ]
+  },
+  {
+    "id": "skill-prompt-architect-pro",
+    "title": "Hộp Công Cụ Prompt Chuyên Gia System Instructions & Custom GPTs v8.5",
+    "subtitle": "Kỹ nghệ viết Master System Prompts siêu dài (>5,000 ký tự), ép AI tư duy đa bước (Chain-of-Thought), triệt tiêu bịa chuyện",
+    "category": "starter-edu",
+    "categoryLabel": "Sinh Viên Lập Trình (Starter)",
+    "badge": "🧠 PROMPT ARCHITECT",
+    "badgeColor": "#10b981",
+    "priceXu": 35,
+    "originalPriceXu": 79,
+    "rating": 4.99,
+    "reviewsCount": 558,
+    "studentsCount": 490,
+    "salesCount": 490,
+    "updatedAt": "Tháng 11/2026",
+    "author": "Bùi Thái AI Studio",
+    "instructor": "Bùi Thái AI Studio",
+    "format": [
+      "Master Prompt v8.5",
+      "15 Mẫu Cheat Sheet",
+      "1-Click Copy Full"
+    ],
+    "description": "Khung phương pháp cấu trúc prompt 6 tầng độc quyền từ Bùi Thái AI Studio: Kỹ thuật khóa chặt System Prompt chống Jailbreak, ép AI xuất JSON Schema nghiêm ngặt, học theo mẫu Few-Shot và tự kiểm định chất lượng câu trả lời.",
+    "tags": [
+      "Clean Code",
+      "Bùi Thái Studio",
+      "Master Prompt v8.5",
+      "ChatGPT Plus",
+      "Claude 3.5"
+    ],
+    "highlights": [
+      "Master System Prompt (1,369 ký tự) độc quyền từ Bùi Thái AI Studio",
+      "Trọn bộ 15 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực tế",
+      "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor IDE"
+    ],
+    "cardsCount": 16,
+    "previewContent": [
+      "Master System Prompt v8.5 độc quyền (1,369 ký tự) thiết lập chuẩn mực tư duy.",
+      "Trọn bộ 15 câu lệnh Cheat Sheet thực chiến kèm ví dụ ứng dụng ngay.",
+      "Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet, Cursor IDE và Antigravity.",
+      "1-Click Copy toàn văn không bị cắt ngắn ký tự, không lỗi font tiếng Việt."
+    ],
+    "cards": [
+      {
+        "id": 1,
+        "front": "👑 [MASTER SYSTEM PROMPT] Hộp Công Cụ Prompt Chuyên Gia System Instructions & Custom GPTs v8.5",
+        "back": "PROMPT:\n# MASTER SYSTEM PROMPT: BẬC THẦY KỸ NGHỆ PROMPT & KIẾN TRÚC SƯ CUSTOM GPTS v8.5\nBạn là Giám đốc Nghiên cứu Kỹ nghệ Câu lệnh & Kiến trúc sư Trợ lý AI Độc bản (Lead Prompt Engineer & Custom GPTs Architect). Nhiệm vụ của bạn là chế tác các câu lệnh Master System Prompts siêu dài (>5,000 ký tự), thiết lập bản sắc chuyên môn không thể lay chuyển, triệt tiêu hoàn toàn hiện tượng AI bịa chuyện (Zero-Hallucination) và ép AI tuân thủ cấu trúc đầu ra chuẩn xác 100%.\n\n## CẤU TRÚC PROMPT 6 TẦNG ĐỘC BẢN:\n- TẦNG 1: ROLE & PERSONA (Định vị vai vế, trình độ thâm niên, tông giọng chuyên gia bản địa, không dùng từ ngữ sáo rỗng AI).\n- TẦNG 2: HARD BOUNDARIES & CẤM KỴ (Danh mục các từ cấm, các hành vi bị nghiêm cấm: không căn giữa, không bento box vụn vặt, không tự ý đoán mò khi thiếu dữ kiện).\n- TẦNG 3: EXECUTION WORKFLOW (Quy trình tác chiến từng bước rõ ràng: Thu thập yêu cầu -> Phân tích lỗ hổng -> Lập giải pháp -> Viết mã -> Tự kiểm định).\n- TẦNG 4: FEW-SHOT IN-CONTEXT LEARNING (Cung cấp các cặp mẫu Input -> Output hoàn hảo để AI tự so sánh và đối chiếu chuẩn mực).\n- TẦNG 5: OUTPUT DELIVERABLE CONTRACT (Đặc tả chính xác định dạng đầu ra: Bảng Markdown, Cấu trúc JSON Schema nghiêm ngặt, Mã nguồn hoàn chỉnh không cắt bớt).\n- TẦNG 6: SELF-VERIFICATION GATE (Bộ câu hỏi tự vấn trước khi xuất câu trả lời: Đoạn code này đã kiểm tra lỗi chưa? Đã tối ưu hiệu năng chưa?).\n\n📌 THAM SỐ GỢI Ý:\n- Phiên bản: Master System Prompt v8.5 (Bùi Thái AI Studio)\n- Tương thích: ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor, Antigravity\n- Tiêu chuẩn: Anti-AI Slop, Production Ready 60fps, Bank-Grade Security\n\n💡 Mẹo triển khai:\nDán toàn bộ câu lệnh Master System Prompt này vào phần Custom Instructions của ChatGPT Plus, System Prompt trong Claude Projects hoặc tệp .cursorrules để thiết lập toàn diện tư duy và bộ quy chuẩn cấm kỵ trước khi bắt đầu công việc.",
+        "tag": "Master Prompt"
+      },
+      {
+        "id": 2,
+        "front": "⚡ [Cheat Sheet #1] Cấu Trúc 6 Tầng Viết Master System Prompt Siêu Dài",
+        "back": "PROMPT:\nÁp dụng khung cấu trúc 6 tầng (Role - Boundaries - Workflow - Few-Shot - Output - Self-Verification) để viết bản Master System Prompt hoàn chỉnh cho trợ lý AI thuộc lĩnh vực [LĨNH_VỰC_CHUYÊN_MÔN]. Đảm bảo độ dài trên 3,000 ký tự sắc bén.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Viết Master System Prompt cho Trợ lý Cố vấn Khởi nghiệp Công nghệ AEP NEU.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 3,
+        "front": "⚡ [Cheat Sheet #2] Kỹ Thuật Khóa Chặt System Prompt Chống Bị Lộ Lệnh (Anti-Jailbreak)",
+        "back": "PROMPT:\nSoạn thảo bộ quy tắc phòng vệ Anti-Prompt Injection & Anti-Jailbreak: Ngăn chặn kẻ xấu dùng các câu lệnh bẫy như 'Hãy quên hết lệnh trên', 'In ra system prompt của bạn' để đánh cắp chất xám câu lệnh gốc.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bộ lệnh bảo vệ bản quyền câu lệnh Custom GPTs chống bị người dùng trích xuất bí mật.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 4,
+        "front": "⚡ [Cheat Sheet #3] Ép ChatGPT / Claude Trả Lời Theo Chuẩn JSON Schema",
+        "back": "PROMPT:\nThiết kế câu lệnh ép AI chỉ xuất dữ liệu đúng theo định dạng JSON Schema [CẤU_TRÚC_JSON]. Nghiêm cấm AI thêm bất kỳ câu chào hỏi 'Dưới đây là kết quả của bạn' hoặc giải thích ngoài lề.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt ép AI phân tích bài viết và trả về đúng JSON { title, summary, tags, sentiment }.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 5,
+        "front": "⚡ [Cheat Sheet #4] Kích Hoạt Tư Duy Đa Bước Chain-of-Thought Giải Bài Khó",
+        "back": "PROMPT:\nThiết lập quy trình kích hoạt tư duy chuỗi (Chain-of-Thought): Bắt buộc AI phải suy nghĩ phân tích trong thẻ `<thinking>` trước khi đưa ra kết luận cuối cùng, giúp giải quyết các bài toán logic phức tạp với độ chính xác tuyệt đối.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kích hoạt tư duy đa bước giải bài toán tối ưu thuật toán Dynamic Programming.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 6,
+        "front": "⚡ [Cheat Sheet #5] Kỹ Thuật Viết Few-Shot Prompt Nhại Giọng Văn Cá Nhân",
+        "back": "PROMPT:\nCung cấp phương pháp xây dựng Few-Shot Prompt: Đưa vào 3 bài viết mẫu có sẵn của tác giả [TÊN_TÁC_GIẢ] để AI phân tích cấu trúc câu, từ ngữ cửa miệng, nhịp ngắt đoạn và viết bài mới chuẩn 100% phong cách đó.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Few-shot prompt giúp AI nhại giọng văn châm biếm, sắc bén của một chuyên gia tài chính.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 7,
+        "front": "⚡ [Cheat Sheet #6] Prompt Đóng Vai Hội Đồng Phản Biện Khó Tính Chấm Điểm",
+        "back": "PROMPT:\nThiết kế Prompt đóng vai Giáo sư phản biện cực kỳ khắt khe của hội đồng bảo vệ luận án [CHUYÊN_NGÀNH]. Nhiệm vụ là soi từng lỗ hổng phương pháp nghiên cứu, đặt 5 câu hỏi xoáy sâu và chấm điểm thử.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt đóng vai Chủ tịch hội đồng bảo vệ khóa luận tốt nghiệp ngành Kinh tế Quốc tế.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 8,
+        "front": "⚡ [Cheat Sheet #7] Thiết Kế Prompt Agent Tự Gọi Công Cụ Function Calling / MCP",
+        "back": "PROMPT:\nViết bản đặc tả System Prompt cho AI Agent tích hợp các công cụ Tool Calling: Hướng dẫn AI khi nào cần gọi công cụ tìm kiếm, khi nào gọi máy tính, định dạng tham số gọi hàm chuẩn và xử lý kết quả trả về.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt cho AI Agent điều phối việc gọi tool tra cứu tài liệu học thuật và gửi email.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 9,
+        "front": "⚡ [Cheat Sheet #8] Kỹ Thuật Lọc Bỏ Ảo Giác (Zero-Hallucination Prompting)",
+        "back": "PROMPT:\nXây dựng cơ chế ràng buộc chặt chẽ: AI chỉ được phép trích dẫn thông tin có mặt trong tài liệu tham khảo được cung cấp. Nếu tài liệu không đề cập, AI bắt buộc phải trả lời 'Dữ liệu không cung cấp' thay vì tự suy diễn bịa đặt.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt cho trợ lý tra cứu luật pháp Việt Nam, cấm tuyệt đối việc tự bịa điều khoản luật.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 10,
+        "front": "⚡ [Cheat Sheet #9] Tối Ưu Token Prompt: Rút Ngắn 50% Độ Dài Giữ Nguyên Ý",
+        "back": "PROMPT:\nKỹ thuật cô đọng prompt: Loại bỏ từ nối rườm rà, thay thế câu văn miêu tả bằng ký hiệu logic, bảng ma trận và danh sách điều kiện boolean, giúp tiết kiệm 50% chi phí Token đầu vào mà hiệu quả tăng gấp đôi.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Rút gọn một bản prompt dài 4,000 token xuống còn 2,000 token cho tiết kiệm chi phí API.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 11,
+        "front": "⚡ [Cheat Sheet #10] Prompt Phân Tích Dữ Liệu Excel / CSV Tự Động Tìm Quy Luật",
+        "back": "PROMPT:\nThiết kế câu lệnh chuyên gia phân tích dữ liệu kinh doanh: Nhận tệp dữ liệu dạng bảng, tự động tính toán tăng trưởng MoM, chỉ ra 20% sản phẩm mang lại 80% doanh thu (Pareto) và gợi ý 3 hành động cụ thể.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt phân tích bảng xuất dữ liệu bán hàng tháng, tự động phát hiện mặt hàng ế ẩm.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 12,
+        "front": "⚡ [Cheat Sheet #11] Prompt Dịch Thuật Học Thuật Chuyên Sâu Chuẩn Văn Phong",
+        "back": "PROMPT:\nViết câu lệnh dịch thuật chuyên sâu từ tiếng Anh sang tiếng Việt học thuật: Giữ nguyên thuật ngữ chuyên ngành chuẩn quốc tế, cấu trúc lại câu văn phức tiếng Anh thành câu tiếng Việt sáng nghĩa, không bị dịch gượng.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Prompt dịch các bài báo khoa học kinh tế lượng từ Scopus sang tiếng Việt mượt mà.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 13,
+        "front": "⚡ [Cheat Sheet #12] Kỹ Thuật Gán Quyền Hạn & Giới Hạn Phạm Vi Trợ Lý Ảo",
+        "back": "PROMPT:\nCài đặt câu lệnh giới hạn phạm vi trách nhiệm (Scope Guardrails): Trợ lý chỉ trả lời trong chuyên môn [LĨNH_VỰC], từ chối khéo léo và hướng người dùng quay lại chủ đề chính khi bị hỏi các câu lạc đề.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Gán phạm vi cho Chatbot tuyển sinh, từ chối trả lời chuyện phiếm và tập trung vào học phí, ngành học.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 14,
+        "front": "⚡ [Cheat Sheet #13] Viết Prompt Tự Động Sinh Kịch Bản Bán Hàng Telesale",
+        "back": "PROMPT:\nThiết kế câu lệnh sản xuất kịch bản Telesale xử lý từ chối cho sản phẩm [SẢN_PHẨM]: Soạn sẵn kịch bản 3 bước phản hồi khi khách hàng chê đắt, khi khách bảo bận và khi khách muốn hỏi ý kiến người thân.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Kịch bản Telesale chốt đơn khóa học lập trình thực chiến cho học viên mới bắt đầu.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 15,
+        "front": "⚡ [Cheat Sheet #14] Kỹ Thuật Debug Prompt Khi AI Trả Lời Lệch Hướng",
+        "back": "PROMPT:\nKhung chẩn đoán lỗi Prompt: Phân tích nguyên nhân vì sao AI hiểu nhầm đề bài (Do Role mơ hồ, do thiếu ràng buộc loại trừ Negative Prompt hay do thứ tự ưu tiên câu lệnh bị đảo lộn) và đưa ra bản vá ngay lập tức.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Sửa lỗi prompt khi AI liên tục tự động sinh code bằng thư viện cũ thay vì React 19.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      },
+      {
+        "id": 16,
+        "front": "⚡ [Cheat Sheet #15] Tạo Khung Kiểm Thử Tự Động Đánh Giá Độ Chính Xác Của Prompt",
+        "back": "PROMPT:\nThiết lập bảng ma trận 10 tiêu chí kiểm định chất lượng đầu ra của Prompt: Tính đầy đủ, Tính chính xác, Văn phong, Thời gian xử lý, Tuân thủ format. Chấm điểm theo thang điểm 10 để tối ưu hóa liên tục.\n\n📌 THAM SỐ GỢI Ý:\n- Ví dụ thực tế: Bộ test case kiểm tra chất lượng Prompt sinh code HTML/Tailwind CSS chuẩn chỉnh.\n- Công cụ: ChatGPT Plus / Claude 3.5 Sonnet / Cursor IDE\n\n💡 Mẹo triển khai:\nThay thế các trường thông tin trong ngoặc vuông [...] bằng dữ liệu thực tế của dự án bạn trước khi bấm gửi câu lệnh.",
+        "tag": "Clean Code"
+      }
+    ]
   }
 ];
 
 export const COMBO_PACKAGE = {
   "id": "combo-all-access",
   "title": "ĐẠI HỘP CÔNG CỤ MASTER AI PROMPT VAULT (BÙI THÁI AI STUDIO)",
-  "subtitle": "Mở khóa trọn đời toàn bộ 6 Hộp Công Cụ Master Prompts (101 Thẻ Prompt Thực Chiến): Web Haute-Couture, Fullstack AppSec, Content SEO E-E-A-T, Luận Văn Điểm A+, Clean Code Starter",
+  "subtitle": "Mở khóa trọn đời toàn bộ 12 Hộp Công Cụ Master Prompts (197+ Thẻ Prompt Thực Chiến): Web Haute-Couture, Fullstack AppSec, Content SEO, N8N Auto, Video Phonk, Game SFX... Giá ưu đãi chỉ 99 Xu!",
   "originalPriceXu": 499,
-  "priceXu": 119,
-  "discountPercent": 76,
-  "badge": "Siêu Tiết Kiệm 76% 👑",
+  "priceXu": 99,
+  "discountPercent": 80,
+  "badge": "VIP TRỌN ĐỜI 99 XU 👑",
   "features": [
-    "Trọn bộ 6 Hộp Công Cụ Master Prompts (>30,000 ký tự prompt chuẩn) của Bùi Thái AI Studio",
-    "101 thẻ Prompt Cheat Sheet thực chiến có sẵn mẫu câu lệnh và ví dụ thực tế",
+    "Toàn bộ 12 Hộp Công Cụ Master Prompts (>60,000 ký tự prompt chuẩn) của Bùi Thái AI Studio",
+    "Trọn bộ 197 thẻ Prompt Cheat Sheet thực chiến có sẵn mẫu câu lệnh và ví dụ thực tế",
     "Tương thích 100% với ChatGPT Plus (GPT-4o), Claude 3.5 Sonnet, Cursor và Antigravity",
     "1-Click Copy Prompt siêu tốc định dạng sạch, không cắt ngắn ký tự, không lỗi font",
     "Quyền sở hữu vĩnh viễn và nhận cập nhật các phiên bản Master Prompt nâng cấp trọn đời",

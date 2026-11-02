@@ -145,7 +145,7 @@ export default function HomeView({
           </h1>
 
           <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-300 leading-relaxed font-normal">
-            Hệ sinh thái Master System Prompts v8.5 (từ 3,500 đến 8,200 ký tự) và 101 câu lệnh Cheat Sheet chuyên sâu độc quyền từ Bùi Thái AI Studio. Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet và Cursor IDE.
+            Hệ sinh thái Master System Prompts v8.5 (từ 3,500 đến 8,200 ký tự) và 197 câu lệnh Cheat Sheet chuyên sâu độc quyền từ Bùi Thái AI Studio. Tối ưu 100% cho ChatGPT Plus, Claude 3.5 Sonnet và Cursor IDE.
           </p>
 
           {/* Quick CTA Actions */}
