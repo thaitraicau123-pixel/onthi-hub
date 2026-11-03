@@ -383,7 +383,7 @@
                     Phân loại: ${item.variant || 'Mặc định'}
                   </span>
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                    ● ${item.stock || 'Còn hàng'}
+                    ● Mở khóa tức thì • Vĩnh viễn
                   </span>
                 </div>
                 <div class="mt-1.5 flex items-baseline gap-2">

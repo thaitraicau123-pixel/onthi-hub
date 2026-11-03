@@ -4,7 +4,7 @@
  * Strategy: Network-First falling back to Cache (luôn ưu tiên dữ liệu mới, offline mở tức thì)
  */
 
-const CACHE_NAME = 'shopskill247-pwa-v12.8-prompts-v12-chatgpt6-claude46-gemini4';
+const CACHE_NAME = 'shopskill247-pwa-v12.9-floor-price-9k-and-infinite-digital-stock';
 
 const CORE_STATIC_ASSETS = [
   './',

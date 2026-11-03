@@ -215,7 +215,7 @@ window.ShopVietViews.modal = (function () {
       const userBalance = (currentUser && typeof currentUser.balance === 'number') ? currentUser.balance : 0;
       const totalXu = currentProduct.price * currentQty;
       const isSufficient = currentUser && (userBalance >= totalXu);
-      const isOutOfStock = currentProduct.status === 'out_of_stock' || currentProduct.stock <= 0;
+      const isOutOfStock = false; // Kỹ năng số 1-Click Copy luôn luôn sẵn sàng 24/7, không bao giờ hết hàng
       const activeOrder = getExistingActiveOrder(currentProduct.id, currentUser ? currentUser.email : '');
       const isAlreadyUnlocked = Boolean(activeOrder);
 
@@ -348,10 +348,13 @@ window.ShopVietViews.modal = (function () {
                 </div>
               </div>
 
-              <!-- SỐ LƯỢNG (MẶC ĐỊNH 1 GÓI CÀI ĐẶT) -->
+              <!-- HÌNH THỨC CẤP PHÉP -->
               <div class="flex items-center justify-between p-3 rounded-2xl bg-white/70 dark:bg-[#140F0B]/70 border border-[#E6DCCB] dark:border-amber-900/30">
-                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Số lượng bản quyền:</span>
-                <span class="text-xs font-mono font-bold text-amber-700 dark:text-amber-400">1 Bản quyền vĩnh viễn</span>
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Hình thức cấp phép:</span>
+                <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span>Bản quyền vĩnh viễn (1-Click Copy)</span>
+                </span>
               </div>
 
               <!-- KHỐI TÌNH TRẠNG VÍ XU CỦA KHÁCH HÀNG -->
@@ -821,14 +824,17 @@ window.ShopVietViews.modal = (function () {
                   <span class="text-[11px] text-amber-700 dark:text-amber-400 font-medium">Bấm gói bên dưới để cập nhật mã QR</span>
                 </div>
                 <div class="grid grid-cols-3 gap-2" id="depositQuickGrid">
+                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(9000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 9000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
+                    9.000 Xu <span class="block text-[9px] font-bold text-emerald-600">⚡ Giá sàn 9k</span>
+                  </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(19000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 19000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    19.000 Xu <span class="block text-[9px] font-bold text-emerald-600">⚡ Đồng giá 19k</span>
+                    19.000 Xu <span class="block text-[9px] font-bold text-amber-600">⭐ Đa số 19k</span>
                   </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(29000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 29000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    29.000 Xu <span class="block text-[9px] font-bold text-amber-600">⭐ Web & AppSec</span>
+                    29.000 Xu <span class="block text-[9px] font-bold text-rose-600">🔥 Web & AppSec</span>
                   </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(49000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 49000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    49.000 Xu <span class="block text-[9px] font-bold text-rose-600">👑 Đại Hộp All-In-One</span>
+                    49.000 Xu <span class="block text-[9px] font-bold text-amber-500">👑 Đại Hộp All-In-One</span>
                   </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(69000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 69000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
                     69.000 Xu <span class="block text-[9px] font-normal text-slate-400">Combo 3-4 Hộp</span>

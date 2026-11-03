@@ -563,7 +563,7 @@ Viết file cấu hình GitHub Actions Workflow (.github/workflows/deploy.yml) c
 
 ---
 
-## 3. Hộp Công Cụ Prompt Content SEO E-E-A-T & Kịch Bản Video Triệu View (Mã: `skill-seo-affiliate` - Giá: 19.000 Xu)
+## 3. Hộp Công Cụ Prompt Content SEO E-E-A-T & Kịch Bản Video Triệu View (Mã: `skill-seo-affiliate` - Giá: 9.000 Xu)
 
 **Mô tả:** Hộp Công Cụ Master Prompt biến AI thành Giám Đốc Nội Dung kiêm Chuyên Gia Viral Video. Thiết kế theo dạng "Điền chỗ trống 1-chạm": Chỉ cần thay chủ đề và nỗi đau của khách hàng là AI tự động sinh ra kịch bản video ngắn 60s giữ chân 3s đầu, bài viết chuẩn SEO E-E-A-T đoạt Featured Snippet và bài viết chuyển đổi đơn hàng đỉnh cao.
 
@@ -927,7 +927,7 @@ Lập dàn ý slide PowerPoint và kịch bản lời nói (Speaker Notes) cho b
 
 ---
 
-## 5. Hộp Công Cụ Prompt Nhập Môn Lập Trình Cho Sinh Viên (Clean Code Starter Pack) (Mã: `skill-coding-starter` - Giá: 19.000 Xu)
+## 5. Hộp Công Cụ Prompt Nhập Môn Lập Trình Cho Sinh Viên (Clean Code Starter Pack) (Mã: `skill-coding-starter` - Giá: 9.000 Xu)
 
 **Mô tả:** Hộp Công Cụ Master Prompt biến AI thành Gia Sư Lập Trình 1 Kèm 1 tận tâm và kiên nhẫn. Thiết kế theo dạng "Điền chỗ trống 1-chạm": Chỉ cần dán đề bài hoặc thông báo lỗi vào bảng thông số là AI tự động giải thích bản chất bằng ẩn dụ đời thực, chỉ rõ nguyên nhân vì sao sai, hướng dẫn tự sửa và rèn luyện thói quen viết Clean Code chuẩn quốc tế.
 
@@ -1476,7 +1476,7 @@ Thiết kế workflow N8N kích hoạt lúc 03:00 sáng, chạy lệnh pg_dump x
 
 ---
 
-## 8. Hộp Công Cụ Prompt Dựng Video Phonk & TikTok Shorts Giật Beat 60fps (Mã: `skill-phonk-beat-sync` - Giá: 19.000 Xu)
+## 8. Hộp Công Cụ Prompt Dựng Video Phonk & TikTok Shorts Giật Beat 60fps (Mã: `skill-phonk-beat-sync` - Giá: 9.000 Xu)
 
 **Mô tả:** Công thức dựng video ngắn bắt beat triệu view (Brazilian Bass, Drift Phonk, Gym Motivation, Anime Flash & Speed Ramp)
 
@@ -1666,7 +1666,7 @@ Thiết lập chuyển động phóng to thu nhỏ (Optical Zoom Pulse) biên đ
 
 ---
 
-## 9. Hộp Công Cụ Prompt Kỹ Sư Âm Thanh Web Audio API & Game SFX 0MB (Mã: `skill-web-audio-sfx` - Giá: 19.000 Xu)
+## 9. Hộp Công Cụ Prompt Kỹ Sư Âm Thanh Web Audio API & Game SFX 0MB (Mã: `skill-web-audio-sfx` - Giá: 9.000 Xu)
 
 **Mô tả:** Bộ tổng hợp âm thanh xúc giác Taptic Click, tiếng coin rơi lách cách, mở hộp mù và level-up chạy mượt <1ms không tốn byte MP3 nào
 
