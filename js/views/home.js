@@ -1398,7 +1398,7 @@ window.ShopVietViews.home = (function () {
 
                 <!-- Mô Tả Phụ -->
                 <p id="heroDescText" class="text-slate-600 dark:text-slate-300 text-sm sm:text-base mt-4 leading-relaxed font-sans">
-                  <span class="u267-sw u267-block"><span>Đóng gói toàn bộ tinh hoa Kỹ Năng AI thành các Master Prompts v12.0 chuẩn chỉ. 1-Click sao chép dùng ngay trên ChatGPT 6 (GPT-6 / o4-pro), Claude 4.6 Opus / Sonnet, Gemini 4 Argon, Cursor AI 2.0 & Antigravity 2.0. Kèm danh mục 10-20 mẫu câu lệnh Cheat Sheets thực chiến, không lo bảo trì kỹ thuật, mở khóa tức thì bằng Xu!</span></span>
+                  <span class="u267-sw u267-block"><span>Đóng gói toàn bộ tinh hoa Kỹ Năng AI thành các Master Prompts v12.0 chuẩn chỉ. 1-Click sao chép dùng ngay trên ChatGPT, Claude, Gemini, Cursor AI & Antigravity. Kèm danh mục 10-20 mẫu câu lệnh Cheat Sheets thực chiến, không lo bảo trì kỹ thuật, mở khóa tức thì bằng Xu!</span></span>
                 </p>
 
                 <!-- Thanh Tìm Kiếm Tích Hợp -->

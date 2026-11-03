@@ -342,7 +342,7 @@ window.ShopVietViews.modal = (function () {
                   <ul class="space-y-1 text-[11px] text-slate-600 dark:text-slate-400 pl-4 list-disc">
                     <li><strong>1-Click Copy Master Prompt v12.0</strong> chuẩn System Instructions</li>
                     <li><strong>Kèm danh mục 10–20 câu lệnh Cheat Sheet</strong> có sẵn biến thay thế</li>
-                    <li>Sử dụng trực tiếp trên <strong>ChatGPT 6 (GPT-6 / o4-pro), Claude 4.6 Opus/Sonnet, Gemini 4 Argon, Cursor AI 2.0</strong></li>
+                    <li>Sử dụng trực tiếp trên <strong>ChatGPT, Claude, Gemini, Cursor AI</strong></li>
                     <li>Không cần cài đặt, không cần gõ lệnh phức tạp, không lo lỗi môi trường</li>
                   </ul>
                 </div>
