@@ -219,7 +219,7 @@
     }
   };
 
-  // Đăng nhập nhanh Google (1-Chạm)
+  // Đăng nhập Google (Popup Firebase Auth)
   const loginGoogle = async function () {
     if (window.ShopVietFirebase && typeof window.ShopVietFirebase.loginWithGoogle === 'function') {
       try {
@@ -233,50 +233,20 @@
           }
           handlePostAuthRedirect();
           return;
+        } else if (gRes && gRes.message) {
+          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+            window.ShopVietState.showToast(gRes.message, 'info');
+          }
+          return;
         }
       } catch (e) {
         console.warn('Google login popup error:', e);
       }
     }
 
-    const gUser = {
-      id: 'usr_admin_buithai',
-      uid: 'usr_admin_buithai',
-      name: 'Bùi Thái (Admin)',
-      email: 'thaitraicau123@gmail.com',
-      avatar: 'BT',
-      balance: 500000,
-      phone: '0986019623',
-      role: 'admin',
-      isLoggedIn: true,
-      authProvider: 'google'
-    };
-
-    if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
-      window.ShopVietState.login(gUser);
-    }
     if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-      window.ShopVietState.showToast('✅ Đăng nhập Google thành công! Chào mừng Bùi Thái', 'success');
+      window.ShopVietState.showToast('Đăng nhập Google đã bị đóng hoặc chưa hoàn tất.', 'info');
     }
-    handlePostAuthRedirect();
-  };
-
-  // Đăng nhập nhanh Admin Bùi Thái (1-Chạm)
-  const quickAdminLogin = function () {
-    const emailInput = document.getElementById('authEmailInput');
-    const passInput = document.getElementById('authPasswordInput');
-    if (emailInput) emailInput.value = 'thaitraicau123@gmail.com';
-    if (passInput) passInput.value = 'buithai123';
-    if (isRegisterMode) {
-      isRegisterMode = false;
-      const title = document.getElementById('authTitle');
-      const submitText = document.getElementById('authSubmitBtnText');
-      const nameFieldGroup = document.getElementById('nameFieldGroup');
-      if (title) title.textContent = 'Đăng nhập';
-      if (submitText) submitText.textContent = 'Đăng nhập';
-      if (nameFieldGroup) nameFieldGroup.classList.add('hidden');
-    }
-    submitForm();
   };
 
   const authView = {
@@ -455,10 +425,10 @@
               <!-- Phân cách HOẶC -->
               <div class="relative my-4 flex items-center justify-center">
                 <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-                <span class="bg-white dark:bg-slate-900 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC ĐĂNG NHẬP NHANH</span>
+                <span class="bg-white dark:bg-slate-900 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
               </div>
 
-              <!-- Nút Đăng nhập nhanh Google (1-Chạm) -->
+              <!-- Nút Đăng nhập với Google -->
               <button type="button" id="googleLoginBtn" onclick="window.ShopVietViews.auth.loginGoogle()" class="w-full flex items-center justify-center gap-3 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-slate-800 dark:text-slate-100 font-semibold text-xs transition-all shadow-2xs active:scale-[0.99] cursor-pointer">
                 <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -466,13 +436,7 @@
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                 </svg>
-                <span>Đăng nhập 1-chạm với Google</span>
-              </button>
-
-              <!-- Nút Đăng nhập nhanh Admin Bùi Thái -->
-              <button type="button" onclick="window.ShopVietViews.auth.quickAdminLogin()" class="w-full py-2 px-3 rounded-xl border border-dashed border-[#8A5F26]/30 bg-[#8A5F26]/5 hover:bg-[#8A5F26]/10 text-[#8A5F26] dark:text-[#BE9455] font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-                <span>⚡</span>
-                <span>Đăng nhập nhanh Admin (Bùi Thái • 500.000 Xu)</span>
+                <span>Đăng nhập với Google</span>
               </button>
 
             </form>
@@ -589,7 +553,6 @@
 
     submitForm: submitForm,
     loginGoogle: loginGoogle,
-    quickAdminLogin: quickAdminLogin,
     handlePostAuthRedirect: handlePostAuthRedirect
   };
 

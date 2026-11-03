@@ -452,23 +452,10 @@
     },
 
     _mockGoogleLogin: function () {
-      const gEmail = 'thaitraicau123@gmail.com';
-      let matched = window.ShopVietState ? window.ShopVietState.findUserByEmail(gEmail) : null;
-      const userData = matched || {
-        uid: 'goog_buithai',
-        name: 'Bùi Thái (Admin)',
-        email: gEmail,
-        avatar: 'BT',
-        balance: 500000,
-        phone: '0986019623',
-        isLoggedIn: true,
-        isOnline: true,
-        role: 'admin',
-        authProvider: 'google'
+      return {
+        success: false,
+        message: 'Đăng nhập Google trực tuyến chưa hoàn tất hoặc đã bị đóng. Vui lòng thử lại!'
       };
-
-      this.currentUser = userData;
-      return { success: true, user: userData, isCloud: false };
     }
   };
 

@@ -455,30 +455,6 @@ window.ShopVietViews.modal = (function () {
       }
     },
 
-    // 1-Click Test Login Demo as Bùi Thái (250.000 Xu)
-    quickLoginDemo: function () {
-      const defaultUser = {
-        id: 'usr_buithai',
-        name: 'Bùi Thái',
-        email: 'thaitraicau123@gmail.com',
-        phone: '0986019623',
-        role: 'user',
-        balance: 250000,
-        createdAt: '2026-03-20T10:00:00.000Z'
-      };
-      if (window.ShopVietState) {
-        window.ShopVietState.state.user = defaultUser;
-        window.ShopVietState.save();
-        if (typeof window.ShopVietState.notify === 'function') {
-          window.ShopVietState.notify('user_updated', defaultUser);
-        }
-        window.ShopVietState.showToast('Đã đăng nhập thành công tài khoản Bùi Thái! Số dư: 250.000 Xu.', 'success');
-      }
-      if (currentProduct) {
-        this.open(currentProduct.id);
-      }
-    },
-
     goToAuth: function () {
       this.close();
       if (window.ShopVietState && typeof window.ShopVietState.navigate === 'function') {
@@ -601,9 +577,17 @@ window.ShopVietViews.modal = (function () {
       if (!currentProduct) return;
 
       const currentUser = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
-      if (!currentUser) {
+      if (!currentUser || !currentUser.isLoggedIn) {
         this.closeConfirmDialog();
-        this.quickLoginDemo();
+        this.close();
+        if (window.ShopVietState) {
+          if (typeof window.ShopVietState.showToast === 'function') {
+            window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để mở khóa kỹ năng AI này!', 'info');
+          }
+          if (typeof window.ShopVietState.navigate === 'function') {
+            window.ShopVietState.navigate('login');
+          }
+        }
         return;
       }
 
