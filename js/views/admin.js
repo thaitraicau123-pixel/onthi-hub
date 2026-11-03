@@ -39,13 +39,10 @@
     brandColor: '#E92429'
   };
 
-  // Hàm kiểm tra quyền Admin tối cao: Email thaitraicau123@gmail.com hoặc mã PIN đã xác thực
+  // Hàm kiểm tra quyền Admin tối cao: DUY NHẤT Email thaitraicau123@gmail.com đang đăng nhập
   function isAllowedAdminUser() {
     const u = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
-    if (u && u.isLoggedIn && (u.email === 'thaitraicau123@gmail.com' || u.role === 'admin')) {
-      return true;
-    }
-    return isAuthenticated();
+    return Boolean(u && u.isLoggedIn && u.email && u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com');
   }
 
   // Danh sách ngân hàng hỗ trợ VietQR
@@ -182,11 +179,15 @@
     }
   }
 
-  // Kiểm tra trạng thái xác thực Admin (hỗ trợ kiểm tra trực tiếp quyền từ ShopVietState.isAdmin)
+  // Kiểm tra trạng thái xác thực Admin (Bắt buộc phải là tài khoản thaitraicau123@gmail.com)
   function isAuthenticated() {
+    if (!isAllowedAdminUser()) {
+      sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+      localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+      return false;
+    }
     return sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' ||
-           localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true' ||
-           (window.ShopVietState && typeof window.ShopVietState.isAdmin === 'function' && window.ShopVietState.isAdmin());
+           localStorage.getItem(STORAGE_KEYS.ADMIN_AUTH) === 'true';
   }
 
   // Đặt trạng thái xác thực
@@ -3080,8 +3081,22 @@
         }
       }
     },
-    // 1. Mở Cổng Portal Admin
+    // 1. Mở Cổng Portal Admin (Bảo mật: DUY NHẤT thaitraicau123@gmail.com)
     open: function () {
+      if (!isAllowedAdminUser()) {
+        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+        localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+        const modalMount = document.getElementById('adminMount');
+        if (modalMount) modalMount.innerHTML = '';
+        if (window.location.hash === '#admin') {
+          window.location.hash = '#home';
+        }
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        }
+        return;
+      }
+
       let modalMount = document.getElementById('adminMount');
       if (!modalMount) {
         modalMount = document.createElement('div');
@@ -3089,13 +3104,6 @@
         document.body.appendChild(modalMount);
       }
 
-      // Nếu chưa xác thực và không phải tài khoản admin, mở modal nhập PIN buithai123
-      if (!isAllowedAdminUser() && !isAuthenticated()) {
-        modalMount.innerHTML = renderPinAuthModal();
-        return;
-      }
-
-      // Khi là thaitraicau123@gmail.com hoặc đã có PIN, cấp quyền xác thực và mở thẳng phiên quản trị
       setAuthenticated(true);
       window.ShopVietViews.admin.isOpen = true;
       modalMount.innerHTML = renderAdminPortalModal();
@@ -5461,17 +5469,32 @@
     });
   })();
 
-  // Tự động lắng nghe phím tắt toàn cục và Hash khi file script được nạp
+  // Tự động lắng nghe phím tắt toàn cục và Hash khi file script được nạp (BẢO MẬT: CHỈ THAITRAICAU123@GMAIL.COM)
   window.addEventListener('keydown', function (e) {
     // Ctrl + Shift + A hoặc Cmd + Shift + A -> Mở Portal Admin Bí Mật
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
       e.preventDefault();
+      if (!isAllowedAdminUser()) {
+        sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+        localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        }
+        return;
+      }
       window.ShopVietViews.admin.open();
     }
   });
 
   window.addEventListener('hashchange', function () {
     if (window.location.hash === '#admin') {
+      if (!isAllowedAdminUser()) {
+        window.location.hash = '#home';
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        }
+        return;
+      }
       window.ShopVietViews.admin.open();
     }
   });
@@ -5479,7 +5502,11 @@
   // Kiểm tra ngay khi tải trang nếu URL có hash #admin
   if (window.location.hash === '#admin') {
     window.addEventListener('DOMContentLoaded', function () {
-      setTimeout(() => window.ShopVietViews.admin.open(), 200);
+      if (isAllowedAdminUser()) {
+        setTimeout(() => window.ShopVietViews.admin.open(), 200);
+      } else {
+        window.location.hash = '#home';
+      }
     });
   }
 

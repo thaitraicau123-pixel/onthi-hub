@@ -1443,19 +1443,11 @@
       return { success: true, user: matchedUser };
     },
 
-    // Helper phân quyền Quản trị viên
+    // Helper phân quyền Quản trị viên: BẢO MẬT TUYỆT ĐỐI - DUY NHẤT thaitraicau123@gmail.com
     isAdmin: function () {
-      return Boolean(
-        this.state.user &&
-        this.state.user.isLoggedIn &&
-        this.state.user.email &&
-        (this.state.user.role === 'admin' ||
-         (this.state.user.email && (
-           this.state.user.email.trim().toLowerCase() === DEFAULT_ADMIN.email.toLowerCase() ||
-           this.state.user.email.trim().toLowerCase() === 'thaitraicau123@gmail.com' ||
-           this.state.user.email.trim().toLowerCase().startsWith('buithai123')
-         )))
-      );
+      const u = this.state.user;
+      if (!u || !u.isLoggedIn || !u.email) return false;
+      return u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com';
     },
 
     // ==================== CÔ LẬP ĐƠN HÀNG & DỮ LIỆU ĐỘC LẬP THEO TÀI KHOẢN ====================
@@ -1936,21 +1928,28 @@
         this.saveUsersDB(users);
       }
 
+      const isThaitraicauAdmin = Boolean(matchedUser.email && matchedUser.email.trim().toLowerCase() === 'thaitraicau123@gmail.com');
+
       this.state.user = {
         id: matchedUser.id,
         name: matchedUser.name,
         email: matchedUser.email,
         phone: matchedUser.phone || '',
         balance: typeof matchedUser.balance === 'number' ? matchedUser.balance : 0,
-        role: (matchedUser.role === 'admin' || (matchedUser.email && (
-          matchedUser.email.trim().toLowerCase() === DEFAULT_ADMIN.email.toLowerCase() ||
-          matchedUser.email.trim().toLowerCase() === 'thaitraicau123@gmail.com' ||
-          matchedUser.email.trim().toLowerCase().startsWith('buithai123')
-        ))) ? 'admin' : (matchedUser.role || 'user'),
+        role: isThaitraicauAdmin ? 'admin' : 'member',
         avatar: matchedUser.avatar || (matchedUser.name || matchedUser.email).charAt(0).toUpperCase(),
         isLoggedIn: true,
         isOnline: true
       };
+
+      if (!isThaitraicauAdmin) {
+        try {
+          sessionStorage.removeItem('shopviet_admin_authenticated');
+          localStorage.removeItem('shopviet_admin_authenticated');
+          sessionStorage.removeItem('shopviet_admin_session_auth');
+          localStorage.removeItem('shopviet_admin_session_auth');
+        } catch (e) {}
+      }
 
       try {
         localStorage.setItem('shopviet_has_logged_in', 'true');
@@ -1970,6 +1969,10 @@
       this.state.user = null;
       try {
         localStorage.removeItem('shopviet_has_logged_in');
+        sessionStorage.removeItem('shopviet_admin_authenticated');
+        localStorage.removeItem('shopviet_admin_authenticated');
+        sessionStorage.removeItem('shopviet_admin_session_auth');
+        localStorage.removeItem('shopviet_admin_session_auth');
       } catch (e) {}
       if (window.ShopVietFirebase && typeof window.ShopVietFirebase.logout === 'function') {
         window.ShopVietFirebase.logout();
@@ -2672,8 +2675,14 @@
       // Kiểm tra bảo mật Cổng Portal Admin
       if (viewName === 'admin') {
         const u = this.state.user;
-        const isAdmin = Boolean(u && u.isLoggedIn && u.email === 'thaitraicau123@gmail.com');
+        const isAdmin = Boolean(u && u.isLoggedIn && u.email && u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com');
         if (!isAdmin) {
+          try {
+            sessionStorage.removeItem('shopviet_admin_authenticated');
+            localStorage.removeItem('shopviet_admin_authenticated');
+            sessionStorage.removeItem('shopviet_admin_session_auth');
+            localStorage.removeItem('shopviet_admin_session_auth');
+          } catch (e) {}
           this.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
           if (window.location.hash === '#admin') {
             window.location.hash = '#home';

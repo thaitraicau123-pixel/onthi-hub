@@ -1,10 +1,10 @@
 /**
  * Bùi Thái AI Studio Progressive Web App - Service Worker
- * Version: shopskill247-pwa-v12.6
+ * Version: shopskill247-pwa-v12.7
  * Strategy: Network-First falling back to Cache (luôn ưu tiên dữ liệu mới, offline mở tức thì)
  */
 
-const CACHE_NAME = 'shopskill247-pwa-v12.6-super-discount';
+const CACHE_NAME = 'shopskill247-pwa-v12.7-strict-admin-auth-and-login-alerts';
 
 const CORE_STATIC_ASSETS = [
   './',

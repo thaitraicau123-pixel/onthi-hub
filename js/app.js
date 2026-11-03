@@ -284,16 +284,19 @@ function setupHeaderEvents() {
     });
   }
 
-  // Click Cổng Quản Trị Bí Mật (Header & Footer) - Phân quyền chỉ thaitraicau123@gmail.com
+  // Click Cổng Quản Trị Bí Mật (Header & Footer) - Phân quyền DUY NHẤT thaitraicau123@gmail.com
   const adminPortalHeaderBtn = document.getElementById('adminPortalHeaderBtn');
   const adminPortalFooterBtn = document.getElementById('adminPortalFooterBtn');
   
   function handleAdminClick(e) {
     e.preventDefault();
-    const isAdmin = window.ShopVietState && typeof window.ShopVietState.isAdmin === 'function'
-      ? window.ShopVietState.isAdmin()
-      : false;
-    if (!isAdmin) {
+    const u = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
+    const isExactAdmin = Boolean(u && u.isLoggedIn && u.email && u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com');
+    if (!isExactAdmin) {
+      try {
+        sessionStorage.removeItem('shopviet_admin_authenticated');
+        localStorage.removeItem('shopviet_admin_authenticated');
+      } catch (err) {}
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
         window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
       }
@@ -317,13 +320,16 @@ function setupHeaderEvents() {
  */
 function setupKeyboardShortcuts() {
   document.addEventListener('keydown', function (e) {
-    // Ctrl + Shift + A hoặc Cmd + Shift + A -> Mở Portal Admin Bí Mật (Bảo mật: Chỉ thaitraicau123@gmail.com)
+    // Ctrl + Shift + A hoặc Cmd + Shift + A -> Mở Portal Admin Bí Mật (Bảo mật: DUY NHẤT thaitraicau123@gmail.com)
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
       e.preventDefault();
-      const isAdmin = window.ShopVietState && typeof window.ShopVietState.isAdmin === 'function'
-        ? window.ShopVietState.isAdmin()
-        : false;
-      if (!isAdmin) {
+      const u = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
+      const isExactAdmin = Boolean(u && u.isLoggedIn && u.email && u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com');
+      if (!isExactAdmin) {
+        try {
+          sessionStorage.removeItem('shopviet_admin_authenticated');
+          localStorage.removeItem('shopviet_admin_authenticated');
+        } catch (err) {}
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
           window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
         }

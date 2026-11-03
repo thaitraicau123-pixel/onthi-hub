@@ -67,8 +67,48 @@
     }
   }
 
+  // Hiển thị thông báo lỗi trực quan trên Form (Sai tài khoản / mật khẩu)
+  const showAuthError = function (title, message, targetInputId) {
+    const alertBox = document.getElementById('authErrorAlert');
+    const alertTitle = document.getElementById('authErrorAlertTitle');
+    const alertMsg = document.getElementById('authErrorAlertMsg');
+    if (alertBox && alertTitle && alertMsg) {
+      alertTitle.textContent = title || 'Sai tài khoản hoặc mật khẩu!';
+      alertMsg.textContent = message || 'Vui lòng kiểm tra lại địa chỉ email hoặc mật khẩu của bạn.';
+      alertBox.classList.remove('hidden');
+      alertBox.classList.add('animate-shake');
+      setTimeout(() => alertBox.classList.remove('animate-shake'), 600);
+    }
+    if (targetInputId) {
+      const inp = document.getElementById(targetInputId);
+      if (inp) {
+        inp.classList.add('!border-rose-500', 'dark:!border-rose-500', '!ring-2', '!ring-rose-500/30');
+        inp.focus();
+        if (typeof inp.select === 'function') {
+          inp.select();
+        }
+      }
+    }
+    if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+      window.ShopVietState.showToast('❌ ' + (message || title || 'Sai tài khoản hoặc mật khẩu!'), 'error');
+    }
+  };
+
+  // Xóa cảnh báo lỗi khi người dùng bắt đầu nhập lại
+  const clearAuthError = function () {
+    const alertBox = document.getElementById('authErrorAlert');
+    if (alertBox) alertBox.classList.add('hidden');
+    ['authEmailInput', 'authPasswordInput', 'authNameInput'].forEach(id => {
+      const inp = document.getElementById(id);
+      if (inp) {
+        inp.classList.remove('!border-rose-500', 'dark:!border-rose-500', '!ring-2', '!ring-rose-500/30');
+      }
+    });
+  };
+
   // Submit form Đăng nhập / Đăng ký
   const submitForm = async function () {
+    clearAuthError();
     const emailInput = document.getElementById('authEmailInput');
     const nameInput = document.getElementById('authNameInput');
     const passInput = document.getElementById('authPasswordInput');
@@ -79,34 +119,22 @@
     const name = (isRegisterMode && nameInput) ? nameInput.value.trim() : '';
 
     if (!email) {
-      if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Vui lòng nhập địa chỉ Email!', 'warning');
-      }
-      if (emailInput) emailInput.focus();
+      showAuthError('Vui lòng nhập Email!', 'Địa chỉ Email không được để trống.', 'authEmailInput');
       return;
     }
 
     if (!password) {
-      if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Vui lòng nhập mật khẩu!', 'warning');
-      }
-      if (passInput) passInput.focus();
+      showAuthError('Vui lòng nhập Mật khẩu!', 'Mật khẩu tài khoản không được để trống.', 'authPasswordInput');
       return;
     }
 
     if (isRegisterMode) {
       if (!name) {
-        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Vui lòng nhập họ và tên của bạn!', 'warning');
-        }
-        if (nameInput) nameInput.focus();
+        showAuthError('Vui lòng nhập Họ và Tên!', 'Họ và tên giúp bảo vệ tài khoản và nhận vũ khí.', 'authNameInput');
         return;
       }
       if (password.length < 6) {
-        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Mật khẩu phải có ít nhất 6 ký tự!', 'warning');
-        }
-        if (passInput) passInput.focus();
+        showAuthError('Mật khẩu quá ngắn!', 'Mật khẩu bảo mật phải có tối thiểu 6 ký tự.', 'authPasswordInput');
         return;
       }
     }
@@ -131,9 +159,8 @@
         }
 
         if (!regRes || !regRes.success) {
-          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast(regRes?.message || 'Không thể tạo tài khoản lúc này!', 'error');
-          }
+          const regMsg = regRes?.message || 'Không thể tạo tài khoản lúc này!';
+          showAuthError('Đăng ký không thành công!', regMsg, 'authEmailInput');
           return;
         }
 
@@ -182,16 +209,36 @@
             const localRes = window.ShopVietState.authenticateUser(email, password);
             if (localRes && localRes.success) {
               authRes = localRes;
+            } else if (localRes && !authRes) {
+              authRes = localRes;
             }
           }
         }
 
         if (!authRes || !authRes.success) {
-          if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast(authRes?.message || 'Email hoặc mật khẩu không chính xác!', 'error');
+          const rawMsg = authRes?.message || '';
+          const errCode = authRes?.error || '';
+          let errTitle = 'Sai tài khoản hoặc mật khẩu!';
+          let errMsg = 'Địa chỉ email hoặc mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại!';
+          let targetId = 'authPasswordInput';
+
+          if (errCode === 'USER_NOT_FOUND' || rawMsg.toLowerCase().includes('không tìm thấy') || rawMsg.toLowerCase().includes('không tồn tại')) {
+            errTitle = 'Tài khoản không tồn tại!';
+            errMsg = 'Email này chưa được đăng ký trong hệ thống. Vui lòng kiểm tra lại hoặc bấm "Đăng ký ngay" bên dưới!';
+            targetId = 'authEmailInput';
+          } else if (errCode === 'WRONG_PASSWORD' || rawMsg.toLowerCase().includes('mật khẩu không chính xác') || rawMsg.toLowerCase().includes('sai mật khẩu')) {
+            errTitle = 'Sai mật khẩu!';
+            errMsg = 'Mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại phím Caps Lock hoặc bấm "Quên mật khẩu"!';
+            targetId = 'authPasswordInput';
+          } else if (rawMsg) {
+            errMsg = rawMsg;
           }
+
+          showAuthError(errTitle, errMsg, targetId);
           return;
         }
+
+        clearAuthError();
 
         if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
           window.ShopVietState.login(authRes.user);
@@ -305,6 +352,28 @@
 
             <!-- Form Nhập Liệu -->
             <form id="authForm" onsubmit="event.preventDefault(); window.ShopVietViews.auth.submitForm(); return false;" class="space-y-4">
+              
+              <!-- Khung Cảnh Báo Lỗi Trực Quan (Sai tài khoản / Sai mật khẩu) -->
+              <div id="authErrorAlert" class="hidden p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-3 transition-all duration-300 shadow-2xs">
+                <div class="p-1 rounded-lg bg-rose-500/20 text-rose-600 dark:text-rose-300 shrink-0 mt-0.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                  </svg>
+                </div>
+                <div class="flex-1">
+                  <div id="authErrorAlertTitle" class="font-bold text-xs text-rose-700 dark:text-rose-300 mb-0.5">
+                    Sai tài khoản hoặc mật khẩu!
+                  </div>
+                  <div id="authErrorAlertMsg" class="text-[11px] leading-relaxed text-rose-600 dark:text-rose-400">
+                    Vui lòng kiểm tra lại thông tin đăng nhập của bạn.
+                  </div>
+                </div>
+                <button type="button" onclick="document.getElementById('authErrorAlert').classList.add('hidden')" class="text-rose-400 hover:text-rose-600 dark:hover:text-rose-200 cursor-pointer p-0.5 shrink-0" title="Đóng thông báo">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              </div>
               
               <!-- Trường Họ và Tên (chỉ hiện khi Đăng ký) -->
               <div id="nameFieldGroup" class="${isRegisterMode ? 'block' : 'hidden'}">
@@ -514,6 +583,7 @@
       const authToggleModeBtn = document.getElementById('authToggleModeBtn');
       if (authToggleModeBtn) {
         authToggleModeBtn.addEventListener('click', function () {
+          clearAuthError();
           isRegisterMode = !isRegisterMode;
           window.ShopVietState.navigate('login', { mode: isRegisterMode ? 'register' : 'login' });
         });
@@ -523,24 +593,27 @@
       const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
       if (forgotPasswordBtn) {
         forgotPasswordBtn.addEventListener('click', function () {
+          clearAuthError();
           const emailInput = document.getElementById('authEmailInput');
           const emailVal = emailInput ? emailInput.value.trim() : '';
           if (!emailVal) {
-            window.ShopVietState.showToast('Vui lòng nhập Email để khôi phục mật khẩu!', 'warning');
-            if (emailInput) emailInput.focus();
+            showAuthError('Vui lòng nhập Email!', 'Nhập email để nhận link khôi phục mật khẩu.', 'authEmailInput');
             return;
           }
           window.ShopVietState.showToast(`✅ Đã gửi hướng dẫn khôi phục mật khẩu về email ${emailVal}!`, 'success');
         });
       }
 
-      // Bắt Enter submit
+      // Bắt Enter submit & Xóa thông báo lỗi khi bắt đầu gõ lại
       const emailInput = document.getElementById('authEmailInput');
       const passInput = document.getElementById('authPasswordInput');
       const nameInput = document.getElementById('authNameInput');
 
       [emailInput, passInput, nameInput].forEach(function (input) {
         if (input) {
+          input.addEventListener('input', function () {
+            clearAuthError();
+          });
           input.addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
               e.preventDefault();
