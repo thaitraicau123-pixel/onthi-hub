@@ -1003,7 +1003,7 @@
     const dateStr = order.createdAtFormatted || order.date || 'Hôm nay';
     const customerEmail = order.userEmail || (order.user && order.user.email) || (order.customer && order.customer.email) || (order.email) || 'thaitraicau123@gmail.com';
     const customerName = order.customerName || (order.user && order.user.name) || (order.customer && order.customer.name) || 'Bùi Thái';
-    const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Antigravity + Gemini Pro';
+    const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Antigravity 2.0 + Gemini 4 Argon Pro';
     const amount = order.amount || order.total || order.price || 69000;
     const isCompleted = order.status === 'completed';
 
@@ -1953,10 +1953,10 @@
                 <option value="[1 Tháng] Gemini Argon 4 Pro + 5TB Drive" ${serviceName.includes('Argon') || serviceName.includes('Gemini') ? 'selected' : ''}>[1 Tháng] Gemini Argon 4 Pro + 5TB Drive</option>
                 <option value="[1 Năm] Gemini Argon 4 Pro + 2TB Google One" ${serviceName.includes('1 Năm] Gemini') ? 'selected' : ''}>[1 Năm] Gemini Argon 4 Pro + 2TB Google One</option>
                 <option value="Cursor Pro 1 Tháng Chính Chủ" ${serviceName.includes('Cursor') ? 'selected' : ''}>Cursor Pro 1 Tháng Chính Chủ</option>
-                <option value="ChatGPT Plus Chính Chủ GPT-4o" ${serviceName.includes('ChatGPT') ? 'selected' : ''}>ChatGPT Plus Chính Chủ GPT-4o</option>
+                <option value="ChatGPT Plus Chính Chủ ChatGPT 6 (GPT-6)" ${serviceName.includes('ChatGPT') ? 'selected' : ''}>ChatGPT Plus Chính Chủ ChatGPT 6 (GPT-6)</option>
                 <option value="Canva Pro Edu 1 Năm Vĩnh Viễn" ${serviceName.includes('Canva') ? 'selected' : ''}>Canva Pro Edu 1 Năm Vĩnh Viễn</option>
                 <option value="CapCut Pro 1 Năm Bản Quyền" ${serviceName.includes('CapCut') ? 'selected' : ''}>CapCut Pro 1 Năm Bản Quyền</option>
-                <option value="Claude 3.5 Sonnet / Opus Pro" ${serviceName.includes('Claude') ? 'selected' : ''}>Claude 3.5 Sonnet / Opus Pro</option>
+                <option value="Claude 4.6 Opus / 4.5 Sonnet Pro" ${serviceName.includes('Claude') ? 'selected' : ''}>Claude 4.6 Opus / 4.5 Sonnet Pro</option>
               </select>
             </div>
 
@@ -2566,7 +2566,7 @@
                 id="editProdName" 
                 value="${prod.name.replace(/"/g, '&quot;')}" 
                 required 
-                placeholder="Ví dụ: [LINK] Antigravity + Gemini Pro 18 Tháng" 
+                placeholder="Ví dụ: [PROMPT] Hộp Công Cụ Master Prompts v12.0" 
                 class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold"
               >
             </div>
@@ -2609,7 +2609,7 @@
                   id="editProdCategory" 
                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
                 >
-                  <option value="cat_gemini" ${prod.category === 'cat_gemini' ? 'selected' : ''}>Gemini Pro & Antigravity</option>
+                  <option value="cat_gemini" ${prod.category === 'cat_gemini' ? 'selected' : ''}>Gemini 4 Argon Pro & Antigravity 2.0</option>
                   <option value="cat_cursor" ${prod.category === 'cat_cursor' ? 'selected' : ''}>Cursor New</option>
                   <option value="cat_chatgpt" ${prod.category === 'cat_chatgpt' ? 'selected' : ''}>ChatGPT Plus</option>
                   <option value="cat_canva" ${prod.category === 'cat_canva' ? 'selected' : ''}>Canva Pro</option>
