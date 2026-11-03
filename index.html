@@ -5,13 +5,14 @@
   <script>
     (function() {
       try {
-        var REQ_VER = 'v12.9_floor_price_9k_and_infinite_digital_stock';
+        var REQ_VER = 'v13.0_firestore_realtime_sync';
         var cur = localStorage.getItem('shopviet_data_version');
         if (cur !== REQ_VER) {
           localStorage.setItem('shopviet_data_version', REQ_VER);
           localStorage.removeItem('shopviet_custom_products');
           localStorage.removeItem('shopviet_admin_products');
           localStorage.removeItem('shopviet247_custom_products_v1');
+          localStorage.removeItem('shopviet_topups');
           
           // Thanh lọc sạch sẽ các token admin tồn dư nếu người dùng hiện tại không phải thaitraicau123@gmail.com
           var rawState = localStorage.getItem('shopviet_state_v10');
@@ -2560,19 +2561,19 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-  <script src="js/firebase-config.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/ntfy.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
+  <script src="js/firebase-config.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/ntfy.js?v=13.0_firestore_realtime_sync"></script>
 
-  <script src="js/data.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/state.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/home.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/modal.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/checkout.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/auth.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/dashboard.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/admin.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/views/blog.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
-  <script src="js/app.js?v=12.9_floor_price_9k_and_infinite_digital_stock"></script>
+  <script src="js/data.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/state.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/home.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/modal.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/checkout.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/auth.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/dashboard.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/admin.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/views/blog.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/app.js?v=13.0_firestore_realtime_sync"></script>
 
   <!-- ==================== PWA SERVICE WORKER REGISTRATION ==================== -->
   <script>

@@ -830,10 +830,10 @@
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshData && window.ShopVietViews.admin.refreshData()"
                 class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/80 hover:bg-amber-200 border border-amber-300/80 transition flex items-center gap-1 cursor-pointer"
-                title="Kéo các yêu cầu nạp mới nhất từ ntfy.sh"
+                title="Đồng bộ danh sách yêu cầu nạp mới nhất từ Cloud"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                <span>🔄 Kéo ntfy Mới</span>
+                <span>🔄 Làm mới yêu cầu nạp</span>
               </button>
             </div>
           </div>
@@ -5373,34 +5373,83 @@
       });
     }
 
-    // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ ntfy.sh)
+    // Helper kiểm tra yêu cầu nạp xu mới và phát chuông cảnh báo cho Admin
+    let lastPendingTopupSignature = '';
+    function handleTopupsRealtimeUI(topups) {
+      const list = Array.isArray(topups) ? topups : [];
+      const pendingList = list.filter(t => t && t.status === 'pending_approval');
+      const pending = pendingList.length;
+
+      // Kiểm tra có yêu cầu nạp mới chưa từng báo chuông không
+      try {
+        const rawNotifiedTopups = localStorage.getItem('admin_notified_topups');
+        const notifiedTopups = rawNotifiedTopups ? JSON.parse(rawNotifiedTopups) : [];
+        let hasNewUnnotified = false;
+        pendingList.forEach(function (t) {
+          const tid = String(t.id || '').trim();
+          if (tid && !notifiedTopups.includes(tid)) {
+            notifiedTopups.push(tid);
+            hasNewUnnotified = true;
+            if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
+              window.BuiThaiNtfy.playChime('deposit');
+            }
+            if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+              window.ShopVietState.showToast(
+                '💰 Yêu cầu nạp mới: +' + Number(t.amount || 0).toLocaleString('vi-VN') + ' Xu từ ' + (t.userEmail || 'Khách hàng'),
+                'success'
+              );
+            }
+          }
+        });
+        if (hasNewUnnotified) {
+          if (notifiedTopups.length > 300) notifiedTopups.splice(0, notifiedTopups.length - 300);
+          localStorage.setItem('admin_notified_topups', JSON.stringify(notifiedTopups));
+        }
+      } catch (e) {}
+
+      const badge = document.getElementById('adminOrderTabBadge');
+      if (badge) {
+        const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
+        badge.textContent = `${orders.length} đơn${pending > 0 ? ` • ${pending} chờ duyệt` : ''}`;
+        if (pending > 0) {
+          badge.className = 'px-2 py-0.5 rounded-md bg-amber-500 text-white font-extrabold animate-pulse shadow-xs text-[10px]';
+        } else {
+          badge.className = 'px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-[10px]';
+        }
+      }
+      const banner = document.getElementById('adminTopupAlertBanner');
+      const countText = document.getElementById('adminPendingTopupCountText');
+      if (banner) {
+        if (pending > 0) {
+          banner.classList.remove('hidden');
+          banner.classList.add('flex');
+        } else {
+          banner.classList.remove('flex');
+          banner.classList.add('hidden');
+        }
+      }
+      if (countText) {
+        countText.textContent = pending;
+      }
+
+      // Tự động render lại bảng nạp xu nếu danh sách thay đổi và Admin đang mở tab orders
+      const sig = list.map(t => `${t.id}:${t.status}:${t.amount}`).join('|');
+      if (sig !== lastPendingTopupSignature) {
+        lastPendingTopupSignature = sig;
+        const tabContent = document.getElementById('adminTabContent');
+        const emailFocused = document.activeElement && (document.activeElement.id === 'adminManualCoinEmail' || document.activeElement.id === 'adminManualCoinAmount');
+        if (tabContent && currentActiveTab === 'orders' && !emailFocused) {
+          tabContent.innerHTML = renderTabOrders();
+        }
+      }
+    }
+
+    // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ Firestore Cloud)
     setInterval(function () {
       checkPendingReviewOrders();
       if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
         window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
-          const pending = (topups || []).filter(t => t.status === 'pending_approval').length;
-          const badge = document.getElementById('adminOrderTabBadge');
-          if (badge) {
-            const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
-            badge.textContent = `${orders.length} đơn${pending > 0 ? ` • ${pending} chờ duyệt` : ''}`;
-            if (pending > 0) {
-              badge.className = 'px-2 py-0.5 rounded-md bg-amber-500 text-white font-extrabold animate-pulse shadow-xs text-[10px]';
-            }
-          }
-          const banner = document.getElementById('adminTopupAlertBanner');
-          const countText = document.getElementById('adminPendingTopupCountText');
-          if (banner) {
-            if (pending > 0) {
-              banner.classList.remove('hidden');
-              banner.classList.add('flex');
-            } else {
-              banner.classList.remove('flex');
-              banner.classList.add('hidden');
-            }
-          }
-          if (countText) {
-            countText.textContent = pending;
-          }
+          handleTopupsRealtimeUI(topups);
         }).catch(function () {});
       }
     }, 3500);
@@ -5421,11 +5470,25 @@
               console.warn('[AdminWatcher] Firestore snapshot listener:', err.message);
             });
         }
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToTopups === 'function') {
+          window.ShopVietFirebase.listenToTopups(function () {
+            if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
+              window.ShopVietState.syncTopupsFromCloud(true).then(handleTopupsRealtimeUI).catch(function () {});
+            }
+          });
+        }
+        if (window.ShopVietState && typeof window.ShopVietState.subscribe === 'function') {
+          window.ShopVietState.subscribe(function (event, data) {
+            if (event === 'topups_updated') {
+              handleTopupsRealtimeUI(data);
+            }
+          });
+        }
       } catch (e) {
         console.warn('[AdminWatcher] Firestore setup warning:', e);
       }
     }
-    setTimeout(setupFirestoreOrderListener, 2000);
+    setTimeout(setupFirestoreOrderListener, 1200);
 
     // 3. Lắng nghe Storage Event (khi khách hàng đặt đơn trên cùng trình duyệt hoặc tab khác)
     window.addEventListener('storage', function (e) {

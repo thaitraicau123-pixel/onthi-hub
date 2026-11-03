@@ -187,7 +187,7 @@
           const parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length >= 12) {
             const isValid12 = parsed.every(function (p) {
-              return p && p.price >= 19000 && p.price <= 99000 && p.stock && p.unlockedPayload && Array.isArray(p.unlockedPayload.cheatSheet) && p.unlockedPayload.cheatSheet.length >= 10;
+              return p && p.price >= 9000 && p.price <= 99000 && p.stock && p.unlockedPayload && Array.isArray(p.unlockedPayload.cheatSheet) && p.unlockedPayload.cheatSheet.length >= 10;
             });
             if (isValid12) {
               if (window.ShopVietData) {
@@ -506,7 +506,7 @@
         }
 
         // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
-        if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && p.price >= 19000 && p.price <= 99000 && p.stock; })) {
+        if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && p.price >= 9000 && p.price <= 99000 && p.stock; })) {
           const oldProdJson = localStorage.getItem('shopviet_custom_products') || '';
           const prodJson = JSON.stringify(data.products);
           if (prodJson !== oldProdJson) {
@@ -1525,7 +1525,8 @@
 
     // Quản lý Yêu cầu Nạp Xu qua VietQR Techcombank (Chờ Admin Bùi Thái duyệt)
     createTopupRequest: function ({ amount, method, memo, userEmail, userName }) {
-      const topupId = 'TOPUP-' + Date.now().toString().slice(-6);
+      const topupId = 'TOPUP-' + Date.now().toString().slice(-6) + Math.floor(10 + Math.random() * 89);
+      const cleanEmail = (userEmail || (this.state.user && this.state.user.email) || 'khachhang@gmail.com').trim().toLowerCase();
       const topup = {
         id: topupId,
         amount: Number(amount) || 100000,
@@ -1534,8 +1535,8 @@
         accountName: 'BUI THAI',
         method: method || 'Techcombank VietQR 24/7',
         memo: memo || ('NAPXU ' + (userName || 'KHACH').replace(/\s+/g, '').toUpperCase()),
-        userEmail: (userEmail || (this.state.user && this.state.user.email) || 'khachhang@gmail.com').toLowerCase(),
-        userName: userName || (this.state.user && this.state.user.name) || 'Khách Hàng',
+        userEmail: cleanEmail,
+        userName: userName || (this.state.user && this.state.user.name) || cleanEmail.split('@')[0] || 'Khách Hàng',
         status: 'pending_approval',
         statusText: 'Chờ Admin duyệt',
         createdAt: new Date().toISOString()
@@ -1545,7 +1546,7 @@
       this.state.topups.unshift(topup);
       this.save();
 
-      // Đồng bộ lên Firebase Cloud
+      // Đồng bộ lên Firebase Cloud (promtmmo/databases/default)
       if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncTopupToCloud === 'function') {
         window.ShopVietFirebase.syncTopupToCloud(topup);
       }
@@ -1559,173 +1560,167 @@
       return topup;
     },
 
-    // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực & Số dư ví đa thiết bị từ Cloud (ntfy.sh & Firebase)
+    // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực & Số dư ví đa thiết bị từ Cloud Firestore (promtmmo/databases/default)
     syncTopupsFromCloud: async function (isManual = false) {
       let cloudTopups = [];
-      let approvedList = [];
-
-      if (window.BuiThaiNtfy) {
-        if (typeof window.BuiThaiNtfy.fetchRecentTopupRequests === 'function') {
-          cloudTopups = await window.BuiThaiNtfy.fetchRecentTopupRequests().catch(() => []);
-        }
-        if (typeof window.BuiThaiNtfy.fetchApprovedTopups === 'function') {
-          approvedList = await window.BuiThaiNtfy.fetchApprovedTopups().catch(() => []);
-        }
+      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.fetchTopupsFromCloud === 'function') {
+        cloudTopups = await window.ShopVietFirebase.fetchTopupsFromCloud().catch(() => []);
       }
 
       let approvedIds = [];
       let rejectedIds = [];
-      let syncedApprovalIds = [];
+      let creditedTopupIds = [];
       try {
         approvedIds = JSON.parse(localStorage.getItem('shopviet_approved_topup_ids') || '[]');
         rejectedIds = JSON.parse(localStorage.getItem('shopviet_rejected_topup_ids') || '[]');
-        syncedApprovalIds = JSON.parse(localStorage.getItem('shopviet_synced_approval_ids') || '[]');
+        creditedTopupIds = JSON.parse(localStorage.getItem('shopviet_credited_topup_ids_v2') || '[]');
       } catch (e) {}
 
-      // 1. Cập nhật các ID nạp đã duyệt từ ntfy.sh
       let approvedIdsChanged = false;
-      approvedList.forEach(app => {
-        if (app.id && !approvedIds.includes(app.id)) {
-          approvedIds.push(app.id);
+      let rejectedIdsChanged = false;
+
+      // 1. Ghi nhận các lệnh đã duyệt hoặc từ chối từ Firestore
+      cloudTopups.forEach(ct => {
+        if (!ct || !ct.id) return;
+        if (ct.status === 'completed' && !approvedIds.includes(ct.id)) {
+          approvedIds.push(ct.id);
           approvedIdsChanged = true;
+        } else if (ct.status === 'rejected' && !rejectedIds.includes(ct.id)) {
+          rejectedIds.push(ct.id);
+          rejectedIdsChanged = true;
         }
       });
+
       if (approvedIdsChanged) {
         try {
           localStorage.setItem('shopviet_approved_topup_ids', JSON.stringify(approvedIds));
         } catch (e) {}
       }
+      if (rejectedIdsChanged) {
+        try {
+          localStorage.setItem('shopviet_rejected_topup_ids', JSON.stringify(rejectedIds));
+        } catch (e) {}
+      }
 
-      // 2. Cập nhật danh sách yêu cầu nạp tiền (topups)
-      this.state.topups = this.state.topups || [];
+      // 2. Hợp nhất danh sách yêu cầu nạp tiền (Tuyệt đối KHÔNG bao giờ ghi đè completed/rejected về lại pending_approval)
+      // Đồng thời lọc bỏ các mã rác cũ từ ntfy (TOPUP-NTFY-...)
+      this.state.topups = (this.state.topups || []).filter(t => t && t.id && !String(t.id).startsWith('TOPUP-NTFY-'));
       const existingMap = new Map();
-      this.state.topups.forEach(t => existingMap.set(t.id, t));
+      this.state.topups.forEach(t => {
+        if (approvedIds.includes(t.id)) {
+          t.status = 'completed';
+          t.statusText = 'Đã duyệt';
+        } else if (rejectedIds.includes(t.id)) {
+          t.status = 'rejected';
+          t.statusText = 'Đã từ chối';
+        }
+        existingMap.set(t.id, t);
+      });
 
-      let hasNewTopups = false;
+      let hasTopupChanges = false;
       cloudTopups.forEach(ct => {
-        const ctEmail = (ct.userEmail || '').trim().toLowerCase();
-        const isAlreadyApproved = approvedIds.includes(ct.id) || 
-                                  approvedIds.includes(ct.rawNtfyId) ||
-                                  approvedList.some(app => app.userEmail === ctEmail && app.amount === ct.amount);
+        if (!ct || !ct.id || String(ct.id).startsWith('TOPUP-NTFY-')) return;
+        const isApproved = (ct.status === 'completed') || approvedIds.includes(ct.id);
+        const isRejected = (ct.status === 'rejected') || rejectedIds.includes(ct.id);
 
-        if (isAlreadyApproved) {
+        if (isApproved) {
           ct.status = 'completed';
           ct.statusText = 'Đã duyệt';
-        } else if (rejectedIds.includes(ct.id) || rejectedIds.includes(ct.rawNtfyId)) {
+        } else if (isRejected) {
           ct.status = 'rejected';
           ct.statusText = 'Đã từ chối';
         }
 
         if (existingMap.has(ct.id)) {
           const cur = existingMap.get(ct.id);
-          if (cur.status === 'completed' || cur.status === 'rejected') {
-            ct.status = cur.status;
-            ct.statusText = cur.statusText;
-          } else if (isAlreadyApproved) {
-            cur.status = 'completed';
-            cur.statusText = 'Đã duyệt';
-            hasNewTopups = true;
+          if (cur.status !== ct.status) {
+            if (cur.status === 'completed' || cur.status === 'rejected') {
+              // Giữ nguyên trạng thái đã xử lý ở local và đẩy ngược lên Cloud nếu Cloud chưa kịp cập nhật
+              if (ct.status === 'pending_approval' && window.ShopVietFirebase && typeof window.ShopVietFirebase.syncTopupToCloud === 'function') {
+                window.ShopVietFirebase.syncTopupToCloud(cur);
+              }
+            } else {
+              cur.status = ct.status;
+              cur.statusText = ct.statusText;
+              cur.approvedAt = ct.approvedAt || cur.approvedAt;
+              hasTopupChanges = true;
+            }
           }
         } else {
-          this.state.topups.unshift(ct);
+          this.state.topups.push(ct);
           existingMap.set(ct.id, ct);
-          hasNewTopups = true;
+          hasTopupChanges = true;
         }
       });
 
-      // Lọc bỏ trùng lặp trong topups
-      const seenMemos = new Set();
-      this.state.topups = this.state.topups.filter(t => {
-        const key = (t.memo || t.id) + '_' + t.amount;
-        if (seenMemos.has(key)) return false;
-        seenMemos.add(key);
-        return true;
-      });
+      this.state.topups.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
 
-      // 3. ĐỒNG BỘ SỐ DƯ TÀI KHOẢN ĐA THIẾT BỊ TỪ CÁC THÔNG BÁO DUYỆT (approvedList)
-      const approvedByEmail = {};
-      approvedList.forEach(app => {
-        const email = (app.userEmail || '').trim().toLowerCase();
-        if (!email) return;
-        if (!approvedByEmail[email]) {
-          approvedByEmail[email] = { total: 0, items: [] };
-        }
-        approvedByEmail[email].total += app.amount;
-        approvedByEmail[email].items.push(app);
-      });
-
-      const users = this.getUsersDB();
-      let usersDbChanged = false;
+      // 3. Đồng bộ trực tiếp Số dư Ví Xu của tài khoản đang đăng nhập từ Firestore (users/{userDocId})
       let balanceToastMsg = null;
-
-      Object.keys(approvedByEmail).forEach(email => {
-        const userApprovedData = approvedByEmail[email];
-        let uIdx = users.findIndex(u => u.email && u.email.trim().toLowerCase() === email);
-
-        if (uIdx > -1) {
-          if (typeof users[uIdx].balance !== 'number' || users[uIdx].balance < userApprovedData.total) {
-            users[uIdx].balance = userApprovedData.total;
-            usersDbChanged = true;
-          }
-        } else {
-          users.push({
-            id: 'usr_' + Date.now().toString(36),
-            name: email.split('@')[0],
-            email: email,
-            balance: userApprovedData.total,
-            role: 'member',
-            createdAt: new Date().toISOString()
-          });
-          usersDbChanged = true;
-        }
-      });
-
-      if (usersDbChanged) {
-        this.saveUsersDB(users);
-      }
-
-      // 4. Nếu người dùng hiện tại đang đăng nhập, đồng bộ tức thì số dư vào this.state.user
       if (this.state.user && this.state.user.email) {
         const currentEmail = this.state.user.email.trim().toLowerCase();
-        const currentApprovedData = approvedByEmail[currentEmail];
+        const curLocalBal = Number(this.state.user.balance) || 0;
 
-        if (currentApprovedData) {
-          let newlyCredited = 0;
-          let hasNewSync = false;
+        // Kéo document users/{docId} trực tiếp từ Firestore
+        let cloudUserDoc = null;
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.fetchUserFromCloud === 'function') {
+          cloudUserDoc = await window.ShopVietFirebase.fetchUserFromCloud(currentEmail).catch(() => null);
+        }
 
-          currentApprovedData.items.forEach(item => {
-            if (!syncedApprovalIds.includes(item.id)) {
-              newlyCredited += item.amount;
-              syncedApprovalIds.push(item.id);
-              hasNewSync = true;
-            }
-          });
-
-          if (hasNewSync) {
-            try {
-              localStorage.setItem('shopviet_synced_approval_ids', JSON.stringify(syncedApprovalIds));
-            } catch (e) {}
-
-            if ((this.state.user.balance || 0) < currentApprovedData.total) {
-              this.state.user.balance = currentApprovedData.total;
-            } else {
-              this.state.user.balance = (this.state.user.balance || 0) + newlyCredited;
-            }
-
-            if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
-              window.BuiThaiNtfy.playChime('deposit');
-            }
-
-            balanceToastMsg = `🎉 Chúc mừng bạn! Admin Bùi Thái vừa duyệt nạp thành công +${newlyCredited.toLocaleString('vi-VN')} Xu vào ví!`;
-          } else if ((this.state.user.balance || 0) < currentApprovedData.total) {
-            this.state.user.balance = currentApprovedData.total;
+        // Kiểm tra các lệnh nạp vừa được duyệt cho tài khoản này nhưng chưa từng cộng
+        let newlyApprovedSum = 0;
+        let creditedChanged = false;
+        this.state.topups.forEach(t => {
+          if (
+            t &&
+            t.status === 'completed' &&
+            t.userEmail &&
+            t.userEmail.trim().toLowerCase() === currentEmail &&
+            !creditedTopupIds.includes(t.id)
+          ) {
+            newlyApprovedSum += (Number(t.amount) || 0);
+            creditedTopupIds.push(t.id);
+            creditedChanged = true;
           }
+        });
+
+        if (creditedChanged) {
+          try {
+            localStorage.setItem('shopviet_credited_topup_ids_v2', JSON.stringify(creditedTopupIds));
+          } catch (e) {}
+        }
+
+        let targetBalance = curLocalBal;
+        if (cloudUserDoc && typeof cloudUserDoc.balance === 'number') {
+          if (cloudUserDoc.balance > targetBalance) {
+            targetBalance = cloudUserDoc.balance;
+          }
+        }
+        if (newlyApprovedSum > 0 && targetBalance < curLocalBal + newlyApprovedSum) {
+          targetBalance = curLocalBal + newlyApprovedSum;
+        }
+
+        if (targetBalance > curLocalBal) {
+          const added = targetBalance - curLocalBal;
+          this.state.user.balance = targetBalance;
+
+          const users = this.getUsersDB();
+          const uIdx = users.findIndex(u => u.email && u.email.trim().toLowerCase() === currentEmail);
+          if (uIdx > -1) {
+            users[uIdx].balance = targetBalance;
+            this.saveUsersDB(users);
+          }
+
+          if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
+            window.BuiThaiNtfy.playChime('deposit');
+          }
+          balanceToastMsg = `🎉 Chúc mừng bạn! Admin Bùi Thái vừa duyệt nạp thành công +${added.toLocaleString('vi-VN')} Xu vào ví!`;
         }
       }
 
       this.save();
 
-      if (hasNewTopups) {
+      if (hasTopupChanges || isManual) {
         this.notify('topups_updated', this.state.topups);
       }
 
@@ -1745,15 +1740,15 @@
 
     getTopupRequests: function () {
       if (Array.isArray(this.state.topups) && this.state.topups.length > 0) {
-        return this.state.topups;
+        return this.state.topups.filter(t => t && t.id && !String(t.id).startsWith('TOPUP-NTFY-'));
       }
       try {
         const raw = localStorage.getItem('shopviet_topups');
         if (raw) {
           const list = JSON.parse(raw);
           if (Array.isArray(list)) {
-            this.state.topups = list;
-            return list;
+            this.state.topups = list.filter(t => t && t.id && !String(t.id).startsWith('TOPUP-NTFY-'));
+            return this.state.topups;
           }
         }
       } catch (e) {}
@@ -1766,7 +1761,7 @@
       if (!topup) return false;
 
       topup.status = 'rejected';
-      topup.statusText = 'Từ chối';
+      topup.statusText = 'Đã từ chối';
       topup.rejectedAt = new Date().toISOString();
       topup.rejectReason = reason || 'Thông tin chuyển khoản chưa khớp';
 
@@ -1774,7 +1769,6 @@
         const rejectedIds = JSON.parse(localStorage.getItem('shopviet_rejected_topup_ids') || '[]');
         if (!rejectedIds.includes(topupId)) {
           rejectedIds.push(topupId);
-          if (topup.rawNtfyId) rejectedIds.push(topup.rawNtfyId);
           localStorage.setItem('shopviet_rejected_topup_ids', JSON.stringify(rejectedIds));
         }
       } catch (e) {}
@@ -1793,41 +1787,46 @@
       this.state.topups = this.state.topups || [];
       const topup = this.state.topups.find(t => t.id === topupId);
       if (!topup) return false;
+      if (topup.status === 'completed') return true; // Chống bấm duyệt đúp 2 lần
 
+      const amountToAdd = Number(topup.amount) || 0;
       topup.status = 'completed';
       topup.statusText = 'Đã duyệt';
       topup.approvedAt = new Date().toISOString();
 
-      // Lưu ID để tránh bị đè lại trạng thái khi kéo lại từ ntfy.sh
+      // Lưu ID đã duyệt và ID đã cộng tiền để không bao giờ bị lặp lại khi F5
       try {
         const approvedIds = JSON.parse(localStorage.getItem('shopviet_approved_topup_ids') || '[]');
         if (!approvedIds.includes(topupId)) {
           approvedIds.push(topupId);
-          if (topup.rawNtfyId) approvedIds.push(topup.rawNtfyId);
           localStorage.setItem('shopviet_approved_topup_ids', JSON.stringify(approvedIds));
+        }
+        const creditedTopupIds = JSON.parse(localStorage.getItem('shopviet_credited_topup_ids_v2') || '[]');
+        if (!creditedTopupIds.includes(topupId)) {
+          creditedTopupIds.push(topupId);
+          localStorage.setItem('shopviet_credited_topup_ids_v2', JSON.stringify(creditedTopupIds));
         }
       } catch (e) {}
 
-      // Cộng tiền xu cho khách
+      // Cộng tiền xu cho khách trong DB cục bộ
       const users = this.getUsersDB();
       const cleanEmail = (topup.userEmail || '').trim().toLowerCase();
       let userIdx = users.findIndex(u => u.email && u.email.trim().toLowerCase() === cleanEmail);
-      let newBalance = topup.amount;
+      let newBalance = amountToAdd;
       let targetUser = null;
 
       if (userIdx > -1) {
-        newBalance = (users[userIdx].balance || 0) + topup.amount;
+        newBalance = (Number(users[userIdx].balance) || 0) + amountToAdd;
         users[userIdx].balance = newBalance;
         targetUser = users[userIdx];
         this.saveUsersDB(users);
       } else {
-        // Tự động khởi tạo tài khoản nếu khách chưa có trong DB cục bộ
         targetUser = {
           id: 'usr_' + Date.now(),
           uid: 'usr_' + Date.now(),
           name: topup.userName || cleanEmail.split('@')[0],
           email: cleanEmail,
-          balance: topup.amount,
+          balance: amountToAdd,
           role: 'member',
           createdAt: new Date().toISOString()
         };
@@ -1835,24 +1834,57 @@
         this.saveUsersDB(users);
       }
 
-      if (this.state.user && this.state.user.email && this.state.user.email.toLowerCase() === cleanEmail) {
-        this.state.user.balance = (this.state.user.balance || 0) + topup.amount;
-        newBalance = this.state.user.balance;
+      if (this.state.user && this.state.user.email && this.state.user.email.trim().toLowerCase() === cleanEmail) {
+        this.state.user.balance = newBalance;
       }
 
       this.save();
 
-      // Đồng bộ Firebase
-      if (window.ShopVietFirebase) {
-        if (typeof window.ShopVietFirebase.syncTopupToCloud === 'function') {
-          window.ShopVietFirebase.syncTopupToCloud(topup);
+      // Đồng bộ tức thì lên Firestore (promtmmo/databases/default) cho cả topups/{id} và users/{email}
+      const self = this;
+      (async function () {
+        try {
+          if (window.ShopVietFirebase) {
+            if (typeof window.ShopVietFirebase.syncTopupToCloud === 'function') {
+              await window.ShopVietFirebase.syncTopupToCloud(topup);
+            }
+            if (typeof window.ShopVietFirebase.fetchUserFromCloud === 'function' && typeof window.ShopVietFirebase.syncUserToCloud === 'function') {
+              const cloudUser = await window.ShopVietFirebase.fetchUserFromCloud(cleanEmail).catch(() => null);
+              let finalCloudBal = newBalance;
+              if (cloudUser && typeof cloudUser.balance === 'number') {
+                // Nếu số dư trên Cloud cao hơn (do khách nạp nhiều lần trên máy khách), cộng chính xác trên nền Cloud
+                finalCloudBal = Math.max(newBalance, (Number(cloudUser.balance) || 0) + amountToAdd);
+              }
+              const updatedUsers = self.getUsersDB();
+              const idx = updatedUsers.findIndex(u => u.email && u.email.trim().toLowerCase() === cleanEmail);
+              if (idx > -1) {
+                updatedUsers[idx].balance = finalCloudBal;
+                self.saveUsersDB(updatedUsers);
+              }
+              if (self.state.user && self.state.user.email && self.state.user.email.trim().toLowerCase() === cleanEmail) {
+                self.state.user.balance = finalCloudBal;
+                self.save();
+                self.notify('user_balance_updated', self.state.user);
+              }
+              await window.ShopVietFirebase.syncUserToCloud({
+                ...(cloudUser || {}),
+                ...(targetUser || {}),
+                email: cleanEmail,
+                name: (targetUser && targetUser.name) || (cloudUser && cloudUser.name) || cleanEmail.split('@')[0],
+                balance: finalCloudBal,
+                lastApprovedTopupId: topupId,
+                lastApprovedAmount: amountToAdd,
+                lastApprovedAt: topup.approvedAt
+              });
+            }
+          }
+          await self.pushAllToCloud(true, false);
+        } catch (err) {
+          console.warn('[approveTopupRequest Cloud Sync]:', err);
         }
-        if (typeof window.ShopVietFirebase.syncUserToCloud === 'function') {
-          window.ShopVietFirebase.syncUserToCloud({ email: topup.userEmail, balance: newBalance });
-        }
-      }
+      })();
 
-      // Thông báo ntfy
+      // Thông báo ntfy xác nhận đã duyệt
       if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.notifyApprovedDeposit === 'function') {
         window.BuiThaiNtfy.notifyApprovedDeposit(topup);
       }
@@ -1863,8 +1895,9 @@
     },
 
     // Cập nhật số dư ví độc lập cho tài khoản cụ thể
-    updateUserBalance: function (email, newBalance) {
+    updateUserBalance: function (email, newBalance, skipCloudPush = false) {
       email = (email || '').trim().toLowerCase();
+      newBalance = Number(newBalance) || 0;
       const users = this.getUsersDB();
       const idx = users.findIndex(function (u) {
         return u.email && u.email.trim().toLowerCase() === email;
@@ -1872,13 +1905,31 @@
       if (idx > -1) {
         users[idx].balance = newBalance;
         this.saveUsersDB(users);
+      } else {
+        users.push({
+          id: 'usr_' + Date.now(),
+          name: email.split('@')[0],
+          email: email,
+          balance: newBalance,
+          role: 'member',
+          createdAt: new Date().toISOString()
+        });
+        this.saveUsersDB(users);
       }
       if (this.state.user && this.state.user.email && this.state.user.email.trim().toLowerCase() === email) {
         this.state.user.balance = newBalance;
         this.save();
         this.notify('user_balance_updated', this.state.user);
       }
-      this.pushAllToCloud().catch(function () {});
+      if (!skipCloudPush) {
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncUserToCloud === 'function') {
+          window.ShopVietFirebase.syncUserToCloud({
+            email: email,
+            balance: newBalance
+          }).catch(function () {});
+        }
+        this.pushAllToCloud(true).catch(function () {});
+      }
     },
 
     // Đăng ký listener khi state thay đổi
@@ -1960,6 +2011,9 @@
       this.notify('user_balance_updated', this.state.user);
       if (window.ShopVietApp && typeof window.ShopVietApp.updateHeaderAuthUI === 'function') {
         window.ShopVietApp.updateHeaderAuthUI();
+      }
+      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToUserDoc === 'function') {
+        window.ShopVietFirebase.listenToUserDoc(this.state.user.email);
       }
       this.syncTopupsFromCloud().catch(function () {});
     },
@@ -2086,6 +2140,9 @@
 
           if (restoredUser) {
             this.state.user = restoredUser;
+            if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToUserDoc === 'function') {
+              window.ShopVietFirebase.listenToUserDoc(restoredUser.email);
+            }
           } else {
             // Thiết lập trạng thái Khách vãng lai (Guest 100%)
             this.state.user = null;
@@ -2844,9 +2901,36 @@
       });
     },
 
-    // Hiển thị Toast Notification (Đã tắt pop-up DOM theo yêu cầu người dùng)
+    // Hiển thị Toast Notification trực quan (Góc phải trên - Tự động ẩn sau 3.5s)
     showToast: function (message, type) {
       console.log(`[Toast ${type || 'info'}]:`, message);
+      try {
+        if (typeof document === 'undefined' || !document.body) return;
+        let container = document.getElementById('shopviet-toast-container');
+        if (!container) {
+          container = document.createElement('div');
+          container.id = 'shopviet-toast-container';
+          container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:99999;display:flex;flex-direction:column;gap:8px;max-width:380px;pointer-events:none;';
+          document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        const bgMap = {
+          success: 'background:linear-gradient(135deg,#059669,#10b981);border:1px solid #34d399;color:#fff;',
+          error: 'background:linear-gradient(135deg,#dc2626,#ef4444);border:1px solid #f87171;color:#fff;',
+          warning: 'background:linear-gradient(135deg,#d97706,#f59e0b);border:1px solid #fbbf24;color:#fff;',
+          info: 'background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.4);color:#f8fafc;'
+        };
+        toast.style.cssText = (bgMap[type] || bgMap.info) + 'padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 10px 25px -5px rgba(0,0,0,0.4);pointer-events:auto;transition:all 0.25s ease;backdrop-filter:blur(8px);line-height:1.4;';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(-8px)';
+          setTimeout(function () {
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
+          }, 260);
+        }, 3500);
+      } catch (e) {}
     },
 
     // Định dạng tiền tệ VNĐ

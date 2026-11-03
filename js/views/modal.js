@@ -934,9 +934,9 @@ window.ShopVietViews.modal = (function () {
         });
       }
 
-      // Đảm bảo bắn ntfy trực tiếp
-      if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.notifyDepositRequest === 'function') {
-        window.BuiThaiNtfy.notifyDepositRequest(topup || {
+      // Nếu createTopupRequest chưa gọi ntfy thì mới gọi fallback
+      if (!topup && window.BuiThaiNtfy && typeof window.BuiThaiNtfy.notifyDepositRequest === 'function') {
+        window.BuiThaiNtfy.notifyDepositRequest({
           amount: amount,
           userEmail: currentUser.email,
           userName: currentUser.name,

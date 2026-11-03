@@ -2,6 +2,8 @@
  * BuiThai AI Studio (PromptMMO) - ntfy.sh & Web Audio Instant Push Notification Module
  * Đẩy thông báo tức thì về điện thoại & trình duyệt của Admin Bùi Thái (Non-blocking, 0% Treo)
  * Kèm âm thanh thông báo xúc giác Web Audio API (0MB) và Web Notification
+ * Lưu ý: KHÔNG BAO GIỜ poll ntfy.sh liên tục để tránh bị chặn IP (429/Timeout).
+ * Toàn bộ đồng bộ yêu cầu nạp & số dư đều đi qua Firestore (promtmmo/databases/default).
  */
 
 (function () {
@@ -26,7 +28,6 @@
       const gain = ctx.createGain();
 
       if (type === 'deposit') {
-        // Âm tiền leng keng vui tươi (Ding-ding)
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(880, now); // A5
         osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.12);
@@ -36,7 +37,6 @@
         gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
       } else if (type === 'success') {
-        // Âm thành công du dương
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(523.25, now); // C5
         osc1.frequency.setValueAtTime(659.25, now + 0.1); // E5
@@ -45,7 +45,6 @@
         gain.gain.setValueAtTime(0.2, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       } else {
-        // Âm ping nhẹ
         osc1.type = 'sine';
         osc1.frequency.setValueAtTime(987.77, now);
         gain.gain.setValueAtTime(0.15, now);
@@ -60,12 +59,9 @@
       osc2.start(now);
       osc1.stop(now + 0.5);
       osc2.stop(now + 0.5);
-    } catch (e) {
-      // Bỏ qua nếu trình duyệt chặn autoplay
-    }
+    } catch (e) {}
   }
 
-  // Hiển thị Web Notification nếu được cấp quyền
   function showDesktopNotification(title, body) {
     try {
       if ('Notification' in window && Notification.permission === 'granted') {
@@ -76,6 +72,8 @@
       }
     } catch (e) {}
   }
+
+  let _lastSendTime = 0;
 
   window.BuiThaiNtfy = {
     getTopic: function () {
@@ -99,31 +97,35 @@
     },
 
     /**
-     * Gửi notification đến ntfy.sh bất đồng bộ với Timeout 1.8s (Không bao giờ làm nghẽn UI)
+     * Gửi notification đến ntfy.sh bất đồng bộ với Timeout 2.2s (Không bao giờ làm nghẽn UI)
      */
     sendNotification: async function ({ title, message, priority = 'default', tags = [], clickUrl = '', actions = [] }) {
       const topic = this.getTopic();
 
-      // Phát âm thanh chime cục bộ ngay lập tức để người dùng có phản hồi tức thì
       if (tags && tags.includes('moneybag')) {
         playNotificationChime('deposit');
       } else {
         playNotificationChime('success');
       }
 
-      // Hiện Desktop Notification nếu có quyền
       showDesktopNotification(title, message);
+
+      // Chống bắn đúp trong vòng 800ms
+      const nowMs = Date.now();
+      if (nowMs - _lastSendTime < 800) {
+        return true;
+      }
+      _lastSendTime = nowMs;
 
       let priorityLevel = 3;
       if (priority === 'urgent' || priority === 'max') priorityLevel = 5;
       else if (priority === 'high') priorityLevel = 4;
       else if (priority === 'low' || priority === 'min') priorityLevel = 1;
 
-      // Gửi ngầm không đợi (Fire-and-forget với AbortController chống nghẽn)
       (async () => {
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 2000);
+          const timeoutId = setTimeout(() => controller.abort(), 2200);
 
           const payload = {
             topic: topic,
@@ -146,8 +148,7 @@
           clearTimeout(timeoutId);
           console.log(`[BuiThaiNtfy] Đã gửi thông báo thành công đến topic '${topic}'`);
         } catch (err) {
-          // Bắt lỗi âm thầm, không ảnh hưởng đến luồng chính
-          console.info('[BuiThaiNtfy] ntfy.sh offline hoặc timeout:', err.name);
+          console.info('[BuiThaiNtfy] ntfy.sh notice:', err.name);
         }
       })();
 
@@ -159,17 +160,16 @@
      */
     notifyDepositRequest: function (topup) {
       if (!topup) return;
-      const amount = topup.amount || 0;
+      const amount = Number(topup.amount) || 0;
       const customer = topup.userName ? `${topup.userName} (${topup.userEmail || ''})` : (topup.userEmail || 'Khách hàng');
       const memo = topup.memo || '';
-      const bank = topup.bank || 'Techcombank (6688686866688)';
 
       const currentOrigin = (typeof window !== 'undefined' && window.location.origin) || 'https://promptmmo.vercel.app';
       const adminUrl = currentOrigin + '/#admin';
 
       return this.sendNotification({
         title: `💰 [BÙI THÁI STUDIO] YÊU CẦU NẠP +${amount.toLocaleString('vi-VN')} XU CẦN DUYỆT!`,
-        message: `Khách: ${customer}\nSố tiền: ${amount.toLocaleString('vi-VN')} VNĐ (+${amount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 - BUI THAI\nNội dung: ${memo}\n👉 Bấm để vào Admin Duyệt Xu tức thì!`,
+        message: `Mã lệnh: ${topup.id || 'MỚI'}\nKhách: ${customer}\nSố tiền: ${amount.toLocaleString('vi-VN')} VNĐ (+${amount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 - BUI THAI\nNội dung: ${memo}\n👉 Bấm để vào Admin Duyệt Xu tức thì!`,
         priority: 'urgent',
         tags: ['moneybag', 'bell', 'rotating_light', 'white_check_mark'],
         clickUrl: adminUrl
@@ -183,7 +183,7 @@
       if (!order) return;
       const orderId = order.id || order.orderCode || 'Đơn mới';
       const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Kỹ năng Prompt AI';
-      const amount = order.total || order.amount || 0;
+      const amount = Number(order.total || order.amount) || 0;
       const customer = order.userEmail || (order.customer && order.customer.email) || 'Khách hàng';
 
       const currentOrigin = (typeof window !== 'undefined' && window.location.origin) || 'https://promptmmo.vercel.app';
@@ -203,168 +203,52 @@
      */
     notifyApprovedDeposit: function (topup) {
       if (!topup) return;
-      const amount = topup.amount || 0;
+      const amount = Number(topup.amount) || 0;
       const customer = topup.userEmail || 'Khách hàng';
 
       return this.sendNotification({
         title: `✅ [Bùi Thái Studio] ĐÃ DUYỆT NẠP +${amount.toLocaleString('vi-VN')} XU!`,
-        message: `Đã cộng thành công ${amount.toLocaleString('vi-VN')} Xu vào ví của tài khoản ${customer}.`,
+        message: `Đã cộng thành công ${amount.toLocaleString('vi-VN')} Xu vào ví của tài khoản ${customer} (Mã: ${topup.id || ''}).`,
         priority: 'default',
         tags: ['white_check_mark', 'sparkles']
       });
     },
 
-    /**
-     * Phát âm thanh chime Web Audio API 0MB (deposit, success, ping)
-     */
     playChime: function (type) {
       playNotificationChime(type || 'deposit');
     },
 
     /**
-     * Kéo danh sách nạp Xu ĐÃ ĐƯỢC DUYỆT từ kênh ntfy.sh
-     * Giúp mọi thiết bị của khách hàng và Admin nhận tiền Xu tức thì không cần Firestore
+     * Đã thay thế hoàn toàn việc poll ntfy.sh bằng Firestore (promtmmo/databases/default)
+     * để không bao giờ bị ntfy.sh chặn IP hay lặp lại thông báo cũ khi F5!
      */
     fetchApprovedTopups: async function () {
-      const topic = this.getTopic();
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-        const res = await fetch(`https://ntfy.sh/${topic}/json?poll=1`, {
-          headers: { 'Accept': 'application/json' },
-          cache: 'no-store',
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (!res.ok) return [];
-        const text = await res.text();
-        const lines = text.trim().split('\n').filter(Boolean);
-        const approvals = [];
-
-        lines.forEach(l => {
-          try {
-            const item = JSON.parse(l);
-            if (item.event === 'message') {
-              const title = item.title || '';
-              const msg = item.message || '';
-              const isDepositRequest = (title.includes('YÊU CẦU NẠP') || title.includes('CẦN DUYỆT')) && !title.includes('ĐÃ DUYỆT');
-              const isApproval = !isDepositRequest && (title.includes('ĐÃ DUYỆT') || title.includes('DA DUYET') || msg.includes('Đã cộng thành công'));
-
-              if (isApproval) {
-                const amountMatch = title.match(/\+([\d.]+)\s*XU/i) || msg.match(/cộng thành công\s*([\d.]+)\s*Xu/i);
-                const emailMatch = msg.match(/tài khoản\s*([^\s.]+@[^\s.]+\.[^\s.]+)/i) ||
-                                   msg.match(/tài khoản\s*([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i) ||
-                                   msg.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-
-                const amount = amountMatch ? parseInt(amountMatch[1].replace(/\./g, ''), 10) : 0;
-                const userEmail = emailMatch ? emailMatch[1].replace(/[.,]$/, '').trim().toLowerCase() : '';
-
-                if (amount > 0 && userEmail) {
-                  approvals.push({
-                    id: item.id || ('APP-' + item.time),
-                    amount: amount,
-                    userEmail: userEmail,
-                    time: item.time || Math.floor(Date.now() / 1000),
-                    createdAt: new Date((item.time || Math.floor(Date.now() / 1000)) * 1000).toISOString(),
-                    title: title,
-                    message: msg
-                  });
-                }
-              }
-            }
-          } catch (e) {}
-        });
-
-        return approvals;
-      } catch (err) {
-        console.warn('[BuiThaiNtfy] fetchApprovedTopups error:', err);
-        return [];
-      }
+      return [];
     },
 
-    /**
-     * Kéo danh sách yêu cầu nạp Xu thời gian thực từ kênh ntfy.sh
-     * Giúp Admin trên máy tính thấy ngay các lệnh nạp từ điện thoại/máy khách
-     */
     fetchRecentTopupRequests: async function () {
-      const topic = this.getTopic();
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-
-        const res = await fetch(`https://ntfy.sh/${topic}/json?poll=1`, {
-          headers: { 'Accept': 'application/json' },
-          cache: 'no-store',
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (!res.ok) return [];
-        const text = await res.text();
-        const lines = text.trim().split('\n').filter(Boolean);
-        const topups = [];
-
-        lines.forEach(l => {
-          try {
-            const item = JSON.parse(l);
-            const title = item.title || '';
-            const msg = item.message || '';
-            const isDepositRequest = (title.includes('YÊU CẦU NẠP') || title.includes('CẦN DUYỆT')) && !title.includes('ĐÃ DUYỆT');
-
-            if (item.event === 'message' && isDepositRequest) {
-              const emailMatch = msg.match(/Khách:.*?\((.*?)\)/) || msg.match(/Khách:\s*([^\n\r]+)/);
-              const nameMatch = msg.match(/Khách:\s*([^(]+)/);
-              const amountMatch = msg.match(/Số tiền:\s*([\d.]+)/) || title.match(/\+([\d.]+)\s*XU/);
-              const memoMatch = msg.match(/Nội dung:\s*([^\n\r]+)/);
-
-              const amount = amountMatch ? parseInt(amountMatch[1].replace(/\./g, ''), 10) : 0;
-              const userEmail = emailMatch ? emailMatch[1].trim() : 'khachhang@gmail.com';
-              const userName = nameMatch ? nameMatch[1].trim() : userEmail.split('@')[0];
-              const memo = memoMatch ? memoMatch[1].trim() : 'NAPXU';
-              const topupId = 'TOPUP-NTFY-' + (item.id || item.time);
-
-              topups.push({
-                id: topupId,
-                amount: amount,
-                userEmail: userEmail,
-                userName: userName,
-                memo: memo,
-                bank: 'Techcombank (6688686866688)',
-                accountNumber: '6688686866688',
-                accountName: 'BUI THAI',
-                method: 'Techcombank VietQR 24/7',
-                status: 'pending_approval',
-                statusText: 'Chờ Admin duyệt',
-                createdAt: new Date(item.time * 1000).toISOString(),
-                rawNtfyId: item.id
-              });
-            }
-          } catch (e) {}
-        });
-
-        return topups;
-      } catch (err) {
-        console.warn('[BuiThaiNtfy] fetchRecentTopupRequests error:', err);
-        return [];
+      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.fetchTopupsFromCloud === 'function') {
+        return await window.ShopVietFirebase.fetchTopupsFromCloud();
       }
+      return [];
     },
 
-    /**
-     * Kiểm tra kết nối ntfy
-     */
     testNotification: async function () {
       const topic = this.getTopic();
       return this.sendNotification({
         title: `🚀 [Bùi Thái Studio] Kiểm tra thông báo thành công!`,
-        message: `Chào anh Bùi Thái! Kênh ntfy "${topic}" đã kết nối. Khi có khách nạp Xu Techcombank 6688686866688 hoặc mở khóa Prompt, chuông sẽ reo ngay!`,
+        message: `Chào anh Bùi Thái! Kênh ntfy "${topic}" và Firestore (promtmmo/default) đã kết nối 100%. Khi có khách nạp Xu Techcombank 6688686866688, chuông sẽ reo ngay!`,
         priority: 'high',
         tags: ['fire', 'bell', 'white_check_mark']
       });
     }
   };
 
-  window.ShopVietNtfy = window.BuiThaiNtfy;
-  console.log('[BuiThaiNtfy] Module thông báo ntfy.sh siêu tốc sẵn sàng. Topic:', window.BuiThaiNtfy.getTopic());
+  window.ShopVietNtfy = {
+    ...window.BuiThaiNtfy,
+    send: function (title, message) {
+      return window.BuiThaiNtfy.sendNotification({ title: title, message: message, priority: 'high' });
+    }
+  };
+  console.log('[BuiThaiNtfy] Module thông báo ntfy.sh + Firestore Realtime sẵn sàng. Topic:', window.BuiThaiNtfy.getTopic());
 })();
