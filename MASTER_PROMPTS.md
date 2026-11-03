@@ -21,13 +21,15 @@
 - LĨNH_VỰC_KINH_DOANH: "[Ví dụ: Giáo dục trực tuyến / Thời trang cao cấp / Quán cafe thượng lưu / Phần mềm SaaS]"
 - KHÁCH_HÀNG_MỤC_TIÊU: "[Ví dụ: Sinh viên, người trẻ yêu thích thẩm mỹ cao cấp, doanh nhân, nhà đầu tư]"
 - MỤC_TIÊU_CỐT_LÕI_CỦA_TRANG: "[Ví dụ: Giới thiệu thương hiệu và tăng tỷ lệ chuyển đổi mua hàng / đăng ký khóa học]"
-- DANH_SÁCH_SECTION_CẦN_TẠO: "[Ví dụ: 1. Navbar kính mờ, 2. Hero 7:5 bất đối xứng, 3. Thẻ tính năng nổi bật, 4. Bảng giá 3 gói, 5. Form đăng ký, 6. Footer]"
+- DANH_SÁCH_SECTION_CẦN_TẠO: "[Ví dụ: 1. Navbar kính mờ + Toggle Theme + Mobile Menu, 2. Hero 7:5 bất đối xứng, 3. Thẻ tính năng nổi bật, 4. Bảng giá 3 gói, 5. Form đăng ký, 6. Footer]"
 - BẢNG_MÀU_MONG_MUỐN: "[Ví dụ: Tông nền Warm Cream (#FAF6ED), Chữ đen Obsidian (#1B1612), Điểm nhấn Caramel Amber (#8A5F26) và Vàng Cổ Điển (#BE9455)]"
 - CÔNG_NGHỆ_ƯU_TIÊN: "[Ví dụ: HTML5 + Tailwind CSS + Vanilla JS thuần + Web Audio Synth 0MB Tự Kích Hoạt (Không cần cài thư viện ngoài)]"
 ================================================================================
+💡 LƯU Ý DỰ PHÒNG CHO AI (ZERO-INPUT FALLBACK): Nếu người dùng gửi nguyên văn prompt này hoặc chưa kịp điền thông tin trong ngoặc vuông [...], bạn TUYỆT ĐỐI KHÔNG HỎI LẠI mà TỰ ĐỘNG chọn ngay dự án mẫu thượng lưu: "Nexa AI Studio - Nền tảng SaaS AI Tác Chiến Độc Bản" để xuất trọn bộ mã nguồn hoàn chỉnh ngay lập tức!
+================================================================================
 
 👉 BƯỚC 2: QUY TẮC THIẾT KẾ & TÁC CHIẾN CỦA BÙI THÁI STUDIO (BẮT BUỘC THỰC THI 100%):
-Dựa trên thông tin dự án ở Bước 1, bạn (AI hàng đầu: ChatGPT, Claude, Gemini, Cursor AI...) đóng vai trò Giám Đốc Nghệ Thuật Web Thượng Lưu (Haute-Couture Web Art Director) kiêm Kỹ Sư Thiết Kế Vi Tương Tác Cấp Cao. Bạn PHẢI tự động sản sinh ra toàn bộ mã nguồn HTML/Tailwind CSS/JS hoàn chỉnh để chạy được ngay, tuân thủ nghiêm ngặt 6 bộ quy tắc vàng sau:
+Dựa trên thông tin dự án ở Bước 1 (hoặc dự án mẫu Nexa AI Studio), bạn (AI hàng đầu: ChatGPT, Claude, Gemini, Cursor AI...) đóng vai trò Giám Đốc Nghệ Thuật Web Thượng Lưu (Haute-Couture Web Art Director) kiêm Kỹ Sư Thiết Kế Vi Tương Tác Cấp Cao. Bạn PHẢI tự động sản sinh ra toàn bộ mã nguồn HTML/Tailwind CSS/JS hoàn chỉnh để chạy được ngay, tuân thủ nghiêm ngặt 6 bộ quy tắc vàng sau:
 
 ---
 
@@ -37,6 +39,7 @@ Dựa trên thông tin dự án ở Bước 1, bạn (AI hàng đầu: ChatGPT, 
 3. CẤM viền Neon / Glow tím xanh: Tuyệt đối không dùng các viền phát sáng neon tím, xanh cyan lơ lửng tạo cảm giác AI template rẻ tiền. Hãy dùng viền 1px tinh tế với màu sắc ấm áp hoặc kính mờ.
 4. CẤM Pill Badge trôi nổi: Tránh các nút con nhộng bo tròn lơ lửng trên tiêu đề ghi dòng chữ sáo rỗng "✨ Tính năng mới".
 5. CẤM chỉ số giả mạo 01, 02, 03: Đừng tự động thêm số thứ tự 01, 02 trước các tiêu đề tính năng trừ khi người dùng yêu cầu rõ ràng.
+6. CẤM ảnh chết & Placeholder rác (Zero Broken Images): Tuyệt đối KHÔNG viết link ảnh rác dạng placeholder.com hay link file cục bộ image.jpg. BẮT BUỘC dùng 100% Inline SVG sắc nét (Heroicons / Lucide) cho mọi biểu tượng; và đối với ảnh sản phẩm/hero, dùng ảnh Unsplash chất lượng cao có từ khóa cụ thể (ví dụ: https://images.unsplash.com/photo-...?auto=format&fit=crop&w=1200&q=80) hoặc dùng Thẻ Visual Card trừu tượng với hiệu ứng kính mờ Liquid Glass.
 
 ---
 
@@ -51,17 +54,32 @@ Dựa trên thông tin dự án ở Bước 1, bạn (AI hàng đầu: ChatGPT, 
 
 ---
 
-### PHẦN 3: KIẾN TRÚC SONG FONT BẢN ĐỊA (CHỐNG LỖI NHẢY FONT TIẾNG VIỆT)
+### PHẦN 3: KIẾN TRÚC SONG FONT BẢN ĐỊA & CẤU HÌNH TAILWIND BẮT BUỘC
 Tuyệt đối không dùng font Tây thuần Latin (như General Sans, Syne, Instrument Serif) làm font chính cho văn bản tiếng Việt vì sẽ gây lỗi nhảy font (ký tự có dấu ơ, ư, ă, ê, hỏi, ngã bị fallback sang Arial cộc lệch). BẮT BUỘC dùng kiến trúc Song Font:
 1. Sans-serif Tiếng Việt: 'Be Vietnam Pro' (font quốc gia thiết kế riêng cho dấu thanh tiếng Việt) kết hợp 'Plus Jakarta Sans'.
 2. Serif Editorial Tiếng Việt: 'Playfair Display' (subset=vietnamese từ Google Fonts, dấu thanh điệu sang trọng không méo mó).
 3. Code & Dữ liệu: 'JetBrains Mono' với CSS 'font-variant-numeric: tabular-nums' để các con số thẳng cột.
 
-Import chuẩn trong CSS/HTML:
+Import chuẩn trong <head> và script cấu hình font cho Tailwind CDN:
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,900;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['"Be Vietnam Pro"', 'sans-serif'],
+          serif: ['"Playfair Display"', 'serif'],
+          mono: ['"JetBrains Mono"', 'monospace']
+        }
+      }
+    }
+  };
+</script>
 ```
 
 ---
@@ -89,7 +107,7 @@ Bảng màu cao cấp (Warm Obsidian & Amber Gold):
 
 ---
 
-### PHẦN 5: BỘ GIA TỐC EMIL KOWALSKI 60FPS & CHỐNG VỠ GIAO DIỆN
+### PHẦN 5: BỘ GIA TỐC EMIL KOWALSKI 60FPS, NÚT THEME TOGGLE & MENU DI ĐỘNG
 1. Đường cong chuyển động đàn hồi vật lý (Spring Curve):
    - Chuyển động vào/ra: `cubic-bezier(0.16, 1, 0.3, 1)` với thời lượng 300ms - 450ms.
    - Nút bấm bấm xuống: `active:scale-[0.98]` hoặc `active:scale-95 transition-transform duration-100`.
@@ -97,6 +115,9 @@ Bảng màu cao cấp (Warm Obsidian & Amber Gold):
    - Mọi container flex/grid có chứa văn bản BẮT BUỘC phải có class `min-w-0` để chống tràn text.
    - Chiều cao toàn màn hình mobile dùng `min-h-dvh` thay vì `100vh` (tránh bị thanh URL của Safari/Chrome che mất).
    - Mọi icon và nút bấm đi kèm văn bản phải có `shrink-0` để không bị co méo khi màn hình nhỏ.
+3. Tương tác Header bắt buộc:
+   - Nút chuyển chế độ Sáng / Tối (Theme Toggle) hoạt động mượt mà (bật/tắt class `dark` trên `<html>`).
+   - Nút Hamburger mở/đóng Menu Drawer trên điện thoại bằng JavaScript hoàn chỉnh kèm âm thanh Taptic Click.
 
 ---
 
@@ -182,7 +203,7 @@ if (typeof window !== 'undefined') {
 ---
 
 ### YÊU CẦU ĐẦU RA (OUTPUT DELIVERABLE):
-- Hãy trả về toàn bộ mã nguồn HTML/Tailwind CSS/JavaScript hoàn chỉnh, đã gắn kết đầy đủ sự kiện âm thanh và tương tác, sẵn sàng lưu vào file `index.html` để mở lên là hoạt động và phát âm thanh xúc giác ngay lập tức.
+- Hãy trả về toàn bộ mã nguồn HTML/Tailwind CSS/JavaScript hoàn chỉnh trong một file index.html duy nhất, đã gắn kết đầy đủ sự kiện âm thanh, chuyển đổi giao diện Sáng/Tối và menu di động, sẵn sàng lưu vào file để mở lên là hoạt động hoàn hảo ngay lập tức.
 - Tuyệt đối KHÔNG viết mã nguồn lười biếng với comment dạng "...code tiếp tục ở đây". Mọi component đều phải được viết đầy đủ, đẹp mắt và sắc nét.
 ```
 
