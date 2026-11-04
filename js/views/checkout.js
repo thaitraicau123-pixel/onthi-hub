@@ -644,6 +644,13 @@
                     Quét mã VietQR nhận tài khoản tức thì sau 30 giây
                   </div>
 
+                  <div class="text-[11px] text-center text-slate-500 pt-1 leading-relaxed">
+                    Bằng việc đặt hàng, bạn đồng ý với 
+                    <button type="button" onclick="ShopVietViews.modal.openPolicy('terms'); return false;" class="underline text-amber-700 hover:text-amber-800 font-medium cursor-pointer">Điều khoản dịch vụ</button> 
+                    và 
+                    <button type="button" onclick="ShopVietViews.modal.openPolicy('refund'); return false;" class="underline text-emerald-700 hover:text-emerald-800 font-bold cursor-pointer">Chính sách hoàn tiền 100%</button>.
+                  </div>
+
                 </div>
               </div>
 
