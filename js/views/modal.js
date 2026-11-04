@@ -1477,7 +1477,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                     <h5 class="font-bold text-slate-900 dark:text-white text-sm">1. Thông tin đơn vị sở hữu & pháp lý</h5>
                     <p class="mt-1 text-slate-600 dark:text-slate-300">
                       - Đơn vị phát triển: <strong>Bùi Thái AI Studio</strong><br>
-                      - Người đại diện phụ trách: <strong>Bùi Văn Thái</strong><br>
+                      - Người đại diện phụ trách: <strong>Bùi Thái</strong><br>
                       - Địa chỉ liên hệ: Hà Nội, Việt Nam<br>
                       - Hotline/Zalo tiếp nhận CSKH: <strong class="text-amber-600 dark:text-amber-400 font-mono">0986019623</strong><br>
                       - Email hỗ trợ chính thức: <span class="font-mono">thaitraicau123@gmail.com</span><br>
