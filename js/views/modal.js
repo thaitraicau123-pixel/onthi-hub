@@ -1380,7 +1380,8 @@ ${escapeHTML(item.template || item.prompt || "")}
 
     // ==========================================
     // TRUNG TÂM PHÁP LÝ & CHÍNH SÁCH BẢO HÀNH / HOÀN TIỀN
-    // Tuân thủ: Nghị định 52/2013/NĐ-CP, Nghị định 85/2021/NĐ-CP & Nghị định 13/2023/NĐ-CP
+    // Tuân thủ: Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15, Nghị định 356/2025/NĐ-CP (thay thế NĐ 13/2023), 
+    // Luật Thương mại điện tử 122/2025/QH15, Nghị định 248/2026/NĐ-CP & Luật BVQLNTD 19/2023/QH15
     // ==========================================
     openPolicy: function (initialTab) {
       const activeTab = initialTab || 'terms';
@@ -1401,11 +1402,11 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div class="flex items-center gap-2">
                     <h3 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">Trung Tâm Chính Sách & Pháp Lý</h3>
                     <span class="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                      Đã niêm yết công khai
+                      Đã niêm yết công khai 2026
                     </span>
                   </div>
                   <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                    Bùi Thái AI Studio • Tuân thủ Nghị định 52/2013/NĐ-CP, NĐ 85/2021/NĐ-CP & NĐ 13/2023/NĐ-CP
+                    Bùi Thái AI Studio • Tuân thủ Luật 91/2025/QH15, NĐ 356/2025/NĐ-CP & Luật TMĐT 122/2025/QH15
                   </p>
                 </div>
               </div>
@@ -1450,7 +1451,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                 onclick="ShopVietViews.modal.switchPolicyTab('privacy')" 
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>🛡️</span> Bảo Mật Dữ Liệu (NĐ 13/2023)
+                <span>🛡️</span> Bảo Mật Dữ Liệu (Luật 91/2025)
               </button>
               <button 
                 id="policyTabBtnDispute" 
@@ -1468,7 +1469,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <div id="policyPaneTerms" class="space-y-4">
                 <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40">
                   <h4 class="font-bold text-amber-900 dark:text-amber-200 text-sm mb-1">📜 ĐIỀU KHOẢN DỊCH VỤ & QUY CHẾ HOẠT ĐỘNG THƯƠNG MẠI ĐIỆN TỬ</h4>
-                  <p class="text-xs text-amber-800 dark:text-amber-300">Áp dụng cho tất cả khách hàng truy cập, tạo tài khoản và giao dịch tài sản số tại website <code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">https://promptmmo.vercel.app/</code>.</p>
+                  <p class="text-xs text-amber-800 dark:text-amber-300">Căn cứ Luật Thương mại điện tử 122/2025/QH15, Nghị định 248/2026/NĐ-CP (kèm quy định chuyển tiếp Điều 41 từ Nghị định 52/2013/NĐ-CP & NĐ 85/2021/NĐ-CP). Áp dụng tại website <code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">https://promptmmo.vercel.app/</code>.</p>
                 </div>
 
                 <div class="space-y-3">
@@ -1522,7 +1523,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <div id="policyPaneRefund" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40">
                   <h4 class="font-bold text-emerald-900 dark:text-emerald-200 text-sm mb-1">💰 CHÍNH SÁCH HOÀN TIỀN 100% TRONG 24 GIỜ & BẢO HÀNH 1 ĐỔI 1 TRỌN ĐỜI</h4>
-                  <p class="text-xs text-emerald-800 dark:text-emerald-300">Cam kết bảo vệ 100% quyền lợi người tiêu dùng theo Luật Bảo vệ quyền lợi người tiêu dùng Việt Nam.</p>
+                  <p class="text-xs text-emerald-800 dark:text-emerald-300">Cam kết bảo vệ 100% quyền lợi người tiêu dùng theo Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15.</p>
                 </div>
 
                 <div class="space-y-3">
@@ -1578,8 +1579,8 @@ ${escapeHTML(item.template || item.prompt || "")}
               <!-- PANE 3: BẢO MẬT DỮ LIỆU CÁ NHÂN -->
               <div id="policyPanePrivacy" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/40">
-                  <h4 class="font-bold text-blue-900 dark:text-blue-200 text-sm mb-1">🛡️ CHÍNH SÁCH BẢO VỆ DỮ LIỆU CÁ NHÂN (NGHỊ ĐỊNH 13/2023/NĐ-CP)</h4>
-                  <p class="text-xs text-blue-800 dark:text-blue-300">Cam kết bảo mật tuyệt đối thông tin người dùng, không chia sẻ hay kinh doanh dữ liệu cho bất kỳ bên thứ ba nào.</p>
+                  <h4 class="font-bold text-blue-900 dark:text-blue-200 text-sm mb-1">🛡️ CHÍNH SÁCH BẢO VỆ DỮ LIỆU CÁ NHÂN (LUẬT SỐ 91/2025/QH15 & NGHỊ ĐỊNH 356/2025/NĐ-CP)</h4>
+                  <p class="text-xs text-blue-800 dark:text-blue-300">Tuân thủ triệt để Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 và Nghị định 356/2025/NĐ-CP (thay thế Nghị định 13/2023/NĐ-CP từ 01/01/2026). Cam kết bảo mật tuyệt đối, không chia sẻ hay kinh doanh dữ liệu cho bất kỳ bên thứ ba nào.</p>
                 </div>
 
                 <div class="space-y-3">
@@ -1599,11 +1600,10 @@ ${escapeHTML(item.template || item.prompt || "")}
                   </div>
 
                   <div>
-                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">2. Mục đích xử lý & lưu trữ dữ liệu</h5>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">2. Nguyên tắc đồng ý & Cookie Consent Gate</h5>
                     <p class="mt-1 text-slate-600 dark:text-slate-300">
-                      - Xác thực quyền sở hữu vĩnh viễn các hộp công cụ AI đã thanh toán.<br>
-                      - Tự động nhận diện và cộng Xu khi khách hàng quét mã VietQR Techcombank.<br>
-                      - Hỗ trợ xử lý bảo hành, cập nhật tài liệu và hoàn tiền nhanh chóng khi có yêu cầu.
+                      - Tuân thủ Điều 9 Luật 91/2025/QH15: Sự đồng ý của người dùng phải rõ ràng, tự nguyện, không dùng ô tích sẵn. Im lặng hoặc không phản hồi KHÔNG được coi là đồng ý.<br>
+                      - Mọi cookie phân tích không thiết yếu chỉ được kích hoạt SAU KHI người dùng bấm chấp nhận tại Banner Quyền Riêng Tư. Người dùng từ chối vẫn sử dụng toàn bộ chức năng cốt lõi bình thường.
                     </p>
                   </div>
 
@@ -1617,9 +1617,11 @@ ${escapeHTML(item.template || item.prompt || "")}
                   </div>
 
                   <div>
-                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">4. Quyền của khách hàng đối với dữ liệu cá nhân</h5>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">4. Quyền của khách hàng đối với dữ liệu cá nhân & Thời hạn cam kết</h5>
                     <p class="mt-1 text-slate-600 dark:text-slate-300">
-                      Theo quy định của Nghị định 13/2023/NĐ-CP, khách hàng có toàn quyền: tra cứu lịch sử dữ liệu của mình tại trang Dashboard; yêu cầu chỉnh sửa thông tin sai lệch; hoặc yêu cầu xóa vĩnh viễn tài khoản và dữ liệu cá nhân khỏi hệ thống bằng cách liên hệ Zalo <strong>0986019623</strong> hoặc email <strong>thaitraicau123@gmail.com</strong>.
+                      Căn cứ Điều 4 Luật 91/2025/QH15 và Điều 5 Nghị định 356/2025/NĐ-CP, khách hàng có toàn quyền: tra cứu lịch sử dữ liệu của mình tại trang Dashboard; yêu cầu chỉnh sửa thông tin sai lệch; hoặc yêu cầu xóa vĩnh viễn tài khoản và dữ liệu cá nhân khỏi hệ thống bằng cách liên hệ Zalo <strong>0986019623</strong> hoặc email <strong>thaitraicau123@gmail.com</strong>.<br>
+                      - <strong>Thời hạn phản hồi và hướng dẫn thủ tục:</strong> Tối đa <strong>2 ngày làm việc</strong>.<br>
+                      - <strong>Thời hạn hoàn tất chỉnh sửa/xóa dữ liệu:</strong> Theo đúng quy định tại Điều 5 NĐ 356/2025.
                     </p>
                   </div>
                 </div>

@@ -5,7 +5,7 @@
   <script>
     (function() {
       try {
-        var REQ_VER = 'v13.6_legal_policies_and_refund';
+        var REQ_VER = 'v13.7_vn_law_compliance_audit';
         var cur = localStorage.getItem('shopviet_data_version');
         if (cur !== REQ_VER) {
           localStorage.setItem('shopviet_data_version', REQ_VER);
@@ -2532,7 +2532,7 @@
           </ul>
         </div>
 
-        <!-- Column 3: Chính Sách & Pháp Lý (Tuân thủ Nghị định 52/2013, NĐ 85/2021 & NĐ 13/2023) -->
+        <!-- Column 3: Chính Sách & Pháp Lý (Luật 91/2025/QH15, NĐ 356/2025 & Luật TMĐT 122/2025) -->
         <div class="space-y-3">
           <h4 class="text-sm font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
             <span>⚖️</span> Chính Sách & Pháp Lý
@@ -2540,7 +2540,7 @@
           <ul class="space-y-2 text-sm text-slate-400">
             <li>
               <button type="button" onclick="ShopVietViews.modal.openPolicy('terms'); return false;" class="hover:text-[#BE9455] transition-colors flex items-center gap-2 text-left cursor-pointer">
-                <span>📜</span> <span>Điều khoản dịch vụ (Terms of Service)</span>
+                <span>📜</span> <span>Điều khoản dịch vụ (Luật TMĐT 122/2025)</span>
               </button>
             </li>
             <li>
@@ -2550,7 +2550,7 @@
             </li>
             <li>
               <button type="button" onclick="ShopVietViews.modal.openPolicy('privacy'); return false;" class="hover:text-[#BE9455] transition-colors flex items-center gap-2 text-left cursor-pointer">
-                <span>🛡️</span> <span>Chính sách bảo mật (NĐ 13/2023)</span>
+                <span>🛡️</span> <span>Bảo vệ dữ liệu cá nhân (Luật 91/2025 & NĐ 356/2025)</span>
               </button>
             </li>
             <li>
@@ -2599,7 +2599,7 @@
         <div class="text-center md:text-left space-y-1">
           <p>© 2026 Bùi Thái AI Studio (promptmmo.vercel.app). Bản quyền được bảo hộ.</p>
           <p class="text-[11px] text-slate-500 leading-relaxed">
-            Nền tảng vận hành tuân thủ Nghị định 52/2013/NĐ-CP & Nghị định 85/2021/NĐ-CP về Thương mại điện tử, Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân. Toàn bộ giao dịch số được bảo vệ quyền lợi người tiêu dùng và mã hóa SSL an toàn tuyệt đối.
+            Nền tảng vận hành tuân thủ Luật Thương mại điện tử số 122/2025/QH15, Nghị định 248/2026/NĐ-CP (chuyển tiếp Điều 41 từ Nghị định 52/2013 & NĐ 85/2021) và Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15, Nghị định 356/2025/NĐ-CP (thay thế Nghị định 13/2023/NĐ-CP từ 01/01/2026). Toàn bộ giao dịch số được bảo vệ quyền lợi người tiêu dùng và mã hóa SSL an toàn tuyệt đối.
           </p>
         </div>
         <div class="flex items-center gap-3 shrink-0">
@@ -2615,6 +2615,62 @@
     </div>
   </footer>
 
+  <!-- ==================== COOKIE & PRIVACY CONSENT BANNER (TUÂN THỦ LUẬT 91/2025/QH15) ==================== -->
+  <div id="cookieConsentBanner" class="hidden fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 p-4 rounded-2xl bg-white/95 dark:bg-[#1E1813]/95 backdrop-blur-md border border-slate-200 dark:border-amber-900/40 shadow-2xl transition-all duration-300 animate-slide-up text-[#1B1612] dark:text-[#FAF6ED]">
+    <div class="flex items-start gap-3">
+      <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shrink-0 mt-0.5">
+        🍪
+      </div>
+      <div class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+        <h4 class="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm">Quyền Riêng Tư & Cookie</h4>
+        <p class="leading-relaxed text-[11px]">
+          Chúng tôi sử dụng cookie phân tích tối giản nhằm bảo vệ giao dịch Ví Xu và cải thiện trải nghiệm theo <strong>Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15</strong>. Bạn có quyền từ chối mà vẫn sử dụng website bình thường.
+        </p>
+        <div class="pt-1.5 flex items-center gap-2">
+          <button type="button" id="btnAcceptCookieConsent" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition shadow-sm cursor-pointer">
+            Chấp nhận cookie
+          </button>
+          <button type="button" id="btnDeclineCookieConsent" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition cursor-pointer">
+            Chỉ cookie thiết yếu
+          </button>
+          <button type="button" onclick="ShopVietViews.modal.openPolicy('privacy')" class="underline text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-[11px] ml-auto cursor-pointer">
+            Chi tiết
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function initCookieConsent() {
+      try {
+        var banner = document.getElementById('cookieConsentBanner');
+        if (!banner) return;
+        var consent = localStorage.getItem('promptmmo_cookie_consent');
+        if (!consent) {
+          banner.classList.remove('hidden');
+        }
+        var btnAccept = document.getElementById('btnAcceptCookieConsent');
+        var btnDecline = document.getElementById('btnDeclineCookieConsent');
+        if (btnAccept) {
+          btnAccept.onclick = function() {
+            localStorage.setItem('promptmmo_cookie_consent', 'accepted');
+            banner.classList.add('hidden');
+            if (window.firebase && window.firebase.analytics && window.ShopVietFirebase) {
+              try { window.ShopVietFirebase.analytics = window.firebase.analytics(); } catch(e){}
+            }
+          };
+        }
+        if (btnDecline) {
+          btnDecline.onclick = function() {
+            localStorage.setItem('promptmmo_cookie_consent', 'rejected');
+            banner.classList.add('hidden');
+          };
+        }
+      } catch (err) {}
+    })();
+  </script>
+
   <!-- ==================== APPLICATION SCRIPTS ==================== -->
   <!-- Firebase App, Auth, Firestore & Analytics SDKs (v9 Compat) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2622,19 +2678,19 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-  <script src="js/firebase-config.js?v=13.0_firestore_realtime_sync"></script>
-  <script src="js/ntfy.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/firebase-config.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/ntfy.js?v=13.7_vn_law_compliance_audit"></script>
 
-  <script src="js/data.js?v=13.4_fix_246_black_boxes_template_display"></script>
-  <script src="js/state.js?v=13.5_permanent_unlock_forever"></script>
-  <script src="js/views/home.js?v=13.0_firestore_realtime_sync"></script>
-  <script src="js/views/modal.js?v=13.6_legal_policies_and_refund"></script>
-  <script src="js/views/checkout.js?v=13.6_legal_policies_and_refund"></script>
-  <script src="js/views/auth.js?v=13.0_firestore_realtime_sync"></script>
-  <script src="js/views/dashboard.js?v=13.5_permanent_unlock_forever"></script>
-  <script src="js/views/admin.js?v=13.0_firestore_realtime_sync"></script>
-  <script src="js/views/blog.js?v=13.0_firestore_realtime_sync"></script>
-  <script src="js/app.js?v=13.0_firestore_realtime_sync"></script>
+  <script src="js/data.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/state.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/home.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/modal.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/checkout.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/auth.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/dashboard.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/admin.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/views/blog.js?v=13.7_vn_law_compliance_audit"></script>
+  <script src="js/app.js?v=13.7_vn_law_compliance_audit"></script>
 
   <!-- ==================== PWA SERVICE WORKER REGISTRATION ==================== -->
   <script>
