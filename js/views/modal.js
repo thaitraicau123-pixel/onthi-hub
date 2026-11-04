@@ -1543,8 +1543,8 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div>
                     <h5 class="font-bold text-slate-900 dark:text-white text-sm">2. Thời gian và phương thức xử lý hoàn tiền</h5>
                     <p class="mt-1 text-slate-600 dark:text-slate-300">
-                      - <strong>Thời gian hoàn tiền:</strong> Xử lý trong vòng <strong>15 đến 30 phút</strong> (tối đa không quá 24 giờ) kể từ khi xác nhận yêu cầu khiếu nại hợp lệ.<br>
-                      - <strong>Phương thức:</strong> Chuyển khoản ngân hàng trực tiếp 24/7 về số tài khoản khách hàng chỉ định, hoặc hoàn trả 100% Xu vào ví cá nhân theo lựa chọn của khách hàng.
+                      - <strong>Thời gian hoàn tiền:</strong> Xử lý trong vòng <strong>12 đến 24 giờ</strong> (tối đa không quá 48 giờ) kể từ khi tiếp nhận yêu cầu khiếu nại hợp lệ.<br>
+                      - <strong>Phương thức:</strong> Chuyển khoản ngân hàng trực tiếp về số tài khoản khách hàng chỉ định, hoặc hoàn trả 100% Xu vào ví cá nhân theo lựa chọn của khách hàng.
                     </p>
                   </div>
 
@@ -1569,7 +1569,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                       </div>
                       <div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
                         <span class="font-bold text-emerald-600">Bước 3:</span>
-                        <p class="text-xs mt-1">Kỹ thuật viên xác nhận và hoàn tiền 100% trong 15 - 30 phút!</p>
+                        <p class="text-xs mt-1">Admin kiểm tra và chuyển khoản hoàn tiền trong 12 - 24 giờ!</p>
                       </div>
                     </div>
                   </div>
@@ -1652,12 +1652,15 @@ ${escapeHTML(item.template || item.prompt || "")}
                   </div>
 
                   <div>
-                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">3. Thời hạn cam kết xử lý</h5>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">3. Thời gian tiếp nhận & xử lý hỗ trợ</h5>
                     <ul class="list-disc list-inside mt-1.5 space-y-1 text-slate-600 dark:text-slate-300 pl-2">
-                      <li><strong>Sự cố chuyển khoản nạp Xu:</strong> Tiếp nhận và xử lý đối soát trong <strong>5 đến 15 phút</strong>.</li>
-                      <li><strong>Hỗ trợ kỹ thuật / Hướng dẫn sử dụng:</strong> Hỗ trợ trực tiếp trong vòng <strong>2 giờ</strong> làm việc.</li>
-                      <li><strong>Khiếu nại hoàn tiền:</strong> Hoàn tất giải quyết và thực hiện chuyển khoản trong tối đa <strong>24 giờ</strong>.</li>
+                      <li><strong>Sự cố chuyển khoản nạp Xu:</strong> Tiếp nhận và xử lý đối soát trong <strong>30 phút đến 2 giờ</strong> (nếu chuyển ngoài khung giờ 8h - 23h hoặc ban đêm sẽ được duyệt vào đầu giờ sáng hôm sau).</li>
+                      <li><strong>Hỗ trợ kỹ thuật / Hướng dẫn sử dụng:</strong> Phản hồi và hỗ trợ giải đáp trong vòng <strong>4 đến 12 giờ</strong> (chậm nhất trong 24 giờ).</li>
+                      <li><strong>Khiếu nại hoàn tiền:</strong> Hoàn tất đối soát và thực hiện chuyển khoản trong vòng <strong>12 đến 24 giờ</strong> (tối đa 48 giờ).</li>
                     </ul>
+                    <p class="text-[11px] text-slate-500 italic mt-1.5 pl-2">
+                      * Lưu ý: Nền tảng do Bùi Thái trực tiếp vận hành và hỗ trợ thủ công từng khách hàng, rất mong quý khách thông cảm nếu có những thời điểm phản hồi chậm hơn đôi chút!
+                    </p>
                   </div>
 
                   <div>
