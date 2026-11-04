@@ -583,27 +583,27 @@ function updateHeaderAuthUI() {
     const avatarChar = (user.avatar && user.avatar.length <= 2) ? user.avatar : displayName.charAt(0).toUpperCase();
 
     container.innerHTML = `
-      <div class="relative flex items-center gap-1.5 sm:gap-2">
+      <div class="relative flex items-center gap-1.5 sm:gap-2 shrink-0">
         <!-- Số dư Ví Xu Cá Nhân & Nút Nạp Xu 1-Chạm Techcombank -->
-        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 text-xs font-bold font-mono shadow-2xs">
-          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1 px-2 py-0.5 cursor-pointer hover:bg-amber-500/20 rounded-lg transition" title="Bấm để đồng bộ số dư mới nhất từ hệ thống">
+        <div class="flex items-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 text-xs font-bold font-mono shadow-2xs shrink-0">
+          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 cursor-pointer hover:bg-amber-500/20 rounded-lg transition select-none" title="Bấm để đồng bộ số dư mới nhất từ hệ thống">
             <span class="text-amber-600">🪙</span>
-            <span id="headerUserBalanceText">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
+            <span id="headerUserBalanceText" class="tabular-nums">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
             <span class="text-[10px] text-amber-600/70 hover:rotate-180 transition-transform">🔄</span>
           </div>
-          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[10px] font-extrabold uppercase transition shadow-xs cursor-pointer" title="Nạp thêm Xu Techcombank">
+          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[10px] font-extrabold uppercase transition shadow-xs cursor-pointer shrink-0" title="Nạp thêm Xu Techcombank">
             + Nạp
           </button>
         </div>
 
         <!-- Nút User Profile Badge (Click mở Dropdown) -->
-        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all cursor-pointer group shadow-2xs">
+        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all cursor-pointer group shadow-2xs shrink-0">
           <!-- Avatar tròn chữ cái đầu (VD: BT) -->
           <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-800 via-amber-600 to-amber-900 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-white/50 dark:ring-slate-800 shrink-0">
             ${avatarChar}
           </div>
           <!-- Tên người dùng -->
-          <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 max-w-[90px] sm:max-w-[130px] truncate select-none hidden sm:inline">
+          <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 max-w-[80px] sm:max-w-[120px] truncate select-none hidden sm:inline">
             ${displayName}
           </span>
           <!-- Mũi tên Dropdown -->
@@ -655,6 +655,13 @@ function updateHeaderAuthUI() {
                 <path d="M16 10a4 4 0 0 1-8 0"/>
               </svg>
               <span>Đơn hàng của tôi</span>
+            </button>
+
+            <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openPolicy('refund');" class="w-full px-4 py-2 text-left text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+              <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+              <span>Chính sách & Hoàn tiền</span>
             </button>
 
             ${isAdminUser ? `
