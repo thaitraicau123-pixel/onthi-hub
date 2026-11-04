@@ -772,7 +772,7 @@ window.ShopVietViews.modal = (function () {
     // BẮN NTFY TỨC THÌ ĐỂ BÙI THÁI MỞ DUYỆT
     // ==========================================
     openDepositModal: function (initialAmount) {
-      let selectedAmount = Number(initialAmount) || 19000;
+      let selectedAmount = Number(initialAmount) || 9000;
       const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || { name: 'Bùi Thái', email: 'thaitraicau123@gmail.com' };
       const codeSuffix = (currentUser.name ? currentUser.name.replace(/\s+/g, '').toUpperCase() : 'BT') + Math.floor(100 + Math.random() * 900);
       const memo = `NAPXU ${codeSuffix}`;
@@ -833,19 +833,19 @@ window.ShopVietViews.modal = (function () {
                 </div>
                 <div class="grid grid-cols-3 gap-2" id="depositQuickGrid">
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(9000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 9000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    9.000 Xu <span class="block text-[9px] font-bold text-emerald-600">⚡ Giá sàn 9k</span>
+                    9.000 Xu <span class="block text-[9px] font-bold text-emerald-600">⚡ Đồng giá 9k</span>
                   </button>
-                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(19000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 19000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    19.000 Xu <span class="block text-[9px] font-bold text-amber-600">⭐ Đa số 19k</span>
+                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(18000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 18000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
+                    18.000 Xu <span class="block text-[9px] font-bold text-amber-600">⭐ Nạp 2 Hộp</span>
                   </button>
-                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(29000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 29000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    29.000 Xu <span class="block text-[9px] font-bold text-rose-600">🔥 Web & AppSec</span>
+                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(27000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 27000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
+                    27.000 Xu <span class="block text-[9px] font-bold text-rose-600">🔥 Nạp 3 Hộp</span>
                   </button>
-                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(49000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 49000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    49.000 Xu <span class="block text-[9px] font-bold text-amber-500">👑 Đại Hộp All-In-One</span>
+                  <button type="button" onclick="ShopVietViews.modal.setDepositAmount(45000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 45000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
+                    45.000 Xu <span class="block text-[9px] font-bold text-amber-500">👑 Nạp 5 Hộp</span>
                   </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(69000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 69000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
-                    69.000 Xu <span class="block text-[9px] font-normal text-slate-400">Combo 3-4 Hộp</span>
+                    69.000 Xu <span class="block text-[9px] font-normal text-slate-400">Combo Đa Năng</span>
                   </button>
                   <button type="button" onclick="ShopVietViews.modal.setDepositAmount(99000)" class="deposit-chip-btn py-2 px-1 text-center rounded-xl border text-xs font-bold transition ${selectedAmount === 99000 ? 'border-[#8A5F26] bg-amber-500/15 text-[#8A5F26] dark:text-[#BE9455]' : 'border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'}">
                     99.000 Xu <span class="block text-[9px] font-normal text-slate-400">Gói Khuyên Dùng</span>

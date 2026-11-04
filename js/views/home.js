@@ -1338,9 +1338,9 @@ window.ShopVietViews.home = (function () {
         heroProduct = {
           id: 'combo-web-ui-toolkit',
           name: 'Hộp Công Cụ Prompt Thiết Kế Web Thượng Lưu & UI 60fps (Haute-Couture)',
-          price: 89000,
-          oldPrice: 299000,
-          discount: '-70%',
+          price: 9000,
+          oldPrice: 149000,
+          discount: '-94%',
           badge: '⭐ SIÊU PHẨM ĐỈNH NHẤT',
           desc: 'Kỹ năng phần cứng độc quyền khai thác 100% nhân NVENC CUDA trên card NVIDIA Studio/Laptop để render video siêu tốc 10x, mát máy, không nghẽn CPU.'
         };
