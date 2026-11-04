@@ -640,6 +640,16 @@ function updateHeaderAuthUI() {
 
           <!-- Các chức năng Menu -->
           <div class="py-1 text-xs">
+            <button id="dropdownDashboardBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+              <svg class="w-4 h-4 text-[#8A5F26] dark:text-[#BE9455]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <rect width="7" height="9" x="3" y="3" rx="1" />
+                <rect width="7" height="5" x="14" y="3" rx="1" />
+                <rect width="7" height="9" x="14" y="12" rx="1" />
+                <rect width="7" height="5" x="3" y="16" rx="1" />
+              </svg>
+              <span>Dashboard (Tổng quan)</span>
+            </button>
+
             <button id="dropdownProfileBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer">
               <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
@@ -718,10 +728,18 @@ function updateHeaderAuthUI() {
     }
 
     // Các mục bên trong Dropdown
+    const dashboardDropdownBtn = document.getElementById('dropdownDashboardBtn');
     const profileBtn = document.getElementById('dropdownProfileBtn');
     const ordersBtn = document.getElementById('dropdownOrdersBtn');
     const adminBtn = document.getElementById('dropdownAdminBtn');
     const logoutBtn = document.getElementById('dropdownLogoutBtn');
+
+    if (dashboardDropdownBtn) {
+      dashboardDropdownBtn.addEventListener('click', function () {
+        if (userDropdown) userDropdown.classList.add('hidden');
+        window.ShopVietState.navigate('dashboard', { tab: 'overview' });
+      });
+    }
 
     if (profileBtn) {
       profileBtn.addEventListener('click', function () {
