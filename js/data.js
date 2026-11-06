@@ -1791,13 +1791,13 @@ window.ShopVietData = {
   },
   {
     "id": "skill-pixel-vfx-engine",
-    "name": "Đại Hộp Công Cụ Toàn Bộ 244+ Hiệu Ứng Game Pixel & Animation 60fps (PixelFX Vault - Trọn Bộ 21 Chuyên Khoa VFX & Sprite Sheets)",
-    "module": "ĐẠI HỘP CÔNG CỤ ALL-IN-ONE v8.5",
+    "name": "Hộp Công Cụ 246+ Master Prompts: Thiết Kế Chiêu Thức Game Pixel & Kỹ Sư Sound FX 0MB (Kèm Test 2 Chiêu Mẫu)",
+    "module": "HỘP CÔNG CỤ PROMPTS v8.5",
     "tag": "Tự Động Hóa & Game",
     "category": "Game Dev & VFX",
     "filterGroup": "Tự Động Hóa & Game",
-    "badge": "⭐ TRỌN BỘ 244+ PIXEL VFX",
-    "badgeColor": "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white",
+    "badge": "⭐ 246+ MASTER PROMPTS · TEST 2 CHIÊU LIVE",
+    "badgeColor": "bg-gradient-to-r from-purple-600 to-indigo-600 text-white",
     "price": 9000,
     "oldPrice": 199000,
     "discount": "-95%",
@@ -1809,7 +1809,7 @@ window.ShopVietData = {
     "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=900&auto=format&fit=crop",
     "imageUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=900&auto=format&fit=crop",
     "iconType": "pixel-vfx",
-    "desc": "SỞ HỮU TRỌN BỘ 244+ HIỆU ỨNG GAME PIXEL ART NGUYÊN BẢN CỦA PIXELFX. Trọn vẹn 21 chuyên khoa: Moves chiêu thức có cảm giác lực, Lửa, Nổ, Nước, Băng, Sấm sét, Sci-fi, Chém kiếm Melee, Va chạm Impacts, Đạn bay, Hồi sinh/Tử trận, Ma pháp Arcane, Thánh quang Holy, Bóng tối Shadow, Trạng thái Status, Tự nhiên Nature, Thời tiết Weather, UI Game, Thu thập Pickups, Chuyển cảnh Transitions, Sinh vật Critters. 1-Click xuất toàn bộ 244 Sprite Sheet PNG trong suốt kèm Aseprite JSON cho Unity, Godot, Phaser, Web Canvas!",
+    "desc": "HỘP CÔNG CỤ 246+ MASTER PROMPTS TÁC CHIẾN ĐỈNH CAO CHO GAME DEV. Dán câu lệnh chuẩn vào ChatGPT, Claude, Gemini hoặc Cursor để AI tự sinh 246 chiêu thức pixel 60fps, nhịp va chạm có lực (wind-up, hit-stop, camera shake), hệ thống âm thanh Web Audio Synthesizer 0MB không cần tải file .mp3 và 1-Click xuất Sprite Sheet cho Unity/Godot. (Kèm bản chơi thử test nhanh 2 chiêu mẫu trực tiếp trên web).",
     "tags": [
       "Tự Động Hóa & Game",
       "Trọn Bộ 244+ Hiệu Ứng",
@@ -1818,28 +1818,30 @@ window.ShopVietData = {
       "Master Prompt v8.5"
     ],
     "features": [
-      "Trọn bộ kho 244+ hiệu ứng game pixel nguyên bản (21 chuyên khoa đầy đủ 100% không thiếu chiêu nào)",
+      "📋 Trọn bộ 246+ câu lệnh Master Prompt tác chiến (21 chuyên khoa: Ma pháp, Cầu lửa, Lôi điện, Băng hàn, Chấn động, Kiếm khí...)",
+      "🔊 Prompt Kỹ sư Âm thanh Web Audio Synth: Tự sinh tiếng nổ, tiếng chém, tiếng phép thuật 0 byte tải về",
+      "🎮 Kèm bản chơi thử nhanh 2 chiêu mẫu (Tia Hư Không Arcane & Cầu Lửa Meteor) để test âm thanh & nhịp va chạm",
+      "📦 1-Click tải gói mã nguồn mẫu Starter & Audio Bank (pixelfx-combat-polish.zip - 535 KB)",
       "Lệnh 1-Click xuất toàn bộ 244 Sprite Sheet trong suốt kèm JSON Aseprite cho Unity, Godot, Phaser",
-      "Mã nguồn chạy trực tiếp trên Web Canvas / Phaser / PixiJS bằng JS thuần 0 byte ảnh",
       "Master System Prompt v8.5 (3,800+ ký tự) hướng dẫn AI tự thiết kế thêm hiệu ứng mới vô hạn"
     ],
     "beforeAfter": {
       "before": {
-        "title": "Khi tự làm hoặc mua lẻ từng hiệu ứng Pixel Art:",
-        "summary": "Mỗi chiêu thức phải mua lẻ trên Unity Asset Store hoặc thuê họa sĩ vẽ tay tốn 50k - 200k/hiệu ứng. Cả gói 240 hiệu ứng tốn hàng triệu đồng. Hiệu ứng rời rạc không đồng bộ phong cách, thiếu nhịp điệu cử động nhân vật (wind-up, hit-stop, camera shake), không thể đổi màu (recolor) hay xuất sprite sheet linh hoạt.",
+        "title": "Khi tự viết prompt hoặc mua lẻ từng hiệu ứng/âm thanh:",
+        "summary": "Mỗi chiêu thức hoặc âm thanh phải mua lẻ trên Unity Asset Store tốn 50k - 200k. AI bình thường sinh ra hiệu ứng như sticker dán hờ, tiếng cắt cụt lủn, không có nhịp lấy đà (wind-up), không có hit-stop dừng hình, không rung màn hình.",
         "points": [
-          "Tốn hàng triệu đồng nếu mua lẻ từng pack hiệu ứng rời rạc trên mạng.",
-          "Hiệu ứng như sticker dán hờ, thiếu lực va chạm (không có hit-stop và screen shake).",
-          "Mất công cắt ghép sprite sheet thủ công, khó tùy biến màu sắc và góc quay."
+          "Tốn kém tiền bạc và thời gian cắt ghép sprite sheet, âm thanh rời rạc.",
+          "Chiêu thức và tiếng đánh cụt lủn, thiếu cảm giác lực va chạm của game chuyên nghiệp.",
+          "Khó tùy biến tham số màu sắc, thời lượng và kích thước khung hình."
         ]
       },
       "after": {
-        "title": "Khi sở hữu Đại Hộp Công Cụ Trọn Bộ 244+ Hiệu Ứng PixelFX 9K:",
-        "summary": "Chỉ 9.000 Xu sở hữu NGAY LẬP TỨC toàn bộ 244+ hiệu ứng game pixel đỉnh cao chuẩn điện ảnh. Đầy đủ 21 chuyên khoa từ chiêu thức chém kiếm, cầu lửa, sấm sét đến hố đen và chuyển cảnh. 1-Click xuất toàn bộ sprite sheet trong suốt cho Unity / Godot / Phaser. Kèm Master Prompt AI để sáng tạo thêm vô số hiệu ứng mới theo ý muốn!",
+        "title": "Khi dùng 246+ Master Prompts Bùi Thái AI Studio 9K:",
+        "summary": "Chỉ 9.000 Xu sở hữu trọn bộ 246+ mẫu câu lệnh Master Prompts chi tiết đến từng mili-giây, từng tần số âm thanh Web Audio và nhịp va chạm. Dán vào AI là có ngay code hoàn chỉnh, sprite sheet chuẩn và sound effect cực đã!",
         "points": [
-          "Sở hữu toàn bộ 244+ hiệu ứng hoàn chỉnh không thiếu một chiêu thức nào.",
-          "1-Click xuất 244 Sprite Sheet PNG + JSON Aseprite nạp thẳng vào mọi Engine game.",
-          "Có sẵn Web Gallery nội bộ để xem trước 60fps và đổi màu (recolor) thời gian thực."
+          "Sao chép 1-Click 246 mẫu prompt chi tiết cho 21 chuyên khoa game.",
+          "Âm thanh Web Audio Synthesizer 0MB tích hợp sẵn trong câu lệnh.",
+          "Kèm bản test nhanh 2 chiêu trực tiếp trên web để kiểm chứng chất lượng trước khi dùng."
         ]
       }
     },
@@ -3324,8 +3326,16 @@ window.ShopVietData = {
           "prompt": "Tạo/Tích hợp hiệu ứng Pixel Art Storm (`weather/storm`):\n- Quy cách: Vòng lặp vô tận (Loop 60fps) | Khung hình: 320x180px | Thời lượng: 10s\n- Mô tả chuyển động: Driving rain at two depths under a churning cloud deck; a forked bolt strikes in a double flash that lights the sky and the rain, then sheet lightning glows in the clouds.\n- Lệnh xuất Sprite Sheet (PNG trong suốt + JSON Aseprite cho Unity/Godot):\n  node tools/render.mjs weather/storm --sheet\n- Lệnh chạy trực tiếp trên Web Canvas:\n  import * as fx from 'pixelfx/fx/weather/storm';\n  const fxInstance = createFx(fx, { x: 160, y: 120 });",
           "example": "Dùng cho: Kỹ năng Storm trong game RPG / Đi ải 2D. File xuất ra: records/weather/storm/storm.png kèm file metadata .json nạp thẳng vào Game Engine."
         }
-      ]
-    }
+      ],
+      "demoUrl": "/demo/pixelfx/",
+      "downloadUrl": "/downloads/pixelfx-combat-polish.zip",
+      "zipFileName": "pixelfx-combat-polish.zip",
+      "zipFileSize": "535 KB"
+    },
+    "demoUrl": "/demo/pixelfx/",
+    "downloadUrl": "/downloads/pixelfx-combat-polish.zip",
+    "zipFileName": "pixelfx-combat-polish.zip",
+    "zipFileSize": "535 KB"
   }
 ]
 };

@@ -1743,23 +1743,36 @@ window.ShopVietViews.home = (function () {
                         ` : ''}
                       </div>
 
-                      ${isOutOfStock ? `
-                        <button 
-                          disabled 
-                          onclick="event.stopPropagation()" 
-                          class="bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500 text-[11px] sm:text-xs font-semibold px-2 sm:px-3.5 py-1.5 rounded-full cursor-not-allowed shrink-0"
-                        >
-                          Hết hàng
-                        </button>
-                      ` : `
-                        <button 
-                          onclick="event.stopPropagation(); ShopVietViews.home.handleBuyNowClick(event, '${prod.id}', this)" 
-                          class="bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 rounded-xl active:scale-95 transition-all shadow-xs hover:shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
-                        >
-                          <svg class="w-3.5 h-3.5 text-amber-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                          <span>Mở Khóa</span>
-                        </button>
-                      `}
+                      <div class="flex items-center gap-1.5 shrink-0">
+                        ${prod.demoUrl ? `
+                          <button 
+                            type="button" 
+                            onclick="event.stopPropagation(); if(window.ShopVietViews && window.ShopVietViews.modal && window.ShopVietViews.modal.openGameDemo) { window.ShopVietViews.modal.openGameDemo('${prod.demoUrl}'); } else { window.open('${prod.demoUrl}', '_blank'); }" 
+                            class="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 text-white text-[11px] sm:text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-xl active:scale-95 transition-all shadow-xs hover:shadow-md flex items-center gap-1 shrink-0 cursor-pointer"
+                            title="Mở bản chơi thử test 6 chiêu thức và Sound FX"
+                          >
+                            <span>🎮 Chơi Thử</span>
+                          </button>
+                        ` : ''}
+
+                        ${isOutOfStock ? `
+                          <button 
+                            disabled 
+                            onclick="event.stopPropagation()" 
+                            class="bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-500 text-[11px] sm:text-xs font-semibold px-2 sm:px-3.5 py-1.5 rounded-full cursor-not-allowed shrink-0"
+                          >
+                            Hết hàng
+                          </button>
+                        ` : `
+                          <button 
+                            onclick="event.stopPropagation(); ShopVietViews.home.handleBuyNowClick(event, '${prod.id}', this)" 
+                            class="bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 rounded-xl active:scale-95 transition-all shadow-xs hover:shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
+                          >
+                            <svg class="w-3.5 h-3.5 text-amber-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                            <span>Mở Khóa</span>
+                          </button>
+                        `}
+                      </div>
                     </div>
 
                   </div>

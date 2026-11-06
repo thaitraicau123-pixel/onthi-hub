@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-*.zip
+!downloads/*.zip
 onthihub/
 
 # Editor directories and files

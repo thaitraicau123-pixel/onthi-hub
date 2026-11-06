@@ -298,6 +298,30 @@ window.ShopVietViews.modal = (function () {
                 </div>
               </div>
 
+              <!-- BANNER CHƠI THỬ LIVE NẾU CÓ DEMO -->
+              ${currentProduct.demoUrl ? `
+                <div class="p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/50 via-indigo-950/40 to-purple-950/50 border border-purple-500/40 flex items-center justify-between gap-3 shadow-md">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-2xl animate-bounce">🎮</span>
+                    <div>
+                      <div class="text-xs font-bold text-purple-200 flex items-center gap-1.5">
+                        <span>Bản Chơi Thử Live (Impact Edition)</span>
+                        <span class="px-1.5 py-0.5 rounded text-[9px] bg-purple-500/30 text-purple-300 font-extrabold uppercase tracking-wider">Miễn phí test</span>
+                      </div>
+                      <div class="text-[11px] text-slate-300">Trải nghiệm 6 chiêu thức & Sound Effect pixel game trực tiếp trên web</div>
+                    </div>
+                  </div>
+                  <button 
+                    type="button" 
+                    onclick="ShopVietViews.modal.openGameDemo('${currentProduct.demoUrl}')" 
+                    class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md transition-all active:scale-95 whitespace-nowrap cursor-pointer flex items-center gap-1 shrink-0"
+                  >
+                    <span>Chơi Thử Ngay</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              ` : ''}
+
               <!-- MÔ TẢ & HỘP CÔNG CỤ PROMPTS TÁC CHIẾN -->
               <div class="p-4 rounded-2xl bg-white/80 dark:bg-[#140F0B]/80 border border-[#E6DCCB] dark:border-amber-900/30 space-y-3 text-xs">
                 <p class="text-slate-700 dark:text-slate-300 leading-relaxed font-sans text-xs sm:text-sm">
@@ -1036,6 +1060,26 @@ window.ShopVietViews.modal = (function () {
                 >
                   <span>💾 Tải .md</span>
                 </button>
+                ${(prod.demoUrl || payload.demoUrl) ? `
+                  <button 
+                    type="button" 
+                    onclick="ShopVietViews.modal.openGameDemo('${prod.demoUrl || payload.demoUrl}')" 
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md"
+                    title="Mở bản chơi thử test 6 chiêu thức và Sound FX"
+                  >
+                    <span>🎮 Chơi Thử</span>
+                  </button>
+                ` : ''}
+                ${(prod.downloadUrl || payload.downloadUrl) ? `
+                  <a 
+                    href="${prod.downloadUrl || payload.downloadUrl}" 
+                    download="${prod.zipFileName || payload.zipFileName || 'pixelfx-combat-polish.zip'}" 
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-md no-underline"
+                    title="Tải gói mã nguồn & Sound FX (.zip)"
+                  >
+                    <span>📦 Tải .zip (${prod.zipFileSize || payload.zipFileSize || '535 KB'})</span>
+                  </a>
+                ` : ''}
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.close()" 
@@ -1740,6 +1784,47 @@ ${escapeHTML(item.template || item.prompt || "")}
       if (succ) succ.remove();
     },
 
+    openGameDemo: function (demoUrl) {
+      const url = demoUrl || '/demo/pixelfx/';
+      const modalMount = document.getElementById('modalMount');
+      if (!modalMount) {
+        window.open(url, '_blank');
+        return;
+      }
+      modalMount.innerHTML = `
+        <div id="gameDemoBackdrop" class="fixed inset-0 z-[100] bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
+          <div class="bg-[#0B1019] border border-amber-900/40 rounded-2xl shadow-2xl w-full max-w-5xl h-[92vh] max-h-[850px] overflow-hidden flex flex-col animate-slide-up text-[#FAF6ED]">
+            <div class="px-4 py-3 border-b border-amber-900/30 bg-[#140F0B]/90 flex items-center justify-between gap-3 shrink-0">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#A47838] to-[#8A5F26] text-white flex items-center justify-center text-xs font-black">BT</span>
+                <div>
+                  <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                    <span>🎮 Bản Chơi Thử: Pixel Game Sound FX & Chiêu Thức</span>
+                    <span class="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30">Impact Edition</span>
+                  </h3>
+                  <p class="text-[10px] sm:text-[11px] text-slate-400">WASD di chuyển · Chuột ngắm bắn · Phím 1-5 & Space bung chiêu · R dựng lại bia</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <a href="/downloads/pixelfx-combat-polish.zip" download="pixelfx-combat-polish.zip" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#8A5F26] hover:bg-[#6e4b1e] text-white font-bold text-xs shadow-md transition no-underline">
+                  <span>📦 Tải Gói Code & Audio (.zip)</span>
+                </a>
+                <a href="${url}" target="_blank" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition no-underline" title="Mở tab mới toàn màn hình">
+                  <span>⤢ Toàn màn hình</span>
+                </a>
+                <button type="button" onclick="ShopVietViews.modal.close()" class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer" title="Đóng">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex-1 w-full bg-[#080C13] relative overflow-hidden">
+              <iframe src="${url}" class="w-full h-full border-0" allow="autoplay; fullscreen"></iframe>
+            </div>
+          </div>
+        </div>
+      `;
+    },
+
     getProductById: getProductById,
     getActiveVietQRConfig: getActiveVietQRConfig
   };
@@ -1753,6 +1838,13 @@ ${escapeHTML(item.template || item.prompt || "")}
     window.openPolicyModal = function (tab) {
       if (window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openPolicy === 'function') {
         return window.ShopVietViews.modal.openPolicy(tab);
+      }
+    };
+    window.openGameDemo = function (url) {
+      if (window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openGameDemo === 'function') {
+        return window.ShopVietViews.modal.openGameDemo(url);
+      } else {
+        window.open(url || '/demo/pixelfx/', '_blank');
       }
     };
   }
