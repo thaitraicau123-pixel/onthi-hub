@@ -182,7 +182,7 @@
     getCustomProducts: function () {
       try {
         // Cache-busting: Đảm bảo toàn bộ người dùng nhận bảng giá đồng giá 9k mới nhất
-        const PRICE_VER = 'v9k_pixelfx_demo_live_v2';
+        const PRICE_VER = 'v9k_pixelfx_spotlight_top_v3';
         if (localStorage.getItem('promptmmo_price_ver') !== PRICE_VER) {
           localStorage.removeItem('shopviet_custom_products');
           localStorage.removeItem('shopviet_admin_products');
