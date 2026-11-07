@@ -7135,5 +7135,26 @@
       "isBestSeller": false
     }
   ],
-  "updatedAt": "2026-11-07T13:50:09.025Z"
+  "updatedAt": "2026-11-07T17:51:15.213Z",
+  "orders": [
+    {
+      "id": "#DJ2026KDNB",
+      "orderCode": "#DJ2026KDNB",
+      "rawCode": "DJ2026KDNB",
+      "productId": "skill-combo-allinone",
+      "productName": "Đại Hộp Công Cụ Master AI Prompt Vault (Trọn Bộ 560+ Prompts Toàn Năng - Tải Về Dùng Ngay Zero-Setup)",
+      "price": 80000,
+      "quantity": 1,
+      "amount": 80000,
+      "status": "completed",
+      "statusText": "Hoàn tất (Đã mở khóa)",
+      "paymentMethod": "Ví Xu Bùi Thái Studio",
+      "userEmail": "123@gmail.com",
+      "createdAt": "2026-11-08T00:25:00.000Z",
+      "createdAtFormatted": "08/11/2026",
+      "date": "08/11/2026",
+      "unlockedAt": "2026-11-08T00:25:00.000Z",
+      "expiresAt": null
+    }
+  ]
 }

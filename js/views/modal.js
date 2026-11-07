@@ -718,6 +718,8 @@ window.ShopVietViews.modal = (function () {
         paymentMethod: 'Ví Xu Bùi Thái Studio',
         userEmail: currentUser.email,
         createdAt: new Date().toISOString(),
+        createdAtFormatted: new Date().toLocaleDateString('vi-VN'),
+        date: new Date().toLocaleDateString('vi-VN'),
         unlockedAt: new Date().toISOString(),
         expiresAt: null,
         unlockedPayload: payload
@@ -730,12 +732,21 @@ window.ShopVietViews.modal = (function () {
         window.ShopVietState.state.orders = window.ShopVietState.state.orders || [];
         window.ShopVietState.state.orders.unshift(order);
         window.ShopVietState.save();
+        try {
+          localStorage.setItem('shopviet_orders', JSON.stringify(window.ShopVietState.state.orders));
+        } catch (e) {}
         if (typeof window.ShopVietState.notify === 'function') {
           window.ShopVietState.notify('order_created', order);
+          window.ShopVietState.notify('orders_updated', window.ShopVietState.state.orders);
         }
         if (typeof window.ShopVietState.pushAllToCloud === 'function') {
           window.ShopVietState.pushAllToCloud().catch(console.warn);
         }
+      }
+
+      // 4b. Đồng bộ trực tiếp lên Cloud Firestore (Đảm bảo xuất hiện tức thì trên mọi thiết bị / tên miền)
+      if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncOrderToCloud === 'function') {
+        window.ShopVietFirebase.syncOrderToCloud(order).catch(console.warn);
       }
 
       // 5. Gửi thông báo ntfy

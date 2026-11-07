@@ -443,18 +443,35 @@
 
         // FALLBACK 2: Fallback sang REST API dev nếu GitHub Raw chưa có hoặc lỗi
         if (!data) {
-          const fetchUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-          const res = await fetch(fetchUrl, {
-            method: 'GET',
-            cache: 'no-store'
-          });
-          if (res.ok) {
-            const json = await res.json();
-            if (json) {
-              data = json.data || json;
-              console.log('[ShopVietState] Đã tải dữ liệu từ Fallback Cloud REST API!');
+          try {
+            const fetchUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            const res = await fetch(fetchUrl, {
+              method: 'GET',
+              cache: 'no-store'
+            });
+            if (res.ok) {
+              const json = await res.json();
+              if (json && !json.error) {
+                data = json.data || json;
+                console.log('[ShopVietState] Đã tải dữ liệu từ Fallback Cloud REST API!');
+              }
             }
-          }
+          } catch (eRest) {}
+        }
+
+        // FALLBACK 3: Tải từ /cloud-db.json của chính host hiện tại (Vercel Production / Custom Domain)
+        if (!data && typeof window !== 'undefined' && window.location) {
+          try {
+            const localCloudUrl = (window.location.origin || '') + '/cloud-db.json?_t=' + Date.now();
+            const localRes = await fetch(localCloudUrl, { method: 'GET', cache: 'no-store' });
+            if (localRes.ok) {
+              const localJson = await localRes.json();
+              if (localJson) {
+                data = localJson.data || localJson;
+                console.log('[ShopVietState] Đã tải dữ liệu từ Vercel Static Cloud DB (/cloud-db.json)!');
+              }
+            }
+          } catch (eLocal) {}
         }
 
         if (!data) {
@@ -1517,18 +1534,127 @@
       if (!targetEmail) {
         return [];
       }
+      let allOrders = this.getOrders();
+      if (!Array.isArray(allOrders) || allOrders.length === 0) {
+        try {
+          const raw = localStorage.getItem('shopviet_orders');
+          if (raw) allOrders = JSON.parse(raw);
+        } catch (e) {}
+      }
+      try {
+        const rawCloud = localStorage.getItem('shopviet247_cloud_orders_sync');
+        if (rawCloud) {
+          const cloudOrders = JSON.parse(rawCloud);
+          if (Array.isArray(cloudOrders)) {
+            cloudOrders.forEach(co => {
+              if (co && (co.id || co.orderCode)) {
+                const cid = co.id || co.orderCode;
+                if (!allOrders.some(lo => (lo.id && lo.id === cid) || (lo.orderCode && lo.orderCode === cid))) {
+                  allOrders.push(co);
+                }
+              }
+            });
+          }
+        }
+      } catch (e) {}
+
       // Auto migrate existing orders to permanent unlock
-      if (Array.isArray(this.state.orders)) {
-        this.state.orders.forEach(function (o) {
+      allOrders.forEach(function (o) {
+        if (o) {
           o.expiresAt = null;
           o.isExpired = false;
-        });
-      }
-      const allOrders = this.state.orders || [];
+        }
+      });
+
       return allOrders.filter(function (order) {
+        if (!order) return false;
         const orderEmail = (order.userEmail || (order.customer && order.customer.email) || '').trim().toLowerCase();
         return orderEmail === targetEmail;
       });
+    },
+
+    // Hòa trộn đơn hàng kéo từ Cloud vào Local State mà không làm mất đơn hiện tại
+    mergeUserOrdersFromCloud: function (email, remoteOrders) {
+      if (!Array.isArray(remoteOrders) || remoteOrders.length === 0) return;
+      const cleanEmail = (email || '').trim().toLowerCase();
+      this.state.orders = this.state.orders || [];
+      let changed = false;
+
+      remoteOrders.forEach(ro => {
+        if (!ro) return;
+        const roId = ro.id || ro.orderCode;
+        if (!roId) return;
+        const exists = this.state.orders.some(lo => (lo.id && lo.id === roId) || (lo.orderCode && lo.orderCode === roId));
+        if (!exists) {
+          const newOrd = {
+            ...ro,
+            id: roId,
+            orderCode: ro.orderCode || roId,
+            userEmail: ro.userEmail || cleanEmail,
+            status: ro.status || 'completed',
+            statusText: ro.statusText || 'Hoàn tất (Đã mở khóa)',
+            createdAt: ro.createdAt || new Date().toISOString(),
+            createdAtFormatted: ro.createdAtFormatted || (ro.createdAt ? new Date(ro.createdAt).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN')),
+            date: ro.date || (ro.createdAt ? new Date(ro.createdAt).toLocaleDateString('vi-VN') : new Date().toLocaleDateString('vi-VN')),
+            expiresAt: null
+          };
+          this.state.orders.unshift(newOrd);
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        this.save();
+        this.notify('orders_updated', this.state.orders);
+        if (this.state.currentView === 'dashboard' && window.ShopVietViews && window.ShopVietViews.dashboard) {
+          if (typeof window.ShopVietViews.dashboard.refreshActiveTab === 'function') {
+            window.ShopVietViews.dashboard.refreshActiveTab();
+          } else {
+            this.renderCurrentRoute(true);
+          }
+        }
+      }
+    },
+
+    // Kéo danh sách đơn hàng của tài khoản từ Firestore Cloud
+    syncOrdersFromCloud: async function (email) {
+      const currentUser = this.state.user;
+      const cleanEmail = (email || (currentUser && currentUser.isLoggedIn ? currentUser.email : '')).trim().toLowerCase();
+      if (!cleanEmail) return false;
+
+      try {
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.fetchOrdersFromCloud === 'function') {
+          const cloudOrders = await window.ShopVietFirebase.fetchOrdersFromCloud(cleanEmail);
+          if (Array.isArray(cloudOrders) && cloudOrders.length > 0) {
+            this.mergeUserOrdersFromCloud(cleanEmail, cloudOrders);
+            return true;
+          }
+        }
+      } catch (e) {
+        console.warn('[ShopVietState] syncOrdersFromCloud error:', e);
+      }
+      return false;
+    },
+
+    // Đẩy đơn hàng cục bộ lên Firestore Cloud để đồng bộ sang các trình duyệt khác
+    syncLocalOrdersToCloud: async function (email) {
+      const currentUser = this.state.user;
+      const cleanEmail = (email || (currentUser && currentUser.isLoggedIn ? currentUser.email : '')).trim().toLowerCase();
+      if (!cleanEmail) return false;
+
+      try {
+        const localUserOrders = this.getUserOrders(cleanEmail);
+        if (Array.isArray(localUserOrders) && localUserOrders.length > 0) {
+          if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncOrderToCloud === 'function') {
+            for (const ord of localUserOrders) {
+              await window.ShopVietFirebase.syncOrderToCloud(ord);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('[ShopVietState] syncLocalOrdersToCloud error:', e);
+      }
+      return true;
     },
 
     // Lấy thông tin đơn hàng đang còn hạn mở khóa (24 giờ) của sản phẩm
@@ -2086,6 +2212,10 @@
         window.ShopVietFirebase.listenToUserDoc(this.state.user.email);
       }
       this.syncTopupsFromCloud().catch(function () {});
+      if (this.state.user && this.state.user.email) {
+        this.syncOrdersFromCloud(this.state.user.email).catch(function () {});
+        this.syncLocalOrdersToCloud(this.state.user.email).catch(function () {});
+      }
     },
 
     // Đăng xuất an toàn khỏi hệ thống (xóa session người dùng)
@@ -2141,6 +2271,10 @@
       this.startRealtimeDaemon(2000);
       this.syncAllFromCloud().catch(function () {});
       this.syncTopupsFromCloud(false).catch(function () {});
+      if (this.state.user && this.state.user.isLoggedIn && this.state.user.email) {
+        this.syncOrdersFromCloud(this.state.user.email).catch(function () {});
+        this.syncLocalOrdersToCloud(this.state.user.email).catch(function () {});
+      }
 
       // Auto-Sync on Focus & Tab Visibility Change (Đồng bộ tức thì khi chuyển tab / mở lại màn hình)
       if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
@@ -2148,11 +2282,17 @@
         window.addEventListener('focus', function () {
           self.syncAllFromCloud(false).catch(function () {});
           self.syncTopupsFromCloud(false).catch(function () {});
+          if (self.state.user && self.state.user.email) {
+            self.syncOrdersFromCloud(self.state.user.email).catch(function () {});
+          }
         });
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') {
             self.syncAllFromCloud(false).catch(function () {});
             self.syncTopupsFromCloud(false).catch(function () {});
+            if (self.state.user && self.state.user.email) {
+              self.syncOrdersFromCloud(self.state.user.email).catch(function () {});
+            }
           }
         });
         // Lắng nghe thay đổi sản phẩm giữa các tab cùng trình duyệt tức thì trong 1 mili-giây
@@ -2260,6 +2400,16 @@
             });
           } else {
             this.state.orders = [];
+          }
+
+          if (this.state.orders.length === 0) {
+            try {
+              const rawO = localStorage.getItem('shopviet_orders');
+              if (rawO) {
+                const parsedO = JSON.parse(rawO);
+                if (Array.isArray(parsedO)) this.state.orders = parsedO;
+              }
+            } catch (e) {}
           }
 
           this.state.theme = parsed.theme || 'light';
