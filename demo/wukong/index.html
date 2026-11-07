@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tề Thiên Đại Thánh Wukong · Dead Cells Pixel Edition | Bùi Thái AI Studio</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { color-scheme: dark; --gold: #F59E0B; --amber: #8A5F26; --ink: #080C13; }
+    body {
+      background: #06090F;
+      color: #FAF6ED;
+      font-family: 'Segoe UI', -apple-system, sans-serif;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    header.nav {
+      background: rgba(11, 16, 25, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(220, 185, 130, 0.25);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .brand-tag {
+      background: linear-gradient(135deg, #A47838, #8A5F26);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .title-row h1 {
+      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      font-weight: 900;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .edition-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(245, 158, 11, 0.15);
+      color: #F59E0B;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      font-weight: 700;
+    }
+    .arena-container {
+      position: relative;
+      background: #0A0E17;
+      border: 2px solid rgba(220, 185, 130, 0.3);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+      aspect-ratio: 16 / 9;
+      max-height: 480px;
+    }
+    canvas#stage {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      cursor: crosshair;
+    }
+    .hud-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+    }
+    .ctrl-card {
+      background: rgba(18, 24, 38, 0.8);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.2s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ctrl-card:active {
+      transform: scale(0.96);
+      border-color: #F59E0B;
+    }
+    .ctrl-card kbd {
+      background: #1E293B;
+      color: #F8FAFC;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 800;
+      align-self: flex-start;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .ctrl-card strong {
+      font-size: 13px;
+      color: #FDE047;
+    }
+    .ctrl-card span {
+      font-size: 10.5px;
+      color: #94A3B8;
+    }
+    .toggles-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      font-size: 12px;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .toggle-item input { accent-color: #F59E0B; cursor: pointer; }
+    .prompt-box {
+      background: #110D08;
+      border: 2px solid rgba(245, 158, 11, 0.35);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    pre {
+      background: rgba(0,0,0,0.6);
+      padding: 14px;
+      border-radius: 12px;
+      font-family: Consolas, monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #E2E8F0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-top: 10px;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #A47838, #8A5F26);
+      color: #fff;
+      border: 0;
+      padding: 7px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s;
+    }
+    .btn-gold:active { transform: scale(0.96); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header class="nav">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="/" style="display: flex; align-items: center; gap: 8px; color: #FAF6ED; text-decoration: none; font-weight: 800;">
+        <span class="brand-tag">BT</span>
+        <span>Bùi Thái AI Studio</span>
+      </a>
+      <span style="color: #64748B;">|</span>
+      <span style="color: #BE9455; font-size: 12px; font-weight: 700;">
+        🐒 Tề Thiên Đại Thánh Wukong (Dead Cells Engine)
+      </span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="wukong_spritesheet.png" download="wukong_spritesheet.png" class="btn-gold">
+        <span>📥 Tải Sprite Sheet (.png)</span>
+      </a>
+      <a href="/#products" style="background: rgba(255,255,255,0.08); color: #FAF6ED; padding: 6px 12px; border-radius: 10px; text-decoration: none; font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);">
+        ← Cửa Hàng
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Title & Status -->
+    <div class="title-row">
+      <div>
+        <h1>
+          <span>Tề Thiên Đại Thánh Wukong</span>
+          <span class="edition-badge">DEAD CELLS PIXEL 60FPS</span>
+        </h1>
+        <p style="font-size: 12px; color: #94A3B8; margin-top: 4px;">
+          Khung xương Dead Cells procedural 60fps · Dải lụa bay quán tính · Như Ý Kim Cô Bổng vung chém có Hit-Stop & Rung màn hình.
+        </p>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="resetTrainingDummy()" class="btn-gold" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);">
+          🔄 Dựng Lại Quái Thử Nghiệm
+        </button>
+      </div>
+    </div>
+
+    <!-- Arena Canvas Game 60fps -->
+    <div class="arena-container" id="arenaBox">
+      <canvas id="stage" width="384" height="216"></canvas>
+    </div>
+
+    <!-- Live Controls Help -->
+    <div class="hud-controls">
+      <div class="ctrl-card" onclick="triggerMove('left')">
+        <kbd>A / ◄</kbd>
+        <strong>Chạy Sang Trái</strong>
+        <span>Lướt bước chân</span>
+      </div>
+      <div class="ctrl-card" onclick="triggerMove('right')">
+        <kbd>D / ►</kbd>
+        <strong>Chạy Sang Phải</strong>
+        <span>Lụa bay trôi theo gió</span>
+      </div>
+      <div class="ctrl-card" onclick="triggerAction('sweep')">
+        <kbd>J / Click Trái</kbd>
+        <strong>Côn Pháp Hoành Tảo</strong>
+        <span>Vệt kim quang lớn + Hit-Stop</span>
+      </div>
+      <div class="ctrl-card" onclick="triggerAction('slam')">
+        <kbd>K / Click Phải</kbd>
+        <strong>Thiên Địa Phách</strong>
+        <span>Nhảy giáng gậy nứt đất</span>
+      </div>
+      <div class="ctrl-card" onclick="triggerAction('spin')">
+        <kbd>U / Phím 1</kbd>
+        <strong>Vũ Điệu Bão Tố</strong>
+        <span>Xoay gậy 360 độ liên hoàn</span>
+      </div>
+      <div class="ctrl-card" onclick="triggerAction('dodge')">
+        <kbd>Space / Shift</kbd>
+        <strong>Thân Pháp Tàn Ảnh</strong>
+        <span>Lướt né để lại bóng vàng</span>
+      </div>
+    </div>
+
+    <!-- Dead Cells Combat Toggles -->
+    <div class="toggles-row">
+      <strong style="color: #F59E0B;">⚙️ Công Nghệ Chiến Đấu Dead Cells:</strong>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggleHitstop" checked>
+        <span>Hit-Stop (Dừng hình 3 frames khi trúng đích)</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggleShake" checked>
+        <span>Screen Shake (Rung màn hình theo lực)</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggleTrail" checked>
+        <span>Phantom Trail (Tàn ảnh khi né)</span>
+      </label>
+      <label class="toggle-item">
+        <input type="checkbox" id="toggleSound" checked>
+        <span>Web Audio Synth (Âm thanh va chạm 0MB)</span>
+      </label>
+    </div>
+
+    <!-- Master Prompt Showcase Box -->
+    <div class="prompt-box">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="brand-tag">MASTER PROMPT</span>
+          <strong style="font-size: 14px; color: #FAF6ED;">Prompt Tác Chiến: Thiết Kế Nhân Vật Game Pixel Chuẩn Dead Cells</strong>
+        </div>
+        <button onclick="copyPromptCode()" class="btn-gold">
+          📋 Sao Chép Prompt (1-Click)
+        </button>
+      </div>
+
+      <pre id="promptText"># MASTER SYSTEM PROMPT: KỸ SƯ TRƯỞNG NHÂN VẬT PIXEL ART ĐỒNG BỘ PHONG CÁCH DEAD CELLS
+> Bản quyền: Bùi Thái AI Studio | Sử dụng cho Claude 3.7 / Cursor IDE / ChatGPT 4o
+
+Bạn là Chuyên gia Diễn hoạt & Tạo hình Nhân vật Game Pixel 60fps chuẩn phong cách Motion Twin (Dead Cells):
+1. QUY CÁCH KHUNG HÌNH & PALETTE:
+   - Khung hình: 48x48px hoặc 64x64px, tỷ lệ nhân vật 1:2.8 (ngực nở, chân dài, đầu gọn).
+   - Màu sắc Cel-shading: Đúng 3 bậc sắc độ cho mỗi mảng màu (Highlight, Midtone, Shadow).
+   - Viền mực: 1px Ink Outline đen tuyền bao quanh cơ thể để nhân vật luôn nổi bật trên nền hầm ngục.
+2. DẢI KHĂN & QUÁN TÍNH GIÓ (SECONDARY MOTION):
+   - Luôn trang bị dải khăn quàng hoặc áo choàng có độ trễ 2-3 frames sau chuyển động cơ thể.
+3. NHỊP ĐỘ CHIẾN ĐẤU CÓ LỰC (DEAD CELLS COMBAT JUICE):
+   - Đòn đánh: Lấy đà (Anticipation) -> Vệt chém hình quạt lớn (Smear Arc) -> Hit-stop dừng hình 2-4 frames khi chạm địch -> Rung màn hình 2px -> Bắn tia lửa va chạm (Hit sparks).
+4. XUẤT SPRITE SHEET:
+   - Xuất đầy đủ các hàng: Idle (4 frames), Run (6 frames), Attack (4 frames), Slam (5 frames), Dodge Roll (4 frames).
+   - Kèm file metadata .json chứa hitbox, pivot chân và frame duration.</pre>
+      <div style="margin-top: 10px; font-size: 11.5px; color: #10B981; font-weight: 700; display: none;" id="copySuccessMsg">
+        ✓ Đã sao chép Master Prompt vào bộ nhớ tạm! Hãy dán vào Cursor IDE / Claude / ChatGPT để tạo nhân vật tiếp theo.
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ==================== WEB AUDIO SYNTHESIZER (0MB SOUND FX) ====================
+    let audioCtx = null;
+    function getAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      if (!document.getElementById('toggleSound').checked) return;
+      try {
+        const ctx = getAudio();
+        const t = ctx.currentTime;
+        if (type === 'whoosh') {
+          // Gậy xé gió
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, t);
+          osc.frequency.exponentialRampToValueAtTime(80, t + 0.15);
+          gain.gain.setValueAtTime(0.2, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.16);
+        } else if (type === 'hit') {
+          // Va chạm kim loại giòn giã
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(540, t);
+          osc.frequency.exponentialRampToValueAtTime(140, t + 0.1);
+          gain.gain.setValueAtTime(0.3, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.12);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.13);
+        } else if (type === 'slam') {
+          // Đập đất sub-bass cực nặng
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(160, t);
+          osc.frequency.exponentialRampToValueAtTime(35, t + 0.3);
+          gain.gain.setValueAtTime(0.5, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.36);
+        } else if (type === 'dodge') {
+          // Lướt né tiếng gió siêu thanh
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(450, t);
+          osc.frequency.exponentialRampToValueAtTime(180, t + 0.18);
+          gain.gain.setValueAtTime(0.15, t);
+          gain.gain.exponentialRampToValueAtTime(0.01, t + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.19);
+        }
+      } catch (e) {}
+    }
+
+    // ==================== SPRITE SHEET & GAME ENGINE ====================
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+    const spriteImg = new Image();
+    spriteImg.src = 'wukong_spritesheet.png';
+
+    const FRAME_SIZE = 64;
+    const ANIM_ROWS = {
+      idle:  { row: 0, count: 4, speed: 120 },
+      run:   { row: 1, count: 6, speed: 75 },
+      sweep: { row: 2, count: 4, speed: 70 },
+      slam:  { row: 3, count: 5, speed: 90 },
+      dodge: { row: 4, count: 4, speed: 65 },
+      spin:  { row: 5, count: 4, speed: 60 }
+    };
+
+    // State
+    const player = {
+      x: 90,
+      y: 155,
+      facing: 1, // 1: right, -1: left
+      vx: 0,
+      state: 'idle',
+      frame: 0,
+      lastFrameTime: 0,
+      isActionLocked: false
+    };
+
+    const dummy = {
+      x: 270,
+      y: 155,
+      hp: 100,
+      maxHp: 100,
+      hurtTimer: 0,
+      flash: false
+    };
+
+    let damageNumbers = [];
+    let particles = [];
+    let phantomTrails = [];
+    let screenShake = 0;
+    let hitStopFrames = 0;
+
+    // Input handlers
+    const keys = {};
+    window.addEventListener('keydown', (e) => {
+      keys[e.code] = true;
+      if (['Space', 'KeyJ', 'KeyK', 'KeyU'].includes(e.code)) e.preventDefault();
+      
+      if (e.code === 'KeyJ') triggerAction('sweep');
+      if (e.code === 'KeyK') triggerAction('slam');
+      if (e.code === 'KeyU') triggerAction('spin');
+      if (e.code === 'Space' || e.code === 'ShiftLeft') triggerAction('dodge');
+    });
+    window.addEventListener('keyup', (e) => { keys[e.code] = false; });
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (e.button === 0) triggerAction('sweep');
+      else if (e.button === 2) triggerAction('slam');
+    });
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    function triggerMove(dir) {
+      if (dir === 'left') { player.facing = -1; player.vx = -2.5; }
+      else { player.facing = 1; player.vx = 2.5; }
+    }
+
+    function triggerAction(act) {
+      if (player.isActionLocked && player.state === act) return;
+      player.state = act;
+      player.frame = 0;
+      player.isActionLocked = (act !== 'run' && act !== 'idle');
+      player.lastFrameTime = performance.now();
+
+      if (act === 'sweep') playSound('whoosh');
+      else if (act === 'slam') playSound('whoosh');
+      else if (act === 'dodge') {
+        playSound('dodge');
+        player.vx = player.facing * 5.5;
+      } else if (act === 'spin') playSound('whoosh');
+    }
+
+    function resetTrainingDummy() {
+      dummy.hp = dummy.maxHp;
+      dummy.x = 270;
+      dummy.hurtTimer = 0;
+    }
+
+    // Main 60fps Loop
+    let lastTime = performance.now();
+
+    function gameLoop(now) {
+      requestAnimationFrame(gameLoop);
+
+      // Hit-stop logic: pause world computation for X frames on impact
+      if (hitStopFrames > 0) {
+        hitStopFrames--;
+        renderScene();
+        return;
+      }
+
+      const dt = now - lastTime;
+      lastTime = now;
+
+      // Update movement
+      if (!player.isActionLocked) {
+        let mx = 0;
+        if (keys['KeyA'] || keys['ArrowLeft']) mx -= 1;
+        if (keys['KeyD'] || keys['ArrowRight']) mx += 1;
+
+        if (mx !== 0) {
+          player.facing = mx;
+          player.vx = mx * 2.2;
+          player.state = 'run';
+        } else {
+          player.vx = 0;
+          player.state = 'idle';
+        }
+      }
+
+      // Physics
+      player.x += player.vx;
+      if (player.state === 'dodge') player.vx *= 0.88;
+      if (player.x < 30) player.x = 30;
+      if (player.x > 350) player.x = 350;
+
+      // Animation frame advancement
+      const curAnim = ANIM_ROWS[player.state];
+      if (now - player.lastFrameTime >= curAnim.speed) {
+        player.lastFrameTime = now;
+        player.frame++;
+
+        // Action specific frame checks (Attack collision)
+        if (player.state === 'sweep' && player.frame === 2) checkAttackHit(45, 120, 'sweep');
+        if (player.state === 'slam' && player.frame === 3) checkAttackHit(70, 240, 'slam');
+        if (player.state === 'spin') checkAttackHit(35, 60, 'spin');
+
+        // Dodge ghost trail
+        if (player.state === 'dodge' && document.getElementById('toggleTrail').checked) {
+          phantomTrails.push({ x: player.x, y: player.y, facing: player.facing, alpha: 0.8 });
+        }
+
+        if (player.frame >= curAnim.count) {
+          if (player.isActionLocked) {
+            player.isActionLocked = false;
+            player.state = 'idle';
+            player.frame = 0;
+          } else {
+            player.frame = 0;
+          }
+        }
+      }
+
+      // Check hits on dummy
+      function checkAttackHit(reach, damage, type) {
+        const dist = (dummy.x - player.x) * player.facing;
+        if (dist > 0 && dist < reach) {
+          // HIT CONNECTED!
+          dummy.hp = Math.max(0, dummy.hp - damage);
+          dummy.hurtTimer = 10;
+          dummy.flash = true;
+
+          // Hit sound
+          if (type === 'slam') playSound('slam');
+          else playSound('hit');
+
+          // Hit-Stop (Dead Cells secret)
+          if (document.getElementById('toggleHitstop').checked) {
+            hitStopFrames = (type === 'slam') ? 5 : 3;
+          }
+
+          // Screen Shake
+          if (document.getElementById('toggleShake').checked) {
+            screenShake = (type === 'slam') ? 6 : 3;
+          }
+
+          // Damage popup
+          damageNumbers.push({
+            x: dummy.x + (Math.random() * 10 - 5),
+            y: dummy.y - 25,
+            text: (type === 'slam' ? 'CRIT! ' : '') + damage,
+            color: type === 'slam' ? '#EF4444' : '#F59E0B',
+            life: 30
+          });
+
+          // Sparks particles
+          for (let i = 0; i < 8; i++) {
+            particles.push({
+              x: dummy.x - player.facing * 5,
+              y: dummy.y - 15 + Math.random() * 10,
+              vx: (Math.random() * 4 + 1) * -player.facing,
+              vy: (Math.random() * 4 - 2),
+              color: i % 2 === 0 ? '#FDE047' : '#FFFFFF',
+              life: 15
+            });
+          }
+        }
+      }
+
+      // Update particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      // Update phantom trails
+      for (let i = phantomTrails.length - 1; i >= 0; i--) {
+        const t = phantomTrails[i];
+        t.alpha -= 0.08;
+        if (t.alpha <= 0) phantomTrails.splice(i, 1);
+      }
+
+      // Update damage numbers
+      for (let i = damageNumbers.length - 1; i >= 0; i--) {
+        const d = damageNumbers[i];
+        d.y -= 0.6;
+        d.life--;
+        if (d.life <= 0) damageNumbers.splice(i, 1);
+      }
+
+      if (screenShake > 0) screenShake *= 0.85;
+
+      renderScene();
+    }
+
+    function renderScene() {
+      ctx.save();
+
+      // Screen Shake
+      if (screenShake > 0.5) {
+        const sx = (Math.random() - 0.5) * screenShake * 2;
+        const sy = (Math.random() - 0.5) * screenShake * 2;
+        ctx.translate(sx, sy);
+      }
+
+      // Background dungeon floor
+      ctx.fillStyle = '#080C14';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Stone Wall back
+      ctx.fillStyle = '#101622';
+      ctx.fillRect(0, 0, canvas.width, 160);
+
+      // Dungeon Torches
+      drawTorch(70, 70);
+      drawTorch(310, 70);
+
+      // Stone Ground
+      ctx.fillStyle = '#171E2D';
+      ctx.fillRect(0, 160, canvas.width, 56);
+      ctx.fillStyle = '#26334A';
+      ctx.fillRect(0, 160, canvas.width, 3);
+
+      // Phantom trails (Dodge ghost)
+      phantomTrails.forEach(t => {
+        ctx.save();
+        ctx.globalAlpha = t.alpha;
+        ctx.translate(t.x, t.y);
+        ctx.scale(t.facing, 1);
+        ctx.drawImage(spriteImg, 0 * FRAME_SIZE, 4 * FRAME_SIZE, FRAME_SIZE, FRAME_SIZE, -32, -54, FRAME_SIZE, FRAME_SIZE);
+        ctx.restore();
+      });
+
+      // Training Dummy
+      drawDummy(dummy.x, dummy.y);
+
+      // Render Wukong Player
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      ctx.scale(player.facing, 1);
+
+      const anim = ANIM_ROWS[player.state];
+      const sx = (player.frame % anim.count) * FRAME_SIZE;
+      const sy = anim.row * FRAME_SIZE;
+      ctx.drawImage(spriteImg, sx, sy, FRAME_SIZE, FRAME_SIZE, -32, -54, FRAME_SIZE, FRAME_SIZE);
+      ctx.restore();
+
+      // Hit Sparks
+      particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 2, 2);
+      });
+
+      // Damage Numbers
+      damageNumbers.forEach(d => {
+        ctx.save();
+        ctx.font = 'bold 10px Segoe UI, sans-serif';
+        ctx.fillStyle = d.color;
+        ctx.shadowColor = '#000';
+        ctx.shadowBlur = 3;
+        ctx.fillText(d.text, d.x, d.y);
+        ctx.restore();
+      });
+
+      ctx.restore();
+    }
+
+    function drawTorch(x, y) {
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(x - 2, y, 4, 14);
+      // Flame particle
+      const flicker = Math.sin(performance.now() * 0.01 + x) * 2;
+      ctx.fillStyle = '#F59E0B';
+      ctx.fillRect(x - 3, y - 6 + flicker, 6, 6);
+      ctx.fillStyle = '#FEF08A';
+      ctx.fillRect(x - 1, y - 4 + flicker, 2, 4);
+    }
+
+    function drawDummy(x, y) {
+      ctx.save();
+      // Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath();
+      ctx.ellipse(x, y, 10, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Dummy body
+      const flash = dummy.flash && dummy.hurtTimer > 0;
+      ctx.fillStyle = flash ? '#FFFFFF' : '#78350F';
+      ctx.fillRect(x - 5, y - 28, 10, 24);
+      ctx.fillStyle = flash ? '#FFFFFF' : '#B45309';
+      ctx.fillRect(x - 7, y - 24, 14, 5); // Cross arms
+      // Post
+      ctx.fillStyle = '#1E1610';
+      ctx.fillRect(x - 2, y - 4, 4, 4);
+
+      // HP Bar
+      const hpW = 20;
+      const hpH = 3;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(x - 10, y - 35, hpW, hpH);
+      ctx.fillStyle = dummy.hp > 0 ? '#EF4444' : '#64748B';
+      ctx.fillRect(x - 10, y - 35, (dummy.hp / dummy.maxHp) * hpW, hpH);
+
+      if (dummy.hurtTimer > 0) dummy.hurtTimer--;
+      else dummy.flash = false;
+
+      ctx.restore();
+    }
+
+    function copyPromptCode() {
+      const code = document.getElementById('promptText').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        const msg = document.getElementById('copySuccessMsg');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      });
+    }
+
+    // Start loop
+    spriteImg.onload = () => {
+      requestAnimationFrame(gameLoop);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "character": "Wukong - Tề Thiên Đại Thánh (Dead Cells Pixel Edition)",
+  "author": "Bùi Thái AI Studio",
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "animations": {
+    "idle": {
+      "row": 0,
+      "frames": 4,
+      "speedMs": 120
+    },
+    "run": {
+      "row": 1,
+      "frames": 6,
+      "speedMs": 80
+    },
+    "sweep": {
+      "row": 2,
+      "frames": 4,
+      "speedMs": 80
+    },
+    "slam": {
+      "row": 3,
+      "frames": 5,
+      "speedMs": 120
+    },
+    "dodge": {
+      "row": 4,
+      "frames": 4,
+      "speedMs": 120
+    },
+    "spin": {
+      "row": 5,
+      "frames": 4,
+      "speedMs": 80
+    }
+  }
+}
