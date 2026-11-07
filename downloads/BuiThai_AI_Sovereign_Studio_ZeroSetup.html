@@ -31,13 +31,53 @@
   </header>
 
   <!-- SEARCH & FILTER BAR -->
+  <!-- HƯỚNG DẪN BẮT BUỘC GIẢI NÉN -->
+  <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-950/80 to-stone-900 border border-amber-600/40 text-xs text-amber-200/90 leading-relaxed space-y-1">
+    <strong class="text-amber-300 block text-sm">📦 LƯU Ý KHI SỬ DỤNG:</strong>
+    <p>Hãy đảm bảo bạn đã <strong>GIẢI NÉN FILE ZIP</strong> ra thư mục trên máy tính trước khi dùng. Nhấp nút [Copy] ở bất kỳ câu lệnh nào bên dưới và dán vào ChatGPT / Claude / Gemini / Cursor là AI chạy ngay!</p>
+  </div>
+
+  <!-- BẢNG CHỈ MỤC & NÚT LỌC NHANH THEO PHÂN KHU -->
   <div class="mb-6 space-y-3">
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-bold">
+      <button onclick="filterRange(0, 9999, 'Tất cả')" class="px-3 py-1.5 rounded-xl bg-amber-600 text-white shrink-0 hover:bg-amber-500 transition cursor-pointer">
+        Tất cả (545+)
+      </button>
+      <button onclick="filterRange(1, 20, 'Hệ Điều Hành #01-#20')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-amber-400 border border-amber-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        ⚡ Hệ Điều Hành (#01-#20)
+      </button>
+      <button onclick="filterRange(21, 131, 'Kỹ Năng Studio #21-#131')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-purple-400 border border-purple-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        🧠 Kỹ Năng Studio (#21-#131)
+      </button>
+      <button onclick="filterRange(132, 377, 'Pixel VFX #132-#377')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-rose-400 border border-rose-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        🎮 Pixel VFX (#132-#377)
+      </button>
+      <button onclick="filterRange(378, 380, 'Đấu Sĩ 48px #378-#380')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-red-400 border border-red-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        🥊 Đấu Sĩ 48px (#378-#380)
+      </button>
+      <button onclick="filterRange(381, 410, 'Web & Fullstack #381-#410')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-blue-400 border border-blue-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        💻 Web & Fullstack (#381-#410)
+      </button>
+      <button onclick="filterRange(411, 440, 'SEO & Học Thuật #411-#440')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-emerald-400 border border-emerald-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        📚 SEO & Học Thuật (#411-#440)
+      </button>
+      <button onclick="filterRange(456, 485, 'N8N & Phonk #456-#485')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-fuchsia-400 border border-fuchsia-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        🎬 N8N & Phonk (#456-#485)
+      </button>
+      <button onclick="filterRange(486, 530, 'SFX & AppSec #486-#530')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-cyan-400 border border-cyan-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        🛡️ SFX & AppSec (#486-#530)
+      </button>
+      <button onclick="filterRange(531, 545, 'System Prompt #531-#545')" class="px-3 py-1.5 rounded-xl bg-stone-800 text-stone-300 border border-stone-500/30 shrink-0 hover:bg-stone-700 transition cursor-pointer">
+        ⚙️ System Prompt (#531-#545)
+      </button>
+    </div>
+
     <div class="relative">
       <input 
         type="text" 
         id="searchInput" 
         oninput="searchPrompts(this.value)" 
-        placeholder="🔍 Tìm nhanh trong 560+ câu lệnh (VD: pixel, combat, 3d, button, supabase, seo, video, deadcell...)" 
+        placeholder="🔍 Tìm nhanh trong 545+ câu lệnh (VD: pixel, combat, 3d, button, supabase, seo, video...)" 
         class="w-full px-4 py-3 rounded-2xl bg-stone-900 border border-amber-900/50 text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 shadow-inner text-sm"
       />
     </div>
@@ -82,6 +122,19 @@ ${item.template || item.prompt}
           ${item.example ? `<p class="text-[11px] text-stone-400 italic">💡 Ví dụ thực chiến: <span class="text-stone-300 font-mono">${item.example}</span></p>` : ''}
         </div>
       `).join('');
+    }
+
+    function filterRange(start, end, label) {
+      document.getElementById('searchInput').value = '';
+      if (start === 0) {
+        renderPrompts(allPrompts);
+        return;
+      }
+      const filtered = allPrompts.filter((_, idx) => {
+        const num = idx + 1;
+        return num >= start && num <= end;
+      });
+      renderPrompts(filtered);
     }
 
     function searchPrompts(query) {
