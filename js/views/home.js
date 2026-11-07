@@ -490,8 +490,6 @@ window.ShopVietViews.home = (function () {
       discountBadge = '-' + Math.round((1 - prod.price / rawOldPrice) * 100) + '%';
     }
     var stockCount = (typeof prod.stock === 'number' && prod.stock > 0) ? prod.stock : 15;
-    var ratingVal = prod.rating || '5.0';
-    var soldVal = prod.soldCount ? (prod.soldCount + '+') : '128+';
     var categoryLabel = prod.category || prod.tag || 'Công cụ AI Bản Quyền';
 
     // State nội bộ cho Mobile Expander
@@ -552,7 +550,7 @@ window.ShopVietViews.home = (function () {
       </div>
 
       <div class="u328-body">
-        <!-- [1.1] Stats Pill: Bản quyền, Đánh giá, Đã bán (0 Emoji - Micro-Vector SVG) -->
+        <!-- [1.1] Stats Pill: Bản quyền & Kích hoạt (0 Emoji - Micro-Vector SVG) -->
         <div class="flex items-center justify-between gap-2 bg-slate-900/80 border border-slate-800/90 rounded-xl px-3.5 py-2.5 text-xs text-slate-300 shadow-sm">
           <div class="flex items-center gap-1.5 font-bold text-emerald-400">
             <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 drop-shadow-[0_0_6px_rgba(52,211,153,0.6)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -561,19 +559,12 @@ window.ShopVietViews.home = (function () {
             <span>Mở khóa tức thì 24/7</span>
           </div>
           <div class="w-1 h-1 rounded-full bg-slate-700"></div>
-          <div class="flex items-center gap-1 font-semibold text-amber-300">
-            <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 drop-shadow-[0_0_6px_rgba(251,191,36,0.5)]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+          <div class="flex items-center gap-1.5 font-semibold text-indigo-300">
+            <svg class="w-3.5 h-3.5 text-indigo-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
             </svg>
-            <span>${ratingVal}</span>
-            <span class="text-slate-400 font-normal text-[11px]">(5.0)</span>
-          </div>
-          <div class="w-1 h-1 rounded-full bg-slate-700"></div>
-          <div class="flex items-center gap-1 text-slate-400 text-[11px]">
-            <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-            </svg>
-            <span>Đã bán <strong class="text-slate-200 font-semibold">${soldVal}</strong></span>
+            <span>Bản quyền chính hãng vĩnh viễn</span>
           </div>
         </div>
 
@@ -1768,15 +1759,12 @@ window.ShopVietViews.home = (function () {
                             </div>
                           </div>
 
-                          <!-- Rating & Tag -->
+                          <!-- Status Tag -->
                           <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 pt-1">
-                            <span class="flex items-center gap-1 text-amber-500 font-bold">
-                              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> 5.0
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                              <span>Mở khóa tức thì • Vĩnh viễn</span>
                             </span>
-                            <span>•</span>
-                            <span>0.4k đã bán</span>
-                            <span>•</span>
-                            <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Mở khóa tức thì</span>
                           </div>
                         </div>
                       </div>
@@ -1844,17 +1832,8 @@ window.ShopVietViews.home = (function () {
                         ${prod.name}
                       </h3>
 
-                      <!-- Rating & Sold Count -->
-                      <div class="flex items-center gap-1.5 mt-1.5 text-[11px] text-slate-400">
-                        <span class="flex items-center gap-1 text-amber-500 font-bold">
-                          <svg class="w-3.5 h-3.5 text-amber-400 fill-current inline-block" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg> ${prod.rating || '5.0'}
-                        </span>
-                        <span>•</span>
-                        <span>${prod.soldCount ? `${(prod.soldCount / 1000).toFixed(1)}k đã bán` : 'Mới mở bán'}</span>
-                      </div>
-
                       <!-- Stock Status Badge -->
-                      <div class="mt-2">
+                      <div class="mt-2.5">
                         ${renderStockBadge(prod)}
                       </div>
 
