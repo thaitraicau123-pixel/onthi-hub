@@ -513,6 +513,18 @@ window.ShopVietViews.modal = (function () {
         return;
       }
 
+      // ==================== BẢO VỆ CHỐNG SỬA TIỀN QUA F12 DEVTOOLS ====================
+      if (window.ShopVietState && typeof window.ShopVietState.verifyUserWallet === 'function') {
+        const isLegit = window.ShopVietState.verifyUserWallet(currentUser);
+        if (!isLegit) {
+          this.closeConfirmDialog();
+          if (window.ShopVietState.showToast) {
+            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ! Vui lòng nạp tiền chính quy.', 'error');
+          }
+          return;
+        }
+      }
+
       const totalAmount = currentProduct.price * currentQty;
       const balance = typeof currentUser.balance === 'number' ? currentUser.balance : 0;
 
@@ -632,6 +644,18 @@ window.ShopVietViews.modal = (function () {
         this.closeConfirmDialog();
         this.renderUnlockedSkillView(activeOrder);
         return;
+      }
+
+      // ==================== BẢO VỆ CHỐNG SỬA TIỀN QUA F12 DEVTOOLS ====================
+      if (window.ShopVietState && typeof window.ShopVietState.verifyUserWallet === 'function') {
+        const isLegit = window.ShopVietState.verifyUserWallet(currentUser);
+        if (!isLegit) {
+          this.closeConfirmDialog();
+          if (window.ShopVietState.showToast) {
+            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ! Vui lòng nạp tiền chính quy.', 'error');
+          }
+          return;
+        }
       }
 
       const totalAmount = currentProduct.price * currentQty;

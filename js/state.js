@@ -1313,6 +1313,56 @@
       return authResult;
     },
 
+    // ==================== BẢO VỆ VÍ XU CHỐNG CAN THIỆP F12 DEVTOOLS ====================
+    computeWalletSeal: function (email, balance) {
+      if (!email) return '';
+      const cleanEmail = email.trim().toLowerCase();
+      const numBal = Number(balance) || 0;
+      const salt = 'BuiThai_Sovereign_BankGrade_Shield_2026_x99';
+      let hash = 0;
+      const str = cleanEmail + ':' + numBal + ':' + salt;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+      }
+      return 'seal_' + Math.abs(hash).toString(36);
+    },
+
+    verifyUserWallet: function (user) {
+      if (!user || !user.email) return true;
+      const cleanEmail = user.email.trim().toLowerCase();
+      const currentBal = Number(user.balance) || 0;
+      
+      // 1. Kiểm tra đối chiếu với Database Người dùng gốc (Users DB)
+      const dbUser = this.findUserByEmail(cleanEmail);
+      if (dbUser) {
+        const dbBal = Number(dbUser.balance) || 0;
+        // Nếu user ở state cao hơn dbUser (do ai đó sửa F12 vào window.ShopVietState.state.user.balance)
+        if (currentBal > dbBal) {
+          console.warn('[SECURITY] Phát hiện số dư client bị can thiệp trái phép qua F12! Khôi phục về:', dbBal);
+          user.balance = dbBal;
+          user.walletSeal = this.computeWalletSeal(cleanEmail, dbBal);
+          return false;
+        }
+      }
+
+      // 2. Kiểm tra chữ ký niêm phong nếu tài khoản đã có chữ ký
+      if (user.walletSeal) {
+        const expectedSeal = this.computeWalletSeal(cleanEmail, currentBal);
+        if (user.walletSeal !== expectedSeal) {
+          console.warn('[SECURITY] Chữ ký ví không khớp (bị sửa F12)!');
+          if (dbUser) user.balance = Number(dbUser.balance) || 0;
+          user.walletSeal = this.computeWalletSeal(cleanEmail, user.balance);
+          return false;
+        }
+      } else {
+        // Tự động cấp chữ ký niêm phong hợp lệ cho khách cũ mà không làm mất số dư
+        user.walletSeal = this.computeWalletSeal(cleanEmail, currentBal);
+      }
+      return true;
+    },
+
     // Tìm kiếm tài khoản theo email (không phân biệt hoa/thường)
     findUserByEmail: function (email) {
       if (!email) return null;
@@ -1918,8 +1968,10 @@
       const idx = users.findIndex(function (u) {
         return u.email && u.email.trim().toLowerCase() === email;
       });
+      const seal = this.computeWalletSeal(email, newBalance);
       if (idx > -1) {
         users[idx].balance = newBalance;
+        users[idx].walletSeal = seal;
         this.saveUsersDB(users);
       } else {
         users.push({
@@ -1927,6 +1979,7 @@
           name: email.split('@')[0],
           email: email,
           balance: newBalance,
+          walletSeal: seal,
           role: 'member',
           createdAt: new Date().toISOString()
         });
@@ -1934,6 +1987,7 @@
       }
       if (this.state.user && this.state.user.email && this.state.user.email.trim().toLowerCase() === email) {
         this.state.user.balance = newBalance;
+        this.state.user.walletSeal = seal;
         this.save();
         this.notify('user_balance_updated', this.state.user);
       }
@@ -2155,6 +2209,10 @@
           }
 
           if (restoredUser) {
+            // Tự động cấp hoặc kiểm tra chữ ký ví niêm phong hợp lệ cho khách cũ
+            if (!restoredUser.walletSeal && typeof this.computeWalletSeal === 'function') {
+              restoredUser.walletSeal = this.computeWalletSeal(restoredUser.email, restoredUser.balance);
+            }
             this.state.user = restoredUser;
             if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToUserDoc === 'function') {
               window.ShopVietFirebase.listenToUserDoc(restoredUser.email);
