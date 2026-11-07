@@ -46,7 +46,7 @@ for (const file of staticFiles) {
   }
 }
 
-const staticDirs = ['js', 'img', 'demo'];
+const staticDirs = ['js', 'img', 'demo', 'downloads'];
 for (const dir of staticDirs) {
   const src = path.join(rootDir, dir);
   if (fs.existsSync(src)) {

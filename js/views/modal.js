@@ -1135,9 +1135,24 @@ ${escapeHTML(masterPromptText)}
                   </p>
                 </div>
 
-                <div class="space-y-2.5">
+                <!-- THANH TÌM KIẾM PROMPT SIÊU TỐC TRONG KHO 500+ MẪU LỆNH -->
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    id="cheatSheetSearchInput" 
+                    oninput="ShopVietViews.modal.filterCheatSheet(this.value)" 
+                    placeholder="🔍 Tìm nhanh trong ${cheatSheet.length} câu lệnh (VD: pixel, combat, 3d, button, supabase, seo, video...)" 
+                    class="w-full px-4 py-2.5 rounded-xl text-xs bg-white dark:bg-[#140F0B] border border-[#E6DCCB] dark:border-amber-900/50 focus:outline-none focus:border-amber-500 text-slate-800 dark:text-slate-100 placeholder-slate-400 shadow-inner"
+                  />
+                </div>
+
+                <div id="cheatSheetItemsContainer" class="space-y-2.5 max-h-[480px] overflow-y-auto pr-1">
                   ${cheatSheet.map((item, idx) => `
-                    <div class="p-3.5 rounded-2xl bg-white dark:bg-[#140F0B] border border-[#E6DCCB] dark:border-amber-900/40 space-y-2">
+                    <div 
+                      data-cheatsheet-item="true"
+                      data-search-text="${escapeHTML(((item.title || '') + ' ' + (item.category || '') + ' ' + (item.template || '') + ' ' + (item.prompt || '') + ' ' + (item.example || '')).toLowerCase())}"
+                      class="p-3.5 rounded-2xl bg-white dark:bg-[#140F0B] border border-[#E6DCCB] dark:border-amber-900/40 space-y-2"
+                    >
                       <div class="flex items-center justify-between gap-2">
                         <span class="text-xs font-bold text-amber-800 dark:text-amber-400 flex items-center gap-1.5">
                           <span class="w-5 h-5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 flex items-center justify-center text-[10px] font-mono font-bold">${idx + 1}</span>
@@ -1828,6 +1843,21 @@ ${escapeHTML(item.template || item.prompt || "")}
           </div>
         </div>
       `;
+    },
+
+    filterCheatSheet: function (query) {
+      const q = (query || '').trim().toLowerCase();
+      const container = document.getElementById('cheatSheetItemsContainer');
+      if (!container) return;
+      const items = container.querySelectorAll('[data-cheatsheet-item="true"]');
+      items.forEach(el => {
+        const text = el.getAttribute('data-search-text') || el.innerText.toLowerCase();
+        if (!q || text.includes(q)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
     },
 
     getProductById: getProductById,
