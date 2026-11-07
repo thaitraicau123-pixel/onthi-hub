@@ -1624,3 +1624,744 @@ Giữ nguyên toàn bộ cấu trúc 5 tầng kiến trúc (WORLD, LIFE, INTERAC
 3. THẾ GIỚI BÃI PHÓNG TÀU VŨ TRỤ (ORBITAL LAUNCH PAD EDITION — "NOVAGRID"):
    - WORLD: Tháp phóng khổng lồ (launch tower) với cánh tay kết nối (umbilical arms), tên lửa đẩy đa tầng trên bệ phóng, xe bồn nạp nhiên liệu đông lạnh LOX/Methane (fuel trucks), hào xả khói lửa (flame trench), tháp chống sét, đồng hồ đếm ngược T-minus LED khổng lồ (countdown).
    - LIFE: Tên lửa được xe bánh xích crawler vận chuyển ra bệ, tháp phóng khóa chặt, quá trình nạp nhiên liệu xả khói lạnh (cryo venting), đồng hồ đếm ngược kích hoạt (countdown sequence), động cơ khai hỏa tạo khói bụi hạt particle 3D, tên lửa phóng vút lên quỹ đạo.
+
+
+---
+
+PIXEL FIGHTER FORGE — MASTER PROMPT
+Thiết kế nhân vật pixel 48×48 và bộ animation đối kháng hoàn chỉnh
+
+Bạn phụ trách thiết kế nhân vật, pixel art, animation, combat, VFX, voice/SFX và bản chơi thử.
+
+Nhiệm vụ của bạn là biến thông tin bên dưới thành một nhân vật pixel có thể sử dụng trong game đối kháng màn hình ngang: nhận diện rõ, chuyển động có lực, chiêu thức có logic, hình và tiếng khớp nhau.
+
+Đây là prompt độc lập. Không yêu cầu người dùng có thêm bộ file hướng dẫn, skill khác hoặc tài nguyên trả phí để hiểu yêu cầu.
+
+Nếu người dùng để mặc định, bạn tự thiết kế toàn bộ. Nếu người dùng bổ sung tên, hình tham chiếu hoặc ghi chú, hãy điều chỉnh theo thông tin đó.
+
+────────────────────────────────────
+1. KHU VỰC NGƯỜI DÙNG TÙY CHỈNH
+────────────────────────────────────
+
+CÁCH ĐỌC:
+- Các ô “...” là phần tùy chọn.
+- “...”, “AUTO”, bỏ trống hoặc “AI tự chọn” đều có nghĩa là dùng mặc định.
+- Không yêu cầu người dùng điền hết các ô.
+- Chỉ điền tên nhân vật cũng đủ để bắt đầu.
+- Ghi chú cụ thể của người dùng được ưu tiên hơn mặc định về sáng tạo.
+- Tuân thủ giới hạn công cụ, quyền truy cập và hướng dẫn của môi trường đang sử dụng.
+
+A. NHÂN VẬT
+
+Tên nhân vật: ...
+→ Mặc định: tự sáng tạo một nhân vật nguyên bản, có tên và nhận diện riêng.
+
+Nhân vật có sẵn hay nhân vật tự sáng tạo: ...
+→ Mặc định: nguyên bản.
+
+Phiên bản hoặc hình tham chiếu: ...
+→ Mặc định: tự xây dựng thiết kế. Nếu có tên nhân vật nổi tiếng nhưng không ghi phiên bản, chọn phiên bản tiêu biểu và nói rõ lựa chọn.
+
+Giới tính, vóc dáng, tỷ lệ cơ thể: ...
+→ Mặc định: tự chọn để silhouette dễ đọc ở 48×48.
+
+Tính cách và khí chất: ...
+→ Mặc định: tự chọn một tính cách rõ, thể hiện được qua tư thế đứng, cách di chuyển và cách ra đòn.
+
+Trang phục, tóc, phụ kiện nhận diện: ...
+→ Mặc định: tự thiết kế, ưu tiên vài chi tiết nổi bật thay vì nhiều chi tiết nhỏ.
+
+Vũ khí hoặc cách chiến đấu: ...
+→ Mặc định: chọn cách chiến đấu phù hợp nhân vật.
+
+Năng lực, nguyên tố, chủ đề sức mạnh: ...
+→ Mặc định: tự chọn một hệ sức mạnh nhất quán.
+
+Màu chủ đạo: ...
+→ Mặc định: tự xây dựng bảng màu tương phản, dễ nhìn trên nền game.
+
+Linh thể, thú triệu hồi, robot hoặc bạn đồng hành: ...
+→ Mặc định: chỉ thêm nếu có ích cho nhận diện và cơ chế chiến đấu.
+
+Những chi tiết bắt buộc phải giữ: ...
+Những chi tiết cần tránh: ...
+Ghi chú thêm về nhân vật: ...
+
+B. CẢM GIÁC CHIẾN ĐẤU
+
+Phong cách: ...
+→ Mặc định: đối kháng hành động nhanh, đọc được động tác, điều khiển rõ, đòn nặng có trọng lượng.
+
+Mức độ nhanh/chậm: ...
+→ Mặc định: đòn thường nhanh, Skill có lấy đà ngắn, Ultimate có dàn dựng rõ nhưng không kéo dài vô ích.
+
+Mức độ rung màn hình, lóe sáng, dư ảnh: ...
+→ Mặc định: vừa đủ để tạo lực, vẫn nhìn rõ nhân vật và mục tiêu.
+
+Cơ chế đặc biệt mong muốn: ...
+→ Ví dụ: dịch chuyển, phản đòn, hất tung, triệu hồi, ngừng thời gian, kéo mục tiêu, điều khiển vũ khí.
+
+C. ÂM THANH
+
+Ngôn ngữ thoại: ...
+→ Mặc định: chọn phù hợp với nhân vật; không bắt buộc mọi chiêu đều có lời.
+
+Chất giọng hoặc nguồn voice mong muốn: ...
+→ Mặc định: tự tìm nguồn phù hợp trên mạng.
+
+Nguồn SFX mong muốn: ...
+→ Mặc định: tự tìm tiếng đánh, vung, phóng, nạp, va chạm và kết thúc phù hợp chất liệu của từng chiêu.
+
+Mục đích sử dụng: ...
+→ Mặc định: phát triển và chơi thử. Nếu người dùng ghi sử dụng thương mại, áp dụng việc kiểm tra quyền sử dụng tài nguyên tương ứng.
+
+Ghi chú về voice/SFX: ...
+
+D. ĐẦU RA
+
+Engine hoặc nền tảng: ...
+→ Mặc định: bản chơi thử bằng HTML, CSS và JavaScript với Canvas 2D.
+
+Kích thước nhân vật: ...
+→ Mặc định: từng frame sprite nhân vật có kích thước gốc 48×48 pixel.
+
+Tỷ lệ màn hình: ...
+→ Mặc định: 16:9.
+
+Độ phân giải bản xem thử: ...
+→ Mặc định: 1920×1080 nếu xuất video.
+
+Tốc độ video hoặc vòng render: ...
+→ Mặc định: 60 fps.
+
+Thời lượng video giới thiệu moveset: ...
+→ Mặc định: khoảng 60 giây nếu môi trường có khả năng render video.
+
+Các đầu ra ưu tiên khác: ...
+→ Mặc định: bản chơi thử, sprite/atlas, preview animation và hướng dẫn điều khiển.
+
+E. CHÚ THÍCH RIÊNG CHO TỪNG ĐÒN
+
+Những ô dưới đây để trống thì bạn tự đạo diễn.
+
+Combo thường:
+- Đòn 1: ...
+- Đòn 2: ...
+- Đòn 3: ...
+- Đòn 4: ...
+
+Đánh theo ngữ cảnh:
+- Tiến đánh: ...
+- Lùi đánh/phản kích: ...
+- Nhảy đánh/không kích: ...
+- Cúi đánh/đánh thấp: ...
+
+Skill:
+- Skill thường: ...
+- Skill tiến: ...
+- Skill lùi: ...
+- Skill lên: ...
+- Skill xuống: ...
+
+Ultimate:
+- Ultimate thường: ...
+- Ultimate tiến: ...
+- Ultimate lùi: ...
+- Ultimate lên: ...
+- Ultimate xuống: ...
+
+Ghi chú về chuyển động đặc biệt, đạo cụ hoặc camera: ...
+
+────────────────────────────────────
+2. CHỦ ĐỘNG THIẾT KẾ VÀ TRIỂN KHAI
+────────────────────────────────────
+
+Đọc các phần tùy chỉnh và xác định những gì đã được người dùng quyết định.
+
+Với phần còn trống:
+- Tự chọn một phương án phù hợp.
+- Giữ lựa chọn nhất quán trong toàn bộ bộ nhân vật.
+- Không biến các ô tùy chọn thành danh sách câu hỏi bắt buộc.
+- Không dừng ở việc đề xuất ý tưởng nếu môi trường có khả năng tạo sản phẩm.
+- Nêu ngắn gọn các giả định quan trọng rồi tiếp tục làm.
+
+Nếu người dùng nhập tên một nhân vật có sẵn:
+- Xác định phiên bản đang thể hiện.
+- Khi có khả năng duyệt web, ưu tiên đối chiếu nguồn chính thức hoặc tư liệu đáng tin cậy.
+- Giữ các đặc điểm giúp nhận ra nhân vật ở độ phân giải nhỏ.
+- Chuyển sức mạnh và cách chiến đấu của nhân vật thành cơ chế game phù hợp.
+- Phân biệt thông tin xác minh được với phần bạn tự diễn giải.
+- Không dùng bộ chiêu của nhân vật trước rồi chỉ đổi tên và đổi màu.
+
+Nếu để mặc định:
+- Tạo nhân vật nguyên bản.
+- Chốt một ý tưởng trung tâm đủ mạnh để dẫn dắt ngoại hình, chuyển động, vũ khí, VFX và âm thanh.
+- Tránh tạo một nhân vật có nhiều năng lực không liên quan với nhau.
+
+Trước khi bắt đầu, xác định khả năng thực tế của môi trường:
+- Có thể tạo ảnh hay không?
+- Có thể viết và chạy mã hay không?
+- Có thể tìm và tải âm thanh hay không?
+- Có thể mở bản chơi thử, xem frame và render video hay không?
+
+Điều chỉnh cách thực hiện theo công cụ sẵn có.
+
+Nếu chỉ có khả năng trả lời văn bản:
+- Hoàn thiện thiết kế, bảng animation, thông số combat, prompt tạo hình và mã khả thi.
+- Nói rõ những gì chưa được chạy hoặc chưa được tạo thành tài nguyên thật.
+- Không bịa liên kết tải, ảnh, âm thanh, kết quả kiểm thử hoặc video đã render.
+
+────────────────────────────────────
+3. KHÓA THIẾT KẾ NHÂN VẬT
+────────────────────────────────────
+
+Trước khi làm hàng loạt animation, chốt một bản mô tả ngắn gồm:
+
+1. Tên và ý tưởng nhân vật.
+2. Silhouette chính.
+3. Tỷ lệ đầu, thân và chân.
+4. Trang phục và phụ kiện nhận diện.
+5. Vũ khí hoặc cách ra đòn.
+6. Bảng màu.
+7. Dấu hiệu sức mạnh.
+8. Tính cách thể hiện qua chuyển động.
+9. Kích thước, điểm neo và hướng nhìn.
+10. Thiết kế bạn đồng hành nếu có.
+
+Dùng thiết kế này làm nguồn tham chiếu xuyên suốt.
+
+Giữ ổn định giữa các frame:
+- Kích thước đầu và thân.
+- Màu tóc, quần áo, giáp và vũ khí.
+- Bên tay cầm vũ khí.
+- Vị trí các dấu hiệu nhận diện.
+- Độ dày nét viền.
+- Hướng chiếu sáng.
+
+Khác biệt giữa các frame phải đến từ động tác và phối cảnh hợp lý, không phải do nhân vật tự đổi thiết kế.
+
+Nếu dùng công cụ tạo ảnh:
+- Tạo và kiểm tra hình chuẩn trước.
+- Dùng hình chuẩn làm tham chiếu cho các nhóm animation tiếp theo.
+- Chia theo hành động hoặc nhóm tư thế để kiểm soát tính nhất quán.
+- Kiểm tra cả sprite sau khi đưa về kích thước sử dụng thật.
+
+────────────────────────────────────
+4. TIÊU CHUẨN PIXEL ART 48×48
+────────────────────────────────────
+
+48×48 là kích thước gốc của từng frame nhân vật, không phải nhãn mô tả phong cách.
+
+Mặc định:
+- Frame: 48×48 pixel.
+- Khoảng 12–16 màu cho một nhân vật.
+- Viền tối khoảng 1 pixel.
+- Các cụm pixel rõ ràng.
+- Mảng sáng, trung gian và tối có phân cấp.
+- Nền trong suốt cho tài nguyên đưa vào game.
+- Có khoảng trống quanh silhouette.
+- Điểm neo nhân vật đứng gần giữa hai chân, mặc định khoảng [24,45].
+
+Đặt nhân vật sao cho:
+- Không cắt tóc, bàn tay, bàn chân hoặc vũ khí nằm trong phần thân sprite.
+- Tư thế giơ tay và cúi người vẫn nằm trong ô.
+- Chân các tư thế đứng, bước và cúi cùng chạm một mặt sàn.
+- Tư thế trên không có điểm neo được định nghĩa rõ.
+- Dịch chuyển điểm neo không làm nhân vật rung hoặc trượt chân vô cớ.
+
+Đạo cụ lớn, vệt chém, tia năng lượng, vụ nổ và bạn đồng hành có thể dùng lớp riêng với kích thước khác. Không nhét tất cả vào ô nhân vật rồi làm mất một phần hình.
+
+Khi hiển thị:
+- Phóng theo hệ số nguyên khi có thể.
+- Dùng nearest-neighbor hoặc thiết lập tương đương.
+- Giữ pixel sắc.
+- Không làm mịn sprite bằng bộ lọc.
+- Không dùng ảnh minh họa mịn thu nhỏ tùy tiện rồi gọi là pixel art hoàn chỉnh.
+
+Kiểm tra ở kích thước gốc và kích thước phóng trong game. Chi tiết không đọc được ở 48×48 cần được đơn giản hóa.
+
+────────────────────────────────────
+5. BỘ ANIMATION CƠ BẢN
+────────────────────────────────────
+
+Nhân vật phải có các trạng thái cần thiết để chơi thử và phản hồi chiến đấu:
+
+DI CHUYỂN
+- Idle có nhịp thở hoặc chuyển trọng tâm nhẹ.
+- Đi tới.
+- Đi lùi nhưng vẫn giữ hướng nhìn đối thủ.
+- Chạy hoặc lướt tới.
+- Lướt/lùi nhanh.
+- Lấy đà nhảy.
+- Bay lên.
+- Đỉnh nhảy.
+- Rơi xuống.
+- Tiếp đất và hồi thế.
+- Chuyển từ đứng sang cúi.
+- Giữ tư thế cúi và đứng dậy.
+
+PHÒNG THỦ VÀ PHẢN ỨNG
+- Đỡ đòn.
+- Đỡ thấp nếu có phân biệt đòn cao/thấp.
+- Trúng đòn nhẹ.
+- Trúng đòn nặng.
+- Bị hất lên.
+- Bị đánh khi đang trên không.
+- Ngã hoặc bị đập xuống.
+- Đứng dậy.
+- Hạ gục.
+- Chiến thắng.
+
+Có thể dùng chung những frame hồi thế phù hợp, nhưng các phản ứng phải đọc được sự khác biệt.
+
+Nhảy phải có quỹ đạo rõ và cảm giác trọng lực. Nếu nhân vật có khả năng bay hoặc lơ lửng, hãy thể hiện đó là năng lực có chủ đích.
+
+Cúi người phải có thay đổi tư thế và hurtbox phù hợp; không chỉ ép dẹp toàn bộ sprite.
+
+────────────────────────────────────
+6. COMBO THƯỜNG VÀ ĐÁNH THEO NGỮ CẢNH
+────────────────────────────────────
+
+A. COMBO THƯỜNG 4 ĐÒN
+
+Bốn lần bấm tấn công tạo bốn đòn nối tiếp:
+
+Đòn 1:
+- Nhanh, dễ đọc.
+- Tầm gần hoặc tầm cơ bản của vũ khí.
+- Có lấy đà ngắn và hồi thế rõ.
+
+Đòn 2:
+- Thay đổi tay, hướng, mặt phẳng hoặc cách ra đòn.
+- Thể hiện nối lực từ đòn trước.
+
+Đòn 3:
+- Có tác dụng tạo cơ hội như hất nhẹ, kéo gần hoặc làm khựng.
+- Tác dụng được chọn theo phong cách nhân vật.
+
+Đòn 4:
+- Là đòn kết rõ ràng.
+- Có lực và thời gian hồi lớn hơn.
+- Có thể đẩy lùi, đánh ngã hoặc kết thúc chuỗi.
+
+Mỗi đòn cần có tư thế tiếp xúc riêng và nhịp riêng. Bốn lần phát lại một cú đấm không được tính là combo 4 đòn.
+
+Người chơi bấm từng nhịp:
+- Có cửa sổ nối đòn.
+- Có input buffer ngắn.
+- Có thời hạn để chuỗi trở về đòn 1.
+- Giữ nút không tự động chạy hết combo, trừ khi người dùng yêu cầu chế độ đó.
+
+B. ĐÁNH THEO NGỮ CẢNH
+
+Tiến đánh:
+- Có chuyển động tiến hoặc mở rộng áp lực phía trước.
+- Khoảng di chuyển và tầm đánh phải tương ứng hình ảnh.
+
+Lùi đánh:
+- Nhân vật vẫn hướng về đối thủ.
+- Có rút người, bước lùi, phản kích hoặc tạo khoảng cách.
+- Không tự quay lưng chỉ vì người chơi giữ hướng lùi.
+
+Nhảy đánh/không kích:
+- Có tư thế trên không riêng.
+- Đòn xuất phát từ vị trí thực của nhân vật.
+- Có quy định số lần sử dụng trong một lần nhảy.
+- Có tiếp đất và hồi thế phù hợp.
+
+Cúi đánh/đánh thấp:
+- Động tác và vùng đánh nằm thấp.
+- Tư thế, mục tiêu va chạm và phản ứng thống nhất với nhau.
+
+Các đòn phải thích nghi với nhân vật: võ sĩ, kiếm sĩ, xạ thủ, pháp sư, robot hoặc sinh vật không bắt buộc dùng cùng một cách đánh.
+
+────────────────────────────────────
+7. SKILL — 5 BIẾN THỂ
+────────────────────────────────────
+
+Tạo đủ:
+1. Skill thường.
+2. Skill tiến.
+3. Skill lùi.
+4. Skill lên.
+5. Skill xuống.
+
+Mỗi biến thể cần có vai trò rõ ràng. Bộ vai trò mặc định:
+
+Skill thường:
+- Thể hiện kỹ năng đặc trưng của nhân vật.
+
+Skill tiến:
+- Tiếp cận, lao đánh, xuyên áp lực hoặc truy đuổi.
+
+Skill lùi:
+- Rút lui kết hợp phản kích, phóng đạn hoặc tạo bẫy.
+
+Skill lên:
+- Chống trên không, hất tung hoặc truy kích lên cao.
+
+Skill xuống:
+- Đánh thấp, chấn địa, đặt vùng hoặc khống chế vị trí.
+
+Tự thay đổi cách thể hiện theo vũ khí và năng lực. Không chỉ phát lại một animation rồi đổi màu hiệu ứng.
+
+Với từng Skill, xác định:
+- Tên.
+- Input.
+- Ý đồ chiến thuật.
+- Tư thế lấy đà.
+- Chuyển động cơ thể.
+- Thời điểm bắt đầu gây sát thương.
+- Vùng đánh hoặc quỹ đạo đạn.
+- Số hit.
+- Sát thương và hiệu ứng trúng đòn.
+- Tiêu hao và hồi chiêu.
+- Phần dư lực.
+- Tư thế hồi phục.
+- SFX hoặc voice tương ứng.
+
+────────────────────────────────────
+8. ULTIMATE — 5 BIẾN THỂ
+────────────────────────────────────
+
+Tạo đủ:
+1. Ultimate thường.
+2. Ultimate tiến.
+3. Ultimate lùi.
+4. Ultimate lên.
+5. Ultimate xuống.
+
+Ultimate phải có quy mô và cách dàn dựng khác Skill:
+- Báo hiệu rõ.
+- Có khoảnh khắc chuẩn bị.
+- Có đỉnh tác động.
+- Có kết thúc và hồi thế.
+- Tạo cảm giác mạnh bằng chuyển động, nhịp và phản ứng, không chỉ bằng tăng độ sáng.
+
+Vai trò mặc định:
+
+Ultimate thường:
+- Đòn đại diện rõ nhất cho nhân vật.
+
+Ultimate tiến:
+- Truy sát, áp sát lớn hoặc đánh xuyên tuyến.
+
+Ultimate lùi:
+- Phản công, bẫy, bao vây hoặc tấn công từ vị trí an toàn.
+
+Ultimate lên:
+- Giao chiến theo chiều cao, hất lên và truy kích.
+
+Ultimate xuống:
+- Tác động mạnh xuống mặt đất hoặc vùng mục tiêu đã báo trước.
+
+Các gợi ý này là vai trò, không phải yêu cầu mọi nhân vật đều có xe lu, ngừng thời gian hay linh thể.
+
+Nếu người dùng yêu cầu một động tác đặc biệt, phải dựng đúng toàn bộ hành động.
+
+Ví dụ có điều kiện:
+“Bay khỏi màn hình rồi ôm một đạo cụ dựng dọc lao xuống.”
+
+Khi đó:
+- Toàn bộ cơ thể phải rời khỏi khung hình.
+- Có khoảng thời gian đủ nhận ra nhân vật đã biến mất.
+- Khi trở lại, đạo cụ và nhân vật đã ở tư thế mang/ôm hợp lý.
+- Hai tay bám đúng bề mặt đạo cụ.
+- Không để lại tay thừa, bàn tay rời hoặc bộ phận của tư thế cũ.
+- Nhân vật và đạo cụ dùng chung một quỹ đạo hoặc ràng buộc chuyển động.
+- Hướng và điểm rơi khớp vùng báo trước.
+- Va chạm xảy ra khi phần tiếp xúc thực chạm mục tiêu hoặc mặt đất.
+- Cú nện, sát thương, rung, phản ứng và tiếng va chạm dùng cùng mốc.
+- Sau va chạm có nhả tay, dư lực và hồi thế hợp lý.
+- Khi lật hướng đối thủ, bộ phận dẫn đầu của đạo cụ vẫn hướng xuống đúng.
+
+────────────────────────────────────
+9. NGUYÊN TẮC ANIMATION VÀ VFX
+────────────────────────────────────
+
+Dựng chuyển động theo:
+Lấy đà → phát lực → tiếp xúc → dư lực → hồi thế.
+
+Chọn keypose có silhouette rõ trước khi thêm hiệu ứng.
+
+Mỗi hành động thường cần:
+- Tư thế chuẩn bị.
+- Tư thế nén/lấy đà.
+- Tư thế phát lực.
+- Tư thế tiếp xúc.
+- Tư thế dư lực.
+- Tư thế hồi phục.
+
+Số frame cụ thể phụ thuộc hành động. Có thể giữ pose để tạo nhịp; phân biệt frame giữ với tư thế mới.
+
+Vòng game/video 60 fps không có nghĩa phải tạo 60 bức vẽ khác nhau mỗi giây. Sprite có thể chạy ở nhịp thấp hơn nếu thời gian giữ, chuyển vị trí và cảm giác lực được thiết kế tốt.
+
+Áp dụng:
+- Chuyển trọng tâm trước đòn nặng.
+- Quỹ đạo có chủ đích khi nhảy, vung hoặc phóng.
+- Chân trụ ổn định.
+- Áo, tóc, dây hoặc phụ kiện có chuyển động thứ cấp vừa phải.
+- Đòn nhanh dứt khoát.
+- Đòn nặng có thời gian chuẩn bị và hồi lớn hơn.
+- Không kéo giãn toàn thân thay cho việc tạo tư thế mới.
+
+VFX:
+- Xuất phát từ bàn tay, vũ khí, mặt đất hoặc vị trí có nguyên nhân.
+- Giữ cùng hệ tọa độ với nhân vật và hitbox.
+- Vệt chém đi theo đường vung.
+- Tia và đạn đi theo hướng thực.
+- Chùm đấm phải đọc được thành nhiều cú đánh.
+- Dư ảnh hỗ trợ tốc độ, không che silhouette chính.
+- Hiệu ứng lớn phải có phân lớp để vẫn nhìn rõ diễn biến.
+
+Phân biệt ba pha:
+1. Active: được phát hạt và gây sát thương theo thiết kế.
+2. Release: ngừng phát tác động mới; phần đã sinh tiếp tục kết thúc.
+3. Finished: hình và âm đã kết thúc, đối tượng tạm được dọn.
+
+Phần kết theo chất liệu:
+- Chém: vệt mỏng đi, tia nhỏ tan dần.
+- Năng lượng: lõi thu lại, ánh sáng và hạt dư tàn sau.
+- Lửa: ngọn yếu dần, tàn và khói tiếp tục trôi.
+- Băng: tinh thể, mảnh và hơi lạnh có nhịp kết thúc.
+- Sét: lóe chính ngắn, dư điện giảm sau.
+- Chấn địa: sóng lan, bụi và mảnh rơi rồi lắng xuống.
+
+Hiệu ứng dư không tiếp tục gây sát thương, trừ đối tượng còn ở pha active như một viên đạn vẫn đang bay.
+
+────────────────────────────────────
+10. COMBAT, VA CHẠM VÀ ĐIỀU KHIỂN
+────────────────────────────────────
+
+Mặc định:
+- A/D: di chuyển.
+- J: đánh thường.
+- K: nhảy.
+- L: lướt.
+- S: cúi.
+- U: Skill.
+- I: Ultimate.
+- W/S: biến thể lên/xuống cho Skill và Ultimate.
+- Hướng tiến/lùi + U hoặc I: biến thể tiến/lùi.
+- S + J: đánh thấp.
+- K rồi J: không kích.
+- R: đặt lại sân tập.
+- G: nạp tài nguyên trong chế độ thử.
+
+Tiến/lùi được tính theo hướng đối thủ, không cố định là phải/trái màn hình.
+
+Nếu người dùng chọn sơ đồ phím khác, cập nhật cả logic và hướng dẫn.
+
+Yêu cầu runtime:
+- Tách trạng thái đứng, di chuyển, nhảy, tấn công, trúng đòn, ngã và hồi phục.
+- Tách đồng hồ mô phỏng với nhịp vẽ khi phù hợp.
+- Có xử lý press/release và chống lặp phím ngoài ý muốn.
+- Khóa hướng trong những đòn cần khóa hướng.
+- Có hurtbox và hitbox riêng.
+- Có giới hạn tầm đánh.
+- Đạn nhanh cần kiểm tra đường di chuyển để tránh xuyên mục tiêu.
+- Mỗi hit có mã hoặc cơ chế ghi nhận riêng.
+- Một hit không gây sát thương lặp lại ở mọi frame.
+- Đánh hụt không cộng combo.
+- Đòn nhiều hit có lịch tác động rõ.
+- Hất tung, đẩy lùi và đập xuống phải có phản ứng thật.
+
+Mốc sát thương, phản ứng, lóe va chạm và tiếng đánh chính phải lấy từ cùng một sự kiện.
+
+Thông số khởi điểm có thể dùng:
+- Input buffer: khoảng 100–150 ms.
+- Cửa sổ giữ chuỗi sau hồi thế: khoảng 350–450 ms.
+- Hit-stop nhẹ: khoảng 20–40 ms.
+- Hit-stop nặng: khoảng 60–110 ms.
+- Skill: khoảng 20 năng lượng.
+- Ultimate: khoảng 100 năng lượng.
+
+Đây là điểm bắt đầu để tinh chỉnh, không phải thông số bắt buộc cho mọi nhân vật.
+
+Hit-stop phải dừng chuyển động chiến đấu liên quan và hiệu ứng đi cùng, tránh nhân vật đứng yên nhưng đạo cụ vẫn trôi.
+
+Nếu có ngừng thời gian:
+- Xác định đối tượng nào bị dừng.
+- Dừng mô phỏng của chúng thật.
+- Đạn chờ không tự gây sát thương trước lúc được kích hoạt.
+- Khi thời gian chạy lại, chỉ khôi phục tác động đã được thiết kế.
+
+────────────────────────────────────
+11. TỰ TÌM VOICE VÀ SFX TRÊN MẠNG
+────────────────────────────────────
+
+Chủ động tìm âm thanh khi có khả năng duyệt web.
+
+Với nhân vật có sẵn:
+- Ưu tiên đúng nhân vật, đúng phiên bản và đúng hành động.
+- Tìm tiếng gọi chiêu, tiếng đặc trưng và SFX có liên quan.
+- Đối chiếu mô tả nguồn và nghe/kiểm tra đoạn âm khi công cụ cho phép.
+- Không lấy tiếng của nhân vật hoặc bộ phim khác chỉ vì âm đó lớn.
+
+Với nhân vật nguyên bản:
+- Tìm voice/grunt và SFX phù hợp tính cách, chất liệu vũ khí và năng lực.
+- Không mặc định phải có lời cho mọi đòn.
+- Có thể kết hợp tiếng nạp, phát lực, va chạm và đuôi âm thành các lớp.
+
+Từ khóa tìm kiếm nên gồm:
+- Tên nhân vật hoặc bộ phim/game.
+- Tên chiêu hoặc hành động.
+- Voice line, sound effect, SFX, clean audio, isolated, sound pack.
+- Thông tin phiên bản khi cần phân biệt.
+
+Ghi lại:
+- Tên đoạn âm.
+- Nguồn thực tế.
+- Đường dẫn nguồn.
+- Vai trò trong chiêu.
+- Khoảng âm đã dùng nếu có cắt.
+- Thông tin giấy phép/quyền sử dụng tìm được.
+- Tình trạng chưa xác minh nếu chưa có bằng chứng.
+
+Việc âm thanh xuất hiện công khai hoặc có nút tải không tự chứng minh quyền sử dụng thương mại.
+
+Phân biệt bản fan demo với bản phát hành thương mại. Với đầu ra thương mại, ưu tiên nguồn có quyền sử dụng đã được xác minh phù hợp. Nếu chưa xác minh được, ghi rõ tình trạng và cung cấp phương án âm được phép thay thế.
+
+Không tự clone hoặc giả mạo giọng người thật để che việc chưa tìm được bản thu.
+
+Nếu không có công cụ duyệt web:
+- Nói rõ chưa tìm hoặc chưa xác minh được nguồn.
+- Cung cấp từ khóa và tiêu chí tìm.
+- Tiếp tục các phần không phụ thuộc âm đó.
+- Không bịa URL hoặc báo đã tải âm.
+
+Khi ghép:
+- Giữ chất giọng và cao độ của thoại gốc.
+- Để đủ câu hoặc cụm từ có nghĩa.
+- Có khoảng lấy đà phù hợp trước tiếng nổ/va chạm.
+- Tiếng impact chính khớp frame tiếp xúc.
+- Giữ đuôi tự nhiên; nếu cắt cần nhả mềm.
+- Cân mức giữa thoại và SFX.
+- Kiểm soát các âm chồng lên nhau để tránh clipping.
+- Không phủ một tiếng nổ giống nhau lên mọi chiêu.
+
+Pause, mute và reset phải dừng cả âm chính lẫn âm đang nhả, không để tiếng hoặc vòng lặp tiếp tục ở nền.
+
+────────────────────────────────────
+12. BẢN CHƠI THỬ VÀ PREVIEW
+────────────────────────────────────
+
+Nếu môi trường hỗ trợ lập trình:
+- Tạo sân tập đủ để thử toàn bộ bộ chiêu.
+- Có đối thủ hoặc mục tiêu với phản ứng trúng đòn.
+- Hiển thị máu, tài nguyên, combo, cooldown và tên chiêu.
+- Có đặt lại mục tiêu, nạp tài nguyên và bật/tắt âm.
+- Có hướng dẫn phím.
+- Có điều khiển cảm ứng nếu phù hợp nền tảng.
+
+Mặc định ưu tiên bản web gọn bằng Canvas 2D. Có thể dùng pixel rig hoặc ảnh sprite thật tùy công cụ, miễn kết quả đạt đúng kích thước và chất lượng.
+
+Nếu tạo bản HTML tự chứa:
+- Dùng dữ liệu ảnh/âm có thật.
+- Nhúng tài nguyên khi có thể.
+- Không để đường dẫn giả hoặc chuỗi base64 tượng trưng.
+- Nói rõ tài nguyên còn cần mạng nếu chưa nhúng được.
+
+Nếu có tự động trình diễn:
+- Gọi cùng controller và input như lúc người chơi điều khiển.
+- Không dựng một cảnh diễn giả khác với cơ chế chơi thật.
+
+Nếu xuất video:
+- Giới thiệu đủ combo, các ngữ cảnh đánh, 5 Skill và 5 Ultimate.
+- Chừa thời gian để người xem đọc được đòn.
+- Cho thấy cả lấy đà, va chạm và hồi thế.
+- Dùng cắt cảnh đơn giản.
+- Ghi đúng độ phân giải, fps và thời lượng đã xuất.
+- Không báo có video nếu chỉ mới có storyboard.
+
+Giao diện dùng tiếng Việt cần mã hóa và font hỗ trợ dấu. Chữ, số và thanh trạng thái phải rõ, không bị cắt dấu hoặc bị pixel hóa đến mức khó đọc.
+
+────────────────────────────────────
+13. TỰ KIỂM TRA VÀ SỬA LỖI
+────────────────────────────────────
+
+Xem ở tốc độ thật trước, sau đó kiểm tra các frame:
+- Trước tiếp xúc.
+- Đúng lúc tiếp xúc.
+- Sau tiếp xúc.
+- Bắt đầu hồi thế.
+- Kết thúc hiệu ứng.
+
+A. HÌNH ẢNH
+- Frame nhân vật đúng 48×48.
+- Không có bộ phận bị cắt.
+- Bảng màu và tỷ lệ nhất quán.
+- Chân không lệch sàn giữa các tư thế đứng.
+- Không có mảnh từ ô sprite bên cạnh.
+- Không có tay/chân thừa hoặc chi tiết của pose cũ.
+- Pixel giữ sắc khi phóng.
+
+B. ANIMATION
+- Bốn đòn thường khác nhau.
+- Di chuyển không trượt chân vô cớ.
+- Nhảy có lấy đà và tiếp đất.
+- Lùi vẫn nhìn đối thủ.
+- Thân, tay, vũ khí và đạo cụ liên kết hợp lý.
+- Động tác đặc biệt thực hiện đủ các bước người dùng yêu cầu.
+- Hồi thế và vòng lặp không nhảy hình bất ngờ.
+
+C. COMBAT
+- Input, buffer và cửa sổ nối hoạt động.
+- Đánh hụt không gây sát thương.
+- Không gây hit lặp ngoài thiết kế.
+- Vùng đánh khớp hình.
+- Phản ứng trúng đòn đúng hướng.
+- Các biến thể hoạt động khi đối thủ ở hai phía.
+- Tài nguyên và cooldown có tác dụng.
+- Hiệu ứng release không gây thêm sát thương.
+
+D. ÂM THANH
+- Nguồn đúng với vai trò.
+- Thoại không bị cắt ngang vô cớ.
+- Impact khớp tiếp xúc.
+- Âm không vỡ hoặc chồng thành một khối khó nghe.
+- Đuôi âm kết thúc tự nhiên.
+- Pause, mute và reset không để âm mắc lại.
+
+E. VẬN HÀNH
+- Không có lỗi runtime đã biết.
+- Chơi được bằng các phím đã ghi.
+- Bản trình diễn và bản chơi dùng cùng cơ chế.
+- Đo hiệu năng trong cảnh nhiều hiệu ứng.
+- Tối ưu theo số đo thực tế.
+- Phân biệt mục tiêu 60 fps với kết quả đã đo; không hứa mọi máy đều đạt như nhau.
+
+Sửa các lỗi làm sai nhận diện, điều khiển, va chạm hoặc chuyển động trước khi tăng hiệu ứng trang trí.
+
+────────────────────────────────────
+14. CÁCH BÀN GIAO
+────────────────────────────────────
+
+Bàn giao theo thứ tự dễ kiểm tra:
+
+1. Thiết kế nhân vật đã chốt.
+2. Điều khiển.
+3. Bảng animation.
+4. Combo 4 đòn và các đòn theo ngữ cảnh.
+5. Bảng 5 Skill và 5 Ultimate.
+6. Tài nguyên hoặc mã thực tế đã tạo.
+7. Bản chơi thử và preview nếu có.
+8. Nguồn voice/SFX và tình trạng quyền sử dụng.
+9. Kết quả kiểm tra, giới hạn và phần còn thiếu.
+
+Nếu chỉ trả lời văn bản:
+- Trả đặc tả và mã bằng các khối rõ ràng.
+- Phân biệt thiết kế với phần đã triển khai.
+- Không gọi phần chưa chạy là “đã kiểm thử”.
+- Không gọi tài nguyên dự kiến là tài nguyên đã tạo.
+
+Nếu công cụ đủ khả năng tạo sản phẩm:
+- Tiếp tục đến khi các thành phần bắt buộc được hoàn thành và kiểm tra.
+- Không kết thúc chỉ với danh sách ý tưởng hoặc prompt ảnh.
+- Nếu gặp giới hạn thực tế, ghi rõ phần đã làm và phần chưa làm, giữ kết quả có thể tiếp tục sử dụng.
+
+Tiêu chuẩn hoàn thành:
+Nhân vật phải vừa nhận ra được ở 48×48, vừa điều khiển được, có đủ bộ animation, có đòn đánh đọc được, có VFX và âm phù hợp, và không che lỗi chuyển động bằng hiệu ứng lớn.
+
+BẮT ĐẦU:
+Đọc khu vực tùy chỉnh. Tự quyết định các ô còn trống. Chốt thiết kế nhân vật và triển khai theo khả năng thực tế của môi trường, bắt đầu từ bộ khung nhất quán rồi hoàn thiện toàn bộ moveset.
