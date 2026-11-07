@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  const STORAGE_KEY = 'shopviet247_app_state_v_no_rating_sold_v1';
+  const STORAGE_KEY = 'shopviet247_app_state_v80k_allinone_v1';
   const USERS_DB_KEY = 'shopviet_users_database';
   const GITHUB_RAW_CLOUD_URL = 'https://raw.githubusercontent.com/thaitraicau123-pixel/onthi-hub/main/cloud-db.json';
   const GITHUB_API_URL = 'https://api.github.com/repos/thaitraicau123-pixel/onthi-hub/contents/cloud-db.json';

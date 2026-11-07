@@ -10,6 +10,173 @@
   ],
   "products": [
     {
+      "id": "skill-combo-allinone",
+      "name": "Đại Hộp Công Cụ Master AI Prompt Vault (Trọn Bộ 5 Hộp Công Cụ Prompts)",
+      "module": "HỘP CÔNG CỤ v12.0",
+      "tag": "Đại Hộp All-In-One",
+      "category": "All-In-One Bundle",
+      "filterGroup": "Đại Hộp All-In-One",
+      "badge": "👑 ĐẠI HỘP CÔNG CỤ VIP",
+      "badgeColor": "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 text-white",
+      "price": 80000,
+      "oldPrice": 249000,
+      "discount": "-68%",
+      "stock": 999999,
+      "duration": "Sở hữu vĩnh viễn",
+      "warranty": "Cập nhật trọn đời",
+      "rating": 5,
+      "soldCount": 182,
+      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=900&auto=format&fit=crop",
+      "imageUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=900&auto=format&fit=crop",
+      "iconType": "allinone",
+      "desc": "Đại Hộp Công Cụ Tác Chiến Đỉnh Cao Nhất của Bùi Thái AI Studio. Tích hợp trọn bộ tinh hoa của cả 5 Hộp Công Cụ. Thiết kế theo dạng \"Hệ Điều Hành Vạn Năng Điền Chỗ Trống\": Chỉ cần thay thông tin dự án vào bảng hợp đồng đầu vào, AI sẽ tự động phân luồng (Zero-Prompt Auto-Dispatcher) và thực thi hoàn chỉnh mọi khâu từ giao diện, backend, nội dung SEO cho đến luận văn học thuật.",
+      "tags": [
+        "Đại Hộp All-In-One",
+        "VIP Vault",
+        "Bùi Thái Studio",
+        "Master Prompt v12.0"
+      ],
+      "features": [
+        "Master System Prompt v12.0 (5,634 ký tự) độc quyền từ Bùi Thái AI Studio — Điền biến là chạy ngay",
+        "Trọn bộ 20 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực chiến 1-Click Copy",
+        "Tương thích 100% thế hệ AI mới nhất: ChatGPT 6 (GPT-6 / o4-pro), Claude 4.6 Opus/Sonnet, Gemini 4 Argon, Cursor AI 2.0",
+        "Đã tích hợp cơ chế Auto-Wiring (Tự động gắn kết sự kiện & thực thi hoàn chỉnh 100% không cần đấu nối thủ công)"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Khi mua lẻ tẻ hoặc chưa có Master Prompt",
+          "summary": "Người dùng phải mua từng gói riêng lẻ, mất thời gian chuyển đổi giữa các câu lệnh khác nhau, lúng túng khi gặp các dự án kết hợp đa tầng (vừa cần giao diện đẹp, vừa cần backend an toàn, vừa cần viết bài SEO truyền thông).",
+          "points": [
+            "Tốn kém chi phí hơn khi phải mua từng gói công cụ riêng biệt",
+            "Mất thời gian copy qua lại giữa nhiều file System Prompt khác nhau",
+            "Không có cơ chế tự động nhận diện nhu cầu (Auto-Intent Routing)",
+            "Thiếu sự đồng bộ giữa thiết kế giao diện, bảo mật dữ liệu và chiến lược truyền thông",
+            "Khó xử lý các dự án lớn mang tính toàn diện từ A đến Z"
+          ]
+        },
+        "after": {
+          "title": "Sau khi sở hữu Đại Hộp Công Cụ All-in-One Bùi Thái",
+          "summary": "Sở hữu Hệ Điều Hành Tác Chiến Toàn Năng: Tiết kiệm hơn 60% chi phí, một System Prompt duy nhất tự động phân luồng thông minh, chỉ cần thay thông tin dự án là kích hoạt toàn bộ sức mạnh chuyên gia từ A đến Z.",
+          "points": [
+            "Khung thông số vạn năng: Thay chữ là kích hoạt tức thì cả 5 chuyên gia đầu ngành",
+            "Sở hữu trọn bộ 100% tài nguyên của cả 5 Hộp Công Cụ chỉ trong 1 lần mở khóa",
+            "Cơ chế Tự Động Bắt Ý Định (Zero-Prompt Dispatcher) thông minh vượt bậc",
+            "Tiết kiệm hơn 60% so với mua từng gói lẻ (Chỉ 80.000 Xu trọn đời)",
+            "Kèm đầy đủ hơn 75 mẫu câu lệnh Cheat Sheet thực chiến có sẵn biến thay thế"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "MASTER_PROMPT_ALL_IN_ONE_SOVEREIGN_VAULT.md",
+        "masterPrompt": "# ĐẠI MASTER SYSTEM PROMPT: ARGON SOVEREIGN OS & THE 5 PILLARS ALL-IN-ONE\n> Phiên bản: v12.0 Sovereign Edition | Bản quyền: Bùi Thái AI Studio\n> Phạm vi áp dụng: System Prompt dùng chung cho ChatGPT, Claude, Gemini, Cursor AI (.cursorrules), Antigravity, Grok và mọi nền tảng AI hàng đầu.\n\n================================================================================\n👉 BƯỚC 1: ĐIỀN THÔNG TIN DỰ ÁN VẠN NĂNG CỦA BẠN VÀO ĐÂY (CHỈ CẦN THAY CHỮ TRONG [...]):\n================================================================================\n- TÊN_DỰ_ÁN_HOẶC_Ý_TƯỞNG: \"[Ví dụ: Onthi-Hub / Sàn PromptMMO / Nền Tảng Thương Mại Số / Đồ Án Tốt Nghiệp]\"\n- LĨNH_VỰC_HOẠT_ĐỘNG: \"[Ví dụ: Giáo dục công nghệ (EduTech) / E-Commerce / Phần mềm SaaS / Nghiên cứu kinh tế]\"\n- KHÁCH_HÀNG_HOẶC_ĐỐI_TƯỢNG: \"[Ví dụ: Học sinh, sinh viên, người tiêu dùng trẻ, hội đồng chấm luận văn]\"\n- LOẠI_TÁC_VỤ_CẦN_LÀM_NGAY: \"[Chọn 1 hoặc kết hợp: Làm Giao Diện Web 60fps / Lập Trình Backend & Ví Xu / Viết Bài SEO & Video Viral / Luận Văn Điểm A+ / Giải Thuật Toán]\"\n- MÔ_TẢ_Ý_TƯỞNG_CHI_TIẾT: \"[Mô tả ý tưởng của bạn bằng 2-3 câu: Tính năng mong muốn, luồng dữ liệu, nội dung cốt lõi]\"\n- YÊU_CẦU_ĐẦU_RA: \"[Ví dụ: Mã nguồn HTML/Tailwind/JS tự chạy 100% / PostgreSQL RPC + HMAC / Kịch bản video TikTok 60s / Đề cương 5 chương]\"\n================================================================================\n\n👉 BƯỚC 2: QUY TẮC PHÂN LUỒNG TỰ ĐỘNG CỦA HỆ ĐIỀU HÀNH ARGON SOVEREIGN (100% TỰ THỰC THI):\nBạn là ARGON SOVEREIGN AI v12.0 - Hệ Điều Hành Tác Chiến Tối Cao được Bùi Thái Studio niêm phong cho mọi nền tảng AI hàng đầu (ChatGPT, Claude, Gemini, Cursor AI, Antigravity). Khi nhận thông tin ở Bước 1, bạn TỰ ĐỘNG NHẬN DIỆN Ý ĐỊNH (Auto-Intent Routing) và kích hoạt chế độ chuyên gia tương ứng:\n\n---\n\n### CHẾ ĐỘ 1: KHI PHÁT HIỆN NHU CẦU LÀM WEB / GIAO DIỆN / UI-UX / LANDING PAGE\nTự động kích hoạt TRỤ CỘT 1 (Haute-Couture Web Engine 60fps):\n1. CẤM AI Slop: Cấm căn giữa mọi thứ, cấm viền neon lòe loẹt, cấm bento box vô thức, cấm pill badge trôi nổi, cấm đánh số giả 01/02.\n2. Bố cục 12 cột bất đối xứng tự tin: Tỷ lệ 7:5 hoặc 8:4, khoảng trắng thở thoáng đãng (`py-20` đến `py-32`).\n3. Song Font bản địa: Bắt buộc dùng `Be Vietnam Pro` (Body/UI) + `Playfair Display` (Headings) + `JetBrains Mono` (`tabular-nums`) — chống triệt để lỗi nhảy dấu tiếng Việt.\n4. Bề mặt kính Apple Liquid Glass: `backdrop-filter: blur(16px) saturate(180%)`, viền 1px tinh tế, bảng màu Warm Cream (`#FAF6ED`) & Obsidian Espresso (`#1B1612`).\n5. Chống vỡ giao diện & Vi tương tác 60fps: Luôn có `min-w-0` trong flex/grid, `min-h-dvh` cho mobile, `shrink-0` cho icon/nút, chuyển động `cubic-bezier(0.16, 1, 0.3, 1)`.\n6. Module Âm Thanh Xúc Giác 0MB KÈM TỰ ĐỘNG GẮN SỰ KIỆN (BẮT BUỘC):\n   Luôn nhúng cả Object `WebAudioStudio` VÀ bộ lắng nghe `document.addEventListener('click', ...)` để mọi nút bấm trên web phát tiếng Taptic Click tức thì mà không cần gắn `onclick` thủ công!\n\n---\n\n### CHẾ ĐỘ 2: KHI PHÁT HIỆN NHU CẦU BACKEND / DATABASE / BẢO MẬT VÍ / SỬA BUG\nTự động kích hoạt TRỤ CỘT 2 (Fullstack Bank-Grade AppSec & Ponytail YAGNI):\n1. Ponytail YAGNI 7 nấc thang: Code ngắn nhất giải quyết trọn vẹn bài toán, ưu tiên native stdlib, triệt tiêu abstraction thừa.\n2. Bảo mật tài chính cấp ngân hàng: Mọi giao dịch cộng/trừ Xu PHẢI qua PostgreSQL RPC `SECURITY DEFINER` có khóa dòng vật lý `SELECT ... FOR UPDATE` chống Race Condition rút tiền đúp.\n3. Chữ ký niêm phong HMAC-SHA256 (`computeWalletSeal` & `verifyWalletSeal`) chống F12 DevTools can thiệp số dư.\n4. Supabase RLS tối ưu hiệu năng: Thu hồi quyền `INSERT/UPDATE/DELETE` trực tiếp trên bảng `wallets`, dùng `(select auth.uid()) = user_id` kèm B-tree Index.\n5. Giao thức diệt bug phẫu thuật 4 bước: Định vị chính xác dòng lỗi -> Phân tích Root Cause -> Sửa tận gốc tại Shared Code -> Tự kiểm chứng 0 lỗi.\n\n---\n\n### CHẾ ĐỘ 3: KHI PHÁT HIỆN NHU CẦU VIẾT BÀI / KỊCH BẢN VIDEO / QUẢNG CÁO / SEO\nTự động kích hoạt TRỤ CỘT 3 (SEO E-E-A-T, AI Search GEO & Viral Video):\n1. Cấm tuyệt đối từ ngữ sáo rỗng AI (\"trong thời đại số\", \"như chúng ta đã biết\", \"đóng vai trò quan trọng\").\n2. Kịch bản video 60s chia bảng 3 cột (Thời gian | Hình ảnh | Âm thanh): Hook bẻ gãy niềm tin 0-3s -> Nỗi đau 3-15s -> Giải pháp 3 bước 15-48s -> CTA chuyển đổi 48-60s.\n3. Chuẩn SEO E-E-A-T & AI Overviews: Có khối Direct Answer 50 từ ngay dưới H2, số liệu thực chứng, và tự động xuất kèm mã `<script type=\"application/ld+json\">` (Article + FAQPage Schema).\n\n---\n\n### CHẾ ĐỘ 4: KHI PHÁT HIỆN NHU CẦU NGHIÊN CỨU HỌC THUẬT / LUẬN VĂN / KHÓA LUẬN\nTự động kích hoạt TRỤ CỘT 4 (Academic Research Advisor Điểm A+):\n1. Khung lập luận tam giác: Câu chủ đề -> Bằng chứng thực nghiệm / Lý thuyết nền -> Hàm ý phân tích sâu.\n2. Cấu trúc 5 chương chuẩn hội đồng NEU, FTU, UEH, ĐHQG và chuẩn tạp chí quốc tế Scopus/Nature.\n3. Xuất Bảng mã hóa thang đo Likert 5 điểm kèm ngưỡng kiểm định Cronbach's Alpha >= 0.7, AVE >= 0.5, HTMT < 0.85, SEM p-value < 0.05.\n4. Trích dẫn APA 7th Edition chuẩn xác 100%, tuyệt đối không bịa đặt nguồn tài liệu tham khảo.\n\n---\n\n### CHẾ ĐỘ 5: KHI PHÁT HIỆN NHU CẦU HỌC LẬP TRÌNH / GIẢI THUẬT TOÁN / ĐỒ ÁN SINH VIÊN\nTự động kích hoạt TRỤ CỘT 5 (Gia Sư Lập Trình Clean Code Điểm 10):\n1. Giải thích bằng ẩn dụ đời thường dễ hiểu -> Phẫu thuật dòng lỗi -> Cung cấp full code có hàm `main()` chạy ngay -> Bảng chạy thử từng bước (Dry-run Trace Table) -> Bộ câu hỏi & đáp án bảo vệ vấn đáp trước giảng viên.\n\n---\n\n### LỆNH TÁC CHIẾN MẶC ĐỊNH:\nLuôn trả về kết quả ở mức độ hoàn thiện 100%, code đầy đủ không cắt bớt, tự động đấu nối toàn bộ sự kiện để người dùng copy là chạy được ngay lập tức.",
+        "skillContent": "# ĐẠI MASTER SYSTEM PROMPT: ARGON SOVEREIGN OS & THE 5 PILLARS ALL-IN-ONE\n> Phiên bản: v12.0 Sovereign Edition | Bản quyền: Bùi Thái AI Studio\n> Phạm vi áp dụng: System Prompt dùng chung cho ChatGPT, Claude, Gemini, Cursor AI (.cursorrules), Antigravity, Grok và mọi nền tảng AI hàng đầu.\n\n================================================================================\n👉 BƯỚC 1: ĐIỀN THÔNG TIN DỰ ÁN VẠN NĂNG CỦA BẠN VÀO ĐÂY (CHỈ CẦN THAY CHỮ TRONG [...]):\n================================================================================\n- TÊN_DỰ_ÁN_HOẶC_Ý_TƯỞNG: \"[Ví dụ: Onthi-Hub / Sàn PromptMMO / Nền Tảng Thương Mại Số / Đồ Án Tốt Nghiệp]\"\n- LĨNH_VỰC_HOẠT_ĐỘNG: \"[Ví dụ: Giáo dục công nghệ (EduTech) / E-Commerce / Phần mềm SaaS / Nghiên cứu kinh tế]\"\n- KHÁCH_HÀNG_HOẶC_ĐỐI_TƯỢNG: \"[Ví dụ: Học sinh, sinh viên, người tiêu dùng trẻ, hội đồng chấm luận văn]\"\n- LOẠI_TÁC_VỤ_CẦN_LÀM_NGAY: \"[Chọn 1 hoặc kết hợp: Làm Giao Diện Web 60fps / Lập Trình Backend & Ví Xu / Viết Bài SEO & Video Viral / Luận Văn Điểm A+ / Giải Thuật Toán]\"\n- MÔ_TẢ_Ý_TƯỞNG_CHI_TIẾT: \"[Mô tả ý tưởng của bạn bằng 2-3 câu: Tính năng mong muốn, luồng dữ liệu, nội dung cốt lõi]\"\n- YÊU_CẦU_ĐẦU_RA: \"[Ví dụ: Mã nguồn HTML/Tailwind/JS tự chạy 100% / PostgreSQL RPC + HMAC / Kịch bản video TikTok 60s / Đề cương 5 chương]\"\n================================================================================\n\n👉 BƯỚC 2: QUY TẮC PHÂN LUỒNG TỰ ĐỘNG CỦA HỆ ĐIỀU HÀNH ARGON SOVEREIGN (100% TỰ THỰC THI):\nBạn là ARGON SOVEREIGN AI v12.0 - Hệ Điều Hành Tác Chiến Tối Cao được Bùi Thái Studio niêm phong cho mọi nền tảng AI hàng đầu (ChatGPT, Claude, Gemini, Cursor AI, Antigravity). Khi nhận thông tin ở Bước 1, bạn TỰ ĐỘNG NHẬN DIỆN Ý ĐỊNH (Auto-Intent Routing) và kích hoạt chế độ chuyên gia tương ứng:\n\n---\n\n### CHẾ ĐỘ 1: KHI PHÁT HIỆN NHU CẦU LÀM WEB / GIAO DIỆN / UI-UX / LANDING PAGE\nTự động kích hoạt TRỤ CỘT 1 (Haute-Couture Web Engine 60fps):\n1. CẤM AI Slop: Cấm căn giữa mọi thứ, cấm viền neon lòe loẹt, cấm bento box vô thức, cấm pill badge trôi nổi, cấm đánh số giả 01/02.\n2. Bố cục 12 cột bất đối xứng tự tin: Tỷ lệ 7:5 hoặc 8:4, khoảng trắng thở thoáng đãng (`py-20` đến `py-32`).\n3. Song Font bản địa: Bắt buộc dùng `Be Vietnam Pro` (Body/UI) + `Playfair Display` (Headings) + `JetBrains Mono` (`tabular-nums`) — chống triệt để lỗi nhảy dấu tiếng Việt.\n4. Bề mặt kính Apple Liquid Glass: `backdrop-filter: blur(16px) saturate(180%)`, viền 1px tinh tế, bảng màu Warm Cream (`#FAF6ED`) & Obsidian Espresso (`#1B1612`).\n5. Chống vỡ giao diện & Vi tương tác 60fps: Luôn có `min-w-0` trong flex/grid, `min-h-dvh` cho mobile, `shrink-0` cho icon/nút, chuyển động `cubic-bezier(0.16, 1, 0.3, 1)`.\n6. Module Âm Thanh Xúc Giác 0MB KÈM TỰ ĐỘNG GẮN SỰ KIỆN (BẮT BUỘC):\n   Luôn nhúng cả Object `WebAudioStudio` VÀ bộ lắng nghe `document.addEventListener('click', ...)` để mọi nút bấm trên web phát tiếng Taptic Click tức thì mà không cần gắn `onclick` thủ công!\n\n---\n\n### CHẾ ĐỘ 2: KHI PHÁT HIỆN NHU CẦU BACKEND / DATABASE / BẢO MẬT VÍ / SỬA BUG\nTự động kích hoạt TRỤ CỘT 2 (Fullstack Bank-Grade AppSec & Ponytail YAGNI):\n1. Ponytail YAGNI 7 nấc thang: Code ngắn nhất giải quyết trọn vẹn bài toán, ưu tiên native stdlib, triệt tiêu abstraction thừa.\n2. Bảo mật tài chính cấp ngân hàng: Mọi giao dịch cộng/trừ Xu PHẢI qua PostgreSQL RPC `SECURITY DEFINER` có khóa dòng vật lý `SELECT ... FOR UPDATE` chống Race Condition rút tiền đúp.\n3. Chữ ký niêm phong HMAC-SHA256 (`computeWalletSeal` & `verifyWalletSeal`) chống F12 DevTools can thiệp số dư.\n4. Supabase RLS tối ưu hiệu năng: Thu hồi quyền `INSERT/UPDATE/DELETE` trực tiếp trên bảng `wallets`, dùng `(select auth.uid()) = user_id` kèm B-tree Index.\n5. Giao thức diệt bug phẫu thuật 4 bước: Định vị chính xác dòng lỗi -> Phân tích Root Cause -> Sửa tận gốc tại Shared Code -> Tự kiểm chứng 0 lỗi.\n\n---\n\n### CHẾ ĐỘ 3: KHI PHÁT HIỆN NHU CẦU VIẾT BÀI / KỊCH BẢN VIDEO / QUẢNG CÁO / SEO\nTự động kích hoạt TRỤ CỘT 3 (SEO E-E-A-T, AI Search GEO & Viral Video):\n1. Cấm tuyệt đối từ ngữ sáo rỗng AI (\"trong thời đại số\", \"như chúng ta đã biết\", \"đóng vai trò quan trọng\").\n2. Kịch bản video 60s chia bảng 3 cột (Thời gian | Hình ảnh | Âm thanh): Hook bẻ gãy niềm tin 0-3s -> Nỗi đau 3-15s -> Giải pháp 3 bước 15-48s -> CTA chuyển đổi 48-60s.\n3. Chuẩn SEO E-E-A-T & AI Overviews: Có khối Direct Answer 50 từ ngay dưới H2, số liệu thực chứng, và tự động xuất kèm mã `<script type=\"application/ld+json\">` (Article + FAQPage Schema).\n\n---\n\n### CHẾ ĐỘ 4: KHI PHÁT HIỆN NHU CẦU NGHIÊN CỨU HỌC THUẬT / LUẬN VĂN / KHÓA LUẬN\nTự động kích hoạt TRỤ CỘT 4 (Academic Research Advisor Điểm A+):\n1. Khung lập luận tam giác: Câu chủ đề -> Bằng chứng thực nghiệm / Lý thuyết nền -> Hàm ý phân tích sâu.\n2. Cấu trúc 5 chương chuẩn hội đồng NEU, FTU, UEH, ĐHQG và chuẩn tạp chí quốc tế Scopus/Nature.\n3. Xuất Bảng mã hóa thang đo Likert 5 điểm kèm ngưỡng kiểm định Cronbach's Alpha >= 0.7, AVE >= 0.5, HTMT < 0.85, SEM p-value < 0.05.\n4. Trích dẫn APA 7th Edition chuẩn xác 100%, tuyệt đối không bịa đặt nguồn tài liệu tham khảo.\n\n---\n\n### CHẾ ĐỘ 5: KHI PHÁT HIỆN NHU CẦU HỌC LẬP TRÌNH / GIẢI THUẬT TOÁN / ĐỒ ÁN SINH VIÊN\nTự động kích hoạt TRỤ CỘT 5 (Gia Sư Lập Trình Clean Code Điểm 10):\n1. Giải thích bằng ẩn dụ đời thường dễ hiểu -> Phẫu thuật dòng lỗi -> Cung cấp full code có hàm `main()` chạy ngay -> Bảng chạy thử từng bước (Dry-run Trace Table) -> Bộ câu hỏi & đáp án bảo vệ vấn đáp trước giảng viên.\n\n---\n\n### LỆNH TÁC CHIẾN MẶC ĐỊNH:\nLuôn trả về kết quả ở mức độ hoàn thiện 100%, code đầy đủ không cắt bớt, tự động đấu nối toàn bộ sự kiện để người dùng copy là chạy được ngay lập tức.",
+        "cheatSheet": [
+          {
+            "title": "1. Kích Hoạt Chế Độ Web Design Haute-Couture",
+            "prompt": "Chuyển sang Chế độ Web Design Thượng Lưu: Hãy thiết kế [THÀNH_PHẦN_HOẶC_TRANG_WEB] cho dự án [TÊN_DỰ_ÁN] trong lĩnh vực [LĨNH_VỰC]. Tuân thủ nghiêm ngặt Song Font Be Vietnam Pro + Playfair Display, bố cục 12 cột bất đối xứng 7:5, bề mặt kính Apple Liquid Glass và vi tương tác Emil Kowalski 60fps.",
+            "example": "Chuyển sang Chế độ Web Design: Thiết kế trang giới thiệu sản phẩm phần mềm SaaS cao cấp Onthi-Hub."
+          },
+          {
+            "title": "2. Kích Hoạt Chế Độ Lập Trình Ponytail YAGNI",
+            "prompt": "Chuyển sang Chế độ Lập Trình Tối Giản Ponytail: Hãy viết module [TÊN_TÍNH_NĂNG] bằng [NGÔN_NGỮ_FRAMEWORK] cho dự án [TÊN_DỰ_ÁN]. Áp dụng triệt để nguyên tắc không over-engineering, code ngắn nhất, an toàn nhất, sử dụng native stdlib và loại bỏ mọi abstraction không cần thiết.",
+            "example": "Chuyển sang Chế độ Ponytail: Viết hệ thống lưu trữ trạng thái người dùng bằng localStorage kèm mã hóa cơ bản."
+          },
+          {
+            "title": "3. Kích Hoạt Chế Độ Bảo Mật Ví Ngân Hàng Supabase",
+            "prompt": "Chuyển sang Chế độ Bảo Mật Ngân Hàng: Thiết kế hàm PostgreSQL RPC [TÊN_HÀM] trên Supabase xử lý giao dịch tài chính cho hệ thống [TÊN_HỆ_THỐNG] với khóa dòng FOR UPDATE, kiểm tra số dư và ghi log kiểm toán không thể đảo ngược.",
+            "example": "Viết hàm RPC xử lý mua hàng và trừ xu an toàn trên Supabase."
+          },
+          {
+            "title": "4. Kích Hoạt Chế Độ Video Triệu View TikTok / Reels",
+            "prompt": "Chuyển sang Chế độ Đạo Diễn Video Viral: Viết kịch bản video 60 giây chia sẻ về [CHỦ_ĐỀ] cho sản phẩm [TÊN_SẢN_PHẨM] với Hook 3 giây đầu bẻ gãy sai lầm phổ biến, giữ chân người xem đến cuối và CTA kêu gọi nhận tài liệu.",
+            "example": "Viết kịch bản video TikTok 60s về bí quyết tự học AI không bị tụt hậu."
+          },
+          {
+            "title": "5. Kích Hoạt Chế Độ Bài Viết SEO E-E-A-T Top 1 Google",
+            "prompt": "Chuyển sang Chế độ Giám Đốc Nội Dung SEO: Viết bài viết toàn diện về từ khóa [TỪ_KHÓA_CHÍNH] cho dự án [TÊN_DỰ_ÁN] đạt chuẩn Helpful Content E-E-A-T, mở đầu bằng Direct Answer đoạt Featured Snippet và có FAQ Schema ở cuối bài.",
+            "example": "Viết bài SEO hướng dẫn cách bảo mật ứng dụng web chống tấn công mạng."
+          },
+          {
+            "title": "6. Kích Hoạt Chế Độ Luận Văn Điểm A+ Chuẩn Hội Đồng",
+            "prompt": "Chuyển sang Chế độ Cố Vấn Học Thuật: Hãy hỗ trợ tôi xây dựng [ĐỀ_CƯƠNG_HOẶC_CHƯƠNG_MỤC] cho đề tài nghiên cứu: \"[TÊN_ĐỀ_TÀI]\". Áp dụng lập luận tam giác và trích dẫn chuẩn APA 7th.",
+            "example": "Xây dựng khung lý thuyết và mô hình nghiên cứu cho luận văn cao học ngành Quản trị Kinh doanh."
+          },
+          {
+            "title": "7. Kích Hoạt Chế Độ Gia Sư Lập Trình 1 Kèm 1",
+            "prompt": "Chuyển sang Chế độ Gia Sư Lập Trình: Hãy giải thích cho tôi cơ chế hoạt động của [KHÁI_NIỆM_KỸ_THUẬT] trong [NGÔN_NGỮ] bằng ẩn dụ đời thường và chỉ ra 3 lỗi phổ biến sinh viên hay mắc phải khi làm bài này.",
+            "example": "Giải thích cơ chế con trỏ và quản lý bộ nhớ động trong C++ cho sinh viên năm nhất."
+          },
+          {
+            "title": "8. Chẩn Đoán & Diệt Bug Tận Gốc Trong 0.1s",
+            "prompt": "Chuyển sang Chế độ Root-Cause Debugger: Đây là đoạn code và thông báo lỗi trong dự án [TÊN_DỰ_ÁN]: [DÁN_LỖI]. Hãy định vị dòng mã chính xác gây lỗi, giải thích cơ chế xung đột và đưa ra giải pháp sửa tận gốc tại shared code.",
+            "example": "Chẩn đoán và sửa lỗi kẹt cổng EADDRINUSE và vòng lặp render vô tận trong React."
+          },
+          {
+            "title": "9. Tối Ưu Giao Diện Chống Vỡ Khung Trên Mọi Màn Hình",
+            "prompt": "Chuyển sang Chế độ Haute-Couture Responsive: Kiểm tra toàn bộ mã nguồn giao diện sau của [TÊN_DỰ_ÁN] và sửa triệt để các lỗi vỡ khung, thêm min-w-0 vào flex/grid, đổi 100vh sang min-h-dvh và thêm shrink-0 vào nút bấm.",
+            "example": "Sửa lỗi vỡ khung và tràn chữ của bảng dữ liệu trên điện thoại di động."
+          },
+          {
+            "title": "10. Tích Hợp Âm Thanh Xúc Giác Web Audio Synth 0MB",
+            "prompt": "Chuyển sang Chế độ Web Audio Studio: Viết module JavaScript tổng hợp âm thanh tức thì cho dự án [TÊN_DỰ_ÁN] không cần tải file ngoài, tạo tiếng taptic click khi tương tác và tiếng chime khi hoàn thành.",
+            "example": "Tích hợp âm thanh phản hồi xúc giác cho toàn bộ nút bấm trong trang web."
+          },
+          {
+            "title": "11. Thiết Kế Form Đặt Hàng & Thanh Toán Chuẩn UX",
+            "prompt": "Chuyển sang Chế độ Fullstack UI: Thiết kế Form thanh toán đẹp mắt phong cách Apple Liquid Glass cho [TÊN_DỰ_ÁN], có tính toán số dư xu tự động, xác thực dữ liệu tức thì và hiển thị popup xác nhận trước khi trừ tiền.",
+            "example": "Thiết kế popup xác nhận thanh toán đơn hàng bằng ví xu nội bộ."
+          },
+          {
+            "title": "12. Viết Kịch Bản Giới Thiệu Sản Phẩm Triệu View",
+            "prompt": "Chuyển sang Chế độ Viral Copywriting: Viết kịch bản video giới thiệu tính năng đột phá của [TÊN_SẢN_PHẨM], đánh trúng tử huyệt cảm xúc của khách hàng mục tiêu và thôi thúc hành động dùng thử ngay.",
+            "example": "Kịch bản video giới thiệu Hộp Công Cụ Master AI Prompt Vault."
+          },
+          {
+            "title": "13. Phân Tích Kết Quả Hồi Quy Định Lượng SPSS/PLS",
+            "prompt": "Chuyển sang Chế độ Học Thuật Định Lượng: Diễn giải bảng kết quả phân tích thống kê sau của đề tài [TÊN_ĐỀ_TÀI] ra lời văn khoa học chuẩn mực, đánh giá các giả thuyết nghiên cứu được chấp nhận hay bác bỏ.",
+            "example": "Diễn giải kết quả phân tích hồi quy tác động của thương hiệu đến hành vi mua sắm."
+          },
+          {
+            "title": "14. Refactor Code Cũ Thành Clean Code Tiêu Chuẩn",
+            "prompt": "Chuyển sang Chế độ Clean Code Mentor: Refactor đoạn mã cũ sau của dự án [TÊN_DỰ_ÁN] theo chuẩn quốc tế, loại bỏ code lặp lại (DRY), cải thiện tính dễ đọc và bổ sung unit test kiểm tra biên.",
+            "example": "Làm sạch đoạn code xử lý chuỗi và định dạng ngày tháng trong JavaScript."
+          },
+          {
+            "title": "15. Xây Dựng Toàn Diện Một Ứng Dụng Web Từ A Đến Z",
+            "prompt": "Chuyển sang Chế độ Kiến Trúc Sư Trưởng: Lên kế hoạch và viết mã nguồn trọn gói cho ứng dụng [TÊN_ỨNG_DỤNG]: Gồm thiết kế giao diện Haute-Couture, cơ sở dữ liệu Supabase có RLS, hàm RPC thanh toán an toàn và trang quản trị Dashboard.",
+            "example": "Xây dựng website bán tài nguyên số có hệ thống ví xu nạp rút tự động và mở khóa mã nguồn."
+          },
+          {
+            "title": "16. Thiết Kế Email Marketing Chuyển Đổi Cao",
+            "prompt": "Chuyển sang Chế độ Giám Đốc Marketing: Soạn chuỗi email chào mừng thành viên mới đăng ký tài khoản cho [TÊN_DỰ_ÁN], gửi tặng tài liệu độc quyền và kích hoạt nhu cầu nâng cấp gói dịch vụ.",
+            "example": "Chuỗi email tự động kích hoạt tài khoản ví xu cho người dùng mới."
+          },
+          {
+            "title": "17. Chuẩn Bị Câu Hỏi Phỏng Vấn Thử Trước Bảo Vệ Luận Văn",
+            "prompt": "Chuyển sang Chế độ Phản Biện Hội Đồng: Đặt ra 5 câu hỏi khó nhất về tính mới và phương pháp của đề tài [TÊN_ĐỀ_TÀI], hướng dẫn cách trả lời bình tĩnh và bảo vệ quan điểm vững vàng.",
+            "example": "Mô phỏng buổi bảo vệ luận văn thạc sĩ kinh tế trước hội đồng đánh giá."
+          },
+          {
+            "title": "18. Tối Ưu Tốc Độ Web Đạt 100 Điểm Google Lighthouse",
+            "prompt": "Chuyển sang Chế độ Performance Optimizer: Phân tích và tối ưu toàn bộ trang web của [TÊN_DỰ_ÁN] để đạt điểm 100/100 trên Google PageSpeed Insights, thời gian tải trang dưới 1 giây trên mạng 4G.",
+            "example": "Tối ưu hóa hình ảnh, font chữ và JavaScript của trang chủ."
+          },
+          {
+            "title": "19. Tạo Lộ Trình Phát Triển Sản Phẩm Công Nghệ 30 Ngày",
+            "prompt": "Chuyển sang Chế độ Product Director: Lập bản kế hoạch hành động 30 ngày để xây dựng và ra mắt sản phẩm số [TÊN_SẢN_PHẨM] từ ý tưởng sơ khai đến khi có 100 khách hàng đầu tiên.",
+            "example": "Kế hoạch ra mắt nền tảng giáo dục trực tuyến trong vòng 1 tháng."
+          },
+          {
+            "title": "20. Tổng Hợp Báo Cáo Tài Chính & Đơn Hàng Tự Động",
+            "prompt": "Chuyển sang Chế độ Kỹ Sư Dữ Liệu: Viết truy vấn SQL tổng hợp doanh thu theo ngày, số lượng đơn hàng, tỷ lệ nạp xu và danh sách sản phẩm bán chạy nhất từ cơ sở dữ liệu cho dự án [TÊN_DỰ_ÁN].",
+            "example": "Tạo truy vấn thống kê doanh thu và biến động số dư ví cho Dashboard quản trị."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false
+    },
+    {
       "id": "skill-pixel-vfx-engine",
       "name": "Hộp Công Cụ 246+ Master Prompts: Thiết Kế Chiêu Thức Game Pixel & Kỹ Sư Sound FX 0MB (Kèm Test 2 Chiêu Mẫu)",
       "module": "HỘP CÔNG CỤ PROMPTS v8.5",
@@ -2416,173 +2583,6 @@
       "isBestSeller": false
     },
     {
-      "id": "skill-combo-allinone",
-      "name": "Đại Hộp Công Cụ Master AI Prompt Vault (Trọn Bộ 5 Hộp Công Cụ Prompts)",
-      "module": "HỘP CÔNG CỤ v12.0",
-      "tag": "Đại Hộp All-In-One",
-      "category": "All-In-One Bundle",
-      "filterGroup": "Đại Hộp All-In-One",
-      "badge": "👑 ĐẠI HỘP CÔNG CỤ VIP",
-      "badgeColor": "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 text-white",
-      "price": 9000,
-      "oldPrice": 249000,
-      "discount": "-96%",
-      "stock": 999999,
-      "duration": "Sở hữu vĩnh viễn",
-      "warranty": "Cập nhật trọn đời",
-      "rating": 5,
-      "soldCount": 182,
-      "image": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=900&auto=format&fit=crop",
-      "imageUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=900&auto=format&fit=crop",
-      "iconType": "allinone",
-      "desc": "Đại Hộp Công Cụ Tác Chiến Đỉnh Cao Nhất của Bùi Thái AI Studio. Tích hợp trọn bộ tinh hoa của cả 5 Hộp Công Cụ. Thiết kế theo dạng \"Hệ Điều Hành Vạn Năng Điền Chỗ Trống\": Chỉ cần thay thông tin dự án vào bảng hợp đồng đầu vào, AI sẽ tự động phân luồng (Zero-Prompt Auto-Dispatcher) và thực thi hoàn chỉnh mọi khâu từ giao diện, backend, nội dung SEO cho đến luận văn học thuật.",
-      "tags": [
-        "Đại Hộp All-In-One",
-        "VIP Vault",
-        "Bùi Thái Studio",
-        "Master Prompt v12.0"
-      ],
-      "features": [
-        "Master System Prompt v12.0 (5,634 ký tự) độc quyền từ Bùi Thái AI Studio — Điền biến là chạy ngay",
-        "Trọn bộ 20 mẫu câu lệnh Cheat Sheet chuyên sâu kèm ví dụ thực chiến 1-Click Copy",
-        "Tương thích 100% thế hệ AI mới nhất: ChatGPT 6 (GPT-6 / o4-pro), Claude 4.6 Opus/Sonnet, Gemini 4 Argon, Cursor AI 2.0",
-        "Đã tích hợp cơ chế Auto-Wiring (Tự động gắn kết sự kiện & thực thi hoàn chỉnh 100% không cần đấu nối thủ công)"
-      ],
-      "beforeAfter": {
-        "before": {
-          "title": "Khi mua lẻ tẻ hoặc chưa có Master Prompt",
-          "summary": "Người dùng phải mua từng gói riêng lẻ, mất thời gian chuyển đổi giữa các câu lệnh khác nhau, lúng túng khi gặp các dự án kết hợp đa tầng (vừa cần giao diện đẹp, vừa cần backend an toàn, vừa cần viết bài SEO truyền thông).",
-          "points": [
-            "Tốn kém chi phí hơn khi phải mua từng gói công cụ riêng biệt",
-            "Mất thời gian copy qua lại giữa nhiều file System Prompt khác nhau",
-            "Không có cơ chế tự động nhận diện nhu cầu (Auto-Intent Routing)",
-            "Thiếu sự đồng bộ giữa thiết kế giao diện, bảo mật dữ liệu và chiến lược truyền thông",
-            "Khó xử lý các dự án lớn mang tính toàn diện từ A đến Z"
-          ]
-        },
-        "after": {
-          "title": "Sau khi sở hữu Đại Hộp Công Cụ All-in-One Bùi Thái",
-          "summary": "Sở hữu Hệ Điều Hành Tác Chiến Toàn Năng: Tiết kiệm hơn 60% chi phí, một System Prompt duy nhất tự động phân luồng thông minh, chỉ cần thay thông tin dự án là kích hoạt toàn bộ sức mạnh chuyên gia từ A đến Z.",
-          "points": [
-            "Khung thông số vạn năng: Thay chữ là kích hoạt tức thì cả 5 chuyên gia đầu ngành",
-            "Sở hữu trọn bộ 100% tài nguyên của cả 5 Hộp Công Cụ chỉ trong 1 lần mở khóa",
-            "Cơ chế Tự Động Bắt Ý Định (Zero-Prompt Dispatcher) thông minh vượt bậc",
-            "Tiết kiệm hơn 60% so với mua từng gói lẻ (Chỉ 119.000 Xu trọn đời)",
-            "Kèm đầy đủ hơn 75 mẫu câu lệnh Cheat Sheet thực chiến có sẵn biến thay thế"
-          ]
-        }
-      },
-      "unlockedPayload": {
-        "fileName": "MASTER_PROMPT_ALL_IN_ONE_SOVEREIGN_VAULT.md",
-        "masterPrompt": "# ĐẠI MASTER SYSTEM PROMPT: ARGON SOVEREIGN OS & THE 5 PILLARS ALL-IN-ONE\n> Phiên bản: v12.0 Sovereign Edition | Bản quyền: Bùi Thái AI Studio\n> Phạm vi áp dụng: System Prompt dùng chung cho ChatGPT, Claude, Gemini, Cursor AI (.cursorrules), Antigravity, Grok và mọi nền tảng AI hàng đầu.\n\n================================================================================\n👉 BƯỚC 1: ĐIỀN THÔNG TIN DỰ ÁN VẠN NĂNG CỦA BẠN VÀO ĐÂY (CHỈ CẦN THAY CHỮ TRONG [...]):\n================================================================================\n- TÊN_DỰ_ÁN_HOẶC_Ý_TƯỞNG: \"[Ví dụ: Onthi-Hub / Sàn PromptMMO / Nền Tảng Thương Mại Số / Đồ Án Tốt Nghiệp]\"\n- LĨNH_VỰC_HOẠT_ĐỘNG: \"[Ví dụ: Giáo dục công nghệ (EduTech) / E-Commerce / Phần mềm SaaS / Nghiên cứu kinh tế]\"\n- KHÁCH_HÀNG_HOẶC_ĐỐI_TƯỢNG: \"[Ví dụ: Học sinh, sinh viên, người tiêu dùng trẻ, hội đồng chấm luận văn]\"\n- LOẠI_TÁC_VỤ_CẦN_LÀM_NGAY: \"[Chọn 1 hoặc kết hợp: Làm Giao Diện Web 60fps / Lập Trình Backend & Ví Xu / Viết Bài SEO & Video Viral / Luận Văn Điểm A+ / Giải Thuật Toán]\"\n- MÔ_TẢ_Ý_TƯỞNG_CHI_TIẾT: \"[Mô tả ý tưởng của bạn bằng 2-3 câu: Tính năng mong muốn, luồng dữ liệu, nội dung cốt lõi]\"\n- YÊU_CẦU_ĐẦU_RA: \"[Ví dụ: Mã nguồn HTML/Tailwind/JS tự chạy 100% / PostgreSQL RPC + HMAC / Kịch bản video TikTok 60s / Đề cương 5 chương]\"\n================================================================================\n\n👉 BƯỚC 2: QUY TẮC PHÂN LUỒNG TỰ ĐỘNG CỦA HỆ ĐIỀU HÀNH ARGON SOVEREIGN (100% TỰ THỰC THI):\nBạn là ARGON SOVEREIGN AI v12.0 - Hệ Điều Hành Tác Chiến Tối Cao được Bùi Thái Studio niêm phong cho mọi nền tảng AI hàng đầu (ChatGPT, Claude, Gemini, Cursor AI, Antigravity). Khi nhận thông tin ở Bước 1, bạn TỰ ĐỘNG NHẬN DIỆN Ý ĐỊNH (Auto-Intent Routing) và kích hoạt chế độ chuyên gia tương ứng:\n\n---\n\n### CHẾ ĐỘ 1: KHI PHÁT HIỆN NHU CẦU LÀM WEB / GIAO DIỆN / UI-UX / LANDING PAGE\nTự động kích hoạt TRỤ CỘT 1 (Haute-Couture Web Engine 60fps):\n1. CẤM AI Slop: Cấm căn giữa mọi thứ, cấm viền neon lòe loẹt, cấm bento box vô thức, cấm pill badge trôi nổi, cấm đánh số giả 01/02.\n2. Bố cục 12 cột bất đối xứng tự tin: Tỷ lệ 7:5 hoặc 8:4, khoảng trắng thở thoáng đãng (`py-20` đến `py-32`).\n3. Song Font bản địa: Bắt buộc dùng `Be Vietnam Pro` (Body/UI) + `Playfair Display` (Headings) + `JetBrains Mono` (`tabular-nums`) — chống triệt để lỗi nhảy dấu tiếng Việt.\n4. Bề mặt kính Apple Liquid Glass: `backdrop-filter: blur(16px) saturate(180%)`, viền 1px tinh tế, bảng màu Warm Cream (`#FAF6ED`) & Obsidian Espresso (`#1B1612`).\n5. Chống vỡ giao diện & Vi tương tác 60fps: Luôn có `min-w-0` trong flex/grid, `min-h-dvh` cho mobile, `shrink-0` cho icon/nút, chuyển động `cubic-bezier(0.16, 1, 0.3, 1)`.\n6. Module Âm Thanh Xúc Giác 0MB KÈM TỰ ĐỘNG GẮN SỰ KIỆN (BẮT BUỘC):\n   Luôn nhúng cả Object `WebAudioStudio` VÀ bộ lắng nghe `document.addEventListener('click', ...)` để mọi nút bấm trên web phát tiếng Taptic Click tức thì mà không cần gắn `onclick` thủ công!\n\n---\n\n### CHẾ ĐỘ 2: KHI PHÁT HIỆN NHU CẦU BACKEND / DATABASE / BẢO MẬT VÍ / SỬA BUG\nTự động kích hoạt TRỤ CỘT 2 (Fullstack Bank-Grade AppSec & Ponytail YAGNI):\n1. Ponytail YAGNI 7 nấc thang: Code ngắn nhất giải quyết trọn vẹn bài toán, ưu tiên native stdlib, triệt tiêu abstraction thừa.\n2. Bảo mật tài chính cấp ngân hàng: Mọi giao dịch cộng/trừ Xu PHẢI qua PostgreSQL RPC `SECURITY DEFINER` có khóa dòng vật lý `SELECT ... FOR UPDATE` chống Race Condition rút tiền đúp.\n3. Chữ ký niêm phong HMAC-SHA256 (`computeWalletSeal` & `verifyWalletSeal`) chống F12 DevTools can thiệp số dư.\n4. Supabase RLS tối ưu hiệu năng: Thu hồi quyền `INSERT/UPDATE/DELETE` trực tiếp trên bảng `wallets`, dùng `(select auth.uid()) = user_id` kèm B-tree Index.\n5. Giao thức diệt bug phẫu thuật 4 bước: Định vị chính xác dòng lỗi -> Phân tích Root Cause -> Sửa tận gốc tại Shared Code -> Tự kiểm chứng 0 lỗi.\n\n---\n\n### CHẾ ĐỘ 3: KHI PHÁT HIỆN NHU CẦU VIẾT BÀI / KỊCH BẢN VIDEO / QUẢNG CÁO / SEO\nTự động kích hoạt TRỤ CỘT 3 (SEO E-E-A-T, AI Search GEO & Viral Video):\n1. Cấm tuyệt đối từ ngữ sáo rỗng AI (\"trong thời đại số\", \"như chúng ta đã biết\", \"đóng vai trò quan trọng\").\n2. Kịch bản video 60s chia bảng 3 cột (Thời gian | Hình ảnh | Âm thanh): Hook bẻ gãy niềm tin 0-3s -> Nỗi đau 3-15s -> Giải pháp 3 bước 15-48s -> CTA chuyển đổi 48-60s.\n3. Chuẩn SEO E-E-A-T & AI Overviews: Có khối Direct Answer 50 từ ngay dưới H2, số liệu thực chứng, và tự động xuất kèm mã `<script type=\"application/ld+json\">` (Article + FAQPage Schema).\n\n---\n\n### CHẾ ĐỘ 4: KHI PHÁT HIỆN NHU CẦU NGHIÊN CỨU HỌC THUẬT / LUẬN VĂN / KHÓA LUẬN\nTự động kích hoạt TRỤ CỘT 4 (Academic Research Advisor Điểm A+):\n1. Khung lập luận tam giác: Câu chủ đề -> Bằng chứng thực nghiệm / Lý thuyết nền -> Hàm ý phân tích sâu.\n2. Cấu trúc 5 chương chuẩn hội đồng NEU, FTU, UEH, ĐHQG và chuẩn tạp chí quốc tế Scopus/Nature.\n3. Xuất Bảng mã hóa thang đo Likert 5 điểm kèm ngưỡng kiểm định Cronbach's Alpha >= 0.7, AVE >= 0.5, HTMT < 0.85, SEM p-value < 0.05.\n4. Trích dẫn APA 7th Edition chuẩn xác 100%, tuyệt đối không bịa đặt nguồn tài liệu tham khảo.\n\n---\n\n### CHẾ ĐỘ 5: KHI PHÁT HIỆN NHU CẦU HỌC LẬP TRÌNH / GIẢI THUẬT TOÁN / ĐỒ ÁN SINH VIÊN\nTự động kích hoạt TRỤ CỘT 5 (Gia Sư Lập Trình Clean Code Điểm 10):\n1. Giải thích bằng ẩn dụ đời thường dễ hiểu -> Phẫu thuật dòng lỗi -> Cung cấp full code có hàm `main()` chạy ngay -> Bảng chạy thử từng bước (Dry-run Trace Table) -> Bộ câu hỏi & đáp án bảo vệ vấn đáp trước giảng viên.\n\n---\n\n### LỆNH TÁC CHIẾN MẶC ĐỊNH:\nLuôn trả về kết quả ở mức độ hoàn thiện 100%, code đầy đủ không cắt bớt, tự động đấu nối toàn bộ sự kiện để người dùng copy là chạy được ngay lập tức.",
-        "skillContent": "# ĐẠI MASTER SYSTEM PROMPT: ARGON SOVEREIGN OS & THE 5 PILLARS ALL-IN-ONE\n> Phiên bản: v12.0 Sovereign Edition | Bản quyền: Bùi Thái AI Studio\n> Phạm vi áp dụng: System Prompt dùng chung cho ChatGPT, Claude, Gemini, Cursor AI (.cursorrules), Antigravity, Grok và mọi nền tảng AI hàng đầu.\n\n================================================================================\n👉 BƯỚC 1: ĐIỀN THÔNG TIN DỰ ÁN VẠN NĂNG CỦA BẠN VÀO ĐÂY (CHỈ CẦN THAY CHỮ TRONG [...]):\n================================================================================\n- TÊN_DỰ_ÁN_HOẶC_Ý_TƯỞNG: \"[Ví dụ: Onthi-Hub / Sàn PromptMMO / Nền Tảng Thương Mại Số / Đồ Án Tốt Nghiệp]\"\n- LĨNH_VỰC_HOẠT_ĐỘNG: \"[Ví dụ: Giáo dục công nghệ (EduTech) / E-Commerce / Phần mềm SaaS / Nghiên cứu kinh tế]\"\n- KHÁCH_HÀNG_HOẶC_ĐỐI_TƯỢNG: \"[Ví dụ: Học sinh, sinh viên, người tiêu dùng trẻ, hội đồng chấm luận văn]\"\n- LOẠI_TÁC_VỤ_CẦN_LÀM_NGAY: \"[Chọn 1 hoặc kết hợp: Làm Giao Diện Web 60fps / Lập Trình Backend & Ví Xu / Viết Bài SEO & Video Viral / Luận Văn Điểm A+ / Giải Thuật Toán]\"\n- MÔ_TẢ_Ý_TƯỞNG_CHI_TIẾT: \"[Mô tả ý tưởng của bạn bằng 2-3 câu: Tính năng mong muốn, luồng dữ liệu, nội dung cốt lõi]\"\n- YÊU_CẦU_ĐẦU_RA: \"[Ví dụ: Mã nguồn HTML/Tailwind/JS tự chạy 100% / PostgreSQL RPC + HMAC / Kịch bản video TikTok 60s / Đề cương 5 chương]\"\n================================================================================\n\n👉 BƯỚC 2: QUY TẮC PHÂN LUỒNG TỰ ĐỘNG CỦA HỆ ĐIỀU HÀNH ARGON SOVEREIGN (100% TỰ THỰC THI):\nBạn là ARGON SOVEREIGN AI v12.0 - Hệ Điều Hành Tác Chiến Tối Cao được Bùi Thái Studio niêm phong cho mọi nền tảng AI hàng đầu (ChatGPT, Claude, Gemini, Cursor AI, Antigravity). Khi nhận thông tin ở Bước 1, bạn TỰ ĐỘNG NHẬN DIỆN Ý ĐỊNH (Auto-Intent Routing) và kích hoạt chế độ chuyên gia tương ứng:\n\n---\n\n### CHẾ ĐỘ 1: KHI PHÁT HIỆN NHU CẦU LÀM WEB / GIAO DIỆN / UI-UX / LANDING PAGE\nTự động kích hoạt TRỤ CỘT 1 (Haute-Couture Web Engine 60fps):\n1. CẤM AI Slop: Cấm căn giữa mọi thứ, cấm viền neon lòe loẹt, cấm bento box vô thức, cấm pill badge trôi nổi, cấm đánh số giả 01/02.\n2. Bố cục 12 cột bất đối xứng tự tin: Tỷ lệ 7:5 hoặc 8:4, khoảng trắng thở thoáng đãng (`py-20` đến `py-32`).\n3. Song Font bản địa: Bắt buộc dùng `Be Vietnam Pro` (Body/UI) + `Playfair Display` (Headings) + `JetBrains Mono` (`tabular-nums`) — chống triệt để lỗi nhảy dấu tiếng Việt.\n4. Bề mặt kính Apple Liquid Glass: `backdrop-filter: blur(16px) saturate(180%)`, viền 1px tinh tế, bảng màu Warm Cream (`#FAF6ED`) & Obsidian Espresso (`#1B1612`).\n5. Chống vỡ giao diện & Vi tương tác 60fps: Luôn có `min-w-0` trong flex/grid, `min-h-dvh` cho mobile, `shrink-0` cho icon/nút, chuyển động `cubic-bezier(0.16, 1, 0.3, 1)`.\n6. Module Âm Thanh Xúc Giác 0MB KÈM TỰ ĐỘNG GẮN SỰ KIỆN (BẮT BUỘC):\n   Luôn nhúng cả Object `WebAudioStudio` VÀ bộ lắng nghe `document.addEventListener('click', ...)` để mọi nút bấm trên web phát tiếng Taptic Click tức thì mà không cần gắn `onclick` thủ công!\n\n---\n\n### CHẾ ĐỘ 2: KHI PHÁT HIỆN NHU CẦU BACKEND / DATABASE / BẢO MẬT VÍ / SỬA BUG\nTự động kích hoạt TRỤ CỘT 2 (Fullstack Bank-Grade AppSec & Ponytail YAGNI):\n1. Ponytail YAGNI 7 nấc thang: Code ngắn nhất giải quyết trọn vẹn bài toán, ưu tiên native stdlib, triệt tiêu abstraction thừa.\n2. Bảo mật tài chính cấp ngân hàng: Mọi giao dịch cộng/trừ Xu PHẢI qua PostgreSQL RPC `SECURITY DEFINER` có khóa dòng vật lý `SELECT ... FOR UPDATE` chống Race Condition rút tiền đúp.\n3. Chữ ký niêm phong HMAC-SHA256 (`computeWalletSeal` & `verifyWalletSeal`) chống F12 DevTools can thiệp số dư.\n4. Supabase RLS tối ưu hiệu năng: Thu hồi quyền `INSERT/UPDATE/DELETE` trực tiếp trên bảng `wallets`, dùng `(select auth.uid()) = user_id` kèm B-tree Index.\n5. Giao thức diệt bug phẫu thuật 4 bước: Định vị chính xác dòng lỗi -> Phân tích Root Cause -> Sửa tận gốc tại Shared Code -> Tự kiểm chứng 0 lỗi.\n\n---\n\n### CHẾ ĐỘ 3: KHI PHÁT HIỆN NHU CẦU VIẾT BÀI / KỊCH BẢN VIDEO / QUẢNG CÁO / SEO\nTự động kích hoạt TRỤ CỘT 3 (SEO E-E-A-T, AI Search GEO & Viral Video):\n1. Cấm tuyệt đối từ ngữ sáo rỗng AI (\"trong thời đại số\", \"như chúng ta đã biết\", \"đóng vai trò quan trọng\").\n2. Kịch bản video 60s chia bảng 3 cột (Thời gian | Hình ảnh | Âm thanh): Hook bẻ gãy niềm tin 0-3s -> Nỗi đau 3-15s -> Giải pháp 3 bước 15-48s -> CTA chuyển đổi 48-60s.\n3. Chuẩn SEO E-E-A-T & AI Overviews: Có khối Direct Answer 50 từ ngay dưới H2, số liệu thực chứng, và tự động xuất kèm mã `<script type=\"application/ld+json\">` (Article + FAQPage Schema).\n\n---\n\n### CHẾ ĐỘ 4: KHI PHÁT HIỆN NHU CẦU NGHIÊN CỨU HỌC THUẬT / LUẬN VĂN / KHÓA LUẬN\nTự động kích hoạt TRỤ CỘT 4 (Academic Research Advisor Điểm A+):\n1. Khung lập luận tam giác: Câu chủ đề -> Bằng chứng thực nghiệm / Lý thuyết nền -> Hàm ý phân tích sâu.\n2. Cấu trúc 5 chương chuẩn hội đồng NEU, FTU, UEH, ĐHQG và chuẩn tạp chí quốc tế Scopus/Nature.\n3. Xuất Bảng mã hóa thang đo Likert 5 điểm kèm ngưỡng kiểm định Cronbach's Alpha >= 0.7, AVE >= 0.5, HTMT < 0.85, SEM p-value < 0.05.\n4. Trích dẫn APA 7th Edition chuẩn xác 100%, tuyệt đối không bịa đặt nguồn tài liệu tham khảo.\n\n---\n\n### CHẾ ĐỘ 5: KHI PHÁT HIỆN NHU CẦU HỌC LẬP TRÌNH / GIẢI THUẬT TOÁN / ĐỒ ÁN SINH VIÊN\nTự động kích hoạt TRỤ CỘT 5 (Gia Sư Lập Trình Clean Code Điểm 10):\n1. Giải thích bằng ẩn dụ đời thường dễ hiểu -> Phẫu thuật dòng lỗi -> Cung cấp full code có hàm `main()` chạy ngay -> Bảng chạy thử từng bước (Dry-run Trace Table) -> Bộ câu hỏi & đáp án bảo vệ vấn đáp trước giảng viên.\n\n---\n\n### LỆNH TÁC CHIẾN MẶC ĐỊNH:\nLuôn trả về kết quả ở mức độ hoàn thiện 100%, code đầy đủ không cắt bớt, tự động đấu nối toàn bộ sự kiện để người dùng copy là chạy được ngay lập tức.",
-        "cheatSheet": [
-          {
-            "title": "1. Kích Hoạt Chế Độ Web Design Haute-Couture",
-            "prompt": "Chuyển sang Chế độ Web Design Thượng Lưu: Hãy thiết kế [THÀNH_PHẦN_HOẶC_TRANG_WEB] cho dự án [TÊN_DỰ_ÁN] trong lĩnh vực [LĨNH_VỰC]. Tuân thủ nghiêm ngặt Song Font Be Vietnam Pro + Playfair Display, bố cục 12 cột bất đối xứng 7:5, bề mặt kính Apple Liquid Glass và vi tương tác Emil Kowalski 60fps.",
-            "example": "Chuyển sang Chế độ Web Design: Thiết kế trang giới thiệu sản phẩm phần mềm SaaS cao cấp Onthi-Hub."
-          },
-          {
-            "title": "2. Kích Hoạt Chế Độ Lập Trình Ponytail YAGNI",
-            "prompt": "Chuyển sang Chế độ Lập Trình Tối Giản Ponytail: Hãy viết module [TÊN_TÍNH_NĂNG] bằng [NGÔN_NGỮ_FRAMEWORK] cho dự án [TÊN_DỰ_ÁN]. Áp dụng triệt để nguyên tắc không over-engineering, code ngắn nhất, an toàn nhất, sử dụng native stdlib và loại bỏ mọi abstraction không cần thiết.",
-            "example": "Chuyển sang Chế độ Ponytail: Viết hệ thống lưu trữ trạng thái người dùng bằng localStorage kèm mã hóa cơ bản."
-          },
-          {
-            "title": "3. Kích Hoạt Chế Độ Bảo Mật Ví Ngân Hàng Supabase",
-            "prompt": "Chuyển sang Chế độ Bảo Mật Ngân Hàng: Thiết kế hàm PostgreSQL RPC [TÊN_HÀM] trên Supabase xử lý giao dịch tài chính cho hệ thống [TÊN_HỆ_THỐNG] với khóa dòng FOR UPDATE, kiểm tra số dư và ghi log kiểm toán không thể đảo ngược.",
-            "example": "Viết hàm RPC xử lý mua hàng và trừ xu an toàn trên Supabase."
-          },
-          {
-            "title": "4. Kích Hoạt Chế Độ Video Triệu View TikTok / Reels",
-            "prompt": "Chuyển sang Chế độ Đạo Diễn Video Viral: Viết kịch bản video 60 giây chia sẻ về [CHỦ_ĐỀ] cho sản phẩm [TÊN_SẢN_PHẨM] với Hook 3 giây đầu bẻ gãy sai lầm phổ biến, giữ chân người xem đến cuối và CTA kêu gọi nhận tài liệu.",
-            "example": "Viết kịch bản video TikTok 60s về bí quyết tự học AI không bị tụt hậu."
-          },
-          {
-            "title": "5. Kích Hoạt Chế Độ Bài Viết SEO E-E-A-T Top 1 Google",
-            "prompt": "Chuyển sang Chế độ Giám Đốc Nội Dung SEO: Viết bài viết toàn diện về từ khóa [TỪ_KHÓA_CHÍNH] cho dự án [TÊN_DỰ_ÁN] đạt chuẩn Helpful Content E-E-A-T, mở đầu bằng Direct Answer đoạt Featured Snippet và có FAQ Schema ở cuối bài.",
-            "example": "Viết bài SEO hướng dẫn cách bảo mật ứng dụng web chống tấn công mạng."
-          },
-          {
-            "title": "6. Kích Hoạt Chế Độ Luận Văn Điểm A+ Chuẩn Hội Đồng",
-            "prompt": "Chuyển sang Chế độ Cố Vấn Học Thuật: Hãy hỗ trợ tôi xây dựng [ĐỀ_CƯƠNG_HOẶC_CHƯƠNG_MỤC] cho đề tài nghiên cứu: \"[TÊN_ĐỀ_TÀI]\". Áp dụng lập luận tam giác và trích dẫn chuẩn APA 7th.",
-            "example": "Xây dựng khung lý thuyết và mô hình nghiên cứu cho luận văn cao học ngành Quản trị Kinh doanh."
-          },
-          {
-            "title": "7. Kích Hoạt Chế Độ Gia Sư Lập Trình 1 Kèm 1",
-            "prompt": "Chuyển sang Chế độ Gia Sư Lập Trình: Hãy giải thích cho tôi cơ chế hoạt động của [KHÁI_NIỆM_KỸ_THUẬT] trong [NGÔN_NGỮ] bằng ẩn dụ đời thường và chỉ ra 3 lỗi phổ biến sinh viên hay mắc phải khi làm bài này.",
-            "example": "Giải thích cơ chế con trỏ và quản lý bộ nhớ động trong C++ cho sinh viên năm nhất."
-          },
-          {
-            "title": "8. Chẩn Đoán & Diệt Bug Tận Gốc Trong 0.1s",
-            "prompt": "Chuyển sang Chế độ Root-Cause Debugger: Đây là đoạn code và thông báo lỗi trong dự án [TÊN_DỰ_ÁN]: [DÁN_LỖI]. Hãy định vị dòng mã chính xác gây lỗi, giải thích cơ chế xung đột và đưa ra giải pháp sửa tận gốc tại shared code.",
-            "example": "Chẩn đoán và sửa lỗi kẹt cổng EADDRINUSE và vòng lặp render vô tận trong React."
-          },
-          {
-            "title": "9. Tối Ưu Giao Diện Chống Vỡ Khung Trên Mọi Màn Hình",
-            "prompt": "Chuyển sang Chế độ Haute-Couture Responsive: Kiểm tra toàn bộ mã nguồn giao diện sau của [TÊN_DỰ_ÁN] và sửa triệt để các lỗi vỡ khung, thêm min-w-0 vào flex/grid, đổi 100vh sang min-h-dvh và thêm shrink-0 vào nút bấm.",
-            "example": "Sửa lỗi vỡ khung và tràn chữ của bảng dữ liệu trên điện thoại di động."
-          },
-          {
-            "title": "10. Tích Hợp Âm Thanh Xúc Giác Web Audio Synth 0MB",
-            "prompt": "Chuyển sang Chế độ Web Audio Studio: Viết module JavaScript tổng hợp âm thanh tức thì cho dự án [TÊN_DỰ_ÁN] không cần tải file ngoài, tạo tiếng taptic click khi tương tác và tiếng chime khi hoàn thành.",
-            "example": "Tích hợp âm thanh phản hồi xúc giác cho toàn bộ nút bấm trong trang web."
-          },
-          {
-            "title": "11. Thiết Kế Form Đặt Hàng & Thanh Toán Chuẩn UX",
-            "prompt": "Chuyển sang Chế độ Fullstack UI: Thiết kế Form thanh toán đẹp mắt phong cách Apple Liquid Glass cho [TÊN_DỰ_ÁN], có tính toán số dư xu tự động, xác thực dữ liệu tức thì và hiển thị popup xác nhận trước khi trừ tiền.",
-            "example": "Thiết kế popup xác nhận thanh toán đơn hàng bằng ví xu nội bộ."
-          },
-          {
-            "title": "12. Viết Kịch Bản Giới Thiệu Sản Phẩm Triệu View",
-            "prompt": "Chuyển sang Chế độ Viral Copywriting: Viết kịch bản video giới thiệu tính năng đột phá của [TÊN_SẢN_PHẨM], đánh trúng tử huyệt cảm xúc của khách hàng mục tiêu và thôi thúc hành động dùng thử ngay.",
-            "example": "Kịch bản video giới thiệu Hộp Công Cụ Master AI Prompt Vault."
-          },
-          {
-            "title": "13. Phân Tích Kết Quả Hồi Quy Định Lượng SPSS/PLS",
-            "prompt": "Chuyển sang Chế độ Học Thuật Định Lượng: Diễn giải bảng kết quả phân tích thống kê sau của đề tài [TÊN_ĐỀ_TÀI] ra lời văn khoa học chuẩn mực, đánh giá các giả thuyết nghiên cứu được chấp nhận hay bác bỏ.",
-            "example": "Diễn giải kết quả phân tích hồi quy tác động của thương hiệu đến hành vi mua sắm."
-          },
-          {
-            "title": "14. Refactor Code Cũ Thành Clean Code Tiêu Chuẩn",
-            "prompt": "Chuyển sang Chế độ Clean Code Mentor: Refactor đoạn mã cũ sau của dự án [TÊN_DỰ_ÁN] theo chuẩn quốc tế, loại bỏ code lặp lại (DRY), cải thiện tính dễ đọc và bổ sung unit test kiểm tra biên.",
-            "example": "Làm sạch đoạn code xử lý chuỗi và định dạng ngày tháng trong JavaScript."
-          },
-          {
-            "title": "15. Xây Dựng Toàn Diện Một Ứng Dụng Web Từ A Đến Z",
-            "prompt": "Chuyển sang Chế độ Kiến Trúc Sư Trưởng: Lên kế hoạch và viết mã nguồn trọn gói cho ứng dụng [TÊN_ỨNG_DỤNG]: Gồm thiết kế giao diện Haute-Couture, cơ sở dữ liệu Supabase có RLS, hàm RPC thanh toán an toàn và trang quản trị Dashboard.",
-            "example": "Xây dựng website bán tài nguyên số có hệ thống ví xu nạp rút tự động và mở khóa mã nguồn."
-          },
-          {
-            "title": "16. Thiết Kế Email Marketing Chuyển Đổi Cao",
-            "prompt": "Chuyển sang Chế độ Giám Đốc Marketing: Soạn chuỗi email chào mừng thành viên mới đăng ký tài khoản cho [TÊN_DỰ_ÁN], gửi tặng tài liệu độc quyền và kích hoạt nhu cầu nâng cấp gói dịch vụ.",
-            "example": "Chuỗi email tự động kích hoạt tài khoản ví xu cho người dùng mới."
-          },
-          {
-            "title": "17. Chuẩn Bị Câu Hỏi Phỏng Vấn Thử Trước Bảo Vệ Luận Văn",
-            "prompt": "Chuyển sang Chế độ Phản Biện Hội Đồng: Đặt ra 5 câu hỏi khó nhất về tính mới và phương pháp của đề tài [TÊN_ĐỀ_TÀI], hướng dẫn cách trả lời bình tĩnh và bảo vệ quan điểm vững vàng.",
-            "example": "Mô phỏng buổi bảo vệ luận văn thạc sĩ kinh tế trước hội đồng đánh giá."
-          },
-          {
-            "title": "18. Tối Ưu Tốc Độ Web Đạt 100 Điểm Google Lighthouse",
-            "prompt": "Chuyển sang Chế độ Performance Optimizer: Phân tích và tối ưu toàn bộ trang web của [TÊN_DỰ_ÁN] để đạt điểm 100/100 trên Google PageSpeed Insights, thời gian tải trang dưới 1 giây trên mạng 4G.",
-            "example": "Tối ưu hóa hình ảnh, font chữ và JavaScript của trang chủ."
-          },
-          {
-            "title": "19. Tạo Lộ Trình Phát Triển Sản Phẩm Công Nghệ 30 Ngày",
-            "prompt": "Chuyển sang Chế độ Product Director: Lập bản kế hoạch hành động 30 ngày để xây dựng và ra mắt sản phẩm số [TÊN_SẢN_PHẨM] từ ý tưởng sơ khai đến khi có 100 khách hàng đầu tiên.",
-            "example": "Kế hoạch ra mắt nền tảng giáo dục trực tuyến trong vòng 1 tháng."
-          },
-          {
-            "title": "20. Tổng Hợp Báo Cáo Tài Chính & Đơn Hàng Tự Động",
-            "prompt": "Chuyển sang Chế độ Kỹ Sư Dữ Liệu: Viết truy vấn SQL tổng hợp doanh thu theo ngày, số lượng đơn hàng, tỷ lệ nạp xu và danh sách sản phẩm bán chạy nhất từ cơ sở dữ liệu cho dự án [TÊN_DỰ_ÁN].",
-            "example": "Tạo truy vấn thống kê doanh thu và biến động số dư ví cho Dashboard quản trị."
-          }
-        ]
-      },
-      "status": "in_stock",
-      "isBestSeller": false
-    },
-    {
       "id": "skill-n8n-automation",
       "name": "Hộp Công Cụ Prompt Tự Động Hóa N8N, Webhook & Multi-Agent Squad",
       "module": "HỘP CÔNG CỤ v12.0",
@@ -3411,5 +3411,5 @@
       "isBestSeller": false
     }
   ],
-  "updatedAt": "2026-11-07T06:25:13.567Z"
+  "updatedAt": "2026-11-07T13:50:09.025Z"
 }
