@@ -1806,9 +1806,14 @@ ${escapeHTML(item.template || item.prompt || "")}
                 </div>
               </div>
               <div class="flex items-center gap-1.5 sm:gap-2">
-                <a href="/downloads/pixelfx-combat-polish.zip" download="pixelfx-combat-polish.zip" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#8A5F26] hover:bg-[#6e4b1e] text-white font-bold text-xs shadow-md transition no-underline">
-                  <span>📦 Tải Gói Code & Audio (.zip)</span>
-                </a>
+                <button 
+                  type="button" 
+                  onclick="ShopVietViews.modal.open('skill-pixel-vfx-engine')" 
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#A47838] to-[#8A5F26] hover:from-[#8A5F26] hover:to-[#6E491B] text-white font-bold text-xs shadow-md transition active:scale-95 cursor-pointer border border-[#E6DCCB]/30"
+                >
+                  <svg class="w-3.5 h-3.5 text-amber-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  <span>Mở Khóa Prompts (9k Xu)</span>
+                </button>
                 <a href="${url}" target="_blank" class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition no-underline" title="Mở tab mới toàn màn hình">
                   <span>⤢ Toàn màn hình</span>
                 </a>

@@ -61,9 +61,9 @@ window.ShopVietData = {
       "📋 Trọn bộ 246+ câu lệnh Master Prompt tác chiến (21 chuyên khoa: Ma pháp, Cầu lửa, Lôi điện, Băng hàn, Chấn động, Kiếm khí...)",
       "🔊 Prompt Kỹ sư Âm thanh Web Audio Synth: Tự sinh tiếng nổ, tiếng chém, tiếng phép thuật 0 byte tải về",
       "🎮 Kèm bản chơi thử nhanh 2 chiêu mẫu (Tia Hư Không Arcane & Cầu Lửa Meteor) để test âm thanh & nhịp va chạm",
-      "📦 1-Click tải gói mã nguồn mẫu Starter & Audio Bank (pixelfx-combat-polish.zip - 535 KB)",
       "Lệnh 1-Click xuất toàn bộ 244 Sprite Sheet trong suốt kèm JSON Aseprite cho Unity, Godot, Phaser",
-      "Master System Prompt v8.5 (3,800+ ký tự) hướng dẫn AI tự thiết kế thêm hiệu ứng mới vô hạn"
+      "Master System Prompt v8.5 (3,800+ ký tự) hướng dẫn AI tự thiết kế thêm hiệu ứng mới vô hạn",
+      "Bản quyền sở hữu vĩnh viễn, sao chép 1-Click dùng ngay trên ChatGPT / Claude / Cursor"
     ],
     "beforeAfter": {
       "before": {
@@ -1567,15 +1567,9 @@ window.ShopVietData = {
           "example": "Dùng cho: Kỹ năng Storm trong game RPG / Đi ải 2D. File xuất ra: records/weather/storm/storm.png kèm file metadata .json nạp thẳng vào Game Engine."
         }
       ],
-      "demoUrl": "/demo/pixelfx/",
-      "downloadUrl": "/downloads/pixelfx-combat-polish.zip",
-      "zipFileName": "pixelfx-combat-polish.zip",
-      "zipFileSize": "535 KB"
+      "demoUrl": "/demo/pixelfx/"
     },
     "demoUrl": "/demo/pixelfx/",
-    "downloadUrl": "/downloads/pixelfx-combat-polish.zip",
-    "zipFileName": "pixelfx-combat-polish.zip",
-    "zipFileSize": "535 KB",
     "isBestSeller": true,
     "isFeatured": true
   },
