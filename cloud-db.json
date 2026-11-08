@@ -7291,7 +7291,7 @@
       "installCommand": "irm https://open-jarvis.github.io/OpenJarvis/install.ps1 | iex"
     }
   ],
-  "updatedAt": "2026-11-08T03:26:48.751Z",
+  "updatedAt": "2026-11-08T05:07:51.066Z",
   "orders": [
     {
       "id": "#DJ2026KDNB",
@@ -7311,6 +7311,64 @@
       "date": "08/11/2026",
       "unlockedAt": "2026-11-08T00:25:00.000Z",
       "expiresAt": null
+    }
+  ],
+  "topups": [
+    {
+      "id": "TOPUP-34528054",
+      "amount": 9000,
+      "bank": "Techcombank",
+      "accountNumber": "6688686866688",
+      "accountName": "BUI THAI",
+      "method": "Techcombank VietQR 24/7",
+      "memo": "NAPXU MAILGAMEE05222",
+      "userEmail": "mailgamee05@gmail.com",
+      "userName": "mailgamee05",
+      "status": "pending_approval",
+      "statusText": "Chờ Admin duyệt",
+      "createdAt": "2026-11-08T04:48:53.000Z"
+    },
+    {
+      "id": "TOPUP-28598761",
+      "amount": 9000,
+      "bank": "Techcombank",
+      "accountNumber": "6688686866688",
+      "accountName": "BUI THAI",
+      "method": "Techcombank VietQR 24/7",
+      "memo": "NAPXU THEWICKEDEYE1206408",
+      "userEmail": "thewickedeye1206@gmail.com",
+      "userName": "thewickedeye1206",
+      "status": "pending_approval",
+      "statusText": "Chờ Admin duyệt",
+      "createdAt": "2026-11-08T04:14:47.000Z"
+    },
+    {
+      "id": "TOPUP-37444741",
+      "amount": 9000,
+      "bank": "Techcombank",
+      "accountNumber": "6688686866688",
+      "accountName": "BUI THAI",
+      "method": "Techcombank VietQR 24/7",
+      "memo": "NAPXU THEWICKEDEYE1206147",
+      "userEmail": "thewickedeye1206@gmail.com",
+      "userName": "thewickedeye1206",
+      "status": "completed",
+      "statusText": "Đã duyệt",
+      "createdAt": "2026-11-08T04:16:16.000Z"
+    },
+    {
+      "id": "TOPUP-35024786",
+      "amount": 99000,
+      "bank": "Techcombank",
+      "accountNumber": "6688686866688",
+      "accountName": "BUI THAI",
+      "method": "Techcombank VietQR 24/7",
+      "memo": "NAPXU 123724",
+      "userEmail": "123@gmail.com",
+      "userName": "123",
+      "status": "completed",
+      "statusText": "Đã duyệt",
+      "createdAt": "2026-11-07T17:25:54.000Z"
     }
   ]
 }
