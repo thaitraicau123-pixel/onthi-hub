@@ -361,10 +361,13 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Admin Session
                   </span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-mono">
+                    v1.0.4
+                  </span>
                 </div>
                 <!-- Dòng phụ chuẩn Ảnh 3 -->
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Tài khoản quản trị: <strong class="text-slate-700 dark:text-slate-200">${adminDisplayName}</strong> • Phiên: <span id="adminSessionTimer" class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${formatSessionTime(sessionCountdownSeconds)}</span> • Cấu hình: <span class="font-semibold text-slate-700 dark:text-slate-300">v12</span>
+                  Tài khoản quản trị: <strong class="text-slate-700 dark:text-slate-200">${adminDisplayName}</strong> • Phiên: <span id="adminSessionTimer" class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${formatSessionTime(sessionCountdownSeconds)}</span> • Cấu hình: <span class="font-semibold text-amber-500 font-mono font-bold">v1.0.4</span>
                 </p>
               </div>
             </div>
@@ -539,7 +542,14 @@
   // TAB 1: GIÁ & GÓI (QUẢN LÝ SẢN PHẨM)
   // =========================================================================
   function renderTabPricing() {
-    const products = (window.ShopVietData && window.ShopVietData.products) || [];
+    let products = [];
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_products_purged') === 'true') {
+      products = [];
+    } else {
+      products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === 'function' && window.ShopVietState.getCustomProducts().length > 0)
+        ? window.ShopVietState.getCustomProducts()
+        : ((window.ShopVietData && window.ShopVietData.products) || []);
+    }
 
     return `
       <div class="space-y-5">
@@ -606,7 +616,7 @@
                 </tr>
               </thead>
               <tbody id="adminProductTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/80">
-                ${products.map(renderProductTableRow).join('')}
+                ${products.length > 0 ? products.map(renderProductTableRow).join('') : '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Toàn bộ sản phẩm đã được xóa sạch hoàn toàn khỏi hệ thống (v1.0.4).</td></tr>'}
               </tbody>
             </table>
           </div>
@@ -3653,6 +3663,12 @@
 
         // 2. Dọn sạch LocalStorage & Khóa vĩnh viễn ngăn tự động nạp lại
         const emptyJson = JSON.stringify([]);
+
+        // Ngay lập tức dọn sạch hiển thị bảng sản phẩm trong DOM
+        const curTbody = document.getElementById('adminProductTableBody');
+        if (curTbody) {
+          curTbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Toàn bộ sản phẩm đã được xóa sạch hoàn toàn khỏi hệ thống (v1.0.4).</td></tr>';
+        }
         try {
           localStorage.setItem('shopviet_products_purged', 'true');
           localStorage.setItem('shopviet_custom_products', emptyJson);

@@ -1,7 +1,7 @@
 {
   "name": "promptmmo-studio",
   "private": true,
-  "version": "8.6.0",
+  "version": "1.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
