@@ -4,11 +4,6 @@
   "version": "1.0.4",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "node build.cjs",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^8.3.0"
+    "build": "node build.cjs"
   }
 }
