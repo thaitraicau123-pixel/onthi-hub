@@ -181,6 +181,14 @@
     // Lấy danh sách sản phẩm tùy chỉnh từ localStorage (shopviet_custom_products / shopviet_admin_products)
     getCustomProducts: function () {
       try {
+        // BẢO VỆ TUYỆT ĐỐI: Nếu đã bị kích hoạt xóa vĩnh viễn, trả về ngay mảng rỗng []
+        if (localStorage.getItem('shopviet_products_purged') === 'true') {
+          if (window.ShopVietData) {
+            window.ShopVietData.products = [];
+            if (window.ShopVietData.defaultProducts) window.ShopVietData.defaultProducts = [];
+          }
+          return [];
+        }
         // Cache-busting: Đảm bảo toàn bộ người dùng nhận bảng giá đồng giá 9k & Hộp OpenJarvis 29k mới nhất
         const PRICE_VER = 'v29k_openjarvis_auto_install_v18';
         if (localStorage.getItem('promptmmo_price_ver') !== PRICE_VER) {
@@ -532,6 +540,18 @@
         }
 
         // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
+        if (data.products_purged || (Array.isArray(data.products) && data.products.length === 0) || localStorage.getItem('shopviet_products_purged') === 'true') {
+          localStorage.setItem('shopviet_products_purged', 'true');
+          const emptyStr = JSON.stringify([]);
+          localStorage.setItem('shopviet_custom_products', emptyStr);
+          localStorage.setItem('shopviet_admin_products', emptyStr);
+          localStorage.setItem('shopviet247_custom_products_v1', emptyStr);
+          if (window.ShopVietData) {
+            window.ShopVietData.products = [];
+            if (window.ShopVietData.defaultProducts) window.ShopVietData.defaultProducts = [];
+          }
+          hasChange = true;
+        } else
         if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 1000 && p.price <= 990000 && p.stock; })) {
           const oldProdJson = localStorage.getItem('shopviet_custom_products') || '';
           const prodJson = JSON.stringify(data.products);
@@ -1034,6 +1054,20 @@
             this.showToast(`🎉 Số dư ví đã được Admin Bùi Thái cập nhật: +${(Number(p.amount) || 0).toLocaleString('vi-VN')} Xu!`, 'success');
           }
         }
+      }
+
+      // 0c. BẢO VỆ TUYỆT ĐỐI: Nhận tín hiệu xóa vĩnh viễn toàn bộ sản phẩm
+      if (data.payload && (data.payload.purged || data.payload.action === 'purge_all')) {
+        localStorage.setItem('shopviet_products_purged', 'true');
+        if (window.ShopVietData) {
+          window.ShopVietData.products = [];
+          if (window.ShopVietData.defaultProducts) window.ShopVietData.defaultProducts = [];
+        }
+        const emptyJson = JSON.stringify([]);
+        localStorage.setItem('shopviet_custom_products', emptyJson);
+        localStorage.setItem('shopviet_admin_products', emptyJson);
+        localStorage.setItem('shopviet247_custom_products_v1', emptyJson);
+        needReRender = true;
       }
 
       // 1. Đồng bộ danh sách sản phẩm Products

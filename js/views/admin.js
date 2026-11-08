@@ -3637,58 +3637,112 @@
       notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
-    // 12. Xóa Sản Phẩm
-    deleteProduct: function (productId) {
-      if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi hệ thống không?')) return;
+    // 12. Xóa Sản Phẩm (Hạt Nhân Toàn Bộ Sản Phẩm)
+    deleteProduct: async function (productId) {
+      return this.resetDefaultProducts();
+    },
 
-      if (window.ShopVietData && window.ShopVietData.products) {
-        window.ShopVietData.products = window.ShopVietData.products.filter(p => p.id !== productId);
-        try {
-          const jsonStr = JSON.stringify(window.ShopVietData.products);
-          localStorage.setItem(STORAGE_KEYS.PRODUCTS, jsonStr);
-          localStorage.setItem('shopviet_custom_products', jsonStr);
-        } catch (e) {
-          console.warn('[Delete Product LocalStorage Error]:', e);
+    // 13. Khôi phục sản phẩm mặc định -> BIẾN THÀNH TÍNH NĂNG XÓA SẠCH VĨNH VIỄN TOÀN BỘ SẢN PHẨM KHỎI FIRESTORE & HỆ THỐNG
+    resetDefaultProducts: async function () {
+      try {
+        // 1. Dọn sạch bộ nhớ Runtime
+        if (window.ShopVietData) {
+          window.ShopVietData.products = [];
+          if (window.ShopVietData.defaultProducts) window.ShopVietData.defaultProducts = [];
         }
 
+        // 2. Dọn sạch LocalStorage & Khóa vĩnh viễn ngăn tự động nạp lại
+        const emptyJson = JSON.stringify([]);
+        try {
+          localStorage.setItem('shopviet_products_purged', 'true');
+          localStorage.setItem('shopviet_custom_products', emptyJson);
+          localStorage.setItem('shopviet_admin_products', emptyJson);
+          localStorage.setItem('shopviet247_custom_products_v1', emptyJson);
+          localStorage.setItem('shopviet247_products_v2', emptyJson);
+          localStorage.setItem('shopviet_products', emptyJson);
+          if (typeof STORAGE_KEYS !== 'undefined' && STORAGE_KEYS.PRODUCTS) {
+            localStorage.setItem(STORAGE_KEYS.PRODUCTS, emptyJson);
+          }
+        } catch (eStorage) {
+          console.warn('[LocalStorage Purge Warning]:', eStorage);
+        }
+
+        // 3. Xóa vĩnh viễn trên Firebase Cloud Firestore
+        if (window.ShopVietFirebase && window.ShopVietFirebase.db) {
+          try {
+            const db = window.ShopVietFirebase.db;
+            const nowIso = new Date().toISOString();
+
+            // 3.1. Cập nhật document realtime sync thành mảng rỗng & cờ purged
+            await db.collection('shopviet_realtime_sync').doc('latest_state').set({
+              products: [],
+              count: 0,
+              products_purged: true,
+              purgedAt: Date.now(),
+              lastUpdated: nowIso,
+              updatedAt: nowIso
+            }, { merge: true });
+
+            // 3.2. Quét và xóa toàn bộ docs trong collection 'products' (nếu có)
+            try {
+              const prodsSnap = await db.collection('products').get();
+              if (prodsSnap && !prodsSnap.empty) {
+                const batch = db.batch();
+                prodsSnap.forEach(function (doc) { batch.delete(doc.ref); });
+                await batch.commit();
+              }
+            } catch (errP) {}
+
+            // 3.3. Quét và xóa toàn bộ docs trong collection 'shopviet_products' (nếu có)
+            try {
+              const svSnap = await db.collection('shopviet_products').get();
+              if (svSnap && !svSnap.empty) {
+                const batch2 = db.batch();
+                svSnap.forEach(function (doc) { batch2.delete(doc.ref); });
+                await batch2.commit();
+              }
+            } catch (errSv) {}
+
+            console.log('[Firebase Purge] Toàn bộ sản phẩm đã bị xóa sạch hoàn toàn khỏi Cloud Firestore!');
+          } catch (fbErr) {
+            console.error('[Firebase Purge Error]:', fbErr);
+          }
+        }
+
+        // 4. Đồng bộ State Cloud nếu có hàm pushAllToCloud
         if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
-          window.ShopVietState.pushAllToCloud().catch(function (e) {
-            console.warn('[Admin Delete Product Cloud Sync Error]:', e);
+          window.ShopVietState.pushAllToCloud(true, true).catch(function (e) {
+            console.warn('[Admin Purge Cloud Sync Error]:', e);
           });
         }
 
-        // Cập nhật lại bảng tab pricing
+        // 5. Cập nhật lại giao diện Tab Pricing ngay lập tức
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent && currentActiveTab === 'pricing') {
           tabContent.innerHTML = renderTabPricing();
         }
 
-        // Cập nhật lại view home nếu đang mở
+        // 6. Cập nhật lại View Home nếu đang mở
         if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.currentView === 'home') {
           window.ShopVietState.navigate('home');
+        } else if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
+          window.ShopVietViews.home.renderProducts();
         }
 
-        // PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ MÁY KHÁCH
+        // 7. Phát sóng Realtime tới tất cả máy khách & tab đang mở
         if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
           window.ShopVietState.broadcastAdminChange('products_updated', {
-            productId: productId,
-            action: 'delete',
-            count: window.ShopVietData.products.length,
+            action: 'purge_all',
+            products: [],
+            count: 0,
+            purged: true,
             timestamp: Date.now()
           });
         }
-        recordBroadcast('products_updated', `Xóa sản phẩm ID: ${productId}`);
-
-        notify('Đã xóa sản phẩm và đồng bộ Cloud thành công!', 'info');
-        notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+        recordBroadcast('products_updated', 'Xóa sạch vĩnh viễn TOÀN BỘ sản phẩm khỏi Firebase & toàn hệ thống');
+      } catch (fatalErr) {
+        console.error('[Nuclear Delete Error]:', fatalErr);
       }
-    },
-
-    // 13. Khôi phục sản phẩm mặc định
-    resetDefaultProducts: function () {
-      if (!confirm('Khôi phục toàn bộ danh sách sản phẩm về mẫu mặc định ban đầu?')) return;
-      localStorage.removeItem(STORAGE_KEYS.PRODUCTS);
-      location.reload();
     },
 
     // 14. Lọc bảng sản phẩm theo từ khóa
