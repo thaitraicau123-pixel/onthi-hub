@@ -1973,11 +1973,9 @@
 
       let approvedIds = [];
       let rejectedIds = [];
-      let creditedTopupIds = [];
       try {
         approvedIds = JSON.parse(localStorage.getItem('shopviet_approved_topup_ids') || '[]');
         rejectedIds = JSON.parse(localStorage.getItem('shopviet_rejected_topup_ids') || '[]');
-        creditedTopupIds = JSON.parse(localStorage.getItem('shopviet_credited_topup_ids_v2') || '[]');
       } catch (e) {}
 
       let approvedIdsChanged = false;
@@ -2073,37 +2071,13 @@
           cloudUserDoc = await window.ShopVietFirebase.fetchUserFromCloud(currentEmail).catch(() => null);
         }
 
-        // Kiểm tra các lệnh nạp vừa được duyệt cho tài khoản này nhưng chưa từng cộng
-        let newlyApprovedSum = 0;
-        let creditedChanged = false;
-        this.state.topups.forEach(t => {
-          if (
-            t &&
-            t.status === 'completed' &&
-            t.userEmail &&
-            t.userEmail.trim().toLowerCase() === currentEmail &&
-            !creditedTopupIds.includes(t.id)
-          ) {
-            newlyApprovedSum += (Number(t.amount) || 0);
-            creditedTopupIds.push(t.id);
-            creditedChanged = true;
-          }
-        });
-
-        if (creditedChanged) {
-          try {
-            localStorage.setItem('shopviet_credited_topup_ids_v2', JSON.stringify(creditedTopupIds));
-          } catch (e) {}
-        }
-
+        // SỐ DƯ VÍ LÀ DỮ LIỆU DO SERVER GHI (SePay webhook / Admin duyệt) — client CHỈ ĐỌC.
+        // Không tự cộng Xu từ danh sách topup (chống cộng trùng khi đổi thiết bị và chống giả mạo).
         let targetBalance = curLocalBal;
         if (cloudUserDoc && typeof cloudUserDoc.balance === 'number') {
           if (cloudUserDoc.balance > targetBalance) {
             targetBalance = cloudUserDoc.balance;
           }
-        }
-        if (newlyApprovedSum > 0 && targetBalance < curLocalBal + newlyApprovedSum) {
-          targetBalance = curLocalBal + newlyApprovedSum;
         }
 
         if (targetBalance > curLocalBal) {
@@ -2120,7 +2094,7 @@
           if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
             window.BuiThaiNtfy.playChime('deposit');
           }
-          balanceToastMsg = `🎉 Chúc mừng bạn! Admin Bùi Thái vừa duyệt nạp thành công +${added.toLocaleString('vi-VN')} Xu vào ví!`;
+          balanceToastMsg = `🎉 Chúc mừng bạn! Hệ thống vừa cộng thành công +${added.toLocaleString('vi-VN')} Xu vào ví!`;
         }
       }
 

@@ -4,6 +4,10 @@
  * Kết nối ntfy.sh từ hạ tầng toàn cầu Vercel (Singapore/AWS) - 100% không bao giờ bị nhà mạng chặn tại VN.
  */
 
+import { verifyFirebaseIdToken } from '../lib/firebase-token.js';
+import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured } from '../lib/firestore.js';
+import { generateMemo } from '../lib/sepay.js';
+
 // Bộ đệm lưu trữ topups trong memory của serverless instance
 if (!global._serverTopupCache) {
   global._serverTopupCache = [];
@@ -26,8 +30,17 @@ function cleanId(id) {
   return String(id || '').trim();
 }
 
+function extractBearerToken(req) {
+  const headers = (req && req.headers) || {};
+  const raw = String(headers.authorization || headers.Authorization || '').trim();
+  const matched = raw.match(/^Bearer\s+(.+)$/i);
+  return matched ? matched[1].trim() : '';
+}
+
+const MEMO_PATTERN = /^NAPXU[A-Z0-9]{6,12}$/;
+
 export default async function handler(req, res) {
-  // Bật CORS cho toàn bộ domain (promptmmo.vercel.app, promptmmo.store, localhost, github.io)
+  // Bật CORS cho mọi origin (promptmmo.store, *.vercel.app, localhost, github.io)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
@@ -43,6 +56,30 @@ export default async function handler(req, res) {
   // 1. GET: Kéo danh sách Yêu cầu Nạp Xu từ ntfy.sh & server cache
   // ==========================================
   if (req.method === 'GET') {
+    // 1.1 Khách kiểm tra trạng thái mã nạp (mã 8 ký tự là capability, không trả PII).
+    if (req.query && req.query.intent) {
+      const memo = String(req.query.intent).trim().toUpperCase();
+      if (!MEMO_PATTERN.test(memo)) {
+        return res.status(400).json({ ok: false, message: 'Mã nạp không hợp lệ' });
+      }
+      if (!isConfigured()) {
+        return res.status(503).json({ ok: false, status: 'unavailable', message: 'Server chưa cấu hình Firestore' });
+      }
+      try {
+        const intent = await getTopupIntent(memo);
+        if (!intent) return res.status(404).json({ ok: false, status: 'not_found' });
+        return res.status(200).json({
+          ok: true,
+          memo: memo,
+          status: String(intent.status || 'pending'),
+          amount: Number(intent.amount) || 0
+        });
+      } catch (err) {
+        console.warn('[api/topups] intent status error:', err && err.message);
+        return res.status(503).json({ ok: false, status: 'unavailable' });
+      }
+    }
+
     const topupsMap = new Map();
     const approvedIds = new Set();
     const rejectedIds = new Set();
@@ -201,6 +238,75 @@ export default async function handler(req, res) {
     body = body || {};
 
     const action = body.action || 'create';
+
+    // 2.0 Tạo / cập nhật mã nạp Xu bền vững trên server.
+    // Mã NAPXU... được lưu tại topup_intents/{memo} và gắn với email đã xác thực,
+    // để webhook SePay cộng Xu đúng khách hàng (không đoán email từ nội dung CK).
+    if (action === 'create_intent' || action === 'update_intent') {
+      if (!isConfigured()) {
+        return res.status(503).json({
+          ok: false,
+          code: 'server_not_configured',
+          message: 'Server chưa cấu hình quyền ghi Firestore (FIREBASE_SERVICE_ACCOUNT).'
+        });
+      }
+
+      const identity = await verifyFirebaseIdToken(extractBearerToken(req)).catch(() => null);
+      if (!identity || !identity.email) {
+        return res.status(401).json({
+          ok: false,
+          code: 'auth_required',
+          message: 'Vui lòng đăng nhập tài khoản để tạo mã nạp Xu.'
+        });
+      }
+
+      const requestedAmount = Math.round(Number(body.amount) || 0);
+      if (!(requestedAmount >= 1000 && requestedAmount <= 50000000)) {
+        return res.status(400).json({
+          ok: false,
+          code: 'invalid_amount',
+          message: 'Số Xu nạp phải từ 1.000 đến 50.000.000.'
+        });
+      }
+
+      try {
+        if (action === 'update_intent') {
+          const memo = String(body.memo || '').trim().toUpperCase();
+          if (!MEMO_PATTERN.test(memo)) {
+            return res.status(400).json({ ok: false, message: 'Mã nạp không hợp lệ' });
+          }
+          const intent = await getTopupIntent(memo);
+          if (!intent) return res.status(404).json({ ok: false, message: 'Không tìm thấy mã nạp' });
+          if (String(intent.userEmail || '').trim().toLowerCase() !== identity.email) {
+            return res.status(403).json({ ok: false, message: 'Mã nạp không thuộc tài khoản này' });
+          }
+          await updateTopupIntentAmount(memo, requestedAmount);
+          return res.status(200).json({
+            ok: true,
+            memo: memo,
+            amount: requestedAmount,
+            status: String(intent.status || 'pending')
+          });
+        }
+
+        const memo = generateMemo();
+        await createTopupIntent({
+          memo: memo,
+          userEmail: identity.email,
+          userName: String(body.userName || '').trim() || identity.email.split('@')[0],
+          amount: requestedAmount,
+          uid: identity.uid
+        });
+        return res.status(200).json({ ok: true, memo: memo, amount: requestedAmount, status: 'pending' });
+      } catch (err) {
+        console.warn('[api/topups] intent error:', err && err.message);
+        return res.status(503).json({
+          ok: false,
+          code: 'intent_failed',
+          message: 'Không tạo được mã nạp, vui lòng thử lại.'
+        });
+      }
+    }
 
     // 2.1 Admin duyệt yêu cầu nạp
     if (action === 'approve') {

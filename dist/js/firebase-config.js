@@ -718,6 +718,20 @@
     },
 
     /**
+     * Lấy Firebase ID Token của phiên hiện tại.
+     * Server dùng token này để biết CHÍNH XÁC email đang tạo mã nạp Xu.
+     */
+    getIdToken: async function () {
+      this.init();
+      try {
+        if (this.auth && this.auth.currentUser) {
+          return await this.auth.currentUser.getIdToken();
+        }
+      } catch (e) {}
+      return null;
+    },
+
+    /**
      * Đăng nhập bằng Email và Mật khẩu
      */
     loginWithEmail: async function (email, password) {
