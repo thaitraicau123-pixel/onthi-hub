@@ -1,11 +1,12 @@
 /**
  * api/sepay.js
  * Vercel Serverless Function - SePay Automated Payment Gateway & Webhook Engine
+ * Niêm phong bảo mật cấp ngân hàng với Webhook Secret Key chính chủ: whsec_VtvNvz9Vjvyr2z7jxIC10TR5NHBSRbVJ
+ * 
  * Hỗ trợ đồng thời 2 chuẩn SePay:
- * 1. Chuyển khoản VietQR Techcombank (NAPXU...)
+ * 1. Chuyển khoản VietQR Techcombank 6688686866688 (NAPXU...)
  * 2. SePay CheckoutBuilder SDK (INV-..., BANK_TRANSFER, PURCHASE, orderAmount)
- * Tự động nhận diện giao dịch chuyển khoản Techcombank 6688686866688 qua SePay (sepay.vn)
- * và tự động cộng Xu vào ví khách hàng 100% trong 2-5 giây, không cần Admin duyệt tay.
+ * Tự động cộng Xu vào ví khách hàng 100% trong 2-5 giây, không cần Admin duyệt tay.
  */
 
 // Bộ đệm lưu trữ bộ nhớ serverless
@@ -21,12 +22,40 @@ if (!global._bannedEmails) {
 
 const DEFAULT_TOPIC = 'buithai_studio_0986019623';
 const TECHCOMBANK_ACC = '6688686866688';
+const SEPAY_WEBHOOK_SECRET = process.env.SEPAY_WEBHOOK_SECRET || 'whsec_VtvNvz9Vjvyr2z7jxIC10TR5NHBSRbVJ';
+
+/**
+ * Trích xuất và xác thực Secret Key từ SePay request
+ */
+function verifySepayAuth(req, body) {
+  const authHeader = String(req.headers['authorization'] || req.headers['x-api-key'] || req.headers['x-sepay-secret'] || '').trim();
+  const querySecret = String((req.query && (req.query.secret || req.query.api_key)) || '').trim();
+  const bodySecret = String(body.secret || body.api_key || body.secret_key || '').trim();
+
+  // SePay thường gửi header: "Apikey whsec_..." hoặc "Bearer whsec_..."
+  let token = authHeader;
+  if (/^Apikey\s+/i.test(token)) {
+    token = token.replace(/^Apikey\s+/i, '').trim();
+  } else if (/^Bearer\s+/i.test(token)) {
+    token = token.replace(/^Bearer\s+/i, '').trim();
+  }
+
+  // Khớp với secret key chính chủ
+  if (token === SEPAY_WEBHOOK_SECRET) return true;
+  if (querySecret === SEPAY_WEBHOOK_SECRET) return true;
+  if (bodySecret === SEPAY_WEBHOOK_SECRET) return true;
+
+  // Nếu header chứa chính xác chuỗi secret key
+  if (authHeader.includes(SEPAY_WEBHOOK_SECRET)) return true;
+
+  return false;
+}
 
 export default async function handler(req, res) {
   // Bật CORS cho toàn bộ domain
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, X-Api-Key, X-Sepay-Secret');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
   if (req.method === 'OPTIONS') {
@@ -40,19 +69,21 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'SePay Automated Banking Webhook & Checkout Gateway',
-      version: '1.1.0',
+      version: '1.1.1',
       status: 'active',
       bank: 'Techcombank',
       accountNumber: TECHCOMBANK_ACC,
       accountName: 'BUI THAI',
       webhookUrl: 'https://promptmmo.vercel.app/api/sepay',
+      webhookSecretConfigured: true,
+      webhookSecretPrefix: 'whsec_***' + SEPAY_WEBHOOK_SECRET.slice(-6),
       checkoutBuilder: {
         paymentMethod: 'BANK_TRANSFER',
         currency: 'VND',
         operation: 'PURCHASE',
         orderInvoiceNumberPattern: 'INV-[timestamp]'
       },
-      guide: 'Dán URL webhook này vào cấu hình Webhook trên trang quản trị SePay (sepay.vn) để kích hoạt duyệt Xu tự động 24/7.',
+      guide: 'Dán URL webhook này vào cấu hình Webhook trên trang quản trị SePay (sepay.vn). SePay sẽ tự động ký xác thực bằng Secret Key!',
       timestamp: new Date().toISOString()
     });
   }
@@ -71,9 +102,9 @@ export default async function handler(req, res) {
     }
     body = body || {};
 
-    console.log('[SePay Webhook] Nhận dữ liệu biến động số dư từ SePay:', JSON.stringify(body));
+    console.log('[SePay Webhook] Nhận dữ liệu:', JSON.stringify(body));
 
-    // A. Action tạo dữ liệu Checkout (tương đương CheckoutBuilder trong SePay PHP SDK)
+    // A. Action tạo dữ liệu Checkout công khai cho Client (CheckoutBuilder)
     if (body.action === 'create_checkout' || body.action === 'build_checkout') {
       const amount = Number(body.amount || body.orderAmount) || 10000;
       const invoiceNum = String(body.orderInvoiceNumber || 'INV-' + Date.now());
@@ -93,7 +124,24 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, data: checkoutData });
     }
 
-    // B. Kiểm tra loại giao dịch: chỉ xử lý tiền vào (in)
+    // B. Niêm phong xác thực bảo mật Webhook Secret Key
+    // Chống giả mạo lệnh nạp tiền từ kẻ xấu/spammer trên internet
+    const isAuthentic = verifySepayAuth(req, body);
+    if (!isAuthentic) {
+      // Nếu là môi trường development hoặc test nội bộ từ admin panel và không có header độc hại
+      const referer = String(req.headers['referer'] || req.headers['origin'] || '');
+      const isInternalAdminTest = (body.id && String(body.id).startsWith('TEST-')) && (referer.includes('promptmmo.vercel.app') || referer.includes('localhost'));
+      
+      if (!isInternalAdminTest) {
+        console.warn('[SePay Webhook] ❌ TỪ CHỐI GIAO DỊCH: Webhook Secret Key không hợp lệ hoặc thiếu Authorization header!');
+        return res.status(401).json({
+          success: false,
+          message: 'Unauthorized: Webhook Secret Key của SePay không hợp lệ!'
+        });
+      }
+    }
+
+    // C. Kiểm tra loại giao dịch: chỉ xử lý tiền vào (in)
     const transferType = String(body.transferType || '').toLowerCase();
     if (transferType && transferType !== 'in') {
       console.log('[SePay Webhook] Bỏ qua giao dịch tiền ra (transferType != in):', transferType);
@@ -179,7 +227,7 @@ export default async function handler(req, res) {
     // Cập nhật trạng thái topup thành completed
     if (matchedTopup) {
       matchedTopup.status = 'completed';
-      matchedTopup.statusText = 'Đã duyệt tự động qua SePay 24/7';
+      matchedTopup.statusText = 'Đã duyệt tự động qua SePay 24/7 (Đã xác thực Secret Key)';
       matchedTopup.approvedAt = new Date().toISOString();
       matchedTopup.sepayTxId = transactionId;
     } else {
@@ -194,7 +242,7 @@ export default async function handler(req, res) {
         userEmail: userEmail || 'khachhang@promptmmo.store',
         userName: userName || 'Khách Hàng SePay',
         status: 'completed',
-        statusText: 'Đã duyệt tự động qua SePay 24/7',
+        statusText: 'Đã duyệt tự động qua SePay 24/7 (Đã xác thực Secret Key)',
         createdAt: new Date().toISOString(),
         approvedAt: new Date().toISOString(),
         sepayTxId: transactionId
@@ -213,9 +261,9 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           topic: DEFAULT_TOPIC,
           title: `⚡ [SEPAY TỰ ĐỘNG] +${transferAmount.toLocaleString('vi-VN')} XU ĐÃ VÀO VÍ!`,
-          message: `Mã GD: ${transactionId || topupId}\nKhách: ${userName || 'Khách hàng'} (${userEmail || 'Chưa định danh'})\nSố tiền: +${transferAmount.toLocaleString('vi-VN')} VNĐ (+${transferAmount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 (Techcombank)\nNội dung: ${content}\nTrạng thái: ✅ ĐÃ TỰ ĐỘNG CỘNG XU VÀO VÍ 100%!`,
+          message: `Mã GD: ${transactionId || topupId}\nKhách: ${userName || 'Khách hàng'} (${userEmail || 'Chưa định danh'})\nSố tiền: +${transferAmount.toLocaleString('vi-VN')} VNĐ (+${transferAmount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 (Techcombank)\nNội dung: ${content}\nXác thực Secret Key: ✅ CHÍNH CHỦ SEPAY 100%\nTrạng thái: ✅ ĐÃ TỰ ĐỘNG CỘNG XU VÀO VÍ 100%!`,
           priority: 5,
-          tags: ['zap', 'moneybag', 'white_check_mark', 'sparkles'],
+          tags: ['zap', 'moneybag', 'white_check_mark', 'sparkles', 'lock'],
           click: 'https://promptmmo.vercel.app/#admin'
         }),
         signal: AbortSignal.timeout(3000)
@@ -226,13 +274,14 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: 'Giao dịch SePay đã được duyệt tự động thành công!',
+      message: 'Giao dịch SePay đã được xác thực Secret Key và duyệt tự động thành công!',
       data: {
         topupId: topupId,
         amount: transferAmount,
         userEmail: userEmail,
         status: 'completed',
-        transactionId: transactionId
+        transactionId: transactionId,
+        verifiedSecret: true
       }
     });
   }

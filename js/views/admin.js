@@ -891,49 +891,22 @@
                             <td class="py-2.5 px-2 font-bold text-emerald-600 dark:text-emerald-400">+${(t.amount || 0).toLocaleString('vi-VN')} Xu</td>
                             <td class="py-2.5 px-2 font-mono text-[11px] text-slate-600 dark:text-slate-300">${t.memo || 'NAP TIEN'}</td>
                             <td class="py-2.5 px-2">
-                              ${isPending ? `
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200">
-                                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                  Chờ duyệt
-                                </span>
-                              ` : `
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                                  ✓ Đã duyệt
-                                </span>
-                              `}
+                              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${t.status === 'completed' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 text-rose-600 border border-rose-200'}">
+                                ${t.status === 'completed' ? '✅ SePay Tự Động' : '✕ Đã từ chối'}
+                              </span>
                             </td>
                             <td class="py-2.5 px-2 text-right">
-                              ${isPending ? `
-                                <div class="flex items-center justify-end gap-1.5">
-                                  <button 
-                                    type="button" 
-                                    onclick="window.ShopVietViews.admin.approveTopup && window.ShopVietViews.admin.approveTopup('${t.id}')"
-                                    class="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer"
-                                  >
-                                    ✓ Duyệt Nạp Xu
-                                  </button>
-                                  <button 
-                                    type="button" 
-                                    onclick="window.ShopVietViews.admin.rejectTopup && window.ShopVietViews.admin.rejectTopup('${t.id}')"
-                                    class="px-2 py-1 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 transition cursor-pointer"
-                                    title="Từ chối yêu cầu"
-                                  >
-                                    ✕
-                                  </button>
-                                  <button 
-                                    type="button" 
-                                    onclick="window.ShopVietViews.admin.banUserFromTopup && window.ShopVietViews.admin.banUserFromTopup('${t.userEmail}', '${t.id}')"
-                                    class="px-2 py-1 rounded-lg text-xs font-bold text-white bg-rose-700 hover:bg-rose-800 transition cursor-pointer shadow-xs"
-                                    title="Khóa vĩnh viễn tài khoản này và từ chối toàn bộ yêu cầu nạp"
-                                  >
-                                    🚫 Ban
-                                  </button>
-                                </div>
-                              ` : (t.status === 'rejected' ? `
-                                <span class="text-[11px] text-rose-500 font-medium">Đã từ chối</span>
-                              ` : `
-                                <span class="text-[11px] text-slate-400">Đã cộng vào ví</span>
-                              `)}
+                              <div class="flex items-center justify-end gap-1.5">
+                                <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">Tự động 100%</span>
+                                <button 
+                                  type="button" 
+                                  onclick="window.ShopVietViews.admin.banUserFromTopup && window.ShopVietViews.admin.banUserFromTopup('${t.userEmail}', '${t.id}')"
+                                  class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 border border-rose-200 transition cursor-pointer"
+                                  title="Khóa tài khoản này"
+                                >
+                                  🚫 Khóa
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         `;
@@ -3079,17 +3052,8 @@
   // =========================================================================
   window.ShopVietViews.admin = {
     // Duyệt yêu cầu nạp xu từ Firebase Cloud
-    approveTopup: function (topupId) {
-      if (window.ShopVietState && typeof window.ShopVietState.approveTopupRequest === 'function') {
-        const ok = window.ShopVietState.approveTopupRequest(topupId);
-        if (ok) {
-          notify(`✅ Đã duyệt nạp xu thành công cho #${topupId}! Tiền đã cộng vào ví khách.`, 'success');
-          const tabContent = document.getElementById('adminTabContent');
-          if (tabContent && currentActiveTab === 'orders') {
-            tabContent.innerHTML = renderTabOrders();
-          }
-        }
-      }
+    approveTopup: function () {
+      alert('⚡ Chế độ duyệt thủ công đã được tắt hoàn toàn! Hệ thống SePay sẽ tự động đối soát và cộng Xu khi có biến động số dư Techcombank 6688686866688.');
     },
 
     rejectTopup: function (topupId) {
