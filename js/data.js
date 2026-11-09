@@ -7320,36 +7320,7 @@ window.ShopVietData = {
 ]
 };
 
-// BẢO VỆ TUYỆT ĐỐI (v1.0.4): Nếu cờ shopviet_products_purged đã bật, ngay lập tức làm sạch window.ShopVietData.products
-if (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_products_purged') === 'true') {
-  if (window.ShopVietData) {
-    window.ShopVietData.products = [];
-    if (window.ShopVietData.defaultProducts) window.ShopVietData.defaultProducts = [];
-  }
+// Đảm bảo cờ xóa sản phẩm bị gỡ bỏ 100%
+if (typeof localStorage !== "undefined") {
+  try { localStorage.removeItem("shopviet_products_purged"); } catch (e) {}
 }
-
-// Bọc getter/setter chống bypass
-(function() {
-  if (typeof window !== 'undefined' && window.ShopVietData) {
-    var _rawProds = window.ShopVietData.products || [];
-    try {
-      Object.defineProperty(window.ShopVietData, 'products', {
-        get: function() {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_products_purged') === 'true') {
-            return [];
-          }
-          return _rawProds;
-        },
-        set: function(val) {
-          if (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_products_purged') === 'true') {
-            _rawProds = [];
-          } else {
-            _rawProds = val;
-          }
-        },
-        configurable: true,
-        enumerable: true
-      });
-    } catch (eProp) {}
-  }
-})();

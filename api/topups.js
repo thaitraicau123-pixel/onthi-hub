@@ -107,7 +107,7 @@ export default async function handler(req, res) {
             const body = msg.message || '';
 
             const isDepositReq = title.includes('YÊU CẦU NẠP') || body.includes('Mã lệnh: TOPUP-');
-            const isDirectCredit = title.includes('ĐÃ DUYỆT NẠP') && body.includes('TOPUP-DIRECT-');
+            const isDirectCredit = (title.includes('ĐÃ DUYỆT NẠP') || title.includes('SEPAY')) && (body.includes('TOPUP-DIRECT-') || body.includes('TOPUP-SEPAY-') || title.includes('SEPAY'));
 
             if (isDepositReq || isDirectCredit) {
               const idMatch = body.match(/Mã(?: lệnh)?:\s*(TOPUP-[^\s).\n]+)/);
@@ -133,8 +133,8 @@ export default async function handler(req, res) {
               const amount = parseInt(amountRaw, 10) || 0;
               const memo = memoMatch ? memoMatch[1].trim() : 'NAP XU TECHCOMBANK';
 
-              let status = isDirectCredit ? 'completed' : 'pending_approval';
-              let statusText = isDirectCredit ? 'Đã duyệt' : 'Chờ Admin duyệt';
+              let status = (isDirectCredit || title.includes('SEPAY')) ? 'completed' : 'pending_approval';
+              let statusText = (isDirectCredit || title.includes('SEPAY')) ? 'Đã duyệt tự động qua SePay' : 'Chờ Admin duyệt';
 
               if (approvedIds.has(id)) {
                 status = 'completed';

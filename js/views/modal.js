@@ -1262,7 +1262,7 @@ window.ShopVietViews.modal = (function () {
       const memo = `NAPXU ${codeSuffix}`;
 
       function buildQrUrl(amt) {
-        return `https://img.vietqr.io/image/970407-6688686866688-compact2.png?amount=${amt}&addInfo=${encodeURIComponent(memo)}&accountName=BUI%20THAI`;
+        return `https://qr.sepay.vn/img?acc=6688686866688&bank=Techcombank&amount=${amt}&des=${encodeURIComponent(memo)}&template=compact`;
       }
 
       const modalMount = document.getElementById('modalMount');
@@ -1289,7 +1289,7 @@ window.ShopVietViews.modal = (function () {
                     Nạp Xu Vào Ví Tự Động
                     <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">1 VNĐ = 1 Xu</span>
                   </h3>
-                  <p class="text-xs text-slate-500 dark:text-slate-400">VietQR Techcombank • Bắn ntfy tức thì để Bùi Thái mở duyệt</p>
+                  <p class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span>Cổng SePay Tự Động 24/7 • Tiền vào ví tức thì trong 2-5s</span></p>
                 </div>
               </div>
               <button onclick="ShopVietViews.modal.close()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer">
@@ -1300,12 +1300,12 @@ window.ShopVietViews.modal = (function () {
             <!-- BODY NẠP XU -->
             <div class="p-4 sm:p-5 space-y-4 overflow-y-auto text-center flex-1">
               
-              <!-- THÔNG BÁO LỊCH DUYỆT THỨ 3, 5, 6 -->
-              <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 text-xs text-left leading-relaxed flex items-start gap-2.5">
-                <span class="text-base shrink-0">⏰</span>
+              <!-- THÔNG BÁO TÍCH HỢP SEPAY DUYỆT TỰ ĐỘNG 24/7 -->
+              <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-950 dark:text-emerald-200 text-xs text-left leading-relaxed flex items-start gap-2.5">
+                <span class="text-base shrink-0">⚡</span>
                 <div>
-                  <strong class="text-[#8A5F26] dark:text-[#BE9455]">Lưu ý lịch duyệt tiền:</strong>
-                  Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái có lịch học & công tác nên có thể duyệt muộn hơn bình thường. Các ngày khác duyệt siêu tốc 3-5 phút! Mọi khoản nạp đều được bảo đảm 100%.
+                  <strong class="text-emerald-700 dark:text-emerald-300">Cổng Nạp SePay Tự Động 24/7:</strong>
+                  Quét mã QR trên app ngân hàng hoặc chuyển khoản đúng nội dung <span class="font-mono font-bold text-amber-700 dark:text-amber-400 bg-amber-500/15 px-1.5 py-0.5 rounded">${memo}</span>. Hệ thống SePay sẽ tự động khớp lệnh và <strong>cộng Xu vào ví sau 2-5 giây</strong>!
                 </div>
               </div>
 
@@ -1342,7 +1342,7 @@ window.ShopVietViews.modal = (function () {
 
               <!-- MÃ VIETQR TECHCOMBANK ĐỘNG -->
               <div class="p-3 bg-white rounded-2xl border border-slate-200/90 inline-block shadow-md">
-                <img id="techcombankDepositQrImg" src="${buildQrUrl(selectedAmount)}" onerror="this.src='img/vietqr-techcombank-napxuvip.png';" alt="VietQR Techcombank 6688686866688 BUI THAI" class="w-52 h-52 sm:w-56 sm:h-56 mx-auto object-contain rounded-xl" />
+                <img id="techcombankDepositQrImg" src="${buildQrUrl(selectedAmount)}" onerror="this.src='https://img.vietqr.io/image/970407-6688686866688-compact2.png?amount=' + selectedAmount + '&addInfo=' + encodeURIComponent('${memo}') + '&accountName=BUI%20THAI';" alt="SePay VietQR Techcombank 6688686866688 BUI THAI" class="w-52 h-52 sm:w-56 sm:h-56 mx-auto object-contain rounded-xl shadow-xs" />
               </div>
 
               <!-- THÔNG TIN CHUYỂN KHOẢN TECHCOMBANK -->
@@ -1410,6 +1410,44 @@ window.ShopVietViews.modal = (function () {
       `;
 
       // Kích hoạt đồng hồ đếm ngược nếu đang trong 30s cooldown
+      // Tự động lắng nghe SePay duyệt tiền thời gian thực
+      if (window._sepayModalPollTimer) {
+        clearInterval(window._sepayModalPollTimer);
+      }
+      const initialBal = (currentUser && typeof currentUser.balance === "number") ? currentUser.balance : 0;
+      window._sepayModalPollTimer = setInterval(async function () {
+        const modalEl = document.getElementById("depositBackdrop");
+        if (!modalEl) {
+          clearInterval(window._sepayModalPollTimer);
+          window._sepayModalPollTimer = null;
+          return;
+        }
+        if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === "function") {
+          const cloudTopups = await window.ShopVietState.syncTopupsFromCloud(false).catch(() => []);
+          const curU = (window.ShopVietState.state && window.ShopVietState.state.user) || {};
+          const curBal = typeof curU.balance === "number" ? curU.balance : 0;
+          const foundPaid = Array.isArray(cloudTopups) && cloudTopups.some(t => {
+            if (!t) return false;
+            const isMatch = String(t.memo || "").trim().toUpperCase() === memo.toUpperCase();
+            return isMatch && t.status === "completed";
+          });
+          if (curBal > initialBal || foundPaid) {
+            clearInterval(window._sepayModalPollTimer);
+            window._sepayModalPollTimer = null;
+            if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === "function") {
+              window.BuiThaiNtfy.playChime("deposit");
+            }
+            if (window.ShopVietState.showToast) {
+              window.ShopVietState.showToast(`🎉 Nạp Xu thành công! SePay đã tự động duyệt và cộng +${selectedAmount.toLocaleString("vi-VN")} Xu vào ví.`, "success");
+            }
+            ShopVietViews.modal.close();
+            if (window.ShopVietState.renderCurrentRoute) {
+              window.ShopVietState.renderCurrentRoute(true);
+            }
+          }
+        }
+      }, 2500);
+
       if (cooldownRemaining > 0) {
         let sec = cooldownRemaining;
         const intervalId = setInterval(function () {
@@ -2566,6 +2604,10 @@ ${escapeHTML(item.template || item.prompt || "")}
     },
 
     close: function () {
+      if (window._sepayModalPollTimer) {
+        clearInterval(window._sepayModalPollTimer);
+        window._sepayModalPollTimer = null;
+      }
       clearPaymentTimer();
       const modalMount = document.getElementById('modalMount');
       if (modalMount) modalMount.innerHTML = '';

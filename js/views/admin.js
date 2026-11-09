@@ -542,14 +542,9 @@
   // TAB 1: GIÁ & GÓI (QUẢN LÝ SẢN PHẨM)
   // =========================================================================
   function renderTabPricing() {
-    let products = [];
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_products_purged') === 'true') {
-      products = [];
-    } else {
-      products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === 'function' && window.ShopVietState.getCustomProducts().length > 0)
-        ? window.ShopVietState.getCustomProducts()
-        : ((window.ShopVietData && window.ShopVietData.products) || []);
-    }
+    const products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === "function" && window.ShopVietState.getCustomProducts().length > 0)
+      ? window.ShopVietState.getCustomProducts()
+      : ((window.ShopVietData && window.ShopVietData.products) || []);
 
     return `
       <div class="space-y-5">
@@ -1276,6 +1271,48 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- ==================== THẺ CẤU HÌNH SEPAY WEBHOOK TỰ ĐỘNG 24/7 ==================== -->
+        <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 p-6 rounded-2xl border border-emerald-500/30 shadow-sm space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-lg font-bold shadow-xs">⚡</span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>Cổng Thanh Toán SePay Tự Động 24/7 (sepay.vn)</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">🟢 Đang Hoạt Động</span>
+                </h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tự động nhận diện biến động số dư Techcombank 6688686866688 và duyệt cộng Xu cho khách trong 2-5 giây.</p>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              onclick="window.ShopVietViews.admin.testSepayWebhook && window.ShopVietViews.admin.testSepayWebhook()"
+              class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 transition active:scale-95"
+            >
+              <span>🧪 Test Giả Lập SePay</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
+              <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">1. URL Webhook (Dán vào SePay.vn)</span>
+              <div class="flex items-center gap-2">
+                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-emerald-700 dark:text-emerald-300 flex-1 break-all select-all">https://promptmmo.vercel.app/api/sepay</code>
+                <button type="button" onclick="navigator.clipboard.writeText('https://promptmmo.vercel.app/api/sepay'); alert('Đã sao chép URL Webhook SePay!');" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] cursor-pointer shrink-0">Copy</button>
+              </div>
+              <p class="text-[11px] text-slate-500">Vào SePay.vn &rarr; Webhooks &rarr; Thêm Webhook &rarr; Dán URL trên và chọn Sự kiện: <em>Giao dịch chuyển tiền vào</em>.</p>
+            </div>
+
+            <div class="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
+              <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">2. Cấu Trúc Mã QR SePay Động</span>
+              <div class="flex items-center gap-2">
+                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-slate-800 dark:text-slate-200 flex-1 truncate select-all">https://qr.sepay.vn/img?acc=6688686866688&bank=Techcombank...</code>
+              </div>
+              <p class="text-[11px] text-slate-500">Mã QR nạp xu ở modal đã tự động liên kết chuẩn SePay, giúp app ngân hàng tự điền đúng nội dung và số tiền 100%.</p>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -4173,6 +4210,40 @@
     },
 
     // 18. Lưu cấu hình VietQR
+    testSepayWebhook: async function () {
+      const amt = 10000;
+      const curUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || { email: "thaitraicau123@gmail.com" };
+      const testEmail = curUser.email || "thaitraicau123@gmail.com";
+      const memo = "NAPXU TEST" + Math.floor(100 + Math.random() * 900);
+      try {
+        const origin = window.location.origin || "https://promptmmo.vercel.app";
+        const res = await fetch(origin + "/api/sepay", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: "TEST-" + Date.now(),
+            gateway: "Techcombank",
+            transactionDate: new Date().toISOString(),
+            accountNumber: "6688686866688",
+            transferType: "in",
+            content: memo + " " + testEmail,
+            description: memo,
+            transferAmount: amt,
+            referenceCode: "TEST-SEPAY-" + Date.now()
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert("✅ [TEST THÀNH CÔNG] SePay Webhook đã phản hồi 200 OK!\nĐã tạo lệnh nạp tự động +" + amt.toLocaleString("vi-VN") + " Xu.\nKiểm tra ntfy trên điện thoại để xác nhận!");
+          if (this.refreshData) this.refreshData();
+        } else {
+          alert("⚠️ Phản hồi từ SePay Webhook: " + (data.message || "Không thành công"));
+        }
+      } catch (err) {
+        alert("❌ Lỗi kết nối Webhook SePay: " + err.message);
+      }
+    },
+
     saveVietQRSettings: function () {
       const bankSelect = document.getElementById('adminVietQRBank');
       const accountInput = document.getElementById('adminVietQRAccountNumber');
