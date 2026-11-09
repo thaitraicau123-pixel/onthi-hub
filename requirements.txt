@@ -1,0 +1,4 @@
+# Python runtime cho Vercel Serverless Function api/ai.py ("AI Prompt Studio").
+# Cài cục bộ trong venv của repo: xem hướng dẫn ở README.md mục "AI Prompt Studio".
+respan-gateway==0.3.0
+openai==3.46.0

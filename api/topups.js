@@ -5,7 +5,7 @@
  */
 
 import { verifyFirebaseIdToken } from '../lib/firebase-token.js';
-import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured } from '../lib/firestore.js';
+import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured, getDocument, userDocId } from '../lib/firestore.js';
 import { generateMemo } from '../lib/sepay.js';
 
 // Bộ đệm lưu trữ topups trong memory của serverless instance
@@ -38,6 +38,41 @@ function extractBearerToken(req) {
 }
 
 const MEMO_PATTERN = /^NAPXU[A-Z0-9]{6,12}$/;
+
+// ==========================================
+// XÁC THỰC QUẢN TRỊ: các action cộng/trừ Xu và khoá tài khoản chỉ dành cho admin.
+// Không có bước này, ai biết URL cũng gọi được direct_credit và tự cộng Xu.
+// ==========================================
+function getAdminEmails() {
+  return String(process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map(function (email) { return email.trim().toLowerCase(); })
+    .filter(Boolean);
+}
+
+async function requireAdmin(req) {
+  const identity = await verifyFirebaseIdToken(extractBearerToken(req)).catch(function () { return null; });
+  if (!identity || !identity.email) {
+    return { ok: false, status: 401, code: 'auth_required', message: 'Cần đăng nhập tài khoản quản trị để thực hiện thao tác này.' };
+  }
+
+  const email = String(identity.email).trim().toLowerCase();
+  if (getAdminEmails().indexOf(email) !== -1) return { ok: true, email: email };
+
+  // Dự phòng: tài khoản được đánh dấu admin ngay trong Firestore (users/{docId}.role = 'admin').
+  let profile = null;
+  try {
+    if (isConfigured()) profile = await getDocument('users/' + userDocId(email));
+  } catch (_) {
+    profile = null;
+  }
+  const role = String((profile && (profile.role || profile.userRole)) || '').toLowerCase();
+  const isAdmin = Boolean(profile && (profile.isAdmin === true || profile.admin === true || role === 'admin'));
+  if (isAdmin) return { ok: true, email: email };
+
+  return { ok: false, status: 403, code: 'admin_only', message: 'Tài khoản này không có quyền quản trị.' };
+}
+
 
 export default async function handler(req, res) {
   // Bật CORS cho mọi origin (promptmmo.store, *.vercel.app, localhost, github.io)
@@ -238,6 +273,15 @@ export default async function handler(req, res) {
     body = body || {};
 
     const action = body.action || 'create';
+
+    // Action quản trị: approve / direct_credit / ban_user / reset_balance.
+    if (['approve', 'direct_credit', 'ban_user', 'reset_balance'].indexOf(String(action)) !== -1) {
+      const admin = await requireAdmin(req);
+      if (!admin.ok) {
+        console.warn('[api/topups] Chặn action quản trị không xác thực:', action);
+        return res.status(admin.status).json({ ok: false, code: admin.code, message: admin.message });
+      }
+    }
 
     // 2.0 Tạo / cập nhật mã nạp Xu bền vững trên server.
     // Mã NAPXU... được lưu tại topup_intents/{memo} và gắn với email đã xác thực,

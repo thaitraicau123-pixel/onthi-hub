@@ -336,6 +336,43 @@ async function main() {
     assert.equal(r.body.status, 'completed');
   });
 
+  // ------- Các action quản trị phải xác thực (lỗ hổng đã bị bot khai thác) -------
+  await check('direct_credit không có token → 401, không ai tự cộng Xu được', async () => {
+    const r = await invoke(topupsHandler, {
+      body: { action: 'direct_credit', userEmail: 'attacker@test.vn', amount: 1000000 }
+    });
+    assert.equal(r.statusCode, 401, JSON.stringify(r.body));
+    assert.equal(store.get('users/attacker_test_vn'), undefined);
+  });
+
+  await check('approve không có token → 401', async () => {
+    const r = await invoke(topupsHandler, {
+      body: { action: 'approve', topupId: 'TOPUP-FAKE-1', userEmail: 'attacker@test.vn', amount: 1000000 }
+    });
+    assert.equal(r.statusCode, 401, JSON.stringify(r.body));
+  });
+
+  await check('direct_credit với khách thường → 403', async () => {
+    const normal = signIdToken({ email: 'nguoikhac@test.vn', sub: 'uid-2' });
+    const r = await invoke(topupsHandler, {
+      headers: { authorization: `Bearer ${normal}` },
+      body: { action: 'direct_credit', userEmail: 'nguoikhac@test.vn', amount: 1000000 }
+    });
+    assert.equal(r.statusCode, 403, JSON.stringify(r.body));
+  });
+
+  await check('direct_credit với email trong ADMIN_EMAILS → 200', async () => {
+    process.env.ADMIN_EMAILS = 'admin@test.vn';
+    const admin = signIdToken({ email: 'admin@test.vn', sub: 'uid-admin' });
+    const r = await invoke(topupsHandler, {
+      headers: { authorization: `Bearer ${admin}` },
+      body: { action: 'direct_credit', userEmail: 'khachhang@test.vn', amount: 5000 }
+    });
+    assert.equal(r.statusCode, 200, JSON.stringify(r.body));
+    assert.equal(r.body.ok, true);
+    delete process.env.ADMIN_EMAILS;
+  });
+
   server.close();
 
   const failed = results.filter((r) => !r.ok);

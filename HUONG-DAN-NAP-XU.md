@@ -83,6 +83,18 @@ Việc này chỉ để **server** ghi được số dư; khách không có quy�
 
 > ⚠️ File JSON này là "chìa khoá vạn năng" của Firebase. Không gửi qua chat, không đăng lên mạng, không commit vào code. Nếu lỡ lộ: vào Firebase → Service accounts → xoá key cũ và tạo key mới, rồi cập nhật lại Vercel.
 
+### ☐ Bước 3b — Khai báo email admin (bắt buộc để dùng nút quản trị)
+
+Từ 09/11/2026, các action cộng Xu tay / duyệt / khoá / reset số dư **yêu cầu đăng nhập bằng tài khoản admin**.
+Nếu không khai báo, các nút đó trả 401/403 (đúng thiết kế — trước đây ai biết URL cũng gọi được và tự cộng 1.000.000 Xu).
+
+Vercel → **Settings → Environment Variables → Add**:
+- Name: `ADMIN_EMAILS`
+- Value: email admin của bạn (ví dụ `tenban@gmail.com`); nhiều email thì cách nhau dấu phẩy
+- Environment: **Production** → Save → **Redeploy**
+
+(Dự phòng: tài khoản có `role: "admin"` hoặc `isAdmin: true` trong `users/{docId}` trên Firestore cũng được phép.)
+
 ### ☐ Bước 4 — Deploy lại và tự kiểm tra
 
 1. Vercel → tab **Deployments** → bấm **Redeploy** (hoặc push code mới lên nhánh `main`)
@@ -197,3 +209,25 @@ Không thể xảy ra với giao dịch qua SePay: mỗi mã giao dịch SePay c
 - Client **chỉ đọc** số dư; đã bỏ hoàn toàn việc tự cộng Xu từ danh sách topup và `localStorage`.
 - Kiểm thử tự động: `node test/sepay-flow.test.mjs` (12/12 case: auth, mã nạp, chống trùng, tiền ra, không khớp mã).
 - Biến môi trường liên quan: `SEPAY_WEBHOOK_SECRET`, `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID` (mặc định `promtmmo`), `FIRESTORE_DATABASE` (mặc định `default`).
+
+---
+
+## 7. SỰ CỐ BẢO MẬT 09/11/2026 — API cộng Xu mở công khai (đã vá)
+
+**Chuyện gì đã xảy ra:** endpoint `POST /api/topups` với `action: "direct_credit"` / `"approve"` / `"ban_user"` / `"reset_balance"` **không kiểm tra đăng nhập**. Bot quét lỗ hổng đã gọi thẳng và bắn thông báo giả vào ntfy:
+
+```
+12:50  ĐÃ DUYỆT NẠP +1 XU          → vuln-probe-092154c718@example.invalid
+13:00  ĐÃ DUYỆT NẠP +1.000.000 XU  → banmuon@example.com  (mã TOPUP-DIRECT-…)
+```
+
+**Đã vá:** 4 action trên giờ bắt buộc **Firebase ID Token** của tài khoản nằm trong `ADMIN_EMAILS` (hoặc `role: "admin"` trong Firestore). Không token → 401, sai người → 403. Có 4 test tự động cho đúng các trường hợp này.
+
+**Việc admin phải kiểm tra tay sau sự cố:**
+
+1. Firebase Console → Firestore → collection `users`: tìm `banmuon_example_com`, `vuln_probe_…` — nếu có, **xoá document** hoặc đặt `balance: 0`.
+2. Kiểm tra `orders` / đơn mua: nếu có đơn nào thanh toán bằng Xu của các tài khoản đó thì huỷ quyền mở khoá.
+3. Kiểm tra `topups` có bản ghi `TOPUP-DIRECT-…` lạ → đánh dấu huỷ.
+4. Đặt `ADMIN_EMAILS` trên Vercel rồi redeploy (bước 3b), nếu không các nút quản trị của bạn cũng bị chặn.
+5. (Khuyến nghị) Topic ntfy `buithai_studio_0986019623` là **công khai**: ai cũng đọc và gửi được thông báo giả vào đó. Nên đổi sang topic riêng khó đoán hoặc bật ntfy auth. Tin cũ trên ntfy.sh tự hết hạn sau ~12 giờ.
+6. (Khuyến nghị) `/cloud-db.json` vẫn public và chứa email khách — nên chặn hoặc bỏ file này khỏi repo.

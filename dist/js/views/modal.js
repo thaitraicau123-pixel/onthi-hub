@@ -2068,6 +2068,43 @@ ${escapeHTML(item.template || item.prompt || "")}
 
             </div>
 
+            <!-- AI PROMPT STUDIO — viết lại Master Prompt qua Respan Gateway (api/ai.py) -->
+            <div id="aiPromptStudio" class="hidden px-5 py-4 border-t border-[#E6DCCB]/80 dark:border-amber-900/30 bg-amber-50/60 dark:bg-[#140F0B]/70 space-y-2 shrink-0">
+              <div class="flex items-center justify-between gap-2">
+                <strong class="text-xs font-bold text-slate-900 dark:text-white">✨ Viết lại prompt cho đúng dự án của bạn</strong>
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.togglePromptStudio(false)"
+                  class="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:underline cursor-pointer"
+                >Đóng</button>
+              </div>
+              <p class="text-[11px] text-slate-600 dark:text-slate-400">AI giữ nguyên khung prompt gốc, chỉ thay bối cảnh/ví dụ theo mô tả của bạn.</p>
+              <textarea
+                id="aiPromptStudioContext"
+                rows="2"
+                maxlength="1000"
+                placeholder="Ví dụ: mình bán khoá học tiếng Anh cho người đi làm 25-35 tuổi, cần prompt viết caption Facebook giọng gần gũi..."
+                class="w-full text-xs p-2.5 rounded-xl border border-[#E6DCCB] dark:border-amber-900/40 bg-white dark:bg-[#1B1612] text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-amber-500/40 resize-none"
+              ></textarea>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button
+                  id="aiPromptStudioRun"
+                  type="button"
+                  onclick="ShopVietViews.modal.runPromptStudio('${order.productId}')"
+                  class="px-3.5 py-2 rounded-xl bg-[#8A5F26] hover:bg-[#6e4b1e] text-white font-bold text-[11px] shadow-sm transition active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                >Tạo bản tối ưu</button>
+                <span id="aiPromptStudioStatus" class="text-[11px] text-slate-500 dark:text-slate-400"></span>
+              </div>
+              <div id="aiPromptStudioResultWrap" class="hidden space-y-2">
+                <pre id="aiPromptStudioResult" class="max-h-44 overflow-y-auto whitespace-pre-wrap text-[11px] leading-relaxed p-2.5 rounded-xl bg-white dark:bg-[#1B1612] border border-[#E6DCCB] dark:border-amber-900/40 text-slate-800 dark:text-slate-100"></pre>
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.copyPromptStudioResult()"
+                  class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] cursor-pointer"
+                >Sao chép bản tối ưu</button>
+              </div>
+            </div>
+
             <!-- FOOTER MỞ KHÓA -->
             <div class="px-5 py-3.5 border-t border-[#E6DCCB]/80 dark:border-amber-900/30 bg-white/70 dark:bg-[#140F0B]/80 flex items-center justify-between gap-3 shrink-0">
               <button 
@@ -2078,6 +2115,14 @@ ${escapeHTML(item.template || item.prompt || "")}
                 ← Xem lại trong Quản lý Đơn hàng
               </button>
               <div class="flex items-center gap-2">
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.togglePromptStudio()"
+                  class="px-4 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-600/40 text-amber-800 dark:text-amber-300 font-bold text-xs cursor-pointer shadow-sm transition"
+                  title="Nhờ AI viết lại prompt cho đúng dự án của bạn (Respan Gateway)"
+                >
+                  ✨ Cá nhân hoá prompt
+                </button>
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.copyMasterPrompt('${order.productId}')"
@@ -2114,6 +2159,101 @@ ${escapeHTML(item.template || item.prompt || "")}
         return;
       }
       copyToClipboard(text, "100% Master Prompt chuẩn (Dán vào Cursor / Claude / ChatGPT là dùng ngay)");
+    },
+
+    // ==========================================
+    // AI PROMPT STUDIO (Respan Gateway)
+    // Gọi POST /api/ai — server xác thực Firebase ID token rồi mới gọi model.
+    // ==========================================
+    togglePromptStudio: function (show) {
+      const panel = document.getElementById('aiPromptStudio');
+      if (!panel) return;
+      const shouldShow = typeof show === 'boolean' ? show : panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !shouldShow);
+      if (shouldShow) {
+        const input = document.getElementById('aiPromptStudioContext');
+        if (input) input.focus();
+      }
+    },
+
+    setPromptStudioStatus: function (message, isError) {
+      const status = document.getElementById('aiPromptStudioStatus');
+      if (!status) return;
+      status.textContent = message || '';
+      status.className = 'text-[11px] ' + (isError ? 'text-rose-600 dark:text-rose-400 font-bold' : 'text-slate-500 dark:text-slate-400');
+    },
+
+    runPromptStudio: async function (productId) {
+      const prod = this.getProductById(productId) || (window.ShopVietData && window.ShopVietData.getProductById(productId)) || {};
+      const payload = prod.unlockedPayload || {};
+      const sourcePrompt = payload.masterPrompt || payload.skillContent || '';
+      const input = document.getElementById('aiPromptStudioContext');
+      const runButton = document.getElementById('aiPromptStudioRun');
+      const resultWrap = document.getElementById('aiPromptStudioResultWrap');
+      const resultBox = document.getElementById('aiPromptStudioResult');
+      const context = (input && input.value ? input.value : '').trim();
+
+      if (!sourcePrompt) {
+        this.setPromptStudioStatus('Không tìm thấy nội dung prompt gốc của sản phẩm này.', true);
+        return;
+      }
+      if (context.length < 10) {
+        this.setPromptStudioStatus('Hãy mô tả dự án của bạn ít nhất 10 ký tự.', true);
+        if (input) input.focus();
+        return;
+      }
+
+      let token = null;
+      try {
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.getIdToken === 'function') {
+          token = await window.ShopVietFirebase.getIdToken();
+        }
+      } catch (err) {
+        token = null;
+      }
+      if (!token) {
+        this.setPromptStudioStatus('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để dùng AI.', true);
+        return;
+      }
+
+      if (runButton) { runButton.disabled = true; runButton.textContent = 'Đang tối ưu...'; }
+      this.setPromptStudioStatus('AI đang viết lại prompt, chờ khoảng 5-15 giây...', false);
+      if (resultWrap) resultWrap.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/ai', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+          body: JSON.stringify({
+            prompt: sourcePrompt,
+            context: context,
+            productName: prod.name || (prod.title || '')
+          })
+        });
+        const data = await res.json().catch(function () { return {}; });
+        if (!res.ok || !data.ok || !data.prompt) {
+          throw new Error(data.message || 'Máy chủ AI chưa sẵn sàng.');
+        }
+        if (resultBox) resultBox.textContent = data.prompt;
+        if (resultWrap) resultWrap.classList.remove('hidden');
+        this.setPromptStudioStatus('Xong — model ' + (data.model || 'gateway') + '. Bấm "Sao chép bản tối ưu" để dùng ngay.', false);
+      } catch (err) {
+        this.setPromptStudioStatus((err && err.message) || 'Không gọi được trợ lý AI. Vui lòng thử lại.', true);
+      } finally {
+        if (runButton) { runButton.disabled = false; runButton.textContent = 'Tạo bản tối ưu'; }
+      }
+    },
+
+    copyPromptStudioResult: function () {
+      const resultBox = document.getElementById('aiPromptStudioResult');
+      const text = resultBox ? (resultBox.textContent || '') : '';
+      if (!text.trim()) {
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Chưa có bản tối ưu để sao chép.', 'warning');
+        }
+        return;
+      }
+      copyToClipboard(text, 'bản prompt đã tối ưu');
     },
 
     copyCheatSheetCommand: function (productId, index) {

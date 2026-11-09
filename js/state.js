@@ -13,6 +13,19 @@
   const GITHUB_PAT = (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_github_pat')) || [103,104,112,95,78,73,100,50,107,56,105,48,57,103,107,71,74,53,56,113,67,54,78,84,89,79,67,89,116,119,115,78,66,121,52,97,111,48,118,85].map(function (c) { return String.fromCharCode(c); }).join('');
   const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1878bee264ca3';
 
+  // Gắn Firebase ID Token để server biết ai đang gọi các action quản trị.
+  async function adminAuthHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    try {
+      if (typeof window !== 'undefined' && window.ShopVietFirebase && typeof window.ShopVietFirebase.getIdToken === 'function') {
+        const token = await window.ShopVietFirebase.getIdToken();
+        if (token) headers.Authorization = 'Bearer ' + token;
+      }
+    } catch (e) {}
+    return headers;
+  }
+
+
   // Tài khoản Quản trị viên mặc định
   const DEFAULT_ADMIN = {
     id: 'usr_admin_buithai',
@@ -2207,10 +2220,12 @@
       if (typeof window !== 'undefined' && window.location) {
         try {
           const origin = window.location.origin || '';
-          fetch(origin + '/api/topups', {
+          adminAuthHeaders().then(function (authHeaders) {
+            return fetch(origin + '/api/topups', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders,
             body: JSON.stringify({ action: 'ban_user', userEmail: cleanEmail, reason: reason || 'Admin ban' })
+          });
           }).catch(() => null);
         } catch (e) {}
       }
@@ -2297,10 +2312,12 @@
       if (typeof window !== 'undefined' && window.location) {
         try {
           const origin = window.location.origin || '';
-          fetch(origin + '/api/topups', {
+          adminAuthHeaders().then(function (authHeaders) {
+            return fetch(origin + '/api/topups', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders,
             body: JSON.stringify({ action: 'reset_balance', userEmail: cleanEmail, newBalance: newBalance })
+          });
           }).catch(() => null);
         } catch (e) {}
       }
@@ -2414,15 +2431,17 @@
       if (typeof window !== 'undefined' && window.location) {
         try {
           const origin = window.location.origin || '';
-          fetch(origin + '/api/topups', {
+          adminAuthHeaders().then(function (authHeaders) {
+            return fetch(origin + '/api/topups', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders,
             body: JSON.stringify({
               action: 'approve',
               topupId: topupId,
               userEmail: cleanEmail,
               amount: amountToAdd
             })
+          });
           }).catch(() => null);
         } catch (eApi) {}
       }
@@ -2523,15 +2542,17 @@
       if (typeof window !== 'undefined' && window.location) {
         try {
           const origin = window.location.origin || '';
-          fetch(origin + '/api/topups', {
+          adminAuthHeaders().then(function (authHeaders) {
+            return fetch(origin + '/api/topups', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: authHeaders,
             body: JSON.stringify({
               action: 'direct_credit',
               userEmail: email,
               amount: amount,
               note: note
             })
+          });
           }).catch(() => null);
         } catch (eApi) {}
       }
