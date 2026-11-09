@@ -843,7 +843,31 @@
                 title="Đồng bộ danh sách yêu cầu nạp mới nhất từ Cloud"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                <span>🔄 Làm mới yêu cầu nạp</span>
+                <span>🔄 Làm mới</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="window.ShopVietViews.admin.cleanAllSpamFromEmail && window.ShopVietViews.admin.cleanAllSpamFromEmail('thaihoa27492@gmail.com')"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                title="Xóa và từ chối hàng loạt yêu cầu spam của Thái Hòa"
+              >
+                <span>🗑️ Xóa Hết Spam Thái Hòa</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="window.ShopVietViews.admin.resetUserBalanceToZero && window.ShopVietViews.admin.resetUserBalanceToZero('duy001wastaken@gmail.com')"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-amber-900 bg-amber-400 hover:bg-amber-500 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                title="Reset số dư duy001wastaken về 0 Xu"
+              >
+                <span>🔄 Reset Xu duy001</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="window.ShopVietViews.admin.promptBanUser && window.ShopVietViews.admin.promptBanUser()"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 border border-slate-700 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                title="Khóa/Ban tài khoản bất kỳ"
+              >
+                <span>🚫 Khóa Email</span>
               </button>
             </div>
           </div>
@@ -914,6 +938,14 @@
                                     title="Từ chối yêu cầu"
                                   >
                                     ✕
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onclick="window.ShopVietViews.admin.banUserFromTopup && window.ShopVietViews.admin.banUserFromTopup('${t.userEmail}', '${t.id}')"
+                                    class="px-2 py-1 rounded-lg text-xs font-bold text-white bg-rose-700 hover:bg-rose-800 transition cursor-pointer shadow-xs"
+                                    title="Khóa vĩnh viễn tài khoản này và từ chối toàn bộ yêu cầu nạp"
+                                  >
+                                    🚫 Ban
                                   </button>
                                 </div>
                               ` : (t.status === 'rejected' ? `
@@ -3048,6 +3080,58 @@
           }
         }
       }
+    },
+
+    banUserFromTopup: function (userEmail, topupId) {
+      if (!userEmail) return;
+      const cleanEmail = userEmail.trim().toLowerCase();
+      if (!confirm(`⚠️ XÁC NHẬN KHÓA VĨNH VIỄN TÀI KHOẢN: ${cleanEmail}?\n\n- Tài khoản sẽ bị cấm đăng nhập và cấm nạp tiền.\n- Toàn bộ yêu cầu nạp tiền chờ duyệt của user này sẽ bị hủy bỏ ngay lập tức.\n- Máy chủ Vercel sẽ chặn 403 Forbidden.`)) {
+        return;
+      }
+      if (window.ShopVietState && typeof window.ShopVietState.banUser === 'function') {
+        window.ShopVietState.banUser(cleanEmail, 'Spam yêu cầu nạp tiền phá hoại');
+      }
+      notify(`🚫 Đã khóa vĩnh viễn tài khoản ${cleanEmail} và hủy toàn bộ yêu cầu nạp rác!`, 'success');
+      const tabContent = document.getElementById('adminTabContent');
+      if (tabContent && currentActiveTab === 'orders') {
+        tabContent.innerHTML = renderTabOrders();
+      }
+    },
+
+    cleanAllSpamFromEmail: function (userEmail) {
+      if (!userEmail) return;
+      const cleanEmail = userEmail.trim().toLowerCase();
+      if (window.ShopVietState && typeof window.ShopVietState.banUser === 'function') {
+        window.ShopVietState.banUser(cleanEmail, 'Spam phá hoại');
+      }
+      if (window.ShopVietState && typeof window.ShopVietState.cleanSpamTopupsByEmail === 'function') {
+        window.ShopVietState.cleanSpamTopupsByEmail(cleanEmail);
+      }
+      notify(`🗑️ Đã khóa vĩnh viễn và dọn sạch toàn bộ yêu cầu nạp rác của ${cleanEmail}!`, 'success');
+      const tabContent = document.getElementById('adminTabContent');
+      if (tabContent && currentActiveTab === 'orders') {
+        tabContent.innerHTML = renderTabOrders();
+      }
+    },
+
+    resetUserBalanceToZero: function (userEmail) {
+      if (!userEmail) return;
+      const cleanEmail = userEmail.trim().toLowerCase();
+      if (!confirm(`Xác nhận RESET số dư ví của tài khoản ${cleanEmail} về 0 Xu?`)) return;
+      if (window.ShopVietState && typeof window.ShopVietState.resetUserBalance === 'function') {
+        window.ShopVietState.resetUserBalance(cleanEmail, 0);
+      }
+      notify(`🔄 Đã reset số dư tài khoản ${cleanEmail} về 0 Xu thành công!`, 'success');
+      const tabContent = document.getElementById('adminTabContent');
+      if (tabContent) {
+        if (currentActiveTab === 'orders') tabContent.innerHTML = renderTabOrders();
+      }
+    },
+
+    promptBanUser: function () {
+      const email = prompt('Nhập địa chỉ email tài khoản cần KHÓA / BAN:');
+      if (!email || !email.trim()) return;
+      this.banUserFromTopup(email.trim(), 'manual_prompt');
     },
 
     // Bắn thông báo ntfy thử nghiệm
