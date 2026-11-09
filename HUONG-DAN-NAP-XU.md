@@ -1,6 +1,6 @@
 # HƯỚNG DẪN NẠP XU QUA SEPAY — LÀM THEO TỪNG BƯỚC
 
-Tài liệu này dành cho **bất kỳ ai** (kể cả không biết lập trình) cần bật / kiểm tra / sửa tính năng nạp Xu tự động của web **https://promptmmo.store**.
+Tài liệu này dành cho **bất kỳ ai** (kể cả không biết lập trình) cần bật / kiểm tra / sửa tính năng nạp Xu tự động của web **https://www.promptmmo.store**.
 
 Đọc xong bạn sẽ biết: ai phải làm gì, bấm vào đâu, kiểm tra bằng cách nào, và khi tiền không vào ví thì xem ở đâu.
 
@@ -20,13 +20,15 @@ Có **3 nhân vật** tham gia:
 
 ---
 
-## 0.5. TÊN MIỀN CHÍNH THỨC: https://promptmmo.store
+## 0.5. TÊN MIỀN CHÍNH THỨC: https://www.promptmmo.store (bắt buộc có `www`)
 
-Web có **một** bản chạy chính thức: **https://promptmmo.store**. Địa chỉ `promptmmo.vercel.app` vẫn trỏ vào **cùng một bản code, cùng một database** — dữ liệu không bị tách đôi, chỉ khác cái tên miền trên thanh địa chỉ.
+Web có **một** bản chạy chính thức: **https://www.promptmmo.store**. Địa chỉ `promptmmo.vercel.app` vẫn trỏ vào **cùng một bản code, cùng một database** — dữ liệu không bị tách đôi, chỉ khác cái tên miền trên thanh địa chỉ.
+
+> ⚠️ **Bắt buộc dùng `www`:** gõ `https://promptmmo.store` sẽ bị Vercel trả **308 chuyển sang `https://www.promptmmo.store`**. Với request POST, nhiều hệ thống (kể cả SePay) không đi theo redirect → webhook coi như mất. Vì vậy URL webhook phải ghi **`https://www.promptmmo.store/api/sepay`** đúng như vậy.
 
 Vì vậy cần để ý 3 điểm sau:
 
-1. **Webhook SePay phải trỏ đúng tên miền chính thức:** `https://promptmmo.store/api/sepay`
+1. **Webhook SePay phải trỏ đúng tên miền chính thức:** `https://www.promptmmo.store/api/sepay`
    - Nếu webhook đang là `https://promptmmo.vercel.app/api/sepay` → sửa lại thành `.store`, hoặc thêm webhook mới rồi **tắt/xoá cái cũ**.
    - Để cả hai cùng bật vẫn **không cộng tiền 2 lần** (server chống trùng theo mã giao dịch), nhưng sẽ có 2 request cho mỗi lần chuyển khoản và log SePay bị rối — nên chỉ giữ 1.
 2. **Nút Nạp Xu tự chạy đúng trên cả 2 tên miền** vì nó gọi API theo đường dẫn tương đối (`/api/topups`, `/api/sepay`). Trang Admin giờ cũng hiện URL webhook theo **tên miền bạn đang mở**, bấm Copy là dán được ngay vào SePay.
@@ -45,9 +47,9 @@ Làm đủ 4 bước dưới đây thì tiền mới tự vào ví. Nếu thiế
 
 1. Đăng nhập **https://my.sepay.vn**
 2. Vào **Cấu hình → Webhooks** (hoặc **Tích hợp → Webhook**)
-3. Mở webhook đang trỏ tới `https://promptmmo.store/api/sepay`
+3. Mở webhook đang trỏ tới `https://www.promptmmo.store/api/sepay`
    - Nếu chưa có, bấm **Thêm webhook** và tạo:
-     - URL: `https://promptmmo.store/api/sepay`
+     - URL: `https://www.promptmmo.store/api/sepay`
      - Phương thức: **POST**
      - Sự kiện: **Có tiền vào** (tiền ra không cần)
      - Xác thực: **API Key**
@@ -86,7 +88,7 @@ Việc này chỉ để **server** ghi được số dư; khách không có quy�
 1. Vercel → tab **Deployments** → bấm **Redeploy** (hoặc push code mới lên nhánh `main`)
 2. Mở trình duyệt, vào địa chỉ này (chỉ cần xem, không cần đăng nhập):
 
-   **https://promptmmo.store/api/sepay**
+   **https://www.promptmmo.store/api/sepay**
 
 3. Kết quả đúng phải có 2 dòng:
 

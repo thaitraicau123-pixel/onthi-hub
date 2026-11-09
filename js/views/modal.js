@@ -2361,7 +2361,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <div id="policyPaneTerms" class="space-y-4">
                 <div class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40">
                   <h4 class="font-bold text-amber-900 dark:text-amber-200 text-sm mb-1">📜 ĐIỀU KHOẢN DỊCH VỤ & QUY CHẾ HOẠT ĐỘNG THƯƠNG MẠI ĐIỆN TỬ</h4>
-                  <p class="text-xs text-amber-800 dark:text-amber-300">Căn cứ Luật Thương mại điện tử 122/2025/QH15, Nghị định 248/2026/NĐ-CP (kèm quy định chuyển tiếp Điều 41 từ Nghị định 52/2013/NĐ-CP & NĐ 85/2021/NĐ-CP). Áp dụng tại website <code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">https://promptmmo.store/</code>.</p>
+                  <p class="text-xs text-amber-800 dark:text-amber-300">Căn cứ Luật Thương mại điện tử 122/2025/QH15, Nghị định 248/2026/NĐ-CP (kèm quy định chuyển tiếp Điều 41 từ Nghị định 52/2013/NĐ-CP & NĐ 85/2021/NĐ-CP). Áp dụng tại website <code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">https://www.promptmmo.store/</code>.</p>
                 </div>
 
                 <div class="space-y-3">
