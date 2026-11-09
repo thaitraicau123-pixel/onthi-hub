@@ -12,13 +12,7 @@
  */
 
 import { getWebhookSecret, verifyWebhookAuth, extractMemoFromPayment } from '../lib/sepay.js';
-import {
-  creditWallet,
-  getTopupIntent,
-  recordUnmatchedTopup,
-  isConfigured,
-  FirestoreError
-} from '../lib/firestore.js';
+import { creditWallet, getTopupIntent, recordUnmatchedTopup, isConfigured, FirestoreError, getDocument } from '../lib/firestore.js';
 
 const NOTIFY_TOPIC = 'buithai_studio_0986019623';
 const MAX_AMOUNT = 100_000_000;
@@ -58,6 +52,23 @@ export default async function handler(req, res) {
 
   // ---------------------------------------------------------------- health
   if (req.method === 'GET') {
+    // ?probe=1 : tự kiểm tra quyền đọc Firestore bằng Service Account (chẩn đoán, không ghi gì).
+    if (String((req.query && req.query.probe) || '') === '1') {
+      if (!isConfigured()) {
+        return res.status(200).json({ ok: false, probe: 'firestore', code: 'missing_service_account' });
+      }
+      try {
+        await getDocument('topup_intents/_healthcheck');
+        return res.status(200).json({ ok: true, probe: 'firestore', reachable: true });
+      } catch (err) {
+        return res.status(200).json({
+          ok: false,
+          probe: 'firestore',
+          code: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
+          httpStatus: (err && err.status) || 0
+        });
+      }
+    }
     return res.status(200).json({
       ok: true,
       service: 'SePay → Firestore wallet crediting',
