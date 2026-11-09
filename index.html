@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
-  <!-- FORCE CACHE PURGE (v12.7 Strict Admin Auth & Login Alerts) -->
-  <script>
-    (function() {
+    <!-- INSTANT LOADER KILLER & STRICT PURGE (v1.2.2_instant_zero_lag_quota_shield'sitePreloader');
+          if (p) p.remove();
+          var c = document.getElementById('curtainTransition');
+          if (c) c.remove();
+          var stuck = document.querySelectorAll('.u256, .u321, #sitePreloader, #curtainTransition');
+          for (var i = 0; i < stuck.length; i++) stuck[i].remove();
+          if (document.body) {
+            document.body.style.overflow = '';
+            document.body.style.opacity = '1';
+            document.body.style.visibility = 'visible';
+          }
+        } catch (_) {}
+      }
+      killStuckLoaders();
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', killStuckLoaders);
+      }
+      window.addEventListener('load', killStuckLoaders);
+      var kTimer = setInterval(killStuckLoaders, 100);
+      setTimeout(function() { clearInterval(kTimer); }, 3000);
+
+      // 2. Xóa sạch Cache cũ & Hủy đăng ký Service Worker lỗi thời
       try {
-        var REQ_VER = 'v1.2.0_no_transitions_zero_lag';
+        var REQ_VER = 'v1.2.2_instant_zero_lag_quota_shield';
         var cur = localStorage.getItem('shopviet_data_version');
         if (cur !== REQ_VER) {
           localStorage.setItem('shopviet_data_version', REQ_VER);
@@ -13,25 +32,12 @@
           localStorage.removeItem('shopviet_admin_products');
           localStorage.removeItem('shopviet247_custom_products_v1');
           localStorage.removeItem('shopviet_topups');
-          
-          // Thanh lọc sạch sẽ các token admin tồn dư nếu người dùng hiện tại không phải thaitraicau123@gmail.com
-          var rawState = localStorage.getItem('shopviet_state_v10');
-          var isCurrentAdmin = false;
-          if (rawState) {
-            try {
-              var parsed = JSON.parse(rawState);
-              if (parsed && parsed.user && parsed.user.email && parsed.user.email.trim().toLowerCase() === 'thaitraicau123@gmail.com') {
-                isCurrentAdmin = true;
-              }
-            } catch (err) {}
-          }
-          if (!isCurrentAdmin) {
-            sessionStorage.removeItem('shopviet_admin_authenticated');
-            localStorage.removeItem('shopviet_admin_authenticated');
-            sessionStorage.removeItem('shopviet_admin_session_auth');
-            localStorage.removeItem('shopviet_admin_session_auth');
-          }
 
+          if (typeof caches !== 'undefined' && caches.keys) {
+            caches.keys().then(function(names) {
+              names.forEach(function(n) { caches.delete(n); });
+            });
+          }
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(regs) {
               regs.forEach(function(r) { r.unregister(); });
@@ -2268,19 +2274,19 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 
-  <script src="js/firebase-config.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/ntfy.js?v=v1.2.0_no_transitions_zero_lag"></script>
+  <script src="js/firebase-config.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/ntfy.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
 
-  <script src="js/data.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/state.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/home.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/modal.js?v=v1.3.0_ai_prompt_studio"></script>
-  <script src="js/views/checkout.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/auth.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/dashboard.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/admin.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/views/blog.js?v=v1.2.0_no_transitions_zero_lag"></script>
-  <script src="js/app.js?v=v1.2.0_no_transitions_zero_lag"></script>
+  <script src="js/data.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/state.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/home.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/modal.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/checkout.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/auth.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/dashboard.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/admin.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/views/blog.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
+  <script src="js/app.js?v=v1.2.2_instant_zero_lag_quota_shield"></script>
 
   <!-- ==================== PWA SERVICE WORKER REGISTRATION ==================== -->
   <script>
@@ -2288,7 +2294,7 @@
       // 1. Đăng ký Service Worker chuẩn SEO & Offline-first (Bảo toàn 100%)
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js?v=v1.2.0_no_transitions_zero_lag')
+          navigator.serviceWorker.register('./sw.js?v=v1.2.2_instant_zero_lag_quota_shield')
             .then((registration) => {
               console.log('[PWA] Service Worker đăng ký thành công! Scope:', registration.scope);
               registration.onupdatefound = () => {

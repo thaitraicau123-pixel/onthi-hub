@@ -816,7 +816,7 @@
         };
 
         // 0. GHI NHẬN TÍN HIỆU REALTIME LÊN FIRESTORE NẾU KHẢ DỤNG
-        if (window.ShopVietFirebase && window.ShopVietFirebase.db && window.ShopVietFirebase.isOnline) {
+        if (window.ShopVietFirebase && window.ShopVietFirebase.db && window.ShopVietFirebase.isOnline && !window.ShopVietFirebase.isQuotaExceeded) {
           try {
             window.ShopVietFirebase.db.collection('shopviet_realtime_sync').doc('latest_state').set({
               type: 'cloud_sync_push',
@@ -1236,7 +1236,7 @@
         isChecking = true;
         try {
           // Thử gắn Firestore listener nếu vừa online
-          if (!self._firestoreListenerUnsubscribe && window.ShopVietFirebase && window.ShopVietFirebase.db && window.ShopVietFirebase.isOnline) {
+          if (!self._firestoreListenerUnsubscribe && window.ShopVietFirebase && window.ShopVietFirebase.db && window.ShopVietFirebase.isOnline && !window.ShopVietFirebase.isQuotaExceeded) {
             self.setupFirestoreRealtimeListener();
           }
 

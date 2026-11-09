@@ -9,8 +9,15 @@ import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigure
 import { generateMemo } from '../lib/sepay.js';
 
 // Bộ đệm lưu trữ topups trong memory của serverless instance
+// Bộ đệm lưu trữ topups, users và orders trong memory của serverless instance
 if (!global._serverTopupCache) {
   global._serverTopupCache = [];
+}
+if (!global._serverUserCache) {
+  global._serverUserCache = new Map();
+}
+if (!global._serverOrderCache) {
+  global._serverOrderCache = [];
 }
 
 const INITIAL_BANNED_EMAILS = ['thaihoa27492@gmail.com'];
@@ -419,7 +426,56 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, topupId: topupId, status: 'completed' });
     }
 
-    // 2.1b Admin khóa / ban tài khoản phá hoại
+        // 2.0a Đồng bộ User & Số dư ví lên Serverless Cloud (Thay thế Firestore khi hết Quota 429)
+    if (action === 'sync_user') {
+      const email = String(body.userEmail || body.email || '').trim().toLowerCase();
+      if (!email) return res.status(400).json({ ok: false, message: 'Thiếu email' });
+      const current = global._serverUserCache.get(email) || {};
+      const updated = {
+        ...current,
+        ...(body.userData || {}),
+        email: email,
+        balance: typeof body.balance === 'number' ? body.balance : (typeof current.balance === 'number' ? current.balance : 0),
+        lastSyncedAt: new Date().toISOString()
+      };
+      global._serverUserCache.set(email, updated);
+      console.log(`[Serverless Cloud] Đã đồng bộ User: ${email} | Số dư: ${updated.balance} Xu`);
+      return res.status(200).json({ ok: true, user: updated });
+    }
+
+    // 2.0b Lấy thông tin User từ Serverless Cloud
+    if (action === 'get_user') {
+      const email = String(body.userEmail || body.email || '').trim().toLowerCase();
+      const user = global._serverUserCache.get(email) || null;
+      return res.status(200).json({ ok: true, user });
+    }
+
+    // 2.0c Đồng bộ đơn hàng lên Serverless Cloud
+    if (action === 'sync_order') {
+      const order = body.order || {};
+      if (order.id) {
+        const idx = global._serverOrderCache.findIndex(o => o.id === order.id);
+        if (idx > -1) {
+          global._serverOrderCache[idx] = { ...global._serverOrderCache[idx], ...order };
+        } else {
+          global._serverOrderCache.unshift(order);
+          if (global._serverOrderCache.length > 500) global._serverOrderCache = global._serverOrderCache.slice(0, 500);
+        }
+      }
+      return res.status(200).json({ ok: true, orderId: order.id });
+    }
+
+    // 2.0d Lấy danh sách đơn hàng từ Serverless Cloud
+    if (action === 'get_orders') {
+      const email = String(body.userEmail || body.email || '').trim().toLowerCase();
+      const userOrders = global._serverOrderCache.filter(o => {
+        const oEmail = String(o.userEmail || (o.customer && o.customer.email) || '').trim().toLowerCase();
+        return !email || oEmail === email;
+      });
+      return res.status(200).json({ ok: true, orders: userOrders });
+    }
+
+// 2.1b Admin khóa / ban tài khoản phá hoại
     if (action === 'ban_user') {
       const email = String(body.userEmail || body.email || '').trim().toLowerCase();
       if (email) {
