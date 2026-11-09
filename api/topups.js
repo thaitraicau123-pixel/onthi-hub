@@ -147,10 +147,10 @@ export default async function handler(req, res) {
               const topupItem = {
                 id: id,
                 amount: amount,
-                bank: 'Techcombank',
-                accountNumber: '6688686866688',
+                bank: 'MBBank',
+                accountNumber: '0986019623',
                 accountName: 'BUI THAI',
-                method: 'Techcombank VietQR 24/7',
+                method: 'MBBank VietQR 24/7',
                 memo: memo,
                 userEmail: userEmail,
                 userName: userName,
@@ -308,8 +308,8 @@ export default async function handler(req, res) {
       const directTopup = {
         id: topupId,
         amount: amount,
-        bank: 'Techcombank Admin',
-        accountNumber: '6688686866688',
+        bank: 'MBBank Admin',
+        accountNumber: '0986019623',
         accountName: 'BUI THAI',
         method: 'Cộng trực tiếp Admin',
         memo: note,
@@ -366,7 +366,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: false,
       automated: true,
-      message: "Hệ thống đã chuyển sang chế độ nạp Xu tự động 100% qua SePay. Khi bạn chuyển khoản vào Techcombank 6688686866688, SePay sẽ tự động cộng Xu vào ví trong 2-5 giây, không cần gửi yêu cầu thủ công!"
+      message: "Hệ thống đã chuyển sang chế độ nạp Xu tự động 100% qua SePay. Khi bạn chuyển khoản vào MBBank 0986019623, SePay sẽ tự động cộng Xu vào ví trong 2-5 giây, không cần gửi yêu cầu thủ công!"
     });
   }
 

@@ -122,11 +122,11 @@ window.ShopVietViews.modal = (function () {
       return window.ShopVietState.getVietQRConfig();
     }
     return {
-      bankId: '970407',
-      bin: '970407',
-      bankName: 'Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)',
-      shortName: 'Techcombank',
-      accountNumber: '6688686866688',
+      bankId: '970422',
+      bin: '970422',
+      bankName: 'MBBank (Ngân hàng TMCP Quân Đội)',
+      shortName: 'MBBank',
+      accountNumber: '0986019623',
       accountName: 'BUI THAI',
       memoPrefix: 'NAP',
       brandColor: '#8A5F26'
@@ -835,7 +835,7 @@ window.ShopVietViews.modal = (function () {
                   onclick="ShopVietViews.modal.openDepositForShortage(${totalXu - userBalance})" 
                   class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all active:scale-98 cursor-pointer"
                 >
-                  <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR Techcombank</span>
+                  <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
                 </button>
               `}
             </div>
@@ -1234,7 +1234,7 @@ window.ShopVietViews.modal = (function () {
     },
 
     // ==========================================
-    // TÍNH NĂNG NẠP XU VÀO VÍ TECHCOMBANK 6688686866688
+    // TÍNH NĂNG NẠP XU VÀO VÍ TECHCOMBANK 0986019623
     // BẮN NTFY TỨC THÌ ĐỂ BÙI THÁI MỞ DUYỆT
     // ==========================================
     openDepositModal: function (initialAmount) {
@@ -1262,7 +1262,7 @@ window.ShopVietViews.modal = (function () {
       const memo = `NAPXU ${codeSuffix}`;
 
       function buildQrUrl(amt) {
-        return `https://qr.sepay.vn/img?acc=6688686866688&bank=Techcombank&amount=${amt}&des=${encodeURIComponent(memo)}&template=compact`;
+        return `https://qr.sepay.vn/img?acc=0986019623&bank=MBBank&amount=${amt}&des=${encodeURIComponent(memo)}&template=compact`;
       }
 
       const modalMount = document.getElementById('modalMount');
@@ -1342,20 +1342,20 @@ window.ShopVietViews.modal = (function () {
 
               <!-- MÃ VIETQR TECHCOMBANK ĐỘNG -->
               <div class="p-3 bg-white rounded-2xl border border-slate-200/90 inline-block shadow-md">
-                <img id="techcombankDepositQrImg" src="${buildQrUrl(selectedAmount)}" onerror="this.src='https://img.vietqr.io/image/970407-6688686866688-compact2.png?amount=' + selectedAmount + '&addInfo=' + encodeURIComponent('${memo}') + '&accountName=BUI%20THAI';" alt="SePay VietQR Techcombank 6688686866688 BUI THAI" class="w-52 h-52 sm:w-56 sm:h-56 mx-auto object-contain rounded-xl shadow-xs" />
+                <img id="mbbankDepositQrImg" src="${buildQrUrl(selectedAmount)}" onerror="this.src='https://img.vietqr.io/image/970422-0986019623-compact2.png?amount=' + selectedAmount + '&addInfo=' + encodeURIComponent('${memo}') + '&accountName=BUI%20THAI';" alt="SePay VietQR MBBank 0986019623 BUI THAI" class="w-52 h-52 sm:w-56 sm:h-56 mx-auto object-contain rounded-xl shadow-xs" />
               </div>
 
               <!-- THÔNG TIN CHUYỂN KHOẢN TECHCOMBANK -->
               <div class="space-y-2.5 text-xs text-left bg-white dark:bg-[#140F0B] p-4 rounded-2xl border border-[#E6DCCB] dark:border-amber-900/30">
                 <div class="flex items-center justify-between">
                   <span class="text-slate-500 dark:text-slate-400">Ngân hàng:</span>
-                  <strong class="text-slate-800 dark:text-slate-200 font-semibold">Techcombank (BIN: 970407)</strong>
+                  <strong class="text-slate-800 dark:text-slate-200 font-semibold">MBBank (BIN: 970422)</strong>
                 </div>
                 <div class="flex items-center justify-between">
                   <span class="text-slate-500 dark:text-slate-400">Số tài khoản:</span>
                   <div class="flex items-center gap-1.5">
-                    <strong class="font-mono text-[#8A5F26] dark:text-[#BE9455] font-extrabold text-sm select-all">6688686866688</strong>
-                    <button type="button" onclick="ShopVietViews.modal.copyField('6688686866688', 'Số tài khoản Techcombank')" class="px-2 py-0.5 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-[#8A5F26] dark:text-[#BE9455] font-bold text-[10px] transition cursor-pointer">Sao chép</button>
+                    <strong class="font-mono text-[#8A5F26] dark:text-[#BE9455] font-extrabold text-sm select-all">0986019623</strong>
+                    <button type="button" onclick="ShopVietViews.modal.copyField('0986019623', 'Số tài khoản MBBank')" class="px-2 py-0.5 rounded-md bg-amber-500/10 hover:bg-amber-500/20 text-[#8A5F26] dark:text-[#BE9455] font-bold text-[10px] transition cursor-pointer">Sao chép</button>
                   </div>
                 </div>
                 <div class="flex items-center justify-between">
@@ -1365,7 +1365,7 @@ window.ShopVietViews.modal = (function () {
                 <div class="flex items-center justify-between">
                   <span class="text-slate-500 dark:text-slate-400">Số tiền nạp:</span>
                   <div class="flex items-center gap-1.5">
-                    <strong id="techcombankDepositAmountText" class="font-mono text-emerald-600 dark:text-emerald-400 font-extrabold text-sm">${selectedAmount.toLocaleString('vi-VN')} VNĐ</strong>
+                    <strong id="mbbankDepositAmountText" class="font-mono text-emerald-600 dark:text-emerald-400 font-extrabold text-sm">${selectedAmount.toLocaleString('vi-VN')} VNĐ</strong>
                     <button type="button" onclick="ShopVietViews.modal.copyField('${selectedAmount}', 'Số tiền')" class="px-2 py-0.5 rounded-md bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] transition cursor-pointer">Sao chép</button>
                   </div>
                 </div>
@@ -2297,7 +2297,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                       - Địa chỉ liên hệ: Hà Nội, Việt Nam<br>
                       - Hotline/Zalo tiếp nhận CSKH: <strong class="text-amber-600 dark:text-amber-400 font-mono">0986019623</strong><br>
                       - Email hỗ trợ chính thức: <span class="font-mono">thaitraicau123@gmail.com</span><br>
-                      - Tài khoản thanh toán thụ hưởng chính thức: Techcombank <strong class="font-mono text-slate-900 dark:text-white">6688686866688</strong> (Chủ tài khoản: BUI THAI).
+                      - Tài khoản thanh toán thụ hưởng chính thức: MBBank <strong class="font-mono text-slate-900 dark:text-white">0986019623</strong> (Chủ tài khoản: BUI THAI).
                     </p>
                   </div>
 
@@ -2495,7 +2495,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
                 <span>Zalo CSKH: <strong class="text-slate-800 dark:text-white font-mono">0986019623</strong></span>
                 <span>•</span>
-                <span>Techcombank: <strong class="text-amber-600 dark:text-amber-400 font-mono">6688686866688</strong></span>
+                <span>MBBank: <strong class="text-amber-600 dark:text-amber-400 font-mono">0986019623</strong></span>
               </div>
               <div class="flex items-center gap-2">
                 <a href="https://zalo.me/0986019623" target="_blank" class="px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition">

@@ -1833,7 +1833,7 @@
       this.notify('orders_updated', this.state.orders);
     },
 
-    // Quản lý Yêu cầu Nạp Xu qua VietQR Techcombank (Chờ Admin Bùi Thái duyệt)
+    // Quản lý Yêu cầu Nạp Xu qua VietQR MBBank (Chờ Admin Bùi Thái duyệt)
     createTopupRequest: function ({ amount, method, memo, userEmail, userName }) {
       const cleanEmail = (userEmail || (this.state.user && this.state.user.email) || 'khachhang@gmail.com').trim().toLowerCase();
       if (this.isUserBanned(cleanEmail)) {
@@ -1844,10 +1844,10 @@
       const topup = {
         id: topupId,
         amount: Number(amount) || 100000,
-        bank: 'Techcombank',
-        accountNumber: '6688686866688',
+        bank: 'MBBank',
+        accountNumber: '0986019623',
         accountName: 'BUI THAI',
-        method: method || 'Techcombank VietQR 24/7',
+        method: method || 'MBBank VietQR 24/7',
         memo: memo || ('NAPXU ' + (userName || 'KHACH').replace(/\s+/g, '').toUpperCase()),
         userEmail: cleanEmail,
         userName: userName || (this.state.user && this.state.user.name) || cleanEmail.split('@')[0] || 'Khách Hàng',
@@ -2517,8 +2517,8 @@
       const directTopup = {
         id: topupId,
         amount: amount,
-        bank: 'Techcombank Admin',
-        accountNumber: '6688686866688',
+        bank: 'MBBank Admin',
+        accountNumber: '0986019623',
         accountName: 'BUI THAI',
         method: 'Cộng trực tiếp Admin',
         memo: note,
@@ -3843,14 +3843,14 @@
       `;
     },
 
-    // Lấy cấu hình VietQR động từ Portal Admin (Mặc định: Techcombank 6688686866688 BUI THAI)
+    // Lấy cấu hình VietQR động từ Portal Admin (Mặc định: MBBank 0986019623 BUI THAI)
     getVietQRConfig: function () {
       const DEFAULT_CONFIG = {
-        bankId: '970407', // Techcombank BIN 970407
+        bankId: '970422', // MBBank BIN 970407
         bin: '970407',
-        bankName: 'Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)',
-        shortName: 'Techcombank',
-        accountNumber: '6688686866688',
+        bankName: 'MBBank (Ngân hàng TMCP Quân Đội)',
+        shortName: 'MBBank',
+        accountNumber: '0986019623',
         accountName: 'BUI THAI',
         memoPrefix: 'NAPXU',
         brandColor: '#E92429'
@@ -3859,7 +3859,7 @@
         const saved = localStorage.getItem('shopviet_vietqr_config');
         if (saved) {
           const parsed = JSON.parse(saved);
-          // Tự động chuẩn hóa về Techcombank chính chủ Bùi Thái
+          // Tự động chuẩn hóa về MBBank chính chủ Bùi Thái
           if (parsed && (parsed.accountNumber !== DEFAULT_CONFIG.accountNumber || !parsed.accountNumber)) {
             localStorage.setItem('shopviet_vietqr_config', JSON.stringify(DEFAULT_CONFIG));
             return DEFAULT_CONFIG;

@@ -4,7 +4,7 @@
  * Niêm phong bảo mật cấp ngân hàng với Webhook Secret Key chính chủ: whsec_VtvNvz9Vjvyr2z7jxIC10TR5NHBSRbVJ
  * 
  * Hỗ trợ đồng thời 2 chuẩn SePay:
- * 1. Chuyển khoản VietQR Techcombank 6688686866688 (NAPXU...)
+ * 1. Chuyển khoản VietQR MBBank 0986019623 (NAPXU...)
  * 2. SePay CheckoutBuilder SDK (INV-..., BANK_TRANSFER, PURCHASE, orderAmount)
  * Tự động cộng Xu vào ví khách hàng 100% trong 2-5 giây, không cần Admin duyệt tay.
  */
@@ -21,7 +21,7 @@ if (!global._bannedEmails) {
 }
 
 const DEFAULT_TOPIC = 'buithai_studio_0986019623';
-const TECHCOMBANK_ACC = '6688686866688';
+const MBBANK_ACC = '0986019623';
 const SEPAY_WEBHOOK_SECRET = process.env.SEPAY_WEBHOOK_SECRET || 'whsec_VtvNvz9Vjvyr2z7jxIC10TR5NHBSRbVJ';
 
 /**
@@ -69,10 +69,10 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       service: 'SePay Automated Banking Webhook & Checkout Gateway',
-      version: '1.1.1',
+      version: '1.1.2',
       status: 'active',
-      bank: 'Techcombank',
-      accountNumber: TECHCOMBANK_ACC,
+      bank: 'MBBank',
+      accountNumber: MBBANK_ACC,
       accountName: 'BUI THAI',
       webhookUrl: 'https://promptmmo.vercel.app/api/sepay',
       webhookSecretConfigured: true,
@@ -116,10 +116,10 @@ export default async function handler(req, res) {
         orderAmount: amount,
         operation: 'PURCHASE',
         orderDescription: description,
-        bankAccount: TECHCOMBANK_ACC,
-        bankName: 'Techcombank',
+        bankAccount: MBBANK_ACC,
+        bankName: 'MBBank',
         accountName: 'BUI THAI',
-        qrUrl: `https://qr.sepay.vn/img?acc=${TECHCOMBANK_ACC}&bank=Techcombank&amount=${amount}&des=${encodeURIComponent(invoiceNum)}&template=compact`
+        qrUrl: `https://qr.sepay.vn/img?acc=${MBBANK_ACC}&bank=MBBank&amount=${amount}&des=${encodeURIComponent(invoiceNum)}&template=compact`
       };
       return res.status(200).json({ success: true, data: checkoutData });
     }
@@ -234,8 +234,8 @@ export default async function handler(req, res) {
       const newTopup = {
         id: topupId,
         amount: transferAmount,
-        bank: 'Techcombank',
-        accountNumber: TECHCOMBANK_ACC,
+        bank: 'MBBank',
+        accountNumber: MBBANK_ACC,
         accountName: 'BUI THAI',
         method: invoiceNumber ? 'SePay Checkout Gateway (BANK_TRANSFER)' : 'SePay VietQR 24/7 Tự Động',
         memo: content || invoiceNumber || 'NAPXU SEPAY',
@@ -261,7 +261,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           topic: DEFAULT_TOPIC,
           title: `⚡ [SEPAY TỰ ĐỘNG] +${transferAmount.toLocaleString('vi-VN')} XU ĐÃ VÀO VÍ!`,
-          message: `Mã GD: ${transactionId || topupId}\nKhách: ${userName || 'Khách hàng'} (${userEmail || 'Chưa định danh'})\nSố tiền: +${transferAmount.toLocaleString('vi-VN')} VNĐ (+${transferAmount.toLocaleString('vi-VN')} Xu)\nSTK: 6688686866688 (Techcombank)\nNội dung: ${content}\nXác thực Secret Key: ✅ CHÍNH CHỦ SEPAY 100%\nTrạng thái: ✅ ĐÃ TỰ ĐỘNG CỘNG XU VÀO VÍ 100%!`,
+          message: `Mã GD: ${transactionId || topupId}\nKhách: ${userName || 'Khách hàng'} (${userEmail || 'Chưa định danh'})\nSố tiền: +${transferAmount.toLocaleString('vi-VN')} VNĐ (+${transferAmount.toLocaleString('vi-VN')} Xu)\nSTK: 0986019623 (MBBank)\nNội dung: ${content}\nXác thực Secret Key: ✅ CHÍNH CHỦ SEPAY 100%\nTrạng thái: ✅ ĐÃ TỰ ĐỘNG CỘNG XU VÀO VÍ 100%!`,
           priority: 5,
           tags: ['zap', 'moneybag', 'white_check_mark', 'sparkles', 'lock'],
           click: 'https://promptmmo.vercel.app/#admin'

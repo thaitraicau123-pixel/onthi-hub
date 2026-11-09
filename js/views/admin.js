@@ -27,13 +27,13 @@
   // Mã PIN quản trị hợp lệ
   const VALID_PINS = ['buithai123', 'admin2026'];
 
-  // Cấu hình VietQR mặc định - Chuẩn Techcombank 6688686866688 BUI THAI
+  // Cấu hình VietQR mặc định - Chuẩn MBBank 0986019623 BUI THAI
   const DEFAULT_VIETQR_CONFIG = {
-    bankId: '970407', // Techcombank BIN 970407
+    bankId: '970422', // MBBank BIN 970407
     bin: '970407',
-    bankName: 'Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)',
-    shortName: 'Techcombank',
-    accountNumber: '6688686866688',
+    bankName: 'MBBank (Ngân hàng TMCP Quân Đội)',
+    shortName: 'MBBank',
+    accountNumber: '0986019623',
     accountName: 'BUI THAI',
     memoPrefix: 'NAPXU',
     brandColor: '#E92429'
@@ -48,7 +48,7 @@
   // Danh sách ngân hàng hỗ trợ VietQR
   const SUPPORTED_BANKS = [
     { id: '970422', code: 'MB', name: 'MB Bank (Ngân hàng Quân Đội)' },
-    { id: '970407', code: 'TCB', name: 'Techcombank' },
+    { id: '970407', code: 'TCB', name: 'MBBank' },
     { id: '970436', code: 'VCB', name: 'Vietcombank' },
     { id: '970415', code: 'CTG', name: 'VietinBank' },
     { id: '970418', code: 'BIDV', name: 'BIDV' },
@@ -56,7 +56,7 @@
     { id: '970432', code: 'VPB', name: 'VPBank' },
     { id: '970423', code: 'TPB', name: 'TPBank' },
     { id: '970454', code: 'VIB', name: 'VIB (Quốc Tế)' },
-    { id: '970407', code: 'STB', name: 'Techcombank' }
+    { id: '970407', code: 'STB', name: 'MBBank' }
   ];
 
   // Khôi phục sản phẩm từ LocalStorage nếu đã có trước đó
@@ -424,7 +424,7 @@
           <div id="adminTopupAlertBanner" class="${pendingTopupsCount > 0 ? 'flex' : 'hidden'} px-5 py-3 bg-gradient-to-r from-amber-500/20 via-orange-500/25 to-amber-500/15 border-b border-amber-500/30 items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold shrink-0 animate-fade-in">
             <div class="flex items-center gap-2.5">
               <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
-              <span>🔔 <strong>CÓ <span id="adminPendingTopupCountText">${pendingTopupsCount}</span> YÊU CẦU NẠP XU MỚI TỪ TECHCOMBANK 6688686866688 ĐANG CHỜ DUYỆT!</strong></span>
+              <span>🔔 <strong>CÓ <span id="adminPendingTopupCountText">${pendingTopupsCount}</span> YÊU CẦU NẠP XU MỚI TỪ TECHCOMBANK 0986019623 ĐANG CHỜ DUYỆT!</strong></span>
             </div>
             <button 
               type="button" 
@@ -815,7 +815,7 @@
                 💰
               </div>
               <div>
-                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Duyệt Yêu Cầu Nạp Xu Techcombank 6688686866688 (Firebase Cloud)</h4>
+                <h4 class="font-bold text-slate-900 dark:text-white text-sm">Duyệt Yêu Cầu Nạp Xu MBBank 0986019623 (Firebase Cloud)</h4>
                 <span class="text-xs text-slate-500">Khách chuyển khoản VietQR xong, anh Thái bấm Duyệt để kích hoạt xu</span>
               </div>
             </div>
@@ -1021,7 +1021,7 @@
             ${customerEmail}
           </div>
           <div class="text-[10px] text-slate-400 font-medium">
-            ${customerName} • VietQR Techcombank
+            ${customerName} • VietQR MBBank
           </div>
         </td>
 
@@ -1256,7 +1256,7 @@
                   <span>Cổng Thanh Toán SePay Tự Động 24/7 (sepay.vn)</span>
                   <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">🟢 Đang Hoạt Động</span>
                 </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tự động nhận diện biến động số dư Techcombank 6688686866688 và duyệt cộng Xu cho khách trong 2-5 giây.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tự động nhận diện biến động số dư MBBank 0986019623 và duyệt cộng Xu cho khách trong 2-5 giây.</p>
               </div>
             </div>
             <button 
@@ -1281,7 +1281,7 @@
             <div class="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
               <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">2. Cấu Trúc Mã QR SePay Động</span>
               <div class="flex items-center gap-2">
-                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-slate-800 dark:text-slate-200 flex-1 truncate select-all">https://qr.sepay.vn/img?acc=6688686866688&bank=Techcombank...</code>
+                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-slate-800 dark:text-slate-200 flex-1 truncate select-all">https://qr.sepay.vn/img?acc=0986019623&bank=MBBank...</code>
               </div>
               <p class="text-[11px] text-slate-500">Mã QR nạp xu ở modal đã tự động liên kết chuẩn SePay, giúp app ngân hàng tự điền đúng nội dung và số tiền 100%.</p>
             </div>
@@ -2228,7 +2228,7 @@
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-sm font-bold text-slate-900 dark:text-white truncate">6688686866688</div>
+              <div class="text-sm font-bold text-slate-900 dark:text-white truncate">0986019623</div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">BUI THAI (STB)</p>
             </div>
           </div>
@@ -2298,7 +2298,7 @@
                   <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                   <span>💳 Phát Sóng Cấu Hình VietQR Mới</span>
                 </div>
-                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-800/60">Techcombank</span>
+                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-800/60">MBBank</span>
               </button>
 
               <!-- Nút 4: Đồng bộ Cloud 2 chiều toàn hệ thống -->
@@ -3053,7 +3053,7 @@
   window.ShopVietViews.admin = {
     // Duyệt yêu cầu nạp xu từ Firebase Cloud
     approveTopup: function () {
-      alert('⚡ Chế độ duyệt thủ công đã được tắt hoàn toàn! Hệ thống SePay sẽ tự động đối soát và cộng Xu khi có biến động số dư Techcombank 6688686866688.');
+      alert('⚡ Chế độ duyệt thủ công đã được tắt hoàn toàn! Hệ thống SePay sẽ tự động đối soát và cộng Xu khi có biến động số dư MBBank 0986019623.');
     },
 
     rejectTopup: function (topupId) {
@@ -4186,9 +4186,9 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             id: "TEST-" + Date.now(),
-            gateway: "Techcombank",
+            gateway: "MBBank",
             transactionDate: new Date().toISOString(),
-            accountNumber: "6688686866688",
+            accountNumber: "0986019623",
             transferType: "in",
             content: memo + " " + testEmail,
             description: memo,
@@ -4220,7 +4220,7 @@
         bankId: bankSelect.value,
         bin: bankSelect.value,
         bankName: selectedBank.name || bankSelect.options[bankSelect.selectedIndex].text,
-        shortName: selectedBank.code || 'Techcombank',
+        shortName: selectedBank.code || 'MBBank',
         accountNumber: accountInput.value.trim(),
         accountName: ownerInput.value.trim().toUpperCase(),
         memoPrefix: memoInput.value.trim().toUpperCase() || 'THAIBUI',
