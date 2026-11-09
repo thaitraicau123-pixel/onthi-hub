@@ -7324,3 +7324,20 @@ window.ShopVietData = {
 if (typeof localStorage !== "undefined") {
   try { localStorage.removeItem("shopviet_products_purged"); } catch (e) {}
 }
+
+// Tự động đồng bộ và bảo toàn 100% 975+ câu lệnh Cheat Sheet cho toàn bộ 16 sản phẩm
+if (typeof window !== "undefined" && window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
+  window.ShopVietData.products.forEach(function(p) {
+    if (p && p.unlockedPayload) {
+      if (!p.cheatSheet || !Array.isArray(p.cheatSheet) || p.cheatSheet.length === 0) {
+        p.cheatSheet = (Array.isArray(p.unlockedPayload.cheatSheet) && p.unlockedPayload.cheatSheet.length > 0)
+          ? p.unlockedPayload.cheatSheet
+          : ((Array.isArray(p.unlockedPayload.promptTemplates))
+              ? p.unlockedPayload.promptTemplates
+              : (typeof p.unlockedPayload.cheatSheet === "string"
+                  ? [{ title: p.name + " - Cheat Sheet", template: p.unlockedPayload.cheatSheet }]
+                  : []));
+      }
+    }
+  });
+}

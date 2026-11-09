@@ -188,7 +188,13 @@ window.ShopVietViews.modal = (function () {
   function renderModalGuidePaneHTML(currentProduct, totalXu, userBalance, isSufficient, currentUser) {
     if (!currentProduct) return '';
     const isAllInOne = currentProduct.id === 'skill-combo-allinone';
-    const cheatSheet = currentProduct.cheatSheet || [];
+    const cheatSheet = (currentProduct.unlockedPayload && Array.isArray(currentProduct.unlockedPayload.cheatSheet) && currentProduct.unlockedPayload.cheatSheet.length > 0)
+      ? currentProduct.unlockedPayload.cheatSheet
+      : ((currentProduct.cheatSheet && Array.isArray(currentProduct.cheatSheet) && currentProduct.cheatSheet.length > 0)
+          ? currentProduct.cheatSheet
+          : ((currentProduct.unlockedPayload && Array.isArray(currentProduct.unlockedPayload.promptTemplates))
+              ? currentProduct.unlockedPayload.promptTemplates
+              : []));
 
     return `
       <!-- HỘP HƯỚNG DẪN SỬ DỤNG HOÀN CHỈNH CHO MỌI HỘP CÔNG CỤ -->

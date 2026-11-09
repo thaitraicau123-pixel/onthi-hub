@@ -20,7 +20,7 @@
     password: 'buithai123',
     name: 'Bùi Thái (Admin)',
     role: 'admin',
-    balance: 500000,
+    balance: 9000,
     phone: '0986019623',
     avatar: 'BT',
     createdAt: '2026-01-01T00:00:00.000Z'
@@ -34,7 +34,7 @@
     phone: '0986019623',
     role: 'user',
     password: '123456',
-    balance: 100000,
+    balance: 0,
     avatar: 'KH',
     createdAt: '2026-03-20T10:00:00.000Z'
   };
