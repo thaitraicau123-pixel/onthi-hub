@@ -54,6 +54,9 @@ window.ShopVietViews.modal = (function () {
     return null;
   }
 
+  // Lý do lỗi gần nhất khi gọi /api/topups (hiện trong toast để dễ chẩn đoán).
+  var lastTopupError = '';
+
   async function callTopupApi(idToken, payload) {
     const origin = window.location.origin || '';
     const res = await fetch(origin + '/api/topups', {
@@ -62,8 +65,26 @@ window.ShopVietViews.modal = (function () {
       body: JSON.stringify(payload),
       signal: (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') ? AbortSignal.timeout(10000) : undefined
     }).catch(function () { return null; });
-    if (!res || !res.ok) return null;
-    return res.json().catch(function () { return null; });
+
+    if (!res) {
+      lastTopupError = 'không kết nối được máy chủ';
+      console.warn('[Nạp Xu] không gọi được /api/topups (mạng hoặc timeout)');
+      return null;
+    }
+
+    const json = await res.json().catch(function () { return null; });
+    if (!res.ok) {
+      lastTopupError = 'mã ' + res.status + (json && (json.reason || json.code) ? ' · ' + (json.reason || json.code) : '');
+      console.warn('[Nạp Xu] /api/topups lỗi:', res.status, json);
+      return null;
+    }
+    if (json && json.ok === false) {
+      lastTopupError = json.reason || json.code || json.message || 'máy chủ từ chối';
+      console.warn('[Nạp Xu] /api/topups trả ok:false:', json);
+      return null;
+    }
+    lastTopupError = '';
+    return json;
   }
 
   async function requestDepositIntent(idToken, amount, userName) {
@@ -1326,7 +1347,7 @@ window.ShopVietViews.modal = (function () {
       const intent = await requestDepositIntent(idToken, selectedAmount, currentUser.name);
       if (!intent) {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Không tạo được mã nạp Xu. Vui lòng thử lại sau ít giây!', 'error');
+          window.ShopVietState.showToast('Không tạo được mã nạp Xu (' + (lastTopupError || 'lỗi máy chủ') + '). Vui lòng thử lại sau ít giây!', 'error');
         }
         return;
       }

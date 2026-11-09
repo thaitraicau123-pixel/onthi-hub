@@ -333,20 +333,36 @@ export default async function handler(req, res) {
           });
         }
 
-        const memo = generateMemo();
-        await createTopupIntent({
-          memo: memo,
-          userEmail: identity.email,
-          userName: String(body.userName || '').trim() || identity.email.split('@')[0],
-          amount: requestedAmount,
-          uid: identity.uid
-        });
-        return res.status(200).json({ ok: true, memo: memo, amount: requestedAmount, status: 'pending' });
+        // Sinh mã nạp; nếu mã vô tình trùng (409 ALREADY_EXISTS) thì thử mã khác.
+        const userName = String(body.userName || '').trim() || identity.email.split('@')[0];
+        let createdMemo = '';
+        let lastError = null;
+        for (let attempt = 0; attempt < 3 && !createdMemo; attempt += 1) {
+          const candidate = generateMemo();
+          try {
+            await createTopupIntent({
+              memo: candidate,
+              userEmail: identity.email,
+              userName: userName,
+              amount: requestedAmount,
+              uid: identity.uid
+            });
+            createdMemo = candidate;
+          } catch (err) {
+            lastError = err;
+            const duplicate = err && (err.status === 409 || String(err.message || '').indexOf('ALREADY_EXISTS') !== -1);
+            if (!duplicate) throw err;
+          }
+        }
+        if (!createdMemo) throw lastError || new Error('memo_generation_failed');
+        return res.status(200).json({ ok: true, memo: createdMemo, amount: requestedAmount, status: 'pending' });
       } catch (err) {
         console.warn('[api/topups] intent error:', err && err.message);
+        // reason: mã lỗi ngắn (vd firestore_PATCH_403_PERMISSION_DENIED) để chẩn đoán nhanh.
         return res.status(503).json({
           ok: false,
           code: 'intent_failed',
+          reason: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
           message: 'Không tạo được mã nạp, vui lòng thử lại.'
         });
       }
