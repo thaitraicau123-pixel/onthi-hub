@@ -65,7 +65,8 @@ export default async function handler(req, res) {
           ok: false,
           probe: 'firestore',
           code: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
-          httpStatus: (err && err.status) || 0
+          httpStatus: (err && err.status) || 0,
+          detail: String((err && err.detail) || '').slice(0, 220)
         });
       }
     }
