@@ -1,6 +1,9 @@
 /**
  * api/sepay.js
  * Vercel Serverless Function - SePay Automated Payment Gateway & Webhook Engine
+ * Hỗ trợ đồng thời 2 chuẩn SePay:
+ * 1. Chuyển khoản VietQR Techcombank (NAPXU...)
+ * 2. SePay CheckoutBuilder SDK (INV-..., BANK_TRANSFER, PURCHASE, orderAmount)
  * Tự động nhận diện giao dịch chuyển khoản Techcombank 6688686866688 qua SePay (sepay.vn)
  * và tự động cộng Xu vào ví khách hàng 100% trong 2-5 giây, không cần Admin duyệt tay.
  */
@@ -31,25 +34,31 @@ export default async function handler(req, res) {
   }
 
   // ==========================================
-  // 1. GET: Kiểm tra trạng thái SePay Webhook
+  // 1. GET: Kiểm tra trạng thái SePay Webhook & Cung cấp cấu hình Checkout
   // ==========================================
   if (req.method === 'GET') {
     return res.status(200).json({
       ok: true,
-      service: 'SePay Automated Banking Webhook',
-      version: '1.0.0',
+      service: 'SePay Automated Banking Webhook & Checkout Gateway',
+      version: '1.1.0',
       status: 'active',
       bank: 'Techcombank',
       accountNumber: TECHCOMBANK_ACC,
       accountName: 'BUI THAI',
       webhookUrl: 'https://promptmmo.vercel.app/api/sepay',
+      checkoutBuilder: {
+        paymentMethod: 'BANK_TRANSFER',
+        currency: 'VND',
+        operation: 'PURCHASE',
+        orderInvoiceNumberPattern: 'INV-[timestamp]'
+      },
       guide: 'Dán URL webhook này vào cấu hình Webhook trên trang quản trị SePay (sepay.vn) để kích hoạt duyệt Xu tự động 24/7.',
       timestamp: new Date().toISOString()
     });
   }
 
   // ==========================================
-  // 2. POST: Nhận Webhook từ SePay khi có biến động số dư
+  // 2. POST: Nhận Webhook từ SePay (Cả VietQR lẫn CheckoutBuilder)
   // ==========================================
   if (req.method === 'POST') {
     let body = req.body;
@@ -64,21 +73,41 @@ export default async function handler(req, res) {
 
     console.log('[SePay Webhook] Nhận dữ liệu biến động số dư từ SePay:', JSON.stringify(body));
 
-    // Kiểm tra loại giao dịch: chỉ xử lý tiền vào (in)
+    // A. Action tạo dữ liệu Checkout (tương đương CheckoutBuilder trong SePay PHP SDK)
+    if (body.action === 'create_checkout' || body.action === 'build_checkout') {
+      const amount = Number(body.amount || body.orderAmount) || 10000;
+      const invoiceNum = String(body.orderInvoiceNumber || 'INV-' + Date.now());
+      const description = String(body.orderDescription || body.description || ('Nap Xu Bùi Thái AI - ' + invoiceNum));
+      const checkoutData = {
+        paymentMethod: 'BANK_TRANSFER',
+        currency: 'VND',
+        orderInvoiceNumber: invoiceNum,
+        orderAmount: amount,
+        operation: 'PURCHASE',
+        orderDescription: description,
+        bankAccount: TECHCOMBANK_ACC,
+        bankName: 'Techcombank',
+        accountName: 'BUI THAI',
+        qrUrl: `https://qr.sepay.vn/img?acc=${TECHCOMBANK_ACC}&bank=Techcombank&amount=${amount}&des=${encodeURIComponent(invoiceNum)}&template=compact`
+      };
+      return res.status(200).json({ success: true, data: checkoutData });
+    }
+
+    // B. Kiểm tra loại giao dịch: chỉ xử lý tiền vào (in)
     const transferType = String(body.transferType || '').toLowerCase();
     if (transferType && transferType !== 'in') {
       console.log('[SePay Webhook] Bỏ qua giao dịch tiền ra (transferType != in):', transferType);
       return res.status(200).json({ success: true, message: 'Bỏ qua giao dịch tiền ra' });
     }
 
-    // Lấy số tiền chuyển khoản (VNĐ = Xu, tỷ lệ 1:1)
-    const transferAmount = Number(body.transferAmount || body.amount) || 0;
+    // Lấy số tiền chuyển khoản (hỗ trợ cả transferAmount lẫn orderAmount của CheckoutBuilder)
+    const transferAmount = Number(body.transferAmount || body.orderAmount || body.order_amount || body.amount) || 0;
     if (transferAmount <= 0) {
       return res.status(400).json({ success: false, message: 'Số tiền giao dịch không hợp lệ' });
     }
 
     // Chống xử lý trùng lặp giao dịch (Idempotency key)
-    const transactionId = String(body.id || body.referenceCode || body.transactionId || '').trim();
+    const transactionId = String(body.id || body.referenceCode || body.transactionId || body.orderInvoiceNumber || body.order_invoice_number || '').trim();
     if (transactionId && global._sepayProcessedIds.has(transactionId)) {
       console.warn(`[SePay Webhook] Giao dịch ${transactionId} đã được xử lý trước đó, bỏ qua để chống cộng trùng.`);
       return res.status(200).json({ success: true, message: 'Giao dịch đã được ghi nhận trước đó' });
@@ -91,14 +120,14 @@ export default async function handler(req, res) {
       }
     }
 
-    // Trích xuất nội dung chuyển khoản
-    const content = String(body.content || body.description || body.code || '').trim();
-    const contentUpper = content.toUpperCase();
+    // Trích xuất nội dung chuyển khoản / mã hóa đơn CheckoutBuilder
+    const invoiceNumber = String(body.orderInvoiceNumber || body.order_invoice_number || body.invoiceNumber || '').trim();
+    const content = String(body.content || body.description || body.code || invoiceNumber || '').trim();
+    const contentUpper = (content + ' ' + invoiceNumber).toUpperCase();
 
     // Tìm kiếm trong bộ đệm topups hiện tại
     let matchedTopup = null;
 
-    // 1. Tìm theo memo / mã lệnh NAPXU
     if (Array.isArray(global._serverTopupCache)) {
       matchedTopup = global._serverTopupCache.find(t => {
         if (!t) return false;
@@ -109,11 +138,14 @@ export default async function handler(req, res) {
         // Khớp mã số sau NAPXU
         const memoCodeMatch = memo.match(/NAPXU\s*([A-Z0-9_-]+)/);
         if (memoCodeMatch && contentUpper.includes(memoCodeMatch[1])) return true;
+        // Khớp mã hóa đơn INV-...
+        const invMatch = memo.match(/INV-([A-Z0-9_-]+)/i);
+        if (invMatch && contentUpper.includes(invMatch[0].toUpperCase())) return true;
         return false;
       });
     }
 
-    let topupId = matchedTopup ? matchedTopup.id : ('TOPUP-SEPAY-' + Date.now().toString().slice(-6) + Math.floor(10 + Math.random() * 89));
+    let topupId = matchedTopup ? matchedTopup.id : (invoiceNumber || ('TOPUP-SEPAY-' + Date.now().toString().slice(-6) + Math.floor(10 + Math.random() * 89)));
     let userEmail = matchedTopup ? matchedTopup.userEmail : '';
     let userName = matchedTopup ? matchedTopup.userName : '';
 
@@ -126,12 +158,15 @@ export default async function handler(req, res) {
       }
     }
 
-    // Nếu vẫn chưa có email, trích xuất mã khách hàng từ nội dung (ví dụ NAPXU THAIHOA165)
+    // Nếu vẫn chưa có email, trích xuất mã khách hàng từ nội dung (ví dụ NAPXU THAIHOA165 hoặc INV-...)
     if (!userEmail) {
       const codeMatch = contentUpper.match(/NAPXU\s*([A-Z0-9_-]+)/);
       if (codeMatch) {
         userName = codeMatch[1];
         userEmail = codeMatch[1].toLowerCase() + '@khachhang.promptmmo';
+      } else if (invoiceNumber) {
+        userName = invoiceNumber;
+        userEmail = invoiceNumber.toLowerCase() + '@sepay.checkout';
       }
     }
 
@@ -154,8 +189,8 @@ export default async function handler(req, res) {
         bank: 'Techcombank',
         accountNumber: TECHCOMBANK_ACC,
         accountName: 'BUI THAI',
-        method: 'SePay VietQR 24/7 Tự Động',
-        memo: content || 'NAPXU SEPAY',
+        method: invoiceNumber ? 'SePay Checkout Gateway (BANK_TRANSFER)' : 'SePay VietQR 24/7 Tự Động',
+        memo: content || invoiceNumber || 'NAPXU SEPAY',
         userEmail: userEmail || 'khachhang@promptmmo.store',
         userName: userName || 'Khách Hàng SePay',
         status: 'completed',
