@@ -520,9 +520,10 @@ export default async function handler(req, res) {
         ...current,
         ...(body.userData || {}),
         email: email,
-        balance: typeof body.balance === 'number' ? body.balance : (typeof current.balance === 'number' ? current.balance : 0),
         lastSyncedAt: new Date().toISOString()
       };
+      // Ví Xu do Firestore quản lý — RAM serverless không giữ số dư để khỏi trả số cũ.
+      delete updated.balance;
       global._serverUserCache.set(email, updated);
       console.log(`[Serverless Cloud] Đã đồng bộ User: ${email} | Số dư: ${updated.balance} Xu`);
       return res.status(200).json({ ok: true, user: updated });
@@ -531,7 +532,12 @@ export default async function handler(req, res) {
     // 2.0b Lấy thông tin User từ Serverless Cloud
     if (action === 'get_user') {
       const email = String(body.userEmail || body.email || '').trim().toLowerCase();
-      const user = global._serverUserCache.get(email) || null;
+      const cached = global._serverUserCache.get(email) || null;
+      let user = null;
+      if (cached) {
+        user = { ...cached };
+        delete user.balance; // số dư chỉ lấy từ Firestore
+      }
       return res.status(200).json({ ok: true, user });
     }
 
