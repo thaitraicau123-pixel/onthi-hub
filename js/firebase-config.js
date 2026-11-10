@@ -192,7 +192,7 @@
                 try {
                   const cloudUser = await this.fetchUserFromCloud(cleanEmail);
                   if (cloudUser && typeof cloudUser.balance === 'number') {
-                    userBal = Math.max(userBal, cloudUser.balance);
+                    userBal = cloudUser.balance; // Firestore là chuẩn, không giữ số cao cũ trong máy
                   }
                 } catch (e) {}
 
@@ -697,7 +697,7 @@
 
             const cloudUser = await this.fetchUserFromCloud(email);
             if (cloudUser && typeof cloudUser.balance === 'number') {
-              userBal = Math.max(userBal, cloudUser.balance);
+              userBal = cloudUser.balance; // Firestore là chuẩn, không giữ số cao cũ trong máy
             }
 
             const userData = {
@@ -752,7 +752,7 @@
             let userBal = isAdmin ? 9000 : 0;
             const cloudUser = await this.fetchUserFromCloud(email);
             if (cloudUser && typeof cloudUser.balance === 'number') {
-              userBal = Math.max(userBal, cloudUser.balance);
+              userBal = cloudUser.balance; // Firestore là chuẩn, không giữ số cao cũ trong máy
             }
 
             const userData = {
@@ -806,7 +806,7 @@
 
             const cloudUser = await this.fetchUserFromCloud(cleanEmail);
             if (cloudUser && typeof cloudUser.balance === 'number') {
-              userBal = Math.max(userBal, cloudUser.balance);
+              userBal = cloudUser.balance; // Firestore là chuẩn, không giữ số cao cũ trong máy
             }
 
             const userData = {
@@ -891,7 +891,7 @@
         }
         const cloudUser = await this.fetchUserFromCloud(email);
         if (cloudUser && typeof cloudUser.balance === 'number') {
-          res.user.balance = Math.max(res.user.balance || 0, cloudUser.balance);
+          res.user.balance = cloudUser.balance; // Firestore là chuẩn
         }
         if (cloudUser && (cloudUser.orders || cloudUser.ordersJson) && window.ShopVietState && typeof window.ShopVietState.mergeUserOrdersFromCloud === 'function') {
           let rOrders = Array.isArray(cloudUser.orders) ? cloudUser.orders : null;
