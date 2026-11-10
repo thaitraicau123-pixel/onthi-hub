@@ -1407,7 +1407,8 @@
           // Đồng bộ các lệnh nạp xu thời gian thực: ưu tiên khi Admin Portal đang mở hoặc giãn cách 25s
           const nowMs = Date.now();
           const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
-          if (isAdminOpen || !self._lastTopupCheckTime || nowMs - self._lastTopupCheckTime >= 25000) {
+          const isPageHidden = typeof document !== 'undefined' && document.hidden;
+          if (!isPageHidden && (!self._lastTopupCheckTime || nowMs - self._lastTopupCheckTime >= 30000)) {
             self._lastTopupCheckTime = nowMs;
             try {
               await self.syncTopupsFromCloud(false);
@@ -2636,7 +2637,16 @@
               note: note
             })
           });
-          }).catch(() => null);
+          }).then(function (r) { return r && r.json ? r.json() : null; })
+            .then(function (json) {
+              if (json && json.ok === false) {
+                console.warn('[directCreditCoins] Server chưa ghi ví:', json.reason || json.message);
+                if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+                  window.ShopVietState.showToast('⚠️ Chưa lưu được khoản cộng Xu lên máy chủ (' + (json.reason || json.code || 'error') + ').', 'warning');
+                }
+              }
+            })
+            .catch(function () {});
         } catch (eApi) {}
       }
 
@@ -2779,17 +2789,24 @@
       if (typeof window !== 'undefined' && window.location) {
         try {
           const origin = window.location.origin || '';
-          fetch(origin + '/api/topups', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'deduct_coins',
-              userEmail: email,
-              amount: amount,
-              newBalance: newBalance,
-              orderMeta: orderMeta || null
-            })
-          }).catch(function () {});
+          (async function () {
+            const authHeaders = await adminAuthHeaders();
+            const r = await fetch(origin + '/api/topups', {
+              method: 'POST',
+              headers: authHeaders,
+              body: JSON.stringify({
+                action: 'deduct_coins',
+                userEmail: email,
+                amount: amount,
+                newBalance: newBalance,
+                orderMeta: orderMeta || null
+              })
+            });
+            const json = await r.json().catch(function () { return null; });
+            if (json && json.ok === false) {
+              console.warn('[deductUserCoins] Máy chủ chưa trừ Xu:', json.reason || json.code || json.message);
+            }
+          })().catch(function () {});
         } catch (eApi) {}
       }
 

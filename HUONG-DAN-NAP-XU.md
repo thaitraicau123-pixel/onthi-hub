@@ -231,3 +231,20 @@ Không thể xảy ra với giao dịch qua SePay: mỗi mã giao dịch SePay c
 4. Đặt `ADMIN_EMAILS` trên Vercel rồi redeploy (bước 3b), nếu không các nút quản trị của bạn cũng bị chặn.
 5. (Khuyến nghị) Topic ntfy `buithai_studio_0986019623` là **công khai**: ai cũng đọc và gửi được thông báo giả vào đó. Nên đổi sang topic riêng khó đoán hoặc bật ntfy auth. Tin cũ trên ntfy.sh tự hết hạn sau ~12 giờ.
 6. (Khuyến nghị) `/cloud-db.json` vẫn public và chứa email khách — nên chặn hoặc bỏ file này khỏi repo.
+
+
+## 8. Số dư ví chỉ do máy chủ ghi (10/11/2026)
+
+Từ bản này, **chỉ máy chủ** được cộng/trừ số dư Xu trong Firestore. Trình duyệt (client) không ghi `balance` nữa.
+
+Lý do: trước đây mỗi tab đang mở đều đẩy số dư trong máy nó lên cloud, nên khoản vừa cộng từ SePay bị tab khác ghi đè → số dư lúc đúng lúc sai, nhiều lúc phải duyệt tay.
+
+Các đường ghi số dư hiện nay (đều là API máy chủ, ghi 1 lần, có chống trùng):
+- Webhook SePay khi tiền vào: cộng Xu.
+- Admin "Cộng Xu trực tiếp": cộng Xu (trước đây chỉ lưu tạm trong RAM nên mất khi server khởi động lại).
+- Admin "Reset số dư": đặt về 0.
+- Khách mua hàng: trừ Xu (bắt buộc đăng nhập đúng tài khoản, chống trừ trùng theo mã đơn).
+
+Lưu ý khi vận hành:
+- Tài khoản đăng nhập kiểu "local/mock" (không có Firebase ID Token thật) sẽ **không mua được** bằng Xu, vì máy chủ không xác thực được chủ ví. Hãy đăng nhập bằng email/Google thật.
+- Nếu Firestore báo hết hạn mức miễn phí (`RESOURCE_EXHAUSTED`), mọi lệnh cộng/trừ đều thất bại và web sẽ báo lỗi rõ ràng. Kiểm tra bằng `https://www.promptmmo.store/api/sepay?probe=1`. Cách xử lý: bật gói Blaze cho project `promtmmo` (hạn mức miễn phí mỗi ngày vẫn giữ nguyên).

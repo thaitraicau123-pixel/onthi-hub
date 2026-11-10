@@ -5692,13 +5692,14 @@
 
     // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ Firestore Cloud)
     setInterval(function () {
+      if (typeof document !== 'undefined' && document.hidden) return;
       checkPendingReviewOrders();
       if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
         window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
           handleTopupsRealtimeUI(topups);
         }).catch(function () {});
       }
-    }, 3500);
+    }, 20000);
 
     // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
     function setupFirestoreOrderListener() {

@@ -5,7 +5,7 @@
  */
 
 import { verifyFirebaseIdToken } from '../lib/firebase-token.js';
-import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured, getDocument, userDocId } from '../lib/firestore.js';
+import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured, getDocument, userDocId, creditWallet, applyWalletDelta } from '../lib/firestore.js';
 import { generateMemo } from '../lib/sepay.js';
 
 // Bộ đệm lưu trữ topups trong memory của serverless instance
@@ -468,6 +468,30 @@ export default async function handler(req, res) {
         });
       }
 
+      // 🔒 Ghi ví THẬT trên Firestore (trước đây chỉ sửa cache RAM nên số dư biến mất)
+      if (isConfigured()) {
+        if (!userEmail || !(amount > 0)) {
+          return res.status(400).json({ ok: false, message: 'Thiếu email hoặc số Xu để cộng ví!' });
+        }
+        try {
+          await creditWallet({
+            transactionId: topupId,
+            userEmail: userEmail,
+            userName: String(body.userName || ''),
+            amount: amount,
+            memo: String(body.memo || '')
+          });
+        } catch (err) {
+          console.warn('[api/topups] Chưa cộng được Xu vào ví, vui lòng thử lại!:', err && (err.detail || err.message));
+          return res.status(503).json({
+            ok: false,
+            code: 'wallet_credit_failed',
+            reason: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
+            message: 'Chưa cộng được Xu vào ví, vui lòng thử lại!'
+          });
+        }
+      }
+
       // Bắn ntfy thông báo đã duyệt
       try {
         await fetch('https://ntfy.sh', {
@@ -562,6 +586,19 @@ export default async function handler(req, res) {
       if (email) {
         FORCED_BALANCES[email] = newBal;
       }
+      if (isConfigured() && email) {
+        try {
+          await applyWalletDelta({ email: email, absolute: newBal, reason: 'admin_reset_balance' });
+        } catch (err) {
+          console.warn('[api/topups] Chưa reset được số dư trên máy chủ, vui lòng thử lại!:', err && (err.detail || err.message));
+          return res.status(503).json({
+            ok: false,
+            code: 'wallet_reset_failed',
+            reason: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
+            message: 'Chưa reset được số dư trên máy chủ, vui lòng thử lại!'
+          });
+        }
+      }
       console.log(`[Topup Engine] Đã reset số dư tài khoản ${email} về ${newBal} Xu`);
       return res.status(200).json({ ok: true, userEmail: email, newBalance: newBal });
     }
@@ -573,6 +610,47 @@ export default async function handler(req, res) {
       const newBalance = Number(body.newBalance) || 0;
       const orderMeta = body.orderMeta || {};
 
+      // 🔒 Bắt buộc Firebase ID Token khớp email: không ai trừ hộ ví người khác được
+      let deductClaim = null;
+      try {
+        deductClaim = await verifyFirebaseIdToken(extractBearerToken(req));
+      } catch (eClaim) {
+        deductClaim = null;
+      }
+      const deductEmail = deductClaim && deductClaim.email ? String(deductClaim.email).trim().toLowerCase() : '';
+      if (!deductEmail || deductEmail !== userEmail) {
+        return res.status(401).json({
+          ok: false,
+          code: 'auth_required',
+          message: 'Cần đăng nhập đúng tài khoản để trừ Xu trong ví!'
+        });
+      }
+      if (isConfigured() && userEmail && amount > 0) {
+        try {
+          const applied = await applyWalletDelta({
+            email: userEmail,
+            delta: -amount,
+            reason: 'purchase',
+            idempotencyKey: String(orderMeta.orderCode || orderMeta.id || '')
+          });
+          return res.status(200).json({
+            ok: true,
+            userEmail,
+            amount,
+            newBalance: applied.newBalance === null ? newBalance : applied.newBalance,
+            duplicate: Boolean(applied.duplicate),
+            orderMeta
+          });
+        } catch (err) {
+          console.warn('[api/topups] Chưa trừ được Xu trên máy chủ, vui lòng thử lại!:', err && (err.detail || err.message));
+          return res.status(503).json({
+            ok: false,
+            code: 'wallet_deduct_failed',
+            reason: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
+            message: 'Chưa trừ được Xu trên máy chủ, vui lòng thử lại!'
+          });
+        }
+      }
       console.log(`[Topup Engine] Khách ${userEmail} đã trừ ${amount} Xu. Số dư còn: ${newBalance} Xu. Đơn: ${orderMeta.orderCode || 'N/A'}`);
       return res.status(200).json({ ok: true, userEmail, amount, newBalance, orderMeta });
     }
@@ -607,6 +685,27 @@ export default async function handler(req, res) {
       global._serverTopupCache.unshift(directTopup);
       if (global._serverTopupCache.length > 200) {
         global._serverTopupCache = global._serverTopupCache.slice(0, 200);
+      }
+
+      // 🔒 Ghi ví THẬT trên Firestore để số dư không mất khi server khởi động lại
+      if (isConfigured()) {
+        try {
+          await creditWallet({
+            transactionId: topupId,
+            userEmail: userEmail,
+            userName: directTopup.userName,
+            amount: amount,
+            memo: note
+          });
+        } catch (err) {
+          console.warn('[api/topups] Chưa cộng được Xu vào ví, vui lòng thử lại!:', err && (err.detail || err.message));
+          return res.status(503).json({
+            ok: false,
+            code: 'wallet_credit_failed',
+            reason: String((err && (err.code || err.message)) || 'unknown').slice(0, 90),
+            message: 'Chưa cộng được Xu vào ví, vui lòng thử lại!'
+          });
+        }
       }
 
       // Bắn ntfy xác nhận

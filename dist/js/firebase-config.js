@@ -18,7 +18,7 @@
     measurementId: "G-4QW8FFR4YD"
   };
 
-  const FIRESTORE_REST_BASE = `https://firestore.googleapis.com/v1/projects/${promtmmoFirebaseConfig.projectId}/databases/default/documents`;
+  const FIRESTORE_REST_BASE = `https://firestore.googleapis.com/v1/projects/${promtmmoFirebaseConfig.projectId}/databases/(default)/documents`;
   const FIRESTORE_API_KEY = promtmmoFirebaseConfig.apiKey;
 
   const CLOUD_USERS_KEY = 'shopviet247_cloud_users_sync';
@@ -270,34 +270,23 @@
                 : null;
 
               if (curBal !== null && data.balance !== curBal) {
+                // Bỏ qua snapshot còn ghi cục bộ chưa lên server.
+                if (doc.metadata && doc.metadata.hasPendingWrites) return;
                 const diff = data.balance - curBal;
-                // CHỐNG ROLLBACK SỐ DƯ KHI ĐÃ TRỪ TIỀN (Ngăn chặn Firestore 429 quota hoặc cache cũ ghi đè)
-                if (diff > 0) {
-                  let isLegitDeposit = false;
-                  let approvedIds = [];
-                  try {
-                    approvedIds = JSON.parse(localStorage.getItem('shopviet_approved_topup_ids') || '[]');
-                  } catch (e) {}
-                  if (data.lastApprovedTopupId && !approvedIds.includes(data.lastApprovedTopupId)) {
-                    isLegitDeposit = true;
-                    approvedIds.push(data.lastApprovedTopupId);
-                    try {
-                      localStorage.setItem('shopviet_approved_topup_ids', JSON.stringify(approvedIds));
-                    } catch (e) {}
-                  }
-                  if (!isLegitDeposit) {
-                    console.warn('[Firestore] Giữ nguyên số dư sau khi trừ tiền cục bộ (' + curBal + ' Xu), chặn đứng rollback số dư cũ từ Cloud (' + data.balance + ' Xu)');
-                    return;
-                  }
-                }
-
+                // 🔒 Firestore là CHUẨN: server là nơi duy nhất được cộng/trừ số dư.
                 window.ShopVietState.updateUserBalance(cleanEmail, data.balance, true);
                 if (diff > 0) {
-                  if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
-                    window.BuiThaiNtfy.playChime('deposit');
-                  }
-                  if (typeof window.ShopVietState.showToast === 'function') {
-                    window.ShopVietState.showToast(`🎉 Admin Bùi Thái vừa duyệt nạp thành công +${diff.toLocaleString('vi-VN')} Xu vào ví của bạn!`, 'success');
+                  let seenId = '';
+                  try { seenId = localStorage.getItem('shopviet_last_seen_approved_topup') || ''; } catch (e) {}
+                  const isNewCredit = Boolean(data.lastApprovedTopupId) && data.lastApprovedTopupId !== seenId;
+                  if (isNewCredit) {
+                    try { localStorage.setItem('shopviet_last_seen_approved_topup', data.lastApprovedTopupId); } catch (e) {}
+                    if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
+                      window.BuiThaiNtfy.playChime('deposit');
+                    }
+                    if (typeof window.ShopVietState.showToast === 'function') {
+                      window.ShopVietState.showToast(`🎉 Đã cộng +${diff.toLocaleString('vi-VN')} Xu vào ví của bạn!`, 'success');
+                    }
                   }
                 }
               }
@@ -336,7 +325,7 @@
         if (this.topupsUnsubscribe) {
           this.topupsUnsubscribe();
         }
-        this.topupsUnsubscribe = this.db.collection('topups').onSnapshot((snapshot) => {
+        this.topupsUnsubscribe = this.db.collection('topups').limit(30).onSnapshot((snapshot) => {
           const topups = [];
           snapshot.forEach(doc => {
             const d = doc.data();
@@ -420,6 +409,11 @@
         email: cleanEmail,
         lastSyncedAt: new Date().toISOString()
       };
+      // 🔒 SỐ DƯ CHỈ DO SERVER GHI (webhook SePay / duyệt tay / trừ Xu).
+      delete payload.balance;
+      delete payload.walletSeal;
+      const writableKeys = Object.keys(payload).filter(k => k !== 'email' && k !== 'lastSyncedAt');
+      if (writableKeys.length === 0) return true;
 
       // 1. Lưu LocalStorage cache (0ms)
       try {
@@ -517,16 +511,21 @@
     /**
      * Kéo danh sách Yêu cầu Nạp Xu từ Firestore (REST API + SDK)
      */
-    fetchTopupsFromCloud: async function () {
+    fetchTopupsFromCloud: async function (force = false) {
       if (typeof window !== 'undefined' && window._firestoreQuotaBlockedUntil && Date.now() < window._firestoreQuotaBlockedUntil) {
         return [];
+      }
+      // Đệm 45 giây: đây là chỗ từng đốt hàng chục nghìn lượt đọc mỗi giờ.
+      const cacheNow = Date.now();
+      if (!force && this._topupsCache && (cacheNow - this._topupsCache.at) < 45000) {
+        return this._topupsCache.list.slice();
       }
       this.init();
       const map = new Map();
 
       // 1. Kéo trực tiếp từ REST API databases/default/documents/topups (Zero-Cache)
       try {
-        const restUrl = `${FIRESTORE_REST_BASE}/topups?key=${FIRESTORE_API_KEY}&pageSize=100&_t=${Date.now()}`;
+        const restUrl = `${FIRESTORE_REST_BASE}/topups?key=${FIRESTORE_API_KEY}&pageSize=30&_t=${Date.now()}`;
         const res = await fetch(restUrl, { method: 'GET', cache: 'no-store' });
         if (res.status === 429) {
           if (typeof window !== 'undefined') {
@@ -550,7 +549,7 @@
       // 2. Nếu REST chưa trả về hoặc cần bổ sung từ SDK
       if (map.size === 0 && this.db) {
         try {
-          const snapshot = await this.db.collection('topups').limit(100).get();
+          const snapshot = await this.db.collection('topups').limit(30).get();
           snapshot.forEach(doc => {
             const d = doc.data();
             if (d) {
@@ -563,6 +562,7 @@
 
       const list = Array.from(map.values());
       list.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+      this._topupsCache = { at: Date.now(), list: list.slice() };
       return list;
     },
 
