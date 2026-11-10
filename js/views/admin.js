@@ -5699,7 +5699,7 @@
           handleTopupsRealtimeUI(topups);
         }).catch(function () {});
       }
-    }, 20000);
+    }, 60000);
 
     // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
     function setupFirestoreOrderListener() {

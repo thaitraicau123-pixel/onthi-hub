@@ -1407,8 +1407,10 @@
           // Đồng bộ các lệnh nạp xu thời gian thực: ưu tiên khi Admin Portal đang mở hoặc giãn cách 25s
           const nowMs = Date.now();
           const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
+          // CHỈ khi Admin Portal đang mở mới kéo danh sách nạp.
+          // Trước đây mọi tab của khách cũng kéo 30 document mỗi 30 giây → đốt quota vô ích.
           const isPageHidden = typeof document !== 'undefined' && document.hidden;
-          if (!isPageHidden && (!self._lastTopupCheckTime || nowMs - self._lastTopupCheckTime >= 30000)) {
+          if (isAdminOpen && !isPageHidden && (!self._lastTopupCheckTime || nowMs - self._lastTopupCheckTime >= 60000)) {
             self._lastTopupCheckTime = nowMs;
             try {
               await self.syncTopupsFromCloud(false);

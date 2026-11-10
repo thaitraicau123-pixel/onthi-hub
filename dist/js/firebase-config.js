@@ -514,9 +514,9 @@
       if (typeof window !== 'undefined' && window._firestoreQuotaBlockedUntil && Date.now() < window._firestoreQuotaBlockedUntil) {
         return [];
       }
-      // Đệm 45 giây: đây là chỗ từng đốt hàng chục nghìn lượt đọc mỗi giờ.
+      // Đệm 120 giây: đây là chỗ từng đốt hàng chục nghìn lượt đọc mỗi giờ.
       const cacheNow = Date.now();
-      if (!force && this._topupsCache && (cacheNow - this._topupsCache.at) < 45000) {
+      if (!force && this._topupsCache && (cacheNow - this._topupsCache.at) < 120000) {
         return this._topupsCache.list.slice();
       }
       this.init();
@@ -524,7 +524,7 @@
 
       // 1. Kéo trực tiếp từ REST API databases/default/documents/topups (Zero-Cache)
       try {
-        const restUrl = `${FIRESTORE_REST_BASE}/topups?key=${FIRESTORE_API_KEY}&pageSize=30&_t=${Date.now()}`;
+        const restUrl = `${FIRESTORE_REST_BASE}/topups?key=${FIRESTORE_API_KEY}&pageSize=15&_t=${Date.now()}`;
         const res = await fetch(restUrl, { method: 'GET', cache: 'no-store' });
         if (res.status === 429) {
           if (typeof window !== 'undefined') {
@@ -548,7 +548,7 @@
       // 2. Nếu REST chưa trả về hoặc cần bổ sung từ SDK
       if (map.size === 0 && this.db) {
         try {
-          const snapshot = await this.db.collection('topups').limit(30).get();
+          const snapshot = await this.db.collection('topups').limit(15).get();
           snapshot.forEach(doc => {
             const d = doc.data();
             if (d) {
@@ -605,12 +605,19 @@
     /**
      * Đồng bộ Đơn hàng lên Cloud
      */
-    fetchOrdersFromCloud: async function (email) {
+    fetchOrdersFromCloud: async function (email, force = false) {
       if (typeof window !== 'undefined' && window._firestoreQuotaBlockedUntil && Date.now() < window._firestoreQuotaBlockedUntil) {
         return [];
       }
       this.init();
       const cleanEmail = (email || '').trim().toLowerCase();
+
+      // Đệm 60 giây theo email: trước đây mỗi lần đồng bộ tốn tới ~50 lượt đọc.
+      const ordersCache = this._ordersCache || (this._ordersCache = {});
+      const cachedOrders = ordersCache[cleanEmail];
+      if (!force && cachedOrders && (Date.now() - cachedOrders.at) < 60000) {
+        return cachedOrders.list.slice();
+      }
       const map = new Map();
 
       // 1. Kéo từ user document (chứa ordersJson)
@@ -636,14 +643,15 @@
         } catch (e) {}
       }
 
-      // 2. Kéo từ collection('orders') qua SDK
-      if (this.db) {
+      // 2. Chỉ hỏi collection('orders') khi user document KHÔNG có đơn nào.
+      //    User document đã chứa ordersJson nên truy vấn này thường là thừa.
+      if (this.db && map.size === 0) {
         try {
           let query = this.db.collection('orders');
           if (cleanEmail) {
             query = query.where('userEmail', '==', cleanEmail);
           }
-          const snapshot = await query.limit(50).get();
+          const snapshot = await query.limit(20).get();
           snapshot.forEach(doc => {
             const d = doc.data();
             if (d) {
@@ -658,6 +666,7 @@
 
       const list = Array.from(map.values());
       list.sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
+      this._ordersCache[cleanEmail] = { at: Date.now(), list: list.slice() };
       return list;
     },
 
