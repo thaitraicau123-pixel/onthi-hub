@@ -437,8 +437,7 @@
           body: JSON.stringify({
             action: 'sync_user',
             userEmail: cleanEmail,
-            userData: payload,
-            balance: payload.balance
+            userData: payload
           })
         }).catch(() => null);
       } catch (_) {}
