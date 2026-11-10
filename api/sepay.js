@@ -13,6 +13,7 @@
 
 import { getWebhookSecret, verifyWebhookAuth, extractMemoFromPayment } from '../lib/sepay.js';
 import { creditWallet, getTopupIntent, recordUnmatchedTopup, isConfigured, FirestoreError, getDocument } from '../lib/firestore.js';
+import { queuePendingCredit } from '../lib/pending.js';
 
 const NOTIFY_TOPIC = 'buithai_studio_0986019623';
 const MAX_AMOUNT = 100_000_000;
@@ -194,6 +195,46 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error('[SePay] Lỗi cộng ví:', err && err.message);
+    const reason = String((err && (err.code || err.message)) || 'server_error').slice(0, 120);
+
+    // Tiền ĐÃ vào tài khoản nhưng chưa ghi được ví → lưu vào hàng đợi ngoài Google
+    // để không mất, sau đó admin cộng lại bằng một nút.
+    let queued = false;
+    try {
+      const q = await queuePendingCredit({
+        transactionId,
+        userEmail: intent.userEmail,
+        userName: intent.userName,
+        amount,
+        memo: intent.memo || memo,
+        content,
+        bank: body.gateway || 'MBBank',
+        referenceCode: body.referenceCode || '',
+        error: reason
+      });
+      queued = Boolean(q && q.queued);
+    } catch (eQueue) {
+      console.warn('[SePay] Không lưu được hàng đợi:', eQueue && eQueue.message);
+    }
+
+    if (queued) {
+      await notify({
+        title: `⏳ [SEPAY] TIỀN ĐÃ VÀO NHƯNG CHƯA CỘNG ĐƯỢC XU`,
+        message: `Khách: ${intent.userEmail}\nSố tiền: ${amount.toLocaleString('vi-VN')} VNĐ\nMã nạp: ${intent.memo || memo}\nMã GD: ${transactionId}\nLý do: ${reason}\n→ Đã lưu vào hàng đợi. Vào Admin bấm "Khoản chờ cộng" để cộng lại.`,
+        priority: 5,
+        tags: ['warning', 'moneybag']
+      });
+      // Trả 200 vì đã nhận và giữ được khoản tiền: SePay không cần gửi lại.
+      return res.status(200).json({
+        success: true,
+        matched: true,
+        queued: true,
+        credited: 0,
+        message: 'Tiền đã vào, chưa cộng được Xu — đã lưu vào hàng đợi để cộng lại.',
+        code: reason
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: 'Lỗi ghi ví, SePay sẽ thử lại.',

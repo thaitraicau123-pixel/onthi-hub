@@ -7,6 +7,7 @@
 import { verifyFirebaseIdToken } from '../lib/firebase-token.js';
 import { createTopupIntent, updateTopupIntentAmount, getTopupIntent, isConfigured, getDocument, userDocId, creditWallet, applyWalletDelta } from '../lib/firestore.js';
 import { generateMemo } from '../lib/sepay.js';
+import { isQueueConfigured, listPendingCredits, dropPendingCredit } from '../lib/pending.js';
 
 // Bộ đệm lưu trữ topups trong memory của serverless instance
 // Bộ đệm lưu trữ topups, users và orders trong memory của serverless instance
@@ -512,6 +513,69 @@ export default async function handler(req, res) {
     }
 
         // 2.0a Đồng bộ User & Số dư ví lên Serverless Cloud (Thay thế Firestore khi hết Quota 429)
+    // ------------------------------------------- hàng đợi khoản nạp chờ cộng Xu
+    if (action === 'pending_list' || action === 'pending_replay') {
+      const admin = await requireAdmin(req);
+      if (!admin || admin.ok !== true) {
+        return res.status(admin && admin.status ? admin.status : 401).json({
+          ok: false,
+          code: (admin && admin.code) || 'auth_required',
+          message: (admin && admin.message) || 'Cần đăng nhập tài khoản quản trị.'
+        });
+      }
+      try {
+        if (!isQueueConfigured()) {
+          return res.status(200).json({ ok: true, queueConfigured: false, items: [], count: 0, credited: 0, remaining: 0 });
+        }
+
+        if (action === 'pending_list') {
+          const items = await listPendingCredits(50);
+          return res.status(200).json({ ok: true, queueConfigured: true, items: items, count: items.length });
+        }
+
+        const pending = await listPendingCredits(50);
+        let credited = 0;
+        let creditedAmount = 0;
+        let failed = 0;
+        for (const item of pending) {
+          try {
+            const result = await creditWallet({
+              transactionId: item.transactionId,
+              userEmail: item.userEmail,
+              userName: item.userName,
+              amount: item.amount,
+              memo: item.memo,
+              bankInfo: { bank: item.bank || 'MBBank', content: item.content || '', referenceCode: item.referenceCode || '' }
+            });
+            await dropPendingCredit(item.transactionId);
+            if (!result.duplicate) {
+              credited += 1;
+              creditedAmount += Number(item.amount) || 0;
+            }
+          } catch (err) {
+            failed += 1;
+            console.warn('[api/topups] pending_replay lỗi:', err && (err.detail || err.message));
+          }
+        }
+        const again = await listPendingCredits(50).catch(function () { return []; });
+        return res.status(200).json({
+          ok: true,
+          queueConfigured: true,
+          credited: credited,
+          creditedAmount: creditedAmount,
+          failed: failed,
+          remaining: again.length
+        });
+      } catch (err) {
+        return res.status(503).json({
+          ok: false,
+          code: 'queue_error',
+          reason: String((err && err.message) || 'unknown').slice(0, 90),
+          message: 'Không truy cập được hàng đợi, vui lòng thử lại.'
+        });
+      }
+    }
+
     if (action === 'sync_user') {
       const email = String(body.userEmail || body.email || '').trim().toLowerCase();
       if (!email) return res.status(400).json({ ok: false, message: 'Thiếu email' });

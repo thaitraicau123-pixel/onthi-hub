@@ -248,3 +248,22 @@ Các đường ghi số dư hiện nay (đều là API máy chủ, ghi 1 lần, 
 Lưu ý khi vận hành:
 - Tài khoản đăng nhập kiểu "local/mock" (không có Firebase ID Token thật) sẽ **không mua được** bằng Xu, vì máy chủ không xác thực được chủ ví. Hãy đăng nhập bằng email/Google thật.
 - Nếu Firestore báo hết hạn mức miễn phí (`RESOURCE_EXHAUSTED`), mọi lệnh cộng/trừ đều thất bại và web sẽ báo lỗi rõ ràng. Kiểm tra bằng `https://www.promptmmo.store/api/sepay?probe=1`. Cách xử lý: bật gói Blaze cho project `promtmmo` (hạn mức miễn phí mỗi ngày vẫn giữ nguyên).
+
+
+## 9. Hàng đợi chống mất tiền (10/11/2026)
+
+Nếu tiền đã vào tài khoản mà Firestore lỗi (hết hạn mức, mất mạng) thì khoản đó **không bị mất**: máy chủ tự lưu vào một hàng đợi riêng (Redis), kèm email khách, số Xu, mã nạp, mã giao dịch.
+
+**Cách bật (làm 1 lần, miễn phí):**
+1. Tạo tài khoản tại https://upstash.com → **Create Database** (chọn region Singapore, gói Free).
+2. Vào database vừa tạo → tab **REST API** → copy **UPSTASH_REDIS_REST_URL** và **UPSTASH_REDIS_REST_TOKEN**.
+3. Vercel → project → **Settings → Environment Variables** → thêm 2 biến trên → **Redeploy**.
+4. Chưa làm bước này cũng không sao: hệ thống chạy như cũ, chỉ là không có hàng đợi dự phòng.
+
+**Cách dùng khi có sự cố:**
+- Khách chuyển tiền mà ví không tăng → vào **Admin → nút "⏳ Khoản chờ cộng"**.
+- Hệ thống hiện danh sách: email, số Xu từng khoản, tổng cộng.
+- Bấm xác nhận → tự cộng lại vào đúng ví, chống cộng trùng theo mã giao dịch.
+- Cộng xong khoản nào thì khoản đó tự xoá khỏi hàng đợi.
+
+**Lưu ý:** nút này cần đăng nhập đúng tài khoản trong `ADMIN_EMAILS` (hoặc tài khoản có `role = admin` trong Firestore).
