@@ -53,7 +53,14 @@ export default async function handler(req, res) {
   // ---------------------------------------------------------------- health
   if (req.method === 'GET') {
     // ?probe=1 : tự kiểm tra quyền đọc Firestore bằng Service Account (chẩn đoán, không ghi gì).
-    if (String((req.query && req.query.probe) || '') === '1') {
+    // Bất kỳ giá trị probe nào (1, 2, true...) đều chạy kiểm tra thật.
+    // Trước đây chỉ đúng "1" mới kiểm tra, các giá trị khác rơi xuống nhánh health
+    // nên luôn trả ok:true dù Firestore đang chết — dễ gây hiểu nhầm.
+    const probeRaw = req.query ? req.query.probe : undefined;
+    const probeOn = probeRaw !== undefined && probeRaw !== null
+      && String(probeRaw).trim() !== ''
+      && !/^(0|false|no|off)$/i.test(String(probeRaw).trim());
+    if (probeOn) {
       if (!isConfigured()) {
         return res.status(200).json({ ok: false, probe: 'firestore', code: 'missing_service_account' });
       }
