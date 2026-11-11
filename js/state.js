@@ -33,7 +33,7 @@
     password: 'buithai123',
     name: 'Bùi Thái (Admin)',
     role: 'admin',
-    balance: 9000,
+    balance: 999999,
     phone: '0986019623',
     avatar: 'BT',
     createdAt: '2026-01-01T00:00:00.000Z'
@@ -3161,6 +3161,16 @@
                 if (Array.isArray(parsedO)) this.state.orders = parsedO;
               }
             } catch (e) {}
+          }
+
+                    // Luôn tự động hòa trộn các đơn hàng mẫu mặc định (defaultOrders) nếu chưa có
+          if (window.ShopVietData && Array.isArray(window.ShopVietData.defaultOrders)) {
+            const existingOrderKeys = new Set((this.state.orders || []).map(function(o) { return o.id || o.orderCode || o.productId; }));
+            window.ShopVietData.defaultOrders.forEach(function(dOrd) {
+              if (!existingOrderKeys.has(dOrd.id) && !existingOrderKeys.has(dOrd.orderCode) && !existingOrderKeys.has(dOrd.productId)) {
+                self.state.orders.push(Object.assign({}, dOrd));
+              }
+            });
           }
 
           this.state.theme = parsed.theme || 'light';
