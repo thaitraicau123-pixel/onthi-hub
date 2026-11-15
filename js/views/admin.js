@@ -59,20 +59,19 @@
     { id: '970407', code: 'STB', name: 'MBBank' }
   ];
 
-  // Khôi phục sản phẩm từ LocalStorage nếu đã có trước đó (tôn trọng trạng thái đã xóa sạch)
+  // Khôi phục sản phẩm từ LocalStorage nếu đã có trước đó
   function restoreProductsFromStorage() {
     try {
-      if (localStorage.getItem('shopviet_products_purged') === 'true') {
-        if (window.ShopVietData) {
-          window.ShopVietData.products = [];
-        }
-        return;
-      }
-      const saved = localStorage.getItem('shopviet_custom_products') || localStorage.getItem(STORAGE_KEYS.PRODUCTS);
+      const saved = localStorage.getItem(STORAGE_KEYS.PRODUCTS) || localStorage.getItem('shopviet_custom_products');
       if (saved && window.ShopVietData) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed)) {
-          window.ShopVietData.products = parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const hasNewSkills = parsed.some(function (p) {
+            return p && p.id === 'combo-web-ui-toolkit';
+          });
+          if (hasNewSkills) {
+            window.ShopVietData.products = parsed;
+          }
         }
       }
     } catch (e) {
@@ -324,9 +323,7 @@
   // GIAO DIỆN PHIÊN QUẢN TRỊ MODAL CHUẨN XÁC THEO PHONG CÁCH ẢNH 3
   // =========================================================================
   function renderAdminPortalModal() {
-    const products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === 'function')
-      ? window.ShopVietState.getCustomProducts()
-      : ((window.ShopVietData && window.ShopVietData.products) || []);
+    const products = (window.ShopVietData && window.ShopVietData.products) || [];
     const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
     const vouchers = (window.ShopVietState && window.ShopVietState.getVouchers) ? window.ShopVietState.getVouchers() : [];
     const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
@@ -456,7 +453,7 @@
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
               <span>Giá & gói</span>
-              <span id="adminPricingTabBadge" class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">${products.length}</span>
+              <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">${products.length}</span>
             </button>
 
             <!-- Tab 2: Thanh toán VietQR & Duyệt nạp xu -->
@@ -551,7 +548,7 @@
   // TAB 1: GIÁ & GÓI (QUẢN LÝ SẢN PHẨM)
   // =========================================================================
   function renderTabPricing() {
-    const products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === "function")
+    const products = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === "function" && window.ShopVietState.getCustomProducts().length > 0)
       ? window.ShopVietState.getCustomProducts()
       : ((window.ShopVietData && window.ShopVietData.products) || []);
 
@@ -3826,11 +3823,7 @@
       const editModal = document.getElementById('productEditBackdrop');
       if (editModal) editModal.remove();
 
-      // Cập nhật lại bảng tab pricing & badge số lượng trong admin
-      const pricingBadge = document.getElementById('adminPricingTabBadge');
-      if (pricingBadge) {
-        pricingBadge.textContent = String(window.ShopVietData.products.length);
-      }
+      // Cập nhật lại bảng tab pricing trong admin
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'pricing') {
         tabContent.innerHTML = renderTabPricing();
@@ -3857,80 +3850,9 @@
       notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
-    // 12. Xóa Sản Phẩm Vĩnh Viễn (xóa theo ID và xóa sạch trên Cloud/Firebase)
+    // 12. Xóa Sản Phẩm (Hạt Nhân Toàn Bộ Sản Phẩm)
     deleteProduct: async function (productId) {
-      if (!productId) {
-        return this.resetDefaultProducts();
-      }
-      try {
-        const currentList = (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === 'function')
-          ? window.ShopVietState.getCustomProducts()
-          : ((window.ShopVietData && window.ShopVietData.products) || []);
-        const filtered = currentList.filter(function (p) { return p && p.id !== productId; });
-
-        if (window.ShopVietState && typeof window.ShopVietState.markAsDeleted === 'function') {
-          window.ShopVietState.markAsDeleted(productId);
-        }
-
-        if (filtered.length === 0) {
-          return this.resetDefaultProducts();
-        }
-
-        if (window.ShopVietData) {
-          window.ShopVietData.products = filtered;
-        }
-        const jsonStr = JSON.stringify(filtered);
-        try {
-          if (typeof STORAGE_KEYS !== 'undefined' && STORAGE_KEYS.PRODUCTS) {
-            localStorage.setItem(STORAGE_KEYS.PRODUCTS, jsonStr);
-          }
-        } catch (eStorage) {}
-
-        if (window.ShopVietState && typeof window.ShopVietState.saveCustomProducts === 'function') {
-          window.ShopVietState.saveCustomProducts(filtered);
-        }
-
-        if (window.ShopVietFirebase && window.ShopVietFirebase.db) {
-          try {
-            const db = window.ShopVietFirebase.db;
-            await db.collection('products').doc(productId).delete().catch(function () {});
-            await db.collection('shopviet_products').doc(productId).delete().catch(function () {});
-          } catch (fbErr) {}
-        }
-
-        if (window.ShopVietState && typeof window.ShopVietState.pushAllToCloud === 'function') {
-          window.ShopVietState.pushAllToCloud(true, true).catch(function (e) {
-            console.warn('[Admin Delete Product Cloud Sync Error]:', e);
-          });
-        }
-
-        const pricingBadge = document.getElementById('adminPricingTabBadge');
-        if (pricingBadge) pricingBadge.textContent = String(filtered.length);
-        const tabContent = document.getElementById('adminTabContent');
-        if (tabContent && currentActiveTab === 'pricing') {
-          tabContent.innerHTML = renderTabPricing();
-        }
-
-        if (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.currentView === 'home') {
-          window.ShopVietState.navigate('home');
-        } else if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
-          window.ShopVietViews.home.renderProducts();
-        }
-
-        if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
-          window.ShopVietState.broadcastAdminChange('products_updated', {
-            action: 'delete',
-            productId: productId,
-            products: filtered,
-            count: filtered.length,
-            timestamp: Date.now()
-          });
-        }
-        recordBroadcast('products_updated', `Đã xóa vĩnh viễn sản phẩm ${productId}`);
-        notify('Đã xóa vĩnh viễn sản phẩm khỏi hệ thống & Cloud!', 'success');
-      } catch (err) {
-        console.error('[Delete Product Error]:', err);
-      }
+      return this.resetDefaultProducts();
     },
 
     // 13. Khôi phục sản phẩm mặc định -> BIẾN THÀNH TÍNH NĂNG XÓA SẠCH VĨNH VIỄN TOÀN BỘ SẢN PHẨM KHỎI FIRESTORE & HỆ THỐNG
@@ -3945,19 +3867,12 @@
         // 2. Dọn sạch LocalStorage & Khóa vĩnh viễn ngăn tự động nạp lại
         const emptyJson = JSON.stringify([]);
 
-        // Ngay lập tức dọn sạch hiển thị bảng sản phẩm và badge đếm trong DOM
-        const pricingBadge = document.getElementById('adminPricingTabBadge');
-        if (pricingBadge) {
-          pricingBadge.textContent = '0';
-        }
+        // Ngay lập tức dọn sạch hiển thị bảng sản phẩm trong DOM
         const curTbody = document.getElementById('adminProductTableBody');
         if (curTbody) {
           curTbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Toàn bộ sản phẩm đã được xóa sạch hoàn toàn khỏi hệ thống (v1.0.4).</td></tr>';
         }
         try {
-          if (window.ShopVietState && typeof window.ShopVietState.saveCustomProducts === 'function') {
-            window.ShopVietState.saveCustomProducts([]);
-          }
           localStorage.setItem('shopviet_products_purged', 'true');
           localStorage.setItem('shopviet_custom_products', emptyJson);
           localStorage.setItem('shopviet_admin_products', emptyJson);

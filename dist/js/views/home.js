@@ -1329,9 +1329,9 @@ window.ShopVietViews.home = (function () {
       const currentViewMode = getEffectiveViewMode();
       let gridColClasses = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-5';
 
-      // Lấy danh sách sản phẩm thật (Ưu tiên từ getCustomProducts trong State, tôn trọng trạng thái rỗng [])
+      // Lấy danh sách sản phẩm thật (Ưu tiên từ getCustomProducts trong State, nếu không có fallback về ShopVietData)
       let allProducts = [];
-      if (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === "function") {
+      if (window.ShopVietState && typeof window.ShopVietState.getCustomProducts === "function" && window.ShopVietState.getCustomProducts().length > 0) {
         allProducts = window.ShopVietState.getCustomProducts();
       } else if (window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
         allProducts = window.ShopVietData.products;
@@ -1373,10 +1373,21 @@ window.ShopVietViews.home = (function () {
       });
       const displayedProducts = matchingProducts;
 
-      // Xác định sản phẩm tiêu biểu cho Hero Banner (Ưu tiên sản phẩm isBestSeller -> sản phẩm đầu tiên, null nếu kho trống)
+      // Xác định sản phẩm tiêu biểu cho Hero Banner (Ưu tiên sản phẩm isBestSeller -> hoặc sản phẩm đầu tiên có sẵn trong kho)
       let heroProduct = allProducts.find(function (p) { return p.isBestSeller; });
       if (!heroProduct && allProducts.length > 0) {
         heroProduct = allProducts[0];
+      }
+      if (!heroProduct) {
+        heroProduct = {
+          id: 'combo-web-ui-toolkit',
+          name: 'Hộp Công Cụ Prompt Thiết Kế Web Thượng Lưu & UI 60fps (Haute-Couture)',
+          price: 9000,
+          oldPrice: 149000,
+          discount: '-94%',
+          badge: '⭐ SIÊU PHẨM ĐỈNH NHẤT',
+          desc: 'Kỹ năng phần cứng độc quyền khai thác 100% nhân NVENC CUDA trên card NVIDIA Studio/Laptop để render video siêu tốc 10x, mát máy, không nghẽn CPU.'
+        };
       }
 
       return `
@@ -1472,7 +1483,6 @@ window.ShopVietViews.home = (function () {
             <div class="lg:col-span-7 flex flex-col justify-between gap-4">
               
               <!-- BANNER QUẢNG CÁO NỀN TỐI NEON CHO SẢN PHẨM NỔI BẬT THỰC TẾ -->
-              ${heroProduct ? `
               <div data-product-card="true" data-product-id="${heroProduct.id || 'prod-001'}" class="bg-gradient-to-r from-slate-950 via-slate-900 to-[#18110A] text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-md relative overflow-hidden flex flex-col justify-between group transition-all duration-500">
                 
                 <!-- Glowing Ambient Orbs -->
@@ -1489,11 +1499,11 @@ window.ShopVietViews.home = (function () {
                   </div>
 
                   <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug line-clamp-2">
-                    ${(heroProduct.name || '').toUpperCase()}
+                    ${(heroProduct.name || 'GEMINI ARGON 4 PRO').toUpperCase()}
                   </h2>
 
                   <p class="text-slate-300 text-xs sm:text-sm leading-relaxed line-clamp-2">
-                    ${heroProduct.desc || ''}
+                    ${heroProduct.desc || 'Tăng tốc độ làm việc vượt trội với AI thế hệ mới. Nâng cấp trực tiếp trên email cá nhân, kích hoạt trong vài phút.'}
                   </p>
                 </div>
 
@@ -1522,17 +1532,6 @@ window.ShopVietViews.home = (function () {
                 </div>
 
               </div>
-              ` : `
-              <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-[#18110A] text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-md relative overflow-hidden flex flex-col justify-between">
-                <div class="relative z-10 space-y-2.5 max-w-lg">
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide bg-slate-800 text-slate-300 border border-slate-700">
-                    Bùi Thái AI Studio · Kho Sản Phẩm
-                  </span>
-                  <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">Hiện chưa có sản phẩm nào</h2>
-                  <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">Danh sách sản phẩm hiện đang trống. Quản trị viên có thể thêm sản phẩm mới từ Admin Portal.</p>
-                </div>
-              </div>
-              `}
 
               <!-- LƯỚI 2X2 GỒM 4 THẺ TÍNH NĂNG NHỎ -->
               <div class="grid grid-cols-2 gap-3.5">
