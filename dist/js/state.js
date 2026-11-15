@@ -194,57 +194,35 @@
     // Lấy danh sách sản phẩm tùy chỉnh từ localStorage (shopviet_custom_products / shopviet_admin_products)
     getCustomProducts: function () {
       try {
-        localStorage.removeItem("shopviet_products_purged");
+        if (localStorage.getItem("shopviet_products_purged") === "true") {
+          if (window.ShopVietData) window.ShopVietData.products = [];
+          return [];
+        }
         const defaultList = (window.ShopVietData && Array.isArray(window.ShopVietData.products) && window.ShopVietData.products.length > 0)
           ? window.ShopVietData.products
           : ((window.ShopVietData && window.ShopVietData.defaultProducts) || []);
 
-        // ƯU TIÊN 1: Kiểm tra localStorage (bắt buộc đủ tối thiểu 12 Hộp Công Cụ, có stock & unlockedPayload)
         const raw = localStorage.getItem("shopviet_custom_products") || localStorage.getItem("shopviet_admin_products") || localStorage.getItem("shopviet247_custom_products_v1");
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length >= 12) {
-            const isValid12 = parsed.every(function (p) {
-              return p && typeof p.price === "number" && p.price >= 1000 && p.price <= 990000 && p.stock && p.unlockedPayload;
+          if (Array.isArray(parsed)) {
+            const self = this;
+            const filtered = parsed.filter(function (p) {
+              return p && p.id && !self.isDeleted(p.id);
             });
-            if (isValid12) {
-              // Tự động bổ sung bất kỳ sản phẩm mới nào từ data.js vào danh sách nếu chưa có
-              if (defaultList.length > 0) {
-                const existingIds = new Set(parsed.map(function (p) { return p.id; }));
-                let hasNew = false;
-                defaultList.forEach(function (dp) {
-                  if (!existingIds.has(dp.id)) {
-                    parsed.push(dp);
-                    hasNew = true;
-                  }
-                });
-                if (hasNew) {
-                  try {
-                    localStorage.setItem("shopviet_custom_products", JSON.stringify(parsed));
-                    localStorage.setItem("shopviet_admin_products", JSON.stringify(parsed));
-                  } catch (e) {}
-                }
-              }
-              if (window.ShopVietData) {
-                window.ShopVietData.products = parsed;
-              }
-              return parsed;
+            if (window.ShopVietData) {
+              window.ShopVietData.products = filtered;
             }
+            return filtered;
           }
-          localStorage.removeItem("shopviet_custom_products");
-          localStorage.removeItem("shopviet_admin_products");
-          localStorage.removeItem("shopviet247_custom_products_v1");
         }
 
-        // ƯU TIÊN 2: Luôn khôi phục đầy đủ toàn bộ 16 sản phẩm chuẩn từ data.js
-        if (defaultList.length > 0) {
-          try {
-            localStorage.setItem("shopviet_custom_products", JSON.stringify(defaultList));
-          } catch (e) {}
-          if (window.ShopVietData) window.ShopVietData.products = defaultList;
-          return defaultList;
-        }
-        return [];
+        const self = this;
+        const cleanDefaults = defaultList.filter(function (p) {
+          return p && p.id && !self.isDeleted(p.id);
+        });
+        if (window.ShopVietData) window.ShopVietData.products = cleanDefaults;
+        return cleanDefaults;
       } catch (e) {
         console.warn("[ShopVietState] Lỗi getCustomProducts:", e);
         return (window.ShopVietData && window.ShopVietData.products) || [];
@@ -255,17 +233,22 @@
     getProductById: function (id) {
       if (!id) return null;
       const list = this.getCustomProducts();
-      return list.find(function (p) { return p.id === id; }) ||
-             (window.ShopVietData && typeof window.ShopVietData.getProductById === 'function' ? window.ShopVietData.getProductById(id) : null);
+      return list.find(function (p) { return p.id === id; }) || null;
     },
 
-    // Lưu danh sách sản phẩm tùy chỉnh vào cả 2 key localStorage và window.ShopVietData
+    // Lưu danh sách sản phẩm tùy chỉnh vào các key localStorage và window.ShopVietData
     saveCustomProducts: function (products) {
       try {
         if (!Array.isArray(products)) return false;
         const jsonStr = JSON.stringify(products);
         localStorage.setItem('shopviet_custom_products', jsonStr);
         localStorage.setItem('shopviet_admin_products', jsonStr);
+        localStorage.setItem('shopviet247_custom_products_v1', jsonStr);
+        if (products.length === 0) {
+          localStorage.setItem('shopviet_products_purged', 'true');
+        } else {
+          localStorage.removeItem('shopviet_products_purged');
+        }
         if (window.ShopVietData) {
           window.ShopVietData.products = products;
         }
@@ -599,32 +582,26 @@
           }
         }
 
-        // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
-        if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 1000 && p.price <= 990000 && p.stock; })) {
-          if (window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
-            const cloudIds = new Set(data.products.map(function (p) { return p.id; }));
-            window.ShopVietData.products.forEach(function (dp) {
-              if (!cloudIds.has(dp.id)) {
-                data.products.push(dp);
-              }
-            });
+        // 2. Đồng bộ Products (Tôn trọng trạng thái xóa sạch vĩnh viễn products_purged / mảng rỗng)
+        const isLocalPurged = localStorage.getItem('shopviet_products_purged') === 'true';
+        if (data.products_purged === true || (Array.isArray(data.products) && data.products.length === 0)) {
+          if ((localStorage.getItem('shopviet_custom_products') || '[]') !== '[]' || !isLocalPurged) {
+            hasChange = true;
           }
+          this.saveCustomProducts([]);
+          console.log('[ShopVietState] Đã đồng bộ trạng thái xóa vĩnh viễn toàn bộ sản phẩm từ Cloud!');
+        } else if (Array.isArray(data.products) && data.products.length > 0 && (!isLocalPurged || data.products_purged === false)) {
+          const self = this;
+          const cleanProducts = data.products.filter(function (p) {
+            return p && p.id && !self.isDeleted(p.id);
+          });
           const oldProdJson = localStorage.getItem('shopviet_custom_products') || '';
-          const prodJson = JSON.stringify(data.products);
+          const prodJson = JSON.stringify(cleanProducts);
           if (prodJson !== oldProdJson) {
             hasChange = true;
           }
-          try {
-            localStorage.setItem('shopviet_custom_products', prodJson);
-            localStorage.setItem('shopviet_admin_products', prodJson);
-            localStorage.setItem('shopviet247_custom_products_v1', prodJson);
-          } catch (e) {}
-          if (window.ShopVietData) {
-            window.ShopVietData.products = data.products;
-          }
-          this.saveCustomProducts(data.products);
-          hasChange = true;
-          console.log('[ShopVietState] Đã đồng bộ ' + data.products.length + ' sản phẩm (kèm ảnh upload & mô tả) từ Cloud Storage!');
+          this.saveCustomProducts(cleanProducts);
+          console.log('[ShopVietState] Đã đồng bộ ' + cleanProducts.length + ' sản phẩm từ Cloud Storage!');
         }
 
         // 3. Đồng bộ Vouchers (Mã giảm giá & quà tặng ví)
@@ -868,6 +845,7 @@
         const dbData = {
           users: users,
           products: customProducts,
+          products_purged: customProducts.length === 0,
           vouchers: vouchers,
           schedules: schedules,
           orders: orders,
@@ -880,13 +858,19 @@
         // 0. GHI NHẬN TÍN HIỆU REALTIME LÊN FIRESTORE NẾU KHẢ DỤNG
         if (window.ShopVietFirebase && window.ShopVietFirebase.db && window.ShopVietFirebase.isOnline && !window.ShopVietFirebase.isQuotaExceeded) {
           try {
-            window.ShopVietFirebase.db.collection('shopviet_realtime_sync').doc('latest_state').set({
+            const signalPayload = {
               type: 'cloud_sync_push',
+              count: customProducts.length,
+              products_purged: customProducts.length === 0,
               updatedAt: now,
               isoTimestamp: isoNow,
               senderTab: this.tabId || 'main',
               lastAdmin: (this.state && this.state.user && this.state.user.email) || 'admin'
-            }, { merge: true }).catch(function (e) {
+            };
+            if (customProducts.length === 0) {
+              signalPayload.products = [];
+            }
+            window.ShopVietFirebase.db.collection('shopviet_realtime_sync').doc('latest_state').set(signalPayload, { merge: true }).catch(function (e) {
               console.warn('[ShopVietState] Firestore sync signal error:', e.message);
             });
           } catch (e) {}
@@ -1112,25 +1096,19 @@
         }
       }
 
-      // 0c. BẢO VỆ: Luôn đảm bảo sản phẩm không bị xóa nhầm
-      localStorage.removeItem("shopviet_products_purged");
-
       // 1. Đồng bộ danh sách sản phẩm Products
-      if (data.payload && data.payload.products && Array.isArray(data.payload.products)) {
-        if (window.ShopVietData) {
-          window.ShopVietData.products = data.payload.products;
-        }
+      if ((data.payload && data.payload.purged === true) || (data.payload && Array.isArray(data.payload.products) && data.payload.products.length === 0)) {
+        this.saveCustomProducts([]);
+        needReRender = true;
+      } else if (data.payload && data.payload.products && Array.isArray(data.payload.products)) {
         this.saveCustomProducts(data.payload.products);
         needReRender = true;
       } else if (data.payload && Array.isArray(data.payload)) {
-        if (window.ShopVietData) {
-          window.ShopVietData.products = data.payload;
-        }
         this.saveCustomProducts(data.payload);
         needReRender = true;
       } else {
         const prods = this.getCustomProducts();
-        if (window.ShopVietData && prods && prods.length > 0) {
+        if (window.ShopVietData) {
           window.ShopVietData.products = prods;
           needReRender = true;
         }
@@ -1261,6 +1239,12 @@
             .onSnapshot(function (docSnapshot) {
               if (docSnapshot && docSnapshot.exists) {
                 const data = docSnapshot.data();
+                if (data && (data.products_purged === true || (Array.isArray(data.products) && data.products.length === 0))) {
+                  if (localStorage.getItem('shopviet_products_purged') !== 'true' || self.getCustomProducts().length > 0) {
+                    self.saveCustomProducts([]);
+                    self.renderCurrentRoute(true);
+                  }
+                }
                 if (data && data.updatedAt) {
                   const remoteTime = typeof data.updatedAt === 'number' ? data.updatedAt : new Date(data.updatedAt).getTime();
                   const localTime = self.getLastUpdatedAt();
@@ -3104,12 +3088,8 @@
       this.resetUserBalance('duy001wastaken@gmail.com', 0);
       this.cleanSpamTopupsByEmail('thaihoa27492@gmail.com');
       try {
-        localStorage.removeItem('shopviet_products_purged');
-        const curProds = this.getCustomProducts();
-        if (!Array.isArray(curProds) || curProds.length < 12) {
-          if (window.ShopVietData && Array.isArray(window.ShopVietData.products) && window.ShopVietData.products.length > 0) {
-            localStorage.setItem('shopviet_custom_products', JSON.stringify(window.ShopVietData.products));
-          }
+        if (localStorage.getItem('shopviet_products_purged') === 'true' && window.ShopVietData) {
+          window.ShopVietData.products = [];
         }
       } catch (e) {}
       this.setupFirestoreRealtimeListener();
