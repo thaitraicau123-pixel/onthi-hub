@@ -29,7 +29,10 @@ test('sanitizeDownloadFileName accepts allow-listed files with or without /downl
   );
   assert.equal(sanitizeDownloadFileName('/MASTER_PROMPTS.md'), 'MASTER_PROMPTS.md');
   assert.equal(sanitizeDownloadFileName('MASTER_PROMPTS.md'), 'MASTER_PROMPTS.md');
-  assert.ok(Object.keys(DOWNLOAD_CATALOG).length >= 25);
+  assert.ok(Object.keys(DOWNLOAD_CATALOG).length >= 22);
+  assert.equal(sanitizeDownloadFileName('LuckySpin_Voucher_MiniGame_1File.html'), null);
+  assert.equal(sanitizeDownloadFileName('ascend-1file-template.html'), null);
+  assert.equal(sanitizeDownloadFileName('kimi-1file-template.html'), null);
 });
 
 test('resolveDownloadAsset resolves safe absolute path inside workspace root', () => {
@@ -116,10 +119,7 @@ test('verifyDownloadEntitlement enforces auth, admin bypass, purchasedIds, and c
   const retailChecks = [
     ['Dungeon_Co_Ve_Thach_2D_Starter.zip', 'source-dungeon-co-ve-thach-2d'],
     ['SePay_VietQR_Wallet_Starter.zip', 'source-sepay-wallet-saas-starter'],
-    ['Gemini_Glass_Workspace_Kit.zip', 'source-gemini-ai-workspace-kit'],
-    ['LuckySpin_Voucher_MiniGame_1File.html', 'source-luckyspin-minigame-marketing'],
-    ['ascend-1file-template.html', 'template-ascend-1file-luxury'],
-    ['kimi-1file-template.html', 'template-kimi-1file-studio']
+    ['Gemini_Glass_Workspace_Kit.zip', 'source-gemini-ai-workspace-kit']
   ];
   for (const [fileName, productId] of retailChecks) {
     const res = verifyDownloadEntitlement({

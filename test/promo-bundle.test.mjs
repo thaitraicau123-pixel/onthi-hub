@@ -124,8 +124,8 @@ test('formatPriceLabel formats 0 Xu as free and paid amounts in Xu', () => {
 test('buildShareProductUrl generates normalized product deep-link URLs', () => {
   const promo = loadPromoEngine();
   assert.equal(
-    promo.buildShareProductUrl('https://promptmmo.store/', 'source-luckyspin-minigame-marketing'),
-    'https://promptmmo.store/?product=source-luckyspin-minigame-marketing'
+    promo.buildShareProductUrl('https://promptmmo.store/', 'source-gemini-ai-workspace-kit'),
+    'https://promptmmo.store/?product=source-gemini-ai-workspace-kit'
   );
   assert.equal(
     promo.buildShareProductUrl('', 'free-starter-opendesign-kit'),

@@ -201,7 +201,7 @@
         if (raw) {
           let parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length >= 12) {
-            const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d'];
+            const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
             parsed = parsed.filter(function (p) { return p && !deletedProds.includes(p.id); });
 
             const isValid12 = parsed.every(function (p) {
@@ -527,7 +527,7 @@
 
         // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
         if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 1000 && p.price <= 990000 && p.stock; })) {
-          const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d'];
+          const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
           data.products = data.products.filter(function (p) { return p && !deletedProds.includes(p.id); });
           if (window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
             const cloudIds = new Set(data.products.map(function (p) { return p.id; }));
