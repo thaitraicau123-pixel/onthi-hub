@@ -5,7 +5,126 @@ window.ShopVietData = {
   },
   "defaultOrders": [],
   "defaultTopups": [],
+  "filterTags": ["Tất cả", "Mã nguồn", "Template web", "Skill", "Prompt Video"],
+  "getBrandIcon": function(iconType) {
+    var icons = {
+      'metropolis-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><path d="M12 22V12"/><path d="M21 7l-9 5-9-5"/></svg>',
+      'diet-soda-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 2h6"/></svg>',
+      'flowstate-webgl': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12c2.5-3 5.5-3 8 0s5.5 3 8 0 4-3 4-3"/><path d="M2 17c2.5-3 5.5-3 8 0s5.5 3 8 0"/></svg>',
+      'game': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="15.5" cy="11" r="1"/><circle cx="17.5" cy="13" r="1"/></svg>'
+    };
+    return icons[iconType] || '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9 12 2"/></svg>';
+  },
   "products": [
+  {
+    "id": "source-metropolis-1998-city-builder",
+    "name": "Metropolis 1998 — Mã Nguồn Game Xây Thành Phố Isometric 3D & Nội Thất (React + Three.js)",
+    "module": "SOURCE STARTER v1.0",
+    "tag": "Mã nguồn",
+    "category": "Mã nguồn & Game 3D",
+    "filterGroup": "Template web",
+    "badge": "MÃ NGUỒN STARTER · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 69000,
+    "discount": "-78%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full Source Code + MIT Starter",
+    "rating": 5,
+    "soldCount": 34,
+    "image": "/assets/aistudio/r1-title_bb056220.png",
+    "imageUrl": "/assets/aistudio/r1-title_bb056220.png",
+    "gallery": [
+      { "label": "Title Oakwood", "url": "/assets/aistudio/r1-title_bb056220.png" },
+      { "label": "Ban ngày & Dock", "url": "/assets/aistudio/r1-day_0b668521.png" },
+      { "label": "Ban đêm & Đèn phố", "url": "/assets/aistudio/r1-night_bfd6b447.png" },
+      { "label": "Interior Cutaway [X]", "url": "/assets/aistudio/r1-cutaway_5ff36592.png" },
+      { "label": "Khu căn hộ", "url": "/assets/aistudio/r6-apartment_499ccb5c.png" },
+      { "label": "Thời tiết Mưa", "url": "/assets/aistudio/r6-rain_ffab6a8e.png" },
+      { "label": "Thời tiết Tuyết", "url": "/assets/aistudio/r6-snow_d4afa5c9.png" }
+    ],
+    "iconType": "metropolis-3d",
+    "demoUrl": "/demo/metropolis-1998/",
+    "demoBtnText": "Xem Demo & Code",
+    "demoTitle": "Mở Open-Design Preview & Trình Xem Mã Nguồn Metropolis 1998",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "Metropolis_1998_Source_Starter.zip",
+    "zipFileSize": "27 KB",
+    "desc": "TRỌN BỘ MÃ NGUỒN KHỞI TẠO GAME XÂY DỰNG THÀNH PHỐ ISOMETRIC 3D (METROPOLIS 1998 — REACT 19 + TYPESCRIPT + THREE.JS + TAILWIND V4): Gói code hoàn chỉnh để bạn tải về máy (.zip), giải nén, chạy npm install && npm run dev và tự do phát triển tiếp các tính năng riêng. Kiến trúc tách biệt sạch sẽ giữa CityEngine WebGL Isometric (camera Orthographic 4 góc xoay Q/E, raycaster lưới 16×16 ô, chu kỳ ngày/đêm/mưa/tuyết, chế độ X-Ray Cutaway [X] soi nội thất 3 cấp độ bên trong từng ngôi nhà, lưu/tải city LocalStorage) và hệ thống UI HUD React chuẩn mực (GameHud.tsx, TitleOverlay.tsx, StatusModal.tsx, Icons.tsx SVG thủ công).",
+    "tags": [
+      "Mã nguồn",
+      "Template web",
+      "React 19",
+      "Three.js",
+      "TypeScript",
+      "Metropolis 1998",
+      "Isometric 3D"
+    ],
+    "features": [
+      "Full 18 files trong Metropolis_1998_Source_Starter.zip (tải về & chạy npm install && npm run dev)",
+      "App.tsx + GameHud.tsx + TitleOverlay.tsx + StatusModal.tsx + Icons.tsx chuẩn TypeScript React 19",
+      "CityEngine.ts WebGL Orthographic Isometric engine: đặt công trình, ủi đất (+25%), nâng cấp 3 tầng nội thất",
+      "Chế độ Cutaway X-Ray (phím X): ẩn mái nhà tức thì để quan sát và thay đổi Decor Theme (Classic / Warm / Metro)",
+      "Hệ thống thời gian Auto/Day/Dusk/Night, thời tiết Clear/Rain/Snow và chính sách thuế Low/Standard/High",
+      "Đi kèm hướng dẫn kiến trúc & Prompt mở rộng công trình để tự phát triển tiếp bằng Cursor / Antigravity"
+    ],
+    "highlights": [
+      "Gói .zip đầy đủ 18 file React 19 + Three.js chạy ngay",
+      "Tách biệt CityEngine 3D và HUD giúp dễ dàng tùy biến",
+      "Chế độ Cutaway X-Ray soi nội thất bên trong công trình",
+      "Kiến trúc mở sẵn sàng mở rộng thêm công trình & map mới"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Code game 3D Isometric từ con số 0",
+        "summary": "Tốn hàng tuần để cấu hình camera Orthographic isometric, đồng bộ state giữa Three.js canvas 60fps và React HUD mà không bị re-render mất khung hình.",
+        "points": [
+          "Canvas WebGL bị unmount mỗi khi HUD React cập nhật số tiền hoặc dân số",
+          "Thiếu cấu trúc catalog công trình và chế độ soi nội thất Cutaway",
+          "Khó tổ chức HUD cổ điển gọn gàng mà vẫn có Tooltip, Modal và Save/Load"
+        ]
+      },
+      "after": {
+        "title": "Sở hữu Metropolis 1998 Source Starter",
+        "summary": "Nhận ngay bộ khung React 19 + Three.js + Tailwind v4 sạch đẹp chuẩn kiến trúc, giải nén chạy ngay và tùy biến thẳng lên sản phẩm của bạn.",
+        "points": [
+          "Đóng gói đủ 18 file chuẩn Vite + TypeScript + Three.js + Lucide + Tailwind v4",
+          "Snap-shot bridge giúp WebGL mượt mà không bao giờ bị tear-down",
+          "Sẵn 7 trạng thái UI hoàn chỉnh, bộ Icon SVG sắc nét và Modal Charter Milestones"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "METROPOLIS_1998_DEV_GUIDE.md",
+      "downloadUrl": "/downloads/Metropolis_1998_Source_Starter.zip",
+      "docDownloadUrl": "/downloads/Metropolis_1998_Source_Starter.zip",
+      "zipFileName": "Metropolis_1998_Source_Starter.zip",
+      "zipFileSize": "27 KB",
+      "demoUrl": "/demo/metropolis-1998/",
+      "masterPrompt": "# Metropolis 1998 — Architecture & Extension Prompt\\n\\nYou are developing on top of the Metropolis 1998 Isometric City & Interior Builder starter codebase (`src/App.tsx`, `src/components/GameHud.tsx`, `src/components/TitleOverlay.tsx`, `src/components/StatusModal.tsx`, `src/components/Icons.tsx`, `src/game/types.ts`, `src/game/catalog.ts`, `src/game/CityEngine.ts`).\\n\\n## Architecture Rules\\n1. Keep the Three.js `WebGLRenderer` mounted once in `useRef` inside `App.tsx`; propagate immutable `HudSnapshot` updates into React state.\\n2. Register every new `BuildingKind` in `src/game/types.ts`, add its stats in `src/game/catalog.ts`, draw its crisp SVG icon in `src/components/Icons.tsx`, and render its 3D exterior + cutaway interior mesh inside `src/game/CityEngine.ts`.\\n3. Preserve keyboard shortcuts: `WASD`/Arrows Pan, `Q/E` Camera Rotate, `R` Rotate Placement, `X` Interior Cutaway, `V` Weather, `Esc` Pause.",
+      "codeSnippet": "unzip Metropolis_1998_Source_Starter.zip && cd metropolis-1998-starter && npm install && npm run dev"
+    },
+    "status": "active",
+    "isBestSeller": true,
+    "cheatSheet": [
+      {
+        "title": "1. Lệnh cài đặt & chạy Source Code Local",
+        "template": "unzip Metropolis_1998_Source_Starter.zip && cd metropolis-1998-starter && npm install && npm run dev",
+        "example": "Mở http://localhost:3000 sau khi cài đặt"
+      },
+      {
+        "title": "2. Prompt thêm loại công trình mới (Ví dụ: Fire Station)",
+        "template": "Mở rộng Metropolis 1998 để thêm công trình [TEN_CONG_TRINH] vào src/game/types.ts, src/game/catalog.ts, src/components/Icons.tsx và vẽ khối 3D + nội thất Cutaway tương ứng trong src/game/CityEngine.ts.",
+        "example": "Thêm Fire Station tăng +20% Safety và xe cứu hỏa tuần tra"
+      },
+      {
+        "title": "3. Kiểm tra TypeScript trước khi build",
+        "template": "npm run lint && npm run build",
+        "example": "Đảm bảo 0 lỗi TypeScript trước khi deploy lên Vercel/Netlify"
+      }
+    ]
+  },
   {
     "id": "template-diet-soda-3d-landing",
     "name": "Template Web 3D Landing Page Diet Soda & Master Prompt Tái Hiện 1-File HTML",

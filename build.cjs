@@ -57,4 +57,10 @@ for (const dir of staticDirs) {
   }
 }
 
+const publicAssetsSrc = path.join(rootDir, 'public', 'assets');
+if (fs.existsSync(publicAssetsSrc)) {
+  copyRecursive(publicAssetsSrc, path.join(distDir, 'assets'));
+  console.log('[BUILD] Copied public/assets/ -> dist/assets/');
+}
+
 console.log('[BUILD] Build completed successfully! Output ready in dist/');

@@ -3982,7 +3982,7 @@
         accountNumber: '0986019623',
         accountName: 'BUI THAI',
         memoPrefix: 'NAPXU',
-        brandColor: '#E92429'
+        brandColor: '#0071E3'
       };
       try {
         const saved = localStorage.getItem('shopviet_vietqr_config');

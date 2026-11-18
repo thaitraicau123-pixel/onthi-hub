@@ -24,8 +24,8 @@ window.ShopVietViews.blog = (function () {
       date: '28/03/2026',
       readTime: '4 phút',
       initialLikes: 142,
-      badgeColor: 'bg-amber-50 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/50',
-      gradient: 'from-[#8A5F26] via-[#704B2A] to-[#452D16]',
+      badgeColor: 'bg-blue-50 text-[#0071E3] dark:bg-blue-950/70 dark:text-[#3B9EFF] border-blue-200/60 dark:border-blue-800/50',
+      gradient: 'from-[#090B10] via-[#0F172A] to-[#0B2545]',
       summary: 'Quy trình 3 bước kích hoạt gói Google Antigravity 2.0 và Gemini Advanced 18 tháng chính chủ, bảo toàn dung lượng Google One 2TB cùng quyền truy cập mô hình Gemini 3.8 Flash High & Ultra.',
       content: `
         <div class="space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -33,10 +33,9 @@ window.ShopVietViews.blog = (function () {
             Google Antigravity 2.0 và Gemini Advanced đang là tâm điểm chú ý của cộng đồng AI Developer toàn cầu. Với việc tích hợp sâu vào quy trình Agentic Coding và cấp kèm gói Google One 2TB dung lượng Drive, đây là công cụ không thể thiếu trong năm 2026.
           </p>
 
-          <div class="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40">
-            <h4 class="text-sm font-bold text-amber-900 dark:text-amber-200 mb-1 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#8A5F26] dark:bg-[#BE9455]"></span>
-              Đặc quyền gói Gemini 4 Argon Pro 18 Tháng tại BuiThai AI Studio:
+          <div class="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/35 border border-blue-200/70 dark:border-blue-800/40">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">
+              Đặc quyền gói Gemini 4 Argon Pro 18 Tháng tại BuiThai AI Studio
             </h4>
             <ul class="text-xs sm:text-sm text-amber-900/90 dark:text-amber-200/90 list-disc list-inside space-y-1">
               <li>Nâng cấp trực tiếp trên chính email Gmail cá nhân của bạn, không lo mất dữ liệu.</li>
@@ -83,8 +82,8 @@ window.ShopVietViews.blog = (function () {
       date: '26/03/2026',
       readTime: '6 phút',
       initialLikes: 98,
-      badgeColor: 'bg-amber-50 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/50',
-      gradient: 'from-[#A47838] via-[#8A5F26] to-[#5C3F1B]',
+      badgeColor: 'bg-blue-50 text-[#0071E3] dark:bg-blue-950/70 dark:text-[#3B9EFF] border-blue-200/60 dark:border-blue-800/50',
+      gradient: 'from-[#0B1220] via-[#0F2447] to-[#004A99]',
       summary: 'Phân tích hiệu suất lập trình thực chiến giữa Cursor AI 2.0 Pro (tích hợp sâu Composer, Agentic Tab) và API Claude 4.6 Opus / 4.5 Sonnet. Chi phí, tốc độ phản hồi và benchmark dự án lớn.',
       content: `
         <div class="space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -97,8 +96,8 @@ window.ShopVietViews.blog = (function () {
               <thead class="bg-slate-100 dark:bg-slate-800/80 text-slate-900 dark:text-white font-bold">
                 <tr>
                   <th class="p-3 border-b border-slate-200 dark:border-slate-800">Tiêu chí</th>
-                  <th class="p-3 border-b border-slate-200 dark:border-slate-800 text-[#8A5F26] dark:text-[#BE9455]">Cursor Pro (500 Fast Req)</th>
-                  <th class="p-3 border-b border-slate-200 dark:border-slate-800 text-amber-700 dark:text-amber-300">Claude 4.6 Opus / 4.5 Sonnet API</th>
+                  <th class="p-3 border-b border-slate-200 dark:border-slate-800 text-[#0071E3] dark:text-[#3B9EFF]">Cursor Pro (500 Fast Req)</th>
+                  <th class="p-3 border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200">Claude 4.6 Opus / 4.5 Sonnet API</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -146,7 +145,7 @@ window.ShopVietViews.blog = (function () {
       readTime: '5 phút',
       initialLikes: 75,
       badgeColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/50',
-      gradient: 'from-emerald-700 via-teal-800 to-[#1B1612]',
+      gradient: 'from-[#090B10] via-[#0B292B] to-[#0F172A]',
       summary: 'Khai thác tối đa sức mạnh mô hình suy luận sâu OpenAI O1 Pro và ChatGPT Plus trong nghiên cứu dữ liệu, viết tài liệu kỹ thuật và giải toán học - thuật toán phức tạp.',
       content: `
         <div class="space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -180,8 +179,8 @@ window.ShopVietViews.blog = (function () {
       date: '18/03/2026',
       readTime: '3 phút',
       initialLikes: 64,
-      badgeColor: 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/50',
-      gradient: 'from-amber-500 via-rose-600 to-red-600',
+      badgeColor: 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border-sky-200/60 dark:border-sky-800/50',
+      gradient: 'from-[#090B10] via-[#131C31] to-[#1E3A5F]',
       summary: 'Hướng dẫn nâng cấp Canva Pro gói Edu/Brand và Capcut Pro PC vĩnh viễn trên chính tài khoản cá nhân, mở khóa toàn bộ kho hiệu ứng video 4K, AI Video Upscale và Brand Kit.',
       content: `
         <div class="space-y-6 text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -251,21 +250,20 @@ window.ShopVietViews.blog = (function () {
         <div id="blogViewContainer" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 animate-fade-in">
           
           <!-- Hero Banner Header -->
-          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-[#231910] to-slate-900 text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-slate-800/80">
-            <!-- Background Decorative Blobs -->
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#090B10] via-[#0F172A] to-[#0B2545] text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-slate-800/80">
+            <!-- Background Subtle Ambient Mesh -->
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-[#0071E3]/25 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
             <div class="relative z-10 max-w-3xl space-y-4">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-600/35 text-[#BE9455] text-xs font-semibold uppercase tracking-wider">
-                <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                BuiThai AI Studio Knowledge Hub
-              </div>
-              <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                Cẩm Nang & Tin Tức <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#8A5F26] via-[#BE9455] to-[#E5C388]">Công Nghệ AI</span>
+              <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#3B9EFF]">
+                BuiThai AI Studio · Knowledge Hub
+              </p>
+              <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight [text-wrap:balance]">
+                Cẩm Nang & Tin Tức <span class="text-[#3B9EFF]">Công Nghệ AI</span>
               </h1>
               <p class="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
-                Khám phá các hướng dẫn kích hoạt bản quyền, so sánh chuyên sâu các mô hình trí tuệ nhân tạo hàng đầu, và bí quyết tối ưu hóa quy trình làm việc cho Developer & Creator.
+                Khám phá các hướng dẫn triển khai mã nguồn, so sánh chuyên sâu các mô hình trí tuệ nhân tạo hàng đầu, và bí quyết tối ưu hóa quy trình làm việc cho Developer & Creator.
               </p>
 
               <!-- Thanh tìm kiếm bài viết tức thì -->
@@ -279,46 +277,43 @@ window.ShopVietViews.blog = (function () {
                     id="blogSearchInput"
                     placeholder="Tìm kiếm bài viết (Cursor, Gemini 18T, ChatGPT, Capcut...)"
                     value="${searchKeyword}"
-                    class="w-full pl-10 pr-24 py-3 bg-white/10 dark:bg-slate-800/80 backdrop-blur-md text-white placeholder-slate-400 text-sm rounded-2xl border border-white/15 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]/50 transition shadow-inner"
+                    class="w-full pl-10 pr-24 py-3 bg-white/10 dark:bg-slate-800/80 backdrop-blur-md text-white placeholder-slate-400 text-sm rounded-2xl border border-white/15 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#3B9EFF]/60 transition shadow-inner"
                   />
                   <div class="absolute right-2 flex items-center">
                     <button
                       id="clearBlogSearchBtn"
-                      class="${searchKeyword ? '' : 'hidden'} px-2 py-1 text-xs text-slate-400 hover:text-white"
+                      class="${searchKeyword ? '' : 'hidden'} px-2 py-1 text-xs text-slate-400 hover:text-white cursor-pointer"
                       title="Xóa tìm kiếm"
                     >
                       ✕
                     </button>
-                    <span class="text-[11px] font-semibold bg-white/10 text-slate-300 px-2 py-1 rounded-lg pointer-events-none">
-                      Tức thì
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Thanh Lọc Danh Mục Dạng Tabs Viên Thuốc (Filter Pills) -->
+          <!-- Thanh Lọc Danh Mục Segmented Controls -->
           <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
-            <div class="flex items-center gap-2 overflow-x-auto py-1 scrollbar-none w-full sm:w-auto" id="blogCategoryPills">
-              <button data-cat="all" class="blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${currentCategory === 'all' ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900' : 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}">
+            <div class="inline-flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-x-auto scrollbar-none max-w-full" id="blogCategoryPills">
+              <button data-cat="all" class="blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${currentCategory === 'all' ? 'bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Tất cả (${BLOG_POSTS.length})
               </button>
-              <button data-cat="guide" class="blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${currentCategory === 'guide' ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900' : 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}">
+              <button data-cat="guide" class="blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${currentCategory === 'guide' ? 'bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Hướng dẫn kích hoạt
               </button>
-              <button data-cat="compare" class="blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${currentCategory === 'compare' ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900' : 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}">
+              <button data-cat="compare" class="blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${currentCategory === 'compare' ? 'bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 So sánh AI
               </button>
-              <button data-cat="tips" class="blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${currentCategory === 'tips' ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900' : 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}">
+              <button data-cat="tips" class="blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${currentCategory === 'tips' ? 'bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Thủ thuật Dev
               </button>
-              <button data-cat="design" class="blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${currentCategory === 'design' ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900' : 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'}">
+              <button data-cat="design" class="blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer ${currentCategory === 'design' ? 'bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}">
                 Đồ họa & Video
               </button>
             </div>
 
-            <div class="text-xs text-slate-600 dark:text-slate-400 font-medium">
+            <div class="text-xs text-slate-600 dark:text-slate-400 font-medium tabular-nums">
               Hiển thị <span id="blogCountDisplay" class="font-bold text-slate-900 dark:text-white">...</span> bài viết
             </div>
           </div>
@@ -376,12 +371,12 @@ window.ShopVietViews.blog = (function () {
           const cat = btn.getAttribute('data-cat');
           currentCategory = cat;
 
-          // Cập nhật giao diện tabs viên thuốc
+          // Cập nhật giao diện segmented tabs
           catBtns.forEach(function (b) {
             if (b.getAttribute('data-cat') === cat) {
-              b.className = 'blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900';
+              b.className = 'blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-white shadow-sm';
             } else {
-              b.className = 'blog-cat-btn rounded-full px-4 py-2 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800';
+              b.className = 'blog-cat-btn rounded-lg px-3.5 py-2 text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
             }
           });
 
@@ -415,8 +410,8 @@ window.ShopVietViews.blog = (function () {
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full py-16 text-center space-y-3 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8">
-            <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] flex items-center justify-center">
+          <div class="col-span-full py-16 text-center space-y-3 bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white">Không tìm thấy bài viết phù hợp</h3>
@@ -433,26 +428,22 @@ window.ShopVietViews.blog = (function () {
         const liked = isPostLiked(post.id);
 
         return `
-          <article class="blog-card flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#8A5F26]/40 dark:hover:border-[#8A5F26]/40 transition-all duration-300 group">
+          <article class="blog-card flex flex-col justify-between bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071E3]/40 dark:hover:border-[#3B9EFF]/40 transition-all duration-300 group">
             
-            <!-- Card Header & Decorative Banner -->
+            <!-- Card Header & Cover Banner -->
             <div class="relative h-44 bg-gradient-to-br ${post.gradient} p-6 flex flex-col justify-between overflow-hidden">
-              <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-white/10 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500"></div>
+              <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-[#0071E3]/15 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500"></div>
               
-              <div class="flex items-center justify-between relative z-10">
-                <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/90 text-slate-900 backdrop-blur-sm shadow-xs">
-                  ${post.categoryName}
-                </span>
-                <span class="text-xs font-medium text-white/90 bg-black/30 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  ${post.readTime}
-                </span>
+              <div class="flex items-center gap-2 text-xs text-slate-300 relative z-10 font-medium">
+                <span class="font-semibold text-[#3B9EFF]">${post.categoryName}</span>
+                <span aria-hidden="true">·</span>
+                <span>${post.readTime}</span>
               </div>
 
               <!-- Tiêu đề lớn trong Cover -->
               <div class="relative z-10">
-                <span class="text-[11px] font-semibold text-white/70 uppercase tracking-wider block mb-1">Cẩm nang BuiThai AI Studio</span>
-                <h3 class="text-lg sm:text-xl font-extrabold text-white line-clamp-2 drop-shadow-xs group-hover:text-amber-200 transition-colors">
+                <span class="text-[11px] font-medium text-white/70 block mb-1">Cẩm nang BuiThai AI Studio</span>
+                <h3 class="text-lg sm:text-xl font-extrabold text-white line-clamp-2 group-hover:text-sky-200 transition-colors">
                   ${post.title}
                 </h3>
               </div>
@@ -465,16 +456,16 @@ window.ShopVietViews.blog = (function () {
               </p>
 
               <!-- Footer Metadata & Interactive Actions -->
-              <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-3">
+              <div class="pt-4 border-t border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between gap-3">
                 
                 <!-- Author & Date -->
                 <div class="flex items-center gap-2.5">
-                  <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-700 to-amber-800 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-                    MC
+                  <div class="w-8 h-8 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs flex items-center justify-center">
+                    BT
                   </div>
                   <div class="flex flex-col">
                     <span class="text-xs font-bold text-slate-900 dark:text-white leading-none">${post.author}</span>
-                    <span class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">${post.date}</span>
+                    <span class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums">${post.date}</span>
                   </div>
                 </div>
 
@@ -483,7 +474,7 @@ window.ShopVietViews.blog = (function () {
                   <!-- Like Button Thả Tim Tương Tác -->
                   <button
                     data-post-id="${post.id}"
-                    class="blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                    class="blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 tabular-nums ${
                       liked
                         ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800/80'
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-700'
@@ -499,7 +490,7 @@ window.ShopVietViews.blog = (function () {
                   <!-- Đọc tiếp Button -->
                   <button
                     data-open-post="${post.id}"
-                    class="blog-read-btn inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold hover:bg-[#8A5F26] dark:hover:bg-slate-200 transition-colors shadow-xs cursor-pointer"
+                    class="blog-read-btn inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-[#0071E3] hover:bg-[#0060C7] dark:bg-[#3B9EFF] dark:hover:bg-[#2589F5] text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <span>Đọc tiếp</span>
                     <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -569,13 +560,13 @@ window.ShopVietViews.blog = (function () {
         if (counter) counter.textContent = currentLikes;
 
         if (isNowLiked) {
-          buttonEl.className = 'blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800/80';
+          buttonEl.className = 'blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 tabular-nums bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200/80 dark:border-rose-800/80';
           if (heartSvg) {
-            heartSvg.setAttribute('class', 'w-4 h-4 transition-transform duration-200 fill-rose-600 scale-110 animate-bounce');
-            setTimeout(() => heartSvg.classList.remove('animate-bounce'), 500);
+            heartSvg.setAttribute('class', 'w-4 h-4 transition-transform duration-150 fill-rose-600 scale-125');
+            setTimeout(() => heartSvg.setAttribute('class', 'w-4 h-4 transition-transform duration-150 fill-rose-600 scale-110'), 180);
           }
         } else {
-          buttonEl.className = 'blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-700';
+          buttonEl.className = 'blog-like-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 tabular-nums bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-slate-700';
           if (heartSvg) {
             heartSvg.setAttribute('class', 'w-4 h-4 transition-transform duration-200 fill-none');
           }
@@ -590,10 +581,10 @@ window.ShopVietViews.blog = (function () {
         const heartSvg = modalLikeBtn.querySelector('svg');
         if (counter) counter.textContent = currentLikes;
         if (isNowLiked) {
-          modalLikeBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-800/80 cursor-pointer';
+          modalLikeBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-800/80 cursor-pointer tabular-nums';
           if (heartSvg) heartSvg.setAttribute('class', 'w-4 h-4 fill-rose-600 scale-110');
         } else {
-          modalLikeBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 cursor-pointer';
+          modalLikeBtn.className = 'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 cursor-pointer tabular-nums';
           if (heartSvg) heartSvg.setAttribute('class', 'w-4 h-4 fill-none');
         }
       }
@@ -616,40 +607,36 @@ window.ShopVietViews.blog = (function () {
       modalMount.innerHTML = `
         <div id="blogDetailModalBackdrop" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
           
-          <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+          <div class="relative bg-white/95 dark:bg-[#0B0F17]/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
             
             <!-- Modal Header Banner -->
             <div class="relative bg-gradient-to-r ${post.gradient} text-white p-6 sm:p-8 shrink-0 overflow-hidden">
-              <div class="absolute -right-8 -top-8 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+              <div class="absolute -right-8 -top-8 w-44 h-44 bg-[#0071E3]/20 rounded-full blur-2xl pointer-events-none"></div>
 
               <!-- Close Button -->
               <button
                 id="closeBlogModalBtn"
-                class="absolute top-4 right-4 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors cursor-pointer"
+                class="absolute top-4 right-4 p-2 rounded-xl bg-black/30 hover:bg-black/50 text-white transition-colors cursor-pointer"
                 title="Đóng cửa sổ"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
 
               <div class="space-y-3 max-w-xl">
-                <div class="flex items-center gap-2">
-                  <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-white/90 text-slate-900 backdrop-blur-sm">
-                    ${post.categoryName}
-                  </span>
-                  <span class="text-xs text-white/80 flex items-center gap-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    ${post.readTime} đọc
-                  </span>
+                <div class="flex items-center gap-2 text-xs text-slate-300 font-medium">
+                  <span class="font-semibold text-[#3B9EFF]">${post.categoryName}</span>
+                  <span aria-hidden="true">·</span>
+                  <span>${post.readTime} đọc</span>
                 </div>
-                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white leading-tight [text-wrap:balance]">
                   ${post.title}
                 </h2>
                 <div class="flex items-center gap-3 pt-1">
-                  <div class="w-7 h-7 rounded-full bg-white/20 text-white font-bold text-xs flex items-center justify-center border border-white/30">
-                    MC
+                  <div class="w-7 h-7 rounded-xl bg-white/15 text-white font-bold text-xs flex items-center justify-center border border-white/25">
+                    BT
                   </div>
                   <div class="text-xs text-white/90">
-                    <span class="font-bold">${post.author}</span> • <span>${post.date}</span>
+                    <span class="font-bold">${post.author}</span> · <span class="tabular-nums">${post.date}</span>
                   </div>
                 </div>
               </div>
@@ -661,12 +648,12 @@ window.ShopVietViews.blog = (function () {
             </div>
 
             <!-- Modal Footer Actions -->
-            <div class="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-950/60 flex items-center justify-between gap-4 shrink-0">
+            <div class="p-4 sm:p-5 border-t border-slate-200/70 dark:border-slate-800 bg-slate-50/70 dark:bg-[#090B10]/80 flex items-center justify-between gap-4 shrink-0">
               
               <!-- Like Action trong Modal -->
               <button
                 id="modalLikeBtn_${post.id}"
-                class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-all tabular-nums ${
                   liked
                     ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-800/80'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600'
@@ -682,16 +669,16 @@ window.ShopVietViews.blog = (function () {
                 <!-- Nút Chia sẻ -->
                 <button
                   id="shareBlogModalBtn"
-                  class="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
                 >
-                  <svg class="w-4 h-4 text-[#8A5F26]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                  <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                   <span>Chia sẻ</span>
                 </button>
 
                 <!-- Nút Đóng -->
                 <button
                   id="closeBlogModalBtnBottom"
-                  class="px-5 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-bold hover:bg-[#8A5F26] dark:hover:bg-slate-200 transition cursor-pointer"
+                  class="px-5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0060C7] dark:bg-[#3B9EFF] dark:hover:bg-[#2589F5] text-white text-xs font-bold transition cursor-pointer"
                 >
                   Đóng
                 </button>
@@ -743,7 +730,7 @@ window.ShopVietViews.blog = (function () {
               `;
               setTimeout(() => {
                 shareBtn.innerHTML = `
-                  <svg class="w-4 h-4 text-[#8A5F26]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+                  <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
                   <span>Chia sẻ</span>
                 `;
               }, 2000);

@@ -45,7 +45,7 @@
       accountNumber: '6688686866688',
       accountName: 'BUI THAI',
       memoPrefix: 'THAIBUI',
-      brandColor: '#E92429'
+      brandColor: '#0071E3'
     };
   }
 
@@ -56,9 +56,11 @@
     get accountNumber() { return getActiveVietQRConfig().accountNumber; },
     get accountName() { return getActiveVietQRConfig().accountName; },
     get bin() { return getActiveVietQRConfig().bin || getActiveVietQRConfig().bankId || '970407'; },
-    get brandColor() { return getActiveVietQRConfig().brandColor || '#E92429'; },
+    get brandColor() { return getActiveVietQRConfig().brandColor || '#0071E3'; },
     get memoPrefix() { return getActiveVietQRConfig().memoPrefix || 'THAIBUI'; }
   };
+
+  const DEFAULT_THUMB_SVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230071E3'/%3E%3Cstop offset='100%25' stop-color='%23090B10'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='96' height='96' rx='20' fill='url(%23g)'/%3E%3Cpath d='M30 34h36M30 48h24M30 62h30' stroke='%23ffffff' stroke-width='5' stroke-linecap='round' opacity='0.9'/%3E%3C/svg%3E";
 
   // Biến lưu trữ Timer toàn cục để dọn dẹp sạch sẽ
   window.__shopvietPayTimer = null;
@@ -73,7 +75,7 @@
     price: 45000,
     originalPrice: 79000,
     quantity: 1,
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=240&auto=format&fit=crop&q=80'
+    image: DEFAULT_THUMB_SVG
   };
 
   // Danh sách mã giảm giá hợp lệ
@@ -230,53 +232,54 @@
     showToast(`Đã sao chép: ${text}`, 'success');
   }
 
-  // SVG Fallback QR Generator chuẩn Techcombank
+  // SVG Fallback QR Generator chuẩn Liquid Sapphire
   function getFallbackQrSvg(text) {
+    const label = (TECHCOMBANK_CONFIG.shortName || 'VIETQR').toUpperCase().slice(0, 11);
     return `
       <svg class="w-full h-full max-w-[260px] mx-auto text-slate-800" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="200" height="200" rx="12" fill="white"/>
         <!-- Finder top-left -->
-        <rect x="20" y="20" width="45" height="45" rx="6" stroke="#E92429" stroke-width="8"/>
-        <rect x="33" y="33" width="19" height="19" rx="3" fill="#E92429"/>
+        <rect x="20" y="20" width="45" height="45" rx="6" stroke="#0071E3" stroke-width="8"/>
+        <rect x="33" y="33" width="19" height="19" rx="3" fill="#0071E3"/>
         <!-- Finder top-right -->
-        <rect x="135" y="20" width="45" height="45" rx="6" stroke="#E92429" stroke-width="8"/>
-        <rect x="148" y="33" width="19" height="19" rx="3" fill="#E92429"/>
+        <rect x="135" y="20" width="45" height="45" rx="6" stroke="#0071E3" stroke-width="8"/>
+        <rect x="148" y="33" width="19" height="19" rx="3" fill="#0071E3"/>
         <!-- Finder bottom-left -->
-        <rect x="20" y="135" width="45" height="45" rx="6" stroke="#E92429" stroke-width="8"/>
-        <rect x="33" y="148" width="19" height="19" rx="3" fill="#E92429"/>
-        <!-- Random QR Pattern Matrix Blocks -->
-        <rect x="75" y="25" width="10" height="10" fill="#0f172a"/>
-        <rect x="95" y="25" width="10" height="10" fill="#0f172a"/>
-        <rect x="115" y="25" width="10" height="10" fill="#0f172a"/>
-        <rect x="75" y="45" width="20" height="10" fill="#0f172a"/>
-        <rect x="105" y="45" width="10" height="20" fill="#0f172a"/>
-        <rect x="25" y="75" width="10" height="10" fill="#0f172a"/>
-        <rect x="45" y="75" width="20" height="10" fill="#0f172a"/>
-        <rect x="75" y="75" width="50" height="10" fill="#0f172a"/>
-        <rect x="135" y="75" width="10" height="20" fill="#0f172a"/>
-        <rect x="155" y="75" width="20" height="10" fill="#0f172a"/>
-        <rect x="25" y="95" width="30" height="10" fill="#0f172a"/>
-        <rect x="65" y="95" width="10" height="30" fill="#0f172a"/>
-        <rect x="85" y="95" width="30" height="30" rx="4" fill="#E92429"/>
-        <rect x="125" y="95" width="20" height="10" fill="#0f172a"/>
-        <rect x="155" y="95" width="10" height="20" fill="#0f172a"/>
-        <rect x="175" y="95" width="10" height="30" fill="#0f172a"/>
-        <rect x="25" y="115" width="10" height="10" fill="#0f172a"/>
-        <rect x="45" y="115" width="10" height="10" fill="#0f172a"/>
-        <rect x="125" y="115" width="10" height="20" fill="#0f172a"/>
-        <rect x="145" y="115" width="20" height="10" fill="#0f172a"/>
-        <rect x="75" y="135" width="20" height="10" fill="#0f172a"/>
-        <rect x="105" y="135" width="20" height="20" fill="#0f172a"/>
-        <rect x="135" y="135" width="10" height="10" fill="#0f172a"/>
-        <rect x="155" y="135" width="20" height="10" fill="#0f172a"/>
-        <rect x="75" y="155" width="10" height="20" fill="#0f172a"/>
-        <rect x="95" y="165" width="20" height="10" fill="#0f172a"/>
-        <rect x="125" y="155" width="10" height="20" fill="#0f172a"/>
-        <rect x="145" y="155" width="10" height="10" fill="#0f172a"/>
-        <rect x="165" y="165" width="15" height="10" fill="#0f172a"/>
-        <!-- VietQR / Techcombank Logo badge in center -->
-        <rect x="68" y="82" width="64" height="36" rx="8" fill="#E92429"/>
-        <text x="100" y="104" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="white" text-anchor="middle" letter-spacing="0.5">TECHCOMBANK</text>
+        <rect x="20" y="135" width="45" height="45" rx="6" stroke="#0071E3" stroke-width="8"/>
+        <rect x="33" y="148" width="19" height="19" rx="3" fill="#0071E3"/>
+        <!-- QR Pattern Matrix Blocks -->
+        <rect x="75" y="25" width="10" height="10" fill="#090B10"/>
+        <rect x="95" y="25" width="10" height="10" fill="#090B10"/>
+        <rect x="115" y="25" width="10" height="10" fill="#090B10"/>
+        <rect x="75" y="45" width="20" height="10" fill="#090B10"/>
+        <rect x="105" y="45" width="10" height="20" fill="#090B10"/>
+        <rect x="25" y="75" width="10" height="10" fill="#090B10"/>
+        <rect x="45" y="75" width="20" height="10" fill="#090B10"/>
+        <rect x="75" y="75" width="50" height="10" fill="#090B10"/>
+        <rect x="135" y="75" width="10" height="20" fill="#090B10"/>
+        <rect x="155" y="75" width="20" height="10" fill="#090B10"/>
+        <rect x="25" y="95" width="30" height="10" fill="#090B10"/>
+        <rect x="65" y="95" width="10" height="30" fill="#090B10"/>
+        <rect x="85" y="95" width="30" height="30" rx="4" fill="#0071E3"/>
+        <rect x="125" y="95" width="20" height="10" fill="#090B10"/>
+        <rect x="155" y="95" width="10" height="20" fill="#090B10"/>
+        <rect x="175" y="95" width="10" height="30" fill="#090B10"/>
+        <rect x="25" y="115" width="10" height="10" fill="#090B10"/>
+        <rect x="45" y="115" width="10" height="10" fill="#090B10"/>
+        <rect x="125" y="115" width="10" height="20" fill="#090B10"/>
+        <rect x="145" y="115" width="20" height="10" fill="#090B10"/>
+        <rect x="75" y="135" width="20" height="10" fill="#090B10"/>
+        <rect x="105" y="135" width="20" height="20" fill="#090B10"/>
+        <rect x="135" y="135" width="10" height="10" fill="#090B10"/>
+        <rect x="155" y="135" width="20" height="10" fill="#090B10"/>
+        <rect x="75" y="155" width="10" height="20" fill="#090B10"/>
+        <rect x="95" y="165" width="20" height="10" fill="#090B10"/>
+        <rect x="125" y="155" width="10" height="20" fill="#090B10"/>
+        <rect x="145" y="155" width="10" height="10" fill="#090B10"/>
+        <rect x="165" y="165" width="15" height="10" fill="#090B10"/>
+        <!-- VietQR / Bank badge in center -->
+        <rect x="68" y="82" width="64" height="36" rx="8" fill="#0071E3"/>
+        <text x="100" y="104" font-family="system-ui, sans-serif" font-size="9" font-weight="900" fill="white" text-anchor="middle" letter-spacing="0.5">${label}</text>
       </svg>
     `;
   }
@@ -358,12 +361,12 @@
         const cart = window.ShopVietState.cart || [];
         if (cart.length === 0) {
           return `
-            <div class="py-12 text-center text-slate-500">
-              <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="py-12 text-center text-slate-500 dark:text-slate-400">
+              <svg class="w-12 h-12 mx-auto text-slate-300 dark:text-slate-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
               </svg>
               <p class="font-medium">Giỏ hàng của bạn đang trống</p>
-              <button id="btn-re-add-sample" class="mt-3 text-xs text-[#8A5F26] hover:underline">Thêm sản phẩm mẫu ChatGPT Plus để thử nghiệm</button>
+              <button type="button" id="btn-re-add-sample" class="mt-3 text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] hover:underline cursor-pointer">Thêm sản phẩm mẫu ChatGPT Plus để thử nghiệm</button>
             </div>
           `;
         }
@@ -371,23 +374,20 @@
         return cart
           .map(
             (item, index) => `
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b border-slate-100 last:border-0" data-item-id="${item.id}">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b border-slate-200/70 dark:border-slate-800/80 last:border-0" data-item-id="${item.id}">
             <div class="flex items-center gap-3.5 flex-1 min-w-0">
-              <img src="${item.image || SAMPLE_CART_ITEM.image}" alt="${item.name}" 
-                   class="w-16 h-16 rounded-xl object-cover border border-slate-200/80 shadow-sm flex-shrink-0"
-                   onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=240&auto=format&fit=crop&q=80'" />
+              <img src="${item.image || DEFAULT_THUMB_SVG}" alt="${item.name}" 
+                   class="w-16 h-16 rounded-xl object-cover border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex-shrink-0"
+                   onerror="this.src='${DEFAULT_THUMB_SVG}'" />
               <div class="min-w-0 flex-1">
-                <h4 class="text-sm font-semibold text-slate-900 truncate" title="${item.name}">${item.name}</h4>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700">
-                    Phân loại: ${item.variant || 'Mặc định'}
-                  </span>
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                    ● Mở khóa tức thì • Vĩnh viễn
-                  </span>
+                <h4 class="text-sm font-semibold text-slate-900 dark:text-white truncate" title="${item.name}">${item.name}</h4>
+                <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                  <span>Phân loại: <strong class="text-slate-700 dark:text-slate-300 font-medium">${item.variant || 'Mặc định'}</strong></span>
+                  <span aria-hidden="true">·</span>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-medium">● Mở khóa tức thì · Vĩnh viễn</span>
                 </div>
-                <div class="mt-1.5 flex items-baseline gap-2">
-                  <span class="text-base font-bold text-slate-900">${formatMoney(item.price)}đ</span>
+                <div class="mt-1.5 flex items-baseline gap-2 tabular-nums">
+                  <span class="text-base font-bold text-slate-900 dark:text-white">${formatMoney(item.price)}đ</span>
                   ${item.originalPrice ? `<span class="text-xs text-slate-400 line-through">${formatMoney(item.originalPrice)}đ</span>` : ''}
                 </div>
               </div>
@@ -395,16 +395,16 @@
 
             <!-- Controls: Tăng giảm số lượng & Xóa -->
             <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-              <div class="inline-flex items-center border border-slate-200 rounded-xl bg-slate-50/50 p-1">
-                <button type="button" class="btn-qty-minus w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition" data-index="${index}">
+              <div class="inline-flex items-center border border-slate-200/80 dark:border-slate-700/80 rounded-xl bg-slate-50/80 dark:bg-[#090B10] p-1 tabular-nums">
+                <button type="button" aria-label="Giảm số lượng" class="btn-qty-minus w-7 h-7 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 rounded-lg transition cursor-pointer" data-index="${index}">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
                 </button>
-                <span class="w-8 text-center text-sm font-semibold text-slate-900 select-none">${item.quantity || 1}</span>
-                <button type="button" class="btn-qty-plus w-7 h-7 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-white rounded-lg transition" data-index="${index}">
+                <span class="w-8 text-center text-sm font-semibold text-slate-900 dark:text-white select-none">${item.quantity || 1}</span>
+                <button type="button" aria-label="Tăng số lượng" class="btn-qty-plus w-7 h-7 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800 rounded-lg transition cursor-pointer" data-index="${index}">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </button>
               </div>
-              <button type="button" class="btn-item-delete p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition" data-index="${index}" title="Xóa sản phẩm">
+              <button type="button" aria-label="Xóa sản phẩm" class="btn-item-delete p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-500/10 rounded-xl transition cursor-pointer" data-index="${index}" title="Xóa sản phẩm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>
@@ -465,9 +465,11 @@
 
       // Xây dựng giao diện HTML tổng thể của view checkout
       const { totalItems, subtotal, discount, finalTotal } = calculateTotals();
+      const bankShort = TECHCOMBANK_CONFIG.shortName || 'Techcombank';
+      const bankCodeBadge = bankShort.toUpperCase().includes('MB') ? 'MB' : 'TCB';
 
       const html = `
-        <div class="checkout-view-wrapper min-h-screen bg-slate-50/60 py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
+        <div class="checkout-view-wrapper min-h-screen bg-[#F5F7FA] dark:bg-[#090B10] py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
           <div class="max-w-6xl mx-auto space-y-8">
             
             <!-- THANH TIẾN TRÌNH (STEPPER) NGANG CĂN GIỮA -->
@@ -475,17 +477,17 @@
               <div class="flex items-center gap-3">
                 <!-- Bước 1: Active -->
                 <div class="flex items-center gap-2">
-                  <span class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm font-bold shadow-md">1</span>
-                  <span class="text-sm font-bold text-slate-900">Kiểm tra đơn hàng</span>
+                  <span class="w-8 h-8 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center text-sm font-bold shadow-md tabular-nums">1</span>
+                  <span class="text-sm font-bold text-slate-900 dark:text-white">Kiểm tra đơn hàng</span>
                 </div>
                 
-                <!-- Đường nối / Mũi tên -->
-                <div class="w-12 sm:w-20 h-0.5 bg-slate-300 mx-1"></div>
+                <!-- Đường nối -->
+                <div class="w-12 sm:w-20 h-0.5 bg-slate-300 dark:bg-slate-700 mx-1"></div>
 
                 <!-- Bước 2: Chờ -->
                 <div class="flex items-center gap-2 opacity-60">
-                  <span class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-semibold">2</span>
-                  <span class="text-sm font-medium text-slate-600">Quét mã VietQR Techcombank</span>
+                  <span class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center text-sm font-semibold tabular-nums">2</span>
+                  <span class="text-sm font-medium text-slate-600 dark:text-slate-400">Quét mã VietQR ${bankShort}</span>
                 </div>
               </div>
             </div>
@@ -497,55 +499,55 @@
               <div class="lg:col-span-7 space-y-6">
                 
                 <!-- Card Sản phẩm -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
-                  <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+                  <div class="flex items-center justify-between pb-4 border-b border-slate-200/70 dark:border-slate-800/80 mb-4">
                     <div class="flex items-center gap-2.5">
-                      <svg class="w-5 h-5 text-slate-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="w-5 h-5 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
                       </svg>
-                      <h2 class="text-lg font-bold text-slate-900">Sản phẩm thanh toán</h2>
+                      <h2 class="text-lg font-bold text-slate-900 dark:text-white">Sản phẩm thanh toán</h2>
                     </div>
-                    <span class="text-xs text-slate-500 font-medium bg-slate-100 px-2.5 py-1 rounded-full">
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold tabular-nums">
                       <span id="checkout-total-items">${totalItems}</span> món
                     </span>
                   </div>
 
                   <!-- Danh sách sản phẩm -->
-                  <div id="checkout-items-list" class="divide-y divide-slate-100">
+                  <div id="checkout-items-list" class="divide-y divide-slate-200/60 dark:divide-slate-800/70">
                     ${renderCartItemsList()}
                   </div>
                 </div>
 
                 <!-- Card Mã giảm giá -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
                   <div class="flex items-center gap-2 mb-3">
-                    <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0115 5v1.077a3 3 0 011.584 2.617l.832 3.99A3 3 0 0114.478 16H5.522a3 3 0 01-2.938-3.316l.832-3.99A3 3 0 015 6.077V5zm3.707 4.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 10.586l-1.293-1.293z" clip-rule="evenodd"/>
                     </svg>
-                    <h3 class="text-sm font-bold text-slate-900">Mã ưu đãi / Giảm giá</h3>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">Mã ưu đãi / Giảm giá</h3>
                   </div>
 
                   <div class="flex gap-2">
                     <div class="relative flex-1">
                       <input type="text" id="input-voucher-code" placeholder="Nhập mã giảm giá (không bắt buộc)" 
-                             class="w-full uppercase font-mono text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 transition" />
-                      <button type="button" id="btn-clear-voucher" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                             class="w-full uppercase font-mono text-sm px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] dark:focus:ring-[#3B9EFF] transition" />
+                      <button type="button" id="btn-clear-voucher" aria-label="Xóa mã giảm giá" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                       </button>
                     </div>
                     <button type="button" id="btn-apply-voucher" 
-                            class="bg-slate-900 hover:bg-slate-800 active:scale-[0.98] text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition shadow-sm flex items-center justify-center">
+                            class="bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] active:scale-[0.98] text-white rounded-xl px-5 py-2.5 text-sm font-semibold transition shadow-sm flex items-center justify-center cursor-pointer">
                       Áp dụng
                     </button>
                   </div>
 
                   <!-- Tag gợi ý mã sẵn có -->
                   <div class="mt-3 flex flex-wrap items-center gap-2">
-                    <span class="text-xs text-slate-500">Mã có sẵn:</span>
-                    <button type="button" class="btn-preset-voucher text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/60 hover:bg-emerald-100 transition" data-code="AI2026">
+                    <span class="text-xs text-slate-500 dark:text-slate-400">Mã có sẵn:</span>
+                    <button type="button" class="btn-preset-voucher text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/15 transition cursor-pointer" data-code="AI2026">
                       AI2026 (-15k)
                     </button>
-                    <button type="button" class="btn-preset-voucher text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-amber-50 text-[#8A5F26] border border-amber-200/60 hover:bg-amber-100 transition" data-code="HSSV">
+                    <button type="button" class="btn-preset-voucher text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-blue-500/10 text-[#0071E3] dark:text-[#3B9EFF] border border-blue-500/20 hover:bg-blue-500/15 transition cursor-pointer" data-code="HSSV">
                       HSSV (-10k)
                     </button>
                   </div>
@@ -558,50 +560,50 @@
 
               <!-- CỘT PHẢI (5 COLS): CARD TẠO ĐƠN HÀNG -->
               <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-5">
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <h3 class="text-lg font-bold text-slate-900">Tạo đơn hàng</h3>
-                    <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">NAPAS 24/7 LIVE</span>
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-5">
+                  <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800/80">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Tạo đơn hàng</h3>
+                    <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold tracking-wider">NAPAS 24/7 LIVE</span>
                   </div>
 
                   <!-- Bảng kê chi tiết giá -->
-                  <div class="space-y-2.5 text-sm">
-                    <div class="flex justify-between text-slate-600">
+                  <div class="space-y-2.5 text-sm tabular-nums">
+                    <div class="flex justify-between text-slate-600 dark:text-slate-400">
                       <span>Số lượng sản phẩm:</span>
-                      <span id="checkout-total-items-sidebar" class="font-semibold text-slate-900">${totalItems}</span>
+                      <span id="checkout-total-items-sidebar" class="font-semibold text-slate-900 dark:text-white">${totalItems}</span>
                     </div>
-                    <div class="flex justify-between text-slate-600">
+                    <div class="flex justify-between text-slate-600 dark:text-slate-400">
                       <span>Giá gốc:</span>
-                      <span id="checkout-subtotal" class="font-semibold text-slate-900">${formatMoney(subtotal)}đ</span>
+                      <span id="checkout-subtotal" class="font-semibold text-slate-900 dark:text-white">${formatMoney(subtotal)}đ</span>
                     </div>
-                    <div id="checkout-voucher-row" class="flex justify-between text-emerald-600 ${discount > 0 ? '' : 'hidden'} font-medium">
+                    <div id="checkout-voucher-row" class="flex justify-between text-emerald-600 dark:text-emerald-400 ${discount > 0 ? '' : 'hidden'} font-medium">
                       <span>Giảm giá voucher:</span>
                       <span id="checkout-voucher-amount" class="font-bold">-${formatMoney(discount)}đ</span>
                     </div>
-                    <div class="flex justify-between text-slate-600">
+                    <div class="flex justify-between text-slate-600 dark:text-slate-400">
                       <span>Khuyến mãi hệ thống:</span>
-                      <span class="font-medium text-slate-700">0đ</span>
+                      <span class="font-medium text-slate-700 dark:text-slate-300">0đ</span>
                     </div>
-                    <div class="flex justify-between text-slate-600">
+                    <div class="flex justify-between text-slate-600 dark:text-slate-400">
                       <span>Phí giao dịch:</span>
-                      <span class="font-medium text-emerald-600">Miễn phí 0đ</span>
+                      <span class="font-medium text-emerald-600 dark:text-emerald-400">Miễn phí 0đ</span>
                     </div>
 
-                    <div class="border-t border-slate-200/80 pt-3 mt-2 flex justify-between items-baseline">
-                      <span class="text-sm font-bold text-slate-900 uppercase tracking-wide">CẦN THANH TOÁN:</span>
-                      <span id="checkout-final-total" class="text-2xl font-black text-slate-900 tracking-tight">${formatMoney(finalTotal)}đ</span>
+                    <div class="border-t border-slate-200/80 dark:border-slate-800/80 pt-3 mt-2 flex justify-between items-baseline">
+                      <span class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wide">CẦN THANH TOÁN:</span>
+                      <span id="checkout-final-total" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">${formatMoney(finalTotal)}đ</span>
                     </div>
                   </div>
 
-                  <!-- KHU VỰC PHƯƠNG THỨC THANH TOÁN TECHCOMBANK CHUẨN ẢNH 4 -->
-                  <div class="pt-3 border-t border-slate-100 space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500">Phương thức thanh toán</h4>
+                  <!-- KHU VỰC PHƯƠNG THỨC THANH TOÁN VIETQR -->
+                  <div class="pt-3 border-t border-slate-200/70 dark:border-slate-800/80 space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Phương thức thanh toán</h4>
                     
                     <!-- Hộp số dư ví -->
-                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs text-slate-700">
+                    <div class="p-3 bg-slate-50/80 dark:bg-[#090B10] rounded-xl border border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 tabular-nums">
                       <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                        <span>Số dư ví: <strong class="text-slate-900">0đ</strong></span>
+                        <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                        <span>Số dư ví: <strong class="text-slate-900 dark:text-white">0đ</strong></span>
                       </div>
                       <label class="flex items-center gap-1.5 cursor-pointer select-none">
                         <input type="checkbox" id="cb-use-wallet" disabled class="rounded border-slate-300 text-slate-900 focus:ring-0 opacity-50 cursor-not-allowed" />
@@ -609,22 +611,22 @@
                       </label>
                     </div>
 
-                    <!-- Hộp chọn ngân hàng TECHCOMBANK (Active chuẩn Ảnh 4) -->
-                    <div class="border-2 border-[#E92429] bg-sky-50/60 p-3.5 rounded-xl flex items-center justify-between shadow-xs cursor-pointer relative overflow-hidden group">
+                    <!-- Hộp chọn ngân hàng Active -->
+                    <div class="border-2 border-[#0071E3] dark:border-[#3B9EFF] bg-blue-50/50 dark:bg-blue-950/25 p-3.5 rounded-xl flex items-center justify-between shadow-xs relative overflow-hidden">
                       <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-xl bg-[#E92429] text-white flex flex-col items-center justify-center font-black text-xs tracking-tighter shadow-sm flex-shrink-0">
-                          <span class="leading-none text-[11px]">SCB</span>
-                          <span class="text-[8px] opacity-80 font-normal">VIETQR</span>
+                        <div class="w-11 h-11 rounded-xl bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex flex-col items-center justify-center font-black text-xs tracking-tighter shadow-sm flex-shrink-0">
+                          <span class="leading-none text-[11px]">${bankCodeBadge}</span>
+                          <span class="text-[8px] opacity-85 font-normal">VIETQR</span>
                         </div>
                         <div>
-                          <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                            Techcombank
-                            <span class="bg-amber-100 text-[#8A5F26] text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">VietQR 24/7</span>
+                          <div class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                            <span>${bankShort}</span>
+                            <span class="text-[#0071E3] dark:text-[#3B9EFF] text-[10px] font-bold uppercase tracking-wider">· VietQR 24/7</span>
                           </div>
-                          <div class="text-xs text-slate-600 mt-0.5">STK: <strong class="font-mono text-slate-800">6688686866688</strong> • BUI THAI</div>
+                          <div class="text-xs text-slate-600 dark:text-slate-400 mt-0.5 tabular-nums">STK: <strong class="font-mono text-slate-900 dark:text-white">${TECHCOMBANK_CONFIG.accountNumber}</strong> · ${TECHCOMBANK_CONFIG.accountName}</div>
                         </div>
                       </div>
-                      <div class="w-5 h-5 rounded-full bg-[#E92429] text-white flex items-center justify-center text-xs flex-shrink-0">
+                      <div class="w-5 h-5 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center text-xs flex-shrink-0">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                       </div>
                     </div>
@@ -632,23 +634,23 @@
 
                   <!-- Nút bấm chính "Đặt hàng và thanh toán" -->
                   <button type="button" id="btn-proceed-checkout" 
-                          class="w-full bg-[#E92429] hover:bg-[#003d75] text-white text-base font-bold py-3.5 rounded-xl active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2 group">
-                    <span>Đặt hàng và chuyển khoản Techcombank</span>
+                          class="w-full bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] text-white text-base font-bold py-3.5 rounded-xl active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2 group cursor-pointer">
+                    <span>Đặt hàng và chuyển khoản ${bankShort}</span>
                     <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
                   </button>
 
-                  <div class="text-[11px] text-center text-slate-400 flex items-center justify-center gap-1.5 pt-1">
-                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  <div class="text-[11px] text-center text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5 pt-1">
+                    <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     Quét mã VietQR nhận tài khoản tức thì sau 30 giây
                   </div>
 
-                  <div class="text-[11px] text-center text-slate-500 pt-1 leading-relaxed">
+                  <div class="text-[11px] text-center text-slate-500 dark:text-slate-400 pt-1 leading-relaxed">
                     Bằng việc đặt hàng, bạn đồng ý với 
-                    <button type="button" onclick="ShopVietViews.modal.openPolicy('terms'); return false;" class="underline text-amber-700 hover:text-amber-800 font-medium cursor-pointer">Điều khoản dịch vụ</button> 
+                    <button type="button" onclick="ShopVietViews.modal.openPolicy('terms'); return false;" class="underline text-[#0071E3] dark:text-[#3B9EFF] hover:opacity-80 font-medium cursor-pointer">Điều khoản dịch vụ</button> 
                     và 
-                    <button type="button" onclick="ShopVietViews.modal.openPolicy('refund'); return false;" class="underline text-emerald-700 hover:text-emerald-800 font-bold cursor-pointer">Chính sách hoàn tiền 100%</button>.
+                    <button type="button" onclick="ShopVietViews.modal.openPolicy('refund'); return false;" class="underline text-emerald-600 dark:text-emerald-400 hover:opacity-80 font-bold cursor-pointer">Chính sách hoàn tiền 100%</button>.
                   </div>
 
                 </div>
@@ -847,52 +849,58 @@
         order.bin = TECHCOMBANK_CONFIG.bin;
       }
 
-      // URL VietQR Napas với Techcombank BIN 970407, STK 6688686866688
-      const vietQrUrl = `https://api.vietqr.io/image/${TECHCOMBANK_CONFIG.bin}-${TECHCOMBANK_CONFIG.accountNumber}-compact2.jpg?amount=${order.amount}&addInfo=${encodeURIComponent(order.memo)}&accountName=${encodeURIComponent(order.accountName)}`;
+      // URL VietQR Napas
+      const bankShort = TECHCOMBANK_CONFIG.shortName || 'Techcombank';
+      const bankFullName = order.bankName || TECHCOMBANK_CONFIG.bankName || 'Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)';
+      const bankAccountNum = order.accountNumber || TECHCOMBANK_CONFIG.accountNumber;
+      const bankAccountHolder = order.accountName || TECHCOMBANK_CONFIG.accountName;
+      const bankBin = order.bin || TECHCOMBANK_CONFIG.bin;
+      const vietQrUrl = `https://api.vietqr.io/image/${bankBin}-${bankAccountNum}-compact2.jpg?amount=${order.amount}&addInfo=${encodeURIComponent(order.memo)}&accountName=${encodeURIComponent(bankAccountHolder)}`;
 
       const html = `
-        <div class="pay-view-wrapper min-h-screen bg-slate-50/70 py-6 sm:py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
+        <div class="pay-view-wrapper min-h-screen bg-[#F5F7FA] dark:bg-[#090B10] py-6 sm:py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
           <div class="max-w-6xl mx-auto space-y-6">
 
-            <!-- HEADER BỐ CỤC ẢNH 4: "Thanh toán Plus", Nút Đổi gói, Đếm ngược thời gian, Mã đơn -->
-            <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <!-- HEADER: "Thanh toán Plus", Nút Đổi gói, Đếm ngược thời gian, Mã đơn -->
+            <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-[#E92429] text-white flex items-center justify-center shadow-md shadow-blue-900/20 flex-shrink-0">
+                <div class="w-12 h-12 rounded-2xl bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center shadow-md shadow-blue-900/20 flex-shrink-0">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                   </svg>
                 </div>
                 <div>
                   <div class="flex items-center gap-2.5 flex-wrap">
-                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Thanh toán Plus</h1>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-[#8A5F26] border border-amber-200">
-                      Techcombank VietQR
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">Thanh toán Plus</h1>
+                    <span class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">
+                      ${bankShort} VietQR
                     </span>
-                    <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                    <span class="text-slate-300 dark:text-slate-700" aria-hidden="true">·</span>
+                    <span class="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 tabular-nums">
                       ${order.orderCode}
                     </span>
                   </div>
-                  <p class="text-xs text-slate-500 mt-1">Đơn hàng được khởi tạo lúc ${order.createdAtFormatted || 'vừa xong'} • Tự động kích hoạt sau thanh toán</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums">Đơn hàng được khởi tạo lúc ${order.createdAtFormatted || 'vừa xong'} · Tự động kích hoạt sau thanh toán</p>
                 </div>
               </div>
 
               <!-- Khu vực nút đổi gói & Đồng hồ đếm ngược -->
               <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                 <!-- Đồng hồ đếm ngược header -->
-                <div class="flex items-center gap-2 bg-rose-50 border border-rose-200/80 px-3.5 py-2 rounded-xl text-rose-700">
-                  <svg class="w-4 h-4 animate-spin text-rose-600" style="animation-duration: 3s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 px-3.5 py-2 rounded-xl text-rose-600 dark:text-rose-400">
+                  <svg class="w-4 h-4 animate-spin text-rose-600 dark:text-rose-400" style="animation-duration: 3s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="32" stroke-linecap="round"></circle>
                   </svg>
                   <div class="text-xs">
-                    <span class="font-medium text-slate-600 mr-1 hidden sm:inline">Hết hạn sau:</span>
-                    <strong id="header-countdown-timer" class="font-mono font-black text-sm text-rose-700">09:59</strong>
+                    <span class="font-medium text-slate-600 dark:text-slate-400 mr-1 hidden sm:inline">Hết hạn sau:</span>
+                    <strong id="header-countdown-timer" class="font-mono font-black text-sm text-rose-600 dark:text-rose-400 tabular-nums">09:59</strong>
                   </div>
                 </div>
 
                 <!-- Nút Đổi gói -->
                 <button type="button" id="btn-change-plan" 
-                        class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition flex items-center gap-1.5 shadow-2xs">
-                  <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition flex items-center gap-1.5 shadow-2xs cursor-pointer">
+                  <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
                   </svg>
                   <span>Đổi gói / Quay lại</span>
@@ -900,7 +908,7 @@
               </div>
             </div>
 
-            <!-- BỐ CỤC CHÍNH 2 CỘT CHUẨN ẢNH 4 (5 COLS TRÁI - 7 COLS PHẢI HOẶC 6 - 6) -->
+            <!-- BỐ CỤC CHÍNH 2 CỘT (5 COLS TRÁI - 7 COLS PHẢI) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
               <!-- ========================================== -->
@@ -908,31 +916,30 @@
               <!-- ========================================== -->
               <div class="lg:col-span-5 space-y-5">
                 
-                <!-- KHUNG CHÍNH QR TECHCOMBANK -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col items-center relative overflow-hidden">
+                <!-- KHUNG CHÍNH QR VIETQR -->
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col items-center relative overflow-hidden">
                   
-                  <!-- Badge "VietQR Chuẩn Napas 24/7 Tự Động" -->
-                  <div class="w-full flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                      VietQR Chuẩn Napas 24/7 Tự Động
+                  <!-- Header "VietQR Chuẩn Napas 24/7 Tự Động" -->
+                  <div class="w-full flex items-center justify-between pb-4 mb-4 border-b border-slate-200/70 dark:border-slate-800/80">
+                    <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                      ● VietQR Chuẩn Napas 24/7 Tự Động
                     </div>
-                    <span class="text-[11px] font-mono text-slate-400 font-semibold">BIN 970407</span>
+                    <span class="text-[11px] font-mono text-slate-400 font-semibold tabular-nums">BIN ${bankBin}</span>
                   </div>
 
-                  <!-- Khung ảnh QR có góc ngắm Viewfinder Techcombank -->
-                  <div class="relative p-3.5 bg-white rounded-2xl shadow-md border-2 border-slate-100 max-w-[270px] w-full">
-                    <!-- 4 góc ngắm trang trí thương hiệu Techcombank -->
-                    <div class="absolute top-1.5 left-1.5 w-5 h-5 border-t-3 border-l-3 border-[#E92429] rounded-tl-md pointer-events-none"></div>
-                    <div class="absolute top-1.5 right-1.5 w-5 h-5 border-t-3 border-r-3 border-[#E92429] rounded-tr-md pointer-events-none"></div>
-                    <div class="absolute bottom-1.5 left-1.5 w-5 h-5 border-b-3 border-l-3 border-[#E92429] rounded-bl-md pointer-events-none"></div>
-                    <div class="absolute bottom-1.5 right-1.5 w-5 h-5 border-b-3 border-r-3 border-[#E92429] rounded-br-md pointer-events-none"></div>
+                  <!-- Khung ảnh QR có góc ngắm Viewfinder Sapphire -->
+                  <div class="relative p-3.5 bg-white rounded-2xl shadow-md border border-slate-200/80 max-w-[270px] w-full">
+                    <!-- 4 góc ngắm thương hiệu Sapphire -->
+                    <div class="absolute top-1.5 left-1.5 w-5 h-5 border-t-3 border-l-3 border-[#0071E3] rounded-tl-md pointer-events-none"></div>
+                    <div class="absolute top-1.5 right-1.5 w-5 h-5 border-t-3 border-r-3 border-[#0071E3] rounded-tr-md pointer-events-none"></div>
+                    <div class="absolute bottom-1.5 left-1.5 w-5 h-5 border-b-3 border-l-3 border-[#0071E3] rounded-bl-md pointer-events-none"></div>
+                    <div class="absolute bottom-1.5 right-1.5 w-5 h-5 border-b-3 border-r-3 border-[#0071E3] rounded-br-md pointer-events-none"></div>
 
-                    <!-- Ảnh VietQR Techcombank -->
+                    <!-- Ảnh VietQR -->
                     <div id="qr-img-wrapper" class="aspect-square w-full flex items-center justify-center overflow-hidden rounded-xl bg-white">
                       <img id="vietqr-live-img" 
                            src="${vietQrUrl}" 
-                           alt="VietQR Techcombank - ${order.memo}" 
+                           alt="VietQR ${bankShort} - ${order.memo}" 
                            class="w-full h-full object-contain transition-transform duration-300 hover:scale-[1.02]" />
                     </div>
                   </div>
@@ -940,22 +947,22 @@
                   <!-- Nút "Lưu ảnh mã QR về máy" -->
                   <div class="w-full mt-4 flex flex-col gap-2">
                     <button type="button" id="btn-download-qr" 
-                            class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-2 active:scale-[0.99]">
-                      <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="w-full py-2.5 px-4 bg-[#090B10] hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs sm:text-sm font-bold rounded-xl transition shadow-sm flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer">
+                      <svg class="w-4 h-4 text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                       </svg>
                       <span>Lưu ảnh mã QR về máy</span>
                     </button>
-                    <p class="text-[11px] text-slate-400 text-center">
-                      Hỗ trợ mọi app ngân hàng (Techcombank, VCB, BIDV, Techcombank, MoMo...)
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 text-center">
+                      Hỗ trợ mọi app ngân hàng (Techcombank, VCB, BIDV, MBBank, MoMo...)
                     </p>
                   </div>
                 </div>
 
                 <!-- KHUNG "3 BƯỚC THANH TOÁN NHANH" -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-3">
-                  <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-[#E92429]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
+                  <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>
                     3 Bước thanh toán nhanh
@@ -963,28 +970,28 @@
 
                   <div class="space-y-3 text-xs">
                     <div class="flex items-start gap-3">
-                      <span class="w-5 h-5 rounded-full bg-amber-100 text-[#8A5F26] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</span>
-                      <div class="text-slate-600">
-                        <strong class="text-slate-900">Mở App Ngân hàng</strong> hoặc Ví điện tử bất kỳ có tính năng Quét mã QR.
+                      <span class="w-5 h-5 rounded-full bg-blue-500/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5 tabular-nums">1</span>
+                      <div class="text-slate-600 dark:text-slate-400">
+                        <strong class="text-slate-900 dark:text-white">Mở App Ngân hàng</strong> hoặc Ví điện tử bất kỳ có tính năng Quét mã QR.
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
-                      <span class="w-5 h-5 rounded-full bg-amber-100 text-[#8A5F26] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</span>
-                      <div class="text-slate-600">
-                        <strong class="text-slate-900">Quét mã VietQR</strong> phía trên hoặc tải ảnh về để quét trực tiếp từ thư viện.
+                      <span class="w-5 h-5 rounded-full bg-blue-500/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5 tabular-nums">2</span>
+                      <div class="text-slate-600 dark:text-slate-400">
+                        <strong class="text-slate-900 dark:text-white">Quét mã VietQR</strong> phía trên hoặc tải ảnh về để quét trực tiếp từ thư viện.
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
-                      <span class="w-5 h-5 rounded-full bg-amber-100 text-[#8A5F26] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">3</span>
-                      <div class="text-slate-600">
-                        <strong class="text-slate-900">Kiểm tra thông tin</strong> đúng người nhận <span class="font-bold text-[#E92429]">BUI THAI</span> và xác nhận chuyển.
+                      <span class="w-5 h-5 rounded-full bg-blue-500/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5 tabular-nums">3</span>
+                      <div class="text-slate-600 dark:text-slate-400">
+                        <strong class="text-slate-900 dark:text-white">Kiểm tra thông tin</strong> đúng người nhận <span class="font-bold text-[#0071E3] dark:text-[#3B9EFF]">${bankAccountHolder}</span> và xác nhận chuyển.
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- BADGE AN TOÀN & BẢO MẬT 24/7 -->
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-4 text-white shadow-sm flex items-center gap-3.5">
+                <div class="bg-[#090B10] border border-slate-800/80 rounded-2xl p-4 text-white shadow-sm flex items-center gap-3.5">
                   <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 text-emerald-400">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -992,7 +999,7 @@
                   </div>
                   <div>
                     <h4 class="text-xs font-bold text-white uppercase tracking-wider">Hệ thống bảo mật Napas 24/7</h4>
-                    <p class="text-[11px] text-slate-300 mt-0.5">Mã hóa SSL 256-bit • Tự động khớp lệnh tức thì không cần can thiệp thủ công</p>
+                    <p class="text-[11px] text-slate-300 mt-0.5">Mã hóa SSL 256-bit · Tự động khớp lệnh tức thì không cần can thiệp thủ công</p>
                   </div>
                 </div>
 
@@ -1003,77 +1010,76 @@
               <!-- ========================================== -->
               <div class="lg:col-span-7 space-y-5">
                 
-                <!-- BẢNG THÔNG TIN CHUYỂN KHOẢN TECHCOMBANK CHI TIẾT -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#E92429]"></span>
-                      Thông tin chuyển khoản Techcombank
+                <!-- BẢNG THÔNG TIN CHUYỂN KHOẢN CHI TIẾT -->
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+                  <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800/80">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                      <span class="w-2.5 h-2.5 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF]"></span>
+                      Thông tin chuyển khoản ${bankShort}
                     </h3>
-                    <span class="text-xs text-slate-500 font-medium">Sao chép nhanh 1 chạm</span>
+                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sao chép nhanh 1 chạm</span>
                   </div>
 
                   <!-- Danh sách các trường thông tin -->
-                  <div class="bg-slate-50/80 rounded-2xl border border-slate-200/80 divide-y divide-slate-200/60 overflow-hidden text-sm">
+                  <div class="bg-slate-50/80 dark:bg-[#090B10]/85 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 divide-y divide-slate-200/70 dark:divide-slate-800/80 overflow-hidden text-sm">
                     
-                    <!-- 1. Số tiền cần chuyển (In đậm, to rõ, nút copy) -->
-                    <div class="p-3.5 sm:px-4 flex items-center justify-between gap-3 bg-rose-50/40">
-                      <div class="text-slate-600 text-xs sm:text-sm font-medium">Số tiền cần chuyển:</div>
+                    <!-- 1. Số tiền cần chuyển -->
+                    <div class="p-3.5 sm:px-4 flex items-center justify-between gap-3 bg-blue-50/50 dark:bg-blue-950/20">
+                      <div class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm font-medium">Số tiền cần chuyển:</div>
                       <div class="flex items-center gap-2.5">
-                        <span class="font-mono font-black text-rose-600 text-lg sm:text-xl select-all">${formatMoney(order.amount)}đ</span>
-                        <button type="button" class="btn-copy px-3 py-1 text-xs font-bold rounded-lg bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 transition shadow-2xs" data-copy="${order.amount}">
+                        <span class="font-mono font-black text-[#0071E3] dark:text-[#3B9EFF] text-lg sm:text-xl select-all tabular-nums">${formatMoney(order.amount)}đ</span>
+                        <button type="button" class="btn-copy px-3 py-1 text-xs font-bold rounded-lg bg-white dark:bg-[#0B0F17] border border-blue-200 dark:border-blue-800/60 text-[#0071E3] dark:text-[#3B9EFF] hover:bg-blue-50 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer" data-copy="${order.amount}">
                           Sao chép
                         </button>
                       </div>
                     </div>
 
-                    <!-- 2. Ngân hàng nhận: Techcombank -->
+                    <!-- 2. Ngân hàng nhận -->
                     <div class="p-3.5 sm:px-4 flex items-center justify-between gap-3">
-                      <div class="text-slate-600 text-xs sm:text-sm">Ngân hàng nhận:</div>
+                      <div class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">Ngân hàng nhận:</div>
                       <div class="flex items-center gap-2 text-right">
-                        <span class="font-bold text-slate-900 text-xs sm:text-sm">Techcombank (Ngân hàng TMCP Kỹ Thương Việt Nam)</span>
-                        <button type="button" class="btn-copy px-2.5 py-1 text-xs font-medium rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition shadow-2xs" data-copy="Techcombank">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">${bankFullName}</span>
+                        <button type="button" class="btn-copy px-2.5 py-1 text-xs font-medium rounded-lg bg-white dark:bg-[#0B0F17] border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition shadow-2xs cursor-pointer" data-copy="${bankShort}">
                           Sao chép
                         </button>
                       </div>
                     </div>
 
-                    <!-- 3. Số tài khoản: 6688686866688 -->
+                    <!-- 3. Số tài khoản -->
                     <div class="p-3.5 sm:px-4 flex items-center justify-between gap-3">
-                      <div class="text-slate-600 text-xs sm:text-sm">Số tài khoản:</div>
+                      <div class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">Số tài khoản:</div>
                       <div class="flex items-center gap-2.5">
-                        <span class="font-mono font-bold text-slate-900 text-base sm:text-lg select-all">6688686866688</span>
-                        <button type="button" class="btn-copy px-3 py-1 text-xs font-bold rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 transition shadow-2xs" data-copy="6688686866688">
+                        <span class="font-mono font-bold text-slate-900 dark:text-white text-base sm:text-lg select-all tabular-nums">${bankAccountNum}</span>
+                        <button type="button" class="btn-copy px-3 py-1 text-xs font-bold rounded-lg bg-white dark:bg-[#0B0F17] border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 transition shadow-2xs cursor-pointer" data-copy="${bankAccountNum}">
                           Sao chép
                         </button>
                       </div>
                     </div>
 
-                    <!-- 4. Chủ tài khoản: BUI THAI -->
+                    <!-- 4. Chủ tài khoản -->
                     <div class="p-3.5 sm:px-4 flex items-center justify-between gap-3">
-                      <div class="text-slate-600 text-xs sm:text-sm">Chủ tài khoản:</div>
+                      <div class="text-slate-600 dark:text-slate-400 text-xs sm:text-sm">Chủ tài khoản:</div>
                       <div class="flex items-center gap-2.5">
-                        <span class="font-bold text-slate-900 uppercase text-xs sm:text-sm select-all">BUI THAI</span>
-                        <button type="button" class="btn-copy px-2.5 py-1 text-xs font-medium rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition shadow-2xs" data-copy="BUI THAI">
+                        <span class="font-bold text-slate-900 dark:text-white uppercase text-xs sm:text-sm select-all">${bankAccountHolder}</span>
+                        <button type="button" class="btn-copy px-2.5 py-1 text-xs font-medium rounded-lg bg-white dark:bg-[#0B0F17] border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition shadow-2xs cursor-pointer" data-copy="${bankAccountHolder}">
                           Sao chép
                         </button>
                       </div>
                     </div>
 
-                    <!-- 5. Nội dung chuyển khoản BẮT BUỘC (Mã memo + Nút copy nổi bật) -->
-                    <div class="p-4 sm:px-4 flex items-center justify-between gap-3 bg-amber-50/70 border-l-4 border-amber-500">
+                    <!-- 5. Nội dung chuyển khoản BẮT BUỘC -->
+                    <div class="p-4 sm:px-4 flex flex-wrap items-center justify-between gap-3 bg-blue-500/8 dark:bg-blue-950/25">
                       <div>
-                        <div class="text-amber-900 font-bold text-xs sm:text-sm flex items-center gap-1.5">
-                          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                          Nội dung chuyển khoản (Bắt buộc):
+                        <div class="text-[#0071E3] dark:text-[#3B9EFF] font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                          <span>● Nội dung chuyển khoản (Bắt buộc):</span>
                         </div>
-                        <div class="text-[11px] text-amber-700 mt-0.5">Vui lòng ghi đúng để tự động duyệt đơn</div>
+                        <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">Vui lòng ghi đúng để tự động duyệt đơn</div>
                       </div>
                       <div class="flex items-center gap-2">
-                        <span class="font-mono font-black text-slate-900 text-base sm:text-lg bg-white px-2.5 py-1 rounded-lg border border-amber-300 select-all tracking-wider shadow-2xs">
+                        <span class="font-mono font-black text-slate-900 dark:text-white text-base sm:text-lg bg-white dark:bg-[#0B0F17] px-2.5 py-1 rounded-lg border border-blue-200 dark:border-blue-800/60 select-all tracking-wider shadow-2xs">
                           ${order.memo}
                         </span>
-                        <button type="button" class="btn-copy px-3 py-1.5 text-xs font-bold rounded-lg bg-amber-500 hover:bg-amber-600 text-white transition shadow-sm active:scale-95" data-copy="${order.memo}">
+                        <button type="button" class="btn-copy px-3 py-1.5 text-xs font-bold rounded-lg bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] text-white transition shadow-sm active:scale-95 cursor-pointer" data-copy="${order.memo}">
                           Sao chép
                         </button>
                       </div>
@@ -1082,30 +1088,32 @@
                   </div>
 
                   <!-- Thông báo lịch duyệt Thứ 3, Thứ 5, Thứ 6 -->
-                  <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-300/80 text-amber-900 text-xs flex items-start gap-2.5 shadow-2xs">
-                    <span class="text-base shrink-0">⏰</span>
+                  <div class="p-3.5 rounded-xl bg-blue-500/8 border border-blue-500/20 text-slate-700 dark:text-slate-300 text-xs flex items-start gap-2.5 shadow-2xs">
+                    <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                    </svg>
                     <div class="leading-relaxed">
-                      <span class="font-bold text-amber-900">Lưu ý lịch duyệt đơn & tiền:</span>
+                      <span class="font-bold text-slate-900 dark:text-white">Lưu ý lịch duyệt đơn & tiền:</span>
                       Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái vướng lịch học & công tác nên có thể duyệt muộn hơn bình thường một chút. Các ngày còn lại duyệt siêu tốc trong 3-5 phút! Mọi đơn hàng chuyển khoản đều được bảo đảm 100%.
                     </div>
                   </div>
 
-                  <!-- DÒNG XÁC THỰC: "Tên người nhận trong app ngân hàng: BUI THAI" -->
-                  <div class="bg-sky-50 border border-sky-200/80 rounded-xl p-3.5 text-xs text-sky-900 flex items-center gap-2.5 shadow-2xs">
-                    <div class="w-6 h-6 rounded-full bg-sky-200 text-[#E92429] flex items-center justify-center flex-shrink-0 font-bold">
+                  <!-- DÒNG XÁC THỰC -->
+                  <div class="bg-blue-50/70 dark:bg-blue-950/25 border border-blue-200/80 dark:border-blue-800/50 rounded-xl p-3.5 text-xs text-slate-700 dark:text-slate-300 flex items-center gap-2.5 shadow-2xs">
+                    <div class="w-6 h-6 rounded-full bg-blue-500/15 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center flex-shrink-0 font-bold">
                       ✓
                     </div>
                     <div class="leading-relaxed">
-                      <strong>Xác thực người thụ hưởng:</strong> Tên hiển thị trong app ngân hàng của bạn phải là <strong class="font-bold text-[#E92429] uppercase">BUI THAI</strong>.
+                      <strong>Xác thực người thụ hưởng:</strong> Tên hiển thị trong app ngân hàng của bạn phải là <strong class="font-bold text-[#0071E3] dark:text-[#3B9EFF] uppercase">${bankAccountHolder}</strong>.
                     </div>
                   </div>
                 </div>
 
                 <!-- KHUNG TẢI ẢNH CHỤP MÀN HÌNH CHUYỂN KHOẢN (UPLOAD BILL) -->
-                <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-sm space-y-3">
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
                   <div class="flex items-center justify-between pb-2">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                      <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                       </svg>
                       Ảnh chụp biên lai chuyển khoản (Không bắt buộc)
@@ -1114,16 +1122,16 @@
                   </div>
 
                   <!-- Vùng Dropzone Upload -->
-                  <div id="bill-upload-area" class="border-2 border-dashed border-slate-300 hover:border-[#E92429] bg-slate-50/60 hover:bg-sky-50/30 rounded-2xl p-5 text-center cursor-pointer transition-all">
+                  <div id="bill-upload-area" class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#0071E3] dark:hover:border-[#3B9EFF] bg-slate-50/60 dark:bg-[#090B10]/70 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 rounded-2xl p-5 text-center cursor-pointer transition-all">
                     <input type="file" id="input-bill-file" accept="image/*" class="hidden" />
                     
                     <div id="bill-empty-state" class="space-y-2">
-                      <div class="w-10 h-10 rounded-full bg-slate-200/70 text-slate-500 flex items-center justify-center mx-auto">
+                      <div class="w-10 h-10 rounded-full bg-slate-200/70 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center mx-auto">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
                       </div>
-                      <p class="text-xs font-semibold text-slate-700">
+                      <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Nhấp để tải lên ảnh biên lai hoặc kéo thả ảnh vào đây
                       </p>
                       <p class="text-[11px] text-slate-400">PNG, JPG, JPEG (Tối đa 5MB)</p>
@@ -1132,13 +1140,13 @@
                     <!-- Trạng thái xem trước ảnh preview (mặc định ẩn) -->
                     <div id="bill-preview-state" class="hidden flex items-center justify-between gap-4 p-2">
                       <div class="flex items-center gap-3">
-                        <img id="bill-preview-img" src="" alt="Biên lai" class="w-14 h-14 object-cover rounded-xl border border-slate-200 shadow-xs" />
+                        <img id="bill-preview-img" src="" alt="Biên lai" class="w-14 h-14 object-cover rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs" />
                         <div class="text-left">
-                          <div id="bill-filename" class="text-xs font-bold text-slate-800 truncate max-w-[200px]">bienlai.png</div>
-                          <div class="text-[11px] text-emerald-600 font-medium">✓ Đã đính kèm ảnh xác thực</div>
+                          <div id="bill-filename" class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate max-w-[200px]">bienlai.png</div>
+                          <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">✓ Đã đính kèm ảnh xác thực</div>
                         </div>
                       </div>
-                      <button type="button" id="btn-remove-bill" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-50 transition">
+                      <button type="button" id="btn-remove-bill" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-500/10 transition cursor-pointer">
                         Xóa ảnh
                       </button>
                     </div>
@@ -1146,44 +1154,41 @@
                 </div>
 
                 <!-- STEPPER 3 BƯỚC TIẾN TRÌNH: 1. Quét mã & chuyển -> 2. Kiểm tra giao dịch -> 3. Kích hoạt -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm space-y-4">
-                  <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Tiến trình thanh toán</div>
+                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+                  <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tiến trình thanh toán</div>
                   
-                  <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div class="grid grid-cols-3 gap-2 text-center text-xs tabular-nums">
                     <!-- Bước 1 -->
-                    <div id="step-col-1" class="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[#8A5F26] font-bold flex flex-col items-center gap-1">
-                      <span class="w-5 h-5 rounded-full bg-[#E92429] text-white flex items-center justify-center text-[10px]">1</span>
+                    <div id="step-col-1" class="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/25 text-[#0071E3] dark:text-[#3B9EFF] font-bold flex flex-col items-center gap-1">
+                      <span class="w-5 h-5 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center text-[10px]">1</span>
                       <span class="text-[11px] sm:text-xs">1. Quét mã & chuyển</span>
                     </div>
 
                     <!-- Bước 2 -->
-                    <div id="step-col-2" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 font-medium flex flex-col items-center gap-1 transition-all">
-                      <span id="step-badge-2" class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">2</span>
+                    <div id="step-col-2" class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium flex flex-col items-center gap-1 transition-all">
+                      <span id="step-badge-2" class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center text-[10px]">2</span>
                       <span class="text-[11px] sm:text-xs">2. Kiểm tra giao dịch</span>
                     </div>
 
                     <!-- Bước 3 -->
-                    <div id="step-col-3" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 font-medium flex flex-col items-center gap-1 transition-all">
-                      <span id="step-badge-3" class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px]">3</span>
+                    <div id="step-col-3" class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium flex flex-col items-center gap-1 transition-all">
+                      <span id="step-badge-3" class="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 flex items-center justify-center text-[10px]">3</span>
                       <span class="text-[11px] sm:text-xs">3. Kích hoạt</span>
                     </div>
                   </div>
 
-                  <!-- Radar trạng thái giao dịch -->
-                  <div id="radar-status-box" class="pt-1 flex items-center justify-center gap-2 text-xs text-slate-500">
-                    <div class="relative flex h-2.5 w-2.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E92429]"></span>
-                    </div>
-                    <span id="radar-text" class="font-medium text-slate-600 animate-pulse">
-                      Đang lắng nghe giao dịch chuyển khoản Techcombank...
+                  <!-- Trạng thái giao dịch -->
+                  <div id="radar-status-box" class="pt-1 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                    <span class="inline-flex rounded-full h-2 w-2 bg-[#0071E3] dark:bg-[#3B9EFF]"></span>
+                    <span id="radar-text" class="font-medium text-slate-600 dark:text-slate-300">
+                      Đang lắng nghe giao dịch chuyển khoản ${bankShort}...
                     </span>
                   </div>
 
                   <!-- NÚT CHÍNH "Tôi đã chuyển khoản" -->
                   <div class="space-y-2 pt-1">
                     <button type="button" id="btn-paid-confirm" 
-                            class="w-full bg-[#E92429] hover:bg-[#003d75] active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2 text-base">
+                            class="w-full bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2 text-base cursor-pointer">
                       <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                       </svg>
@@ -1192,11 +1197,11 @@
 
                     <!-- Nút phụ giả lập Webhook Sandbox để tester duyệt tức thì -->
                     <button type="button" id="btn-simulate-webhook" 
-                            class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
-                      <svg class="w-3.5 h-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                            class="w-full bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                      <svg class="w-3.5 h-3.5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"/>
                       </svg>
-                      <span>⚡ Duyệt tự động tức thì (Chế độ Thử nghiệm Sandbox)</span>
+                      <span>Duyệt tự động tức thì (Chế độ Thử nghiệm Sandbox)</span>
                     </button>
                   </div>
                 </div>
@@ -1209,31 +1214,31 @@
         </div>
 
         <!-- MODAL BÀN GIAO TÀI KHOẢN SAU KHI THANH TOÁN THÀNH CÔNG -->
-        <div id="payment-success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300">
-          <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 transform transition-transform duration-300 scale-95 space-y-6">
+        <div id="payment-success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300">
+          <div class="bg-white/92 dark:bg-[#0B0F17]/95 backdrop-blur-2xl rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-800/80 transform transition-transform duration-300 scale-95 space-y-6">
             
             <!-- Icon chúc mừng thành công -->
             <div class="text-center">
-              <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
+              <div class="w-16 h-16 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
               </div>
-              <h3 class="text-2xl font-black text-slate-900">Thanh toán Techcombank thành công!</h3>
-              <p class="text-xs text-slate-500 mt-1">Đơn hàng <strong class="text-slate-800 font-mono">${order.orderCode}</strong> đã được hệ thống Techcombank duyệt tự động.</p>
+              <h3 class="text-2xl font-black text-slate-900 dark:text-white">Thanh toán ${bankShort} thành công!</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Đơn hàng <strong class="text-slate-800 dark:text-slate-200 font-mono tabular-nums">${order.orderCode}</strong> đã được hệ thống ${bankShort} duyệt tự động.</p>
             </div>
 
             <!-- Khung thông tin Kỹ Năng Mở Khóa Trực Tiếp -->
-            <div class="bg-[#FAF6ED] dark:bg-[#1B1612] rounded-2xl p-5 border border-[#E6DCCB] dark:border-[#8A5F26]/40 space-y-3.5 text-xs sm:text-sm">
-              <div class="flex items-center justify-between pb-2 border-b border-[#E6DCCB] dark:border-[#8A5F26]/30">
-                <span class="font-bold text-[#1B1612] dark:text-[#F3EDE0] flex items-center gap-1.5">
-                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <div class="bg-slate-50/80 dark:bg-[#090B10]/85 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 space-y-3.5 text-xs sm:text-sm">
+              <div class="flex items-center justify-between pb-2 border-b border-slate-200/70 dark:border-slate-800/80">
+                <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   Kỹ Năng & File Mã Nguồn Đã Mở Khóa
                 </span>
-                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 px-2.5 py-0.5 rounded-full">SẴN SÀNG SAO CHÉP</span>
+                <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">SẴN SÀNG SAO CHÉP</span>
               </div>
 
               <div class="space-y-2 text-slate-600 dark:text-slate-300 text-xs">
-                <p>⚡ <strong>Không qua link trung gian:</strong> File <code>SKILL.md</code>, lệnh cài đặt và scripts tự động hóa đã được mở khóa trực tiếp trên trình duyệt của bạn (mở khóa vĩnh viễn trọn đời).</p>
-                <button type="button" id="btn-modal-open-skill-view" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white font-extrabold text-sm shadow-md shadow-amber-900/20 flex items-center justify-center gap-2 transition active:scale-98">
+                <p><strong>Không qua link trung gian:</strong> File <code>SKILL.md</code>, lệnh cài đặt và scripts tự động hóa đã được mở khóa trực tiếp trên trình duyệt của bạn (mở khóa vĩnh viễn trọn đời).</p>
+                <button type="button" id="btn-modal-open-skill-view" class="w-full py-3 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] text-white font-extrabold text-sm shadow-md flex items-center justify-center gap-2 transition active:scale-98 cursor-pointer">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                   <span>MỞ TRÌNH XEM SKILL & TẢI FILE .MD NGAY</span>
                 </button>
@@ -1241,21 +1246,21 @@
             </div>
 
             <!-- Tích lũy điểm thưởng -->
-            <div class="flex items-center justify-between p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-xs text-amber-900">
+            <div class="flex items-center justify-between p-3 bg-blue-500/8 rounded-xl border border-blue-500/20 text-xs text-slate-800 dark:text-slate-200 tabular-nums">
               <span class="flex items-center gap-1.5 font-medium">
-                🎁 Điểm thưởng nhận được:
+                Điểm thưởng nhận được:
               </span>
-              <span class="font-bold font-mono text-sm text-amber-700">+45 Điểm</span>
+              <span class="font-bold font-mono text-sm text-[#0071E3] dark:text-[#3B9EFF]">+45 Điểm</span>
             </div>
 
             <!-- Nút hành động -->
             <div class="flex flex-col sm:flex-row gap-3 pt-2">
               <button type="button" id="btn-modal-go-dashboard" 
-                      class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition text-center shadow-md">
+                      class="flex-1 bg-[#090B10] hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition text-center shadow-md cursor-pointer">
                 Xem trong Dashboard
               </button>
               <button type="button" id="btn-modal-go-home" 
-                      class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm transition text-center">
+                      class="bg-slate-100 dark:bg-slate-800/60 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm transition text-center cursor-pointer">
                 Về trang chủ
               </button>
             </div>
@@ -1493,16 +1498,16 @@
 
           // Cập nhật Stepper sang Bước 2 đang kiểm tra
           if (stepCol2) {
-            stepCol2.className = 'p-2.5 rounded-xl bg-amber-100 border border-amber-300 text-[#8A5F26] font-bold flex flex-col items-center gap-1';
+            stepCol2.className = 'p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-[#0071E3] dark:text-[#3B9EFF] font-bold flex flex-col items-center gap-1';
           }
           if (stepBadge2) {
-            stepBadge2.className = 'w-5 h-5 rounded-full bg-[#E92429] text-white flex items-center justify-center text-[10px] animate-pulse';
+            stepBadge2.className = 'w-5 h-5 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center text-[10px]';
           }
           if (radarText) {
-            radarText.textContent = 'Đang khớp lệnh giao dịch với Techcombank...';
+            radarText.textContent = `Đang khớp lệnh giao dịch với ${bankShort}...`;
           }
 
-          showToast('Đang kết nối cổng Techcombank để kiểm tra số dư...', 'info');
+          showToast(`Đang kết nối cổng ${bankShort} để kiểm tra số dư...`, 'info');
 
           setTimeout(() => {
             completePaymentSuccess();

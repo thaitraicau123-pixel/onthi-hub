@@ -318,35 +318,31 @@
           </div>
 
           <!-- Card Đăng nhập / Đăng ký -->
-          <div class="max-w-md mx-auto w-full bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-md transition-all duration-300">
+          <div class="max-w-md mx-auto w-full bg-white/85 dark:bg-[#0B0F17]/90 backdrop-blur-2xl rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-xl transition-all duration-300">
             
-            <div class="text-[11px] font-black tracking-[0.25em] text-[#8A5F26] dark:text-[#BE9455] uppercase select-none">
+            <div class="text-[11px] font-extrabold tracking-[0.22em] text-[#0071E3] dark:text-[#3B9EFF] uppercase select-none">
               BÙI THÁI AI STUDIO
             </div>
 
             <div id="authHeaderArea">
-              <h1 id="authTitle" class="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              <h1 id="authTitle" class="text-2xl font-bold text-slate-900 dark:text-white mt-1 tracking-tight">
                 ${isRegisterMode ? 'Đăng ký tài khoản' : 'Đăng nhập'}
               </h1>
               <p id="authSubtitle" class="text-slate-500 dark:text-slate-400 text-sm mt-1 mb-4">
                 ${isRegisterMode 
-                  ? 'Tạo tài khoản quản lý vũ khí Prompt MMO và Ví Xu độc bản' 
-                  : 'Truy cập tài khoản để sử dụng 12 Master Toolkits và Ví Xu'}
+                  ? 'Tạo tài khoản quản lý mã nguồn, Prompt MMO và Ví Xu' 
+                  : 'Truy cập tài khoản để mở khóa Source Code, Skill và Ví Xu'}
               </p>
             </div>
 
             <!-- Trạng thái Hệ thống -->
-            <div class="mb-5 flex items-center justify-between px-3 py-2 rounded-xl bg-amber-50/70 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 text-[11px] sm:text-xs shadow-2xs">
+            <div class="mb-5 flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-100/80 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 text-[11px] sm:text-xs">
               <div class="flex items-center gap-1.5 shrink-0 whitespace-nowrap min-w-0">
-                <span class="relative flex h-2 w-2 shrink-0">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span class="text-slate-600 dark:text-slate-400 font-medium shrink-0">Hạ tầng:</span>
-                <span class="font-bold text-[#8A5F26] dark:text-[#BE9455]">Firebase (promtmmo)</span>
+                <span class="text-slate-500 dark:text-slate-400 font-medium shrink-0">Hạ tầng:</span>
+                <span class="font-bold text-[#0071E3] dark:text-[#3B9EFF]">Firebase (promtmmo)</span>
               </div>
-              <span class="shrink-0 whitespace-nowrap text-[10px] bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-md font-bold border border-emerald-200/60 flex items-center gap-1">
-                <span>✓ Live Cloud Auth</span>
+              <span class="shrink-0 whitespace-nowrap text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
+                Cloud Auth hoạt động
               </span>
             </div>
 
@@ -386,7 +382,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                   </div>
-                  <input type="text" id="authNameInput" value="" placeholder="Ví dụ: Bùi Thái" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]/20 focus:border-[#8A5F26] transition-all">
+                  <input type="text" id="authNameInput" value="" placeholder="Ví dụ: Bùi Thái" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] dark:focus:border-[#3B9EFF] transition-all">
                 </div>
               </div>
 
@@ -402,7 +398,7 @@
                       <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
                     </svg>
                   </div>
-                  <input type="email" id="authEmailInput" required value="" placeholder="name@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]/20 focus:border-[#8A5F26] transition-all">
+                  <input type="email" id="authEmailInput" required value="" placeholder="name@example.com" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] dark:focus:border-[#3B9EFF] transition-all">
                 </div>
               </div>
 
@@ -418,7 +414,7 @@
                       <path d="M7 11V7a5 5 0 0110 0v4"/>
                     </svg>
                   </div>
-                  <input type="password" id="authPasswordInput" required value="" placeholder="••••••••" class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]/20 focus:border-[#8A5F26] transition-all">
+                  <input type="password" id="authPasswordInput" required value="" placeholder="••••••••" class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/60 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/25 focus:border-[#0071E3] dark:focus:border-[#3B9EFF] transition-all">
                   
                   <button type="button" id="togglePasswordBtn" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer transition-colors" title="Ẩn/Hiện mật khẩu">
                     <svg id="eyeShowIcon" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -445,7 +441,7 @@
                       </svg>
                     </span>
                     <span id="turnstileSpinner" class="hidden">
-                      <svg class="w-4 h-4 text-[#8A5F26] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF] animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
                         <path d="M12 2a10 10 0 0 1 10 10"/>
                       </svg>
@@ -462,7 +458,7 @@
                 </div>
 
                 <div class="flex items-center gap-1.5 opacity-80 pl-2">
-                  <svg class="w-5 h-5 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                  <svg class="w-5 h-5 text-[#0071E3] dark:text-[#3B9EFF] shrink-0" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.8 9.7c-.5-2.6-2.7-4.6-5.4-4.7-2.3 0-4.3 1.4-5.1 3.4-.6-.2-1.3-.3-1.9-.3-3.1.1-5.6 2.7-5.5 5.8.1 3.1 2.7 5.6 5.8 5.5h11.9c2.5 0 4.5-2 4.5-4.5 0-2.3-1.7-4.2-4.3-4.5v-.7z"/>
                   </svg>
                   <div class="text-[10px] leading-tight text-right text-slate-400 hidden sm:block">
@@ -475,16 +471,16 @@
               <!-- Hàng tùy chọn: Ghi nhớ & Quên mật khẩu -->
               <div class="flex items-center justify-between text-xs pt-1">
                 <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer select-none">
-                  <input type="checkbox" checked id="rememberLoginCheckbox" class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-[#8A5F26] focus:ring-[#8A5F26]/20 cursor-pointer">
+                  <input type="checkbox" checked id="rememberLoginCheckbox" class="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-[#0071E3] focus:ring-[#0071E3]/25 cursor-pointer">
                   <span>Ghi nhớ đăng nhập</span>
                 </label>
-                <button type="button" id="forgotPasswordBtn" class="text-[#8A5F26] dark:text-[#BE9455] hover:text-[#6e4b1e] dark:hover:text-[#d4aa6d] font-medium cursor-pointer transition-colors">
+                <button type="button" id="forgotPasswordBtn" class="text-[#0071E3] dark:text-[#3B9EFF] hover:underline font-medium cursor-pointer transition-colors">
                   Quên mật khẩu?
                 </button>
               </div>
 
               <!-- Nút submit chính -->
-              <button type="button" id="authSubmitBtn" onclick="window.ShopVietViews.auth.submitForm()" class="w-full bg-[#8A5F26] hover:bg-[#704B2A] text-white font-bold py-3 rounded-xl transition-all shadow-sm active:scale-[0.99] flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
+              <button type="button" id="authSubmitBtn" onclick="window.ShopVietViews.auth.submitForm()" class="w-full bg-[#0071E3] hover:bg-[#0060C7] dark:bg-[#3B9EFF] dark:hover:bg-[#2589F5] text-white font-bold py-3 rounded-xl transition-all shadow-sm active:scale-[0.99] flex items-center justify-center gap-2 text-sm mt-4 cursor-pointer">
                 <span id="authSubmitBtnText">${isRegisterMode ? 'Đăng ký tài khoản' : 'Đăng nhập'}</span>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -494,7 +490,7 @@
               <!-- Phân cách HOẶC -->
               <div class="relative my-4 flex items-center justify-center">
                 <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-                <span class="bg-white dark:bg-slate-900 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
+                <span class="bg-white/95 dark:bg-[#0B0F17] px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
               </div>
 
               <!-- Nút Đăng nhập với Google -->
@@ -511,9 +507,9 @@
             </form>
 
             <!-- Chuyển đổi Đăng nhập / Đăng ký -->
-            <div class="text-center text-xs text-slate-500 dark:text-slate-400 mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+            <div class="text-center text-xs text-slate-500 dark:text-slate-400 mt-6 pt-5 border-t border-slate-200/70 dark:border-slate-800">
               <span id="authToggleQuestion">${isRegisterMode ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'}</span>
-              <button type="button" id="authToggleModeBtn" class="text-[#8A5F26] dark:text-[#BE9455] font-bold hover:underline ml-1 cursor-pointer">
+              <button type="button" id="authToggleModeBtn" class="text-[#0071E3] dark:text-[#3B9EFF] font-bold hover:underline ml-1 cursor-pointer">
                 ${isRegisterMode ? 'Đăng nhập ngay' : 'Đăng ký ngay'}
               </button>
             </div>
@@ -521,21 +517,12 @@
           </div>
 
           <!-- Cam kết dưới Card -->
-          <div class="max-w-md mx-auto w-full mt-6 text-center text-[11px] text-slate-400 flex items-center justify-center gap-4">
-            <span class="inline-flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Sovereign Engine
-            </span>
-            <span>•</span>
-            <span class="inline-flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 text-[#8A5F26]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              Kích hoạt tức thì 24/7
-            </span>
-            <span>•</span>
-            <span class="inline-flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="m12 15 2 2 4-4"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
-              Ví Xu Chuẩn Xác 100%
-            </span>
+          <div class="max-w-md mx-auto w-full mt-6 text-center text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-center gap-3 flex-wrap">
+            <span>Firebase Cloud Sync</span>
+            <span aria-hidden="true">·</span>
+            <span>Kích hoạt tức thì 24/7</span>
+            <span aria-hidden="true">·</span>
+            <span>Ví Xu minh bạch</span>
           </div>
 
         </div>

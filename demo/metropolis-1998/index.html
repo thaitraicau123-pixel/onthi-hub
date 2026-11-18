@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Metropolis 1998 — Open Design Interactive Source Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --bg: #0b0e14;
+        --glass: rgba(20, 25, 35, 0.72);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --accent: #3b9eff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(59, 158, 255, 0.14), transparent 48%),
+          radial-gradient(circle at 82% 100%, rgba(16, 185, 129, 0.08), transparent 44%),
+          var(--bg);
+        color: #f1f5f9;
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-display { font-family: 'Outfit', system-ui, sans-serif; }
+      .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+      .lg-panel {
+        background: var(--glass);
+        backdrop-filter: blur(24px) saturate(180%);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        border: 1px solid var(--glass-border);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 20px 50px rgba(0, 0, 0, 0.35);
+      }
+      .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <!-- Top Open-Design Workbench Header -->
+    <header class="sticky top-0 z-30 border-b border-white/10 bg-[#0b0e14]/80 backdrop-blur-2xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-xs font-semibold text-slate-200 transition whitespace-nowrap shrink-0"
+          >
+            ← Quay lại cửa hàng
+          </a>
+          <div class="hidden sm:block h-4 w-px bg-white/10"></div>
+          <div class="min-w-0">
+            <h1 class="font-display text-sm sm:text-base font-bold text-white truncate">
+              Metropolis 1998 — Source Kit Inspector
+            </h1>
+            <p class="text-[11px] text-slate-400 truncate">
+              React 19 · TypeScript · Three.js · Tailwind CSS v4
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 shrink-0">
+          <div class="hidden md:flex items-center gap-1 p-1 rounded-xl bg-white/[0.05] border border-white/10">
+            <button
+              type="button"
+              data-mode-btn="preview"
+              onclick="setWorkbenchMode('preview')"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#0071E3] text-white transition cursor-pointer whitespace-nowrap"
+            >
+              Preview
+            </button>
+            <button
+              type="button"
+              data-mode-btn="code"
+              onclick="setWorkbenchMode('code')"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap"
+            >
+              Source Tree (18 files)
+            </button>
+            <button
+              type="button"
+              data-mode-btn="spec"
+              onclick="setWorkbenchMode('spec')"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap"
+            >
+              Architecture Spec
+            </button>
+          </div>
+          <span class="font-mono-code text-xs font-semibold text-sky-300 tabular-nums whitespace-nowrap">
+            15.000 Xu
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workbench Grid -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Left File Tree / Scene Rail -->
+      <aside class="lg:col-span-3 space-y-4">
+        <div class="lg-panel rounded-2xl p-4 space-y-3">
+          <div class="text-xs font-semibold text-slate-300">Cảnh quan tương tác</div>
+          <div id="sceneSelector" class="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
+            <!-- populated via JS -->
+          </div>
+        </div>
+
+        <div class="lg-panel rounded-2xl p-4 space-y-2.5">
+          <div class="text-xs font-semibold text-slate-300">Cây mã nguồn Starter (.zip)</div>
+          <div id="fileTreeList" class="space-y-1 text-xs font-mono-code">
+            <!-- populated via JS -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Stage -->
+      <section class="lg:col-span-9 space-y-4">
+        <!-- Mobile Mode Switch -->
+        <div class="flex md:hidden items-center gap-1 p-1 rounded-xl bg-white/[0.05] border border-white/10">
+          <button type="button" data-mode-btn="preview" onclick="setWorkbenchMode('preview')" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-[#0071E3] text-white cursor-pointer">Preview</button>
+          <button type="button" data-mode-btn="code" onclick="setWorkbenchMode('code')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-300 cursor-pointer">Code</button>
+          <button type="button" data-mode-btn="spec" onclick="setWorkbenchMode('spec')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-300 cursor-pointer">Spec</button>
+        </div>
+
+        <!-- Mode: Preview -->
+        <div id="panePreview" class="lg-panel rounded-3xl overflow-hidden">
+          <div class="px-5 py-3.5 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 bg-white/[0.03]">
+            <div>
+              <h2 id="sceneTitle" class="font-display text-sm sm:text-base font-bold text-white">Title Overlay — Oakwood</h2>
+              <p id="sceneDesc" class="text-xs text-slate-400">Màn hình khởi động 1998 kèm nút Enter Oakwood / Blank Parcel trên nền canvas Three.js.</p>
+            </div>
+            <div class="flex items-center gap-2 text-[11px] font-mono-code text-slate-400 tabular-nums">
+              <span>WASD Pan</span>
+              <span aria-hidden="true">·</span>
+              <span>X Cutaway</span>
+              <span aria-hidden="true">·</span>
+              <span>Q/E Orbit</span>
+            </div>
+          </div>
+          <div class="relative aspect-[16/10] bg-[#0d1118]">
+            <img
+              id="sceneImage"
+              src="/assets/aistudio/r1-title_bb056220.png"
+              alt="Metropolis 1998 Preview"
+              class="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+
+        <!-- Mode: Source Tree Code Viewer -->
+        <div id="paneCode" class="hidden lg-panel rounded-3xl overflow-hidden">
+          <div class="px-5 py-3.5 border-b border-white/10 flex items-center justify-between bg-white/[0.03]">
+            <span id="activeFileName" class="font-mono-code text-xs font-semibold text-sky-300">src/App.tsx</span>
+            <span id="activeFileMeta" class="text-[11px] text-slate-400 font-mono-code">React 19 + CityEngine</span>
+          </div>
+          <pre id="codeContentBox" class="p-5 text-xs font-mono-code text-slate-200 overflow-x-auto max-h-[540px] leading-relaxed bg-[#080b10]"></pre>
+        </div>
+
+        <!-- Mode: Architecture Spec -->
+        <div id="paneSpec" class="hidden lg-panel rounded-3xl p-6 space-y-6">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-5">
+            <div class="space-y-1 max-w-2xl">
+              <h2 class="font-display text-xl font-bold text-white">Cấu trúc gói Source Code Metropolis 1998</h2>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                Gói tải về (<code class="font-mono-code text-sky-300">Metropolis_1998_Source_Starter.zip</code>) chứa đầy đủ mã nguồn TypeScript, React 19, Three.js isometric city engine và HUD cổ điển 1998 để bạn chạy local bằng <code class="font-mono-code text-sky-300">npm install &amp;&amp; npm run dev</code> và phát triển thêm tính năng.
+              </p>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-xs text-slate-400">Giá mở khóa</div>
+              <div class="font-display text-2xl font-bold text-white tabular-nums">15.000 Xu</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div class="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-1.5">
+              <div class="font-semibold text-white">Three.js Isometric Core</div>
+              <p class="text-slate-400 leading-relaxed">Camera Orthographic 4 góc xoay Q/E, zoom con lăn, raycaster lưới 16×16 ô, chu kỳ ngày/đêm &amp; thời tiết.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-1.5">
+              <div class="font-semibold text-white">Interior Cutaway X-Ray</div>
+              <p class="text-slate-400 leading-relaxed">Nhấn phím X để mở mái công trình, xem bố cục phòng và nâng cấp 3 cấp độ nội thất kèm 3 theme decor.</p>
+            </div>
+            <div class="p-4 rounded-2xl bg-white/[0.04] border border-white/10 space-y-1.5">
+              <div class="font-semibold text-white">Mở rộng ngay</div>
+              <p class="text-slate-400 leading-relaxed">Tách biệt hoàn toàn logic game (<code class="font-mono-code">CityEngine.ts</code>) với React HUD (<code class="font-mono-code">GameHud.tsx</code>), sẵn sàng thêm công trình mới.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const SCENES = [
+        { id: 'title', label: '01. Title Oakwood', desc: 'Màn hình khởi động 1998 kèm nút Enter Oakwood / Blank Parcel.', img: '/assets/aistudio/r1-title_bb056220.png' },
+        { id: 'day', label: '02. Ban ngày & Dock', desc: 'Thanh trạng thái ngân sách, dân số, điện năng và Dock xây dựng 4 nhóm.', img: '/assets/aistudio/r1-day_0b668521.png' },
+        { id: 'night', label: '03. Ban đêm & Đèn phố', desc: 'Ánh sáng cửa sổ và cột đèn đường tự động kích hoạt theo thời gian thực.', img: '/assets/aistudio/r1-night_bfd6b447.png' },
+        { id: 'cutaway', label: '04. Interior Cutaway [X]', desc: 'Chế độ X-Ray ẩn mái nhà để quan sát và nâng cấp nội thất từng phòng.', img: '/assets/aistudio/r1-cutaway_5ff36592.png' },
+        { id: 'apartment', label: '05. Chung cư & Phố xá', desc: 'Bản đồ khu dân cư Brick Apartment mật độ cao cùng hạ tầng thương mại.', img: '/assets/aistudio/r6-apartment_499ccb5c.png' },
+        { id: 'rain', label: '06. Thời tiết Mưa (Rain)', desc: 'Hiệu ứng mưa phủ toàn thị trấn trong bộ điều khiển thời tiết.', img: '/assets/aistudio/r6-rain_ffab6a8e.png' },
+        { id: 'snow', label: '07. Thời tiết Tuyết (Snow)', desc: 'Hiệu ứng tuyết rơi phủ trắng bản đồ isometric.', img: '/assets/aistudio/r6-snow_d4afa5c9.png' }
+      ];
+
+      const FILES = [
+        {
+          name: 'src/App.tsx',
+          meta: 'Root shell + HUD snapshot bridge',
+          code: `import React, { useEffect, useRef, useState } from 'react';
+import { GameHud } from './components/GameHud';
+import { StatusModal } from './components/StatusModal';
+import { TitleOverlay } from './components/TitleOverlay';
+import { CityEngine } from './game/CityEngine';
+import { INITIAL_MILESTONES, STARTING_FUNDS } from './game/catalog';
+import type { HudSnapshot } from './game/types';
+
+export default function App() {
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const engineRef = useRef<CityEngine | null>(null);
+  const [hud, setHud] = useState<HudSnapshot>(INITIAL_HUD);
+
+  useEffect(() => {
+    const container = mountRef.current;
+    if (!container) return;
+    const params = new URLSearchParams(window.location.search);
+    const engine = new CityEngine(container, (s) => setHud(s), params.get('autostart') === '1');
+    engineRef.current = engine;
+    return () => { engine.dispose(); engineRef.current = null; };
+  }, []);
+
+  return (
+    <main className="relative w-screen h-screen overflow-hidden bg-[#161b24]">
+      <div ref={mountRef} data-testid="city-canvas-mount" className="absolute inset-0 w-full h-full" />
+      {hud.screen === 'title' && (
+        <TitleOverlay
+          onStartStarter={() => engineRef.current?.startGame()}
+          onStartBlank={() => engineRef.current?.resetCity(false)}
+        />
+      )}
+      {hud.screen !== 'title' && <GameHud hud={hud} /* ... */ />}
+      <StatusModal hud={hud} /* ... */ />
+    </main>
+  );
+}`
+        },
+        {
+          name: 'src/components/GameHud.tsx',
+          meta: 'Telemetry strip · Cutaway · Build Dock',
+          code: `// Top-Left City Ledger (Treasury, Citizens, Power, Joy, Safety, Health, R/C/G Demand)
+// Top-Right Utility Controls (Cutaway [X], Time Preset, Weather, 0x/1x/2x/4x Speed, Q/E Orbit, Save, Mute, Pause)
+// Contextual Bottom-Right Building Interior Inspector (Lvl 1-3, Classic/Warm/Metro decor theme)
+// Bottom-Center Collapsible Categorized Build & Design Dock (All, Roads & Civic, Homes, Shops)`
+        },
+        {
+          name: 'src/game/CityEngine.ts',
+          meta: 'Three.js Orthographic Isometric Engine',
+          code: `export class CityEngine {
+  // Orthographic isometric camera with Q/E rotation & mouse wheel zoom
+  // 16x16 grid tile placement, bulldoze refund (+25%), interior level 1..3 remodeling
+  // Cutaway toggle [X] hiding roofs and revealing interior furniture groups
+  // Auto / Day / Dusk / Night atmospheric lighting & weather cycles
+  // LocalStorage city save/load serializer + Oakwood starter town generator
+}`
+        },
+        {
+          name: 'src/game/catalog.ts',
+          meta: '14 Building Definitions & Milestones',
+          code: `export const STARTING_FUNDS = 3800;
+export const VICTORY_POPULATION = 140;
+export const VICTORY_HAPPINESS = 75;
+// Includes: road, park, cottage, townhouse, apartment, villa,
+// cafe, diner, supermarket, cinema, office, police, hospital, powerplant`
+        },
+        {
+          name: 'package.json',
+          meta: 'React 19 + Three.js + Vite 8 + Tailwind v4',
+          code: `{
+  "name": "metropolis-1998-starter",
+  "scripts": { "dev": "vite --port=3000", "build": "vite build", "lint": "tsc --noEmit" },
+  "dependencies": {
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "three": "^0.187.0",
+    "@tailwindcss/vite": "^4.3.3"
+  }
+}`
+        }
+      ];
+
+      let activeSceneId = 'title';
+      let activeFileIdx = 0;
+
+      function renderSceneList() {
+        const el = document.getElementById('sceneSelector');
+        if (!el) return;
+        el.innerHTML = SCENES.map((s) => {
+          const active = s.id === activeSceneId;
+          return '<button type="button" onclick="selectScene(\'' + s.id + '\')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition cursor-pointer ' +
+            (active ? 'bg-[#0071E3] text-white shadow-sm' : 'bg-white/[0.04] hover:bg-white/[0.09] text-slate-300') +
+            '">' + s.label + '</button>';
+        }).join('');
+      }
+
+      function renderFileTree() {
+        const el = document.getElementById('fileTreeList');
+        if (!el) return;
+        el.innerHTML = FILES.map((f, idx) => {
+          const active = idx === activeFileIdx;
+          return '<button type="button" onclick="selectFile(' + idx + ')" class="w-full text-left px-3 py-1.5 rounded-lg transition cursor-pointer truncate ' +
+            (active ? 'bg-sky-500/20 text-sky-300 border border-sky-400/30' : 'text-slate-400 hover:text-white hover:bg-white/[0.05]') +
+            '">' + f.name + '</button>';
+        }).join('');
+      }
+
+      window.selectScene = function (id) {
+        activeSceneId = id;
+        const sc = SCENES.find((s) => s.id === id) || SCENES[0];
+        document.getElementById('sceneTitle').textContent = sc.label;
+        document.getElementById('sceneDesc').textContent = sc.desc;
+        document.getElementById('sceneImage').src = sc.img;
+        setWorkbenchMode('preview');
+        renderSceneList();
+      };
+
+      window.selectFile = function (idx) {
+        activeFileIdx = idx;
+        const f = FILES[idx] || FILES[0];
+        document.getElementById('activeFileName').textContent = f.name;
+        document.getElementById('activeFileMeta').textContent = f.meta;
+        document.getElementById('codeContentBox').textContent = f.code;
+        setWorkbenchMode('code');
+        renderFileTree();
+      };
+
+      window.setWorkbenchMode = function (mode) {
+        document.getElementById('panePreview').classList.toggle('hidden', mode !== 'preview');
+        document.getElementById('paneCode').classList.toggle('hidden', mode !== 'code');
+        document.getElementById('paneSpec').classList.toggle('hidden', mode !== 'spec');
+        document.querySelectorAll('[data-mode-btn]').forEach((btn) => {
+          const isCurrent = btn.getAttribute('data-mode-btn') === mode;
+          btn.className = isCurrent
+            ? 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#0071E3] text-white transition cursor-pointer whitespace-nowrap'
+            : 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap';
+        });
+      };
+
+      renderSceneList();
+      renderFileTree();
+      document.getElementById('activeFileName').textContent = FILES[0].name;
+      document.getElementById('activeFileMeta').textContent = FILES[0].meta;
+      document.getElementById('codeContentBox').textContent = FILES[0].code;
+    </script>
+  </body>
+</html>
