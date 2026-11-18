@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Metropolis 1998 — Open Design Interactive Source Preview</title>
+    <title>Metropolis 1998 — Interactive 3D Isometric Sandbox &amp; Source Kit</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,9 +14,8 @@
     <style>
       :root {
         --bg: #0b0e14;
-        --glass: rgba(20, 25, 35, 0.72);
-        --glass-border: rgba(255, 255, 255, 0.1);
-        --accent: #3b9eff;
+        --glass: rgba(17, 22, 32, 0.78);
+        --glass-border: rgba(255, 255, 255, 0.11);
       }
       * { box-sizing: border-box; }
       body {
@@ -33,32 +32,37 @@
       .font-mono-code { font-family: 'JetBrains Mono', monospace; }
       .lg-panel {
         background: var(--glass);
-        backdrop-filter: blur(24px) saturate(180%);
-        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        backdrop-filter: blur(22px) saturate(180%);
+        -webkit-backdrop-filter: blur(22px) saturate(180%);
         border: 1px solid var(--glass-border);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 20px 50px rgba(0, 0, 0, 0.35);
+      }
+      .hud-bar {
+        background: rgba(12, 16, 24, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
       }
       .tabular-nums { font-variant-numeric: tabular-nums; }
     </style>
   </head>
   <body class="min-h-screen flex flex-col">
     <!-- Top Open-Design Workbench Header -->
-    <header class="sticky top-0 z-30 border-b border-white/10 bg-[#0b0e14]/80 backdrop-blur-2xl">
+    <header class="sticky top-0 z-30 border-b border-white/10 bg-[#0b0e14]/88 backdrop-blur-2xl">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3 min-w-0">
           <a
             href="/"
             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] border border-white/10 text-xs font-semibold text-slate-200 transition whitespace-nowrap shrink-0"
           >
-            ← Quay lại cửa hàng
+            &larr; Quay lại cửa hàng
           </a>
           <div class="hidden sm:block h-4 w-px bg-white/10"></div>
           <div class="min-w-0">
             <h1 class="font-display text-sm sm:text-base font-bold text-white truncate">
-              Metropolis 1998 — Source Kit Inspector
+              Metropolis 1998 — Interactive 3D Sandbox &amp; Source Kit
             </h1>
             <p class="text-[11px] text-slate-400 truncate">
-              React 19 · TypeScript · Three.js · Tailwind CSS v4
+              React 19 · TypeScript · Three.js Isometric · Tailwind CSS v4
             </p>
           </div>
         </div>
@@ -67,11 +71,19 @@
           <div class="hidden md:flex items-center gap-1 p-1 rounded-xl bg-white/[0.05] border border-white/10">
             <button
               type="button"
-              data-mode-btn="preview"
-              onclick="setWorkbenchMode('preview')"
+              data-mode-btn="sandbox"
+              onclick="setWorkbenchMode('sandbox')"
               class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#0071E3] text-white transition cursor-pointer whitespace-nowrap"
             >
-              Preview
+              3D Sandbox
+            </button>
+            <button
+              type="button"
+              data-mode-btn="preview"
+              onclick="setWorkbenchMode('preview')"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap"
+            >
+              7 Screenshots
             </button>
             <button
               type="button"
@@ -87,7 +99,7 @@
               onclick="setWorkbenchMode('spec')"
               class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-300 hover:text-white transition cursor-pointer whitespace-nowrap"
             >
-              Architecture Spec
+              Spec
             </button>
           </div>
           <span class="font-mono-code text-xs font-semibold text-sky-300 tabular-nums whitespace-nowrap">
@@ -98,18 +110,27 @@
     </header>
 
     <!-- Main Workbench Grid -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <!-- Left File Tree / Scene Rail -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <!-- Left Rail -->
       <aside class="lg:col-span-3 space-y-4">
         <div class="lg-panel rounded-2xl p-4 space-y-3">
-          <div class="text-xs font-semibold text-slate-300">Cảnh quan tương tác</div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-200">Cảnh quan (7 góc nhìn)</span>
+            <button
+              type="button"
+              onclick="setWorkbenchMode('sandbox')"
+              class="text-[11px] font-semibold text-[#3B9EFF] hover:text-white cursor-pointer"
+            >
+              Mở 3D Live
+            </button>
+          </div>
           <div id="sceneSelector" class="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
             <!-- populated via JS -->
           </div>
         </div>
 
         <div class="lg-panel rounded-2xl p-4 space-y-2.5">
-          <div class="text-xs font-semibold text-slate-300">Cây mã nguồn Starter (.zip)</div>
+          <div class="text-xs font-semibold text-slate-200">Cây mã nguồn Starter (.zip)</div>
           <div id="fileTreeList" class="space-y-1 text-xs font-mono-code">
             <!-- populated via JS -->
           </div>
@@ -120,16 +141,140 @@
       <section class="lg:col-span-9 space-y-4">
         <!-- Mobile Mode Switch -->
         <div class="flex md:hidden items-center gap-1 p-1 rounded-xl bg-white/[0.05] border border-white/10">
-          <button type="button" data-mode-btn="preview" onclick="setWorkbenchMode('preview')" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-[#0071E3] text-white cursor-pointer">Preview</button>
+          <button type="button" data-mode-btn="sandbox" onclick="setWorkbenchMode('sandbox')" class="flex-1 py-2 rounded-lg text-xs font-semibold bg-[#0071E3] text-white cursor-pointer">3D Live</button>
+          <button type="button" data-mode-btn="preview" onclick="setWorkbenchMode('preview')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-300 cursor-pointer">Scenes</button>
           <button type="button" data-mode-btn="code" onclick="setWorkbenchMode('code')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-300 cursor-pointer">Code</button>
           <button type="button" data-mode-btn="spec" onclick="setWorkbenchMode('spec')" class="flex-1 py-2 rounded-lg text-xs font-semibold text-slate-300 cursor-pointer">Spec</button>
         </div>
 
-        <!-- Mode: Preview -->
-        <div id="panePreview" class="lg-panel rounded-3xl overflow-hidden">
+        <!-- Mode 0: Interactive Three.js Isometric Sandbox -->
+        <div id="paneSandbox" class="lg-panel rounded-3xl overflow-hidden">
+          <div class="px-4 sm:px-5 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 bg-white/[0.03]">
+            <div>
+              <h2 class="font-display text-sm sm:text-base font-bold text-white">
+                Oakwood Town — Interactive Three.js Mini-Sandbox
+              </h2>
+              <p class="text-[11px] text-slate-400">
+                Thử xoay Q/E, bật Cutaway [X] xem nội thất, đổi Ngày/Đêm, Thời tiết và đặt tối đa 3 công trình mẫu.
+              </p>
+            </div>
+            <div class="flex items-center gap-1.5 text-[11px] font-mono-code text-slate-400 tabular-nums">
+              <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/25">WebGL Live</span>
+            </div>
+          </div>
+
+          <div class="relative aspect-[16/10] w-full bg-[#1b241d] overflow-hidden select-none">
+            <div id="sandboxMount" data-testid="metropolis-canvas-mount" class="absolute inset-0 w-full h-full"></div>
+
+            <!-- Top-Left City Ledger (Solid dark fill, no backdrop-blur over WebGL) -->
+            <div class="absolute top-3 left-3 z-10 hud-bar rounded-xl px-3 py-2 flex flex-wrap items-center gap-3 sm:gap-4 text-xs pointer-events-none">
+              <div>
+                <div class="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">Treasury</div>
+                <div id="hudTreasury" class="font-mono-code font-bold text-amber-300 tabular-nums">$3,800</div>
+              </div>
+              <div>
+                <div class="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">Citizens</div>
+                <div id="hudCitizens" class="font-mono-code font-bold text-white tabular-nums">54/140</div>
+              </div>
+              <div>
+                <div class="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">Power Grid</div>
+                <div id="hudPower" class="font-mono-code font-bold text-emerald-400 tabular-nums">21/32</div>
+              </div>
+              <div>
+                <div class="text-[9px] font-semibold tracking-wider text-slate-400 uppercase">Demo Builds</div>
+                <div id="hudDemoBuilds" class="font-mono-code font-bold text-sky-300 tabular-nums">0/3</div>
+              </div>
+            </div>
+
+            <!-- Top-Right Interactive Controls -->
+            <div class="absolute top-3 right-3 z-10 hud-bar rounded-xl p-1 flex flex-wrap items-center gap-1 text-[11px] font-semibold">
+              <button
+                id="btnCutaway"
+                type="button"
+                onclick="sandboxAction('cutaway')"
+                class="px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 transition cursor-pointer"
+                title="Phím tắt: X"
+              >
+                Cutaway [X]
+              </button>
+              <button
+                id="btnDayNight"
+                type="button"
+                onclick="sandboxAction('night')"
+                class="px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 transition cursor-pointer"
+              >
+                Day / Night
+              </button>
+              <button
+                id="btnWeather"
+                type="button"
+                onclick="sandboxAction('weather')"
+                class="px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 transition cursor-pointer"
+              >
+                Clear
+              </button>
+              <button
+                type="button"
+                onclick="sandboxAction('rotateLeft')"
+                class="px-2 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 font-mono-code cursor-pointer"
+                title="Xoay trái (Q)"
+              >
+                Q
+              </button>
+              <button
+                type="button"
+                onclick="sandboxAction('rotateRight')"
+                class="px-2 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 font-mono-code cursor-pointer"
+                title="Xoay phải (E)"
+              >
+                E
+              </button>
+            </div>
+
+            <!-- Bottom Dock: 3 Demo Building Placements -->
+            <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 hud-bar rounded-2xl px-2 py-1.5 flex items-center gap-1.5 text-[11px]">
+              <button
+                id="btnBuildHome"
+                type="button"
+                onclick="sandboxAction('buildHome')"
+                class="px-3 py-1.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold transition cursor-pointer whitespace-nowrap"
+              >
+                + Build Home ($180)
+              </button>
+              <button
+                id="btnBuildDiner"
+                type="button"
+                onclick="sandboxAction('buildDiner')"
+                class="px-3 py-1.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-100 font-semibold transition cursor-pointer whitespace-nowrap"
+              >
+                + Retro Diner ($260)
+              </button>
+              <button
+                id="btnBuildPark"
+                type="button"
+                onclick="sandboxAction('buildPark')"
+                class="px-3 py-1.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.16] text-slate-100 font-semibold transition cursor-pointer whitespace-nowrap"
+              >
+                + Civic Park ($60)
+              </button>
+              <button
+                id="btnResetSandbox"
+                type="button"
+                onclick="sandboxAction('reset')"
+                class="px-2.5 py-1.5 rounded-xl text-slate-400 hover:text-white transition cursor-pointer"
+                title="Khôi phục Oakwood"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode 1: 7 Reference Screenshots -->
+        <div id="panePreview" class="hidden lg-panel rounded-3xl overflow-hidden">
           <div class="px-5 py-3.5 border-b border-white/10 flex flex-wrap items-center justify-between gap-2 bg-white/[0.03]">
             <div>
-              <h2 id="sceneTitle" class="font-display text-sm sm:text-base font-bold text-white">Title Overlay — Oakwood</h2>
+              <h2 id="sceneTitle" class="font-display text-sm sm:text-base font-bold text-white">01. Title Oakwood</h2>
               <p id="sceneDesc" class="text-xs text-slate-400">Màn hình khởi động 1998 kèm nút Enter Oakwood / Blank Parcel trên nền canvas Three.js.</p>
             </div>
             <div class="flex items-center gap-2 text-[11px] font-mono-code text-slate-400 tabular-nums">
@@ -150,7 +295,7 @@
           </div>
         </div>
 
-        <!-- Mode: Source Tree Code Viewer -->
+        <!-- Mode 2: Source Tree Code Viewer -->
         <div id="paneCode" class="hidden lg-panel rounded-3xl overflow-hidden">
           <div class="px-5 py-3.5 border-b border-white/10 flex items-center justify-between bg-white/[0.03]">
             <span id="activeFileName" class="font-mono-code text-xs font-semibold text-sky-300">src/App.tsx</span>
@@ -159,7 +304,7 @@
           <pre id="codeContentBox" class="p-5 text-xs font-mono-code text-slate-200 overflow-x-auto max-h-[540px] leading-relaxed bg-[#080b10]"></pre>
         </div>
 
-        <!-- Mode: Architecture Spec -->
+        <!-- Mode 3: Architecture Spec -->
         <div id="paneSpec" class="hidden lg-panel rounded-3xl p-6 space-y-6">
           <div class="flex flex-wrap items-start justify-between gap-4 border-b border-white/10 pb-5">
             <div class="space-y-1 max-w-2xl">
@@ -192,6 +337,7 @@
       </section>
     </main>
 
+    <!-- Workbench UI Script -->
     <script>
       const SCENES = [
         { id: 'title', label: '01. Title Oakwood', desc: 'Màn hình khởi động 1998 kèm nút Enter Oakwood / Blank Parcel.', img: '/assets/aistudio/r1-title_bb056220.png' },
@@ -238,8 +384,8 @@ export default function App() {
           onStartBlank={() => engineRef.current?.resetCity(false)}
         />
       )}
-      {hud.screen !== 'title' && <GameHud hud={hud} /* ... */ />}
-      <StatusModal hud={hud} /* ... */ />
+      {hud.screen !== 'title' && <GameHud hud={hud} />}
+      <StatusModal hud={hud} />
     </main>
   );
 }`
@@ -334,6 +480,7 @@ export const VICTORY_HAPPINESS = 75;
       };
 
       window.setWorkbenchMode = function (mode) {
+        document.getElementById('paneSandbox').classList.toggle('hidden', mode !== 'sandbox');
         document.getElementById('panePreview').classList.toggle('hidden', mode !== 'preview');
         document.getElementById('paneCode').classList.toggle('hidden', mode !== 'code');
         document.getElementById('paneSpec').classList.toggle('hidden', mode !== 'spec');
@@ -350,6 +497,520 @@ export const VICTORY_HAPPINESS = 75;
       document.getElementById('activeFileName').textContent = FILES[0].name;
       document.getElementById('activeFileMeta').textContent = FILES[0].meta;
       document.getElementById('codeContentBox').textContent = FILES[0].code;
+    </script>
+
+    <!-- Live Interactive Three.js Isometric Oakwood Mini-Sandbox -->
+    <script type="module">
+      import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.174.0/build/three.module.js';
+
+      const mount = document.getElementById('sandboxMount');
+      if (mount) {
+        const GRID_SIZE = 14;
+        const HALF = GRID_SIZE / 2;
+
+        const simState = {
+          treasury: 3800,
+          citizens: 54,
+          powerUsed: 21,
+          powerCap: 32,
+          demoCount: 0,
+          cutaway: false,
+          night: false,
+          weather: 'clear', // clear | rain | snow
+          yawStep: 0,
+          targetYaw: Math.PI / 4,
+          currentYaw: Math.PI / 4,
+          zoom: 8.5
+        };
+
+        const roofGroups = [];
+        const emissiveWindowMats = [];
+        const streetLampGlowMats = [];
+        const demoBuiltMeshes = [];
+        const tileMatList = [];
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x9ac58e);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'default' });
+        const gl = renderer.getContext();
+        const dbg = gl && gl.getExtension ? gl.getExtension('WEBGL_debug_renderer_info') : null;
+        const glName = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '') : '';
+        const isSoftwareGl = /swiftshader|llvmpipe|softpipe/i.test(glName);
+
+        renderer.setPixelRatio(isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 1.5));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        if (!isSoftwareGl) {
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        }
+        renderer.setSize(mount.clientWidth || 800, mount.clientHeight || 500);
+        mount.appendChild(renderer.domElement);
+
+        const aspect = (mount.clientWidth || 800) / Math.max(1, mount.clientHeight || 500);
+        const camera = new THREE.OrthographicCamera(
+          -simState.zoom * aspect,
+          simState.zoom * aspect,
+          simState.zoom,
+          -simState.zoom,
+          -40,
+          100
+        );
+
+        function updateCameraTransform() {
+          const dist = 18;
+          const elev = 13.5;
+          camera.position.set(
+            Math.cos(simState.currentYaw) * dist,
+            elev,
+            Math.sin(simState.currentYaw) * dist
+          );
+          camera.lookAt(0, 0.5, 0);
+        }
+        updateCameraTransform();
+
+        // Warm/Cool Lighting Contrast
+        const hemiLight = new THREE.HemisphereLight(0xdff2ff, 0x4b6e49, 1.05);
+        scene.add(hemiLight);
+
+        const sunLight = new THREE.DirectionalLight(0xfff1d6, 1.55);
+        sunLight.position.set(12, 20, 10);
+        if (!isSoftwareGl) {
+          sunLight.castShadow = true;
+          sunLight.shadow.mapSize.set(512, 512);
+          sunLight.shadow.camera.left = -10;
+          sunLight.shadow.camera.right = 10;
+          sunLight.shadow.camera.top = 10;
+          sunLight.shadow.camera.bottom = -10;
+          sunLight.shadow.bias = -0.0005;
+        }
+        scene.add(sunLight);
+
+        // Ground Checkered Isometric Grid
+        const groundGroup = new THREE.Group();
+        const tileGeo = new THREE.BoxGeometry(0.98, 0.2, 0.98);
+        const dayLightMat = new THREE.MeshStandardMaterial({ color: 0x8bc97f, roughness: 0.9 });
+        const dayDarkMat = new THREE.MeshStandardMaterial({ color: 0x7ebe73, roughness: 0.9 });
+        tileMatList.push(dayLightMat, dayDarkMat);
+
+        for (let gx = 0; gx < GRID_SIZE; gx++) {
+          for (let gz = 0; gz < GRID_SIZE; gz++) {
+            const tile = new THREE.Mesh(tileGeo, (gx + gz) % 2 === 0 ? dayLightMat : dayDarkMat);
+            tile.position.set(gx - HALF + 0.5, -0.1, gz - HALF + 0.5);
+            tile.receiveShadow = !isSoftwareGl;
+            groundGroup.add(tile);
+          }
+        }
+        // Subtle perimeter curb
+        const borderMesh = new THREE.Mesh(
+          new THREE.BoxGeometry(GRID_SIZE + 0.3, 0.14, GRID_SIZE + 0.3),
+          new THREE.MeshStandardMaterial({ color: 0x5c7260, roughness: 0.85 })
+        );
+        borderMesh.position.y = -0.22;
+        groundGroup.add(borderMesh);
+        scene.add(groundGroup);
+
+        // Road Helper
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0x3b424c, roughness: 0.88 });
+        const stripeMat = new THREE.MeshStandardMaterial({ color: 0xe6c85c, roughness: 0.6 });
+        const lampPostMat = new THREE.MeshStandardMaterial({ color: 0x1e242d, roughness: 0.5 });
+
+        function addRoadTile(gx, gz, horizontal) {
+          const g = new THREE.Group();
+          const road = new THREE.Mesh(new THREE.BoxGeometry(0.98, 0.04, 0.98), roadMat);
+          road.position.y = 0.02;
+          g.add(road);
+
+          const stripe = new THREE.Mesh(
+            new THREE.BoxGeometry(horizontal ? 0.45 : 0.08, 0.02, horizontal ? 0.08 : 0.45),
+            stripeMat
+          );
+          stripe.position.y = 0.045;
+          g.add(stripe);
+
+          if ((gx + gz) % 2 === 0) {
+            const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.55, 6), lampPostMat);
+            pole.position.set(-0.38, 0.28, -0.38);
+            g.add(pole);
+            const bulbMat = new THREE.MeshStandardMaterial({
+              color: 0xffe49e,
+              emissive: 0xffc857,
+              emissiveIntensity: 0.15,
+              roughness: 0.3
+            });
+            streetLampGlowMats.push(bulbMat);
+            const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 8), bulbMat);
+            bulb.position.set(-0.38, 0.57, -0.38);
+            g.add(bulb);
+          }
+
+          g.position.set(gx - HALF + 0.5, 0, gz - HALF + 0.5);
+          scene.add(g);
+        }
+
+        // Oakwood Road Loop (x=4..9, z=4..9)
+        for (let i = 4; i <= 9; i++) {
+          addRoadTile(i, 4, true);
+          addRoadTile(i, 9, true);
+          if (i > 4 && i < 9) {
+            addRoadTile(4, i, false);
+            addRoadTile(9, i, false);
+          }
+        }
+        // Branch roads
+        addRoadTile(3, 4, true);
+        addRoadTile(10, 9, true);
+
+        // Composite Buildings (Multi-part + Roof Cutaway + Interior Furniture!)
+        function createBuilding(type, gx, gz) {
+          const group = new THREE.Group();
+          const roofGroup = new THREE.Group();
+          const interiorGroup = new THREE.Group();
+
+          const winMat = new THREE.MeshStandardMaterial({
+            color: 0xaad4f5,
+            emissive: 0xffd275,
+            emissiveIntensity: 0.1,
+            roughness: 0.25
+          });
+          emissiveWindowMats.push(winMat);
+
+          if (type === 'home') {
+            // Base foundation + open interior walls
+            const floor = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.05, 0.84), new THREE.MeshStandardMaterial({ color: 0xd9cbb8, roughness: 0.8 }));
+            floor.position.y = 0.025;
+            group.add(floor);
+
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0xe6d3b8, roughness: 0.78 });
+            const wallBack = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.42, 0.08), wallMat);
+            wallBack.position.set(0, 0.24, -0.38);
+            const wallLeft = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.42, 0.84), wallMat);
+            wallLeft.position.set(-0.38, 0.24, 0);
+            const wallRight = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.42, 0.84), wallMat);
+            wallRight.position.set(0.38, 0.24, 0);
+            const wallFront = new THREE.Mesh(new THREE.BoxGeometry(0.84, 0.42, 0.08), wallMat);
+            wallFront.position.set(0, 0.24, 0.38);
+            group.add(wallBack, wallLeft, wallRight, wallFront);
+
+            // Windows
+            const win1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.88), winMat);
+            win1.position.set(-0.18, 0.26, 0);
+            const win2 = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.16, 0.22), winMat);
+            win2.position.set(0, 0.26, 0.15);
+            group.add(win1, win2);
+
+            // Interior Furniture (visible on Cutaway!)
+            const bed = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.12, 0.22), new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.7 }));
+            bed.position.set(-0.18, 0.11, -0.18);
+            const sofa = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.11, 0.14), new THREE.MeshStandardMaterial({ color: 0xd97757, roughness: 0.75 }));
+            sofa.position.set(0.15, 0.1, 0.12);
+            const table = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.09, 0.16), new THREE.MeshStandardMaterial({ color: 0x8b5a2b, roughness: 0.65 }));
+            table.position.set(0.15, 0.095, -0.15);
+            interiorGroup.add(bed, sofa, table);
+
+            // Gable Roof
+            const roof = new THREE.Mesh(new THREE.ConeGeometry(0.68, 0.38, 4), new THREE.MeshStandardMaterial({ color: 0xc96448, roughness: 0.7 }));
+            roof.rotation.y = Math.PI / 4;
+            roof.position.y = 0.62;
+            roofGroup.add(roof);
+          } else if (type === 'apartment') {
+            const brickMat = new THREE.MeshStandardMaterial({ color: 0xa94a3c, roughness: 0.82 });
+            const base = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.95, 0.88), brickMat);
+            base.position.y = 0.475;
+            group.add(base);
+
+            for (let floorIdx = 0; floorIdx < 3; floorIdx++) {
+              const fy = 0.22 + floorIdx * 0.28;
+              const band = new THREE.Mesh(new THREE.BoxGeometry(0.91, 0.1, 0.22), winMat);
+              band.position.set(0, fy, 0.18);
+              const band2 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.1, 0.91), winMat);
+              band2.position.set(-0.18, fy, 0);
+              group.add(band, band2);
+            }
+            const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(0.94, 0.09, 0.94), new THREE.MeshStandardMaterial({ color: 0x2c3442, roughness: 0.65 }));
+            roofSlab.position.y = 0.99;
+            const waterTank = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.16, 10), new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.4 }));
+            waterTank.position.set(0.18, 1.11, -0.18);
+            roofGroup.add(roofSlab, waterTank);
+          } else if (type === 'diner') {
+            const dinerWall = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.48, 0.88), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.7 }));
+            dinerWall.position.y = 0.24;
+            const awning = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.08, 0.95), new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.45 }));
+            awning.position.y = 0.46;
+            const neonSign = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.12, 0.14), new THREE.MeshStandardMaterial({ color: 0x38bdf8, emissive: 0x0ea5e9, emissiveIntensity: 0.5, roughness: 0.2 }));
+            neonSign.position.set(0, 0.62, 0);
+            const roof = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.08, 0.88), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 }));
+            roof.position.y = 0.53;
+            group.add(dinerWall, awning);
+            roofGroup.add(roof, neonSign);
+          } else if (type === 'power') {
+            const plant = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.72, 1.4), new THREE.MeshStandardMaterial({ color: 0x6e473b, roughness: 0.85 }));
+            plant.position.y = 0.36;
+            const stripeWin = new THREE.Mesh(new THREE.BoxGeometry(1.43, 0.14, 0.75), winMat);
+            stripeWin.position.y = 0.46;
+            const roofCap = new THREE.Mesh(new THREE.BoxGeometry(1.46, 0.08, 1.46), new THREE.MeshStandardMaterial({ color: 0x262d38, roughness: 0.7 }));
+            roofCap.position.y = 0.75;
+            const stack1 = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, 0.55, 10), new THREE.MeshStandardMaterial({ color: 0xb95c3c, roughness: 0.75 }));
+            stack1.position.set(-0.32, 1.05, -0.25);
+            const stack2 = stack1.clone();
+            stack2.position.set(0.25, 1.05, -0.25);
+            group.add(plant, stripeWin);
+            roofGroup.add(roofCap, stack1, stack2);
+          } else if (type === 'office') {
+            const tower = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.15, 1.2), new THREE.MeshStandardMaterial({ color: 0x526072, roughness: 0.55 }));
+            tower.position.y = 0.575;
+            group.add(tower);
+            for (let k = 0; k < 3; k++) {
+              const glassBand = new THREE.Mesh(new THREE.BoxGeometry(1.23, 0.14, 1.23), winMat);
+              glassBand.position.y = 0.25 + k * 0.32;
+              group.add(glassBand);
+            }
+            const topCap = new THREE.Mesh(new THREE.BoxGeometry(1.26, 0.1, 1.26), new THREE.MeshStandardMaterial({ color: 0xdbe3ee, roughness: 0.45 }));
+            topCap.position.y = 1.18;
+            const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.03, 0.4, 6), new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.3 }));
+            spire.position.y = 1.42;
+            roofGroup.add(topCap, spire);
+          } else if (type === 'park') {
+            const bench = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.08, 0.14), new THREE.MeshStandardMaterial({ color: 0x9a6536, roughness: 0.7 }));
+            bench.position.set(0, 0.05, 0.2);
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.24, 6), new THREE.MeshStandardMaterial({ color: 0x6b4423, roughness: 0.85 }));
+            trunk.position.set(-0.18, 0.12, -0.15);
+            const leaves = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.42, 7), new THREE.MeshStandardMaterial({ color: 0x4ca658, roughness: 0.78 }));
+            leaves.position.set(-0.18, 0.42, -0.15);
+            const leaves2 = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.32, 7), new THREE.MeshStandardMaterial({ color: 0x59b865, roughness: 0.78 }));
+            leaves2.position.set(0.22, 0.32, -0.1);
+            group.add(bench, trunk, leaves, leaves2);
+          }
+
+          group.add(interiorGroup);
+          group.add(roofGroup);
+          roofGroups.push(roofGroup);
+
+          group.position.set(gx - HALF + 0.5, 0, gz - HALF + 0.5);
+          scene.add(group);
+          return group;
+        }
+
+        // Initial Oakwood Layout
+        createBuilding('home', 5, 3);
+        createBuilding('home', 6, 3);
+        createBuilding('home', 7, 3);
+        createBuilding('home', 8, 3);
+        createBuilding('diner', 6, 5);
+        createBuilding('apartment', 8, 5);
+        createBuilding('power', 5, 1);
+        createBuilding('office', 10, 6);
+        createBuilding('home', 5, 7);
+        createBuilding('home', 6, 7);
+        createBuilding('park', 7, 6);
+
+        // Border Trees
+        const treeCoords = [[1, 1], [12, 1], [1, 12], [12, 12], [2, 11], [11, 2]];
+        treeCoords.forEach(([tx, tz]) => createBuilding('park', tx, tz));
+
+        // Animated Cars along Oakwood Road Loop (x: 4..9, z: 4..9 -> world: -2.5 .. +2.5)
+        const cars = [];
+        const carColors = [0xdc4a38, 0xf2c94c, 0x3b82f6, 0x4bb56d];
+        carColors.forEach((hex, idx) => {
+          const car = new THREE.Group();
+          const body = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.13, 0.2), new THREE.MeshStandardMaterial({ color: hex, roughness: 0.4 }));
+          body.position.y = 0.085;
+          const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.1, 0.17), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.2 }));
+          cabin.position.y = 0.17;
+          car.add(body, cabin);
+          scene.add(car);
+          cars.push({ mesh: car, progress: idx * 0.25, speed: 0.065 + idx * 0.008 });
+        });
+
+        // Weather Particle System (Rain / Snow)
+        const partCount = isSoftwareGl ? 220 : 420;
+        const partGeo = new THREE.BufferGeometry();
+        const partPos = new Float32Array(partCount * 3);
+        for (let i = 0; i < partCount; i++) {
+          partPos[i * 3] = (Math.random() - 0.5) * 16;
+          partPos[i * 3 + 1] = Math.random() * 10;
+          partPos[i * 3 + 2] = (Math.random() - 0.5) * 16;
+        }
+        partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+        const partMat = new THREE.PointsMaterial({ color: 0xbae6fd, size: 0.11, transparent: true, opacity: 0.78 });
+        const weatherParticles = new THREE.Points(partGeo, partMat);
+        weatherParticles.visible = false;
+        scene.add(weatherParticles);
+
+        function refreshHudDOM() {
+          document.getElementById('hudTreasury').textContent = '$' + simState.treasury.toLocaleString('en-US');
+          document.getElementById('hudCitizens').textContent = simState.citizens + '/140';
+          document.getElementById('hudPower').textContent = simState.powerUsed + '/' + simState.powerCap;
+          document.getElementById('hudDemoBuilds').textContent = simState.demoCount + '/3';
+
+          const btnCut = document.getElementById('btnCutaway');
+          btnCut.className = simState.cutaway
+            ? 'px-2.5 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold transition cursor-pointer'
+            : 'px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 transition cursor-pointer';
+
+          const btnNight = document.getElementById('btnDayNight');
+          btnNight.textContent = simState.night ? 'Night' : 'Day';
+          btnNight.className = simState.night
+            ? 'px-2.5 py-1.5 rounded-lg bg-[#0071E3] text-white font-bold transition cursor-pointer'
+            : 'px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] text-slate-200 transition cursor-pointer';
+
+          const btnWeather = document.getElementById('btnWeather');
+          btnWeather.textContent = simState.weather === 'rain' ? 'Rain' : (simState.weather === 'snow' ? 'Snow' : 'Clear');
+        }
+
+        function applyLightingAndModes() {
+          roofGroups.forEach((rg) => { rg.visible = !simState.cutaway; });
+          if (simState.night) {
+            scene.background.setHex(0x102216);
+            tileMatList[0].color.setHex(0x1d4b23);
+            tileMatList[1].color.setHex(0x173e1d);
+            hemiLight.intensity = 0.35;
+            sunLight.intensity = 0.42;
+            sunLight.color.setHex(0x6c92d8);
+            emissiveWindowMats.forEach((m) => { m.emissiveIntensity = 1.2; });
+            streetLampGlowMats.forEach((m) => { m.emissiveIntensity = 1.6; });
+          } else {
+            scene.background.setHex(simState.weather === 'snow' ? 0xcfdce3 : 0x9ac58e);
+            tileMatList[0].color.setHex(simState.weather === 'snow' ? 0xdbe6ec : 0x8bc97f);
+            tileMatList[1].color.setHex(simState.weather === 'snow' ? 0xcbd8e0 : 0x7ebe73);
+            hemiLight.intensity = 1.05;
+            sunLight.intensity = 1.55;
+            sunLight.color.setHex(0xfff1d6);
+            emissiveWindowMats.forEach((m) => { m.emissiveIntensity = 0.08; });
+            streetLampGlowMats.forEach((m) => { m.emissiveIntensity = 0.15; });
+          }
+
+          if (simState.weather === 'clear') {
+            weatherParticles.visible = false;
+          } else {
+            weatherParticles.visible = true;
+            partMat.color.setHex(simState.weather === 'snow' ? 0xffffff : 0x93c5fd);
+            partMat.size = simState.weather === 'snow' ? 0.14 : 0.1;
+          }
+          refreshHudDOM();
+        }
+
+        const DEMO_SPOTS = [
+          [7, 7],
+          [10, 8],
+          [3, 6]
+        ];
+
+        window.sandboxAction = function (action) {
+          if (action === 'cutaway') {
+            simState.cutaway = !simState.cutaway;
+            applyLightingAndModes();
+          } else if (action === 'night') {
+            simState.night = !simState.night;
+            applyLightingAndModes();
+          } else if (action === 'weather') {
+            simState.weather = simState.weather === 'clear' ? 'rain' : (simState.weather === 'rain' ? 'snow' : 'clear');
+            applyLightingAndModes();
+          } else if (action === 'rotateLeft') {
+            simState.targetYaw -= Math.PI / 2;
+          } else if (action === 'rotateRight') {
+            simState.targetYaw += Math.PI / 2;
+          } else if (action === 'buildHome' || action === 'buildDiner' || action === 'buildPark') {
+            if (simState.demoCount >= 3) return;
+            const [gx, gz] = DEMO_SPOTS[simState.demoCount];
+            const typeMap = { buildHome: 'home', buildDiner: 'diner', buildPark: 'park' };
+            const costMap = { buildHome: 180, buildDiner: 260, buildPark: 60 };
+            const popMap = { buildHome: 6, buildDiner: 4, buildPark: 0 };
+            const m = createBuilding(typeMap[action], gx, gz);
+            demoBuiltMeshes.push(m);
+            simState.demoCount += 1;
+            simState.treasury -= costMap[action];
+            simState.citizens += popMap[action];
+            simState.powerUsed += 2;
+            applyLightingAndModes();
+          } else if (action === 'reset') {
+            while (demoBuiltMeshes.length) {
+              const obj = demoBuiltMeshes.pop();
+              scene.remove(obj);
+            }
+            simState.treasury = 3800;
+            simState.citizens = 54;
+            simState.powerUsed = 21;
+            simState.demoCount = 0;
+            simState.cutaway = false;
+            simState.night = false;
+            simState.weather = 'clear';
+            applyLightingAndModes();
+          }
+        };
+
+        window.addEventListener('keydown', (e) => {
+          const key = (e.key || '').toLowerCase();
+          if (key === 'x') window.sandboxAction('cutaway');
+          else if (key === 'q') window.sandboxAction('rotateLeft');
+          else if (key === 'e') window.sandboxAction('rotateRight');
+        });
+
+        mount.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          simState.zoom = Math.max(5.5, Math.min(12.5, simState.zoom + Math.sign(e.deltaY) * 0.6));
+          const a = (mount.clientWidth || 800) / Math.max(1, mount.clientHeight || 500);
+          camera.left = -simState.zoom * a;
+          camera.right = simState.zoom * a;
+          camera.top = simState.zoom;
+          camera.bottom = -simState.zoom;
+          camera.updateProjectionMatrix();
+        }, { passive: false });
+
+        window.addEventListener('resize', () => {
+          const w = mount.clientWidth || 800;
+          const h = Math.max(1, mount.clientHeight || 500);
+          const a = w / h;
+          camera.left = -simState.zoom * a;
+          camera.right = simState.zoom * a;
+          camera.top = simState.zoom;
+          camera.bottom = -simState.zoom;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        });
+
+        // Smooth & Software-WebGL Friendly Loop
+        let lastTime = performance.now();
+        function animate(now) {
+          requestAnimationFrame(animate);
+          const dt = Math.min(0.05, (now - lastTime) / 1000);
+          lastTime = now;
+
+          simState.currentYaw += (simState.targetYaw - simState.currentYaw) * Math.min(1, dt * 8);
+          updateCameraTransform();
+
+          // Drive cars around loop (world x: -2.5 .. 2.5, z: -2.5 .. 2.5)
+          cars.forEach((c) => {
+            c.progress = (c.progress + dt * c.speed) % 1;
+            const t = c.progress * 4;
+            const seg = Math.floor(t);
+            const u = t - seg;
+            let x = 0, z = 0, ry = 0;
+            if (seg === 0) { x = -2.5 + u * 5; z = -2.5; ry = 0; }
+            else if (seg === 1) { x = 2.5; z = -2.5 + u * 5; ry = -Math.PI / 2; }
+            else if (seg === 2) { x = 2.5 - u * 5; z = 2.5; ry = Math.PI; }
+            else { x = -2.5; z = 2.5 - u * 5; ry = Math.PI / 2; }
+            c.mesh.position.set(x, 0.04, z);
+            c.mesh.rotation.y = ry;
+          });
+
+          if (weatherParticles.visible) {
+            const arr = partGeo.attributes.position.array;
+            const fallSpeed = simState.weather === 'snow' ? 2.1 : 9.5;
+            for (let i = 0; i < partCount; i++) {
+              arr[i * 3 + 1] -= dt * fallSpeed;
+              if (arr[i * 3 + 1] < 0) arr[i * 3 + 1] = 10;
+            }
+            partGeo.attributes.position.needsUpdate = true;
+          }
+
+          renderer.render(scene, camera);
+        }
+        applyLightingAndModes();
+        document.body.setAttribute('data-demo-state', 'ready');
+        requestAnimationFrame(animate);
+      }
     </script>
   </body>
 </html>

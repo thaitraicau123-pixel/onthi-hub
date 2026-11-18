@@ -719,8 +719,60 @@ window.ShopVietViews.home = (function () {
   }
   function checkoutCombo() {
     if (selectedComboSet.size === 0) return;
-    var firstId = Array.from(selectedComboSet)[0];
-    if (window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.open(firstId);
+    var ids = Array.from(selectedComboSet);
+    if (ids.length === 1) {
+      if (window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.open(ids[0]);
+      return;
+    }
+    var data = window.ShopVietData || {};
+    var products = Array.isArray(data.products) ? data.products : [];
+    var chosen = ids
+      .map(function (id) { return products.find(function (x) { return x && x.id === id; }); })
+      .filter(Boolean);
+    if (chosen.length === 0) return;
+
+    var prices = chosen.map(function (p) { return Number(p.price) || 0; });
+    var pricing = (window.ShopVietPromo && typeof window.ShopVietPromo.calculateComboPricing === 'function')
+      ? window.ShopVietPromo.calculateComboPricing(prices)
+      : (function () {
+          var sub = prices.reduce(function (a, b) { return a + b; }, 0);
+          var pct = prices.length === 2 ? 20 : (prices.length >= 3 ? 30 : 0);
+          var disc = Math.round(sub * pct / 100);
+          return { count: prices.length, subtotal: sub, discountPercent: pct, discountAmount: disc, finalTotal: Math.max(0, sub - disc) };
+        })();
+
+    var cartItems = chosen.map(function (p) {
+      return {
+        id: p.id,
+        name: p.name,
+        category: p.category || p.tag || 'Open-Design',
+        variant: p.zipFileName || p.badge || 'Full Kit',
+        price: Number(p.price) || 0,
+        originalPrice: p.oldPrice || undefined,
+        quantity: 1,
+        image: p.imageUrl || ''
+      };
+    });
+
+    if (window.ShopVietState) {
+      window.ShopVietState.state = window.ShopVietState.state || {};
+      window.ShopVietState.state.cart = cartItems;
+      window.ShopVietState.cart = cartItems;
+      window.ShopVietState.currentVoucher = pricing.discountAmount > 0
+        ? {
+            code: 'COMBO' + pricing.discountPercent,
+            amount: pricing.discountAmount,
+            desc: 'Ưu đãi Combo -' + pricing.discountPercent + '% (' + pricing.count + ' gói)'
+          }
+        : null;
+      if (typeof window.ShopVietState.save === 'function') window.ShopVietState.save();
+      if (typeof window.ShopVietState.showToast === 'function') {
+        window.ShopVietState.showToast('Đã tạo giỏ Combo ' + pricing.count + ' gói (giảm ' + pricing.discountPercent + '% · -' + Number(pricing.discountAmount).toLocaleString('vi-VN') + ' Xu)!', 'success');
+      }
+      if (typeof window.ShopVietState.navigate === 'function') {
+        window.ShopVietState.navigate('checkout');
+      }
+    }
   }
 
   // ==================== OPEN-DESIGN STUDIO WORKBENCH RENDERER ====================
@@ -771,6 +823,9 @@ window.ShopVietViews.home = (function () {
         </div>
       `;
     } else if (workbenchState.tab === 'code') {
+      var codeHtml = (window.ShopVietPromo && typeof window.ShopVietPromo.highlightCodeLines === 'function')
+        ? window.ShopVietPromo.highlightCodeLines(activeFile.code)
+        : '<pre class="whitespace-pre">' + escapeCode(activeFile.code) + '</pre>';
       bodyHtml = `
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3 h-[300px] sm:h-[330px]">
           <div class="md:col-span-4 rounded-xl bg-white/[0.03] border border-white/10 p-2 overflow-y-auto space-y-1">
@@ -790,11 +845,32 @@ window.ShopVietViews.home = (function () {
             }).join('')}
           </div>
           <div class="md:col-span-8 rounded-xl bg-[#05070B] border border-white/10 flex flex-col overflow-hidden">
-            <div class="px-3.5 py-2 border-b border-white/10 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span class="text-slate-200">${activeFile.path}</span>
-              <span>${proj.zipName}</span>
+            <div class="px-3.5 py-2 border-b border-white/10 flex items-center justify-between gap-2 text-[11px] font-mono text-slate-400">
+              <span class="text-slate-200 truncate">${activeFile.path}</span>
+              <div class="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onclick="ShopVietViews.home.copyWorkbenchCode()"
+                  class="px-2 py-0.5 rounded-md bg-white/[0.08] hover:bg-white/[0.16] text-slate-200 text-[10px] font-sans font-semibold transition cursor-pointer"
+                >
+                  Copy mẫu
+                </button>
+                <span class="hidden sm:inline text-slate-500">${proj.zipName}</span>
+              </div>
             </div>
-            <pre class="p-3.5 text-[11.5px] leading-relaxed font-mono text-slate-200 overflow-auto flex-1"><code>${escapeCode(activeFile.code)}</code></pre>
+            <div class="p-3 text-[11.5px] leading-relaxed font-mono text-slate-200 overflow-auto flex-1">
+              ${codeHtml}
+            </div>
+            <div class="px-3.5 py-2 border-t border-white/10 bg-[#0A0E17] flex items-center justify-between gap-2 text-[11px]">
+              <span class="text-slate-400 truncate">Xem trước kiến trúc · Mở khóa đủ <strong class="text-slate-200">${proj.fileCount}</strong> trong ZIP</span>
+              <button
+                type="button"
+                onclick="ShopVietViews.modal.open('${proj.id}')"
+                class="text-[#3B9EFF] hover:text-white font-semibold whitespace-nowrap cursor-pointer"
+              >
+                Mở khóa trọn bộ &rarr;
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -1488,6 +1564,17 @@ window.ShopVietViews.home = (function () {
     toggleComboItem: toggleComboItem,
     renderComboStatus: renderComboStatus,
     checkoutCombo: checkoutCombo,
+    copyWorkbenchCode: function () {
+      var proj = WORKBENCH_PROJECTS[workbenchState.project] || WORKBENCH_PROJECTS.metropolis;
+      var activeFile = proj.files[workbenchState.fileIndex] || proj.files[0];
+      if (activeFile && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(activeFile.code || '').then(function () {
+          if (window.ShopVietState && window.ShopVietState.showToast) {
+            window.ShopVietState.showToast('Đã sao chép mẫu ' + activeFile.path + '!', 'success');
+          }
+        }).catch(function () {});
+      }
+    },
     closeMobileExpander: closeMobileExpander,
     renderSafeProductImage: renderSafeProductImage
   };

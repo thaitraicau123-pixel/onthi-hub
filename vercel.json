@@ -2,9 +2,14 @@
   "buildCommand": "node build.cjs",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "functions": {
+    "api/download.js": {
+      "includeFiles": "{downloads/**,MASTER_PROMPTS.md}"
+    }
+  },
   "rewrites": [
     {
-      "source": "/((?!api/|js/|img/|demo/|favicon.svg|icon-192.png|icon-512.png|manifest.json|sw.js|cloud-db.json|MASTER_PROMPTS.md|.*\\..*).*)",
+      "source": "/((?!api/|js/|img/|demo/|favicon.svg|icon-192.png|icon-512.png|manifest.json|sw.js|cloud-db.json|.*\\..*).*)",
       "destination": "/index.html"
     }
   ]

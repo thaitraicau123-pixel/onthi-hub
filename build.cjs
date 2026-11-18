@@ -34,8 +34,7 @@ const staticFiles = [
   'icon-512.png',
   'manifest.json',
   'sw.js',
-  'cloud-db.json',
-  'MASTER_PROMPTS.md'
+  'cloud-db.json'
 ];
 
 for (const file of staticFiles) {
@@ -46,9 +45,9 @@ for (const file of staticFiles) {
   }
 }
 
-// Lưu ý: KHÔNG copy thư mục api/ vào dist/ — Vercel tự build api/*.js thành
-// Serverless Function. Copy vào dist sẽ phơi mã nguồn server dưới dạng file tĩnh.
-const staticDirs = ['js', 'img', 'demo', 'downloads'];
+// Lưu ý: KHÔNG copy api/ hoặc downloads/ vào dist/ — /api/download sẽ xác thực
+// quyền sở hữu rồi mới stream file từ nguồn gốc.
+const staticDirs = ['js', 'img', 'demo'];
 for (const dir of staticDirs) {
   const src = path.join(rootDir, dir);
   if (fs.existsSync(src)) {

@@ -605,19 +605,30 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, user });
     }
 
-    // 2.0c Đồng bộ đơn hàng lên Serverless Cloud
+    // 2.0c Đồng bộ đơn hàng lên Serverless Cloud (Bắt buộc khớp Firebase ID Token)
     if (action === 'sync_order') {
+      const claim = await verifyFirebaseIdToken(extractBearerToken(req)).catch(() => null);
+      const claimEmail = claim && claim.email ? String(claim.email).trim().toLowerCase() : '';
+      if (!claimEmail) {
+        return res.status(401).json({ ok: false, code: 'auth_required', message: 'Cần đăng nhập để đồng bộ đơn hàng.' });
+      }
       const order = body.order || {};
-      if (order.id) {
-        const idx = global._serverOrderCache.findIndex(o => o.id === order.id);
+      const orderEmail = String(order.userEmail || (order.customer && order.customer.email) || claimEmail).trim().toLowerCase();
+      const isAdmin = claimEmail === 'thaitraicau123@gmail.com' || getAdminEmails().includes(claimEmail);
+      if (!isAdmin && orderEmail !== claimEmail) {
+        return res.status(403).json({ ok: false, code: 'forbidden', message: 'Không có quyền đồng bộ đơn hàng của tài khoản khác.' });
+      }
+      const safeOrder = { ...order, userEmail: orderEmail };
+      if (safeOrder.id) {
+        const idx = global._serverOrderCache.findIndex(o => o.id === safeOrder.id);
         if (idx > -1) {
-          global._serverOrderCache[idx] = { ...global._serverOrderCache[idx], ...order };
+          global._serverOrderCache[idx] = { ...global._serverOrderCache[idx], ...safeOrder };
         } else {
-          global._serverOrderCache.unshift(order);
+          global._serverOrderCache.unshift(safeOrder);
           if (global._serverOrderCache.length > 500) global._serverOrderCache = global._serverOrderCache.slice(0, 500);
         }
       }
-      return res.status(200).json({ ok: true, orderId: order.id });
+      return res.status(200).json({ ok: true, orderId: safeOrder.id });
     }
 
     // 2.0d Lấy danh sách đơn hàng từ Serverless Cloud
@@ -695,6 +706,30 @@ export default async function handler(req, res) {
           message: 'Cần đăng nhập đúng tài khoản để trừ Xu trong ví!'
         });
       }
+      const recordCompletedOrderCache = () => {
+        if (!orderMeta || (!orderMeta.productId && !Array.isArray(orderMeta.items))) return;
+        const oid = String(orderMeta.orderCode || orderMeta.id || ('#DJ-' + Date.now()));
+        const entry = {
+          id: oid,
+          orderCode: oid,
+          productId: orderMeta.productId || '',
+          productName: orderMeta.productName || '',
+          items: Array.isArray(orderMeta.items) ? orderMeta.items : undefined,
+          userEmail,
+          status: 'completed',
+          unlockedAt: new Date().toISOString()
+        };
+        const idx = global._serverOrderCache.findIndex(o => o && o.id === oid);
+        if (idx > -1) {
+          global._serverOrderCache[idx] = { ...global._serverOrderCache[idx], ...entry };
+        } else {
+          global._serverOrderCache.unshift(entry);
+          if (global._serverOrderCache.length > 500) {
+            global._serverOrderCache = global._serverOrderCache.slice(0, 500);
+          }
+        }
+      };
+
       if (isConfigured() && userEmail && amount > 0) {
         try {
           const applied = await applyWalletDelta({
@@ -703,6 +738,7 @@ export default async function handler(req, res) {
             reason: 'purchase',
             idempotencyKey: String(orderMeta.orderCode || orderMeta.id || '')
           });
+          recordCompletedOrderCache();
           return res.status(200).json({
             ok: true,
             userEmail,
@@ -721,6 +757,7 @@ export default async function handler(req, res) {
           });
         }
       }
+      recordCompletedOrderCache();
       console.log(`[Topup Engine] Khách ${userEmail} đã trừ ${amount} Xu. Số dư còn: ${newBalance} Xu. Đơn: ${orderMeta.orderCode || 'N/A'}`);
       return res.status(200).json({ ok: true, userEmail, amount, newBalance, orderMeta });
     }

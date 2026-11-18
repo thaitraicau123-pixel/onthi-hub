@@ -8,10 +8,7 @@
 
   const STORAGE_KEY = 'shopviet247_app_state_v560_roadmap_guide_v1';
   const USERS_DB_KEY = 'shopviet_users_database';
-  const GITHUB_RAW_CLOUD_URL = 'https://raw.githubusercontent.com/thaitraicau123-pixel/onthi-hub/main/cloud-db.json';
-  const GITHUB_API_URL = 'https://api.github.com/repos/thaitraicau123-pixel/onthi-hub/contents/cloud-db.json';
-  const GITHUB_PAT = (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_github_pat')) || [103,104,112,95,78,73,100,50,107,56,105,48,57,103,107,71,74,53,56,113,67,54,78,84,89,79,67,89,116,119,115,78,66,121,52,97,111,48,118,85].map(function (c) { return String.fromCharCode(c); }).join('');
-  const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1878bee264ca3';
+  const LOCAL_CLOUD_DB_PATH = '/cloud-db.json';
 
   // Gắn Firebase ID Token để server biết ai đang gọi các action quản trị.
   async function adminAuthHeaders() {
@@ -457,93 +454,15 @@
       try {
         let data = null;
 
-        // ƯU TIÊN 1 TUYỆT ĐỐI: Gọi trực tiếp GitHub Contents API (Zero-Cache qua header Accept raw & Authorization token)
-        try {
-          const ghApiUrl = GITHUB_API_URL + (GITHUB_API_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-          const ghHeaders = {
-            'Accept': 'application/vnd.github.v3.raw'
-          };
-          if (GITHUB_PAT) {
-            ghHeaders['Authorization'] = 'token ' + GITHUB_PAT;
-          }
-          const ghApiRes = await fetch(ghApiUrl, {
-            method: 'GET',
-            cache: 'no-store',
-            headers: ghHeaders
-          });
-          if (ghApiRes.ok) {
-            const rawText = await ghApiRes.text();
-            let parsed = null;
-            try {
-              parsed = JSON.parse(rawText);
-            } catch (eParse) {}
-            // Fallback nếu GitHub API trả về JSON envelope chứa Base64
-            if (parsed && parsed.content && parsed.encoding === 'base64') {
-              try {
-                const b64 = parsed.content.replace(/\s/g, '');
-                const decoded = decodeURIComponent(escape(window.atob(b64)));
-                parsed = JSON.parse(decoded);
-              } catch (eDec) {}
-            }
-            if (parsed) {
-              data = parsed.data || parsed;
-              console.log('[ShopVietState] Đã tải thành công Zero-Cache dữ liệu từ GitHub Contents API!');
-            }
-          } else {
-            console.warn('[ShopVietState] GitHub Contents API status:', ghApiRes.status);
-          }
-        } catch (eGhApi) {
-          console.warn('[ShopVietState] Lỗi gọi trực tiếp GitHub API (Zero Cache), kích hoạt fallback Raw URL:', eGhApi);
-        }
-
-        // FALLBACK 1: Tải từ GitHub Raw Cloud Storage nếu API bị chặn hoặc rate limit
-        if (!data) {
+        // Tải từ /cloud-db.json của chính host hiện tại (Same-Origin, không CORS / 401)
+        if (typeof window !== 'undefined' && window.location) {
           try {
-            const ghRawUrl = GITHUB_RAW_CLOUD_URL + (GITHUB_RAW_CLOUD_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-            const ghRes = await fetch(ghRawUrl, {
-              method: 'GET',
-              cache: 'no-store'
-            });
-            if (ghRes.ok) {
-              const ghJson = await ghRes.json();
-              if (ghJson) {
-                data = ghJson.data || ghJson;
-                console.log('[ShopVietState] Đã tải thành công dữ liệu từ GitHub Raw Cloud Storage!');
-              }
-            }
-          } catch (eGh) {
-            console.warn('[ShopVietState] Lỗi đọc GitHub Raw Cloud Storage, đang kích hoạt fallback REST:', eGh);
-          }
-        }
-
-        // FALLBACK 2: Fallback sang REST API dev nếu GitHub Raw chưa có hoặc lỗi
-        if (!data) {
-          try {
-            const fetchUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-            const res = await fetch(fetchUrl, {
-              method: 'GET',
-              cache: 'no-store'
-            });
-            if (res.ok) {
-              const json = await res.json();
-              if (json && !json.error) {
-                data = json.data || json;
-                console.log('[ShopVietState] Đã tải dữ liệu từ Fallback Cloud REST API!');
-              }
-            }
-          } catch (eRest) {}
-        }
-
-        // FALLBACK 3: Tải từ /cloud-db.json của chính host hiện tại (Vercel Production / Custom Domain)
-        if (!data && typeof window !== 'undefined' && window.location) {
-          try {
-            const localCloudUrl = (window.location.origin || '') + '/cloud-db.json?_t=' + Date.now();
+            const localCloudUrl = (window.location.origin || '') + LOCAL_CLOUD_DB_PATH + '?_t=' + Date.now();
             const localRes = await fetch(localCloudUrl, { method: 'GET', cache: 'no-store' });
             if (localRes.ok) {
               const localJson = await localRes.json();
               if (localJson) {
                 data = localJson.data || localJson;
-                console.log('[ShopVietState] Đã tải dữ liệu từ Vercel Static Cloud DB (/cloud-db.json)!');
               }
             }
           } catch (eLocal) {}
@@ -901,77 +820,7 @@
           } catch (e) {}
         }
 
-        // 1. ĐẨY LÊN GITHUB CLOUD STORAGE (API CONTENTS PUT)
-        try {
-          // Lấy SHA mới nhất của file cloud-db.json nếu đã tồn tại
-          let sha = null;
-          try {
-            const shaRes = await fetch(GITHUB_API_URL, {
-              method: 'GET',
-              headers: {
-                'Authorization': 'token ' + GITHUB_PAT,
-                'Accept': 'application/vnd.github.v3+json'
-              }
-            });
-            if (shaRes.ok) {
-              const fileData = await shaRes.json();
-              if (fileData && fileData.sha) {
-                sha = fileData.sha;
-              }
-            }
-          } catch (eSha) {
-            console.warn('[ShopVietState] Không thể lấy SHA GitHub file:', eSha);
-          }
-
-          // Chuẩn hóa Unicode UTF-8 sang Base64 chuẩn trình duyệt
-          const jsonContent = JSON.stringify(dbData, null, 2);
-          const base64Content = window.btoa(unescape(encodeURIComponent(jsonContent)));
-
-          const ghBody = {
-            message: 'Update cloud-db.json via BuiThai AI Studio Cloud Sync [' + new Date().toISOString() + ']',
-            content: base64Content
-          };
-          if (sha) {
-            ghBody.sha = sha;
-          }
-
-          const ghPutRes = await fetch(GITHUB_API_URL, {
-            method: 'PUT',
-            headers: {
-              'Authorization': 'token ' + GITHUB_PAT,
-              'Content-Type': 'application/json',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(ghBody)
-          });
-
-          if (ghPutRes.ok) {
-            console.log('[ShopVietState] Đã lưu và đồng bộ lên GitHub Cloud Storage thành công!');
-          } else {
-            console.warn('[ShopVietState] GitHub Cloud Storage PUT status:', ghPutRes.status);
-          }
-        } catch (errGh) {
-          console.warn('[ShopVietState] Lỗi đẩy lên GitHub Cloud Storage:', errGh);
-        }
-
-        // 2. FALLBACK ĐỒNG THỜI LÊN CLOUD_DB_URL REST API
-        try {
-          const payload = {
-            name: 'Bùi Thái AI Studio_Unified_Cloud_DB',
-            data: dbData
-          };
-
-          await fetch(CLOUD_DB_URL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-          console.log('[ShopVietState] Đã đồng bộ dự phòng lên Cloud REST API!');
-        } catch (errRest) {
-          console.warn('[ShopVietState] Fallback REST PUT error:', errRest);
-        }
+        // Dữ liệu được đồng bộ qua Firestore Signal & BroadcastChannel nội bộ (không gửi PAT ra client)
 
         // 2.5 LẬP TỨC PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ CLIENTS & TABS
         if (!skipBroadcast) {
@@ -1301,11 +1150,18 @@
 
       const self = this;
 
-      // Realtime SePay & Balance Poller: Tự động kéo số dư mới nhất mỗi 4 giây
+      // Smart SePay & Balance Poller: Chỉ chạy mỗi 10s khi user đã đăng nhập và đang mở modal nạp Xu hoặc có lệnh pending
       if (!this._topupPollInterval) {
         this._topupPollInterval = setInterval(function () {
+          const u = self.state && self.state.user;
+          const isLoggedIn = Boolean(u && u.isLoggedIn && u.email);
+          const hasDepositModal = typeof document !== 'undefined' && Boolean(document.getElementById('depositBackdrop'));
+          const hasPendingTopup = Array.isArray(self.state && self.state.topups) && self.state.topups.some(function (t) { return t && t.status === 'pending'; });
+          const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
+          if (!isLoggedIn && !isAdminOpen) return;
+          if (!hasDepositModal && !hasPendingTopup && !isAdminOpen) return;
           self.syncTopupsFromCloud(false).catch(function () {});
-        }, 4000);
+        }, 10000);
       }
       let isChecking = false;
 
@@ -1319,100 +1175,11 @@
           }
 
           let cloudUpdatedAt = 0;
-          let cloudData = null;
 
-          // ƯU TIÊN 1: Kiểm tra trực tiếp GitHub API (Zero-Cache Header & Token)
-          try {
-            const ghApiUrl = GITHUB_API_URL + (GITHUB_API_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-            const ghHeaders = {
-              'Accept': 'application/vnd.github.v3.raw'
-            };
-            if (GITHUB_PAT) {
-              ghHeaders['Authorization'] = 'token ' + GITHUB_PAT;
-            }
-            const ghRes = await fetch(ghApiUrl, {
-              method: 'GET',
-              cache: 'no-store',
-              headers: ghHeaders
-            });
-            if (ghRes.ok) {
-              const rawText = await ghRes.text();
-              let parsed = null;
-              try {
-                parsed = JSON.parse(rawText);
-              } catch (eParse) {}
-              if (parsed && parsed.content && parsed.encoding === 'base64') {
-                try {
-                  const b64 = parsed.content.replace(/\s/g, '');
-                  const decoded = decodeURIComponent(escape(window.atob(b64)));
-                  parsed = JSON.parse(decoded);
-                } catch (eDec) {}
-              }
-              if (parsed) {
-                cloudData = parsed.data || parsed;
-                if (cloudData && cloudData.updatedAt) {
-                  cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                    ? cloudData.updatedAt
-                    : new Date(cloudData.updatedAt).getTime();
-                } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                  cloudUpdatedAt = cloudData.version;
-                }
-              }
-            }
-          } catch (eGhApi) {}
-
-          // FALLBACK 2: Fallback sang REST API nếu GitHub API lỗi hoặc nghẽn
-          if (!cloudUpdatedAt) {
+          // Kiểm tra Local Origin /cloud-db.json (Same-Origin, zero CORS / 401 errors)
+          if (typeof window !== 'undefined' && window.location) {
             try {
-              const restUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-              const restRes = await fetch(restUrl, {
-                method: 'GET',
-                cache: 'no-store'
-              });
-              if (restRes.ok) {
-                const rJson = await restRes.json();
-                if (rJson) {
-                  cloudData = rJson.data || rJson;
-                  if (cloudData && cloudData.updatedAt) {
-                    cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                      ? cloudData.updatedAt
-                      : new Date(cloudData.updatedAt).getTime();
-                  } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                    cloudUpdatedAt = cloudData.version;
-                  }
-                }
-              }
-            } catch (eRest) {}
-          }
-
-          // FALLBACK 3: Kiểm tra GitHub Raw Cloud
-          if (!cloudUpdatedAt) {
-            try {
-              const ghRawUrl = GITHUB_RAW_CLOUD_URL + (GITHUB_RAW_CLOUD_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-              const res = await fetch(ghRawUrl, {
-                method: 'GET',
-                cache: 'no-store'
-              });
-              if (res.ok) {
-                const json = await res.json();
-                if (json) {
-                  cloudData = json.data || json;
-                  if (cloudData && cloudData.updatedAt) {
-                    cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                      ? cloudData.updatedAt
-                      : new Date(cloudData.updatedAt).getTime();
-                  } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                    cloudUpdatedAt = cloudData.version;
-                  }
-                }
-              }
-            } catch (eGh) {}
-          }
-
-          // FALLBACK 4: Kiểm tra Local Origin /cloud-db.json (Vercel Production)
-          if (!cloudUpdatedAt && typeof window !== 'undefined' && window.location) {
-            try {
-              const locUrl = (window.location.origin || '') + '/cloud-db.json?_hb=' + Date.now();
+              const locUrl = (window.location.origin || '') + LOCAL_CLOUD_DB_PATH + '?_hb=' + Date.now();
               const lRes = await fetch(locUrl, { method: 'GET', cache: 'no-store' });
               if (lRes.ok) {
                 const lJson = await lRes.json();
@@ -1479,6 +1246,10 @@
       if (this._realtimeDaemonTimer) {
         clearInterval(this._realtimeDaemonTimer);
         this._realtimeDaemonTimer = null;
+      }
+      if (this._topupPollInterval) {
+        clearInterval(this._topupPollInterval);
+        this._topupPollInterval = null;
       }
       this._realtimeDaemonRunning = false;
       if (this._firestoreListenerUnsubscribe) {
@@ -2008,6 +1779,12 @@
 
     // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực & Số dư ví đa thiết bị từ Cloud (Vercel API + ntfy.sh + Firestore + /cloud-db.json)
     syncTopupsFromCloud: async function (isManual = false) {
+      const currentUser = this.state && this.state.user;
+      const isLoggedIn = Boolean(currentUser && currentUser.isLoggedIn && currentUser.email);
+      const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
+      if (!isManual && !isLoggedIn && !isAdminOpen) {
+        return (this.state && this.state.topups) || [];
+      }
       let cloudTopups = [];
       const seenDocIds = new Set();
 
@@ -2394,11 +2171,12 @@
         try {
           const origin = window.location.origin || '';
           adminAuthHeaders().then(function (authHeaders) {
+            if (!authHeaders || !authHeaders.Authorization) return null;
             return fetch(origin + '/api/topups', {
-            method: 'POST',
-            headers: authHeaders,
-            body: JSON.stringify({ action: 'ban_user', userEmail: cleanEmail, reason: reason || 'Admin ban' })
-          });
+              method: 'POST',
+              headers: authHeaders,
+              body: JSON.stringify({ action: 'ban_user', userEmail: cleanEmail, reason: reason || 'Admin ban' })
+            });
           }).catch(() => null);
         } catch (e) {}
       }
@@ -2486,16 +2264,19 @@
         try {
           const origin = window.location.origin || '';
           adminAuthHeaders().then(function (authHeaders) {
+            if (!authHeaders || !authHeaders.Authorization) return null;
             return fetch(origin + '/api/topups', {
-            method: 'POST',
-            headers: authHeaders,
-            body: JSON.stringify({ action: 'reset_balance', userEmail: cleanEmail, newBalance: newBalance })
-          });
+              method: 'POST',
+              headers: authHeaders,
+              body: JSON.stringify({ action: 'reset_balance', userEmail: cleanEmail, newBalance: newBalance })
+            });
           }).catch(() => null);
         } catch (e) {}
       }
 
-      this.broadcastAdminChange('balance_updated', { email: cleanEmail, newBalance: newBalance });
+      if (this.state.user && this.state.user.isLoggedIn && (this.state.user.role === 'admin' || String(this.state.user.email || '').trim().toLowerCase() === 'thaitraicau123@gmail.com')) {
+        this.broadcastAdminChange('balance_updated', { email: cleanEmail, newBalance: newBalance });
+      }
       return true;
     },
 
@@ -3109,8 +2890,16 @@
       this.load();
       this.initBroadcastChannel();
 
-      // Cưỡng chế Reset Xu và chặn Spam đã chỉ định
-      this.resetUserBalance('duy001wastaken@gmail.com', 0);
+      // Cưỡng chế Reset Xu cục bộ và chặn Spam đã chỉ định (Server tự ép FORCED_BALANCES)
+      try {
+        const users = this.getUsersDB();
+        const duyIdx = users.findIndex(u => u && u.email && u.email.trim().toLowerCase() === 'duy001wastaken@gmail.com');
+        if (duyIdx > -1 && Number(users[duyIdx].balance) !== 0) {
+          users[duyIdx].balance = 0;
+          users[duyIdx].walletSeal = this.computeWalletSeal('duy001wastaken@gmail.com', 0);
+          this.saveUsersDB(users);
+        }
+      } catch (e) {}
       this.cleanSpamTopupsByEmail('thaihoa27492@gmail.com');
       try {
         localStorage.removeItem('shopviet_products_purged');

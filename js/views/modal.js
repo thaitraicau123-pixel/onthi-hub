@@ -41,6 +41,15 @@ window.ShopVietViews.modal = (function () {
   let lastUnlockedOrder = null;
   let isPurchasing = false; // Khoa chong bam nhieu lan tru nhieu tien
 
+  function getEffectiveQuickBuyTotal() {
+    if (!currentProduct) return 0;
+    const raw = Math.max(0, (Number(currentProduct.price) || 0) * (Number(currentQty) || 1));
+    if (appliedVoucher && typeof appliedVoucher.finalTotal === 'number') {
+      return Math.max(0, appliedVoucher.finalTotal);
+    }
+    return raw;
+  }
+
   // ================== NẠP XU: MÃ DO SERVER CẤP + SEPAY ĐỐI SOÁT ==================
   // Ví Xu nằm trên server (Firestore). Client chỉ xin mã nạp và hỏi trạng thái.
   let depositIntent = { memo: '', amount: 0 };
@@ -790,10 +799,11 @@ window.ShopVietViews.modal = (function () {
                       ${escapeHTML(currentProduct.name)}
                     </h4>
 
-                    <div class="flex items-baseline gap-2 mt-1.5">
-                      <span class="text-lg sm:text-xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
+                    <div class="flex items-baseline gap-2 mt-1.5 flex-wrap">
+                      <span id="quickBuyFinalXu" class="text-lg sm:text-xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
                         ${formatMoney(currentProduct.price)} Xu
                       </span>
+                      <span id="quickBuyVoucherSavings" class="hidden text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums"></span>
                       ${currentProduct.oldPrice ? `
                         <span class="text-xs text-slate-400 line-through font-mono tabular-nums">
                           ${formatMoney(currentProduct.oldPrice)}đ
@@ -915,6 +925,37 @@ window.ShopVietViews.modal = (function () {
                   </span>
                 </div>
 
+                <!-- MÃ ƯU ĐÃI / VOUCHER -->
+                <div id="quickBuyVoucherSection" class="p-3.5 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80 space-y-2">
+                  <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <label for="quickBuyVoucherInput" class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                      Mã ưu đãi Studio (tuỳ chọn)
+                    </label>
+                    <div class="flex items-center gap-1.5 text-[10px]">
+                      <button type="button" onclick="ShopVietViews.modal.applyQuickBuyVoucher('OPENDESIGN20')" class="px-2 py-0.5 rounded-md bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] hover:bg-[#0071E3]/20 font-mono font-semibold cursor-pointer">OPENDESIGN20</button>
+                      ${currentProduct.price >= 15000 ? `<button type="button" onclick="ShopVietViews.modal.applyQuickBuyVoucher('METRO15')" class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 font-mono font-semibold cursor-pointer">METRO15</button>` : ''}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input
+                      id="quickBuyVoucherInput"
+                      type="text"
+                      placeholder="Nhập OPENDESIGN20, METRO15, HSSV..."
+                      onkeydown="if(event.key==='Enter'){event.preventDefault();ShopVietViews.modal.applyQuickBuyVoucher();}"
+                      class="flex-1 min-w-0 px-3 py-2 rounded-xl border border-slate-200/90 dark:border-slate-700/90 bg-slate-50/90 dark:bg-[#0B0F17] text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]/40"
+                    />
+                    <button
+                      id="quickBuyApplyVoucherBtn"
+                      type="button"
+                      onclick="ShopVietViews.modal.applyQuickBuyVoucher()"
+                      class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white/15 dark:hover:bg-white/25 text-white text-xs font-bold transition cursor-pointer shrink-0"
+                    >
+                      Áp dụng
+                    </button>
+                  </div>
+                  <div id="quickBuyVoucherMsg" class="hidden text-[11px]"></div>
+                </div>
+
                 <!-- VÍ XU -->
                 <div id="modalWalletSection">
                   ${!currentUser ? `
@@ -974,6 +1015,7 @@ window.ShopVietViews.modal = (function () {
 
             <!-- FOOTER MODAL -->
             <div class="px-5 py-4 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#090B10]/90 space-y-2.5 shrink-0">
+              <div id="quickBuyFooterAction">
               ${!currentUser ? `
                 <button
                   type="button"
@@ -1009,6 +1051,7 @@ window.ShopVietViews.modal = (function () {
                   <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
                 </button>
               `}
+              </div>
 
               <div class="text-center text-[11px] text-slate-500 dark:text-slate-400">
                 Bằng việc mở khóa, bạn đồng ý với
@@ -1024,6 +1067,188 @@ window.ShopVietViews.modal = (function () {
 
       if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
         window.addEventListener('keydown', handleKeyDown);
+      }
+    },
+
+    _refreshQuickBuyPricingDOM: function () {
+      if (!currentProduct) return;
+      const totalXu = getEffectiveQuickBuyTotal();
+      const rawTotal = Math.max(0, (Number(currentProduct.price) || 0) * (Number(currentQty) || 1));
+      const priceEl = document.getElementById('quickBuyFinalXu');
+      const savingsEl = document.getElementById('quickBuyVoucherSavings');
+      if (priceEl) priceEl.textContent = `${formatMoney(totalXu)} Xu`;
+      if (savingsEl) {
+        if (appliedVoucher && appliedVoucher.discount > 0) {
+          savingsEl.classList.remove('hidden');
+          savingsEl.textContent = `(-${formatMoney(appliedVoucher.discount)} Xu · gốc ${formatMoney(rawTotal)} Xu)`;
+        } else {
+          savingsEl.classList.add('hidden');
+          savingsEl.textContent = '';
+        }
+      }
+      const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || null;
+      const userBalance = (currentUser && typeof currentUser.balance === 'number') ? currentUser.balance : 0;
+      const isSufficient = Boolean(currentUser && userBalance >= totalXu);
+      const walletBox = document.getElementById('modalWalletSection');
+      if (walletBox && currentUser) {
+        walletBox.innerHTML = isSufficient ? `
+          <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Ví Xu của bạn (${escapeHTML(currentUser.name || 'Khách hàng')}):</span>
+              </div>
+              <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
+                ${formatMoney(userBalance)} Xu
+              </span>
+            </div>
+            <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
+              ✓ Đủ số dư! Sau khi mở khóa ví còn <strong class="font-mono tabular-nums">${formatMoney(userBalance - totalXu)} Xu</strong>.
+            </p>
+          </div>
+        ` : `
+          <div class="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Ví Xu hiện tại:</span>
+              <span class="text-sm font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
+                ${formatMoney(userBalance)} Xu
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-400">
+              Cần nạp thêm <strong class="text-rose-600 dark:text-rose-400 font-mono font-bold tabular-nums">${formatMoney(totalXu - userBalance)} Xu</strong> để mở khóa gói này.
+            </p>
+          </div>
+        `;
+      }
+      const footerWrap = document.getElementById('quickBuyFooterAction');
+      if (footerWrap && currentUser) {
+        footerWrap.innerHTML = isSufficient ? `
+          <button
+            type="button"
+            onclick="ShopVietViews.modal.showPurchaseConfirmDialog()"
+            class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+          >
+            <span>🪙</span>
+            <span>Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay</span>
+          </button>
+        ` : `
+          <button
+            type="button"
+            onclick="ShopVietViews.modal.openDepositForShortage(${totalXu - userBalance})"
+            class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+          >
+            <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
+          </button>
+        `;
+      }
+    },
+
+    applyQuickBuyVoucher: function (presetCode) {
+      if (!currentProduct) return;
+      const input = document.getElementById('quickBuyVoucherInput');
+      const msgEl = document.getElementById('quickBuyVoucherMsg');
+      const rawCode = presetCode !== undefined ? String(presetCode) : (input ? input.value : '');
+      if (input && presetCode !== undefined) input.value = String(presetCode);
+      const rawSubtotal = Math.max(0, (Number(currentProduct.price) || 0) * (Number(currentQty) || 1));
+
+      const result = (window.ShopVietPromo && typeof window.ShopVietPromo.applyVoucher === 'function')
+        ? window.ShopVietPromo.applyVoucher({ code: rawCode, subtotal: rawSubtotal })
+        : { valid: false, discount: 0, finalTotal: rawSubtotal, message: 'Hệ thống voucher chưa sẵn sàng.' };
+
+      if (!result.valid) {
+        appliedVoucher = null;
+        if (msgEl) {
+          msgEl.className = 'text-[11px] font-medium text-rose-600 dark:text-rose-400 block';
+          msgEl.textContent = result.message;
+        }
+        this._refreshQuickBuyPricingDOM();
+        return;
+      }
+
+      appliedVoucher = result;
+      if (window.ShopVietState) window.ShopVietState.appliedQuickBuyVoucher = result;
+      if (msgEl) {
+        msgEl.className = 'text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25';
+        msgEl.innerHTML = `<span>✓ ${escapeHTML(result.message)}</span><button type="button" onclick="ShopVietViews.modal.clearQuickBuyVoucher()" class="text-rose-600 dark:text-rose-400 underline text-[10px] cursor-pointer shrink-0">Gỡ mã</button>`;
+      }
+      this._refreshQuickBuyPricingDOM();
+    },
+
+    clearQuickBuyVoucher: function () {
+      appliedVoucher = null;
+      if (window.ShopVietState) window.ShopVietState.appliedQuickBuyVoucher = null;
+      const input = document.getElementById('quickBuyVoucherInput');
+      const msgEl = document.getElementById('quickBuyVoucherMsg');
+      if (input) input.value = '';
+      if (msgEl) {
+        msgEl.className = 'hidden text-[11px]';
+        msgEl.textContent = '';
+      }
+      this._refreshQuickBuyPricingDOM();
+    },
+
+    downloadProtectedAsset: async function (rawUrl, fallbackFilename, productId) {
+      const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
+      const fileName = (window.ShopVietPromo && typeof window.ShopVietPromo.extractDownloadFileName === 'function')
+        ? window.ShopVietPromo.extractDownloadFileName(rawUrl)
+        : String(rawUrl || '').split('/').pop().split('?')[0];
+      const targetName = fileName || fallbackFilename || 'source-starter.zip';
+      const downloadEndpoint = (window.ShopVietPromo && typeof window.ShopVietPromo.buildProtectedDownloadUrl === 'function')
+        ? window.ShopVietPromo.buildProtectedDownloadUrl(rawUrl, productId)
+        : (`/api/download?file=${encodeURIComponent(targetName)}${productId ? '&productId=' + encodeURIComponent(productId) : ''}`);
+
+      if (!downloadEndpoint) {
+        if (window.ShopVietState && window.ShopVietState.showToast) {
+          window.ShopVietState.showToast('Không tìm thấy tệp tải về hợp lệ.', 'error');
+        }
+        return;
+      }
+
+      const idToken = await getFirebaseIdToken();
+      if (!idToken) {
+        if (window.ShopVietState && window.ShopVietState.showToast) {
+          window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để xác thực quyền tải mã nguồn!', 'warning');
+        }
+        return;
+      }
+
+      if (window.ShopVietState && window.ShopVietState.showToast) {
+        window.ShopVietState.showToast(`⏳ Đang xác thực quyền & chuẩn bị tải ${targetName}...`, 'info');
+      }
+
+      try {
+        const res = await fetch(origin + downloadEndpoint, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + idToken }
+        });
+        if (!res.ok) {
+          const errJson = await res.json().catch(() => null);
+          const msg = (errJson && errJson.message) || (res.status === 401
+            ? 'Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.'
+            : 'Bạn cần mở khóa sản phẩm này bằng Ví Xu trước khi tải.');
+          if (window.ShopVietState && window.ShopVietState.showToast) {
+            window.ShopVietState.showToast(msg, 'error');
+          }
+          return;
+        }
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fallbackFilename || targetName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () {
+          URL.revokeObjectURL(blobUrl);
+          if (a.parentNode) a.parentNode.removeChild(a);
+        }, 1200);
+        if (window.ShopVietState && window.ShopVietState.showToast) {
+          window.ShopVietState.showToast(`✓ Đã tải xuống ${fallbackFilename || targetName}!`, 'success');
+        }
+      } catch (err) {
+        if (window.ShopVietState && window.ShopVietState.showToast) {
+          window.ShopVietState.showToast('Lỗi kết nối khi tải tệp. Vui lòng thử lại!', 'error');
+        }
       }
     },
 
@@ -1065,7 +1290,7 @@ window.ShopVietViews.modal = (function () {
         }
       }
 
-      const totalAmount = currentProduct.price * currentQty;
+      const totalAmount = getEffectiveQuickBuyTotal();
       const balance = typeof currentUser.balance === 'number' ? currentUser.balance : 0;
 
       if (balance < totalAmount) {
@@ -1197,7 +1422,7 @@ window.ShopVietViews.modal = (function () {
         }
       }
 
-      const totalAmount = currentProduct.price * currentQty;
+      const totalAmount = getEffectiveQuickBuyTotal();
       const balance = typeof currentUser.balance === 'number' ? currentUser.balance : 0;
 
       if (balance < totalAmount) {
@@ -1231,7 +1456,9 @@ window.ShopVietViews.modal = (function () {
         deductRes = window.ShopVietState.deductUserCoins(currentUser.email, totalAmount, {
           orderCode: orderCode,
           productId: currentProduct.id,
-          productName: currentProduct.name
+          productName: currentProduct.name,
+          voucherCode: appliedVoucher ? appliedVoucher.code : '',
+          discountAmount: appliedVoucher ? appliedVoucher.discount : 0
         });
         if (deductRes && typeof deductRes.newBalance === 'number') {
           newBalance = deductRes.newBalance;
@@ -1421,7 +1648,9 @@ window.ShopVietViews.modal = (function () {
       const cleanEmail = (currentUser.email || '').trim().toLowerCase();
       if (window.ShopVietState && typeof window.ShopVietState.isUserBanned === 'function') {
         if (window.ShopVietState.isUserBanned(cleanEmail)) {
-          alert('🚫 TÀI KHOẢN ĐÃ BỊ KHÓA: Bạn không thể nạp Xu do vi phạm chính sách hệ thống!');
+          if (typeof window.ShopVietState.showToast === 'function') {
+            window.ShopVietState.showToast('Tài khoản đã bị khóa do vi phạm chính sách hệ thống!', 'error');
+          }
           if (typeof window.ShopVietState.logout === 'function') {
             window.ShopVietState.logout();
           }
@@ -1764,14 +1993,14 @@ window.ShopVietViews.modal = (function () {
                   <span>Copy Master Prompt</span>
                 </button>
                 ${zipHref ? `
-                  <a 
-                    href="${escapeHTML(zipHref)}" 
-                    download="${escapeHTML(zipName)}" 
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm no-underline tabular-nums"
+                  <button
+                    type="button"
+                    onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(zipHref)}', '${escapeHTML(zipName)}', '${escapeHTML(prodId)}')"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm tabular-nums"
                     title="Tải gói mã nguồn (.zip)"
                   >
                     <span>📦 Tải .zip${zipSize ? ` (${escapeHTML(zipSize)})` : ''}</span>
-                  </a>
+                  </button>
                 ` : ''}
                 ${demoTargetUrl ? `
                   <button 
@@ -1784,14 +2013,14 @@ window.ShopVietViews.modal = (function () {
                   </button>
                 ` : ''}
                 ${hasWordDoc ? `
-                  <a 
-                    href="${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}" 
-                    download="${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}" 
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 font-bold text-xs transition active:scale-95 cursor-pointer no-underline"
+                  <button
+                    type="button"
+                    onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prodId)}')"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 font-bold text-xs transition active:scale-95 cursor-pointer"
                     title="Tải tài liệu Word (.docx) về máy"
                   >
                     <span>📄 Tải .docx</span>
-                  </a>
+                  </button>
                 ` : ''}
                 <button 
                   type="button" 
@@ -1828,20 +2057,20 @@ window.ShopVietViews.modal = (function () {
                   </div>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                  <a 
-                    href="${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}" 
-                    download="${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}" 
-                    class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-sm active:scale-95 transition no-underline flex items-center gap-1.5"
+                  <button
+                    type="button"
+                    onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prodId)}')"
+                    class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-sm active:scale-95 transition cursor-pointer flex items-center gap-1.5"
                   >
                     <span>📥 Tải .docx</span>
-                  </a>
-                  <a 
-                    href="downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc" 
-                    download="TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc" 
-                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow-sm active:scale-95 transition no-underline flex items-center gap-1.5"
+                  </button>
+                  <button
+                    type="button"
+                    onclick="ShopVietViews.modal.downloadProtectedAsset('downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc', 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc', '${escapeHTML(prodId)}')"
+                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow-sm active:scale-95 transition cursor-pointer flex items-center gap-1.5"
                   >
                     <span>Bản .doc</span>
-                  </a>
+                  </button>
                 </div>
               </div>
             ` : ''}
@@ -3192,8 +3421,6 @@ ${escapeHTML(item.template || item.prompt || "")}
       if (!isUnlocked) {
         if (window.ShopVietState && window.ShopVietState.showToast) {
           window.ShopVietState.showToast('🔒 Bạn chưa mở khóa sản phẩm này. Vui lòng mở khóa bằng Ví Xu để nhận Master Prompt!', 'warning');
-        } else {
-          alert('🔒 Bạn chưa mở khóa sản phẩm này. Vui lòng mở khóa bằng Ví Xu để nhận Master Prompt!');
         }
         this.open(productId);
         return;
@@ -3201,20 +3428,30 @@ ${escapeHTML(item.template || item.prompt || "")}
 
       let p = window.ShopVietData && Array.isArray(window.ShopVietData.products) ? window.ShopVietData.products.find(item => item.id === productId) : null;
       let prompt = p && p.unlockedPayload && p.unlockedPayload.masterPrompt ? p.unlockedPayload.masterPrompt : (p ? p.desc : '');
-      if (!prompt) prompt = "Master Prompt 3D WebGL Template - Bùi Thái Studio";
+      if (!prompt) prompt = 'Master Prompt 3D WebGL Template - Bùi Thái Studio';
+
+      const fallbackCopy = function (text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (_) {}
+        if (ta.parentNode) ta.parentNode.removeChild(ta);
+        if (window.ShopVietState && window.ShopVietState.showToast) {
+          window.ShopVietState.showToast('📋 Đã sao chép Master Prompt vào Clipboard!', 'success');
+        }
+      };
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(prompt).then(() => {
           if (window.ShopVietState && window.ShopVietState.showToast) {
             window.ShopVietState.showToast('📋 Đã sao chép Master Prompt vào Clipboard!', 'success');
-          } else {
-            alert('Đã sao chép Master Prompt!');
           }
-        }).catch(() => {
-          window.prompt('Sao chép Master Prompt:', prompt);
-        });
+        }).catch(() => fallbackCopy(prompt));
       } else {
-        window.prompt('Sao chép Master Prompt:', prompt);
+        fallbackCopy(prompt);
       }
     },
 

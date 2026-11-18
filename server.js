@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import topupsHandler from './api/topups.js';
 import sepayHandler from './api/sepay.js';
 import aiHandler from './api/ai.js';
+import downloadHandler from './api/download.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,6 +30,7 @@ function wrapHandler(handler) {
 app.all('/api/topups', wrapHandler(topupsHandler));
 app.all('/api/sepay', wrapHandler(sepayHandler));
 app.all('/api/ai', wrapHandler(aiHandler));
+app.all('/api/download', wrapHandler(downloadHandler));
 
 // Explicit root static files (matching build.cjs / vercel.json — never expose api/, lib/, .env*, server.js)
 const ROOT_STATIC_FILES = new Set([
@@ -38,8 +40,7 @@ const ROOT_STATIC_FILES = new Set([
   'icon-512.png',
   'manifest.json',
   'sw.js',
-  'cloud-db.json',
-  'MASTER_PROMPTS.md'
+  'cloud-db.json'
 ]);
 
 app.get('/', (_req, res) => {
@@ -56,8 +57,25 @@ for (const file of ROOT_STATIC_FILES) {
   });
 }
 
-// Explicit static directories
-for (const dir of ['js', 'img', 'demo', 'downloads']) {
+// Block unauthenticated direct static access to paid downloads & Master Prompts
+app.use('/downloads', (_req, res) => {
+  return res.status(403).json({
+    ok: false,
+    code: 'protected_asset',
+    message: 'Vui lòng mở khóa bằng Ví Xu và tải qua /api/download'
+  });
+});
+
+app.get('/MASTER_PROMPTS.md', (_req, res) => {
+  return res.status(403).json({
+    ok: false,
+    code: 'protected_asset',
+    message: 'Vui lòng mở khóa gói All-In-One bằng Ví Xu và tải qua /api/download'
+  });
+});
+
+// Explicit static directories (paid downloads/ are served exclusively via /api/download)
+for (const dir of ['js', 'img', 'demo']) {
   const dirPath = path.join(__dirname, dir);
   if (fs.existsSync(dirPath)) {
     app.use(`/${dir}`, express.static(dirPath));

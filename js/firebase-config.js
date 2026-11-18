@@ -511,6 +511,9 @@
      * Kéo danh sách Yêu cầu Nạp Xu từ Firestore (REST API + SDK)
      */
     fetchTopupsFromCloud: async function (force = false) {
+      if (this.isQuotaExceeded) {
+        return [];
+      }
       if (typeof window !== 'undefined' && window._firestoreQuotaBlockedUntil && Date.now() < window._firestoreQuotaBlockedUntil) {
         return [];
       }
@@ -520,6 +523,9 @@
         return this._topupsCache.list.slice();
       }
       this.init();
+      if (!this.auth || !this.auth.currentUser) {
+        return [];
+      }
       const map = new Map();
 
       // 1. Kéo trực tiếp từ REST API databases/default/documents/topups (Zero-Cache)

@@ -230,7 +230,7 @@
     if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
       window.ShopVietState.showToast(msg, type);
     } else {
-      alert(msg);
+      console.log('[Admin]', msg);
     }
   }
 
@@ -1294,7 +1294,7 @@
               <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">1. URL Webhook (Dán vào SePay.vn)</span>
               <div class="flex items-center gap-2">
                 <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-emerald-700 dark:text-emerald-300 flex-1 break-all select-all">${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay</code>
-                <button type="button" onclick="navigator.clipboard.writeText('${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay'); alert('Đã sao chép URL Webhook SePay!');" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] cursor-pointer shrink-0">Copy</button>
+                <button type="button" onclick="navigator.clipboard.writeText('${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay'); window.ShopVietState && window.ShopVietState.showToast && window.ShopVietState.showToast('Đã sao chép URL Webhook SePay!', 'success');" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] cursor-pointer shrink-0">Copy</button>
               </div>
               <p class="text-[11px] text-slate-500">Vào SePay.vn &rarr; Webhooks &rarr; Thêm Webhook &rarr; Dán URL trên và chọn Sự kiện: <em>Giao dịch chuyển tiền vào</em>.</p>
             </div>
@@ -4308,23 +4308,21 @@
     // 18. Lưu cấu hình VietQR
     testSepayWebhook: async function () {
       try {
-        const origin = window.location.origin || "https://www.promptmmo.store";
-        const res = await fetch(origin + "/api/sepay", { method: "GET", headers: { Accept: "application/json" } });
+        const origin = window.location.origin || 'https://www.promptmmo.store';
+        const res = await fetch(origin + '/api/sepay', { method: 'GET', headers: { Accept: 'application/json' } });
         const data = await res.json().catch(() => null);
         if (!res.ok || !data || !data.ok) {
-          alert("❌ Không đọc được cấu hình webhook SePay (HTTP " + res.status + ").");
+          notify('Không đọc được cấu hình webhook SePay (HTTP ' + res.status + ').', 'error');
           return;
         }
-        alert([
-          "Webhook: " + origin + "/api/sepay",
-          "API Key webhook: " + (data.webhookSecretConfigured ? "✅ đã cấu hình" : "❌ CHƯA cấu hình SEPAY_WEBHOOK_SECRET"),
-          "Ghi ví trên server: " + (data.walletWritesConfigured ? "✅ đã cấu hình" : "❌ CHƯA cấu hình FIREBASE_SERVICE_ACCOUNT"),
-          "Mã nạp: " + (data.memoFormat || "NAPXU + 8 ký tự"),
-          "",
-          "Để test thật: vào SePay → Webhooks → chọn webhook này → bấm Gửi thử (Test)."
-        ].join("\n"));
+        const statusMsg = [
+          'Webhook: ' + origin + '/api/sepay',
+          'Secret: ' + (data.webhookSecretConfigured ? 'OK' : 'Thiếu SEPAY_WEBHOOK_SECRET'),
+          'Wallet: ' + (data.walletWritesConfigured ? 'OK' : 'Thiếu FIREBASE_SERVICE_ACCOUNT')
+        ].join(' · ');
+        notify(statusMsg, data.webhookSecretConfigured && data.walletWritesConfigured ? 'success' : 'warning');
       } catch (err) {
-        alert("❌ Lỗi kết nối /api/sepay: " + err.message);
+        notify('Lỗi kết nối /api/sepay: ' + (err && err.message ? err.message : 'Unknown'), 'error');
       }
     },
 
@@ -5686,9 +5684,24 @@
       });
     }
 
+    function isAdminWatcherAllowed() {
+      const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) ||
+                          (window.ShopVietState && window.ShopVietState.currentUser);
+      const email = currentUser && currentUser.email ? String(currentUser.email).trim().toLowerCase() : '';
+      const isUserAdmin = Boolean(currentUser && currentUser.isLoggedIn && (email === 'thaitraicau123@gmail.com' || currentUser.role === 'admin'));
+      const isPortalActive = Boolean(
+        (window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen) ||
+        document.getElementById('adminPortalModal') ||
+        (document.getElementById('adminMount') && document.getElementById('adminMount').children.length > 0) ||
+        (typeof isAuthenticated === 'function' && isAuthenticated())
+      );
+      return isUserAdmin || isPortalActive;
+    }
+
     // Helper kiểm tra yêu cầu nạp xu mới và phát chuông cảnh báo cho Admin
     let lastPendingTopupSignature = '';
     function handleTopupsRealtimeUI(topups) {
+      if (!isAdminWatcherAllowed()) return;
       const isBannedUser = (email) => (window.ShopVietState && window.ShopVietState.isUserBanned && window.ShopVietState.isUserBanned(email)) || String(email || '').trim().toLowerCase() === 'thaihoa27492@gmail.com';
       const list = (Array.isArray(topups) ? topups : []).filter(t => t && !isBannedUser(t.userEmail));
       const pendingList = list.filter(t => t && t.status === 'pending_approval');
@@ -5758,9 +5771,10 @@
       }
     }
 
-    // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ Firestore Cloud)
+    // 1. Quét định kỳ khi Admin đang mở app hoặc đã đăng nhập Admin
     setInterval(function () {
       if (typeof document !== 'undefined' && document.hidden) return;
+      if (!isAdminWatcherAllowed()) return;
       checkPendingReviewOrders();
       if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
         window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
@@ -5769,12 +5783,16 @@
       }
     }, 60000);
 
-    // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
+    // 2. Lắng nghe Firestore Realtime onSnapshot nếu đang ở phiên Admin
+    let firestoreAdminListenerAttached = false;
     function setupFirestoreOrderListener() {
+      if (firestoreAdminListenerAttached || !isAdminWatcherAllowed()) return;
+      firestoreAdminListenerAttached = true;
       try {
         if (window.ShopVietFirebase && window.ShopVietFirebase.db && typeof window.ShopVietFirebase.db.collection === 'function') {
           window.ShopVietFirebase.db.collection('orders').where('status', '==', 'pending_review')
             .onSnapshot(function (snapshot) {
+              if (!isAdminWatcherAllowed()) return;
               snapshot.docChanges().forEach(function (change) {
                 if (change.type === 'added' || change.type === 'modified') {
                   const ord = change.doc.data();
@@ -5787,6 +5805,7 @@
         }
         if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToTopups === 'function') {
           window.ShopVietFirebase.listenToTopups(function () {
+            if (!isAdminWatcherAllowed()) return;
             if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
               window.ShopVietState.syncTopupsFromCloud(true).then(handleTopupsRealtimeUI).catch(function () {});
             }
@@ -5794,7 +5813,7 @@
         }
         if (window.ShopVietState && typeof window.ShopVietState.subscribe === 'function') {
           window.ShopVietState.subscribe(function (event, data) {
-            if (event === 'topups_updated') {
+            if (event === 'topups_updated' && isAdminWatcherAllowed()) {
               handleTopupsRealtimeUI(data);
             }
           });
@@ -5802,6 +5821,13 @@
       } catch (e) {
         console.warn('[AdminWatcher] Firestore setup warning:', e);
       }
+    }
+    if (window.ShopVietState && typeof window.ShopVietState.subscribe === 'function') {
+      window.ShopVietState.subscribe(function (event) {
+        if ((event === 'user_login' || event === 'user_updated') && isAdminWatcherAllowed()) {
+          setupFirestoreOrderListener();
+        }
+      });
     }
     setTimeout(setupFirestoreOrderListener, 1200);
 

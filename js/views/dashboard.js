@@ -925,8 +925,9 @@
                         <div class="font-semibold text-slate-900 dark:text-white truncate" title="${order.productName}">
                           ${order.productName}
                         </div>
-                        <div class="text-[11px] text-slate-400 truncate mt-0.5">
-                          ${order.deliveryInfo && order.deliveryInfo.account ? order.deliveryInfo.account : order.userEmail}
+                        <div class="flex items-center gap-2 mt-0.5 text-[11px] text-slate-400 truncate">
+                          <span class="truncate">${order.deliveryInfo && order.deliveryInfo.account ? order.deliveryInfo.account : order.userEmail}</span>
+                          ${order.status === 'completed' ? `<span class="shrink-0 font-mono text-[10px] text-[#0071E3] dark:text-[#3B9EFF]">· v1.0.4</span>` : ''}
                         </div>
                       </td>
                       <td class="py-3.5 px-4 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap tabular-nums">
@@ -953,10 +954,22 @@
                         `}
                       </td>
                       <td class="py-3.5 px-4 sm:px-5 text-right whitespace-nowrap">
-                        <button type="button" data-order-id="${order.id}" class="view-order-detail-btn inline-flex items-center gap-1.5 text-xs font-bold ${order.isExpired ? 'text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300' : 'text-white bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] shadow-sm active:scale-95'} px-3.5 py-1.5 rounded-lg transition-all cursor-pointer">
-                          <span>${order.isExpired ? 'Biên nhận' : 'Xem & Dùng'}</span>
-                          <span>→</span>
-                        </button>
+                        <div class="inline-flex items-center justify-end gap-1.5">
+                          ${(() => {
+                            if (order.status !== 'completed' || order.isExpired) return '';
+                            const prodObj = (window.ShopVietData && typeof window.ShopVietData.getProductById === 'function')
+                              ? window.ShopVietData.getProductById(order.productId)
+                              : null;
+                            const dlUrl = (prodObj && prodObj.downloadUrl) || (order.unlockedPayload && order.unlockedPayload.downloadUrl) || '';
+                            const dlName = (prodObj && prodObj.zipFileName) || (order.unlockedPayload && order.unlockedPayload.zipFileName) || '';
+                            if (!dlUrl) return '';
+                            return `<button type="button" onclick="ShopVietViews.modal && ShopVietViews.modal.downloadProtectedAsset && ShopVietViews.modal.downloadProtectedAsset('${dlUrl}', '${dlName}', '${order.productId || ''}')" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2.5 py-1.5 rounded-lg transition cursor-pointer"><span>⬇ ZIP</span></button>`;
+                          })()}
+                          <button type="button" data-order-id="${order.id}" class="view-order-detail-btn inline-flex items-center gap-1.5 text-xs font-bold ${order.isExpired ? 'text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300' : 'text-white bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] shadow-sm active:scale-95'} px-3.5 py-1.5 rounded-lg transition-all cursor-pointer">
+                            <span>${order.isExpired ? 'Biên nhận' : 'Xem & Dùng'}</span>
+                            <span>→</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   `;
@@ -980,7 +993,10 @@
     // TAB 4: GIỚI THIỆU BẠN BÈ (REFERRAL)
     // ==========================================
     renderReferralTab: function (user) {
-      const referralLink = `https://thaitraicau123-web.github.io/shoppromt/?ref=MC2026`;
+      const emailPrefix = String((user && user.email) || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8);
+      const refCode = emailPrefix ? ('BT' + emailPrefix) : 'OPENDESIGN20';
+      const siteOrigin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://www.promptmmo.store';
+      const referralLink = `${siteOrigin}/?ref=${encodeURIComponent(refCode)}`;
 
       return `
         <!-- Header Giới thiệu bạn bè -->
@@ -1017,7 +1033,7 @@
           </div>
 
           <p class="text-xs text-slate-500 dark:text-slate-400">
-            Mã giới thiệu của bạn: <strong class="font-mono text-[#0071E3] dark:text-[#3B9EFF] text-sm">MC2026</strong> · Nhận thưởng ngay khi người được giới thiệu thanh toán đơn hàng đầu tiên.
+            Mã giới thiệu của bạn: <strong class="font-mono text-[#0071E3] dark:text-[#3B9EFF] text-sm">${refCode}</strong> · Nhận thưởng ngay khi người được giới thiệu thanh toán đơn hàng đầu tiên.
           </p>
         </div>
 
