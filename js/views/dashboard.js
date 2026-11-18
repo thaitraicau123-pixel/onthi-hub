@@ -50,7 +50,7 @@
         licenseKey: 'HAUTE-COUTURE-WEB-MASTER-2026',
         note: 'Hộp Công Cụ Master Prompt chuẩn Haute-Couture Web, Song Font Be Vietnam Pro, Apple Liquid Glass và Emil Kowalski Motion 60fps.',
         warranty: 'Bản quyền & Hỗ trợ trọn đời',
-        guide: '1. Bấm nút 📋 1-Click Copy Master Prompt\n2. Dán vào Custom Instructions của ChatGPT/Claude/Cursor\n3. Chọn câu lệnh Cheat Sheet để bắt đầu tác chiến.'
+        guide: '1. Bấm nút 1-Click Copy Master Prompt\n2. Dán vào Custom Instructions của ChatGPT/Claude/Cursor\n3. Chọn câu lệnh Cheat Sheet để bắt đầu tác chiến.'
       }
     },
     {
@@ -321,8 +321,8 @@
             <!-- ================= a. SIDEBAR BÊN TRÁI ================= -->
             <aside class="lg:col-span-4 xl:col-span-3 space-y-4">
               
-              <div class="bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col items-center text-center">
-                <div id="sidebarUserAvatar" class="w-14 h-14 rounded-full bg-gradient-to-tr from-[#090B10] to-[#0071E3] text-white font-black flex items-center justify-center text-xl shadow-md select-none border-2 border-white dark:border-slate-800">
+              <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs flex flex-col items-center text-center">
+                <div id="sidebarUserAvatar" class="w-14 h-14 rounded-full bg-[#0071E3] text-white font-black flex items-center justify-center text-xl shadow-xs select-none border-2 border-white dark:border-slate-800">
                   ${(user.avatar && user.avatar.length <= 2) ? user.avatar.toUpperCase() : ((user.name || 'C').trim().charAt(0).toUpperCase())}
                 </div>
                 <h2 id="sidebarUserName" class="text-base font-bold text-slate-900 dark:text-white mt-2.5 truncate max-w-[200px]">
@@ -336,7 +336,7 @@
                 </p>
               </div>
 
-              <nav class="bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-2xl p-2.5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-1 text-sm font-medium">
+              <nav class="bg-white dark:bg-[#111520] rounded-xl p-2.5 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-1 text-sm font-medium">
                 <button type="button" data-tab="overview" id="tabBtn-overview" class="dashboard-tab-btn w-full ${activeTab === 'overview' ? 'bg-blue-50/90 dark:bg-slate-800 text-[#0071E3] dark:text-[#3B9EFF] font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'} rounded-xl px-4 py-2.5 flex items-center justify-between transition-all text-left cursor-pointer">
                   <div class="flex items-center gap-3">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -406,8 +406,8 @@
           </div>
 
           <!-- ================= MODAL XEM CHI TIẾT ĐƠN HÀNG & LICENSE KEY ================= -->
-          <div id="orderDetailModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
-            <div class="bg-white/90 dark:bg-[#0B0F17]/92 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-slide-up relative">
+          <div id="orderDetailModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4 animate-slide-up relative">
               
               <div class="flex items-start justify-between">
                 <div>
@@ -428,7 +428,7 @@
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">Thông tin bàn giao bản quyền</span>
                   <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                    ● Bảo hành 1 đổi 1
+                    Bảo hành 1 đổi 1
                   </span>
                 </div>
 
@@ -442,7 +442,7 @@
                     <span>Đang chờ Admin phê duyệt giao dịch</span>
                   </div>
                   <p class="text-[11px] leading-relaxed text-slate-600 dark:text-slate-300 pl-6">
-                    Đơn hàng của bạn đang được Ban quản trị đối soát giao dịch MBBank và chuẩn bị bàn giao đường link bản quyền riêng. Vui lòng quay lại sau ít phút!
+                    Đơn hàng của bạn đang được Ban quản trị đối soát giao dịch MBBank và chuẩn bị bàn giao đường link bản quyền riêng. Vui lòng quay lại sau ít phút.
                   </p>
                 </div>
 
@@ -498,8 +498,8 @@
           </div>
 
           <!-- ================= MODAL NẠP TIỀN VIETQR MBBANK ================= -->
-          <div id="vietQrModal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
-            <div class="bg-white/90 dark:bg-[#0B0F17]/92 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-slide-up relative">
+          <div id="vietQrModal" class="hidden fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 animate-slide-up relative">
               
               <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800/80">
                 <div>
@@ -558,7 +558,7 @@
                 </svg>
                 <div class="leading-relaxed">
                   <span class="font-bold text-slate-900 dark:text-white">Lưu ý lịch duyệt tiền xu:</span>
-                  Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái vướng lịch học & công tác nên có thể duyệt muộn hơn bình thường một chút. Các ngày còn lại duyệt siêu tốc trong 3-5 phút! Mọi giao dịch chuyển khoản đều được bảo đảm khớp lệnh 100%.
+                  Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái vướng lịch học & công tác nên có thể duyệt muộn hơn bình thường một chút. Các ngày còn lại duyệt siêu tốc trong 3-5 phút. Mọi giao dịch chuyển khoản đều được bảo đảm khớp lệnh 100%.
                 </div>
               </div>
 
@@ -631,7 +631,7 @@
               Tổng quan tài khoản
             </h1>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Chào mừng trở lại, <span class="font-semibold text-slate-800 dark:text-slate-200">${user.name || 'Bùi Thái'}</span>! Quản lý đơn hàng và mã kích hoạt tự động.
+              Tài khoản <span class="font-semibold text-slate-800 dark:text-slate-200">${user.name || 'Bùi Thái'}</span> · Quản lý đơn hàng và mã kích hoạt tự động.
             </p>
           </div>
 
@@ -652,7 +652,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           
           <!-- Thẻ 1: Trạng thái tài khoản -->
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-emerald-300/80 dark:hover:border-emerald-700/70 transition-all">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs relative overflow-hidden group hover:border-emerald-300/80 dark:hover:border-emerald-700/70 transition-all">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Trạng thái tài khoản
@@ -673,7 +673,7 @@
           </div>
 
           <!-- Thẻ 2: Đơn hàng đã mua -->
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-[#0071E3]/50 dark:hover:border-[#3B9EFF]/50 transition-all">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs relative overflow-hidden group hover:border-[#0071E3]/50 dark:hover:border-[#3B9EFF]/50 transition-all">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Đơn hàng đã mua
@@ -695,7 +695,7 @@
           </div>
 
           <!-- Thẻ 3: Đang chờ thanh toán -->
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm relative overflow-hidden group hover:border-[#0071E3]/50 dark:hover:border-[#3B9EFF]/50 transition-all">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs relative overflow-hidden group hover:border-[#0071E3]/50 dark:hover:border-[#3B9EFF]/50 transition-all">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                 Đang chờ thanh toán
@@ -718,7 +718,7 @@
         </div>
 
         <!-- Bảng Đơn hàng gần đây -->
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
           
           <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
             <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -793,10 +793,10 @@
                           </span>
                         ` : (order.status === 'pending' || order.status === 'pending_payment') ? `
                           <span class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">
-                            ● Chờ thanh toán
+                            Chờ thanh toán
                           </span>
                         ` : `
-                          <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓ Hoàn tất</span>
+                          <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Hoàn tất</span></span>
                         `}
                       </td>
                       <td class="py-3.5 px-4 sm:px-5 text-right whitespace-nowrap">
@@ -888,7 +888,7 @@
         </div>
 
         <!-- Bảng danh sách đơn hàng chi tiết -->
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="bg-slate-50/80 dark:bg-[#090B10]/70 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200/80 dark:border-slate-800/80">
@@ -911,7 +911,7 @@
                           <path d="M3 6h18" />
                           <path d="M16 10a4 4 0 0 1-8 0" />
                         </svg>
-                        <p class="text-sm">Không tìm thấy đơn hàng nào phù hợp!</p>
+                        <p class="text-sm">Không tìm thấy đơn hàng nào phù hợp</p>
                       </div>
                     </td>
                   </tr>
@@ -947,10 +947,10 @@
                           </span>
                         ` : (order.status === 'pending' || order.status === 'pending_payment') ? `
                           <span class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">
-                            ● Chờ thanh toán
+                            Chờ thanh toán
                           </span>
                         ` : `
-                          <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">✓ Mở khóa vĩnh viễn</span>
+                          <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Mở khóa vĩnh viễn</span></span>
                         `}
                       </td>
                       <td class="py-3.5 px-4 sm:px-5 text-right whitespace-nowrap">
@@ -963,7 +963,7 @@
                             const dlUrl = (prodObj && prodObj.downloadUrl) || (order.unlockedPayload && order.unlockedPayload.downloadUrl) || '';
                             const dlName = (prodObj && prodObj.zipFileName) || (order.unlockedPayload && order.unlockedPayload.zipFileName) || '';
                             if (!dlUrl) return '';
-                            return `<button type="button" onclick="ShopVietViews.modal && ShopVietViews.modal.downloadProtectedAsset && ShopVietViews.modal.downloadProtectedAsset('${dlUrl}', '${dlName}', '${order.productId || ''}')" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2.5 py-1.5 rounded-lg transition cursor-pointer"><span>⬇ ZIP</span></button>`;
+                            return `<button type="button" onclick="ShopVietViews.modal && ShopVietViews.modal.downloadProtectedAsset && ShopVietViews.modal.downloadProtectedAsset('${dlUrl}', '${dlName}', '${order.productId || ''}')" class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2.5 py-1.5 rounded-lg transition cursor-pointer"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg><span>ZIP</span></button>`;
                           })()}
                           <button type="button" data-order-id="${order.id}" class="view-order-detail-btn inline-flex items-center gap-1.5 text-xs font-bold ${order.isExpired ? 'text-slate-600 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300' : 'text-white bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] shadow-sm active:scale-95'} px-3.5 py-1.5 rounded-lg transition-all cursor-pointer">
                             <span>${order.isExpired ? 'Biên nhận' : 'Xem & Dùng'}</span>
@@ -1010,7 +1010,7 @@
         </div>
 
         <!-- Khung link giới thiệu chuyên nghiệp -->
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+        <div class="bg-white dark:bg-[#111520] p-6 rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
           <div class="flex items-center gap-2 text-[#0071E3] dark:text-[#3B9EFF] font-bold text-sm">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
@@ -1040,19 +1040,19 @@
         <!-- 3 Thẻ Thống Kê Giới Thiệu -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 tabular-nums">
           
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
             <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Số lượt click</span>
             <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">142</div>
             <p class="text-xs text-slate-400 mt-1">Lượt truy cập qua link của bạn</p>
           </div>
 
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
             <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Bạn bè đã đăng ký</span>
             <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">3</div>
             <p class="text-xs text-slate-400 mt-1">Tài khoản đã tạo thành công</p>
           </div>
 
-          <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
             <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Hoa hồng tích lũy</span>
             <div class="text-3xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] mt-2">150.000đ</div>
             <p class="text-xs text-slate-400 mt-1">Đã tích lũy vào tài khoản</p>
@@ -1061,7 +1061,7 @@
         </div>
 
         <!-- Chính sách nhận thưởng 3 bước -->
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+        <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
           <h3 class="text-base font-bold text-slate-900 dark:text-white">
             Quy trình nhận thưởng 3 bước đơn giản:
           </h3>
@@ -1107,7 +1107,7 @@
         </div>
 
         <!-- Form Đổi Mật Khẩu -->
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+        <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
           <div class="flex items-center gap-2">
             <span class="w-8 h-8 rounded-lg bg-blue-500/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1166,7 +1166,7 @@
           </p>
         </div>
 
-        <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-6">
+        <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-6">
           
           <!-- Avatar Selector -->
           <div class="flex flex-col sm:flex-row items-center gap-5 pb-6 border-b border-slate-200/70 dark:border-slate-800/80">
@@ -1254,7 +1254,7 @@
               window.ShopVietState.state.user.isLoggedIn = false;
             }
             window.ShopVietState.save();
-            window.ShopVietState.showToast('Bạn đã đăng xuất tài khoản an toàn!', 'info');
+            window.ShopVietState.showToast('Bạn đã đăng xuất tài khoản an toàn', 'info');
             window.ShopVietState.navigate('home');
           }
         });
@@ -1423,7 +1423,7 @@
       if (copyBtn && linkInput) {
         copyBtn.addEventListener('click', () => {
           navigator.clipboard.writeText(linkInput.value.trim());
-          window.ShopVietState.showToast('Đã sao chép link giới thiệu của bạn! Hãy gửi cho bạn bè để cùng nhận ưu đãi.', 'success');
+          window.ShopVietState.showToast('Đã sao chép link giới thiệu của bạn. Hãy gửi cho bạn bè để cùng nhận ưu đãi.', 'success');
         });
       }
     },
@@ -1442,12 +1442,12 @@
           const confirmPass = document.getElementById('confirmNewPasswordInput').value;
 
           if (newPass.length < 6) {
-            window.ShopVietState.showToast('Mật khẩu mới phải có tối thiểu 6 ký tự!', 'warning');
+            window.ShopVietState.showToast('Mật khẩu mới phải có tối thiểu 6 ký tự', 'warning');
             return;
           }
 
           if (newPass !== confirmPass) {
-            window.ShopVietState.showToast('Mật khẩu xác nhận không khớp với mật khẩu mới!', 'error');
+            window.ShopVietState.showToast('Mật khẩu xác nhận không khớp với mật khẩu mới', 'error');
             return;
           }
 
@@ -1466,7 +1466,7 @@
             localStorage.setItem(CLOUD_USERS_KEY, JSON.stringify(users));
           } catch (err) {}
 
-          window.ShopVietState.showToast('Cập nhật mật khẩu tài khoản thành công! Hãy ghi nhớ mật khẩu mới.', 'success');
+          window.ShopVietState.showToast('Cập nhật mật khẩu tài khoản thành công. Hãy ghi nhớ mật khẩu mới.', 'success');
           form.reset();
         });
       }
@@ -1507,7 +1507,7 @@
           const newPhone = phoneInput ? phoneInput.value.trim() : user.phone;
 
           if (!newName) {
-            window.ShopVietState.showToast('Vui lòng nhập Họ và tên của bạn!', 'warning');
+            window.ShopVietState.showToast('Vui lòng nhập Họ và tên của bạn', 'warning');
             return;
           }
 
@@ -1538,7 +1538,7 @@
           }
           window.ShopVietState.notify('user_login', window.ShopVietState.state.user);
 
-          window.ShopVietState.showToast('Cập nhật hồ sơ cá nhân thành công!', 'success');
+          window.ShopVietState.showToast('Cập nhật hồ sơ cá nhân thành công', 'success');
         });
       }
     },
@@ -1655,7 +1655,8 @@
                 modalOrderWaitingNotice.innerHTML = `
                   <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-xs flex items-center justify-between gap-2">
                     <div class="flex items-center gap-1.5 font-bold">
-                      <span>✓ Bản quyền vĩnh viễn · Mở khóa trọn đời</span>
+                      <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                      <span>Bản quyền vĩnh viễn · Mở khóa trọn đời</span>
                     </div>
                     <span class="text-[11px] font-semibold">Đã mở khóa</span>
                   </div>
@@ -1692,7 +1693,7 @@
                       <span class="text-xs tracking-tight">Lời nhắn từ Admin Bùi Thái:</span>
                     </div>
                     <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      ● Chính chủ
+                      Chính chủ
                     </span>
                   </div>
                   <div class="p-2.5 rounded-xl bg-white/90 dark:bg-[#0B0F17]/90 border border-slate-200/80 dark:border-slate-800/80 shadow-xs mb-2">
@@ -1738,7 +1739,7 @@
           const el = document.getElementById('modalOrderAccount');
           if (el) {
             navigator.clipboard.writeText(el.textContent.trim());
-            window.ShopVietState.showToast('Đã sao chép Email tài khoản!', 'success');
+            window.ShopVietState.showToast('Đã sao chép Email tài khoản', 'success');
           }
         });
       }
@@ -1749,7 +1750,7 @@
           const el = document.getElementById('modalOrderKey');
           if (el) {
             navigator.clipboard.writeText(el.textContent.trim());
-            window.ShopVietState.showToast('Đã sao chép License Key thành công!', 'success');
+            window.ShopVietState.showToast('Đã sao chép License Key thành công', 'success');
           }
         });
       }
@@ -1875,7 +1876,7 @@
       const vietQrModal = document.getElementById('vietQrModal');
       if (vietQrModal) vietQrModal.classList.add('hidden');
 
-      window.ShopVietState.showToast(`Đã gửi yêu cầu nạp +${amount.toLocaleString('vi-VN')} Xu lên Firebase! Admin Bùi Thái đã nhận được thông báo ntfy và sẽ duyệt ngay cho bạn.`, 'success');
+      window.ShopVietState.showToast(`Đã gửi yêu cầu nạp +${amount.toLocaleString('vi-VN')} Xu lên Firebase. Admin Bùi Thái đã nhận được thông báo và sẽ duyệt ngay.`, 'success');
 
       // Cập nhật tab nếu đang ở overview
       if (activeTab === 'overview') {

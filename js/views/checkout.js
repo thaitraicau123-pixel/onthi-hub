@@ -183,7 +183,7 @@
       warning: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`
     };
 
-    toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-4 opacity-0 ${bgColors[type] || bgColors.info}`;
+    toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl border border-slate-900/10 dark:border-white/10 shadow-xl transition-all duration-200 transform translate-y-4 opacity-0 ${bgColors[type] || bgColors.info}`;
     toast.innerHTML = `
       <div class="flex-shrink-0">${icons[type] || icons.info}</div>
       <div class="text-sm font-medium pr-2">${message}</div>
@@ -202,7 +202,7 @@
   }
 
   // Copy to clipboard helper
-  function copyTextToClipboard(text, btnElement, successMsg = 'Đã chép!') {
+  function copyTextToClipboard(text, btnElement, successMsg = 'Đã chép') {
     if (!navigator.clipboard) {
       const textarea = document.createElement('textarea');
       textarea.value = text;
@@ -374,8 +374,8 @@
         return cart
           .map(
             (item, index) => `
-          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b border-slate-200/70 dark:border-slate-800/80 last:border-0" data-item-id="${item.id}">
-            <div class="flex items-center gap-3.5 flex-1 min-w-0">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4 border-b border-slate-200/70 dark:border-slate-800/80 last:border-0 w-full min-w-0" data-item-id="${item.id}">
+            <div class="flex items-center gap-3.5 w-full sm:w-auto sm:flex-1 min-w-0">
               <img src="${item.image || DEFAULT_THUMB_SVG}" alt="${item.name}" 
                    class="w-16 h-16 rounded-xl object-cover border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex-shrink-0"
                    onerror="this.src='${DEFAULT_THUMB_SVG}'" />
@@ -384,7 +384,7 @@
                 <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                   <span>Phân loại: <strong class="text-slate-700 dark:text-slate-300 font-medium">${item.variant || 'Mặc định'}</strong></span>
                   <span aria-hidden="true">·</span>
-                  <span class="text-emerald-600 dark:text-emerald-400 font-medium">● Mở khóa tức thì · Vĩnh viễn</span>
+                  <span class="text-emerald-600 dark:text-emerald-400 font-medium">Mở khóa tức thì · Vĩnh viễn</span>
                 </div>
                 <div class="mt-1.5 flex items-baseline gap-2 tabular-nums">
                   <span class="text-base font-bold text-slate-900 dark:text-white">${formatMoney(item.price)}đ</span>
@@ -469,7 +469,7 @@
       const bankCodeBadge = bankShort.toUpperCase().includes('MB') ? 'MB' : 'TCB';
 
       const html = `
-        <div class="checkout-view-wrapper min-h-screen bg-[#F5F7FA] dark:bg-[#090B10] py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
+        <div class="checkout-view-wrapper min-h-screen bg-[#F7F8FA] dark:bg-[#090B10] py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
           <div class="max-w-6xl mx-auto space-y-8">
             
             <!-- THANH TIẾN TRÌNH (STEPPER) NGANG CĂN GIỮA -->
@@ -499,7 +499,7 @@
               <div class="lg:col-span-7 space-y-6">
                 
                 <!-- Card Sản phẩm -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs">
                   <div class="flex items-center justify-between pb-4 border-b border-slate-200/70 dark:border-slate-800/80 mb-4">
                     <div class="flex items-center gap-2.5">
                       <svg class="w-5 h-5 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -519,7 +519,7 @@
                 </div>
 
                 <!-- Card Mã giảm giá -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs">
                   <div class="flex items-center gap-2 mb-3">
                     <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="currentColor" viewBox="0 0 20 20">
                       <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0115 5v1.077a3 3 0 011.584 2.617l.832 3.99A3 3 0 0114.478 16H5.522a3 3 0 01-2.938-3.316l.832-3.99A3 3 0 015 6.077V5zm3.707 4.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L11 10.586l-1.293-1.293z" clip-rule="evenodd"/>
@@ -560,7 +560,7 @@
 
               <!-- CỘT PHẢI (5 COLS): CARD TẠO ĐƠN HÀNG -->
               <div class="lg:col-span-5 space-y-6">
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-5">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-5">
                   <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800/80">
                     <h3 class="text-lg font-bold text-slate-900 dark:text-white">Tạo đơn hàng</h3>
                     <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold tracking-wider">NAPAS 24/7 LIVE</span>
@@ -710,7 +710,7 @@
               voucherStatus.className = 'mt-3 text-xs text-rose-700 bg-rose-50 p-2 rounded-lg flex items-center gap-1.5 border border-rose-200';
               voucherStatus.innerHTML = `
                 <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                <span>Mã giảm giá không tồn tại hoặc đã hết hạn!</span>
+                <span>Mã giảm giá không tồn tại hoặc đã hết hạn</span>
               `;
               voucherStatus.classList.remove('hidden');
             }
@@ -738,7 +738,7 @@
         proceedBtn.onclick = () => {
           const cart = window.ShopVietState.cart || [];
           if (cart.length === 0) {
-            showToast('Giỏ hàng trống! Vui lòng chọn sản phẩm.', 'error');
+            showToast('Giỏ hàng trống. Vui lòng chọn sản phẩm.', 'error');
             return;
           }
 
@@ -780,7 +780,7 @@
           };
 
           window.ShopVietState.currentOrder = newOrder;
-          showToast(`Đã tạo đơn hàng ${orderId}! Đang chuyển sang màn hình quét mã VietQR Techcombank...`, 'success');
+          showToast(`Đã tạo đơn hàng ${orderId}. Đang chuyển sang màn hình quét mã VietQR Techcombank...`, 'success');
 
           // Chuyển sang màn hình 2: Quét mã VietQR Techcombank
           setTimeout(() => {
@@ -858,11 +858,11 @@
       const vietQrUrl = `https://api.vietqr.io/image/${bankBin}-${bankAccountNum}-compact2.jpg?amount=${order.amount}&addInfo=${encodeURIComponent(order.memo)}&accountName=${encodeURIComponent(bankAccountHolder)}`;
 
       const html = `
-        <div class="pay-view-wrapper min-h-screen bg-[#F5F7FA] dark:bg-[#090B10] py-6 sm:py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
+        <div class="pay-view-wrapper min-h-screen bg-[#F7F8FA] dark:bg-[#090B10] py-6 sm:py-8 px-4 sm:px-6 lg:px-8 font-sans text-slate-800 dark:text-slate-200 transition-colors">
           <div class="max-w-6xl mx-auto space-y-6">
 
             <!-- HEADER: "Thanh toán Plus", Nút Đổi gói, Đếm ngược thời gian, Mã đơn -->
-            <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="bg-white dark:bg-[#111520] rounded-xl p-5 sm:p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div class="flex items-center gap-3.5">
                 <div class="w-12 h-12 rounded-2xl bg-[#0071E3] dark:bg-[#3B9EFF] text-white flex items-center justify-center shadow-md shadow-blue-900/20 flex-shrink-0">
                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -917,12 +917,12 @@
               <div class="lg:col-span-5 space-y-5">
                 
                 <!-- KHUNG CHÍNH QR VIETQR -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm flex flex-col items-center relative overflow-hidden">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs flex flex-col items-center relative overflow-hidden">
                   
                   <!-- Header "VietQR Chuẩn Napas 24/7 Tự Động" -->
                   <div class="w-full flex items-center justify-between pb-4 mb-4 border-b border-slate-200/70 dark:border-slate-800/80">
                     <div class="text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                      ● VietQR Chuẩn Napas 24/7 Tự Động
+                      VietQR Chuẩn Napas 24/7 Tự Động
                     </div>
                     <span class="text-[11px] font-mono text-slate-400 font-semibold tabular-nums">BIN ${bankBin}</span>
                   </div>
@@ -960,7 +960,7 @@
                 </div>
 
                 <!-- KHUNG "3 BƯỚC THANH TOÁN NHANH" -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-3">
                   <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -1011,10 +1011,9 @@
               <div class="lg:col-span-7 space-y-5">
                 
                 <!-- BẢNG THÔNG TIN CHUYỂN KHOẢN CHI TIẾT -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
                   <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 dark:border-slate-800/80">
                     <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
-                      <span class="w-2.5 h-2.5 rounded-full bg-[#0071E3] dark:bg-[#3B9EFF]"></span>
                       Thông tin chuyển khoản ${bankShort}
                     </h3>
                     <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sao chép nhanh 1 chạm</span>
@@ -1071,7 +1070,7 @@
                     <div class="p-4 sm:px-4 flex flex-wrap items-center justify-between gap-3 bg-blue-500/8 dark:bg-blue-950/25">
                       <div>
                         <div class="text-[#0071E3] dark:text-[#3B9EFF] font-bold text-xs sm:text-sm flex items-center gap-1.5">
-                          <span>● Nội dung chuyển khoản (Bắt buộc):</span>
+                          <span>Nội dung chuyển khoản (Bắt buộc):</span>
                         </div>
                         <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">Vui lòng ghi đúng để tự động duyệt đơn</div>
                       </div>
@@ -1094,14 +1093,14 @@
                     </svg>
                     <div class="leading-relaxed">
                       <span class="font-bold text-slate-900 dark:text-white">Lưu ý lịch duyệt đơn & tiền:</span>
-                      Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái vướng lịch học & công tác nên có thể duyệt muộn hơn bình thường một chút. Các ngày còn lại duyệt siêu tốc trong 3-5 phút! Mọi đơn hàng chuyển khoản đều được bảo đảm 100%.
+                      Vào <strong>Thứ 3, Thứ 5 và Thứ 6</strong>, do Admin Bùi Thái vướng lịch học & công tác nên có thể duyệt muộn hơn bình thường một chút. Các ngày còn lại duyệt siêu tốc trong 3-5 phút. Mọi đơn hàng chuyển khoản đều được bảo đảm 100%.
                     </div>
                   </div>
 
                   <!-- DÒNG XÁC THỰC -->
                   <div class="bg-blue-50/70 dark:bg-blue-950/25 border border-blue-200/80 dark:border-blue-800/50 rounded-xl p-3.5 text-xs text-slate-700 dark:text-slate-300 flex items-center gap-2.5 shadow-2xs">
-                    <div class="w-6 h-6 rounded-full bg-blue-500/15 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center flex-shrink-0 font-bold">
-                      ✓
+                    <div class="w-6 h-6 rounded-full bg-blue-500/15 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
                     </div>
                     <div class="leading-relaxed">
                       <strong>Xác thực người thụ hưởng:</strong> Tên hiển thị trong app ngân hàng của bạn phải là <strong class="font-bold text-[#0071E3] dark:text-[#3B9EFF] uppercase">${bankAccountHolder}</strong>.
@@ -1110,7 +1109,7 @@
                 </div>
 
                 <!-- KHUNG TẢI ẢNH CHỤP MÀN HÌNH CHUYỂN KHOẢN (UPLOAD BILL) -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-3">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-5 sm:p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-3">
                   <div class="flex items-center justify-between pb-2">
                     <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                       <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1122,7 +1121,7 @@
                   </div>
 
                   <!-- Vùng Dropzone Upload -->
-                  <div id="bill-upload-area" class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#0071E3] dark:hover:border-[#3B9EFF] bg-slate-50/60 dark:bg-[#090B10]/70 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 rounded-2xl p-5 text-center cursor-pointer transition-all">
+                  <div id="bill-upload-area" class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-[#0071E3] dark:hover:border-[#3B9EFF] bg-slate-50/60 dark:bg-[#090B10]/70 hover:bg-blue-50/30 dark:hover:bg-blue-950/20 rounded-xl p-5 text-center cursor-pointer transition-all">
                     <input type="file" id="input-bill-file" accept="image/*" class="hidden" />
                     
                     <div id="bill-empty-state" class="space-y-2">
@@ -1143,7 +1142,7 @@
                         <img id="bill-preview-img" src="" alt="Biên lai" class="w-14 h-14 object-cover rounded-xl border border-slate-200 dark:border-slate-700 shadow-xs" />
                         <div class="text-left">
                           <div id="bill-filename" class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate max-w-[200px]">bienlai.png</div>
-                          <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">✓ Đã đính kèm ảnh xác thực</div>
+                          <div class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><span>Đã đính kèm ảnh xác thực</span></div>
                         </div>
                       </div>
                       <button type="button" id="btn-remove-bill" class="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-500/10 transition cursor-pointer">
@@ -1154,7 +1153,7 @@
                 </div>
 
                 <!-- STEPPER 3 BƯỚC TIẾN TRÌNH: 1. Quét mã & chuyển -> 2. Kiểm tra giao dịch -> 3. Kích hoạt -->
-                <div class="bg-white/85 dark:bg-[#0B0F17]/88 backdrop-blur-2xl rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4">
+                <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
                   <div class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tiến trình thanh toán</div>
                   
                   <div class="grid grid-cols-3 gap-2 text-center text-xs tabular-nums">
@@ -1179,7 +1178,6 @@
 
                   <!-- Trạng thái giao dịch -->
                   <div id="radar-status-box" class="pt-1 flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                    <span class="inline-flex rounded-full h-2 w-2 bg-[#0071E3] dark:bg-[#3B9EFF]"></span>
                     <span id="radar-text" class="font-medium text-slate-600 dark:text-slate-300">
                       Đang lắng nghe giao dịch chuyển khoản ${bankShort}...
                     </span>
@@ -1214,15 +1212,15 @@
         </div>
 
         <!-- MODAL BÀN GIAO TÀI KHOẢN SAU KHI THANH TOÁN THÀNH CÔNG -->
-        <div id="payment-success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300">
-          <div class="bg-white/92 dark:bg-[#0B0F17]/95 backdrop-blur-2xl rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-800/80 transform transition-transform duration-300 scale-95 space-y-6">
+        <div id="payment-success-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-950/75 transition-opacity duration-200">
+          <div class="bg-white dark:bg-[#111520] rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-xl border border-slate-900/10 dark:border-white/10 transform transition-transform duration-200 scale-95 space-y-6">
             
             <!-- Icon chúc mừng thành công -->
             <div class="text-center">
               <div class="w-16 h-16 bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
               </div>
-              <h3 class="text-2xl font-black text-slate-900 dark:text-white">Thanh toán ${bankShort} thành công!</h3>
+              <h3 class="text-2xl font-black text-slate-900 dark:text-white">Thanh toán ${bankShort} thành công</h3>
               <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Đơn hàng <strong class="text-slate-800 dark:text-slate-200 font-mono tabular-nums">${order.orderCode}</strong> đã được hệ thống ${bankShort} duyệt tự động.</p>
             </div>
 
@@ -1305,7 +1303,7 @@
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(blobUrl);
-            showToast('Đã lưu ảnh mã QR về máy thành công!', 'success');
+            showToast('Đã lưu ảnh mã QR về máy thành công', 'success');
           } catch (e) {
             // Fallback mở tab mới nếu CORS bị chặn
             window.open(vietQrUrl, '_blank');
@@ -1339,7 +1337,7 @@
               if (filenameLabel) filenameLabel.textContent = file.name;
               if (emptyState) emptyState.classList.add('hidden');
               if (previewState) previewState.classList.remove('hidden');
-              showToast('Đã đính kèm ảnh biên lai giao dịch thành công!', 'success');
+              showToast('Đã đính kèm ảnh biên lai giao dịch thành công', 'success');
             };
             reader.readAsDataURL(file);
           }
@@ -1367,7 +1365,7 @@
             headerTimer.textContent = '00:00 (Hết hạn)';
             headerTimer.classList.add('text-slate-400');
           }
-          showToast('Đơn hàng đã hết hạn thanh toán!', 'warning');
+          showToast('Đơn hàng đã hết hạn thanh toán', 'warning');
           return;
         }
 
@@ -1459,8 +1457,8 @@
           stepCol3.className = 'p-2.5 rounded-xl bg-emerald-600 border border-emerald-600 text-white font-bold flex flex-col items-center gap-1';
         }
         if (stepBadge3) {
-          stepBadge3.className = 'w-5 h-5 rounded-full bg-white text-emerald-700 flex items-center justify-center text-[10px] font-bold';
-          stepBadge3.textContent = '✓';
+          stepBadge3.className = 'w-5 h-5 rounded-full bg-white text-emerald-700 flex items-center justify-center';
+          stepBadge3.innerHTML = '<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
         }
 
         // Hiển thị modal thành công
@@ -1476,7 +1474,7 @@
           }
         }
 
-        showToast('Giao dịch Techcombank đã khớp! Tài khoản đã được kích hoạt.', 'success');
+        showToast('Giao dịch Techcombank đã khớp. Tài khoản đã được kích hoạt.', 'success');
       }
 
       // NÚT "TÔI ĐÃ CHUYỂN KHOẢN" (CHUYỂN STEPPER SANG BƯỚC 2 VÀ BẬT MODAL)
@@ -1515,7 +1513,7 @@
         };
       }
 
-      // NÚT GIẢ LẬP DEMO "⚡ Sandbox Webhook"
+      // NÚT GIẢ LẬP DEMO Sandbox Webhook
       const webhookBtn = container.querySelector('#btn-simulate-webhook');
       if (webhookBtn) {
         webhookBtn.onclick = () => {

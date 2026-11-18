@@ -471,7 +471,7 @@
         if (!data) {
           if (isManual) {
             if (syncIcon) syncIcon.classList.remove('animate-spin');
-            if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+            if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
           }
           return false;
         }
@@ -698,14 +698,14 @@
 
         if (isManual) {
           if (syncIcon) syncIcon.classList.remove('animate-spin');
-          if (this.showToast) this.showToast('Đã đồng bộ dữ liệu mới nhất từ Đám Mây thành công!', 'success');
+          if (this.showToast) this.showToast('Đã đồng bộ dữ liệu mới nhất từ Đám Mây thành công.', 'success');
         }
         return true;
       } catch (err) {
         console.warn('[ShopVietState] syncAllFromCloud offline/failed:', err);
         if (isManual) {
           if (syncIcon) syncIcon.classList.remove('animate-spin');
-          if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+          if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
         }
         return false;
       }
@@ -763,13 +763,13 @@
         }
 
         if (this.showToast) {
-          this.showToast('⚡ Đã kéo toàn bộ dữ liệu mới nhất từ Admin về máy thành công!', 'success');
+          this.showToast('Đã kéo toàn bộ dữ liệu mới nhất từ Admin về máy thành công.', 'success');
         }
         return success;
       } catch (err) {
         console.warn('[ShopVietState] forceHardResync failed:', err);
         if (this.showToast) {
-          this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+          this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
         }
         return false;
       } finally {
@@ -838,7 +838,7 @@
 
         // 3. THÔNG BÁO TOAST THÀNH CÔNG CHO NGƯỜI DÙNG
         if (!silent && this.showToast) {
-          this.showToast('Đã lưu và đồng bộ toàn hệ thống lên Cloud thành công!', 'success');
+          this.showToast('Đã lưu và đồng bộ toàn hệ thống lên Cloud thành công.', 'success');
         }
 
         return true;
@@ -965,7 +965,7 @@
             window.BuiThaiNtfy.playChime('deposit');
           }
           if (typeof this.showToast === 'function') {
-            this.showToast(`🎉 Số dư ví đã được Admin Bùi Thái cập nhật: +${(Number(p.amount) || 0).toLocaleString('vi-VN')} Xu!`, 'success');
+            this.showToast(`Số dư ví đã được Admin Bùi Thái cập nhật: +${(Number(p.amount) || 0).toLocaleString('vi-VN')} Xu.`, 'success');
           }
         }
       }
@@ -1210,7 +1210,7 @@
                   detail: {
                     type: 'cloud_heartbeat_sync',
                     updatedAt: cloudUpdatedAt,
-                    message: '🔔 Cửa hàng vừa cập nhật sản phẩm mới!'
+                    message: 'Cửa hàng vừa cập nhật sản phẩm mới.'
                   }
                 }));
               } catch (e) {}
@@ -2056,7 +2056,7 @@
           if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
             window.BuiThaiNtfy.playChime('deposit');
           }
-          balanceToastMsg = `🎉 Chúc mừng bạn! Hệ thống SePay vừa cộng tự động +${newlyCreditedAmount.toLocaleString('vi-VN')} Xu vào ví!`;
+          balanceToastMsg = `Hệ thống SePay vừa cộng tự động +${newlyCreditedAmount.toLocaleString('vi-VN')} Xu vào ví.`;
           console.log(`[ShopVietState] Đã tự động cộng +${newlyCreditedAmount} Xu từ SePay cho nick ${currentEmail}. Số dư mới: ${targetBalance} Xu.`);
         }
       }
@@ -2075,7 +2075,7 @@
         this.showToast(balanceToastMsg, 'success');
       } else if (isManual && this.showToast) {
         const curBal = (this.state.user && this.state.user.balance) || 0;
-        this.showToast(`✅ Đã đồng bộ số dư mới nhất từ hệ thống: ${curBal.toLocaleString('vi-VN')} Xu`, 'success');
+        this.showToast(`Đã đồng bộ số dư mới nhất từ hệ thống: ${curBal.toLocaleString('vi-VN')} Xu`, 'success');
       }
 
       return this.state.topups;
@@ -2518,7 +2518,7 @@
               if (json && json.ok === false) {
                 console.warn('[directCreditCoins] Server chưa ghi ví:', json.reason || json.message);
                 if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-                  window.ShopVietState.showToast('⚠️ Chưa lưu được khoản cộng Xu lên máy chủ (' + (json.reason || json.code || 'error') + ').', 'warning');
+                  window.ShopVietState.showToast('Chưa lưu được khoản cộng Xu lên máy chủ (' + (json.reason || json.code || 'error') + ').', 'warning');
                 }
               }
             })
@@ -2858,7 +2858,7 @@
       if (window.ShopVietApp && typeof window.ShopVietApp.updateHeaderAuthUI === 'function') {
         window.ShopVietApp.updateHeaderAuthUI();
       }
-      this.showToast('Bạn đã đăng xuất tài khoản an toàn!', 'info');
+      this.showToast('Bạn đã đăng xuất tài khoản an toàn.', 'info');
       this.navigate('home');
     },
 
@@ -3203,12 +3203,12 @@
       qty = parseInt(qty, 10) || 1;
       const product = (window.ShopVietData && typeof window.ShopVietData.getProductById === 'function') ? window.ShopVietData.getProductById(productId) : (typeof this.getProductById === 'function' ? this.getProductById(productId) : null);
       if (!product) {
-        this.showToast('Sản phẩm không tồn tại hoặc đã ngừng bán!', 'error');
+        this.showToast('Sản phẩm không tồn tại hoặc đã ngừng bán.', 'error');
         return false;
       }
 
       if (product.status === 'out_of_stock' || product.stock <= 0) {
-        this.showToast('Sản phẩm này hiện đang tạm hết hàng!', 'warning');
+        this.showToast('Sản phẩm này hiện đang tạm hết hàng.', 'warning');
         return false;
       }
 
@@ -3228,7 +3228,7 @@
 
       this.save();
       this.notify('cart_updated', this.state.cart);
-      this.showToast(`Đã thêm "${product.name.slice(0, 32)}..." vào giỏ hàng!`, 'success');
+      this.showToast(`Đã thêm "${product.name.slice(0, 32)}..." vào giỏ hàng.`, 'success');
       return true;
     },
 
@@ -3341,11 +3341,11 @@
     // Thêm mã voucher mới
     addVoucher: function (voucherData) {
       if (!voucherData || !voucherData.code) {
-        return { success: false, message: 'Vui lòng nhập mã voucher!' };
+        return { success: false, message: 'Vui lòng nhập mã voucher.' };
       }
       const code = String(voucherData.code).trim().toUpperCase();
       if (!code) {
-        return { success: false, message: 'Mã voucher không được để trống!' };
+        return { success: false, message: 'Mã voucher không được để trống.' };
       }
 
       const list = this.getVouchers();
@@ -3353,7 +3353,7 @@
         return v.code && v.code.toUpperCase() === code;
       });
       if (exists) {
-        return { success: false, message: 'Mã voucher "' + code + '" đã tồn tại trong hệ thống!' };
+        return { success: false, message: 'Mã voucher "' + code + '" đã tồn tại trong hệ thống.' };
       }
 
       const isPercent = voucherData.type === 'percent_discount';
@@ -3378,7 +3378,7 @@
 
     // Xóa mã voucher
     deleteVoucher: function (code) {
-      if (!code) return { success: false, message: 'Mã voucher không hợp lệ!' };
+      if (!code) return { success: false, message: 'Mã voucher không hợp lệ.' };
       const cleanCode = String(code).trim().toUpperCase();
       this.markAsDeleted(cleanCode);
       this.markAsDeleted(code);
@@ -3390,11 +3390,11 @@
       this.pushAllToCloud().catch(function (e) {
         console.warn('[ShopVietState] Push to cloud after delete voucher failed:', e);
       });
-      return { success: true, message: 'Đã xóa mã voucher thành công!' };
+      return { success: true, message: 'Đã xóa mã voucher thành công.' };
     },
 
     _deprecatedDeleteVoucher: function (code) {
-      if (!code) return { success: false, message: 'Mã voucher không hợp lệ!' };
+      if (!code) return { success: false, message: 'Mã voucher không hợp lệ.' };
       const cleanCode = String(code).trim().toUpperCase();
       let list = this.getVouchers();
       const initialLen = list.length;
@@ -3402,17 +3402,17 @@
         return !(v.code && v.code.toUpperCase() === cleanCode);
       });
       if (list.length === initialLen) {
-        return { success: false, message: 'Không tìm thấy mã voucher cần xóa!' };
+        return { success: false, message: 'Không tìm thấy mã voucher cần xóa.' };
       }
       this.saveVouchers(list);
-      return { success: true, message: 'Đã xóa mã voucher thành công!' };
+      return { success: true, message: 'Đã xóa mã voucher thành công.' };
     },
 
     // Áp dụng và đánh dấu mã voucher đã sử dụng cho đơn hàng hoặc nạp ví
     applyVoucher: function (code, userEmail, orderCode) {
       const clean = window.ShopVietNormalizeVoucher ? window.ShopVietNormalizeVoucher(code) : (code || '').trim().toUpperCase();
       if (!clean) {
-        return { success: false, message: 'Vui lòng cung cấp mã voucher!' };
+        return { success: false, message: 'Vui lòng cung cấp mã voucher.' };
       }
       const list = this.getVouchers();
       const idx = list.findIndex(function (v) {
@@ -3420,14 +3420,14 @@
       });
 
       if (idx === -1) {
-        return { success: false, message: 'Mã voucher không tồn tại hoặc đã hết hạn!' };
+        return { success: false, message: 'Mã voucher không tồn tại hoặc đã hết hạn.' };
       }
 
       const voucher = list[idx];
       if (voucher.isUsed) {
         return { 
           success: false, 
-          message: 'Mã này đã được sử dụng bởi ' + (voucher.usedBy || 'khách hàng khác') + '!'
+          message: 'Mã này đã được sử dụng bởi ' + (voucher.usedBy || 'khách hàng khác') + '.'
         };
       }
 
@@ -3439,7 +3439,7 @@
       list[idx] = voucher;
       this.saveVouchers(list);
 
-      return { success: true, voucher: voucher, message: 'Áp dụng mã thành công!' };
+      return { success: true, voucher: voucher, message: 'Áp dụng mã thành công.' };
     },
 
     // Áp dụng mã giảm giá
@@ -3449,7 +3449,7 @@
         this.state.discountCode = { code: '', percent: 0, amount: 0 };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        return { success: false, message: 'Vui lòng nhập mã giảm giá!' };
+        return { success: false, message: 'Vui lòng nhập mã giảm giá.' };
       }
 
       // 1. Tra cứu trong kho mã Voucher động từ Admin
@@ -3461,7 +3461,7 @@
       if (foundVoucher) {
         if (foundVoucher.isUsed) {
           const usedByText = foundVoucher.usedBy ? ` bởi ${foundVoucher.usedBy}` : '';
-          this.showToast(`Mã "${clean}" đã được sử dụng${usedByText}!`, 'error');
+          this.showToast(`Mã "${clean}" đã được sử dụng${usedByText}.`, 'error');
           return { success: false, message: 'Mã đã được sử dụng' };
         }
 
@@ -3478,7 +3478,7 @@
         };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        this.showToast(`Áp dụng mã ${clean} thành công! (${desc})`, 'success');
+        this.showToast(`Áp dụng mã ${clean} thành công (${desc}).`, 'success');
         return { success: true, voucher: this.state.discountCode };
       }
 
@@ -3500,10 +3500,10 @@
         };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        this.showToast(`Áp dụng mã ${clean} thành công! (${v.desc})`, 'success');
+        this.showToast(`Áp dụng mã ${clean} thành công (${v.desc}).`, 'success');
         return { success: true, voucher: this.state.discountCode };
       } else {
-        this.showToast(`Mã giảm giá "${clean}" không hợp lệ hoặc đã hết hạn!`, 'error');
+        this.showToast(`Mã giảm giá "${clean}" không hợp lệ hoặc đã hết hạn.`, 'error');
         return { success: false, message: 'Mã giảm giá không hợp lệ' };
       }
     },
@@ -3634,7 +3634,7 @@
             sessionStorage.removeItem('shopviet_admin_session_auth');
             localStorage.removeItem('shopviet_admin_session_auth');
           } catch (e) {}
-          this.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          this.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com.', 'error');
           if (window.location.hash === '#admin') {
             window.location.hash = '#home';
           }
@@ -3643,7 +3643,7 @@
         }
       }
 
-      // ĐIỀU HƯỚNG TỨC THÌ 0MS - KHÔNG DÙNG RÈM HAY HIỆU ỨNG CHUYỂN CẢNH LÀM LAG TRÌNH DUYỆT
+      // ĐIỀU HƯỚNG TỨC THÌ 0MS
       self.state.currentView = viewName;
       self.updateNavUI(viewName);
 
@@ -3690,9 +3690,9 @@
       navButtons.forEach(function (btn) {
         const btnView = btn.getAttribute('data-view');
         if (btnView === viewName && !btn.hasAttribute('data-scroll')) {
-          btn.className = 'nav-btn nav-pill-btn rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-300 ease-in-out cursor-pointer bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900';
+          btn.className = 'nav-btn nav-pill-btn rounded-lg px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-150 cursor-pointer bg-slate-900 text-white dark:bg-white dark:text-slate-900';
         } else {
-          btn.className = 'nav-btn nav-pill-btn rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-300 ease-in-out cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
+          btn.className = 'nav-btn nav-pill-btn rounded-lg px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-150 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
         }
       });
     },
@@ -3711,12 +3711,12 @@
         }
         const toast = document.createElement('div');
         const bgMap = {
-          success: 'background:linear-gradient(135deg,#059669,#10b981);border:1px solid #34d399;color:#fff;',
-          error: 'background:linear-gradient(135deg,#dc2626,#ef4444);border:1px solid #f87171;color:#fff;',
-          warning: 'background:linear-gradient(135deg,#d97706,#f59e0b);border:1px solid #fbbf24;color:#fff;',
-          info: 'background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.4);color:#f8fafc;'
+          success: 'background:#059669;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          error: 'background:#dc2626;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          warning: 'background:#d97706;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          info: 'background:#111520;border:1px solid rgba(255,255,255,0.14);color:#f8fafc;'
         };
-        toast.style.cssText = (bgMap[type] || bgMap.info) + 'padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 10px 25px -5px rgba(0,0,0,0.4);pointer-events:auto;transition:all 0.25s ease;backdrop-filter:blur(8px);line-height:1.4;';
+        toast.style.cssText = (bgMap[type] || bgMap.info) + 'padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 12px 28px -8px rgba(0,0,0,0.28);pointer-events:auto;transition:opacity 0.2s ease, transform 0.2s ease;line-height:1.45;';
         toast.textContent = message;
         container.appendChild(toast);
         setTimeout(function () {
@@ -3724,7 +3724,7 @@
           toast.style.transform = 'translateY(-8px)';
           setTimeout(function () {
             if (toast.parentNode) toast.parentNode.removeChild(toast);
-          }, 260);
+          }, 220);
         }, 3500);
       } catch (e) {}
     },
@@ -3740,8 +3740,8 @@
     renderFallbackView: function (viewName, params) {
       return `
         <div class="py-20 text-center space-y-4">
-          <div class="inline-flex p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-            <svg class="w-10 h-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="inline-flex p-4 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF]">
+            <svg class="w-10 h-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
               <line x1="12" y1="2" x2="12" y2="6"/>
               <line x1="12" y1="18" x2="12" y2="22"/>
               <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
@@ -3753,9 +3753,9 @@
             </svg>
           </div>
           <h2 class="text-xl font-bold text-slate-900 dark:text-white">Đang tải phân hệ: ${viewName.toUpperCase()}</h2>
-          <p class="text-slate-500 max-w-md mx-auto text-sm">Giao diện đang được khởi tạo bởi các chuyên viên hệ thống...</p>
+          <p class="text-slate-500 max-w-md mx-auto text-sm">Giao diện đang được khởi tạo...</p>
           <div class="pt-4">
-            <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-500 transition shadow-sm">
+            <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-[#0071E3] text-white font-semibold text-sm hover:bg-[#0062C4] transition-colors shadow-sm cursor-pointer">
               Trở về Trang Chủ
             </button>
           </div>

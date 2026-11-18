@@ -27,7 +27,7 @@
       turnstileIndicator.className = 'w-6 h-6 rounded-md border-2 border-emerald-500 bg-emerald-500 flex items-center justify-center shadow-xs transition-all duration-300 scale-105';
     }
     if (turnstileLabel) {
-      turnstileLabel.textContent = 'Thành công! Bạn là con người';
+      turnstileLabel.textContent = 'Đã xác minh trình duyệt';
       turnstileLabel.className = 'font-bold text-emerald-600 dark:text-emerald-400';
     }
     if (turnstileSublabel) {
@@ -73,7 +73,7 @@
     const alertTitle = document.getElementById('authErrorAlertTitle');
     const alertMsg = document.getElementById('authErrorAlertMsg');
     if (alertBox && alertTitle && alertMsg) {
-      alertTitle.textContent = title || 'Sai tài khoản hoặc mật khẩu!';
+      alertTitle.textContent = title || 'Sai tài khoản hoặc mật khẩu';
       alertMsg.textContent = message || 'Vui lòng kiểm tra lại địa chỉ email hoặc mật khẩu của bạn.';
       alertBox.classList.remove('hidden');
       alertBox.classList.add('animate-shake');
@@ -90,7 +90,7 @@
       }
     }
     if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-      window.ShopVietState.showToast('❌ ' + (message || title || 'Sai tài khoản hoặc mật khẩu!'), 'error');
+      window.ShopVietState.showToast(message || title || 'Sai tài khoản hoặc mật khẩu', 'error');
     }
   };
 
@@ -119,22 +119,22 @@
     const name = (isRegisterMode && nameInput) ? nameInput.value.trim() : '';
 
     if (!email) {
-      showAuthError('Vui lòng nhập Email!', 'Địa chỉ Email không được để trống.', 'authEmailInput');
+      showAuthError('Vui lòng nhập Email', 'Địa chỉ Email không được để trống.', 'authEmailInput');
       return;
     }
 
     if (!password) {
-      showAuthError('Vui lòng nhập Mật khẩu!', 'Mật khẩu tài khoản không được để trống.', 'authPasswordInput');
+      showAuthError('Vui lòng nhập Mật khẩu', 'Mật khẩu tài khoản không được để trống.', 'authPasswordInput');
       return;
     }
 
     if (isRegisterMode) {
       if (!name) {
-        showAuthError('Vui lòng nhập Họ và Tên!', 'Họ và tên giúp bảo vệ tài khoản và nhận vũ khí.', 'authNameInput');
+        showAuthError('Vui lòng nhập Họ và Tên', 'Họ và tên giúp bảo vệ tài khoản và nhận vũ khí.', 'authNameInput');
         return;
       }
       if (password.length < 6) {
-        showAuthError('Mật khẩu quá ngắn!', 'Mật khẩu bảo mật phải có tối thiểu 6 ký tự.', 'authPasswordInput');
+        showAuthError('Mật khẩu quá ngắn', 'Mật khẩu bảo mật phải có tối thiểu 6 ký tự.', 'authPasswordInput');
         return;
       }
     }
@@ -159,8 +159,8 @@
         }
 
         if (!regRes || !regRes.success) {
-          const regMsg = regRes?.message || 'Không thể tạo tài khoản lúc này!';
-          showAuthError('Đăng ký không thành công!', regMsg, 'authEmailInput');
+          const regMsg = regRes?.message || 'Không thể tạo tài khoản lúc này.';
+          showAuthError('Đăng ký không thành công', regMsg, 'authEmailInput');
           return;
         }
 
@@ -191,7 +191,7 @@
             window.ShopVietState.login(userData);
           }
           if (typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast('🎉 Đăng ký thành công! Đã kết nối Firebase promtmmo.', 'success');
+            window.ShopVietState.showToast('Đăng ký thành công · Đã kết nối Firebase promtmmo.', 'success');
           }
         }
         handlePostAuthRedirect();
@@ -218,17 +218,17 @@
         if (!authRes || !authRes.success) {
           const rawMsg = authRes?.message || '';
           const errCode = authRes?.error || '';
-          let errTitle = 'Sai tài khoản hoặc mật khẩu!';
-          let errMsg = 'Địa chỉ email hoặc mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại!';
+          let errTitle = 'Sai tài khoản hoặc mật khẩu';
+          let errMsg = 'Địa chỉ email hoặc mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại.';
           let targetId = 'authPasswordInput';
 
           if (errCode === 'USER_NOT_FOUND' || rawMsg.toLowerCase().includes('không tìm thấy') || rawMsg.toLowerCase().includes('không tồn tại')) {
-            errTitle = 'Tài khoản không tồn tại!';
-            errMsg = 'Email này chưa được đăng ký trong hệ thống. Vui lòng kiểm tra lại hoặc bấm "Đăng ký ngay" bên dưới!';
+            errTitle = 'Tài khoản không tồn tại';
+            errMsg = 'Email này chưa được đăng ký trong hệ thống. Vui lòng kiểm tra lại hoặc bấm "Đăng ký ngay" bên dưới.';
             targetId = 'authEmailInput';
           } else if (errCode === 'WRONG_PASSWORD' || rawMsg.toLowerCase().includes('mật khẩu không chính xác') || rawMsg.toLowerCase().includes('sai mật khẩu')) {
-            errTitle = 'Sai mật khẩu!';
-            errMsg = 'Mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại phím Caps Lock hoặc bấm "Quên mật khẩu"!';
+            errTitle = 'Sai mật khẩu';
+            errMsg = 'Mật khẩu bạn vừa nhập không chính xác. Vui lòng kiểm tra lại phím Caps Lock hoặc bấm "Quên mật khẩu".';
             targetId = 'authPasswordInput';
           } else if (rawMsg) {
             errMsg = rawMsg;
@@ -249,14 +249,14 @@
           }
         }
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('✅ Đăng nhập thành công! Chào mừng ' + (authRes.user.name || authRes.user.email), 'success');
+          window.ShopVietState.showToast('Đăng nhập thành công · ' + (authRes.user.name || authRes.user.email), 'success');
         }
         handlePostAuthRedirect();
       }
     } catch (err) {
       console.error('Auth error:', err);
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Có lỗi xảy ra, vui lòng thử lại!', 'error');
+        window.ShopVietState.showToast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
       }
     } finally {
       if (submitBtn) {
@@ -276,7 +276,7 @@
             window.ShopVietState.login(gRes.user);
           }
           if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast('✅ Đăng nhập Google thành công! Chào mừng ' + (gRes.user.name || gRes.user.email), 'success');
+            window.ShopVietState.showToast('Đăng nhập Google thành công · ' + (gRes.user.name || gRes.user.email), 'success');
           }
           handlePostAuthRedirect();
           return;
@@ -318,7 +318,7 @@
           </div>
 
           <!-- Card Đăng nhập / Đăng ký -->
-          <div class="max-w-md mx-auto w-full bg-white/85 dark:bg-[#0B0F17]/90 backdrop-blur-2xl rounded-2xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800/80 shadow-xl transition-all duration-300">
+          <div class="max-w-md mx-auto w-full bg-white dark:bg-[#111520] rounded-2xl p-6 sm:p-8 border border-slate-900/10 dark:border-white/10 shadow-sm transition-colors duration-150">
             
             <div class="text-[11px] font-extrabold tracking-[0.22em] text-[#0071E3] dark:text-[#3B9EFF] uppercase select-none">
               BÙI THÁI AI STUDIO
@@ -360,7 +360,7 @@
                 </div>
                 <div class="flex-1">
                   <div id="authErrorAlertTitle" class="font-bold text-xs text-rose-700 dark:text-rose-300 mb-0.5">
-                    Sai tài khoản hoặc mật khẩu!
+                    Sai tài khoản hoặc mật khẩu
                   </div>
                   <div id="authErrorAlertMsg" class="text-[11px] leading-relaxed text-rose-600 dark:text-rose-400">
                     Vui lòng kiểm tra lại thông tin đăng nhập của bạn.
@@ -490,7 +490,7 @@
               <!-- Phân cách HOẶC -->
               <div class="relative my-4 flex items-center justify-center">
                 <div class="border-t border-slate-200 dark:border-slate-800 w-full"></div>
-                <span class="bg-white/95 dark:bg-[#0B0F17] px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
+                <span class="bg-white dark:bg-[#111520] px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest absolute">HOẶC TIẾP TỤC VỚI</span>
               </div>
 
               <!-- Nút Đăng nhập với Google -->
@@ -584,10 +584,10 @@
           const emailInput = document.getElementById('authEmailInput');
           const emailVal = emailInput ? emailInput.value.trim() : '';
           if (!emailVal) {
-            showAuthError('Vui lòng nhập Email!', 'Nhập email để nhận link khôi phục mật khẩu.', 'authEmailInput');
+            showAuthError('Vui lòng nhập Email', 'Nhập email để nhận link khôi phục mật khẩu.', 'authEmailInput');
             return;
           }
-          window.ShopVietState.showToast(`✅ Đã gửi hướng dẫn khôi phục mật khẩu về email ${emailVal}!`, 'success');
+          window.ShopVietState.showToast(`Đã gửi hướng dẫn khôi phục mật khẩu về email ${emailVal}`, 'success');
         });
       }
 

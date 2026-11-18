@@ -63,7 +63,7 @@ window.ShopVietViews.blog = (function () {
             Bước 3: Xác nhận trong Google One & Đăng nhập Antigravity IDE
           </h3>
           <p>
-            Sau khi mở email thư mời từ Google, bấm <em>"Chấp nhận lời mời"</em>. Dung lượng Google Drive của bạn sẽ lập tức nhảy lên 2TB. Tiếp theo, mở Antigravity IDE hoặc truy cập gemini.google.com để bắt đầu trải nghiệm toàn bộ sức mạnh mô hình Gemini 3.8 mới nhất!
+            Sau khi mở email thư mời từ Google, bấm <em>"Chấp nhận lời mời"</em>. Dung lượng Google Drive của bạn sẽ lập tức nhảy lên 2TB. Tiếp theo, mở Antigravity IDE hoặc truy cập gemini.google.com để bắt đầu trải nghiệm toàn bộ sức mạnh mô hình Gemini 3.8 mới nhất.
           </p>
 
           <div class="mt-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 text-amber-800 dark:text-amber-300 text-xs sm:text-sm">
@@ -250,11 +250,7 @@ window.ShopVietViews.blog = (function () {
         <div id="blogViewContainer" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10 animate-fade-in">
           
           <!-- Hero Banner Header -->
-          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#090B10] via-[#0F172A] to-[#0B2545] text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-slate-800/80">
-            <!-- Background Subtle Ambient Mesh -->
-            <div class="absolute -top-24 -right-24 w-96 h-96 bg-[#0071E3]/25 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
+          <div class="relative overflow-hidden rounded-2xl bg-[#0B0F17] text-white p-6 sm:p-10 lg:p-12 shadow-sm border border-slate-900/10 dark:border-white/10">
             <div class="relative z-10 max-w-3xl space-y-4">
               <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#3B9EFF]">
                 BuiThai AI Studio · Knowledge Hub
@@ -277,15 +273,16 @@ window.ShopVietViews.blog = (function () {
                     id="blogSearchInput"
                     placeholder="Tìm kiếm bài viết (Cursor, Gemini 18T, ChatGPT, Capcut...)"
                     value="${searchKeyword}"
-                    class="w-full pl-10 pr-24 py-3 bg-white/10 dark:bg-slate-800/80 backdrop-blur-md text-white placeholder-slate-400 text-sm rounded-2xl border border-white/15 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-[#3B9EFF]/60 transition shadow-inner"
+                    class="w-full pl-10 pr-24 py-3 bg-white/[0.08] text-white placeholder-slate-400 text-sm rounded-xl border border-white/15 focus:outline-none focus:ring-2 focus:ring-[#3B9EFF]/60 transition"
                   />
                   <div class="absolute right-2 flex items-center">
                     <button
                       id="clearBlogSearchBtn"
-                      class="${searchKeyword ? '' : 'hidden'} px-2 py-1 text-xs text-slate-400 hover:text-white cursor-pointer"
+                      class="${searchKeyword ? '' : 'hidden'} px-2.5 py-1 text-xs text-slate-300 hover:text-white cursor-pointer"
                       title="Xóa tìm kiếm"
+                      aria-label="Xóa tìm kiếm"
                     >
-                      ✕
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M18 6L6 18M6 6l12 12"/></svg>
                     </button>
                   </div>
                 </div>
@@ -410,9 +407,9 @@ window.ShopVietViews.blog = (function () {
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full py-16 text-center space-y-3 bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800 p-8">
-            <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <div class="col-span-full py-16 text-center space-y-3 bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs p-8">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             </div>
             <h3 class="text-base font-bold text-slate-900 dark:text-white">Không tìm thấy bài viết phù hợp</h3>
             <p class="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
@@ -428,12 +425,10 @@ window.ShopVietViews.blog = (function () {
         const liked = isPostLiked(post.id);
 
         return `
-          <article class="blog-card flex flex-col justify-between bg-white/85 dark:bg-[#0B0F17]/85 backdrop-blur-xl rounded-3xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-[#0071E3]/40 dark:hover:border-[#3B9EFF]/40 transition-all duration-300 group">
+          <article class="blog-card flex flex-col justify-between bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 overflow-hidden shadow-2xs hover:border-[#0071E3]/45 dark:hover:border-[#3B9EFF]/45 transition-[border-color] duration-150 group">
             
             <!-- Card Header & Cover Banner -->
-            <div class="relative h-44 bg-gradient-to-br ${post.gradient} p-6 flex flex-col justify-between overflow-hidden">
-              <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-[#0071E3]/15 rounded-full blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500"></div>
-              
+            <div class="relative h-44 bg-[#0B0F17] border-b border-white/10 p-6 flex flex-col justify-between overflow-hidden">
               <div class="flex items-center gap-2 text-xs text-slate-300 relative z-10 font-medium">
                 <span class="font-semibold text-[#3B9EFF]">${post.categoryName}</span>
                 <span aria-hidden="true">·</span>
@@ -605,19 +600,18 @@ window.ShopVietViews.blog = (function () {
       const liked = isPostLiked(post.id);
 
       modalMount.innerHTML = `
-        <div id="blogDetailModalBackdrop" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
+        <div id="blogDetailModalBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-fade-in">
           
-          <div class="relative bg-white/95 dark:bg-[#0B0F17]/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+          <div class="relative bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
             
             <!-- Modal Header Banner -->
-            <div class="relative bg-gradient-to-r ${post.gradient} text-white p-6 sm:p-8 shrink-0 overflow-hidden">
-              <div class="absolute -right-8 -top-8 w-44 h-44 bg-[#0071E3]/20 rounded-full blur-2xl pointer-events-none"></div>
-
+            <div class="relative bg-[#0B0F17] border-b border-white/10 text-white p-6 sm:p-8 shrink-0 overflow-hidden">
               <!-- Close Button -->
               <button
                 id="closeBlogModalBtn"
-                class="absolute top-4 right-4 p-2 rounded-xl bg-black/30 hover:bg-black/50 text-white transition-colors cursor-pointer"
+                class="absolute top-4 right-4 p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
                 title="Đóng cửa sổ"
+                aria-label="Đóng cửa sổ"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
               </button>
@@ -726,7 +720,7 @@ window.ShopVietViews.blog = (function () {
             navigator.clipboard.writeText(shareUrl).then(function () {
               shareBtn.innerHTML = `
                 <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-                <span class="text-emerald-600 dark:text-emerald-400 font-bold">Đã chép link!</span>
+                <span class="text-emerald-600 dark:text-emerald-400 font-bold">Đã chép link</span>
               `;
               setTimeout(() => {
                 shareBtn.innerHTML = `

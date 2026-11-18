@@ -259,7 +259,7 @@ window.ShopVietViews.modal = (function () {
     if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
       navigator.clipboard.writeText(text).then(() => {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast(`✓ Đã sao chép ${label || 'nội dung'} vào clipboard!`, 'success');
+          window.ShopVietState.showToast(`Đã sao chép ${label || 'nội dung'} vào clipboard`, 'success');
         }
       }).catch(() => {
         fallbackCopy(text, label);
@@ -279,7 +279,7 @@ window.ShopVietViews.modal = (function () {
     try {
       document.execCommand('copy');
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast(`✓ Đã sao chép ${label || 'nội dung'} vào clipboard!`, 'success');
+        window.ShopVietState.showToast(`Đã sao chép ${label || 'nội dung'} vào clipboard`, 'success');
       }
     } catch (err) {
       console.warn('Copy error:', err);
@@ -333,7 +333,9 @@ window.ShopVietViews.modal = (function () {
         <!-- QUY TRÌNH GIẢI NÉN CHUẨN -->
         <div class="p-4 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/[0.08] border border-[#0071E3]/25 dark:border-[#3B9EFF]/25 space-y-2.5">
           <div class="flex items-start gap-2.5">
-            <span class="w-9 h-9 rounded-xl bg-[#0071E3] text-white flex items-center justify-center text-lg shrink-0">📦</span>
+            <span class="w-9 h-9 rounded-xl bg-[#0071E3] text-white flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m3.3 7 8.7 5 8.7-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 22V12"/></svg>
+            </span>
             <div class="min-w-0">
               <div class="text-[10px] font-bold uppercase tracking-wider text-[#0071E3] dark:text-[#3B9EFF]">
                 Quy Trình Trước Khi Khởi Chạy
@@ -366,10 +368,10 @@ window.ShopVietViews.modal = (function () {
         </div>
 
         <!-- QUY TRÌNH 3 BƯỚC -->
-        <div class="p-4 rounded-2xl bg-white/85 dark:bg-[#0B0F17]/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+        <div class="p-4 rounded-xl bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 space-y-3">
           <div class="flex items-center justify-between gap-2">
             <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-              <span>${isSourceStarter ? '🛠️ Quy Trình 3 Bước Tải Code &amp; Phát Triển Tiếp' : '🚀 Quy Trình 3 Bước Nạp Prompt Vào AI'}</span>
+              <span>${isSourceStarter ? 'Quy Trình 3 Bước Tải Code &amp; Phát Triển Tiếp' : 'Quy Trình 3 Bước Nạp Prompt Vào AI'}</span>
             </h4>
             <span class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">
               ${isSourceStarter ? 'Code Sạch • Mở Rộng Tự Do' : 'Chuẩn Tác Chiến'}
@@ -416,11 +418,11 @@ window.ShopVietViews.modal = (function () {
         </div>
 
         ${isAllInOne ? `
-          <div class="p-4 rounded-2xl bg-white/85 dark:bg-[#0B0F17]/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+          <div class="p-4 rounded-xl bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 space-y-3">
             <div class="flex items-center justify-between gap-2">
               <div>
                 <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>🗺️ Ma Trận 15 Phân Khu: Tra Cứu Nhanh 560+ Master Prompts</span>
+                  <span>Ma Trận 15 Phân Khu: Tra Cứu Nhanh 560+ Master Prompts</span>
                 </h4>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400">Chọn đúng nhóm số thứ tự theo tác vụ thực tế</p>
               </div>
@@ -520,7 +522,7 @@ window.ShopVietViews.modal = (function () {
 
               <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 space-y-1">
                 <div class="flex items-center justify-between">
-                  <span class="px-2 py-0.5 rounded-md bg-fuchsia-600 text-white font-mono font-bold text-[11px] tabular-nums">#471 – #485</span>
+                  <span class="px-2 py-0.5 rounded-md bg-sky-700 text-white font-mono font-bold text-[11px] tabular-nums">#471 – #485</span>
                   <span class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 tabular-nums">15 Mẫu</span>
                 </div>
                 <strong class="text-slate-900 dark:text-white block font-bold">Dựng Video Phonk &amp; Beat Sync 60fps</strong>
@@ -565,10 +567,10 @@ window.ShopVietViews.modal = (function () {
             </div>
           </div>
         ` : `
-          <div class="p-4 rounded-2xl bg-white/85 dark:bg-[#0B0F17]/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 space-y-3">
+          <div class="p-4 rounded-xl bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 space-y-3">
             <div class="flex items-center justify-between gap-2">
               <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span>${isSourceStarter ? '🧩 Kiến Trúc Bộ Mã Nguồn &amp; Quyền Tự Phát Triển' : '🎯 Ứng Dụng Thực Chiến &amp; Danh Mục Mẫu Lệnh'}</span>
+                <span>${isSourceStarter ? 'Kiến Trúc Bộ Mã Nguồn &amp; Quyền Tự Phát Triển' : 'Ứng Dụng Thực Chiến &amp; Danh Mục Mẫu Lệnh'}</span>
               </h4>
               <span class="text-[11px] font-bold text-[#0071E3] dark:text-[#3B9EFF] shrink-0 tabular-nums">${cheatSheet.length || '10+'} Mẫu Lệnh</span>
             </div>
@@ -580,7 +582,7 @@ window.ShopVietViews.modal = (function () {
             </p>
 
             <div class="space-y-2">
-              <span class="font-bold text-slate-800 dark:text-slate-200 text-xs block">📋 Phù hợp nhất khi bạn cần:</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200 text-xs block">Phù hợp nhất khi bạn cần:</span>
               <ul class="space-y-1 text-slate-600 dark:text-slate-400 text-[11px] pl-4 list-disc">
                 <li>${isSourceStarter ? `Rút ngắn thời gian dựng nền tảng <strong>${escapeHTML(currentProduct.tag || currentProduct.category || 'Source Starter')}</strong> và phát triển thêm tính năng riêng.` : `Giải quyết chuyên sâu bài toán <strong>${escapeHTML(currentProduct.tag || currentProduct.category || 'AI Tác Chiến')}</strong>.`}</li>
                 <li>${isSourceStarter ? 'Tùy biến logic, giao diện, thêm màn chơi hoặc tích hợp API mới trong Cursor / VS Code.' : 'Loại bỏ kết quả chung chung từ AI mặc định và xuất mã nguồn đúng chuẩn kỹ thuật.'}</li>
@@ -589,10 +591,10 @@ window.ShopVietViews.modal = (function () {
             </div>
 
             ${isOpenJarvis ? `
-              <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
+              <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="text-lg">⚡</span>
+                    <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                     <strong class="text-xs sm:text-sm font-bold text-emerald-800 dark:text-emerald-300">
                       Tự Động Cài Đặt 1-Chạm (1-Click Auto Installer)
                     </strong>
@@ -600,9 +602,9 @@ window.ShopVietViews.modal = (function () {
                   <span class="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">0 Dòng Lệnh</span>
                 </div>
                 <div class="text-[11.5px] text-slate-700 dark:text-slate-300 space-y-1 leading-relaxed">
-                  <p>• <strong>Cách 1:</strong> Giải nén <code class="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 font-mono text-emerald-900 dark:text-emerald-300">OpenJarvis_AutoInstall_1Click_Vault.zip</code> rồi nhấp đúp <strong class="text-emerald-700 dark:text-emerald-400 font-mono">Cai_Dat_Tu_Dong_OpenJarvis_1Click.bat</strong>.</p>
-                  <p>• <strong>Cách 2:</strong> Nhấp đúp <strong class="text-teal-700 dark:text-teal-400 font-mono">Chay_OpenJarvis_Giao_Dien_Web.bat</strong> để mở giao diện chat local.</p>
-                  <p>• <strong>Cách 3 (PowerShell):</strong> <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px] text-[#0071E3] dark:text-[#3B9EFF] select-all">irm https://open-jarvis.github.io/OpenJarvis/install.ps1 | iex</code></p>
+                  <p>· <strong>Cách 1:</strong> Giải nén <code class="px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 font-mono text-emerald-900 dark:text-emerald-300">OpenJarvis_AutoInstall_1Click_Vault.zip</code> rồi nhấp đúp <strong class="text-emerald-700 dark:text-emerald-400 font-mono">Cai_Dat_Tu_Dong_OpenJarvis_1Click.bat</strong>.</p>
+                  <p>· <strong>Cách 2:</strong> Nhấp đúp <strong class="text-teal-700 dark:text-teal-400 font-mono">Chay_OpenJarvis_Giao_Dien_Web.bat</strong> để mở giao diện chat local.</p>
+                  <p>· <strong>Cách 3 (PowerShell):</strong> <code class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 font-mono text-[10px] text-[#0071E3] dark:text-[#3B9EFF] select-all">irm https://open-jarvis.github.io/OpenJarvis/install.ps1 | iex</code></p>
                 </div>
               </div>
             ` : ''}
@@ -610,10 +612,10 @@ window.ShopVietViews.modal = (function () {
         `}
 
         <!-- CAM KẾT BẢO HÀNH & HỖ TRỢ -->
-        <div class="p-3.5 rounded-2xl bg-slate-100/80 dark:bg-[#090B10]/90 border border-slate-200/80 dark:border-slate-800 text-[11px] space-y-1.5">
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-[11px] space-y-1.5">
           <div class="flex items-center justify-between font-bold text-slate-800 dark:text-slate-200">
             <span class="flex items-center gap-1.5">
-              <span>🛡️</span>
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               <span>Chính Sách Bản Quyền &amp; Hỗ Trợ 24/7</span>
             </span>
             <span class="text-emerald-600 dark:text-emerald-400">Bảo Hành Vĩnh Viễn</span>
@@ -690,7 +692,7 @@ window.ShopVietViews.modal = (function () {
 
       if (!currentProduct) {
         if (window.ShopVietState) {
-          window.ShopVietState.showToast('Không tìm thấy thông tin sản phẩm!', 'error');
+          window.ShopVietState.showToast('Không tìm thấy thông tin sản phẩm.', 'error');
         }
         return;
       }
@@ -723,18 +725,22 @@ window.ShopVietViews.modal = (function () {
       modalMount.innerHTML = `
         <div
           id="quickBuyBackdrop"
-          class="fixed inset-0 z-50 bg-slate-950/65 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 transition-opacity animate-fade-in"
+          class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-3 sm:p-5 transition-opacity duration-150"
           onclick="if(event.target === this) ShopVietViews.modal.close()"
         >
           <div
-            class="max-w-2xl w-full bg-white/92 dark:bg-[#0B0F17]/92 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden transform transition-all animate-slide-up flex flex-col max-h-[92vh]"
+            class="max-w-2xl w-full bg-white dark:bg-[#111520] rounded-2xl shadow-xl border border-slate-900/10 dark:border-white/10 overflow-hidden flex flex-col max-h-[92vh]"
             onclick="event.stopPropagation()"
           >
             <!-- HEADER MODAL -->
-            <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#090B10]/80">
+            <div class="px-5 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between gap-2 bg-slate-50 dark:bg-[#090B10]">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-9 h-9 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center text-lg shrink-0">
-                  ${isFreeProduct ? '🎁' : isSourceStarter ? '🧩' : '🪙'}
+                <span class="w-9 h-9 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center shrink-0">
+                  ${isFreeProduct
+                    ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v10H4V12M2 7h20v5H2zm10 15V7m0 0H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zm0 0h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>'
+                    : isSourceStarter
+                      ? '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg>'
+                      : '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>'}
                 </span>
                 <div class="min-w-0">
                   <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
@@ -781,7 +787,8 @@ window.ShopVietViews.modal = (function () {
                 onclick="ShopVietViews.modal.switchQuickBuyTab('overview')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 border-[#0071E3] dark:border-[#3B9EFF] text-[#0071E3] dark:text-[#3B9EFF] transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
               >
-                <span>⚡ Mở Khóa &amp; Mua Xu</span>
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span>Mở Khóa &amp; Mua Xu</span>
               </button>
               <button
                 type="button"
@@ -789,7 +796,8 @@ window.ShopVietViews.modal = (function () {
                 onclick="ShopVietViews.modal.switchQuickBuyTab('guide')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0 cursor-pointer flex items-center gap-1.5"
               >
-                <span>📖 Hướng Dẫn &amp; Cài Đặt</span>
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path stroke-linecap="round" stroke-linejoin="round" d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span>Hướng Dẫn &amp; Cài Đặt</span>
               </button>
             </div>
 
@@ -800,7 +808,7 @@ window.ShopVietViews.modal = (function () {
               <div id="quickBuyPaneOverview" class="space-y-4">
 
                 <!-- PRODUCT SUMMARY -->
-                <div class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80">
+                <div class="flex items-start gap-3.5 p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10">
                   <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-slate-100 dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
                     ${renderSafeProductImage(currentProduct, 'w-full h-full object-cover rounded-xl', 'relative z-10 w-10 h-10 flex items-center justify-center text-[#0071E3] dark:text-[#3B9EFF]')}
                   </div>
@@ -866,10 +874,10 @@ window.ShopVietViews.modal = (function () {
 
                 ${currentProduct.demoUrl ? `
                   <!-- LIVE DEMO LAUNCHER -->
-                  <div class="p-3.5 rounded-2xl bg-[#090B10] border border-[#0071E3]/35 flex items-center justify-between gap-3">
+                  <div class="p-3.5 rounded-xl bg-[#090B10] border border-[#0071E3]/35 flex items-center justify-between gap-3">
                     <div class="min-w-0">
                       <div class="text-xs font-bold text-white flex items-center gap-2 flex-wrap">
-                        <span>${isMetropolis ? '🏙️ Bản Chơi Thử Isometric 3D Live' : '🎮 Bản Chơi Thử Live 60fps'}</span>
+                        <span>${isMetropolis ? 'Bản Chơi Thử Isometric 3D Live' : 'Bản Chơi Thử Live 60fps'}</span>
                         <span class="text-[10px] font-semibold text-[#3B9EFF]">Miễn phí test</span>
                       </div>
                       <div class="text-[11px] text-slate-400 mt-0.5 truncate">
@@ -888,15 +896,15 @@ window.ShopVietViews.modal = (function () {
                 ` : ''}
 
                 <!-- MÔ TẢ & ĐỐI CHIẾU -->
-                <div class="p-4 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80 space-y-3 text-xs">
+                <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 space-y-3 text-xs">
                   <p class="text-slate-700 dark:text-slate-300 leading-relaxed text-xs sm:text-sm">
                     ${escapeHTML(currentProduct.desc || 'Bộ tài nguyên & mã nguồn chuẩn hóa. Mở khóa một lần để tải file trực tiếp trên web.')}
                   </p>
 
                   ${currentProduct.beforeAfter ? `
-                    <div class="pt-2.5 border-t border-slate-200/70 dark:border-slate-800 space-y-2">
+                    <div class="pt-2.5 border-t border-slate-900/10 dark:border-white/10 space-y-2">
                       <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                        <span>⚖️ Hiệu quả trước &amp; sau</span>
+                        <span>Hiệu quả trước &amp; sau</span>
                       </span>
                       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                         <div class="p-2.5 rounded-xl bg-rose-500/[0.06] dark:bg-rose-950/25 border border-rose-500/20 space-y-1">
@@ -915,9 +923,9 @@ window.ShopVietViews.modal = (function () {
                     </div>
                   ` : ''}
 
-                  <div class="pt-2.5 border-t border-slate-200/70 dark:border-slate-800 space-y-1.5">
+                  <div class="pt-2.5 border-t border-slate-900/10 dark:border-white/10 space-y-1.5">
                     <span class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <span class="text-[#0071E3] dark:text-[#3B9EFF]">⚡</span>
+                      <svg class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                       <span>${isSourceStarter ? 'Bao gồm trong gói Source Starter:' : 'Đặc quyền sở hữu Hộp Công Cụ:'}</span>
                     </span>
                     <ul class="space-y-1 text-[11px] text-slate-600 dark:text-slate-400 pl-4 list-disc">
@@ -935,11 +943,10 @@ window.ShopVietViews.modal = (function () {
                 </div>
 
                 <!-- HÌNH THỨC CẤP PHÉP -->
-                <div class="flex items-center justify-between p-3 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80">
+                <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10">
                   <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Hình thức cấp phép:</span>
-                  <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>${isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn' : 'Bản quyền vĩnh viễn (1-Click Copy)'}</span>
+                  <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                    ${isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn' : 'Bản quyền vĩnh viễn (1-Click Copy)'}
                   </span>
                 </div>
 
@@ -1016,37 +1023,31 @@ window.ShopVietViews.modal = (function () {
                       </button>
                     </div>
                   ` : isFreeProduct ? `
-                    <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+                    <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
                       <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                          <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Starter Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
-                        </div>
+                        <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Starter Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
                         <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
                           ${formatMoney(userBalance)} Xu
                         </span>
                       </div>
                       <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
-                        ✓ Miễn phí 0 Xu · Bấm Mở Khóa để tải ngay bộ Starter (không trừ số dư ví).
+                        Miễn phí 0 Xu · Bấm Mở Khóa để tải ngay bộ Starter (không trừ số dư ví).
                       </p>
                     </div>
                   ` : isSufficient ? `
-                    <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+                    <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
                       <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                          <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Ví Xu của bạn (${escapeHTML(currentUser.name || 'Khách hàng')}):</span>
-                        </div>
+                        <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Ví Xu của bạn (${escapeHTML(currentUser.name || 'Khách hàng')}):</span>
                         <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
                           ${formatMoney(userBalance)} Xu
                         </span>
                       </div>
                       <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
-                        ✓ Đủ số dư! Sau khi mở khóa ví còn <strong class="font-mono tabular-nums">${formatMoney(userBalance - totalXu)} Xu</strong>.
+                        Đủ số dư. Sau khi mở khóa ví còn <strong class="font-mono tabular-nums">${formatMoney(userBalance - totalXu)} Xu</strong>.
                       </p>
                     </div>
                   ` : `
-                    <div class="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5">
+                    <div class="p-3.5 rounded-xl bg-slate-100/90 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5">
                       <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Ví Xu hiện tại:</span>
                         <span class="text-sm font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
@@ -1069,13 +1070,13 @@ window.ShopVietViews.modal = (function () {
             </div>
 
             <!-- FOOTER MODAL -->
-            <div class="px-5 py-4 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#090B10]/90 space-y-2.5 shrink-0">
+            <div class="px-5 py-4 border-t border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] space-y-2.5 shrink-0">
               <div id="quickBuyFooterAction">
               ${!currentUser ? `
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.goToAuth()"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer"
+                  class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
                   <span>${isFreeProduct ? 'Đăng Nhập Ví Xu Để Nhận Miễn Phí (0 Xu)' : 'Đăng Nhập Ví Xu Để Mở Khóa'}</span>
                 </button>
@@ -1083,36 +1084,37 @@ window.ShopVietViews.modal = (function () {
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.openUnlockedDirectly('${escapeHTML(currentProduct.id)}')"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/20 transition-all active:scale-98 cursor-pointer"
+                  class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
-                  <span>✓</span>
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                   <span>Đã Mở Khóa · Bấm Tải Code &amp; Xem Chi Tiết</span>
                 </button>
               ` : isFreeProduct ? `
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.unlockFreeProduct()"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+                  class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
                 >
-                  <span>🎁</span>
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v10H4V12M2 7h20v5H2zm10 15V7m0 0H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zm0 0h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
                   <span>Mở Khóa Miễn Phí (0 Xu) · Tải Ngay</span>
                 </button>
               ` : isSufficient ? `
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.showPurchaseConfirmDialog()"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+                  class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
                 >
-                  <span>🪙</span>
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>
                   <span>Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay</span>
                 </button>
               ` : `
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.openDepositForShortage(${totalXu - userBalance})"
-                  class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+                  class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
                 >
-                  <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
+                  <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                  <span>Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
                 </button>
               `}
               </div>
@@ -1160,37 +1162,31 @@ window.ShopVietViews.modal = (function () {
       const walletBox = document.getElementById('modalWalletSection');
       if (walletBox && currentUser) {
         walletBox.innerHTML = isFreeOrder ? `
-          <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
-              </div>
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
               <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
                 ${formatMoney(userBalance)} Xu
               </span>
             </div>
             <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
-              ✓ Không trừ số dư ví · Bấm Mở Khóa để tải ngay về máy.
+              Không trừ số dư ví · Bấm Mở Khóa để tải ngay về máy.
             </p>
           </div>
         ` : isSufficient ? `
-          <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+          <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Ví Xu của bạn (${escapeHTML(currentUser.name || 'Khách hàng')}):</span>
-              </div>
+              <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Ví Xu của bạn (${escapeHTML(currentUser.name || 'Khách hàng')}):</span>
               <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
                 ${formatMoney(userBalance)} Xu
               </span>
             </div>
             <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
-              ✓ Đủ số dư! Sau khi mở khóa ví còn <strong class="font-mono tabular-nums">${formatMoney(userBalance - totalXu)} Xu</strong>.
+              Đủ số dư. Sau khi mở khóa ví còn <strong class="font-mono tabular-nums">${formatMoney(userBalance - totalXu)} Xu</strong>.
             </p>
           </div>
         ` : `
-          <div class="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5">
+          <div class="p-3.5 rounded-xl bg-slate-100/90 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Ví Xu hiện tại:</span>
               <span class="text-sm font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
@@ -1209,27 +1205,28 @@ window.ShopVietViews.modal = (function () {
           <button
             type="button"
             onclick="ShopVietViews.modal.unlockFreeProduct()"
-            class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+            class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
           >
-            <span>🎁</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12v10H4V12M2 7h20v5H2zm10 15V7m0 0H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7zm0 0h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7z"/></svg>
             <span>Mở Khóa Miễn Phí (0 Xu) · Tải Ngay</span>
           </button>
         ` : isSufficient ? `
           <button
             type="button"
             onclick="ShopVietViews.modal.showPurchaseConfirmDialog()"
-            class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+            class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
           >
-            <span>🪙</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>
             <span>Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay</span>
           </button>
         ` : `
           <button
             type="button"
             onclick="ShopVietViews.modal.openDepositForShortage(${totalXu - userBalance})"
-            class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+            class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
           >
-            <span>⚡ Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span>Nạp ${formatMoney(totalXu - userBalance)} Xu Qua VietQR MBBank</span>
           </button>
         `;
       }
@@ -1261,7 +1258,7 @@ window.ShopVietViews.modal = (function () {
       if (window.ShopVietState) window.ShopVietState.appliedQuickBuyVoucher = result;
       if (msgEl) {
         msgEl.className = 'text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25';
-        msgEl.innerHTML = `<span>✓ ${escapeHTML(result.message)}</span><button type="button" onclick="ShopVietViews.modal.clearQuickBuyVoucher()" class="text-rose-600 dark:text-rose-400 underline text-[10px] cursor-pointer shrink-0">Gỡ mã</button>`;
+        msgEl.innerHTML = `<span>${escapeHTML(result.message)}</span><button type="button" onclick="ShopVietViews.modal.clearQuickBuyVoucher()" class="text-rose-600 dark:text-rose-400 underline text-[10px] cursor-pointer shrink-0">Gỡ mã</button>`;
       }
       this._refreshQuickBuyPricingDOM();
     },
@@ -1299,13 +1296,13 @@ window.ShopVietViews.modal = (function () {
       const idToken = await getFirebaseIdToken();
       if (!idToken) {
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để xác thực quyền tải mã nguồn!', 'warning');
+          window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để xác thực quyền tải mã nguồn.', 'warning');
         }
         return;
       }
 
       if (window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast(`⏳ Đang xác thực quyền & chuẩn bị tải ${targetName}...`, 'info');
+        window.ShopVietState.showToast(`Đang xác thực quyền và chuẩn bị tải ${targetName}...`, 'info');
       }
 
       try {
@@ -1335,11 +1332,11 @@ window.ShopVietViews.modal = (function () {
           if (a.parentNode) a.parentNode.removeChild(a);
         }, 1200);
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast(`✓ Đã tải xuống ${fallbackFilename || targetName}!`, 'success');
+          window.ShopVietState.showToast(`Đã tải xuống ${fallbackFilename || targetName}`, 'success');
         }
       } catch (err) {
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('Lỗi kết nối khi tải tệp. Vui lòng thử lại!', 'error');
+          window.ShopVietState.showToast('Lỗi kết nối khi tải tệp. Vui lòng thử lại.', 'error');
         }
       }
     },
@@ -1376,7 +1373,7 @@ window.ShopVietViews.modal = (function () {
         if (!isLegit) {
           this.closeConfirmDialog();
           if (window.ShopVietState.showToast) {
-            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ! Vui lòng nạp tiền chính quy.', 'error');
+            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ. Vui lòng nạp tiền chính quy.', 'error');
           }
           return;
         }
@@ -1390,7 +1387,7 @@ window.ShopVietViews.modal = (function () {
 
       if (balance < totalAmount) {
         if (window.ShopVietState) {
-          window.ShopVietState.showToast(`Số dư ví (${formatMoney(balance)} Xu) không đủ! Vui lòng nạp thêm.`, 'warning');
+          window.ShopVietState.showToast(`Số dư ví (${formatMoney(balance)} Xu) không đủ. Vui lòng nạp thêm.`, 'warning');
         }
         this.openDepositForShortage(totalAmount - balance);
         return;
@@ -1400,15 +1397,15 @@ window.ShopVietViews.modal = (function () {
 
       const dialogEl = document.createElement('div');
       dialogEl.id = 'confirmPurchaseOverlay';
-      dialogEl.className = 'fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 transition-opacity animate-fade-in';
+      dialogEl.className = 'fixed inset-0 z-[60] bg-slate-950/75 flex items-center justify-center p-3 sm:p-5 transition-opacity duration-150';
       dialogEl.onclick = function (e) {
         if (e.target === dialogEl) ShopVietViews.modal.closeConfirmDialog();
       };
 
       dialogEl.innerHTML = `
-        <div class="max-w-md w-full bg-white/92 dark:bg-[#0B0F17]/92 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden transform transition-all animate-slide-up p-5 sm:p-6 text-center space-y-4" onclick="event.stopPropagation()">
-          <div class="w-14 h-14 mx-auto rounded-2xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center text-3xl">
-            🪙
+        <div class="max-w-md w-full bg-white dark:bg-[#111520] rounded-2xl shadow-xl border border-slate-900/10 dark:border-white/10 overflow-hidden p-5 sm:p-6 text-center space-y-4" onclick="event.stopPropagation()">
+          <div class="w-14 h-14 mx-auto rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>
           </div>
 
           <div>
@@ -1420,7 +1417,7 @@ window.ShopVietViews.modal = (function () {
             </p>
           </div>
 
-          <div class="p-3.5 rounded-2xl bg-slate-50/90 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 text-left space-y-2 text-xs">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-left space-y-2 text-xs">
             <div class="flex items-center justify-between gap-2">
               <span class="text-slate-500 dark:text-slate-400">Gói mở khóa:</span>
               <strong class="text-slate-900 dark:text-white font-bold truncate max-w-[210px]">${escapeHTML(currentProduct.name)}</strong>
@@ -1429,7 +1426,7 @@ window.ShopVietViews.modal = (function () {
               <span class="text-slate-500 dark:text-slate-400">Giá thanh toán:</span>
               <strong class="text-[#0071E3] dark:text-[#3B9EFF] font-extrabold text-sm font-mono tabular-nums">-${formatMoney(totalAmount)} Xu</strong>
             </div>
-            <div class="flex items-center justify-between border-t border-slate-200/80 dark:border-slate-800 pt-2">
+            <div class="flex items-center justify-between border-t border-slate-900/10 dark:border-white/10 pt-2">
               <span class="text-slate-500 dark:text-slate-400">Số dư ví hiện tại:</span>
               <span class="font-mono text-slate-700 dark:text-slate-300 font-semibold tabular-nums">${formatMoney(balance)} Xu</span>
             </div>
@@ -1440,7 +1437,7 @@ window.ShopVietViews.modal = (function () {
           </div>
 
           <div class="p-2.5 rounded-xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 text-slate-700 dark:text-slate-200 text-[11px] text-left leading-relaxed flex items-center gap-2 border border-[#0071E3]/20">
-            <span class="text-sm shrink-0 text-[#0071E3] dark:text-[#3B9EFF]">⚡</span>
+            <svg class="w-4 h-4 shrink-0 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             <span>Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời. Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
           </div>
 
@@ -1456,9 +1453,9 @@ window.ShopVietViews.modal = (function () {
               id="btnConfirmExecutePurchase"
               type="button"
               onclick="ShopVietViews.modal.executePurchase()"
-              class="py-3 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-lg shadow-blue-500/25 transition active:scale-98 cursor-pointer flex items-center justify-center gap-1.5"
+              class="py-3 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
-              <span>⚡ Xác Nhận Mua</span>
+              <span>Xác Nhận Mua</span>
             </button>
           </div>
         </div>
@@ -1488,7 +1485,7 @@ window.ShopVietViews.modal = (function () {
         this.close();
         if (window.ShopVietState) {
           if (typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để mở khóa kỹ năng AI này!', 'info');
+            window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để mở khóa kỹ năng AI này.', 'info');
           }
           if (typeof window.ShopVietState.navigate === 'function') {
             window.ShopVietState.navigate('login');
@@ -1511,7 +1508,7 @@ window.ShopVietViews.modal = (function () {
         if (!isLegit) {
           this.closeConfirmDialog();
           if (window.ShopVietState.showToast) {
-            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ! Vui lòng nạp tiền chính quy.', 'error');
+            window.ShopVietState.showToast('Cảnh báo bảo mật: Dữ liệu số dư ví không hợp lệ. Vui lòng nạp tiền chính quy.', 'error');
           }
           return;
         }
@@ -1527,7 +1524,7 @@ window.ShopVietViews.modal = (function () {
       if (balance < totalAmount) {
         this.closeConfirmDialog();
         if (window.ShopVietState) {
-          window.ShopVietState.showToast(`Số dư ví (${formatMoney(balance)} Xu) không đủ! Vui lòng nạp thêm.`, 'warning');
+          window.ShopVietState.showToast(`Số dư ví (${formatMoney(balance)} Xu) không đủ. Vui lòng nạp thêm.`, 'warning');
         }
         this.openDepositForShortage(totalAmount - balance);
         return;
@@ -1539,7 +1536,7 @@ window.ShopVietViews.modal = (function () {
       if (btn) {
         btn.disabled = true;
         btn.classList.add('opacity-75', 'cursor-not-allowed');
-        btn.innerHTML = `<span class="inline-block animate-spin mr-1">⏳</span> Đang mở khóa...`;
+        btn.innerHTML = `<span class="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-1.5"></span> Đang mở khóa...`;
       }
 
       // 1. Tạo mã đơn hàng chuẩn #DJ2026xxxx
@@ -1575,7 +1572,7 @@ window.ShopVietViews.modal = (function () {
         isPurchasing = false;
         this.closeConfirmDialog();
         if (window.ShopVietState) {
-          window.ShopVietState.showToast('Giao dịch thất bại: Số dư ví không đủ hoặc ví đang được giao dịch ở tab khác!', 'error');
+          window.ShopVietState.showToast('Giao dịch thất bại: Số dư ví không đủ hoặc ví đang được giao dịch ở tab khác.', 'error');
         }
         return;
       }
@@ -1639,7 +1636,7 @@ window.ShopVietViews.modal = (function () {
 
       // 5. Gửi thông báo ntfy
       if (window.ShopVietNtfy && typeof window.ShopVietNtfy.send === 'function') {
-        window.ShopVietNtfy.send(`Khách mua kỹ năng: ${currentProduct.name}`, `Đã trừ ${formatMoney(totalAmount)} Xu của ${currentUser.name} (${currentUser.email}). Mở khóa trực tiếp!`);
+        window.ShopVietNtfy.send(`Khách mua kỹ năng: ${currentProduct.name}`, `Đã trừ ${formatMoney(totalAmount)} Xu của ${currentUser.name} (${currentUser.email}). Mở khóa trực tiếp.`);
       }
 
       this.closeConfirmDialog();
@@ -1647,26 +1644,26 @@ window.ShopVietViews.modal = (function () {
       // 6. HIEN THI POP-UP THONG BAO MO KHOA THANH CONG TUC THI
       const successOverlay = document.createElement('div');
       successOverlay.id = 'purchaseSuccessOverlay';
-      successOverlay.className = 'fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 transition-opacity animate-fade-in';
+      successOverlay.className = 'fixed inset-0 z-[70] bg-slate-950/75 flex items-center justify-center p-3 sm:p-5 transition-opacity duration-150';
       
       successOverlay.innerHTML = `
-        <div class="max-w-md w-full bg-white/92 dark:bg-[#0B0F17]/92 backdrop-blur-2xl rounded-3xl shadow-2xl border border-emerald-500/35 p-6 text-center space-y-4 animate-scale-up" onclick="event.stopPropagation()">
-          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-3xl">
-            🎉
+        <div class="max-w-md w-full bg-white dark:bg-[#111520] rounded-2xl shadow-xl border border-emerald-500/35 p-6 text-center space-y-4" onclick="event.stopPropagation()">
+          <div class="w-16 h-16 mx-auto rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 flex items-center justify-center">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
           </div>
           <div>
             <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-1">
               Giao dịch thành công · Đã niêm phong
             </div>
             <h3 class="text-xl font-bold text-slate-900 dark:text-white">
-              Đã Mở Khóa Thành Công!
+              Đã Mở Khóa Thành Công
             </h3>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 tabular-nums">
               Đơn hàng <strong class="text-[#0071E3] dark:text-[#3B9EFF] font-mono">${escapeHTML(order.orderCode)}</strong> đã kích hoạt · Đã trừ ${formatMoney(totalAmount)} Xu.
             </p>
           </div>
 
-          <div class="p-3.5 rounded-2xl bg-slate-50/90 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 text-xs text-left space-y-1.5">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-xs text-left space-y-1.5">
             <div class="flex items-center justify-between gap-2">
               <span class="text-slate-500 dark:text-slate-400">Sản phẩm:</span>
               <strong class="text-slate-900 dark:text-white font-semibold truncate max-w-[200px]">${escapeHTML(order.productName)}</strong>
@@ -1684,9 +1681,9 @@ window.ShopVietViews.modal = (function () {
           <button
             type="button"
             onclick="ShopVietViews.modal.finishSuccessCelebration()"
-            class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+            class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>🚀 Mở Kho Tải Code &amp; Sao Chép Prompt Ngay</span>
+            <span>Mở Kho Tải Code &amp; Sao Chép Prompt Ngay</span>
           </button>
         </div>
       `;
@@ -1821,7 +1818,7 @@ window.ShopVietViews.modal = (function () {
         }
 
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast(`🎁 Đã mở khóa miễn phí "${currentProduct.name}"! Bạn có thể tải ngay về máy.`, 'success');
+          window.ShopVietState.showToast(`Đã mở khóa miễn phí "${currentProduct.name}". Bạn có thể tải ngay về máy.`, 'success');
         }
 
         isPurchasing = false;
@@ -1829,7 +1826,7 @@ window.ShopVietViews.modal = (function () {
       } catch (err) {
         isPurchasing = false;
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Không thể mở khóa miễn phí lúc này. Vui lòng thử lại!', 'error');
+          window.ShopVietState.showToast('Không thể mở khóa miễn phí lúc này. Vui lòng thử lại.', 'error');
         }
       }
     },
@@ -1842,10 +1839,10 @@ window.ShopVietViews.modal = (function () {
       let selectedAmount = Math.max(1000, Math.round((Number(initialAmount) || 9000) / 1000) * 1000);
       const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || null;
 
-      // Mã nạp do SERVER cấp và gắn với email đã xác thực → SePay cộng đúng ví.
+      // Mã nạp do SERVER cấp và gắn với email đã xác thực -> SePay cộng đúng ví.
       if (!currentUser || !currentUser.isLoggedIn || !currentUser.email) {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để nạp Xu vào ví!', 'info');
+          window.ShopVietState.showToast('Vui lòng đăng nhập tài khoản để nạp Xu vào ví.', 'info');
         }
         return;
       }
@@ -1855,7 +1852,7 @@ window.ShopVietViews.modal = (function () {
       if (window.ShopVietState && typeof window.ShopVietState.isUserBanned === 'function') {
         if (window.ShopVietState.isUserBanned(cleanEmail)) {
           if (typeof window.ShopVietState.showToast === 'function') {
-            window.ShopVietState.showToast('Tài khoản đã bị khóa do vi phạm chính sách hệ thống!', 'error');
+            window.ShopVietState.showToast('Tài khoản đã bị khóa do vi phạm chính sách hệ thống.', 'error');
           }
           if (typeof window.ShopVietState.logout === 'function') {
             window.ShopVietState.logout();
@@ -1867,7 +1864,7 @@ window.ShopVietViews.modal = (function () {
       const idToken = await getFirebaseIdToken();
       if (!idToken) {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để nạp Xu!', 'warning');
+          window.ShopVietState.showToast('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại để nạp Xu.', 'warning');
         }
         return;
       }
@@ -1875,7 +1872,7 @@ window.ShopVietViews.modal = (function () {
       const intent = await requestDepositIntent(idToken, selectedAmount, currentUser.name);
       if (!intent) {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Không tạo được mã nạp Xu (' + (lastTopupError || 'lỗi máy chủ') + '). Vui lòng thử lại sau ít giây!', 'error');
+          window.ShopVietState.showToast('Không tạo được mã nạp Xu (' + (lastTopupError || 'lỗi máy chủ') + '). Vui lòng thử lại sau ít giây.', 'error');
         }
         return;
       }
@@ -1894,27 +1891,26 @@ window.ShopVietViews.modal = (function () {
       modalMount.innerHTML = `
         <div
           id="depositBackdrop"
-          class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 transition-opacity animate-fade-in"
+          class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-3 sm:p-5 transition-opacity duration-150"
           onclick="if(event.target === this) ShopVietViews.modal.close()"
         >
           <div
-            class="max-w-lg w-full bg-white/92 dark:bg-[#0B0F17]/92 backdrop-blur-2xl rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800/80 overflow-hidden transform transition-all animate-slide-up flex flex-col max-h-[94vh]"
+            class="max-w-lg w-full bg-white dark:bg-[#111520] rounded-2xl shadow-xl border border-slate-900/10 dark:border-white/10 overflow-hidden flex flex-col max-h-[94vh]"
             onclick="event.stopPropagation()"
           >
             <!-- HEADER NẠP XU -->
-            <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/70 dark:bg-[#090B10]/80">
+            <div class="px-5 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between bg-slate-50 dark:bg-[#090B10]">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-9 h-9 rounded-2xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center text-lg font-bold shrink-0">
-                  ⚡
+                <span class="w-9 h-9 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 </span>
                 <div class="min-w-0">
                   <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2 flex-wrap">
                     <span>Nạp Xu Vào Ví Tự Động</span>
                     <span class="text-[11px] font-semibold text-[#0071E3] dark:text-[#3B9EFF] tabular-nums">· 1 VNĐ = 1 Xu</span>
                   </h3>
-                  <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span>Cổng SePay Tự Động 24/7 · Cộng Xu tức thì 2-5s</span>
+                  <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                    Cổng SePay Tự Động 24/7 · Cộng Xu tức thì 2-5s
                   </p>
                 </div>
               </div>
@@ -1926,8 +1922,8 @@ window.ShopVietViews.modal = (function () {
             <!-- BODY NẠP XU -->
             <div class="p-4 sm:p-5 space-y-4 overflow-y-auto text-center flex-1">
 
-              <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-slate-800 dark:text-slate-200 text-xs text-left leading-relaxed flex items-start gap-2.5">
-                <span class="text-base shrink-0 text-emerald-600 dark:text-emerald-400">⚡</span>
+              <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-slate-800 dark:text-slate-200 text-xs text-left leading-relaxed flex items-start gap-2.5">
+                <svg class="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                 <div>
                   <strong class="text-emerald-700 dark:text-emerald-300">Cổng Nạp SePay Tự Động 24/7:</strong>
                   Quét mã QR hoặc chuyển khoản đúng nội dung <span class="font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/10 px-1.5 py-0.5 rounded">${escapeHTML(memo)}</span>. Hệ thống tự động khớp lệnh và cộng Xu sau 2-5 giây.
@@ -2006,12 +2002,9 @@ window.ShopVietViews.modal = (function () {
             </div>
 
             <!-- FOOTER NẠP XU -->
-            <div class="px-5 py-3.5 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#090B10]/90 space-y-2.5 shrink-0">
+            <div class="px-5 py-3.5 border-t border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] space-y-2.5 shrink-0">
               <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
-                  <span class="font-semibold">SePay tự động duyệt 24/7 khi ngân hàng báo có</span>
-                </div>
+                <span class="font-semibold">SePay tự động duyệt 24/7 khi ngân hàng báo có</span>
                 <span class="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-300 shrink-0">Tự động 100%</span>
               </div>
               <button
@@ -2065,7 +2058,7 @@ window.ShopVietViews.modal = (function () {
         }
         if (window.ShopVietState && window.ShopVietState.showToast) {
           const credAmt = Number(status && status.amount) || selectedAmount;
-          window.ShopVietState.showToast(`🎉 Nạp xu thành công! SePay đã xác nhận và cộng +${credAmt.toLocaleString('vi-VN')} Xu vào ví.`, 'success');
+          window.ShopVietState.showToast(`Nạp xu thành công. SePay đã xác nhận và cộng +${credAmt.toLocaleString('vi-VN')} Xu vào ví.`, 'success');
         }
         ShopVietViews.modal.close();
         if (window.ShopVietState && window.ShopVietState.renderCurrentRoute) {
@@ -2083,7 +2076,7 @@ window.ShopVietViews.modal = (function () {
           if (sec <= 0) {
             clearInterval(intervalId);
             btn.disabled = false;
-            btn.className = "w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-emerald-900/20 transition active:scale-98 cursor-pointer flex items-center justify-center gap-2";
+            btn.className = "w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs sm:text-sm transition-colors cursor-pointer flex items-center justify-center gap-2";
             btn.onclick = function () { ShopVietViews.modal.confirmDepositSent(selectedAmount, memo); };
             btn.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span>TÔI ĐÃ CHUYỂN KHOẢN • BẮN THÔNG BÁO CHO BÙI THÁI DUYỆT</span>`;
           } else if (txt) {
@@ -2103,7 +2096,7 @@ window.ShopVietViews.modal = (function () {
 
     confirmDepositSent: async function () {
       if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
-        window.ShopVietState.showToast('⏳ Đang đồng bộ số dư từ SePay...', 'info');
+        window.ShopVietState.showToast('Đang đồng bộ số dư từ SePay...', 'info');
         await window.ShopVietState.syncTopupsFromCloud(true).catch(() => {});
       }
       this.close();
@@ -2116,7 +2109,7 @@ window.ShopVietViews.modal = (function () {
       currentUser.balance = newBal;
       if (window.ShopVietState) {
         window.ShopVietState.updateUserBalance(currentUser.email, newBal);
-        window.ShopVietState.showToast(`⚡ [Demo] Đã cộng thành công +${formatMoney(amount)} Xu vào ví! Số dư mới: ${formatMoney(newBal)} Xu.`, 'success');
+        window.ShopVietState.showToast(`[Demo] Đã cộng thành công +${formatMoney(amount)} Xu vào ví. Số dư mới: ${formatMoney(newBal)} Xu.`, 'success');
       }
       if (currentProduct) {
         this.open(currentProduct.id);
@@ -2155,23 +2148,25 @@ window.ShopVietViews.modal = (function () {
       const hasWordDoc = !isSourceStarter && (prodId === 'skill-pixel-vfx-engine' || /\.(docx?|pdf)$/i.test(docUrlRaw));
 
       modalMount.innerHTML = `
-        <div id="unlockedSkillBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
-          <div class="bg-white/95 dark:bg-[#0B0F17]/95 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh] animate-slide-up text-slate-900 dark:text-slate-100">
+        <div id="unlockedSkillBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
+          <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh] animate-slide-up text-slate-900 dark:text-slate-100">
             
-            <!-- HEADER MỞ KHÓA LIQUID GLASS -->
-            <div class="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#090B10]/85 space-y-3 shrink-0">
+            <!-- HEADER MỞ KHÓA STUDIO -->
+            <div class="p-4 sm:p-5 border-b border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] space-y-3 shrink-0">
               <div class="flex items-start justify-between gap-3">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-10 h-10 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/25 flex items-center justify-center text-lg font-bold shrink-0">
-                    ${isSourceStarter ? '📦' : '🔓'}
+                  <div class="w-10 h-10 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/25 flex items-center justify-center shrink-0">
+                    ${isSourceStarter
+                      ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>'
+                      : '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>'}
                   </div>
                   <div class="min-w-0">
                     <div class="flex items-center gap-2 flex-wrap text-xs">
                       <span class="inline-flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-400">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                         <span>Đã mở khóa thành công</span>
                       </span>
-                      <span class="text-slate-300 dark:text-slate-700">•</span>
+                      <span class="text-slate-300 dark:text-slate-700">/</span>
                       <span class="font-mono text-slate-500 dark:text-slate-400 tabular-nums">Đơn ${escapeHTML(order.id || '')}</span>
                     </div>
                     <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white line-clamp-1 mt-0.5">
@@ -2182,10 +2177,10 @@ window.ShopVietViews.modal = (function () {
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.close()" 
-                  class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer shrink-0"
+                  class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 transition cursor-pointer shrink-0"
                   title="Đóng (Esc)"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
               </div>
 
@@ -2194,46 +2189,49 @@ window.ShopVietViews.modal = (function () {
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.copyMasterPrompt('${escapeHTML(prodId)}')"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-xs shadow-sm transition-all active:scale-95 cursor-pointer"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-xs shadow-2xs transition cursor-pointer"
                   title="Sao chép toàn bộ Master Prompt"
                 >
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                   <span>Copy Master Prompt</span>
                 </button>
                 ${zipHref ? `
                   <button
                     type="button"
                     onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(zipHref)}', '${escapeHTML(zipName)}', '${escapeHTML(prodId)}')"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm tabular-nums"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition cursor-pointer shadow-2xs tabular-nums"
                     title="Tải gói mã nguồn về máy"
                   >
-                    <span>📦 Tải ${isSingleHtmlDownload ? '.html' : '.zip'}${zipSize ? ` (${escapeHTML(zipSize)})` : ''}</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Tải ${isSingleHtmlDownload ? '.html' : '.zip'}${zipSize ? ` (${escapeHTML(zipSize)})` : ''}</span>
                   </button>
                 ` : ''}
                 ${demoTargetUrl ? `
                   <button 
                     type="button" 
                     onclick="ShopVietViews.modal.openGameDemo('${escapeHTML(demoTargetUrl)}', '${escapeHTML(prodId)}')" 
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition active:scale-95 cursor-pointer border border-slate-700/60"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition cursor-pointer border border-slate-700/60"
                     title="Mở bản xem trước trực tiếp"
                   >
-                    <span>▶ Live Demo</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Live Demo</span>
                   </button>
                 ` : ''}
                 ${hasWordDoc ? `
                   <button
                     type="button"
                     onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prodId)}')"
-                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 font-bold text-xs transition active:scale-95 cursor-pointer"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-900/10 dark:border-white/10 font-bold text-xs transition cursor-pointer"
                     title="Tải tài liệu Word (.docx) về máy"
                   >
-                    <span>📄 Tải .docx</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Tải .docx</span>
                   </button>
                 ` : ''}
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.exportToNotion('${escapeHTML(prodId)}')"
-                  class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition cursor-pointer"
+                  class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition cursor-pointer"
                   title="Xuất trọn bộ sang Notion"
                 >
                   <span>Xuất Notion</span>
@@ -2241,7 +2239,7 @@ window.ShopVietViews.modal = (function () {
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.downloadCurrentSkillFile('${escapeHTML(prodId)}')"
-                  class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition cursor-pointer"
+                  class="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs transition cursor-pointer"
                   title="Tải file Markdown (.md) về máy"
                 >
                   <span>Tải .md</span>
@@ -2252,8 +2250,8 @@ window.ShopVietViews.modal = (function () {
             ${hasWordDoc ? `
               <div class="mx-5 mt-3 p-3.5 rounded-2xl bg-[#0071E3]/5 dark:bg-[#3B9EFF]/10 border border-[#0071E3]/25 dark:border-[#3B9EFF]/25 flex items-center justify-between gap-3 flex-wrap">
                 <div class="flex items-center gap-3 min-w-0">
-                  <div class="w-10 h-10 rounded-xl bg-[#0071E3] text-white flex items-center justify-center text-lg shadow-sm shrink-0">
-                    📄
+                  <div class="w-10 h-10 rounded-xl bg-[#0071E3] text-white flex items-center justify-center shadow-2xs shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                   </div>
                   <div class="min-w-0">
                     <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
@@ -2268,14 +2266,15 @@ window.ShopVietViews.modal = (function () {
                   <button
                     type="button"
                     onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(docUrlRaw || 'downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prod.docFileName || payload.docFileName || 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.docx')}', '${escapeHTML(prodId)}')"
-                    class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-sm active:scale-95 transition cursor-pointer flex items-center gap-1.5"
+                    class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-2xs transition cursor-pointer flex items-center gap-1.5"
                   >
-                    <span>📥 Tải .docx</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Tải .docx</span>
                   </button>
                   <button
                     type="button"
                     onclick="ShopVietViews.modal.downloadProtectedAsset('downloads/TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc', 'TRON_BO_246_MASTER_PROMPTS_GAME_PIXEL_VFX_SOUND_FX.doc', '${escapeHTML(prodId)}')"
-                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow-sm active:scale-95 transition cursor-pointer flex items-center gap-1.5"
+                    class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs shadow-2xs transition cursor-pointer flex items-center gap-1.5"
                   >
                     <span>Bản .doc</span>
                   </button>
@@ -2305,12 +2304,11 @@ window.ShopVietViews.modal = (function () {
               <!-- TAB 1: MASTER PROMPT (1-CLICK COPY) -->
               <div id="skillTabPaneFile" class="space-y-3">
                 <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  <span class="flex items-center gap-1.5">
                     <span>Độ dài: <strong class="font-mono text-slate-900 dark:text-slate-100 tabular-nums">${masterPromptText.length.toLocaleString('vi-VN')} ký tự</strong></span>
                   </span>
                   <button type="button" onclick="ShopVietViews.modal.copyMasterPrompt('${escapeHTML(prodId)}')" class="text-[#0071E3] dark:text-[#3B9EFF] hover:underline font-bold text-xs flex items-center gap-1 cursor-pointer">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                     <span>Sao chép toàn bộ Prompt</span>
                   </button>
                 </div>
@@ -2365,12 +2363,13 @@ ${escapeHTML(masterPromptText)}
 
                 <!-- THANH TÌM KIẾM PROMPT -->
                 <div class="relative">
+                  <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   <input 
                     type="text" 
                     id="cheatSheetSearchInput" 
                     oninput="ShopVietViews.modal.filterCheatSheet(this.value)" 
-                    placeholder="🔍 Tìm nhanh trong ${cheatSheet.length} câu lệnh..." 
-                    class="w-full px-4 py-2.5 rounded-xl text-xs bg-slate-50/90 dark:bg-[#090B10] border border-slate-200/80 dark:border-slate-800 focus:outline-none focus:border-[#0071E3] dark:focus:border-[#3B9EFF] text-slate-900 dark:text-slate-100 placeholder-slate-400"
+                    placeholder="Tìm nhanh trong ${cheatSheet.length} câu lệnh..." 
+                    class="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs bg-[#F7F8FA] dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 focus:outline-none focus:border-[#0071E3] dark:focus:border-[#3B9EFF] text-slate-900 dark:text-slate-100 placeholder-slate-400"
                   />
                 </div>
 
@@ -2399,7 +2398,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                       </div>
                       ${item.example ? `
                         <p class="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
-                          💡 Gợi ý: <span class="text-slate-700 dark:text-slate-300 font-mono">${escapeHTML(item.example)}</span>
+                          Gợi ý: <span class="text-slate-700 dark:text-slate-300 font-mono">${escapeHTML(item.example)}</span>
                         </p>
                       ` : ''}
                     </div>
@@ -2414,7 +2413,8 @@ ${escapeHTML(item.template || item.prompt || "")}
                     <!-- Cột Trước Khi Dùng -->
                     <div class="p-4 rounded-2xl bg-red-500/5 dark:bg-red-950/20 border border-red-500/20 space-y-2.5">
                       <div class="flex items-center gap-2 text-red-600 dark:text-red-400 font-bold text-sm">
-                        <span>✕ ${escapeHTML((prod.beforeAfter.before && prod.beforeAfter.before.title) || 'Trước Khi Dùng')}</span>
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <span>${escapeHTML((prod.beforeAfter.before && prod.beforeAfter.before.title) || 'Trước Khi Dùng')}</span>
                       </div>
                       <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                         ${escapeHTML((prod.beforeAfter.before && prod.beforeAfter.before.summary) || (typeof prod.beforeAfter.before === 'string' ? prod.beforeAfter.before : 'Tốn nhiều ngày dựng kiến trúc thủ công từ đầu.'))}
@@ -2429,7 +2429,8 @@ ${escapeHTML(item.template || item.prompt || "")}
                     <!-- Cột Sau Khi Dùng -->
                     <div class="p-4 rounded-2xl bg-[#0071E3]/5 dark:bg-[#3B9EFF]/10 border border-[#0071E3]/25 dark:border-[#3B9EFF]/30 space-y-2.5">
                       <div class="flex items-center gap-2 text-[#0071E3] dark:text-[#3B9EFF] font-bold text-sm">
-                        <span>✓ ${escapeHTML((prod.beforeAfter.after && prod.beforeAfter.after.title) || 'Sau Khi Dùng Starter / Hộp Công Cụ')}</span>
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>${escapeHTML((prod.beforeAfter.after && prod.beforeAfter.after.title) || 'Sau Khi Dùng Starter / Hộp Công Cụ')}</span>
                       </div>
                       <p class="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
                         ${escapeHTML((prod.beforeAfter.after && prod.beforeAfter.after.summary) || (typeof prod.beforeAfter.after === 'string' ? prod.beforeAfter.after : 'Sẵn sàng tùy biến và mở rộng ngay trên codebase chuẩn.'))}
@@ -2450,7 +2451,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-[#090B10] border border-[#0071E3]/30 space-y-3">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                       <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                        <span>${isMetropolis ? '🏙️ Quy Trình Chạy & Tùy Biến Source Code Metropolis 1998' : '📦 Quy Trình Giải Nén & Chạy Source Starter'}</span>
+                        <span>${isMetropolis ? 'Quy Trình Chạy & Tùy Biến Source Code Metropolis 1998' : 'Quy Trình Giải Nén & Chạy Source Starter'}</span>
                       </h4>
                       <span class="text-[11px] font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF]">
                         ${isMetropolis ? 'React 19 + TypeScript + Three.js' : 'Clean Starter Source'}
@@ -2503,7 +2504,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-[#090B10] border border-[#0071E3]/30 space-y-3">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                       <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                        🤖 Quy Trình Cài Đặt 1-Click OpenJarvis Local AI
+                        Quy Trình Cài Đặt 1-Click OpenJarvis Local AI
                       </h4>
                       <span class="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">Local &amp; Offline Ready</span>
                     </div>
@@ -2527,7 +2528,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/90 dark:bg-[#090B10] border border-[#0071E3]/30 space-y-3">
                     <div class="flex items-center justify-between gap-2 flex-wrap">
                       <h4 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                        📦 Quy Trình Tải Gói Zero-Setup &amp; Giải Nén
+                        Quy Trình Tải Gói Zero-Setup &amp; Giải Nén
                       </h4>
                       <span class="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
                         Zero-Setup 100%
@@ -2560,7 +2561,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                       <div class="flex items-center justify-between border-b border-slate-200/80 dark:border-slate-800 pb-2.5">
                         <div>
                           <h4 class="font-bold text-sm text-slate-900 dark:text-white">
-                            🗺️ Bảng Chỉ Mục Phân Khu Master Prompts
+                            Bảng Chỉ Mục Phân Khu Master Prompts
                           </h4>
                           <p class="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
                             Tra cứu nhanh đúng khoảng số thứ tự phù hợp với tác vụ của bạn:
@@ -2652,9 +2653,12 @@ ${escapeHTML(item.template || item.prompt || "")}
             </div>
 
             <!-- AI PROMPT STUDIO — viết lại Master Prompt qua Respan Gateway (api/ai.py) -->
-            <div id="aiPromptStudio" class="hidden px-5 py-4 border-t border-slate-200/80 dark:border-slate-800/80 bg-slate-50/90 dark:bg-[#090B10]/90 space-y-2 shrink-0">
+            <div id="aiPromptStudio" class="hidden px-5 py-4 border-t border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] space-y-2 shrink-0">
               <div class="flex items-center justify-between gap-2">
-                <strong class="text-xs font-bold text-slate-900 dark:text-white">✨ Cá nhân hóa prompt theo dự án của bạn</strong>
+                <strong class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg>
+                  <span>Cá nhân hóa prompt theo dự án của bạn</span>
+                </strong>
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.togglePromptStudio(false)"
@@ -2667,14 +2671,14 @@ ${escapeHTML(item.template || item.prompt || "")}
                 rows="2"
                 maxlength="1000"
                 placeholder="Ví dụ: muốn đổi theme sang thành phố ven biển năm 2005 và thêm hệ thống giao thông đường thủy..."
-                class="w-full text-xs p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/40 resize-none"
+                class="w-full text-xs p-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/40 resize-none"
               ></textarea>
               <div class="flex items-center gap-2 flex-wrap">
                 <button
                   id="aiPromptStudioRun"
                   type="button"
                   onclick="ShopVietViews.modal.runPromptStudio('${escapeHTML(prodId)}')"
-                  class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-[11px] shadow-sm transition active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                  class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-[11px] shadow-2xs transition cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                 >Tạo bản tối ưu</button>
                 <span id="aiPromptStudioStatus" class="text-[11px] text-slate-500 dark:text-slate-400"></span>
               </div>
@@ -2683,13 +2687,13 @@ ${escapeHTML(item.template || item.prompt || "")}
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.copyPromptStudioResult()"
-                  class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] cursor-pointer"
+                  class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer"
                 >Sao chép bản tối ưu</button>
               </div>
             </div>
 
             <!-- FOOTER MỞ KHÓA -->
-            <div class="px-5 py-3.5 border-t border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-[#090B10]/90 flex items-center justify-between gap-3 flex-wrap shrink-0">
+            <div class="px-5 py-3.5 border-t border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] flex items-center justify-between gap-3 flex-wrap shrink-0">
               <button 
                 type="button" 
                 onclick="ShopVietViews.modal.close(); if(window.ShopVietState){window.ShopVietState.navigate('dashboard', { tab: 'orders' });}" 
@@ -2701,22 +2705,23 @@ ${escapeHTML(item.template || item.prompt || "")}
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.togglePromptStudio()"
-                  class="px-3.5 py-2 rounded-xl bg-[#0071E3]/10 hover:bg-[#0071E3]/20 border border-[#0071E3]/30 text-[#0071E3] dark:text-[#3B9EFF] font-bold text-xs cursor-pointer transition"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0071E3]/10 hover:bg-[#0071E3]/20 border border-[#0071E3]/30 text-[#0071E3] dark:text-[#3B9EFF] font-bold text-xs cursor-pointer transition"
                   title="Nhờ AI viết lại prompt cho đúng dự án của bạn"
                 >
-                  ✨ Cá nhân hóa prompt
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z"/></svg>
+                  <span>Cá nhân hóa prompt</span>
                 </button>
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.copyMasterPrompt('${escapeHTML(prodId)}')"
-                  class="px-4 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-xs cursor-pointer shadow-sm transition"
+                  class="px-4 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] dark:bg-[#3B9EFF] dark:hover:bg-[#2A8CEB] text-white dark:text-slate-950 font-bold text-xs cursor-pointer shadow-2xs transition"
                 >
                   Sao Chép Prompt
                 </button>
                 <button 
                   type="button" 
                   onclick="ShopVietViews.modal.close()" 
-                  class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs cursor-pointer shadow-sm"
+                  class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs cursor-pointer shadow-2xs"
                 >
                   Đóng
                 </button>
@@ -2737,7 +2742,7 @@ ${escapeHTML(item.template || item.prompt || "")}
       const text = payload.masterPrompt || payload.skillContent || (prod && prod.desc) || "";
       if (!text) {
         if (window.ShopVietState && typeof window.ShopVietState.showToast === "function") {
-          window.ShopVietState.showToast("Không tìm thấy nội dung prompt!", "error");
+          window.ShopVietState.showToast("Không tìm thấy nội dung prompt.", "error");
         }
         return;
       }
@@ -2863,11 +2868,11 @@ ${escapeHTML(item.template || item.prompt || "")}
         "",
         "## 1. SO SÁNH HIỆU QUẢ TRƯỚC VÀ SAU",
         prod.beforeAfter ? [
-          "### ❌ Trước khi dùng:",
+          "### Trước khi dùng:",
           prod.beforeAfter.before.summary,
           (prod.beforeAfter.before.points || []).map(p => "- " + p).join("\n"),
           "",
-          "### ✅ Sau khi dùng:",
+          "### Sau khi dùng:",
           prod.beforeAfter.after.summary,
           (prod.beforeAfter.after.points || []).map(p => "- " + p).join("\n")
         ].join("\n") : "",
@@ -2883,7 +2888,7 @@ ${escapeHTML(item.template || item.prompt || "")}
         "## 4. HƯỚNG DẪN 3 BƯỚC SỬ DỤNG TRONG 30 GIÂY",
         "- Bước 1: Mở Notion, tạo trang mới và nhấn Ctrl + V để dán toàn bộ tài liệu này.",
         "- Bước 2: Sao chép Master Prompt ở Mục 2 dán vào System Instructions của ChatGPT / Claude / Cursor.",
-        "- Bước 3: Chọn câu lệnh ở Mục 3, điền thông tin trong dấu [...] và Enter!"
+        "- Bước 3: Chọn câu lệnh ở Mục 3, điền thông tin trong dấu [...] và nhấn Enter."
       ].join("\n");
 
       copyToClipboard(md, "toàn bộ Hộp Công Cụ dạng Notion Markdown (Mở Notion và nhấn Ctrl+V)");
@@ -2974,7 +2979,7 @@ ${escapeHTML(item.template || item.prompt || "")}
       URL.revokeObjectURL(url);
 
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast(`✓ Đang tải file ${fileName} về máy tính của bạn!`, 'success');
+        window.ShopVietState.showToast(`Đang tải file ${fileName} về máy tính của bạn.`, 'success');
       }
     },
 
@@ -3004,14 +3009,14 @@ ${escapeHTML(item.template || item.prompt || "")}
       if (!modalMount) return;
 
       modalMount.innerHTML = `
-        <div id="policyModalBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
-          <div class="bg-white/92 dark:bg-[#0B0F17]/92 backdrop-blur-2xl border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh] animate-slide-up text-slate-900 dark:text-slate-100">
+        <div id="policyModalBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
+          <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh] animate-slide-up text-slate-900 dark:text-slate-100">
 
             <!-- HEADER CHÍNH SÁCH PHÁP LÝ -->
-            <div class="p-4 sm:p-6 bg-slate-50/75 dark:bg-[#090B10]/85 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between shrink-0">
+            <div class="p-4 sm:p-6 bg-[#F7F8FA] dark:bg-[#090B10] border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between shrink-0">
               <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#0071E3] flex items-center justify-center text-white shadow-md shadow-blue-500/20 text-xl shrink-0">
-                  ⚖️
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#0071E3] flex items-center justify-center text-white shadow-2xs shrink-0">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18m-7-4h14M5 7l2-3h10l2 3M3 13l2-6 2 6a2.5 2.5 0 0 1-4 0zm14 0l2-6 2 6a2.5 2.5 0 0 1-4 0z"/></svg>
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-2 flex-wrap">
@@ -3032,48 +3037,53 @@ ${escapeHTML(item.template || item.prompt || "")}
                   target="_blank"
                   class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs transition"
                 >
-                  <span>💬 Zalo CSKH</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Zalo CSKH</span>
                 </a>
                 <button
                   type="button"
                   onclick="ShopVietViews.modal.close()"
-                  class="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center text-lg font-bold transition cursor-pointer"
+                  class="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 flex items-center justify-center transition cursor-pointer"
                   title="Đóng (ESC)"
                 >
-                  ✕
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                 </button>
               </div>
             </div>
 
             <!-- TAB CONTROLS -->
-            <div class="px-4 sm:px-6 flex items-center gap-2 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-[#090B10]/50 shrink-0 overflow-x-auto">
+            <div class="px-4 sm:px-6 flex items-center gap-2 border-b border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] shrink-0 overflow-x-auto">
               <button
                 id="policyTabBtnTerms"
                 onclick="ShopVietViews.modal.switchPolicyTab('terms')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>📜</span> Điều Khoản Dịch Vụ
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span>Điều Khoản Dịch Vụ</span>
               </button>
               <button
                 id="policyTabBtnRefund"
                 onclick="ShopVietViews.modal.switchPolicyTab('refund')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>💰</span> Hoàn Tiền 100% &amp; Bảo Hành
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                <span>Hoàn Tiền 100% &amp; Bảo Hành</span>
               </button>
               <button
                 id="policyTabBtnPrivacy"
                 onclick="ShopVietViews.modal.switchPolicyTab('privacy')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>🛡️</span> Bảo Mật Dữ Liệu (Luật 91/2025)
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Bảo Mật Dữ Liệu (Luật 91/2025)</span>
               </button>
               <button
                 id="policyTabBtnDispute"
                 onclick="ShopVietViews.modal.switchPolicyTab('dispute')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
-                <span>⚖️</span> Giải Quyết Khiếu Nại
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Giải Quyết Khiếu Nại</span>
               </button>
             </div>
 
@@ -3083,7 +3093,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <!-- PANE 1: ĐIỀU KHOẢN DỊCH VỤ -->
               <div id="policyPaneTerms" class="space-y-4">
                 <div class="p-3.5 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 border border-[#0071E3]/25">
-                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">📜 ĐIỀU KHOẢN DỊCH VỤ &amp; QUY CHẾ HOẠT ĐỘNG THƯƠNG MẠI ĐIỆN TỬ</h4>
+                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">ĐIỀU KHOẢN DỊCH VỤ &amp; QUY CHẾ HOẠT ĐỘNG THƯƠNG MẠI ĐIỆN TỬ</h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300">Căn cứ Luật Thương mại điện tử 122/2025/QH15, Nghị định 248/2026/NĐ-CP. Áp dụng tại website <code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">https://www.promptmmo.store/</code>.</p>
                 </div>
 
@@ -3137,7 +3147,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <!-- PANE 2: HOÀN TIỀN 100% & BẢO HÀNH -->
               <div id="policyPaneRefund" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25">
-                  <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm mb-1">💰 CHÍNH SÁCH HOÀN TIỀN 100% TRONG 24 GIỜ &amp; BẢO HÀNH TRỌN ĐỜI</h4>
+                  <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm mb-1">CHÍNH SÁCH HOÀN TIỀN 100% TRONG 24 GIỜ &amp; BẢO HÀNH TRỌN ĐỜI</h4>
                   <p class="text-xs text-emerald-700 dark:text-emerald-400">Cam kết bảo vệ 100% quyền lợi người tiêu dùng theo Luật Bảo vệ quyền lợi người tiêu dùng số 19/2023/QH15.</p>
                 </div>
 
@@ -3189,7 +3199,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <!-- PANE 3: BẢO MẬT DỮ LIỆU CÁ NHÂN -->
               <div id="policyPanePrivacy" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 border border-[#0071E3]/25">
-                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">🛡️ CHÍNH SÁCH BẢO VỆ DỮ LIỆU CÁ NHÂN (LUẬT SỐ 91/2025/QH15 &amp; NĐ 356/2025/NĐ-CP)</h4>
+                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">CHÍNH SÁCH BẢO VỆ DỮ LIỆU CÁ NHÂN (LUẬT SỐ 91/2025/QH15 &amp; NĐ 356/2025/NĐ-CP)</h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300">Cam kết bảo mật tuyệt đối, không chia sẻ hay kinh doanh dữ liệu cá nhân cho bất kỳ bên thứ ba nào.</p>
                 </div>
 
@@ -3219,7 +3229,7 @@ ${escapeHTML(item.template || item.prompt || "")}
               <!-- PANE 4: KHIẾU NẠI & TRANH CHẤP -->
               <div id="policyPaneDispute" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-slate-100 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
-                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">⚖️ CƠ CHẾ TIẾP NHẬN &amp; GIẢI QUYẾT KHIẾU NẠI</h4>
+                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">CƠ CHẾ TIẾP NHẬN &amp; GIẢI QUYẾT KHIẾU NẠI</h4>
                   <p class="text-xs text-slate-600 dark:text-slate-300">Quy trình xử lý minh bạch, nhanh chóng theo quy định pháp luật thương mại điện tử.</p>
                 </div>
 
@@ -3227,9 +3237,9 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <div>
                     <h5 class="font-bold text-slate-900 dark:text-white text-sm">1. Đầu mối tiếp nhận chính thức</h5>
                     <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800 space-y-1.5 text-xs mt-1.5">
-                      <div>📞 <strong>Hotline/Zalo 24/7:</strong> <a href="https://zalo.me/0986019623" target="_blank" class="font-mono text-[#0071E3] dark:text-[#3B9EFF] font-bold hover:underline">0986019623</a></div>
-                      <div>📧 <strong>Email khiếu nại:</strong> <a href="mailto:thaitraicau123@gmail.com" class="font-mono text-slate-800 dark:text-slate-200 hover:underline">thaitraicau123@gmail.com</a></div>
-                      <div>🏢 <strong>Chủ quản:</strong> Bùi Thái AI Studio · Hà Nội, Việt Nam</div>
+                      <div><strong>Hotline/Zalo 24/7:</strong> <a href="https://zalo.me/0986019623" target="_blank" class="font-mono text-[#0071E3] dark:text-[#3B9EFF] font-bold hover:underline">0986019623</a></div>
+                      <div><strong>Email khiếu nại:</strong> <a href="mailto:thaitraicau123@gmail.com" class="font-mono text-slate-800 dark:text-slate-200 hover:underline">thaitraicau123@gmail.com</a></div>
+                      <div><strong>Chủ quản:</strong> Bùi Thái AI Studio · Hà Nội, Việt Nam</div>
                     </div>
                   </div>
 
@@ -3247,15 +3257,16 @@ ${escapeHTML(item.template || item.prompt || "")}
             </div>
 
             <!-- FOOTER MODAL -->
-            <div class="p-4 bg-slate-50/80 dark:bg-[#090B10]/90 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
+            <div class="p-4 bg-[#F7F8FA] dark:bg-[#090B10] border-t border-slate-900/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
               <div class="flex items-center gap-3 text-slate-500 dark:text-slate-400">
                 <span>Zalo CSKH: <strong class="text-slate-900 dark:text-white font-mono">0986019623</strong></span>
                 <span>·</span>
                 <span>MBBank: <strong class="text-[#0071E3] dark:text-[#3B9EFF] font-mono">0986019623</strong></span>
               </div>
               <div class="flex items-center gap-2">
-                <a href="https://zalo.me/0986019623" target="_blank" class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs transition">
-                  💬 Nhắn Zalo CSKH
+                <a href="https://zalo.me/0986019623" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <span>Nhắn Zalo CSKH</span>
                 </a>
                 <button type="button" onclick="ShopVietViews.modal.close()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs transition cursor-pointer">
                   Đã hiểu &amp; Đóng
@@ -3337,7 +3348,7 @@ ${escapeHTML(item.template || item.prompt || "")}
       const unlockTarget = product ? product.id : (url.includes('metropolis-1998') ? 'source-metropolis-1998-city-builder' : (url.includes('diet-soda') ? 'template-diet-soda-3d-landing' : (isDungeon ? 'prompt-soul-knight-heroes-monsters-200' : 'skill-pixel-vfx-engine')));
       const isMetropolis = url.includes('metropolis-1998') || unlockTarget === 'source-metropolis-1998-city-builder';
 
-      const title = product ? product.name : (isMetropolis ? '🏙️ Source Code Metropolis 1998 Isometric City Builder' : (url.includes('diet-soda') ? '🥤 Template Web 3D Landing Page Diet Soda' : '🎮 Trải Nghiệm 3D Live'));
+      const title = product ? product.name : (isMetropolis ? 'Source Code Metropolis 1998 Isometric City Builder' : (url.includes('diet-soda') ? 'Template Web 3D Landing Page Diet Soda' : 'Trải Nghiệm 3D Live'));
       const badge = product ? product.badge : (isMetropolis ? 'React 19 + Three.js City Sim' : '3D Web & WebGL Studio');
       const desc = product ? (product.desc || '') : 'Trải nghiệm trực tiếp 60fps trên trình duyệt (Laptop & Mobile), sẵn sàng tải mã nguồn về phát triển tiếp.';
       const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || null;
@@ -3350,13 +3361,13 @@ ${escapeHTML(item.template || item.prompt || "")}
           : '1-File HTML thuần · 60fps WebGL/Three.js · Không cần build tool');
 
       modalMount.innerHTML = `
-        <div id="gameDemoBackdrop" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-1 sm:p-3 lg:p-4 animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
-          <div class="bg-[#090B10] border border-slate-800/90 rounded-2xl shadow-2xl w-full max-w-7xl h-[94vh] max-h-[920px] overflow-hidden flex flex-col animate-slide-up text-slate-100">
+        <div id="gameDemoBackdrop" class="fixed inset-0 z-[100] bg-slate-950/85 flex items-center justify-center p-1 sm:p-3 lg:p-4 animate-fade-in" onclick="if(event.target === this) ShopVietViews.modal.close()">
+          <div class="bg-[#090B10] border border-white/10 rounded-2xl shadow-xl w-full max-w-7xl h-[94vh] max-h-[920px] overflow-hidden flex flex-col animate-slide-up text-slate-100">
             
             <!-- Top Navigation & Switcher Bar -->
-            <div class="px-3 sm:px-4 py-2.5 sm:py-3 border-b border-slate-800/80 bg-[#0B0F17]/95 flex items-center justify-between gap-3 shrink-0">
+            <div class="px-3 sm:px-4 py-2.5 sm:py-3 border-b border-white/10 bg-[#0B0F17] flex items-center justify-between gap-3 shrink-0">
               <div class="flex items-center gap-2.5 min-w-0">
-                <span class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0071E3] to-[#3B9EFF] text-white flex items-center justify-center text-xs font-black shrink-0 shadow-sm">BT</span>
+                <span class="w-8 h-8 rounded-lg bg-[#0071E3] text-white flex items-center justify-center text-xs font-black shrink-0">BT</span>
                 <div class="min-w-0">
                   <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2 truncate">
                     <span class="truncate">${escapeHTML(title)}</span>
@@ -3368,7 +3379,7 @@ ${escapeHTML(item.template || item.prompt || "")}
 
               <!-- Top Device Switcher Controls -->
               <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                <div class="hidden sm:flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+                <div class="hidden sm:flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800">
                   <button 
                     type="button" 
                     id="btnViewLaptop"
@@ -3376,7 +3387,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                     class="px-3 py-1.5 rounded-lg bg-[#0071E3]/15 text-[#3B9EFF] border border-[#0071E3]/40 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
                     title="Xem trên màn hình Laptop Desktop"
                   >
-                    <span>💻</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
                     <span>Laptop</span>
                   </button>
                   <button 
@@ -3386,7 +3397,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                     class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700/80 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
                     title="Xem trên khung điện thoại Mobile"
                   >
-                    <span>📱</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                     <span>Mobile</span>
                   </button>
                 </div>
@@ -3395,7 +3406,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   href="${escapeHTML(url)}" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs font-bold transition no-underline flex items-center gap-1" 
+                  class="px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition no-underline flex items-center gap-1" 
                   title="Mở toàn màn hình trong tab mới"
                 >
                   <span>↗</span>
@@ -3408,7 +3419,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   class="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer" 
                   title="Đóng modal"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
               </div>
             </div>
@@ -3420,15 +3431,11 @@ ${escapeHTML(item.template || item.prompt || "")}
               <div class="flex-1 bg-[#05070D] relative flex items-center justify-center p-2 sm:p-4 overflow-hidden min-h-[360px]">
                 
                 <!-- Laptop Mockup View -->
-                <div id="demoLaptopBox" class="w-full h-full max-h-[820px] rounded-xl border border-slate-800/90 bg-[#090B10] shadow-2xl flex flex-col overflow-hidden">
+                <div id="demoLaptopBox" class="w-full h-full max-h-[820px] rounded-xl border border-slate-800/90 bg-[#090B10] shadow-xl flex flex-col overflow-hidden">
                   <!-- Browser Window Bar -->
                   <div class="px-3 py-1.5 bg-[#0B0F17] border-b border-slate-800 flex items-center justify-between shrink-0">
-                    <div class="flex items-center gap-1.5">
-                      <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
-                      <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
-                      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
-                    </div>
-                    <div class="px-4 py-0.5 rounded-md bg-slate-900/90 border border-slate-800 text-[10px] text-slate-400 font-mono tracking-tight flex items-center gap-1.5 max-w-[60%] truncate">
+                    <span class="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Studio Stage</span>
+                    <div class="px-4 py-0.5 rounded-md bg-slate-900 border border-slate-800 text-[10px] text-slate-400 font-mono tracking-tight flex items-center gap-1.5 max-w-[60%] truncate">
                       <svg class="w-3 h-3 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                       <span class="truncate">live-preview://${escapeHTML(url)}</span>
                     </div>
@@ -3441,12 +3448,12 @@ ${escapeHTML(item.template || item.prompt || "")}
                 </div>
 
                 <!-- Mobile iPhone Mockup View -->
-                <div id="demoMobileBox" style="display: none;" class="w-[340px] sm:w-[375px] h-[640px] sm:h-[720px] max-h-[92vh] rounded-[44px] sm:rounded-[48px] border-[8px] sm:border-[10px] border-slate-800 ring-1 ring-slate-700/80 shadow-2xl bg-black flex flex-col relative overflow-hidden mx-auto shrink-0">
+                <div id="demoMobileBox" style="display: none;" class="w-[340px] sm:w-[375px] h-[640px] sm:h-[720px] max-h-[92vh] rounded-[40px] border-[8px] sm:border-[10px] border-slate-800 ring-1 ring-slate-700/80 shadow-xl bg-black flex flex-col relative overflow-hidden mx-auto shrink-0">
                   <!-- iPhone Status Bar & Dynamic Island -->
                   <div class="pt-2 px-6 flex items-center justify-between text-white text-[11px] font-semibold select-none z-20 shrink-0 tabular-nums">
                     <span>9:41</span>
                     <div class="w-24 h-5 bg-black rounded-full border border-slate-800 flex items-center justify-end px-2">
-                      <span class="w-2 h-2 rounded-full bg-emerald-500/80"></span>
+                      <span class="w-6 h-1.5 rounded-full bg-slate-800"></span>
                     </div>
                     <div class="flex items-center gap-1 text-[10px]">
                       <span>5G</span>
@@ -3482,7 +3489,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                   </div>
 
                   <!-- Device Switcher in Sidebar -->
-                  <div class="p-2.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-2">
+                  <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
                     <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Chế độ hiển thị (Responsive):</div>
                     <div class="flex items-center gap-1.5">
                       <button 
@@ -3491,7 +3498,8 @@ ${escapeHTML(item.template || item.prompt || "")}
                         onclick="ShopVietViews.modal.setDeviceMode('laptop')" 
                         class="flex-1 py-2 rounded-xl bg-[#0071E3]/15 text-[#3B9EFF] border border-[#0071E3]/40 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>💻 Laptop</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+                        <span>Laptop</span>
                       </button>
                       <button 
                         type="button" 
@@ -3499,7 +3507,8 @@ ${escapeHTML(item.template || item.prompt || "")}
                         onclick="ShopVietViews.modal.setDeviceMode('mobile')" 
                         class="flex-1 py-2 rounded-xl bg-slate-800/70 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>📱 Mobile</span>
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                        <span>Mobile</span>
                       </button>
                     </div>
                   </div>
@@ -3510,38 +3519,38 @@ ${escapeHTML(item.template || item.prompt || "")}
                     ${isMetropolis ? `
                       <ul class="space-y-1.5 text-slate-300 text-[11px] sm:text-xs">
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>React 19 + TypeScript + Three.js Isometric WebGL chuẩn 60fps</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Sẵn bản đồ Oakwood / Blank Parcel + chế độ Cutaway X-Ray [X]</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Chu kỳ Ngày / Đêm / Auto, mô phỏng R/C/I, điện &amp; lưu lượng xe</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Tải trọn bộ Source Code (.zip) + Master Prompt để phát triển tiếp</span>
                         </li>
                       </ul>
                     ` : `
                       <ul class="space-y-1.5 text-slate-300 text-[11px] sm:text-xs">
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>1-File HTML thuần 100%, 0 build step, mở chạy ngay trên trình duyệt</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Hiệu ứng WebGL / Canvas 60fps mượt mà trên cả Desktop &amp; Mobile</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Font bản địa tiếng Việt tối ưu, không lỗi hiển thị dấu</span>
                         </li>
                         <li class="flex items-start gap-1.5">
-                          <span class="text-emerald-400 shrink-0">✓</span>
+                          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                           <span>Kèm Master Prompt &amp; Cheat Sheet mở rộng không giới hạn trên AI</span>
                         </li>
                       </ul>
@@ -3555,18 +3564,18 @@ ${escapeHTML(item.template || item.prompt || "")}
                     <button 
                       type="button" 
                       onclick="ShopVietViews.modal.copyPrompt('${escapeHTML(unlockTarget)}')" 
-                      class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold transition active:scale-95 flex items-center justify-center gap-2 border border-slate-700/80 cursor-pointer"
+                      class="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-700/80 cursor-pointer"
                     >
-                      <span>📋</span>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
                       <span>Sao Chép Master Prompt</span>
                     </button>
                   ` : `
                     <button 
                       type="button" 
                       onclick="ShopVietViews.modal.open('${escapeHTML(unlockTarget)}')" 
-                      class="w-full py-2.5 px-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-[#3B9EFF] text-xs font-bold transition active:scale-95 flex items-center justify-center gap-2 border border-[#0071E3]/40 cursor-pointer tabular-nums"
+                      class="w-full py-2.5 px-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-[#3B9EFF] text-xs font-bold transition flex items-center justify-center gap-2 border border-[#0071E3]/40 cursor-pointer tabular-nums"
                     >
-                      <span>🔒</span>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                       <span>Mở Khóa Trọn Bộ (${product ? (product.price/1000).toFixed(0) : '15'}k Xu)</span>
                     </button>
                   `}
@@ -3574,10 +3583,10 @@ ${escapeHTML(item.template || item.prompt || "")}
                   <button 
                     type="button" 
                     onclick="ShopVietViews.modal.open('${escapeHTML(unlockTarget)}')" 
-                    class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0071E3] to-[#3B9EFF] hover:from-[#0062C4] hover:to-[#2A8CEB] text-white font-bold text-xs shadow-lg shadow-[#0071E3]/25 transition active:scale-95 cursor-pointer flex items-center justify-center gap-2 tabular-nums"
+                    class="w-full py-2.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-2xs transition cursor-pointer flex items-center justify-center gap-2 tabular-nums"
                   >
-                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                    <span>${isUnlocked ? '✅ Đã Mở Khóa • Tải Source & Prompt' : escapeHTML(unlockButtonLabel)}</span>
+                    <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    <span>${isUnlocked ? 'Đã Mở Khóa · Tải Source & Prompt' : escapeHTML(unlockButtonLabel)}</span>
                   </button>
                   <div class="text-[10px] text-center text-slate-400">
                     ${isMetropolis ? 'Bao gồm Source Code (.zip) + Master Prompt + 7 màn hình tham chiếu' : 'Bao gồm toàn bộ file mã nguồn + Master Prompt chi tiết'}
@@ -3628,7 +3637,7 @@ ${escapeHTML(item.template || item.prompt || "")}
       const isUnlocked = Boolean(getExistingActiveOrder(productId, currentUser ? currentUser.email : ''));
       if (!isUnlocked) {
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('🔒 Bạn chưa mở khóa sản phẩm này. Vui lòng mở khóa bằng Ví Xu để nhận Master Prompt!', 'warning');
+          window.ShopVietState.showToast('Bạn chưa mở khóa sản phẩm này. Vui lòng mở khóa bằng Ví Xu để nhận Master Prompt.', 'warning');
         }
         this.open(productId);
         return;
@@ -3648,14 +3657,14 @@ ${escapeHTML(item.template || item.prompt || "")}
         try { document.execCommand('copy'); } catch (_) {}
         if (ta.parentNode) ta.parentNode.removeChild(ta);
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('📋 Đã sao chép Master Prompt vào Clipboard!', 'success');
+          window.ShopVietState.showToast('Đã sao chép Master Prompt vào Clipboard.', 'success');
         }
       };
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(prompt).then(() => {
           if (window.ShopVietState && window.ShopVietState.showToast) {
-            window.ShopVietState.showToast('📋 Đã sao chép Master Prompt vào Clipboard!', 'success');
+            window.ShopVietState.showToast('Đã sao chép Master Prompt vào Clipboard.', 'success');
           }
         }).catch(() => fallbackCopy(prompt));
       } else {

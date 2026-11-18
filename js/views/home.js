@@ -299,10 +299,9 @@ window.ShopVietViews.home = (function () {
 
     if (hasImage) {
       return `
-        <div class="relative w-full aspect-[16/10] bg-[#0B0F17] rounded-xl overflow-hidden border border-slate-900/10 dark:border-white/10">
-          ${renderSafeProductImage(prod, 'w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]', 'w-full h-full p-6 flex items-center justify-center bg-[#0F172A]')}
-          <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent pointer-events-none"></div>
-          ${prod.discount ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[11px] font-semibold text-white tabular-nums border border-white/15">${prod.discount}</span>` : ''}
+        <div class="relative w-full aspect-[16/10] bg-[#0B0F17] rounded-lg overflow-hidden border border-slate-900/10 dark:border-white/10">
+          ${renderSafeProductImage(prod, 'w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.03]', 'w-full h-full p-6 flex items-center justify-center bg-[#0B0F17]')}
+          ${prod.discount ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-[#0B0F17]/90 text-[11px] font-semibold text-white tabular-nums border border-white/15">${prod.discount}</span>` : ''}
         </div>
       `;
     }
@@ -312,11 +311,11 @@ window.ShopVietViews.home = (function () {
       : '';
 
     return `
-      <div class="relative w-full aspect-[16/10] bg-gradient-to-br from-[#0F141F] via-[#131B2B] to-[#0A0E16] rounded-xl overflow-hidden flex items-center justify-center p-6 border border-slate-900/10 dark:border-white/10">
-        <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-center p-3 shadow-lg group-hover:scale-105 transition-transform duration-300">
+      <div class="relative w-full aspect-[16/10] bg-[#0B0F17] rounded-lg overflow-hidden flex items-center justify-center p-6 border border-slate-900/10 dark:border-white/10">
+        <div class="w-14 h-14 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center p-3 group-hover:scale-105 transition-transform duration-200">
           ${iconSvg}
         </div>
-        ${prod.discount ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-white/10 backdrop-blur-md text-[11px] font-semibold text-white tabular-nums border border-white/15">${prod.discount}</span>` : ''}
+        ${prod.discount ? `<span class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-white/[0.08] text-[11px] font-semibold text-white tabular-nums border border-white/15">${prod.discount}</span>` : ''}
       </div>
     `;
   }
@@ -511,17 +510,17 @@ window.ShopVietViews.home = (function () {
           <div class="flex items-center justify-between">
             <span class="text-xs font-semibold text-slate-200">Số lượng</span>
             <div class="flex items-center bg-slate-900 border border-white/10 rounded-xl p-0.5">
-              <button type="button" id="expanderQtyMinus" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-white cursor-pointer" aria-label="Giảm số lượng">-</button>
+              <button type="button" id="expanderQtyMinus" class="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-slate-300 hover:text-white cursor-pointer" aria-label="Giảm số lượng">-</button>
               <span id="expanderQtyDisplay" class="w-10 text-center text-xs font-mono font-bold text-white tabular-nums">1</span>
-              <button type="button" id="expanderQtyPlus" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-white cursor-pointer" aria-label="Tăng số lượng">+</button>
+              <button type="button" id="expanderQtyPlus" class="min-w-[44px] min-h-[44px] rounded-lg flex items-center justify-center text-slate-300 hover:text-white cursor-pointer" aria-label="Tăng số lượng">+</button>
             </div>
           </div>
 
           <div class="pt-2 border-t border-white/10 space-y-1.5">
             <label for="expanderCouponInput" class="text-xs font-semibold text-slate-300 block">Mã giảm giá (Voucher)</label>
             <div class="flex items-center gap-2">
-              <input type="text" id="expanderCouponInput" placeholder="VD: GIAM10K..." oninput="this.value = window.ShopVietNormalizeVoucher ? window.ShopVietNormalizeVoucher(this.value) : this.value.toUpperCase();" class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-white/15 font-mono text-xs uppercase font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0071E3]" />
-              <button type="button" id="expanderApplyCouponBtn" class="px-3.5 py-2 bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold text-xs rounded-xl transition shrink-0 cursor-pointer">Áp dụng</button>
+              <input type="text" id="expanderCouponInput" placeholder="VD: GIAM10K..." oninput="this.value = window.ShopVietNormalizeVoucher ? window.ShopVietNormalizeVoucher(this.value) : this.value.toUpperCase();" class="flex-1 min-h-[44px] px-3 py-2 rounded-xl bg-slate-950 border border-white/15 font-mono text-xs uppercase font-bold text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0071E3]" />
+              <button type="button" id="expanderApplyCouponBtn" class="min-h-[44px] px-4 py-2 bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold text-xs rounded-xl transition shrink-0 cursor-pointer">Áp dụng</button>
             </div>
             <div id="expanderCouponStatus" class="text-[11px] font-medium hidden"></div>
           </div>
@@ -692,10 +691,10 @@ window.ShopVietViews.home = (function () {
       var pid = btn.getAttribute('data-combo-toggle');
       var isAdded = selectedComboSet.has(pid);
       btn.setAttribute('aria-pressed', isAdded ? 'true' : 'false');
-      btn.textContent = isAdded ? '✓ Combo' : '+ Combo';
+      btn.textContent = isAdded ? 'Đã chọn' : '+ Combo';
       btn.className = isAdded
-        ? 'px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/15 dark:bg-[#3B9EFF]/20 border border-[#0071E3]/35 transition-colors whitespace-nowrap shrink-0 cursor-pointer'
-        : 'px-2.5 py-2 rounded-xl text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer';
+        ? 'px-2.5 py-2 rounded-lg text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/12 dark:bg-[#3B9EFF]/18 border border-[#0071E3]/35 transition-colors whitespace-nowrap shrink-0 cursor-pointer'
+        : 'px-2.5 py-2 rounded-lg text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer';
     });
   }
   function toggleComboItem(prodId, isChecked) {
@@ -722,7 +721,7 @@ window.ShopVietViews.home = (function () {
     var discountPercent = count === 2 ? 20 : (count >= 3 ? 30 : 0);
     var finalPrice = totalRaw - Math.round(totalRaw * discountPercent / 100);
     pill.innerHTML = `
-      <div class="flex flex-wrap items-center gap-2.5 lg-glass px-3.5 py-2 rounded-xl tabular-nums">
+      <div class="flex flex-wrap items-center gap-2.5 bg-[#F7F8FA] dark:bg-[#171C28] border border-slate-900/10 dark:border-white/10 px-3.5 py-2 rounded-xl tabular-nums">
         <span class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">Đã chọn ${count} gói</span>
         <span class="text-xs text-slate-400 line-through">${Number(totalRaw).toLocaleString('vi-VN')} Xu</span>
         ${discountPercent ? `<span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">-${discountPercent}%</span>` : ''}
@@ -781,7 +780,7 @@ window.ShopVietViews.home = (function () {
         : null;
       if (typeof window.ShopVietState.save === 'function') window.ShopVietState.save();
       if (typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Đã tạo giỏ Combo ' + pricing.count + ' gói (giảm ' + pricing.discountPercent + '% · -' + Number(pricing.discountAmount).toLocaleString('vi-VN') + ' Xu)!', 'success');
+        window.ShopVietState.showToast('Đã tạo giỏ Combo ' + pricing.count + ' gói (giảm ' + pricing.discountPercent + '% · -' + Number(pricing.discountAmount).toLocaleString('vi-VN') + ' Xu)', 'success');
       }
       if (typeof window.ShopVietState.navigate === 'function') {
         window.ShopVietState.navigate('checkout');
@@ -810,26 +809,25 @@ window.ShopVietViews.home = (function () {
               referrerpolicy="no-referrer"
               class="w-full h-full object-cover"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none"></div>
-            <div class="absolute bottom-3 left-3.5 right-3.5 flex items-end justify-between gap-3">
-              <div>
+            <div class="absolute bottom-0 inset-x-0 bg-[#0B0F17]/90 border-t border-white/10 px-3.5 py-2.5 flex items-center justify-between gap-3">
+              <div class="min-w-0">
                 <div class="text-[11px] font-mono text-[#3B9EFF]">${activeScene.label}</div>
                 <p class="text-xs text-slate-200 mt-0.5 line-clamp-1">${activeScene.caption}</p>
               </div>
-              <a href="${proj.demoUrl}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-3 py-1.5 rounded-lg bg-white/15 hover:bg-white/25 backdrop-blur-md text-white text-xs font-semibold border border-white/15 transition-colors whitespace-nowrap">
+              <a href="${proj.demoUrl}" target="_blank" rel="noopener noreferrer" class="shrink-0 px-3 py-1.5 rounded-lg bg-white/12 hover:bg-white/20 text-white text-xs font-semibold border border-white/15 transition-colors whitespace-nowrap">
                 Demo Live ↗
               </a>
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center gap-1.5">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
             ${proj.scenes.map(function (sc, idx) {
               var active = idx === workbenchState.sceneIndex;
               return `
                 <button
                   type="button"
                   onclick="ShopVietViews.home.setWorkbenchScene(${idx})"
-                  class="px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap transition-colors cursor-pointer ${active ? 'bg-[#0071E3] text-white font-semibold' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'}"
+                  class="px-2 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap shrink-0 transition-colors cursor-pointer ${active ? 'bg-[#0071E3] text-white font-semibold' : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'}"
                 >${sc.label}</button>
               `;
             }).join('')}
@@ -920,7 +918,7 @@ window.ShopVietViews.home = (function () {
     }
 
     return `
-      <div id="odWorkbenchPanel" class="bg-[#0C1018] text-white rounded-3xl p-4 sm:p-5 border border-white/10 shadow-2xl flex flex-col justify-between gap-4 h-full">
+      <div id="odWorkbenchPanel" class="bg-[#0B0F17] text-white rounded-2xl p-4 sm:p-5 border border-white/10 shadow-sm flex flex-col justify-between gap-4 h-full">
         <!-- Workbench Header Controls -->
         <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10">
           <!-- Project Switcher -->
@@ -1035,7 +1033,7 @@ window.ShopVietViews.home = (function () {
         data-product-tag="${prod.tag || ''}"
         data-product-category="${prod.filterGroup || prod.category || ''}"
         data-product-name="${(prod.name || '').replace(/"/g, '&quot;')}"
-        class="u292-t ${isMatch ? '' : 'out'} lg-glass rounded-2xl p-4 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xl transition-all duration-200 group cursor-pointer"
+        class="u292-t ${isMatch ? '' : 'out'} bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 hover:border-[#0071E3]/45 dark:hover:border-[#3B9EFF]/45 rounded-xl p-4 flex flex-col justify-between hover:-translate-y-0.5 transition-[transform,border-color] duration-150 group cursor-pointer shadow-2xs"
         style="${isMatch ? '' : 'display: none;'}"
         onclick="ShopVietViews.modal.open('${prod.id}')"
       >
@@ -1070,7 +1068,7 @@ window.ShopVietViews.home = (function () {
               <button
                 type="button"
                 onclick="event.stopPropagation(); if(window.ShopVietViews && window.ShopVietViews.modal && window.ShopVietViews.modal.openGameDemo) { window.ShopVietViews.modal.openGameDemo('${prod.demoUrl}', '${prod.id}'); } else { window.open('${prod.demoUrl}', '_blank'); }"
-                class="px-2.5 py-2 rounded-xl text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                class="min-h-[38px] sm:min-h-[34px] px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                 title="${prod.demoTitle || 'Xem bản demo trực tiếp'}"
               >Demo</button>
             ` : ''}
@@ -1081,19 +1079,19 @@ window.ShopVietViews.home = (function () {
                 data-combo-toggle="${prod.id}"
                 aria-pressed="${inCombo ? 'true' : 'false'}"
                 onclick="event.stopPropagation(); ShopVietViews.home.toggleComboItem('${prod.id}')"
-                class="${inCombo ? 'px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/15 dark:bg-[#3B9EFF]/20 border border-[#0071E3]/35' : 'px-2.5 py-2 rounded-xl text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'} transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                class="min-h-[38px] sm:min-h-[34px] ${inCombo ? 'px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/12 dark:bg-[#3B9EFF]/18 border border-[#0071E3]/35' : 'px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'} transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                 title="Thêm hoặc gỡ khỏi Combo giảm 20%-30%"
-              >${inCombo ? '✓ Combo' : '+ Combo'}</button>
+              >${inCombo ? 'Đã chọn' : '+ Combo'}</button>
             ` : ''}
 
             ${isOutOfStock ? `
-              <button disabled onclick="event.stopPropagation()" class="px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-400 text-xs font-medium cursor-not-allowed whitespace-nowrap">Hết hàng</button>
+              <button disabled onclick="event.stopPropagation()" class="min-h-[38px] sm:min-h-[34px] px-3 py-2 sm:py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 text-xs font-medium cursor-not-allowed whitespace-nowrap">Hết hàng</button>
             ` : `
               <button
                 type="button"
                 onclick="event.stopPropagation(); ShopVietViews.home.handleBuyNowClick(event, '${prod.id}', this)"
-                class="${isFree ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm' : 'lg-btn-primary'} px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer"
-              >${isFree ? 'Tải Free' : (prod.demoUrl ? 'Mở khóa' : (prod.ctaText ? prod.ctaText.replace(/[⚡🎮👑]+/g, '').replace(/\(\d+k\s*Xu\)/i, '').trim() : 'Mở khóa'))}</button>
+                class="min-h-[38px] sm:min-h-[34px] ${isFree ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs' : 'lg-btn-primary'} px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >${isFree ? 'Tải Free' : (prod.demoUrl ? 'Mở khóa' : (prod.ctaText ? prod.ctaText.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]+/gu, '').replace(/\(\d+k\s*Xu\)/i, '').trim() : 'Mở khóa'))}</button>
             `}
           </div>
         </div>
@@ -1170,11 +1168,11 @@ window.ShopVietViews.home = (function () {
         <div class="space-y-12 sm:space-y-16">
 
           <!-- ==================== OPEN-DESIGN STUDIO WORKBENCH SPLIT HERO ==================== -->
-          <section class="space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <section class="space-y-8 min-w-0">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-w-0">
 
-              <!-- Left Column (5 Cols): Studio Thesis + Direct Primary CTA + Hairline Metrics -->
-              <div class="lg:col-span-5 lg-glass rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
+              <!-- Left Column (5 Cols): Unboxed Studio Stage Hero + Primary CTA + Hairline Metrics -->
+              <div class="lg:col-span-5 min-w-0 flex flex-col justify-between py-2 sm:py-4">
                 <div class="space-y-4">
                   <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] tracking-wide">
                     Open-Design Studio · Mã nguồn &amp; Prompt thực chiến
@@ -1183,13 +1181,13 @@ window.ShopVietViews.home = (function () {
                   <h1
                     id="heroTitleText"
                     data-static-i18n="true"
-                    class="font-display font-bold text-[#1D1D1F] dark:text-[#F5F5F7] leading-[1.12] tracking-tight"
-                    style="font-size: clamp(2rem, 3.2vw, 2.85rem); text-wrap: balance;"
+                    class="font-display font-bold text-[#1D1D1F] dark:text-[#F5F5F7] leading-[1.1] tracking-tight"
+                    style="font-size: clamp(2.05rem, 3.3vw, 2.95rem); text-wrap: balance;"
                   >
                     Tải Mã Nguồn <span class="text-[#0071E3] dark:text-[#3B9EFF]">Studio 3D</span> &amp; Prompt Thực Chiến
                   </h1>
 
-                  <p id="heroDescText" class="text-sm sm:text-[15px] text-[#6E6E73] dark:text-[#9CA3AF] leading-relaxed">
+                  <p id="heroDescText" class="text-sm sm:text-[15px] text-[#525866] dark:text-[#9CA3AF] leading-relaxed">
                     Mở khóa trọn gói mã nguồn <strong>Metropolis 1998 (React + Three.js)</strong> hoặc bộ Landing 3D với giá <strong>15.000 Xu</strong>. Tải file <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]">.zip</code> về giải nén, chạy <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]">npm run dev</code> và tự do phát triển tiếp.
                   </p>
 
@@ -1205,7 +1203,7 @@ window.ShopVietViews.home = (function () {
                       href="/demo/metropolis-1998/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="px-4 py-3 rounded-xl text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap"
+                      class="px-4 py-3 rounded-xl text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] border border-slate-900/12 dark:border-white/15 bg-white dark:bg-[#111520] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors whitespace-nowrap"
                     >
                       Mở Studio Demo ↗
                     </a>
@@ -1216,71 +1214,71 @@ window.ShopVietViews.home = (function () {
                 <div class="mt-8 pt-5 border-t border-slate-900/10 dark:border-white/10 grid grid-cols-3 gap-4 tabular-nums">
                   <div>
                     <div class="text-base sm:text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">18 Files</div>
-                    <div class="text-xs text-[#6E6E73] dark:text-[#9CA3AF]">React + Three.js</div>
+                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">React + Three.js</div>
                   </div>
                   <div>
                     <div class="text-base sm:text-lg font-bold text-[#0071E3] dark:text-[#3B9EFF]">15.000 Xu</div>
-                    <div class="text-xs text-[#6E6E73] dark:text-[#9CA3AF]">Mở khóa trọn đời</div>
+                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">Mở khóa trọn đời</div>
                   </div>
                   <div>
                     <div class="text-base sm:text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">VietQR 5s</div>
-                    <div class="text-xs text-[#6E6E73] dark:text-[#9CA3AF]">Giao file tự động</div>
+                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">Giao file tự động</div>
                   </div>
                 </div>
               </div>
 
               <!-- Right Column (7 Cols): Interactive Open-Design Studio Workbench -->
-              <div id="odWorkbenchMount" class="lg:col-span-7">
+              <div id="odWorkbenchMount" class="lg:col-span-7 min-w-0">
                 ${renderWorkbenchHTML()}
               </div>
             </div>
 
-            <!-- 4-Column Full-Width Capability Strip -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- 4-Column Hairline-Ruled Capability Strip (Hallmark Studio) -->
+            <div class="border-y border-slate-900/10 dark:border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-900/10 dark:divide-white/10">
               <button
                 type="button"
                 onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();"
-                class="text-left lg-glass rounded-2xl p-4 hover:-translate-y-0.5 transition-all cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
               >
                 <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">01 · Ví Xu VietQR</div>
                 <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Nạp tự động 24/7</div>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-1">MBBank 0986019623 khớp lệnh chỉ trong vài giây.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">MBBank 0986019623 khớp lệnh chỉ trong vài giây.</p>
               </button>
 
               <button
                 type="button"
                 onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')"
-                class="text-left lg-glass rounded-2xl p-4 hover:-translate-y-0.5 transition-all cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
               >
                 <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">02 · Mã nguồn sạch</div>
                 <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Tải .ZIP về tự code</div>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-1">Cấu trúc Vite + TS chuẩn, giải nén chạy ngay.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Cấu trúc Vite + TS chuẩn, giải nén chạy ngay.</p>
               </button>
 
               <button
                 type="button"
                 onclick="ShopVietViews.home.filterByTag('Mã nguồn')"
-                class="text-left lg-glass rounded-2xl p-4 hover:-translate-y-0.5 transition-all cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
               >
                 <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">03 · Giá minh bạch</div>
                 <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Chỉ từ 9k – 15k Xu</div>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-1">Sở hữu vĩnh viễn trên tài khoản cá nhân.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Sở hữu vĩnh viễn trên tài khoản cá nhân.</p>
               </button>
 
               <button
                 type="button"
                 onclick="window.ShopVietState ? window.ShopVietState.navigate('dashboard', { tab: 'orders' }) : (window.location.hash = '#dashboard?tab=orders')"
-                class="text-left lg-glass rounded-2xl p-4 hover:-translate-y-0.5 transition-all cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
               >
                 <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">04 · Đồng bộ Cloud</div>
                 <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Quản lý đơn hàng</div>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-1">Tải lại mã nguồn &amp; hỗ trợ 1-1 qua Zalo.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Tải lại mã nguồn &amp; hỗ trợ 1-1 qua Zalo.</p>
               </button>
             </div>
           </section>
 
           <!-- ==================== UNIFIED CATALOG TOOLBAR & 3-COLUMN GRID ==================== -->
-          <section id="productsSection" class="u292 space-y-6 pt-2 scroll-mt-24">
+          <section id="productsSection" class="u292 space-y-6 pt-2 scroll-mt-24 min-w-0">
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-900/10 dark:border-white/10">
               <div>
@@ -1298,8 +1296,8 @@ window.ShopVietViews.home = (function () {
               </div>
 
               <!-- Search + Sort -->
-              <div class="flex flex-wrap items-center gap-2.5">
-                <form id="heroSearchForm" onsubmit="ShopVietViews.home.handleSearchSubmit(event)" class="flex items-center lg-glass rounded-xl p-1 min-w-[240px] sm:min-w-[280px]">
+              <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                <form id="heroSearchForm" onsubmit="ShopVietViews.home.handleSearchSubmit(event)" class="flex items-center bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl p-1 flex-1 sm:flex-initial sm:min-w-[260px] min-w-0">
                   <svg class="w-4 h-4 text-[#6E6E73] dark:text-[#9CA3AF] ml-2.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
                   </svg>
@@ -1322,7 +1320,7 @@ window.ShopVietViews.home = (function () {
                 <select
                   id="productPriceSort"
                   onchange="ShopVietViews.home.setPriceSort(this.value)"
-                  class="lg-glass rounded-xl px-3 py-2 text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071E3]"
+                  class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl px-3 py-2 text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071E3]"
                 >
                   <option value="featured" ${currentPriceSort === 'featured' ? 'selected' : ''}>Sắp xếp: Nổi bật</option>
                   <option value="price-asc" ${currentPriceSort === 'price-asc' ? 'selected' : ''}>Giá: Thấp → Cao</option>
@@ -1349,7 +1347,7 @@ window.ShopVietViews.home = (function () {
             </div>
 
             <!-- Combo Calculator Strip (Preserved IDs) -->
-            <div id="dynamicComboBar" class="lg-glass rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div id="dynamicComboBar" class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
                 <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Ưu đãi Combo nhiều gói · Giảm 20% – 30%</div>
                 <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-0.5">Chọn từ 2 gói giảm 20%, từ 3 gói giảm 30% trên tổng hóa đơn Xu.</p>
@@ -1359,14 +1357,14 @@ window.ShopVietViews.home = (function () {
               </div>
             </div>
 
-            <!-- Uniform 3-Column Liquid Glass Product Grid -->
-            <div id="productListGrid" class="u292-g grid ${gridColClasses} gap-6 transition-all duration-300">
+            <!-- Uniform 3-Column Studio Hairline Product Grid -->
+            <div id="productListGrid" class="u292-g grid ${gridColClasses} gap-6 transition-all duration-150">
               ${searchProducts.map(function (prod) {
                 var isMatch = isProductMatchingTag(prod, currentFilter);
                 return renderProductCard(prod, isMatch);
               }).join('')}
 
-              <div id="u292EmptyState" class="u292-empty col-span-full py-16 text-center space-y-3 lg-glass rounded-2xl" style="${matchingProducts.length === 0 ? '' : 'display: none; opacity: 0;'}">
+              <div id="u292EmptyState" class="u292-empty col-span-full py-16 text-center space-y-3 bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl" style="${matchingProducts.length === 0 ? '' : 'display: none; opacity: 0;'}">
                 <h3 class="text-base font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Không tìm thấy sản phẩm phù hợp</h3>
                 <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] max-w-sm mx-auto">Thử từ khóa khác hoặc chuyển bộ lọc về "Tất cả".</p>
                 <button type="button" onclick="ShopVietViews.home.clearSearch()" class="lg-btn-primary mt-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer">
@@ -1378,32 +1376,32 @@ window.ShopVietViews.home = (function () {
           </section>
 
           <!-- ==================== 3-STEP LOCAL DELIVERY STRIP ==================== -->
-          <section class="lg-glass rounded-3xl p-6 sm:p-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-6 pb-4 border-b border-slate-900/10 dark:border-white/10">
+          <section class="border-t border-slate-900/10 dark:border-white/10 pt-8 sm:pt-10 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
               <div>
                 <h2 class="font-display font-bold text-xl sm:text-2xl text-[#1D1D1F] dark:text-[#F5F5F7]">Quy trình nhận mã nguồn &amp; tự phát triển</h2>
-                <p class="text-xs sm:text-sm text-[#6E6E73] dark:text-[#9CA3AF] mt-1">Từ lúc mở khóa đến khi chạy dự án trên máy cá nhân chỉ mất chưa đầy 2 phút.</p>
+                <p class="text-xs sm:text-sm text-[#525866] dark:text-[#9CA3AF] mt-1">Từ lúc mở khóa đến khi chạy dự án trên máy cá nhân chỉ mất chưa đầy 2 phút.</p>
               </div>
               <button type="button" onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')" class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] hover:underline cursor-pointer whitespace-nowrap">
                 Thử ngay với Metropolis 1998 →
               </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-1.5">
+            <div class="border-y border-slate-900/10 dark:border-white/10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-900/10 dark:divide-white/10">
+              <div class="py-5 md:pr-6 space-y-1.5">
                 <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">01. Chọn gói phù hợp</div>
                 <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Xem thử Demo &amp; Source Tree</h3>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] leading-relaxed">Kiểm tra trước cấu trúc thư mục, công nghệ sử dụng và bản demo thực tế ngay trên Studio Workbench.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Kiểm tra trước cấu trúc thư mục, công nghệ sử dụng và bản demo thực tế ngay trên Studio Workbench.</p>
               </div>
-              <div class="space-y-1.5">
+              <div class="py-5 md:px-6 space-y-1.5">
                 <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">02. Nạp Xu VietQR</div>
                 <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Mở khóa tự động bằng Ví Xu</h3>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] leading-relaxed">Chuyển khoản VietQR MBBank 0986019623 theo nội dung cấp sẵn, hệ thống cộng Xu và mở khóa vĩnh viễn.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Chuyển khoản VietQR MBBank 0986019623 theo nội dung cấp sẵn, hệ thống cộng Xu và mở khóa vĩnh viễn.</p>
               </div>
-              <div class="space-y-1.5">
+              <div class="py-5 md:pl-6 space-y-1.5">
                 <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">03. Tải .ZIP &amp; Mở rộng</div>
                 <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Giải nén &amp; chạy local</h3>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] leading-relaxed">Tải file <code class="font-mono">.zip</code> về máy, chạy <code class="font-mono">npm install &amp;&amp; npm run dev</code> và tiếp tục tùy biến theo ý muốn.</p>
+                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Tải file <code class="font-mono">.zip</code> về máy, chạy <code class="font-mono">npm install &amp;&amp; npm run dev</code> và tiếp tục tùy biến theo ý muốn.</p>
               </div>
             </div>
           </section>
@@ -1607,7 +1605,7 @@ window.ShopVietViews.home = (function () {
       if (activeFile && navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(activeFile.code || '').then(function () {
           if (window.ShopVietState && window.ShopVietState.showToast) {
-            window.ShopVietState.showToast('Đã sao chép mẫu ' + activeFile.path + '!', 'success');
+            window.ShopVietState.showToast('Đã sao chép mẫu ' + activeFile.path, 'success');
           }
         }).catch(function () {});
       }
