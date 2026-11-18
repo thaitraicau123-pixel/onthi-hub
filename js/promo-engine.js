@@ -184,6 +184,19 @@
     }).join('');
   }
 
+  function formatPriceLabel(price) {
+    var val = Math.max(0, Math.round(Number(price) || 0));
+    if (val === 0) return 'Miễn phí · 0 Xu';
+    return val.toLocaleString('vi-VN') + ' Xu';
+  }
+
+  function buildShareProductUrl(origin, productId) {
+    var cleanId = String(productId || '').trim();
+    var cleanOrigin = String(origin || '').replace(/\/+$/, '');
+    if (!cleanId) return cleanOrigin ? cleanOrigin + '/' : '/';
+    return (cleanOrigin || '') + '/?product=' + encodeURIComponent(cleanId);
+  }
+
   var api = {
     VOUCHER_CATALOG: VOUCHER_CATALOG,
     normalizeCode: normalizeCode,
@@ -191,7 +204,9 @@
     calculateComboPricing: calculateComboPricing,
     extractDownloadFileName: extractDownloadFileName,
     buildProtectedDownloadUrl: buildProtectedDownloadUrl,
-    highlightCodeLines: highlightCodeLines
+    highlightCodeLines: highlightCodeLines,
+    formatPriceLabel: formatPriceLabel,
+    buildShareProductUrl: buildShareProductUrl
   };
 
   root.ShopVietPromo = api;

@@ -686,10 +686,24 @@ window.ShopVietViews.home = (function () {
 
   // ==================== COMBO CALCULATOR ====================
   var selectedComboSet = new Set();
+  function syncComboButtonsDOM() {
+    if (typeof document === 'undefined') return;
+    document.querySelectorAll('[data-combo-toggle]').forEach(function (btn) {
+      var pid = btn.getAttribute('data-combo-toggle');
+      var isAdded = selectedComboSet.has(pid);
+      btn.setAttribute('aria-pressed', isAdded ? 'true' : 'false');
+      btn.textContent = isAdded ? '✓ Combo' : '+ Combo';
+      btn.className = isAdded
+        ? 'px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/15 dark:bg-[#3B9EFF]/20 border border-[#0071E3]/35 transition-colors whitespace-nowrap shrink-0 cursor-pointer'
+        : 'px-2.5 py-2 rounded-xl text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer';
+    });
+  }
   function toggleComboItem(prodId, isChecked) {
-    if (isChecked) selectedComboSet.add(prodId);
+    var shouldAdd = (typeof isChecked === 'boolean') ? isChecked : !selectedComboSet.has(prodId);
+    if (shouldAdd) selectedComboSet.add(prodId);
     else selectedComboSet.delete(prodId);
     renderComboStatus();
+    syncComboButtonsDOM();
   }
   function renderComboStatus() {
     var pill = document.getElementById('comboStatusPill');
@@ -976,14 +990,17 @@ window.ShopVietViews.home = (function () {
     var pGroupLower = (p.filterGroup || '').toLowerCase();
     var pCatLower = (p.category || '').toLowerCase();
 
+    if (tag === 'Miễn phí 0 Xu') {
+      return Number(p.price) === 0 || pCatLower.includes('miễn phí');
+    }
     if (tag === 'Mã nguồn') {
-      return p.tag === 'Mã nguồn' || p.filterGroup === 'Mã nguồn' || idLower.startsWith('source-');
+      return p.tag === 'Mã nguồn' || p.filterGroup === 'Mã nguồn' || idLower.startsWith('source-') || idLower === 'free-starter-opendesign-kit';
     }
     if (p.tag === tag || p.filterGroup === tag || p.category === tag || p.categoryId === tag) return true;
     if (Array.isArray(p.tags) && p.tags.some(function (t) { return t && t.toLowerCase().includes(tLower); })) return true;
-    if (tag === 'Template web' && (idLower.includes('template') || idLower.includes('soda') || idLower.includes('source-') || pTagLower.includes('template') || pGroupLower.includes('template') || pCatLower.includes('template'))) return true;
-    if (tag === 'Skill' && (idLower.startsWith('skill') || pTagLower.includes('skill') || pCatLower.includes('skill'))) return true;
-    if (tag === 'Prompt Video' && (idLower.includes('video') || idLower.includes('phonk') || pTagLower.includes('video') || pCatLower.includes('video'))) return true;
+    if (tag === 'Template web' && (idLower.includes('template') || idLower.includes('soda') || idLower.startsWith('source-') || pTagLower.includes('template') || pGroupLower.includes('template') || pCatLower.includes('template'))) return true;
+    if (tag === 'Skill' && (idLower.startsWith('skill') || idLower.startsWith('combo-') || idLower.startsWith('prompt-') || pTagLower.includes('skill') || pCatLower.includes('skill') || pCatLower.includes('học thuật') || pCatLower.includes('full'))) return true;
+    if (tag === 'Prompt Video' && (idLower.includes('video') || idLower.includes('phonk') || idLower.includes('seo') || pTagLower.includes('video') || pTagLower.includes('marketing') || pCatLower.includes('video'))) return true;
     return false;
   }
 
@@ -999,17 +1016,22 @@ window.ShopVietViews.home = (function () {
 
   function renderProductCard(prod, isMatch) {
     var isOutOfStock = prod.status === 'out_of_stock' || prod.stock <= 0;
-    var formattedPrice = window.ShopVietState ? window.ShopVietState.formatCurrency(prod.price) : `${Number(prod.price || 0).toLocaleString('vi-VN')} Xu`;
+    var numericPrice = Math.max(0, Number(prod.price) || 0);
+    var isFree = numericPrice === 0;
+    var formattedPrice = isFree
+      ? 'Miễn phí · 0 Xu'
+      : (window.ShopVietState ? window.ShopVietState.formatCurrency(numericPrice) : `${numericPrice.toLocaleString('vi-VN')} Xu`);
     var formattedOldPrice = prod.oldPrice ? (window.ShopVietState ? window.ShopVietState.formatCurrency(prod.oldPrice) : `${Number(prod.oldPrice).toLocaleString('vi-VN')} Xu`) : '';
     var metaSecondary = prod.zipFileSize
-      ? ('Mã nguồn ZIP · ' + prod.zipFileSize)
+      ? ('Mã nguồn · ' + prod.zipFileSize)
       : (prod.module || 'Mở khóa tức thì · Vĩnh viễn');
+    var inCombo = selectedComboSet.has(prod.id);
 
     return `
       <article
         data-product-card="true"
         data-product-id="${prod.id}"
-        data-product-price="${Number(prod.price) || 0}"
+        data-product-price="${numericPrice}"
         data-product-tag="${prod.tag || ''}"
         data-product-category="${prod.filterGroup || prod.category || ''}"
         data-product-name="${(prod.name || '').replace(/"/g, '&quot;')}"
@@ -1022,7 +1044,7 @@ window.ShopVietViews.home = (function () {
 
           <div class="mt-3.5 space-y-1.5">
             <div class="flex items-center gap-1.5 text-xs text-[#6E6E73] dark:text-[#9CA3AF] truncate">
-              <span class="font-medium text-[#0071E3] dark:text-[#3B9EFF]">${prod.tag || prod.filterGroup || 'Sản phẩm số'}</span>
+              <span class="font-medium ${isFree ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#0071E3] dark:text-[#3B9EFF]'}">${isFree ? 'Miễn phí 0 Xu' : (prod.tag || prod.filterGroup || 'Sản phẩm số')}</span>
               <span aria-hidden="true">·</span>
               <span class="truncate">${metaSecondary}</span>
             </div>
@@ -1037,13 +1059,13 @@ window.ShopVietViews.home = (function () {
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-slate-900/10 dark:border-white/10 flex items-center justify-between gap-2">
+        <div class="mt-4 pt-3 border-t border-slate-900/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
           <div class="flex flex-col tabular-nums shrink-0">
-            <span class="text-base font-bold text-[#1D1D1F] dark:text-[#F5F5F7] whitespace-nowrap">${formattedPrice}</span>
+            <span class="text-base font-bold ${isFree ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#1D1D1F] dark:text-[#F5F5F7]'} whitespace-nowrap">${formattedPrice}</span>
             ${formattedOldPrice ? `<span class="text-[11px] text-[#6E6E73] dark:text-[#9CA3AF] line-through whitespace-nowrap">${formattedOldPrice}</span>` : ''}
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0">
+          <div class="flex flex-wrap items-center justify-end gap-1.5 min-w-0">
             ${prod.demoUrl ? `
               <button
                 type="button"
@@ -1053,14 +1075,25 @@ window.ShopVietViews.home = (function () {
               >Demo</button>
             ` : ''}
 
+            ${(!isOutOfStock && !isFree) ? `
+              <button
+                type="button"
+                data-combo-toggle="${prod.id}"
+                aria-pressed="${inCombo ? 'true' : 'false'}"
+                onclick="event.stopPropagation(); ShopVietViews.home.toggleComboItem('${prod.id}')"
+                class="${inCombo ? 'px-2.5 py-2 rounded-xl text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/15 dark:bg-[#3B9EFF]/20 border border-[#0071E3]/35' : 'px-2.5 py-2 rounded-xl text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'} transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                title="Thêm hoặc gỡ khỏi Combo giảm 20%-30%"
+              >${inCombo ? '✓ Combo' : '+ Combo'}</button>
+            ` : ''}
+
             ${isOutOfStock ? `
               <button disabled onclick="event.stopPropagation()" class="px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-400 text-xs font-medium cursor-not-allowed whitespace-nowrap">Hết hàng</button>
             ` : `
               <button
                 type="button"
                 onclick="event.stopPropagation(); ShopVietViews.home.handleBuyNowClick(event, '${prod.id}', this)"
-                class="lg-btn-primary px-3.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer"
-              >${prod.ctaText ? prod.ctaText.replace(/[⚡🎮👑]+/g, '').trim() : 'Mở khóa'}</button>
+                class="${isFree ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm' : 'lg-btn-primary'} px-3 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 cursor-pointer"
+              >${isFree ? 'Tải Free' : (prod.demoUrl ? 'Mở khóa' : (prod.ctaText ? prod.ctaText.replace(/[⚡🎮👑]+/g, '').replace(/\(\d+k\s*Xu\)/i, '').trim() : 'Mở khóa'))}</button>
             `}
           </div>
         </div>
@@ -1405,16 +1438,20 @@ window.ShopVietViews.home = (function () {
         if (!filterTag || filterTag === 'Tất cả') return true;
         const cTag = card.getAttribute('data-product-tag') || '';
         const cCat = card.getAttribute('data-product-category') || '';
+        const cPrice = Number(card.getAttribute('data-product-price') || 0);
         const cName = (card.getAttribute('data-product-name') || '').toLowerCase();
         const cId = (card.getAttribute('data-product-id') || '').toLowerCase();
+        if (filterTag === 'Miễn phí 0 Xu') {
+          return cPrice === 0 || cCat.toLowerCase().includes('miễn phí');
+        }
         if (filterTag === 'Mã nguồn') {
-          return cTag === 'Mã nguồn' || cCat === 'Mã nguồn' || cId.startsWith('source-');
+          return cTag === 'Mã nguồn' || cCat === 'Mã nguồn' || cId.startsWith('source-') || cId === 'free-starter-opendesign-kit';
         }
         if (cTag === filterTag || cCat === filterTag) return true;
         if (cCat && cCat.toLowerCase().includes(filterTag.toLowerCase())) return true;
         if (filterTag === 'Template web' && (cId.includes('template') || cId.includes('soda') || cId.startsWith('source-') || cName.includes('template') || cTag.toLowerCase().includes('template') || cCat.toLowerCase().includes('template'))) return true;
-        if (filterTag === 'Skill' && (cId.startsWith('skill') || cTag.toLowerCase().includes('skill') || cCat.toLowerCase().includes('skill'))) return true;
-        if (filterTag === 'Prompt Video' && (cId.includes('video') || cId.includes('phonk') || cTag.toLowerCase().includes('video') || cCat.toLowerCase().includes('video'))) return true;
+        if (filterTag === 'Skill' && (cId.startsWith('skill') || cId.startsWith('combo-') || cId.startsWith('prompt-') || cTag.toLowerCase().includes('skill') || cCat.toLowerCase().includes('skill') || cCat.toLowerCase().includes('học thuật') || cCat.toLowerCase().includes('full'))) return true;
+        if (filterTag === 'Prompt Video' && (cId.includes('video') || cId.includes('phonk') || cId.includes('seo') || cTag.toLowerCase().includes('video') || cTag.toLowerCase().includes('marketing') || cCat.toLowerCase().includes('video'))) return true;
         return false;
       }
 

@@ -314,6 +314,7 @@ window.ShopVietViews.modal = (function () {
     const isSourceStarter = !isAllInOne && !isOpenJarvis && (
       String(currentProduct.id || '').startsWith('source-') ||
       String(currentProduct.id || '').startsWith('template-') ||
+      String(currentProduct.id || '').startsWith('free-starter-') ||
       Boolean(currentProduct.unlockedPayload && currentProduct.unlockedPayload.codeSnippet) ||
       Boolean(currentProduct.demoUrl)
     );
@@ -710,8 +711,9 @@ window.ShopVietViews.modal = (function () {
       const activeOrder = getExistingActiveOrder(currentProduct.id, currentUser ? currentUser.email : '');
       const isAlreadyUnlocked = Boolean(activeOrder);
       const hasGallery = Array.isArray(currentProduct.gallery) && currentProduct.gallery.length > 0;
-      const isSourceStarter = String(currentProduct.id || '').startsWith('source-') || String(currentProduct.id || '').startsWith('template-') || Boolean(currentProduct.unlockedPayload && currentProduct.unlockedPayload.codeSnippet);
+      const isSourceStarter = String(currentProduct.id || '').startsWith('source-') || String(currentProduct.id || '').startsWith('template-') || String(currentProduct.id || '').startsWith('free-starter-') || Boolean(currentProduct.unlockedPayload && currentProduct.unlockedPayload.codeSnippet);
       const isMetropolis = currentProduct.id === 'source-metropolis-1998-city-builder';
+      const isFreeProduct = Number(currentProduct.price || 0) === 0 || totalXu === 0;
 
       if (isAlreadyUnlocked && activeOrder) {
         this.renderUnlockedSkillView(activeOrder);
@@ -729,30 +731,46 @@ window.ShopVietViews.modal = (function () {
             onclick="event.stopPropagation()"
           >
             <!-- HEADER MODAL -->
-            <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between bg-slate-50/70 dark:bg-[#090B10]/80">
+            <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-[#090B10]/80">
               <div class="flex items-center gap-2.5 min-w-0">
                 <span class="w-9 h-9 rounded-xl bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 flex items-center justify-center text-lg shrink-0">
-                  ${isSourceStarter ? '🧩' : '🪙'}
+                  ${isFreeProduct ? '🎁' : isSourceStarter ? '🧩' : '🪙'}
                 </span>
                 <div class="min-w-0">
                   <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
-                    ${isSourceStarter ? 'Mở Khóa &amp; Tải Mã Nguồn Bằng Ví Xu' : 'Mua Kỹ Năng Bằng Ví Xu'}
+                    ${isFreeProduct ? 'Nhận Miễn Phí Bộ Starter Kit (0 Xu)' : isSourceStarter ? 'Mở Khóa &amp; Tải Mã Nguồn Bằng Ví Xu' : 'Mua Kỹ Năng Bằng Ví Xu'}
                   </h3>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Trừ Xu tự động &amp; tải trọn bộ file trực tiếp trên web</p>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                    ${isFreeProduct ? 'Mở khóa tức thì không tốn Xu · Tải trực tiếp trên web' : 'Trừ Xu tự động &amp; tải trọn bộ file trực tiếp trên web'}
+                  </p>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onclick="ShopVietViews.modal.close()"
-                class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
-                title="Đóng (Esc)"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.copyProductShareLink('${escapeHTML(currentProduct.id)}')"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:text-[#0071E3] dark:hover:text-[#3B9EFF] hover:border-[#0071E3]/40 text-xs font-semibold transition-colors cursor-pointer"
+                  title="Sao chép liên kết chia sẻ sản phẩm"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                  </svg>
+                  <span class="hidden sm:inline">Chia sẻ</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.close()"
+                  class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-xl hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                  title="Đóng (Esc)"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <!-- NAVIGATION TABS -->
@@ -800,13 +818,13 @@ window.ShopVietViews.modal = (function () {
                     </h4>
 
                     <div class="flex items-baseline gap-2 mt-1.5 flex-wrap">
-                      <span id="quickBuyFinalXu" class="text-lg sm:text-xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] font-mono tabular-nums">
-                        ${formatMoney(currentProduct.price)} Xu
+                      <span id="quickBuyFinalXu" class="text-lg sm:text-xl font-extrabold ${isFreeProduct ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#0071E3] dark:text-[#3B9EFF]'} font-mono tabular-nums">
+                        ${isFreeProduct ? 'Miễn phí · 0 Xu' : `${formatMoney(currentProduct.price)} Xu`}
                       </span>
                       <span id="quickBuyVoucherSavings" class="hidden text-xs font-semibold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums"></span>
                       ${currentProduct.oldPrice ? `
                         <span class="text-xs text-slate-400 line-through font-mono tabular-nums">
-                          ${formatMoney(currentProduct.oldPrice)}đ
+                          ${formatMoney(currentProduct.oldPrice)} Xu
                         </span>
                       ` : ''}
                       ${currentProduct.zipFileSize ? `
@@ -921,12 +939,32 @@ window.ShopVietViews.modal = (function () {
                   <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Hình thức cấp phép:</span>
                   <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>${isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn (.zip)' : 'Bản quyền vĩnh viễn (1-Click Copy)'}</span>
+                    <span>${isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn' : 'Bản quyền vĩnh viễn (1-Click Copy)'}</span>
                   </span>
                 </div>
 
+                <!-- PHIÊN BẢN & HỎI ĐÁP NHANH (FAQ) -->
+                <div id="quickBuyFaqSection" class="p-3.5 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80 space-y-2 text-[11px]">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-slate-800 dark:text-slate-200">Phiên bản &amp; Hỏi đáp nhanh</span>
+                    <span class="font-mono text-[10px] font-semibold text-[#0071E3] dark:text-[#3B9EFF] truncate max-w-[200px]">
+                      ${escapeHTML(currentProduct.module || 'v2026 · Cập nhật chuẩn Studio')}
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
+                    <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                      <div class="font-bold text-slate-800 dark:text-slate-200">Cần biết code sâu để dùng không?</div>
+                      <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Không bắt buộc. Chỉ cần giải nén &amp; dán Master Prompt kèm Cheat Sheet vào AI IDE là sửa được theo ý.</p>
+                    </div>
+                    <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                      <div class="font-bold text-slate-800 dark:text-slate-200">Mở khóa 1 lần dùng vĩnh viễn chứ?</div>
+                      <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Đúng. Tải lại bất kỳ lúc nào trong lịch sử đơn hàng &amp; đồng bộ Cloud trên mọi thiết bị.</p>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- MÃ ƯU ĐÃI / VOUCHER -->
-                <div id="quickBuyVoucherSection" class="p-3.5 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80 space-y-2">
+                <div id="quickBuyVoucherSection" class="${isFreeProduct ? 'hidden ' : ''}p-3.5 rounded-2xl bg-white/80 dark:bg-[#090B10]/85 border border-slate-200/80 dark:border-slate-800/80 space-y-2">
                   <div class="flex items-center justify-between gap-2 flex-wrap">
                     <label for="quickBuyVoucherInput" class="text-xs font-bold text-slate-700 dark:text-slate-200">
                       Mã ưu đãi Studio (tuỳ chọn)
@@ -965,7 +1003,9 @@ window.ShopVietViews.modal = (function () {
                         <span class="text-[10px] text-slate-500 dark:text-slate-400">Bùi Thái Studio ID</span>
                       </div>
                       <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                        Đăng nhập tài khoản để quản lý số dư Ví Xu và mở khóa mã nguồn trực tiếp trên trang.
+                        ${isFreeProduct
+                          ? 'Đăng nhập tài khoản để mở khóa miễn phí 0 Xu và tải trực tiếp gói Starter Kit vào kho của bạn.'
+                          : 'Đăng nhập tài khoản để quản lý số dư Ví Xu và mở khóa mã nguồn trực tiếp trên trang.'}
                       </p>
                       <button
                         type="button"
@@ -974,6 +1014,21 @@ window.ShopVietViews.modal = (function () {
                       >
                         Đăng Nhập / Tạo Tài Khoản Ví Xu
                       </button>
+                    </div>
+                  ` : isFreeProduct ? `
+                    <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+                      <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Starter Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
+                        </div>
+                        <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
+                          ${formatMoney(userBalance)} Xu
+                        </span>
+                      </div>
+                      <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
+                        ✓ Miễn phí 0 Xu · Bấm Mở Khóa để tải ngay bộ Starter (không trừ số dư ví).
+                      </p>
                     </div>
                   ` : isSufficient ? `
                     <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
@@ -1022,7 +1077,7 @@ window.ShopVietViews.modal = (function () {
                   onclick="ShopVietViews.modal.goToAuth()"
                   class="w-full py-3.5 px-4 rounded-2xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition-all cursor-pointer"
                 >
-                  <span>Đăng Nhập Ví Xu Để Mở Khóa</span>
+                  <span>${isFreeProduct ? 'Đăng Nhập Ví Xu Để Nhận Miễn Phí (0 Xu)' : 'Đăng Nhập Ví Xu Để Mở Khóa'}</span>
                 </button>
               ` : isAlreadyUnlocked ? `
                 <button
@@ -1032,6 +1087,15 @@ window.ShopVietViews.modal = (function () {
                 >
                   <span>✓</span>
                   <span>Đã Mở Khóa · Bấm Tải Code &amp; Xem Chi Tiết</span>
+                </button>
+              ` : isFreeProduct ? `
+                <button
+                  type="button"
+                  onclick="ShopVietViews.modal.unlockFreeProduct()"
+                  class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+                >
+                  <span>🎁</span>
+                  <span>Mở Khóa Miễn Phí (0 Xu) · Tải Ngay</span>
                 </button>
               ` : isSufficient ? `
                 <button
@@ -1074,9 +1138,13 @@ window.ShopVietViews.modal = (function () {
       if (!currentProduct) return;
       const totalXu = getEffectiveQuickBuyTotal();
       const rawTotal = Math.max(0, (Number(currentProduct.price) || 0) * (Number(currentQty) || 1));
+      const isFreeOrder = totalXu === 0;
       const priceEl = document.getElementById('quickBuyFinalXu');
       const savingsEl = document.getElementById('quickBuyVoucherSavings');
-      if (priceEl) priceEl.textContent = `${formatMoney(totalXu)} Xu`;
+      if (priceEl) {
+        priceEl.textContent = isFreeOrder ? 'Miễn phí · 0 Xu' : `${formatMoney(totalXu)} Xu`;
+        priceEl.className = `text-lg sm:text-xl font-extrabold ${isFreeOrder ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#0071E3] dark:text-[#3B9EFF]'} font-mono tabular-nums`;
+      }
       if (savingsEl) {
         if (appliedVoucher && appliedVoucher.discount > 0) {
           savingsEl.classList.remove('hidden');
@@ -1091,7 +1159,22 @@ window.ShopVietViews.modal = (function () {
       const isSufficient = Boolean(currentUser && userBalance >= totalXu);
       const walletBox = document.getElementById('modalWalletSection');
       if (walletBox && currentUser) {
-        walletBox.innerHTML = isSufficient ? `
+        walletBox.innerHTML = isFreeOrder ? `
+          <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Gói Miễn Phí (0 Xu) · ${escapeHTML(currentUser.name || 'Thành viên')}:</span>
+              </div>
+              <span class="text-sm font-extrabold text-emerald-700 dark:text-emerald-400 font-mono tabular-nums">
+                ${formatMoney(userBalance)} Xu
+              </span>
+            </div>
+            <p class="text-[11px] text-emerald-700 dark:text-emerald-400">
+              ✓ Không trừ số dư ví · Bấm Mở Khóa để tải ngay về máy.
+            </p>
+          </div>
+        ` : isSufficient ? `
           <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-1">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
@@ -1122,7 +1205,16 @@ window.ShopVietViews.modal = (function () {
       }
       const footerWrap = document.getElementById('quickBuyFooterAction');
       if (footerWrap && currentUser) {
-        footerWrap.innerHTML = isSufficient ? `
+        footerWrap.innerHTML = isFreeOrder ? `
+          <button
+            type="button"
+            onclick="ShopVietViews.modal.unlockFreeProduct()"
+            class="w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/25 transition-all active:scale-98 cursor-pointer tabular-nums"
+          >
+            <span>🎁</span>
+            <span>Mở Khóa Miễn Phí (0 Xu) · Tải Ngay</span>
+          </button>
+        ` : isSufficient ? `
           <button
             type="button"
             onclick="ShopVietViews.modal.showPurchaseConfirmDialog()"
@@ -1291,6 +1383,9 @@ window.ShopVietViews.modal = (function () {
       }
 
       const totalAmount = getEffectiveQuickBuyTotal();
+      if (totalAmount === 0) {
+        return this.unlockFreeProduct();
+      }
       const balance = typeof currentUser.balance === 'number' ? currentUser.balance : 0;
 
       if (balance < totalAmount) {
@@ -1423,6 +1518,10 @@ window.ShopVietViews.modal = (function () {
       }
 
       const totalAmount = getEffectiveQuickBuyTotal();
+      if (totalAmount === 0) {
+        this.closeConfirmDialog();
+        return this.unlockFreeProduct();
+      }
       const balance = typeof currentUser.balance === 'number' ? currentUser.balance : 0;
 
       if (balance < totalAmount) {
@@ -1625,6 +1724,113 @@ window.ShopVietViews.modal = (function () {
         this.renderUnlockedSkillView(activeOrder);
       } else {
         this.open(productId);
+      }
+    },
+
+    copyProductShareLink: function (productId) {
+      const id = productId || (currentProduct && currentProduct.id) || '';
+      if (!id) return;
+      const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : '';
+      const url = (window.ShopVietPromo && typeof window.ShopVietPromo.buildShareProductUrl === 'function')
+        ? window.ShopVietPromo.buildShareProductUrl(origin, id)
+        : `${origin.replace(/\/+$/, '')}/?product=${encodeURIComponent(id)}`;
+      copyToClipboard(url, 'liên kết sản phẩm');
+    },
+
+    unlockFreeProduct: function () {
+      if (isPurchasing) return;
+      if (!currentProduct) return;
+
+      const totalAmount = getEffectiveQuickBuyTotal();
+      if (totalAmount > 0) {
+        this.showPurchaseConfirmDialog();
+        return;
+      }
+
+      const currentUser = window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user;
+      if (!currentUser || !currentUser.isLoggedIn || !currentUser.email) {
+        this.goToAuth();
+        return;
+      }
+
+      const activeOrder = getExistingActiveOrder(currentProduct.id, currentUser.email);
+      if (activeOrder) {
+        this.renderUnlockedSkillView(activeOrder);
+        return;
+      }
+
+      isPurchasing = true;
+      try {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let suffix = '';
+        for (let i = 0; i < 4; i++) suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+        const orderCode = `#FREE2026${suffix}`;
+
+        const payload = currentProduct.unlockedPayload || {
+          fileName: (currentProduct.id || 'starter') + '.md',
+          masterPrompt: currentProduct.masterPrompt || currentProduct.desc || '# Bộ Starter Kit',
+          skillContent: currentProduct.masterPrompt || currentProduct.desc || '# Bộ Starter Kit',
+          cheatSheet: currentProduct.cheatSheet || [],
+          installCommand: 'echo "Mở khóa thành công"',
+          scripts: []
+        };
+        if (!payload.skillContent) payload.skillContent = payload.masterPrompt || currentProduct.desc || '# Bộ Starter Kit';
+        if (!payload.masterPrompt) payload.masterPrompt = payload.skillContent || currentProduct.desc || '# Bộ Starter Kit';
+
+        const order = {
+          id: orderCode,
+          orderCode: orderCode,
+          rawCode: `FREE2026${suffix}`,
+          productId: currentProduct.id,
+          productName: currentProduct.name,
+          price: currentProduct.price || 0,
+          quantity: currentQty || 1,
+          amount: 0,
+          status: 'completed',
+          statusText: 'Hoàn tất (Mở khóa miễn phí 0 Xu)',
+          paymentMethod: 'Gói Starter Miễn Phí (0 Xu)',
+          userEmail: currentUser.email,
+          createdAt: new Date().toISOString(),
+          createdAtFormatted: new Date().toLocaleDateString('vi-VN'),
+          date: new Date().toLocaleDateString('vi-VN'),
+          unlockedAt: new Date().toISOString(),
+          expiresAt: null,
+          unlockedPayload: payload
+        };
+
+        lastUnlockedOrder = order;
+
+        if (window.ShopVietState && window.ShopVietState.state) {
+          window.ShopVietState.state.orders = window.ShopVietState.state.orders || [];
+          window.ShopVietState.state.orders.unshift(order);
+          window.ShopVietState.save();
+          try {
+            localStorage.setItem('shopviet_orders', JSON.stringify(window.ShopVietState.state.orders));
+          } catch (e) {}
+          if (typeof window.ShopVietState.notify === 'function') {
+            window.ShopVietState.notify('order_created', order);
+            window.ShopVietState.notify('orders_updated', window.ShopVietState.state.orders);
+          }
+          if (typeof window.ShopVietState.pushAllToCloud === 'function') {
+            window.ShopVietState.pushAllToCloud().catch(console.warn);
+          }
+        }
+
+        if (window.ShopVietFirebase && typeof window.ShopVietFirebase.syncOrderToCloud === 'function') {
+          window.ShopVietFirebase.syncOrderToCloud(order).catch(console.warn);
+        }
+
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast(`🎁 Đã mở khóa miễn phí "${currentProduct.name}"! Bạn có thể tải ngay về máy.`, 'success');
+        }
+
+        isPurchasing = false;
+        this.renderUnlockedSkillView(order);
+      } catch (err) {
+        isPurchasing = false;
+        if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Không thể mở khóa miễn phí lúc này. Vui lòng thử lại!', 'error');
+        }
       }
     },
 
@@ -1936,6 +2142,7 @@ window.ShopVietViews.modal = (function () {
       const isSourceStarter = !isAllInOne && !isOpenJarvis && (
         prodId.startsWith('source-') ||
         prodId.startsWith('template-') ||
+        prodId.startsWith('free-starter-') ||
         Boolean(payload.codeSnippet) ||
         Boolean(demoTargetUrl)
       );
@@ -1943,6 +2150,7 @@ window.ShopVietViews.modal = (function () {
       const zipHref = prod.downloadUrl || payload.downloadUrl || '';
       const zipName = prod.zipFileName || payload.zipFileName || (isMetropolis ? 'metropolis-1998-source-starter.zip' : 'pixelfx-combat-polish.zip');
       const zipSize = prod.zipFileSize || payload.zipFileSize || '';
+      const isSingleHtmlDownload = /\.html?$/i.test(zipHref || zipName);
       const docUrlRaw = String(prod.docDownloadUrl || payload.docDownloadUrl || '');
       const hasWordDoc = !isSourceStarter && (prodId === 'skill-pixel-vfx-engine' || /\.(docx?|pdf)$/i.test(docUrlRaw));
 
@@ -1997,9 +2205,9 @@ window.ShopVietViews.modal = (function () {
                     type="button"
                     onclick="ShopVietViews.modal.downloadProtectedAsset('${escapeHTML(zipHref)}', '${escapeHTML(zipName)}', '${escapeHTML(prodId)}')"
                     class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition active:scale-95 cursor-pointer shadow-sm tabular-nums"
-                    title="Tải gói mã nguồn (.zip)"
+                    title="Tải gói mã nguồn về máy"
                   >
-                    <span>📦 Tải .zip${zipSize ? ` (${escapeHTML(zipSize)})` : ''}</span>
+                    <span>📦 Tải ${isSingleHtmlDownload ? '.html' : '.zip'}${zipSize ? ` (${escapeHTML(zipSize)})` : ''}</span>
                   </button>
                 ` : ''}
                 ${demoTargetUrl ? `

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#090B10"/>
+      <stop offset="1" stop-color="#111C33"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#FFFFFF" stroke-opacity="0.14"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#3B9EFF">@GOOGLE/GENAI WORKSPACE · EXPRESS PROXY</text>
+  <text x="80" y="162" font-family="system-ui, sans-serif" font-size="36" font-weight="800" fill="#F5F5F7">Gemini AI Glass Workspace</text>
+  <text x="80" y="202" font-family="system-ui, sans-serif" font-size="18" fill="#9CA3AF">Server-Side API Proxy · Prompt Presets · Streaming UI</text>
+  <rect x="80" y="248" width="640" height="162" rx="18" fill="#05070B" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="106" y="288" font-family="ui-monospace, monospace" font-size="14" fill="#6EE7B7">import { GoogleGenAI } from '@google/genai';</text>
+  <text x="106" y="320" font-family="ui-monospace, monospace" font-size="14" fill="#CBD5E1">const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });</text>
+  <text x="106" y="352" font-family="ui-monospace, monospace" font-size="14" fill="#3B9EFF">await ai.models.generateContent({ model: 'gemini-2.5-flash' });</text>
+  <text x="106" y="384" font-family="ui-monospace, monospace" font-size="13" fill="#9CA3AF">// Secure proxy keeps API key strictly on backend server</text>
+</svg>

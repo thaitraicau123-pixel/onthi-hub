@@ -113,3 +113,23 @@ test('highlightCodeLines outputs escaped line-numbered syntax spans without attr
     .trim();
   assert.equal(plain, "01import { CityEngine } from './CityEngine';\n02const ok = true; // <script>");
 });
+
+test('formatPriceLabel formats 0 Xu as free and paid amounts in Xu', () => {
+  const promo = loadPromoEngine();
+  assert.equal(promo.formatPriceLabel(0), 'Miễn phí · 0 Xu');
+  assert.equal(promo.formatPriceLabel(15000), '15.000 Xu');
+  assert.equal(promo.formatPriceLabel(29000), '29.000 Xu');
+});
+
+test('buildShareProductUrl generates normalized product deep-link URLs', () => {
+  const promo = loadPromoEngine();
+  assert.equal(
+    promo.buildShareProductUrl('https://promptmmo.store/', 'source-luckyspin-minigame-marketing'),
+    'https://promptmmo.store/?product=source-luckyspin-minigame-marketing'
+  );
+  assert.equal(
+    promo.buildShareProductUrl('', 'free-starter-opendesign-kit'),
+    '/?product=free-starter-opendesign-kit'
+  );
+  assert.equal(promo.buildShareProductUrl('https://promptmmo.store', ''), 'https://promptmmo.store/');
+});

@@ -3729,9 +3729,11 @@
       } catch (e) {}
     },
 
-    // Định dạng tiền tệ VNĐ
+    // Định dạng đơn vị Xu thống nhất toàn hệ thống
     formatCurrency: function (number) {
-      return (number || 0).toLocaleString('vi-VN') + ' đ';
+      var n = Math.max(0, Math.round(Number(number) || 0));
+      if (n === 0) return 'Miễn phí · 0 Xu';
+      return n.toLocaleString('vi-VN') + ' Xu';
     },
 
     // Giao diện dự phòng khi View chưa load xong

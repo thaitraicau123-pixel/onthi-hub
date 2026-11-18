@@ -5,7 +5,7 @@ window.ShopVietData = {
   },
   "defaultOrders": [],
   "defaultTopups": [],
-  "filterTags": ["Tất cả", "Mã nguồn", "Template web", "Skill", "Prompt Video"],
+  "filterTags": ["Tất cả", "Miễn phí 0 Xu", "Mã nguồn", "Template web", "Skill", "Prompt Video"],
   "getBrandIcon": function(iconType) {
     var icons = {
       'metropolis-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><path d="M12 22V12"/><path d="M21 7l-9 5-9-5"/></svg>',
@@ -122,6 +122,436 @@ window.ShopVietData = {
         "title": "3. Kiểm tra TypeScript trước khi build",
         "template": "npm run lint && npm run build",
         "example": "Đảm bảo 0 lỗi TypeScript trước khi deploy lên Vercel/Netlify"
+      }
+    ]
+  },
+  {
+    "id": "free-starter-opendesign-kit",
+    "name": "Open-Design Liquid Glass Starter Kit — Bộ Token CSS & .cursorrules (Miễn Phí 0 Xu)",
+    "module": "FREE STARTER v1.0",
+    "tag": "Mã nguồn",
+    "category": "Miễn phí 0 Xu",
+    "filterGroup": "Mã nguồn",
+    "badge": "MIỄN PHÍ · 0 XU",
+    "badgeColor": "bg-emerald-600 text-white",
+    "price": 0,
+    "oldPrice": 15000,
+    "discount": "FREE",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "MIT Starter · Tải thử miễn phí",
+    "rating": 5,
+    "soldCount": 148,
+    "image": "/img/opendesign-free-preview.svg",
+    "imageUrl": "/img/opendesign-free-preview.svg",
+    "iconType": "code",
+    "ctaText": "Nhận Miễn Phí (0 Xu)",
+    "zipFileName": "OpenDesign_Starter_Free_Kit.zip",
+    "zipFileSize": "2.1 KB",
+    "desc": "GÓI DÙNG THỬ MIỄN PHÍ 0 XU: Tải ngay bộ khung Apple Liquid Glass + Cool Obsidian + Sapphire Accent chuẩn hóa kèm tệp .cursorrules để AI IDE (Cursor, Claude, Antigravity) sinh UI chuẩn thẩm mỹ ngay lập tức.",
+    "tags": ["Miễn phí 0 Xu", "Mã nguồn", "Open-Design", "Liquid Glass", "Cursorrules"],
+    "features": [
+      "Tệp liquid-glass-tokens.css chuẩn Dark/Light Mode không cần Tailwind build",
+      "Bộ quy tắc .cursorrules khóa chuẩn Zero-Pill & tabular-nums cho AI Coding",
+      "Trang index.html Zero-Build giải nén mở trực tiếp trên trình duyệt"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Prompt AI làm web hay ra giao diện rối mắt",
+        "summary": "AI tự sinh quá nhiều thẻ pill màu mè, font số bị giật khi đếm và thiếu đồng bộ sáng/tối."
+      },
+      "after": {
+        "title": "Dùng Open-Design Free Starter Kit",
+        "summary": "Thả tệp .cursorrules và liquid-glass-tokens.css vào dự án để mọi màn hình đều đạt độ sắc nét chuẩn Apple."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "OPENDESIGN_STARTER_GUIDE.md",
+      "downloadUrl": "/downloads/OpenDesign_Starter_Free_Kit.zip",
+      "docDownloadUrl": "/downloads/OpenDesign_Starter_Free_Kit.zip",
+      "zipFileName": "OpenDesign_Starter_Free_Kit.zip",
+      "zipFileSize": "2.1 KB",
+      "masterPrompt": "# Open-Design Liquid Glass Starter Rules\\n\\nApply Apple Liquid Glass tokens (`#0071E3` light / `#3B9EFF` dark Sapphire, `#090B10` Obsidian, frosted surfaces) with zero static pills and `tabular-nums` for all numeric counters.",
+      "codeSnippet": "unzip OpenDesign_Starter_Free_Kit.zip && npx serve ."
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Mở xem ngay sau khi giải nén",
+        "template": "unzip OpenDesign_Starter_Free_Kit.zip && npx serve . -l 3000",
+        "example": "Truy cập http://localhost:3000 để xem giao diện Apple Liquid Glass mẫu"
+      },
+      {
+        "title": "2. Kích hoạt .cursorrules trong Cursor / Claude",
+        "template": "Đọc toàn bộ tệp .cursorrules và liquid-glass-tokens.css trong dự án này, sau đó thiết kế trang [TÊN_TRANG] tuân thủ tuyệt đối các token màu và bố cục đã khai báo.",
+        "example": "Áp dụng cho trang Dashboard hoặc Landing Page SaaS"
+      }
+    ]
+  },
+  {
+    "id": "source-sepay-wallet-saas-starter",
+    "name": "SePay VietQR & Ví Xu SaaS Starter — Full Webhook HMAC + Tải File Bảo Mật",
+    "module": "FULLSTACK SAAS KIT v1.2",
+    "tag": "Mã nguồn",
+    "category": "Mã nguồn",
+    "filterGroup": "Mã nguồn",
+    "badge": "HOT DEV KIT · 29K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 29000,
+    "oldPrice": 99000,
+    "discount": "-71%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full Backend + Webhook Template",
+    "rating": 5,
+    "soldCount": 41,
+    "image": "/img/sepay-wallet-preview.svg",
+    "imageUrl": "/img/sepay-wallet-preview.svg",
+    "iconType": "server",
+    "ctaText": "Mở Khóa Code (29k Xu)",
+    "zipFileName": "SePay_VietQR_Wallet_Starter.zip",
+    "zipFileSize": "2.0 KB",
+    "desc": "BỘ MÃ NGUỒN KHỞI TẠO HỆ THỐNG NẠP XU TỰ ĐỘNG QUA VIETQR & SEPAY WEBHOOK: Tách chuẩn Express + SePay Webhook Auth + Sinh QR VietQR động theo mã memo + Bảo vệ endpoint tải file trả phí. Tải ZIP sạch về gắn .env là bán sản phẩm số ngay.",
+    "tags": ["Mã nguồn", "SePay", "VietQR", "SaaS", "Node.js", "Express"],
+    "features": [
+      "Hàm extractTopupMemo & buildVietQRUrl sinh mã QR MBBank/Vietcombank tức thì",
+      "Webhook /api/sepay-webhook kiểm tra Apikey secret, chống cộng tiền trùng lặp",
+      "Cấu trúc .env.example sạch sẽ, dễ mở rộng lên Firestore hoặc PostgreSQL"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Duyệt tay từng giao dịch chuyển khoản",
+        "summary": "Khách chuyển khoản lúc 2h sáng phải chờ admin online mới nhận được Xu hoặc file."
+      },
+      "after": {
+        "title": "Tự động hóa 24/7 với SePay VietQR Starter",
+        "summary": "Webhook nhận tiền sau 2-5 giây, tự khớp nội dung NAPxxxx và mở khóa quyền tải."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "SEPAY_WALLET_ARCHITECTURE.md",
+      "downloadUrl": "/downloads/SePay_VietQR_Wallet_Starter.zip",
+      "docDownloadUrl": "/downloads/SePay_VietQR_Wallet_Starter.zip",
+      "zipFileName": "SePay_VietQR_Wallet_Starter.zip",
+      "zipFileSize": "2.0 KB",
+      "masterPrompt": "# SePay VietQR Wallet Starter Architecture\\n\\nExtend `server.js` and `lib/sepay.js` to persist intents/wallets in Firestore or PostgreSQL with idempotent webhook transaction keys.",
+      "codeSnippet": "unzip SePay_VietQR_Wallet_Starter.zip && npm install && npm run dev"
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Khởi chạy server SePay local",
+        "template": "cp .env.example .env && npm install && npm run dev",
+        "example": "Chạy cổng thanh toán thử nghiệm ở localhost:3000"
+      },
+      {
+        "title": "2. Nối thêm database Firestore / Postgres",
+        "template": "Thay thế Map intents và wallets trong server.js bằng collection `intents` và `wallets` trên [TÊN_DATABASE], đảm bảo xử lý transaction nguyên tử tránh cộng trùng webhook.",
+        "example": "Lưu trữ bền vững trên Cloud Firestore hoặc Supabase"
+      }
+    ]
+  },
+  {
+    "id": "source-gemini-ai-workspace-kit",
+    "name": "Gemini AI Liquid Glass Workspace Kit — Backend Proxy @google/genai + Streaming UI",
+    "module": "AI WORKSPACE v1.0",
+    "tag": "Mã nguồn",
+    "category": "Mã nguồn",
+    "filterGroup": "Mã nguồn",
+    "badge": "AI STARTER · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 59000,
+    "discount": "-75%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full Proxy + Glass UI",
+    "rating": 5,
+    "soldCount": 37,
+    "image": "/img/gemini-workspace-preview.svg",
+    "imageUrl": "/img/gemini-workspace-preview.svg",
+    "iconType": "sparkles",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "Gemini_Glass_Workspace_Kit.zip",
+    "zipFileSize": "2.5 KB",
+    "desc": "MÃ NGUỒN STARTER WEB APP TÍCH HỢP GEMINI AI CHUẨN BẢO MẬT: Toàn bộ API key được giữ kín ở backend Express qua SDK chính thức @google/genai, đi kèm giao diện Liquid Glass tối giản sẵn sàng phát triển thành công cụ AI viết nội dung, tóm tắt hoặc trợ lý riêng.",
+    "tags": ["Mã nguồn", "Template web", "Gemini API", "Node.js", "AI Workspace"],
+    "features": [
+      "Tích hợp @google/genai SDK bản mới nhất gọi gemini-2.5-flash qua /api/ai",
+      "Giữ 100% GEMINI_API_KEY phía server, tuyệt đối không lộ khóa trên trình duyệt",
+      "Giao diện Liquid Glass gọn nhẹ dễ nhúng thêm lịch sử chat hoặc preset prompt"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Gọi API key trực tiếp ở frontend",
+        "summary": "Lộ GEMINI_API_KEY trong Network tab khiến người ngoài lấy trộm quota."
+      },
+      "after": {
+        "title": "Dùng Gemini AI Glass Workspace Kit",
+        "summary": "Server proxy xác thực và giới hạn payload sạch sẽ, deploy lên Vercel/VPS trong 2 phút."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "GEMINI_WORKSPACE_GUIDE.md",
+      "downloadUrl": "/downloads/Gemini_Glass_Workspace_Kit.zip",
+      "docDownloadUrl": "/downloads/Gemini_Glass_Workspace_Kit.zip",
+      "zipFileName": "Gemini_Glass_Workspace_Kit.zip",
+      "zipFileSize": "2.5 KB",
+      "masterPrompt": "# Gemini AI Glass Workspace Extension Prompt\\n\\nAdd structured system instructions, response streaming, and Firebase Auth bearer verification on top of `/api/ai`.",
+      "codeSnippet": "unzip Gemini_Glass_Workspace_Kit.zip && cp .env.example .env && npm install && npm run dev"
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Cấu hình key & chạy Workspace",
+        "template": "cp .env.example .env && npm install && npm run dev",
+        "example": "Điền GEMINI_API_KEY trong .env rồi test tại http://localhost:3000"
+      }
+    ]
+  },
+  {
+    "id": "source-luckyspin-minigame-marketing",
+    "name": "Mini-Game Vòng Quay Săn Voucher — Mã Nguồn Marketing 1-File HTML Canvas 60fps",
+    "module": "MARKETING GAME v1.0",
+    "tag": "Mã nguồn",
+    "category": "Mã nguồn",
+    "filterGroup": "Mã nguồn",
+    "badge": "MARKETING HOT · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 49000,
+    "discount": "-69%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "1-File HTML + Chơi Thử Live",
+    "rating": 5,
+    "soldCount": 46,
+    "image": "/img/luckyspin-preview.svg",
+    "imageUrl": "/img/luckyspin-preview.svg",
+    "iconType": "game",
+    "demoUrl": "/demo/luckyspin/",
+    "demoBtnText": "Quay Thử Live",
+    "demoTitle": "Trải nghiệm Mini-Game Vòng Quay Săn Voucher Live 60fps",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "LuckySpin_Voucher_MiniGame_1File.html",
+    "zipFileSize": "15.5 KB",
+    "desc": "MÃ NGUỒN MINI-GAME VÒNG QUAY MAY MẮN TẶNG VOUCHER (1-FILE HTML ĐỘC LẬP): Giải pháp tăng tỷ lệ chốt đơn và giữ chân khách truy cập cho shop online / sự kiện landing page. Chỉnh sửa phần thưởng, tỷ lệ trúng (%) và âm thanh Web Audio chỉ trong một mảng cấu hình.",
+    "tags": ["Mã nguồn", "Template web", "Marketing", "Mini-Game", "1-File HTML", "Voucher"],
+    "features": [
+      "1-File HTML thuần gọn nhẹ ~15KB, nhúng được vào mọi landing page hoặc WordPress/Haravan",
+      "Vật lý giảm tốc Cubic Ease-Out mượt 60fps + âm thanh tick từng ô bằng Web Audio API",
+      "Hỗ trợ tỷ trọng xác suất trúng thưởng JSON & nút sao chép mã voucher 1-chạm"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Banner tĩnh phát mã giảm giá ít tương tác",
+        "summary": "Khách lướt qua nhanh, tỷ lệ lưu mã và quay lại thanh toán thấp."
+      },
+      "after": {
+        "title": "Nhúng Vòng Quay Voucher 60fps",
+        "summary": "Tạo cảm giác săn thưởng thú vị, tăng mạnh tỷ lệ sử dụng voucher khi chốt đơn."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "LUCKYSPIN_CONFIG_GUIDE.md",
+      "downloadUrl": "/downloads/LuckySpin_Voucher_MiniGame_1File.html",
+      "docDownloadUrl": "/downloads/LuckySpin_Voucher_MiniGame_1File.html",
+      "zipFileName": "LuckySpin_Voucher_MiniGame_1File.html",
+      "zipFileSize": "15.5 KB",
+      "demoUrl": "/demo/luckyspin/",
+      "masterPrompt": "# LuckySpin Marketing Wheel Extension Prompt\\n\\nCustomize the `PRIZES` weight array, integrate webhook lead capture before spinning, and keep 60fps Web Audio tick synchronization.",
+      "codeSnippet": "Mở trực tiếp LuckySpin_Voucher_MiniGame_1File.html trên Chrome/Edge hoặc nhúng qua iframe."
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Thay đổi danh sách phần thưởng & tỷ lệ trúng",
+        "template": "Cập nhật mảng PRIZES trong LuckySpin_Voucher_MiniGame_1File.html với danh sách voucher của shop [TÊN_SHOP], đảm bảo giữ nguyên thuật toán pickWeightedIndex().",
+        "example": "Đổi 6 ô thưởng thành Freeship, Giảm 10%, Quà tặng kèm..."
+      }
+    ]
+  },
+  {
+    "id": "source-dungeon-co-ve-thach-2d",
+    "name": "Dungeon Cổ Vệ Thạch — Mã Nguồn Game 2D Action RPG Canvas + Boss & Sprite Sheet",
+    "module": "2D ACTION GAME KIT v1.0",
+    "tag": "Mã nguồn",
+    "category": "Mã nguồn",
+    "filterGroup": "Mã nguồn",
+    "badge": "GAME 2D FULL · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 65000,
+    "discount": "-77%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full Code + Sprite + SFX",
+    "rating": 5,
+    "soldCount": 29,
+    "image": "/img/knight-pistol-demo.png",
+    "imageUrl": "/img/knight-pistol-demo.png",
+    "iconType": "game",
+    "demoUrl": "/demo/dungeon-co-ve-thach/",
+    "demoBtnText": "Chơi Thử 2D",
+    "demoTitle": "Vào Phòng Chơi Thử Game 2D Dungeon Cổ Vệ Thạch",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "Dungeon_Co_Ve_Thach_2D_Starter.zip",
+    "zipFileSize": "9.2 MB",
+    "desc": "TRỌN BỘ MÃ NGUỒN GAME 2D PIXEL ACTION DUNGEON CỔ VỆ THẠCH: Kèm đầy đủ code chiến đấu Canvas, 3 vũ khí (Kiếm / Búa / Súng Tommy), 4 loại quái vật (Slime, Goblin, Bộ xương, Nấm độc), Boss Cổ Vệ Thạch 360 HP đa pha, toàn bộ sprite PNG và sound-data.json để tự phát triển thêm màn chơi.",
+    "tags": ["Mã nguồn", "Game 2D", "Action RPG", "Sprite Sheet", "Canvas"],
+    "features": [
+      "Full source HTML5 Canvas + sprite PNG sắc nét (Knight, Golem Boss, 4 quái, 3 vũ khí)",
+      "Hệ thống dash Spacebar né đòn, hitbox debug, ngắm chuột 360° & âm thanh WAV nhúng sẵn",
+      "Sẵn sàng mở rộng thành game Roguelike nhiều tầng hoặc web game thương mại"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Lập trình game 2D thiếu asset & boss AI",
+        "summary": "Tốn hàng tuần vẽ sprite, căn hitbox vũ khí và làm state machine cho boss."
+      },
+      "after": {
+        "title": "Sở hữu Dungeon Cổ Vệ Thạch 2D Starter",
+        "summary": "Giải nén chạy ngay, có sẵn cả game play thử 60fps + sprite PNG + SFX để mở rộng màn mới."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "DUNGEON_2D_DEV_GUIDE.md",
+      "downloadUrl": "/downloads/Dungeon_Co_Ve_Thach_2D_Starter.zip",
+      "docDownloadUrl": "/downloads/Dungeon_Co_Ve_Thach_2D_Starter.zip",
+      "zipFileName": "Dungeon_Co_Ve_Thach_2D_Starter.zip",
+      "zipFileSize": "9.2 MB",
+      "demoUrl": "/demo/dungeon-co-ve-thach/",
+      "masterPrompt": "# Dungeon 2D Action RPG Extension Prompt\\n\\nAdd Floor 2 encounter rooms, new weapon tiers in `sprite-data.json`, and wave spawners cleanly inside the game loop.",
+      "codeSnippet": "unzip Dungeon_Co_Ve_Thach_2D_Starter.zip && cd dungeon-co-ve-thach-starter && npx serve . -l 3000"
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Chạy Dungeon 2D trên máy cá nhân",
+        "template": "unzip Dungeon_Co_Ve_Thach_2D_Starter.zip && cd dungeon-co-ve-thach-starter && npx serve . -l 3000",
+        "example": "Mở http://localhost:3000 và nhấn Bắt đầu để test trực tiếp"
+      }
+    ]
+  },
+  {
+    "id": "template-ascend-1file-luxury",
+    "name": "Ascend Autonomous SaaS — Template Web 3D Planet WebGL & Glass Landing (1-File HTML)",
+    "module": "TEMPLATE WEB 3D v1.0",
+    "tag": "Template web",
+    "category": "Template web",
+    "filterGroup": "Template web",
+    "badge": "SAAS WEBGL · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 49000,
+    "discount": "-69%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "1-File HTML + Three.js",
+    "rating": 5,
+    "soldCount": 31,
+    "image": "/img/ascend-preview.jpg",
+    "imageUrl": "/img/ascend-preview.jpg",
+    "iconType": "server",
+    "demoUrl": "/demo/ascend/",
+    "demoBtnText": "Xem Demo Live",
+    "demoTitle": "Xem thử Template Ascend WebGL Planet SaaS",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "ascend-1file-template.html",
+    "zipFileSize": "24 KB",
+    "desc": "TEMPLATE WEB SAAS PHONG CÁCH NEO-GLASS & HẠNH TINH 3D THREE.JS (1-FILE HTML): Phù hợp cho startup AI, Fintech, Revenue Ops muốn có landing page cao cấp với nền địa cầu 3D xoay mượt, thanh điều hướng glassmorphism và bảng giá rõ ràng.",
+    "tags": ["Template web", "SaaS", "Three.js", "Landing Page", "1-File HTML"],
+    "features": [
+      "Nền hành tinh 3D Three.js fixed canvas kết hợp smooth scroll Lenis",
+      "1-File HTML tự chạy, thay text/màu/bảng giá cực nhanh trong 5 phút"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Landing SaaS phẳng truyền thống",
+        "summary": "Thiếu chiều sâu công nghệ khi giới thiệu sản phẩm AI hoặc phần mềm B2B."
+      },
+      "after": {
+        "title": "Dùng Ascend 3D SaaS Template",
+        "summary": "Ấn tượng ngay từ giây đầu với nền WebGL Planet và bố cục glass chuyên nghiệp."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "ascend-saas-guide.md",
+      "downloadUrl": "/downloads/ascend-1file-template.html",
+      "docDownloadUrl": "/downloads/ascend-1file-template.html",
+      "zipFileName": "ascend-1file-template.html",
+      "zipFileSize": "24 KB",
+      "demoUrl": "/demo/ascend/",
+      "masterPrompt": "# Ascend 3D SaaS Landing Customization\\n\\nCustomize hero copy, pricing tiers, and Three.js planet accent color variables inside `ascend-1file-template.html`.",
+      "codeSnippet": "Mở trực tiếp ascend-1file-template.html hoặc host lên Vercel/Cloudflare Pages."
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Việt hóa & thay thông tin thương hiệu",
+        "template": "Chỉnh sửa nội dung hero, tính năng và bảng giá trong ascend-1file-template.html cho sản phẩm [TÊN_SAAS] nhưng giữ nguyên canvas WebGL và biến CSS root.",
+        "example": "Biến template thành trang giới thiệu phần mềm AI CRM trong 1 lần prompt"
+      }
+    ]
+  },
+  {
+    "id": "template-kimi-1file-studio",
+    "name": "Kimi Bronze & Time — Template Triển Lãm Nghệ Thuật 3D Cuộn Mượt 900vh (1-File HTML)",
+    "module": "TEMPLATE EXHIBITION 3D v1.0",
+    "tag": "Template web",
+    "category": "Template web",
+    "filterGroup": "Template web",
+    "badge": "ART 3D SCROLL · 15K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 15000,
+    "oldPrice": 49000,
+    "discount": "-69%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "1-File HTML + Scroll Camera 3D",
+    "rating": 5,
+    "soldCount": 24,
+    "image": "/img/kimi-preview.jpg",
+    "imageUrl": "/img/kimi-preview.jpg",
+    "iconType": "palette",
+    "demoUrl": "/demo/kimi/",
+    "demoBtnText": "Xem Demo 3D",
+    "demoTitle": "Xem thử Triển Lãm Nghệ Thuật 3D Scroll Storytelling",
+    "ctaText": "Mở Khóa Code (15k Xu)",
+    "zipFileName": "kimi-1file-template.html",
+    "zipFileSize": "32 KB",
+    "desc": "TEMPLATE TRÌNH DIỄN KỂ CHUYỆN 3D THEO CUỘN TRANG (BRONZE & TIME EDITION): Camera 3D bay theo từng chương nội dung kết hợp con trỏ tùy biến, hiệu ứng lật ảnh clip-path và typo Italiana sang trọng — lý tưởng cho portfolio kiến trúc, bảo tàng số hoặc thương hiệu xa xỉ.",
+    "tags": ["Template web", "Portfolio", "Storytelling", "3D Scroll", "1-File HTML"],
+    "features": [
+      "Timeline camera 3D đồng bộ trực tiếp theo thanh cuộn chuột mượt mà",
+      "Custom cursor + hiệu ứng clip-path gallery chuyển cảnh chuẩn tạp chí"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Portfolio liệt kê ảnh dàn hàng ngang",
+        "summary": "Không tạo được nhịp kể chuyện điện ảnh khi trình bày dự án cao cấp."
+      },
+      "after": {
+        "title": "Dùng Kimi 3D Scroll Storytelling",
+        "summary": "Biến trang giới thiệu thành triển lãm số tương tác đẳng cấp Awwwards."
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "kimi-storytelling-guide.md",
+      "downloadUrl": "/downloads/kimi-1file-template.html",
+      "docDownloadUrl": "/downloads/kimi-1file-template.html",
+      "zipFileName": "kimi-1file-template.html",
+      "zipFileSize": "32 KB",
+      "demoUrl": "/demo/kimi/",
+      "masterPrompt": "# Kimi Bronze & Time Storytelling Template\\n\\nReplace the 3D GLB model, chapter copy, and slide typography while preserving the scroll-synchronized camera timeline.",
+      "codeSnippet": "Mở trực tiếp kimi-1file-template.html qua Live Server hoặc Vercel."
+    },
+    "status": "active",
+    "cheatSheet": [
+      {
+        "title": "1. Thay mô hình 3D & các chương giới thiệu",
+        "template": "Thay đổi nội dung slide 1-4 và link file .glb trong kimi-1file-template.html cho dự án [TÊN_THƯƠNG_HIỆU], giữ nguyên cơ chế custom cursor và clip-path.",
+        "example": "Làm landing page ra mắt đồng hồ hoặc bất động sản hạng sang"
       }
     ]
   },

@@ -29,7 +29,7 @@ test('sanitizeDownloadFileName accepts allow-listed files with or without /downl
   );
   assert.equal(sanitizeDownloadFileName('/MASTER_PROMPTS.md'), 'MASTER_PROMPTS.md');
   assert.equal(sanitizeDownloadFileName('MASTER_PROMPTS.md'), 'MASTER_PROMPTS.md');
-  assert.ok(Object.keys(DOWNLOAD_CATALOG).length >= 20);
+  assert.ok(Object.keys(DOWNLOAD_CATALOG).length >= 25);
 });
 
 test('resolveDownloadAsset resolves safe absolute path inside workspace root', () => {
@@ -100,6 +100,36 @@ test('verifyDownloadEntitlement enforces auth, admin bypass, purchasedIds, and c
   });
   assert.equal(paid.allowed, true);
   assert.equal(paid.status, 200);
+
+  // Free starter 0 Xu completed order -> 200
+  const freeStarter = verifyDownloadEntitlement({
+    email: 'buyer@test.vn',
+    fileName: 'OpenDesign_Starter_Free_Kit.zip',
+    orders: [
+      { id: '#FREE2026A1B2', userEmail: 'buyer@test.vn', productId: 'free-starter-opendesign-kit', amount: 0, status: 'completed' }
+    ]
+  });
+  assert.equal(freeStarter.allowed, true);
+  assert.equal(freeStarter.status, 200);
+
+  // Retail SKUs added in catalog upgrade -> 200 when purchased
+  const retailChecks = [
+    ['Dungeon_Co_Ve_Thach_2D_Starter.zip', 'source-dungeon-co-ve-thach-2d'],
+    ['SePay_VietQR_Wallet_Starter.zip', 'source-sepay-wallet-saas-starter'],
+    ['Gemini_Glass_Workspace_Kit.zip', 'source-gemini-ai-workspace-kit'],
+    ['LuckySpin_Voucher_MiniGame_1File.html', 'source-luckyspin-minigame-marketing'],
+    ['ascend-1file-template.html', 'template-ascend-1file-luxury'],
+    ['kimi-1file-template.html', 'template-kimi-1file-studio']
+  ];
+  for (const [fileName, productId] of retailChecks) {
+    const res = verifyDownloadEntitlement({
+      email: 'retail@test.vn',
+      fileName,
+      purchasedIds: [productId]
+    });
+    assert.equal(res.allowed, true, `Expected ${fileName} unlocked by ${productId}`);
+    assert.equal(res.status, 200);
+  }
 
   // Bundle entitlement: skill-combo-allinone unlocks Vault + MASTER_PROMPTS.md
   const bundleVault = verifyDownloadEntitlement({

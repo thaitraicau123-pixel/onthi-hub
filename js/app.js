@@ -18,9 +18,23 @@ document.addEventListener('DOMContentLoaded', function () {
   // 3. Lắng nghe phím tắt toàn cục (Ctrl+K, Esc)
   setupKeyboardShortcuts();
 
-  // 4. Kích hoạt Router tại view ban đầu
-  const initialView = state.currentView || 'home';
+  // 4. Kiểm tra deep-link (?product=, ?filter=, ?q=) & Kích hoạt Router
+  const urlParams = new URLSearchParams(window.location.search || '');
+  const sharedProductId = (urlParams.get('product') || '').trim();
+  const sharedFilter = (urlParams.get('filter') || '').trim();
+  const sharedQuery = (urlParams.get('q') || '').trim();
+
+  if (sharedFilter) state.activeFilter = sharedFilter;
+  if (sharedQuery) state.searchQuery = sharedQuery;
+
+  const initialView = sharedProductId ? 'home' : (state.currentView || 'home');
   window.ShopVietState.navigate(initialView);
+
+  if (sharedProductId && window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.open === 'function') {
+    setTimeout(function () {
+      window.ShopVietViews.modal.open(sharedProductId);
+    }, 60);
+  }
 
   // 5. Khởi tạo Icons Lucide
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
