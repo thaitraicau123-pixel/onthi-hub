@@ -18,9 +18,23 @@ document.addEventListener('DOMContentLoaded', function () {
   // 3. Lắng nghe phím tắt toàn cục (Ctrl+K, Esc)
   setupKeyboardShortcuts();
 
-  // 4. Kích hoạt Router tại view ban đầu
-  const initialView = state.currentView || 'home';
+  // 4. Kiểm tra deep-link (?product=, ?filter=, ?q=) & Kích hoạt Router
+  const urlParams = new URLSearchParams(window.location.search || '');
+  const sharedProductId = (urlParams.get('product') || '').trim();
+  const sharedFilter = (urlParams.get('filter') || '').trim();
+  const sharedQuery = (urlParams.get('q') || '').trim();
+
+  if (sharedFilter) state.activeFilter = sharedFilter;
+  if (sharedQuery) state.searchQuery = sharedQuery;
+
+  const initialView = sharedProductId ? 'home' : (state.currentView || 'home');
   window.ShopVietState.navigate(initialView);
+
+  if (sharedProductId && window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.open === 'function') {
+    setTimeout(function () {
+      window.ShopVietViews.modal.open(sharedProductId);
+    }, 60);
+  }
 
   // 5. Khởi tạo Icons Lucide
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
@@ -50,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  console.log('[Bùi Thái AI Studio] Ứng dụng đã sẵn sàng hoạt động!');
+  console.log('[Bùi Thái AI Studio] Ứng dụng đã sẵn sàng hoạt động.');
 });
 
 /**
@@ -59,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function setActiveNav(activeId) {
   const navIds = ['navHome', 'navProducts', 'navBlog'];
-  const activeClasses = ['bg-slate-900', 'text-white', 'shadow-sm', 'dark:bg-white', 'dark:text-slate-900'];
-  const inactiveClasses = ['text-slate-600', 'dark:text-slate-300', 'hover:text-slate-900', 'dark:hover:text-white', 'hover:bg-slate-200/60', 'dark:hover:bg-slate-800/60'];
+  const activeClasses = ['text-[#0071E3]', 'dark:text-[#3B9EFF]', 'border-b-2', 'border-[#0071E3]', 'dark:border-[#3B9EFF]', 'font-semibold'];
+  const inactiveClasses = ['text-slate-600', 'dark:text-slate-300', 'hover:text-slate-900', 'dark:hover:text-white', 'border-b-2', 'border-transparent'];
 
   navIds.forEach(function (id) {
     const btn = document.getElementById(id);
@@ -249,7 +263,7 @@ function setupHeaderEvents() {
       // 3. Fallback cho trình duyệt chưa có View Transitions: Overlay bung tròn clipPath
       const currentTheme = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.theme) || 'light';
       const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      const targetBgColor = targetTheme === 'dark' ? '#18110A' : '#FAF6ED';
+      const targetBgColor = targetTheme === 'dark' ? '#090B10' : '#F5F5F7';
 
       const overlay = document.createElement('div');
       overlay.className = 'circular-theme-overlay';
@@ -298,7 +312,7 @@ function setupHeaderEvents() {
         localStorage.removeItem('shopviet_admin_authenticated');
       } catch (err) {}
       if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-        window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+        window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com', 'error');
       }
       return;
     }
@@ -331,7 +345,7 @@ function setupKeyboardShortcuts() {
           localStorage.removeItem('shopviet_admin_authenticated');
         } catch (err) {}
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com', 'error');
         }
         return;
       }
@@ -373,37 +387,37 @@ function triggerQuickSearch() {
   if (!modalMount) return;
 
   modalMount.innerHTML = `
-    <div id="quickSearchBackdrop" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-start justify-center pt-20 px-4 animate-fade-in" onclick="if(event.target === this) this.parentElement.innerHTML = ''">
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up">
+    <div id="quickSearchBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-start justify-center pt-20 px-4 animate-fade-in" onclick="if(event.target === this) this.parentElement.innerHTML = ''">
+      <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-xl rounded-2xl w-full max-w-2xl overflow-hidden animate-slide-up">
         
         <!-- Search Input Bar -->
-        <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
-          <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <div class="p-4 border-b border-slate-200/70 dark:border-white/10 flex items-center gap-3">
+          <svg class="w-5 h-5 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
           <input 
             type="text" 
             id="searchInputBox" 
-            placeholder="Tìm kiếm công cụ AI, Cursor, Gemini, ChatGPT..." 
+            placeholder="Tìm mã nguồn Metropolis 1998, Diet Soda 3D, hoặc Master Prompts..." 
             class="flex-1 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none text-base"
             autocomplete="off"
             autofocus
           >
-          <span class="text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 px-2 py-1 rounded-lg">ESC để thoát</span>
+          <span class="text-[11px] font-mono font-semibold bg-slate-200/70 dark:bg-white/10 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-lg">ESC</span>
         </div>
 
         <!-- Quick Tags -->
-        <div class="p-4 bg-slate-50/50 dark:bg-slate-950/50 flex flex-wrap gap-2 text-xs">
-          <span class="text-slate-400 self-center font-medium mr-1">Gợi ý hot:</span>
-          <button class="search-tag-chip px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] font-medium hover:bg-amber-100 transition">Web Thượng Lưu (9k)</button>
-          <button class="search-tag-chip px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] font-medium hover:bg-amber-100 transition">Fullstack & AppSec (9k)</button>
-          <button class="search-tag-chip px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] font-medium hover:bg-amber-100 transition">N8N Automation (9k)</button>
-          <button class="search-tag-chip px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] font-medium hover:bg-amber-100 transition">Clean Code Starter (9k)</button>
-          <button class="search-tag-chip px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-[#8A5F26] dark:text-[#BE9455] font-medium hover:bg-amber-100 transition">Đại Hộp 246+ Pixel VFX (9k)</button>
+        <div class="p-4 bg-slate-100/60 dark:bg-white/[0.03] flex flex-wrap gap-2 text-xs">
+          <span class="text-slate-500 self-center font-medium mr-1">Gợi ý nhanh:</span>
+          <button class="search-tag-chip px-3 py-1 rounded-lg bg-[#0071E3]/10 text-[#0071E3] dark:bg-[#3B9EFF]/15 dark:text-[#60A5FA] font-semibold hover:bg-[#0071E3]/20 transition">Metropolis 1998 (15k)</button>
+          <button class="search-tag-chip px-3 py-1 rounded-lg bg-[#0071E3]/10 text-[#0071E3] dark:bg-[#3B9EFF]/15 dark:text-[#60A5FA] font-semibold hover:bg-[#0071E3]/20 transition">Diet Soda 3D (15k)</button>
+          <button class="search-tag-chip px-3 py-1 rounded-lg bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-300/70 transition">Web Thượng Lưu (9k)</button>
+          <button class="search-tag-chip px-3 py-1 rounded-lg bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-300/70 transition">N8N Automation (9k)</button>
+          <button class="search-tag-chip px-3 py-1 rounded-lg bg-slate-200/70 dark:bg-white/10 text-slate-700 dark:text-slate-200 font-medium hover:bg-slate-300/70 transition">246+ Pixel VFX (9k)</button>
         </div>
 
         <!-- Search Results List -->
-        <div id="searchResultsContainer" class="max-h-80 overflow-y-auto p-2 divide-y divide-slate-100 dark:divide-slate-800/60">
+        <div id="searchResultsContainer" class="max-h-80 overflow-y-auto p-2 divide-y divide-slate-200/60 dark:divide-white/10">
           <div class="p-6 text-center text-slate-400 text-sm">
-            Nhập tên công cụ bạn muốn tìm kiếm...
+            Nhập tên mã nguồn hoặc bộ công cụ bạn muốn tìm kiếm...
           </div>
         </div>
 
@@ -438,7 +452,7 @@ function triggerQuickSearch() {
 function renderSearchResults(keyword, container) {
   if (!container) return;
   if (!keyword) {
-    container.innerHTML = '<div class="p-6 text-center text-slate-400 text-sm">Nhập tên công cụ bạn muốn tìm kiếm...</div>';
+    container.innerHTML = '<div class="p-6 text-center text-slate-400 text-sm">Nhập tên mã nguồn hoặc bộ công cụ bạn muốn tìm kiếm...</div>';
     return;
   }
 
@@ -452,7 +466,7 @@ function renderSearchResults(keyword, container) {
     container.innerHTML = `
       <div class="p-8 text-center text-slate-400 space-y-2">
         <p class="text-sm">Không tìm thấy sản phẩm nào khớp với "<strong>${keyword}</strong>"</p>
-        <p class="text-xs text-slate-500">Thử tìm với từ khóa: Cursor, Gemini, Claude, Canva, Capcut...</p>
+        <p class="text-xs text-slate-500">Thử tìm với từ khóa: Metropolis 1998, Diet Soda 3D, Fullstack, N8N...</p>
       </div>
     `;
     return;
@@ -460,18 +474,18 @@ function renderSearchResults(keyword, container) {
 
   container.innerHTML = matched.map(function (p) {
     return `
-      <div class="p-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition group" onclick="ShopVietApp.selectSearchedProduct('${p.id}')">
+      <div class="p-3 hover:bg-slate-100/80 dark:hover:bg-white/5 rounded-xl flex items-center justify-between gap-3 cursor-pointer transition group" onclick="ShopVietApp.selectSearchedProduct('${p.id}')">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-2 shrink-0">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center p-2 shrink-0">
             ${window.ShopVietData ? window.ShopVietData.getBrandIcon(p.iconType) : ''}
           </div>
           <div>
-            <h5 class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#8A5F26] dark:group-hover:text-[#BE9455] transition-colors line-clamp-1">${p.name}</h5>
-            <span class="text-xs text-slate-500">${p.tag} • Còn ${p.stock} slot</span>
+            <h5 class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#0071E3] dark:group-hover:text-[#3B9EFF] transition-colors line-clamp-1">${p.name}</h5>
+            <span class="text-xs text-slate-500">${p.tag} · Mở khóa tức thì</span>
           </div>
         </div>
         <div class="text-right shrink-0">
-          <span class="text-sm font-bold text-[#8A5F26] dark:text-[#BE9455]">${window.ShopVietState.formatCurrency(p.price)}</span>
+          <span class="text-sm font-mono font-bold tabular-nums text-[#0071E3] dark:text-[#3B9EFF]">${window.ShopVietState.formatCurrency(p.price)}</span>
         </div>
       </div>
     `;
@@ -541,25 +555,24 @@ function updateHeaderAuthUI() {
 
   if (!isLoggedIn) {
     // ==================== TRẠNG THÁI 1: KHÁCH VÃNG LAI (CHƯA ĐĂNG NHẬP) ====================
-    // Bộ đôi nút "Đăng nhập" & "Đăng ký" chuẩn SaaS cao cấp
     container.innerHTML = `
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <button type="button" onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();" class="px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs font-bold text-[#8A5F26] dark:text-[#BE9455] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 rounded-xl transition cursor-pointer flex items-center gap-1 shadow-2xs active:scale-95" title="Nạp Xu Techcombank">
-          <span>⚡ Nạp Xu</span>
+      <div class="flex items-center gap-1 sm:gap-2">
+        <button type="button" onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();" class="px-2 py-2 sm:px-3 text-[11px] sm:text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/8 hover:bg-[#0071E3]/14 border border-[#0071E3]/25 rounded-lg transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap" title="Nạp Xu VietQR MBBank 0986019623">
+          <span>Nạp Xu</span>
         </button>
-        <button id="headerLoginBtn" type="button" class="px-2.5 py-1.5 sm:px-3.5 sm:py-2 text-xs sm:text-sm font-semibold text-slate-700 hover:text-indigo-600 dark:text-slate-200 dark:hover:text-white rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all duration-200 cursor-pointer active:scale-95 select-none flex items-center gap-1.5 shadow-2xs">
-          <svg class="w-4 h-4 shrink-0 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <button id="headerLoginBtn" type="button" aria-label="Đăng nhập tài khoản" class="px-2.5 py-2 sm:px-3.5 text-xs sm:text-sm font-semibold text-[#1D1D1F] hover:bg-slate-100 dark:text-[#F5F5F7] dark:hover:bg-white/10 rounded-lg border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap" title="Đăng nhập">
+          <svg class="w-4 h-4 shrink-0 text-[#525866] dark:text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
           </svg>
-          <span class="hidden sm:inline">Đăng nhập</span>
+          <span class="hidden md:inline">Đăng nhập</span>
         </button>
-        <button id="headerRegisterBtn" type="button" class="bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-600 hover:to-amber-700 text-white rounded-xl px-2.5 py-1.5 sm:px-3.5 sm:py-2 flex items-center gap-1.5 text-xs sm:text-sm font-semibold shadow-sm shadow-amber-900/15 transition-all duration-200 cursor-pointer active:scale-95 select-none">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <button id="headerRegisterBtn" type="button" aria-label="Đăng ký tài khoản" class="hidden sm:inline-flex lg-btn-primary rounded-lg px-2.5 py-2 sm:px-3.5 items-center gap-1.5 text-xs sm:text-sm font-semibold cursor-pointer select-none whitespace-nowrap" title="Đăng ký">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
             <path stroke-linecap="round" stroke-linejoin="round" d="M19 8v6M22 11h-6"/>
           </svg>
-          <span class="hidden sm:inline">Đăng ký</span>
+          <span class="hidden md:inline">Đăng ký</span>
         </button>
       </div>
     `;
@@ -581,71 +594,62 @@ function updateHeaderAuthUI() {
     }
   } else {
     // ==================== TRẠNG THÁI 2: ĐÃ ĐĂNG NHẬP ====================
-    // Avatar tròn mang ký tự đầu (Chữ "C" nền xanh Indigo như Ảnh 1) + Tên người dùng + Nút Dashboard / Dropdown Menu
     const displayName = user.name || 'Bùi Thái';
     const email = user.email || 'thaitraicau123@gmail.com';
     const avatarChar = (user.avatar && user.avatar.length <= 2) ? user.avatar : displayName.charAt(0).toUpperCase();
 
     container.innerHTML = `
       <div class="relative flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <!-- Số dư Ví Xu Cá Nhân & Nút Nạp Xu 1-Chạm Techcombank -->
-        <div class="flex items-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/25 text-xs font-bold font-mono shadow-2xs shrink-0">
-          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1 px-1.5 sm:px-2 py-0.5 cursor-pointer hover:bg-amber-500/20 rounded-lg transition select-none" title="Bấm để đồng bộ số dư mới nhất từ hệ thống">
-            <span class="text-amber-600">🪙</span>
-            <span id="headerUserBalanceText" class="tabular-nums">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
-            <span class="text-[10px] text-amber-600/70 hover:rotate-180 transition-transform">🔄</span>
+        <!-- Số dư Ví Xu Cá Nhân & Nút Nạp Xu 1-Chạm -->
+        <div class="flex items-center gap-1 sm:gap-1.5 p-1 rounded-lg bg-[#0071E3]/8 text-[#0071E3] dark:text-[#60A5FA] border border-[#0071E3]/25 text-xs font-semibold font-mono shrink-0">
+          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1.5 px-1.5 sm:px-2 py-0.5 cursor-pointer hover:bg-[#0071E3]/15 rounded-md transition-colors select-none" title="Đồng bộ số dư mới nhất">
+            <span id="headerUserBalanceText" class="tabular-nums font-bold">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
           </div>
-          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white text-[10px] font-extrabold uppercase transition shadow-xs cursor-pointer shrink-0" title="Nạp thêm Xu Techcombank">
+          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-md bg-[#0071E3] hover:bg-[#0062C4] text-white text-[10px] font-bold uppercase transition-colors cursor-pointer shrink-0" title="Nạp thêm Xu VietQR">
             + Nạp
           </button>
         </div>
 
         <!-- Nút User Profile Badge (Click mở Dropdown) -->
-        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all cursor-pointer group shadow-2xs shrink-0">
-          <!-- Avatar tròn chữ cái đầu (VD: BT) -->
-          <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-800 via-amber-600 to-amber-900 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-white/50 dark:ring-slate-800 shrink-0">
+        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-2.5 rounded-lg border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer group shrink-0">
+          <div class="w-7 h-7 rounded-md bg-[#0071E3] text-white font-bold text-xs flex items-center justify-center shrink-0">
             ${avatarChar}
           </div>
-          <!-- Tên người dùng -->
-          <span class="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 max-w-[80px] sm:max-w-[120px] truncate select-none hidden sm:inline">
+          <span class="text-xs sm:text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] max-w-[80px] sm:max-w-[120px] truncate select-none hidden sm:inline">
             ${displayName}
           </span>
-          <!-- Mũi tên Dropdown -->
-          <svg id="userMenuChevron" class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-transform duration-200 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <svg id="userMenuChevron" class="w-3.5 h-3.5 text-[#525866] dark:text-[#9CA3AF] transition-transform duration-150 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/>
           </svg>
         </button>
 
-        <!-- Dropdown Menu Tài Khoản Thông Minh -->
-        <div id="headerUserDropdown" class="hidden absolute right-0 top-full mt-2 w-60 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-xl py-2 z-50 animate-slide-up">
+        <!-- Dropdown Menu Tài Khoản -->
+        <div id="headerUserDropdown" class="hidden absolute right-0 top-full mt-2 w-60 rounded-xl lg-glass-elevated py-2 z-50">
           
           <!-- Thông tin User tóm tắt -->
-          <div class="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800/80">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Bùi Thái Sovereign User</span>
-            </div>
+          <div class="px-4 py-2.5 border-b border-slate-200/70 dark:border-white/10">
+            <div class="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-0.5">Bùi Thái Studio Member</div>
             <p class="text-xs font-bold text-slate-900 dark:text-white truncate">${displayName}</p>
             <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${email}</p>
           </div>
 
           <!-- Ví Xu Cá Nhân -->
-          <div class="px-4 py-2.5 bg-amber-500/10 border-b border-amber-200/60 dark:border-amber-900/40 flex items-center justify-between">
+          <div class="px-4 py-2.5 bg-[#0071E3]/5 border-b border-slate-200/70 dark:border-white/10 flex items-center justify-between">
             <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); }" class="cursor-pointer group" title="Bấm để đồng bộ số dư">
-              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1">
-                Số dư Ví Xu <span class="group-hover:rotate-180 transition-transform duration-300">🔄</span>
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 font-medium block">
+                Số dư Ví Xu
               </span>
-              <p class="text-sm font-black text-amber-700 dark:text-amber-400">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</p>
+              <p class="text-sm font-mono font-bold tabular-nums text-[#0071E3] dark:text-[#60A5FA]">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</p>
             </div>
-            <button onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2.5 py-1 rounded-lg bg-[#8A5F26] hover:bg-[#6e4b1e] text-white font-bold text-[10px] transition-colors cursor-pointer">
+            <button onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2.5 py-1 rounded-lg bg-[#0071E3] hover:bg-[#005BB5] text-white font-semibold text-[10px] transition-colors cursor-pointer">
               + Nạp Xu
             </button>
           </div>
 
           <!-- Các chức năng Menu -->
           <div class="py-1 text-xs">
-            <button id="dropdownDashboardBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
-              <svg class="w-4 h-4 text-[#8A5F26] dark:text-[#BE9455]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <button id="dropdownDashboardBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <rect width="7" height="9" x="3" y="3" rx="1" />
                 <rect width="7" height="5" x="14" y="3" rx="1" />
                 <rect width="7" height="9" x="14" y="12" rx="1" />
@@ -654,16 +658,16 @@ function updateHeaderAuthUI() {
               <span>Dashboard (Tổng quan)</span>
             </button>
 
-            <button id="dropdownProfileBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer">
-              <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <button id="dropdownProfileBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                 <circle cx="12" cy="7" r="4"/>
               </svg>
               <span>Trang cá nhân</span>
             </button>
 
-            <button id="dropdownOrdersBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer">
-              <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <button id="dropdownOrdersBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
                 <path d="M3 6h18"/>
                 <path d="M16 10a4 4 0 0 1-8 0"/>
@@ -671,7 +675,7 @@ function updateHeaderAuthUI() {
               <span>Đơn hàng của tôi</span>
             </button>
 
-            <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openPolicy('refund');" class="w-full px-4 py-2 text-left text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+            <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openPolicy('refund');" class="w-full px-4 py-2 text-left text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
               <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
               </svg>
@@ -679,8 +683,8 @@ function updateHeaderAuthUI() {
             </button>
 
             ${isAdminUser ? `
-            <button id="dropdownAdminBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/60 flex items-center gap-2.5 transition-colors cursor-pointer">
-              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <button id="dropdownAdminBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
               </svg>
               <span>Portal Admin</span>

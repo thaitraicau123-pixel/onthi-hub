@@ -8,10 +8,7 @@
 
   const STORAGE_KEY = 'shopviet247_app_state_v560_roadmap_guide_v1';
   const USERS_DB_KEY = 'shopviet_users_database';
-  const GITHUB_RAW_CLOUD_URL = 'https://raw.githubusercontent.com/thaitraicau123-pixel/onthi-hub/main/cloud-db.json';
-  const GITHUB_API_URL = 'https://api.github.com/repos/thaitraicau123-pixel/onthi-hub/contents/cloud-db.json';
-  const GITHUB_PAT = (typeof localStorage !== 'undefined' && localStorage.getItem('shopviet_github_pat')) || [103,104,112,95,78,73,100,50,107,56,105,48,57,103,107,71,74,53,56,113,67,54,78,84,89,79,67,89,116,119,115,78,66,121,52,97,111,48,118,85].map(function (c) { return String.fromCharCode(c); }).join('');
-  const CLOUD_DB_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1878bee264ca3';
+  const LOCAL_CLOUD_DB_PATH = '/cloud-db.json';
 
   // Gắn Firebase ID Token để server biết ai đang gọi các action quản trị.
   async function adminAuthHeaders() {
@@ -204,7 +201,7 @@
         if (raw) {
           let parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length >= 12) {
-            const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d'];
+            const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
             parsed = parsed.filter(function (p) { return p && !deletedProds.includes(p.id); });
 
             const isValid12 = parsed.every(function (p) {
@@ -457,93 +454,15 @@
       try {
         let data = null;
 
-        // ƯU TIÊN 1 TUYỆT ĐỐI: Gọi trực tiếp GitHub Contents API (Zero-Cache qua header Accept raw & Authorization token)
-        try {
-          const ghApiUrl = GITHUB_API_URL + (GITHUB_API_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-          const ghHeaders = {
-            'Accept': 'application/vnd.github.v3.raw'
-          };
-          if (GITHUB_PAT) {
-            ghHeaders['Authorization'] = 'token ' + GITHUB_PAT;
-          }
-          const ghApiRes = await fetch(ghApiUrl, {
-            method: 'GET',
-            cache: 'no-store',
-            headers: ghHeaders
-          });
-          if (ghApiRes.ok) {
-            const rawText = await ghApiRes.text();
-            let parsed = null;
-            try {
-              parsed = JSON.parse(rawText);
-            } catch (eParse) {}
-            // Fallback nếu GitHub API trả về JSON envelope chứa Base64
-            if (parsed && parsed.content && parsed.encoding === 'base64') {
-              try {
-                const b64 = parsed.content.replace(/\s/g, '');
-                const decoded = decodeURIComponent(escape(window.atob(b64)));
-                parsed = JSON.parse(decoded);
-              } catch (eDec) {}
-            }
-            if (parsed) {
-              data = parsed.data || parsed;
-              console.log('[ShopVietState] Đã tải thành công Zero-Cache dữ liệu từ GitHub Contents API!');
-            }
-          } else {
-            console.warn('[ShopVietState] GitHub Contents API status:', ghApiRes.status);
-          }
-        } catch (eGhApi) {
-          console.warn('[ShopVietState] Lỗi gọi trực tiếp GitHub API (Zero Cache), kích hoạt fallback Raw URL:', eGhApi);
-        }
-
-        // FALLBACK 1: Tải từ GitHub Raw Cloud Storage nếu API bị chặn hoặc rate limit
-        if (!data) {
+        // Tải từ /cloud-db.json của chính host hiện tại (Same-Origin, không CORS / 401)
+        if (typeof window !== 'undefined' && window.location) {
           try {
-            const ghRawUrl = GITHUB_RAW_CLOUD_URL + (GITHUB_RAW_CLOUD_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-            const ghRes = await fetch(ghRawUrl, {
-              method: 'GET',
-              cache: 'no-store'
-            });
-            if (ghRes.ok) {
-              const ghJson = await ghRes.json();
-              if (ghJson) {
-                data = ghJson.data || ghJson;
-                console.log('[ShopVietState] Đã tải thành công dữ liệu từ GitHub Raw Cloud Storage!');
-              }
-            }
-          } catch (eGh) {
-            console.warn('[ShopVietState] Lỗi đọc GitHub Raw Cloud Storage, đang kích hoạt fallback REST:', eGh);
-          }
-        }
-
-        // FALLBACK 2: Fallback sang REST API dev nếu GitHub Raw chưa có hoặc lỗi
-        if (!data) {
-          try {
-            const fetchUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
-            const res = await fetch(fetchUrl, {
-              method: 'GET',
-              cache: 'no-store'
-            });
-            if (res.ok) {
-              const json = await res.json();
-              if (json && !json.error) {
-                data = json.data || json;
-                console.log('[ShopVietState] Đã tải dữ liệu từ Fallback Cloud REST API!');
-              }
-            }
-          } catch (eRest) {}
-        }
-
-        // FALLBACK 3: Tải từ /cloud-db.json của chính host hiện tại (Vercel Production / Custom Domain)
-        if (!data && typeof window !== 'undefined' && window.location) {
-          try {
-            const localCloudUrl = (window.location.origin || '') + '/cloud-db.json?_t=' + Date.now();
+            const localCloudUrl = (window.location.origin || '') + LOCAL_CLOUD_DB_PATH + '?_t=' + Date.now();
             const localRes = await fetch(localCloudUrl, { method: 'GET', cache: 'no-store' });
             if (localRes.ok) {
               const localJson = await localRes.json();
               if (localJson) {
                 data = localJson.data || localJson;
-                console.log('[ShopVietState] Đã tải dữ liệu từ Vercel Static Cloud DB (/cloud-db.json)!');
               }
             }
           } catch (eLocal) {}
@@ -552,7 +471,7 @@
         if (!data) {
           if (isManual) {
             if (syncIcon) syncIcon.classList.remove('animate-spin');
-            if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+            if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
           }
           return false;
         }
@@ -608,7 +527,7 @@
 
         // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
         if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 1000 && p.price <= 990000 && p.stock; })) {
-          const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d'];
+          const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
           data.products = data.products.filter(function (p) { return p && !deletedProds.includes(p.id); });
           if (window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
             const cloudIds = new Set(data.products.map(function (p) { return p.id; }));
@@ -779,14 +698,14 @@
 
         if (isManual) {
           if (syncIcon) syncIcon.classList.remove('animate-spin');
-          if (this.showToast) this.showToast('Đã đồng bộ dữ liệu mới nhất từ Đám Mây thành công!', 'success');
+          if (this.showToast) this.showToast('Đã đồng bộ dữ liệu mới nhất từ Đám Mây thành công.', 'success');
         }
         return true;
       } catch (err) {
         console.warn('[ShopVietState] syncAllFromCloud offline/failed:', err);
         if (isManual) {
           if (syncIcon) syncIcon.classList.remove('animate-spin');
-          if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+          if (this.showToast) this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
         }
         return false;
       }
@@ -844,13 +763,13 @@
         }
 
         if (this.showToast) {
-          this.showToast('⚡ Đã kéo toàn bộ dữ liệu mới nhất từ Admin về máy thành công!', 'success');
+          this.showToast('Đã kéo toàn bộ dữ liệu mới nhất từ Admin về máy thành công.', 'success');
         }
         return success;
       } catch (err) {
         console.warn('[ShopVietState] forceHardResync failed:', err);
         if (this.showToast) {
-          this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại!', 'error');
+          this.showToast('Không thể kết nối máy chủ Đám Mây, vui lòng thử lại.', 'error');
         }
         return false;
       } finally {
@@ -901,77 +820,7 @@
           } catch (e) {}
         }
 
-        // 1. ĐẨY LÊN GITHUB CLOUD STORAGE (API CONTENTS PUT)
-        try {
-          // Lấy SHA mới nhất của file cloud-db.json nếu đã tồn tại
-          let sha = null;
-          try {
-            const shaRes = await fetch(GITHUB_API_URL, {
-              method: 'GET',
-              headers: {
-                'Authorization': 'token ' + GITHUB_PAT,
-                'Accept': 'application/vnd.github.v3+json'
-              }
-            });
-            if (shaRes.ok) {
-              const fileData = await shaRes.json();
-              if (fileData && fileData.sha) {
-                sha = fileData.sha;
-              }
-            }
-          } catch (eSha) {
-            console.warn('[ShopVietState] Không thể lấy SHA GitHub file:', eSha);
-          }
-
-          // Chuẩn hóa Unicode UTF-8 sang Base64 chuẩn trình duyệt
-          const jsonContent = JSON.stringify(dbData, null, 2);
-          const base64Content = window.btoa(unescape(encodeURIComponent(jsonContent)));
-
-          const ghBody = {
-            message: 'Update cloud-db.json via BuiThai AI Studio Cloud Sync [' + new Date().toISOString() + ']',
-            content: base64Content
-          };
-          if (sha) {
-            ghBody.sha = sha;
-          }
-
-          const ghPutRes = await fetch(GITHUB_API_URL, {
-            method: 'PUT',
-            headers: {
-              'Authorization': 'token ' + GITHUB_PAT,
-              'Content-Type': 'application/json',
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(ghBody)
-          });
-
-          if (ghPutRes.ok) {
-            console.log('[ShopVietState] Đã lưu và đồng bộ lên GitHub Cloud Storage thành công!');
-          } else {
-            console.warn('[ShopVietState] GitHub Cloud Storage PUT status:', ghPutRes.status);
-          }
-        } catch (errGh) {
-          console.warn('[ShopVietState] Lỗi đẩy lên GitHub Cloud Storage:', errGh);
-        }
-
-        // 2. FALLBACK ĐỒNG THỜI LÊN CLOUD_DB_URL REST API
-        try {
-          const payload = {
-            name: 'Bùi Thái AI Studio_Unified_Cloud_DB',
-            data: dbData
-          };
-
-          await fetch(CLOUD_DB_URL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-          console.log('[ShopVietState] Đã đồng bộ dự phòng lên Cloud REST API!');
-        } catch (errRest) {
-          console.warn('[ShopVietState] Fallback REST PUT error:', errRest);
-        }
+        // Dữ liệu được đồng bộ qua Firestore Signal & BroadcastChannel nội bộ (không gửi PAT ra client)
 
         // 2.5 LẬP TỨC PHÁT SÓNG TÍN HIỆU ĐỒNG BỘ REALTIME TỚI TẤT CẢ CLIENTS & TABS
         if (!skipBroadcast) {
@@ -989,7 +838,7 @@
 
         // 3. THÔNG BÁO TOAST THÀNH CÔNG CHO NGƯỜI DÙNG
         if (!silent && this.showToast) {
-          this.showToast('Đã lưu và đồng bộ toàn hệ thống lên Cloud thành công!', 'success');
+          this.showToast('Đã lưu và đồng bộ toàn hệ thống lên Cloud thành công.', 'success');
         }
 
         return true;
@@ -1116,7 +965,7 @@
             window.BuiThaiNtfy.playChime('deposit');
           }
           if (typeof this.showToast === 'function') {
-            this.showToast(`🎉 Số dư ví đã được Admin Bùi Thái cập nhật: +${(Number(p.amount) || 0).toLocaleString('vi-VN')} Xu!`, 'success');
+            this.showToast(`Số dư ví đã được Admin Bùi Thái cập nhật: +${(Number(p.amount) || 0).toLocaleString('vi-VN')} Xu.`, 'success');
           }
         }
       }
@@ -1301,11 +1150,18 @@
 
       const self = this;
 
-      // Realtime SePay & Balance Poller: Tự động kéo số dư mới nhất mỗi 4 giây
+      // Smart SePay & Balance Poller: Chỉ chạy mỗi 10s khi user đã đăng nhập và đang mở modal nạp Xu hoặc có lệnh pending
       if (!this._topupPollInterval) {
         this._topupPollInterval = setInterval(function () {
+          const u = self.state && self.state.user;
+          const isLoggedIn = Boolean(u && u.isLoggedIn && u.email);
+          const hasDepositModal = typeof document !== 'undefined' && Boolean(document.getElementById('depositBackdrop'));
+          const hasPendingTopup = Array.isArray(self.state && self.state.topups) && self.state.topups.some(function (t) { return t && t.status === 'pending'; });
+          const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
+          if (!isLoggedIn && !isAdminOpen) return;
+          if (!hasDepositModal && !hasPendingTopup && !isAdminOpen) return;
           self.syncTopupsFromCloud(false).catch(function () {});
-        }, 4000);
+        }, 10000);
       }
       let isChecking = false;
 
@@ -1319,100 +1175,11 @@
           }
 
           let cloudUpdatedAt = 0;
-          let cloudData = null;
 
-          // ƯU TIÊN 1: Kiểm tra trực tiếp GitHub API (Zero-Cache Header & Token)
-          try {
-            const ghApiUrl = GITHUB_API_URL + (GITHUB_API_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-            const ghHeaders = {
-              'Accept': 'application/vnd.github.v3.raw'
-            };
-            if (GITHUB_PAT) {
-              ghHeaders['Authorization'] = 'token ' + GITHUB_PAT;
-            }
-            const ghRes = await fetch(ghApiUrl, {
-              method: 'GET',
-              cache: 'no-store',
-              headers: ghHeaders
-            });
-            if (ghRes.ok) {
-              const rawText = await ghRes.text();
-              let parsed = null;
-              try {
-                parsed = JSON.parse(rawText);
-              } catch (eParse) {}
-              if (parsed && parsed.content && parsed.encoding === 'base64') {
-                try {
-                  const b64 = parsed.content.replace(/\s/g, '');
-                  const decoded = decodeURIComponent(escape(window.atob(b64)));
-                  parsed = JSON.parse(decoded);
-                } catch (eDec) {}
-              }
-              if (parsed) {
-                cloudData = parsed.data || parsed;
-                if (cloudData && cloudData.updatedAt) {
-                  cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                    ? cloudData.updatedAt
-                    : new Date(cloudData.updatedAt).getTime();
-                } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                  cloudUpdatedAt = cloudData.version;
-                }
-              }
-            }
-          } catch (eGhApi) {}
-
-          // FALLBACK 2: Fallback sang REST API nếu GitHub API lỗi hoặc nghẽn
-          if (!cloudUpdatedAt) {
+          // Kiểm tra Local Origin /cloud-db.json (Same-Origin, zero CORS / 401 errors)
+          if (typeof window !== 'undefined' && window.location) {
             try {
-              const restUrl = CLOUD_DB_URL + (CLOUD_DB_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-              const restRes = await fetch(restUrl, {
-                method: 'GET',
-                cache: 'no-store'
-              });
-              if (restRes.ok) {
-                const rJson = await restRes.json();
-                if (rJson) {
-                  cloudData = rJson.data || rJson;
-                  if (cloudData && cloudData.updatedAt) {
-                    cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                      ? cloudData.updatedAt
-                      : new Date(cloudData.updatedAt).getTime();
-                  } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                    cloudUpdatedAt = cloudData.version;
-                  }
-                }
-              }
-            } catch (eRest) {}
-          }
-
-          // FALLBACK 3: Kiểm tra GitHub Raw Cloud
-          if (!cloudUpdatedAt) {
-            try {
-              const ghRawUrl = GITHUB_RAW_CLOUD_URL + (GITHUB_RAW_CLOUD_URL.includes('?') ? '&' : '?') + '_hb=' + Date.now();
-              const res = await fetch(ghRawUrl, {
-                method: 'GET',
-                cache: 'no-store'
-              });
-              if (res.ok) {
-                const json = await res.json();
-                if (json) {
-                  cloudData = json.data || json;
-                  if (cloudData && cloudData.updatedAt) {
-                    cloudUpdatedAt = typeof cloudData.updatedAt === 'number'
-                      ? cloudData.updatedAt
-                      : new Date(cloudData.updatedAt).getTime();
-                  } else if (cloudData && cloudData.version && typeof cloudData.version === 'number') {
-                    cloudUpdatedAt = cloudData.version;
-                  }
-                }
-              }
-            } catch (eGh) {}
-          }
-
-          // FALLBACK 4: Kiểm tra Local Origin /cloud-db.json (Vercel Production)
-          if (!cloudUpdatedAt && typeof window !== 'undefined' && window.location) {
-            try {
-              const locUrl = (window.location.origin || '') + '/cloud-db.json?_hb=' + Date.now();
+              const locUrl = (window.location.origin || '') + LOCAL_CLOUD_DB_PATH + '?_hb=' + Date.now();
               const lRes = await fetch(locUrl, { method: 'GET', cache: 'no-store' });
               if (lRes.ok) {
                 const lJson = await lRes.json();
@@ -1443,7 +1210,7 @@
                   detail: {
                     type: 'cloud_heartbeat_sync',
                     updatedAt: cloudUpdatedAt,
-                    message: '🔔 Cửa hàng vừa cập nhật sản phẩm mới!'
+                    message: 'Cửa hàng vừa cập nhật sản phẩm mới.'
                   }
                 }));
               } catch (e) {}
@@ -1479,6 +1246,10 @@
       if (this._realtimeDaemonTimer) {
         clearInterval(this._realtimeDaemonTimer);
         this._realtimeDaemonTimer = null;
+      }
+      if (this._topupPollInterval) {
+        clearInterval(this._topupPollInterval);
+        this._topupPollInterval = null;
       }
       this._realtimeDaemonRunning = false;
       if (this._firestoreListenerUnsubscribe) {
@@ -2008,6 +1779,12 @@
 
     // Đồng bộ danh sách yêu cầu nạp Xu thời gian thực & Số dư ví đa thiết bị từ Cloud (Vercel API + ntfy.sh + Firestore + /cloud-db.json)
     syncTopupsFromCloud: async function (isManual = false) {
+      const currentUser = this.state && this.state.user;
+      const isLoggedIn = Boolean(currentUser && currentUser.isLoggedIn && currentUser.email);
+      const isAdminOpen = typeof window !== 'undefined' && window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen;
+      if (!isManual && !isLoggedIn && !isAdminOpen) {
+        return (this.state && this.state.topups) || [];
+      }
       let cloudTopups = [];
       const seenDocIds = new Set();
 
@@ -2279,7 +2056,7 @@
           if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.playChime === 'function') {
             window.BuiThaiNtfy.playChime('deposit');
           }
-          balanceToastMsg = `🎉 Chúc mừng bạn! Hệ thống SePay vừa cộng tự động +${newlyCreditedAmount.toLocaleString('vi-VN')} Xu vào ví!`;
+          balanceToastMsg = `Hệ thống SePay vừa cộng tự động +${newlyCreditedAmount.toLocaleString('vi-VN')} Xu vào ví.`;
           console.log(`[ShopVietState] Đã tự động cộng +${newlyCreditedAmount} Xu từ SePay cho nick ${currentEmail}. Số dư mới: ${targetBalance} Xu.`);
         }
       }
@@ -2298,7 +2075,7 @@
         this.showToast(balanceToastMsg, 'success');
       } else if (isManual && this.showToast) {
         const curBal = (this.state.user && this.state.user.balance) || 0;
-        this.showToast(`✅ Đã đồng bộ số dư mới nhất từ hệ thống: ${curBal.toLocaleString('vi-VN')} Xu`, 'success');
+        this.showToast(`Đã đồng bộ số dư mới nhất từ hệ thống: ${curBal.toLocaleString('vi-VN')} Xu`, 'success');
       }
 
       return this.state.topups;
@@ -2394,11 +2171,12 @@
         try {
           const origin = window.location.origin || '';
           adminAuthHeaders().then(function (authHeaders) {
+            if (!authHeaders || !authHeaders.Authorization) return null;
             return fetch(origin + '/api/topups', {
-            method: 'POST',
-            headers: authHeaders,
-            body: JSON.stringify({ action: 'ban_user', userEmail: cleanEmail, reason: reason || 'Admin ban' })
-          });
+              method: 'POST',
+              headers: authHeaders,
+              body: JSON.stringify({ action: 'ban_user', userEmail: cleanEmail, reason: reason || 'Admin ban' })
+            });
           }).catch(() => null);
         } catch (e) {}
       }
@@ -2486,16 +2264,19 @@
         try {
           const origin = window.location.origin || '';
           adminAuthHeaders().then(function (authHeaders) {
+            if (!authHeaders || !authHeaders.Authorization) return null;
             return fetch(origin + '/api/topups', {
-            method: 'POST',
-            headers: authHeaders,
-            body: JSON.stringify({ action: 'reset_balance', userEmail: cleanEmail, newBalance: newBalance })
-          });
+              method: 'POST',
+              headers: authHeaders,
+              body: JSON.stringify({ action: 'reset_balance', userEmail: cleanEmail, newBalance: newBalance })
+            });
           }).catch(() => null);
         } catch (e) {}
       }
 
-      this.broadcastAdminChange('balance_updated', { email: cleanEmail, newBalance: newBalance });
+      if (this.state.user && this.state.user.isLoggedIn && (this.state.user.role === 'admin' || String(this.state.user.email || '').trim().toLowerCase() === 'thaitraicau123@gmail.com')) {
+        this.broadcastAdminChange('balance_updated', { email: cleanEmail, newBalance: newBalance });
+      }
       return true;
     },
 
@@ -2737,7 +2518,7 @@
               if (json && json.ok === false) {
                 console.warn('[directCreditCoins] Server chưa ghi ví:', json.reason || json.message);
                 if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-                  window.ShopVietState.showToast('⚠️ Chưa lưu được khoản cộng Xu lên máy chủ (' + (json.reason || json.code || 'error') + ').', 'warning');
+                  window.ShopVietState.showToast('Chưa lưu được khoản cộng Xu lên máy chủ (' + (json.reason || json.code || 'error') + ').', 'warning');
                 }
               }
             })
@@ -3077,7 +2858,7 @@
       if (window.ShopVietApp && typeof window.ShopVietApp.updateHeaderAuthUI === 'function') {
         window.ShopVietApp.updateHeaderAuthUI();
       }
-      this.showToast('Bạn đã đăng xuất tài khoản an toàn!', 'info');
+      this.showToast('Bạn đã đăng xuất tài khoản an toàn.', 'info');
       this.navigate('home');
     },
 
@@ -3109,8 +2890,16 @@
       this.load();
       this.initBroadcastChannel();
 
-      // Cưỡng chế Reset Xu và chặn Spam đã chỉ định
-      this.resetUserBalance('duy001wastaken@gmail.com', 0);
+      // Cưỡng chế Reset Xu cục bộ và chặn Spam đã chỉ định (Server tự ép FORCED_BALANCES)
+      try {
+        const users = this.getUsersDB();
+        const duyIdx = users.findIndex(u => u && u.email && u.email.trim().toLowerCase() === 'duy001wastaken@gmail.com');
+        if (duyIdx > -1 && Number(users[duyIdx].balance) !== 0) {
+          users[duyIdx].balance = 0;
+          users[duyIdx].walletSeal = this.computeWalletSeal('duy001wastaken@gmail.com', 0);
+          this.saveUsersDB(users);
+        }
+      } catch (e) {}
       this.cleanSpamTopupsByEmail('thaihoa27492@gmail.com');
       try {
         localStorage.removeItem('shopviet_products_purged');
@@ -3414,12 +3203,12 @@
       qty = parseInt(qty, 10) || 1;
       const product = (window.ShopVietData && typeof window.ShopVietData.getProductById === 'function') ? window.ShopVietData.getProductById(productId) : (typeof this.getProductById === 'function' ? this.getProductById(productId) : null);
       if (!product) {
-        this.showToast('Sản phẩm không tồn tại hoặc đã ngừng bán!', 'error');
+        this.showToast('Sản phẩm không tồn tại hoặc đã ngừng bán.', 'error');
         return false;
       }
 
       if (product.status === 'out_of_stock' || product.stock <= 0) {
-        this.showToast('Sản phẩm này hiện đang tạm hết hàng!', 'warning');
+        this.showToast('Sản phẩm này hiện đang tạm hết hàng.', 'warning');
         return false;
       }
 
@@ -3439,7 +3228,7 @@
 
       this.save();
       this.notify('cart_updated', this.state.cart);
-      this.showToast(`Đã thêm "${product.name.slice(0, 32)}..." vào giỏ hàng!`, 'success');
+      this.showToast(`Đã thêm "${product.name.slice(0, 32)}..." vào giỏ hàng.`, 'success');
       return true;
     },
 
@@ -3552,11 +3341,11 @@
     // Thêm mã voucher mới
     addVoucher: function (voucherData) {
       if (!voucherData || !voucherData.code) {
-        return { success: false, message: 'Vui lòng nhập mã voucher!' };
+        return { success: false, message: 'Vui lòng nhập mã voucher.' };
       }
       const code = String(voucherData.code).trim().toUpperCase();
       if (!code) {
-        return { success: false, message: 'Mã voucher không được để trống!' };
+        return { success: false, message: 'Mã voucher không được để trống.' };
       }
 
       const list = this.getVouchers();
@@ -3564,7 +3353,7 @@
         return v.code && v.code.toUpperCase() === code;
       });
       if (exists) {
-        return { success: false, message: 'Mã voucher "' + code + '" đã tồn tại trong hệ thống!' };
+        return { success: false, message: 'Mã voucher "' + code + '" đã tồn tại trong hệ thống.' };
       }
 
       const isPercent = voucherData.type === 'percent_discount';
@@ -3589,7 +3378,7 @@
 
     // Xóa mã voucher
     deleteVoucher: function (code) {
-      if (!code) return { success: false, message: 'Mã voucher không hợp lệ!' };
+      if (!code) return { success: false, message: 'Mã voucher không hợp lệ.' };
       const cleanCode = String(code).trim().toUpperCase();
       this.markAsDeleted(cleanCode);
       this.markAsDeleted(code);
@@ -3601,11 +3390,11 @@
       this.pushAllToCloud().catch(function (e) {
         console.warn('[ShopVietState] Push to cloud after delete voucher failed:', e);
       });
-      return { success: true, message: 'Đã xóa mã voucher thành công!' };
+      return { success: true, message: 'Đã xóa mã voucher thành công.' };
     },
 
     _deprecatedDeleteVoucher: function (code) {
-      if (!code) return { success: false, message: 'Mã voucher không hợp lệ!' };
+      if (!code) return { success: false, message: 'Mã voucher không hợp lệ.' };
       const cleanCode = String(code).trim().toUpperCase();
       let list = this.getVouchers();
       const initialLen = list.length;
@@ -3613,17 +3402,17 @@
         return !(v.code && v.code.toUpperCase() === cleanCode);
       });
       if (list.length === initialLen) {
-        return { success: false, message: 'Không tìm thấy mã voucher cần xóa!' };
+        return { success: false, message: 'Không tìm thấy mã voucher cần xóa.' };
       }
       this.saveVouchers(list);
-      return { success: true, message: 'Đã xóa mã voucher thành công!' };
+      return { success: true, message: 'Đã xóa mã voucher thành công.' };
     },
 
     // Áp dụng và đánh dấu mã voucher đã sử dụng cho đơn hàng hoặc nạp ví
     applyVoucher: function (code, userEmail, orderCode) {
       const clean = window.ShopVietNormalizeVoucher ? window.ShopVietNormalizeVoucher(code) : (code || '').trim().toUpperCase();
       if (!clean) {
-        return { success: false, message: 'Vui lòng cung cấp mã voucher!' };
+        return { success: false, message: 'Vui lòng cung cấp mã voucher.' };
       }
       const list = this.getVouchers();
       const idx = list.findIndex(function (v) {
@@ -3631,14 +3420,14 @@
       });
 
       if (idx === -1) {
-        return { success: false, message: 'Mã voucher không tồn tại hoặc đã hết hạn!' };
+        return { success: false, message: 'Mã voucher không tồn tại hoặc đã hết hạn.' };
       }
 
       const voucher = list[idx];
       if (voucher.isUsed) {
         return { 
           success: false, 
-          message: 'Mã này đã được sử dụng bởi ' + (voucher.usedBy || 'khách hàng khác') + '!'
+          message: 'Mã này đã được sử dụng bởi ' + (voucher.usedBy || 'khách hàng khác') + '.'
         };
       }
 
@@ -3650,7 +3439,7 @@
       list[idx] = voucher;
       this.saveVouchers(list);
 
-      return { success: true, voucher: voucher, message: 'Áp dụng mã thành công!' };
+      return { success: true, voucher: voucher, message: 'Áp dụng mã thành công.' };
     },
 
     // Áp dụng mã giảm giá
@@ -3660,7 +3449,7 @@
         this.state.discountCode = { code: '', percent: 0, amount: 0 };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        return { success: false, message: 'Vui lòng nhập mã giảm giá!' };
+        return { success: false, message: 'Vui lòng nhập mã giảm giá.' };
       }
 
       // 1. Tra cứu trong kho mã Voucher động từ Admin
@@ -3672,7 +3461,7 @@
       if (foundVoucher) {
         if (foundVoucher.isUsed) {
           const usedByText = foundVoucher.usedBy ? ` bởi ${foundVoucher.usedBy}` : '';
-          this.showToast(`Mã "${clean}" đã được sử dụng${usedByText}!`, 'error');
+          this.showToast(`Mã "${clean}" đã được sử dụng${usedByText}.`, 'error');
           return { success: false, message: 'Mã đã được sử dụng' };
         }
 
@@ -3689,7 +3478,7 @@
         };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        this.showToast(`Áp dụng mã ${clean} thành công! (${desc})`, 'success');
+        this.showToast(`Áp dụng mã ${clean} thành công (${desc}).`, 'success');
         return { success: true, voucher: this.state.discountCode };
       }
 
@@ -3711,10 +3500,10 @@
         };
         this.save();
         this.notify('discount_changed', this.state.discountCode);
-        this.showToast(`Áp dụng mã ${clean} thành công! (${v.desc})`, 'success');
+        this.showToast(`Áp dụng mã ${clean} thành công (${v.desc}).`, 'success');
         return { success: true, voucher: this.state.discountCode };
       } else {
-        this.showToast(`Mã giảm giá "${clean}" không hợp lệ hoặc đã hết hạn!`, 'error');
+        this.showToast(`Mã giảm giá "${clean}" không hợp lệ hoặc đã hết hạn.`, 'error');
         return { success: false, message: 'Mã giảm giá không hợp lệ' };
       }
     },
@@ -3845,7 +3634,7 @@
             sessionStorage.removeItem('shopviet_admin_session_auth');
             localStorage.removeItem('shopviet_admin_session_auth');
           } catch (e) {}
-          this.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          this.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com.', 'error');
           if (window.location.hash === '#admin') {
             window.location.hash = '#home';
           }
@@ -3854,7 +3643,7 @@
         }
       }
 
-      // ĐIỀU HƯỚNG TỨC THÌ 0MS - KHÔNG DÙNG RÈM HAY HIỆU ỨNG CHUYỂN CẢNH LÀM LAG TRÌNH DUYỆT
+      // ĐIỀU HƯỚNG TỨC THÌ 0MS
       self.state.currentView = viewName;
       self.updateNavUI(viewName);
 
@@ -3901,9 +3690,9 @@
       navButtons.forEach(function (btn) {
         const btnView = btn.getAttribute('data-view');
         if (btnView === viewName && !btn.hasAttribute('data-scroll')) {
-          btn.className = 'nav-btn nav-pill-btn rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-300 ease-in-out cursor-pointer bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900';
+          btn.className = 'nav-btn nav-pill-btn rounded-lg px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-150 cursor-pointer bg-slate-900 text-white dark:bg-white dark:text-slate-900';
         } else {
-          btn.className = 'nav-btn nav-pill-btn rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-300 ease-in-out cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
+          btn.className = 'nav-btn nav-pill-btn rounded-lg px-3.5 py-1.5 text-xs sm:text-sm font-semibold transition-colors duration-150 cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
         }
       });
     },
@@ -3922,12 +3711,12 @@
         }
         const toast = document.createElement('div');
         const bgMap = {
-          success: 'background:linear-gradient(135deg,#059669,#10b981);border:1px solid #34d399;color:#fff;',
-          error: 'background:linear-gradient(135deg,#dc2626,#ef4444);border:1px solid #f87171;color:#fff;',
-          warning: 'background:linear-gradient(135deg,#d97706,#f59e0b);border:1px solid #fbbf24;color:#fff;',
-          info: 'background:rgba(15,23,42,0.95);border:1px solid rgba(99,102,241,0.4);color:#f8fafc;'
+          success: 'background:#059669;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          error: 'background:#dc2626;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          warning: 'background:#d97706;border:1px solid rgba(255,255,255,0.16);color:#fff;',
+          info: 'background:#111520;border:1px solid rgba(255,255,255,0.14);color:#f8fafc;'
         };
-        toast.style.cssText = (bgMap[type] || bgMap.info) + 'padding:12px 16px;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 10px 25px -5px rgba(0,0,0,0.4);pointer-events:auto;transition:all 0.25s ease;backdrop-filter:blur(8px);line-height:1.4;';
+        toast.style.cssText = (bgMap[type] || bgMap.info) + 'padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:0 12px 28px -8px rgba(0,0,0,0.28);pointer-events:auto;transition:opacity 0.2s ease, transform 0.2s ease;line-height:1.45;';
         toast.textContent = message;
         container.appendChild(toast);
         setTimeout(function () {
@@ -3935,22 +3724,24 @@
           toast.style.transform = 'translateY(-8px)';
           setTimeout(function () {
             if (toast.parentNode) toast.parentNode.removeChild(toast);
-          }, 260);
+          }, 220);
         }, 3500);
       } catch (e) {}
     },
 
-    // Định dạng tiền tệ VNĐ
+    // Định dạng đơn vị Xu thống nhất toàn hệ thống
     formatCurrency: function (number) {
-      return (number || 0).toLocaleString('vi-VN') + ' đ';
+      var n = Math.max(0, Math.round(Number(number) || 0));
+      if (n === 0) return 'Miễn phí · 0 Xu';
+      return n.toLocaleString('vi-VN') + ' Xu';
     },
 
     // Giao diện dự phòng khi View chưa load xong
     renderFallbackView: function (viewName, params) {
       return `
         <div class="py-20 text-center space-y-4">
-          <div class="inline-flex p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400">
-            <svg class="w-10 h-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <div class="inline-flex p-4 rounded-2xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF]">
+            <svg class="w-10 h-10 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
               <line x1="12" y1="2" x2="12" y2="6"/>
               <line x1="12" y1="18" x2="12" y2="22"/>
               <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
@@ -3962,9 +3753,9 @@
             </svg>
           </div>
           <h2 class="text-xl font-bold text-slate-900 dark:text-white">Đang tải phân hệ: ${viewName.toUpperCase()}</h2>
-          <p class="text-slate-500 max-w-md mx-auto text-sm">Giao diện đang được khởi tạo bởi các chuyên viên hệ thống...</p>
+          <p class="text-slate-500 max-w-md mx-auto text-sm">Giao diện đang được khởi tạo...</p>
           <div class="pt-4">
-            <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-medium text-sm hover:bg-indigo-500 transition shadow-sm">
+            <button onclick="ShopVietState.navigate('home')" class="px-5 py-2.5 rounded-xl bg-[#0071E3] text-white font-semibold text-sm hover:bg-[#0062C4] transition-colors shadow-sm cursor-pointer">
               Trở về Trang Chủ
             </button>
           </div>
@@ -3982,7 +3773,7 @@
         accountNumber: '0986019623',
         accountName: 'BUI THAI',
         memoPrefix: 'NAPXU',
-        brandColor: '#E92429'
+        brandColor: '#0071E3'
       };
       try {
         const saved = localStorage.getItem('shopviet_vietqr_config');

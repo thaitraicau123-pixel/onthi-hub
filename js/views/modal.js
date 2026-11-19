@@ -309,6 +309,43 @@ window.ShopVietViews.modal = (function () {
 
   function renderModalGuidePaneHTML(currentProduct, totalXu, userBalance, isSufficient, currentUser) {
     if (!currentProduct) return '';
+    if (currentProduct.isService) {
+      return `
+      <div class="space-y-4 text-xs">
+        <div class="p-4 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/[0.08] border border-[#0071E3]/25 dark:border-[#3B9EFF]/25 space-y-2.5">
+          <div class="flex items-start gap-2.5">
+            <span class="w-9 h-9 rounded-xl bg-[#0071E3] text-white flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </span>
+            <div class="min-w-0">
+              <div class="text-[10px] font-bold uppercase tracking-wider text-[#0071E3] dark:text-[#3B9EFF]">
+                Quy Trình Nâng Cấp Chính Chủ
+              </div>
+              <h4 class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">
+                Kích Hoạt Trực Tiếp Trên Email Canva Cá Nhân (1–5 Phút)
+              </h4>
+            </div>
+          </div>
+          <div class="space-y-1.5 text-slate-700 dark:text-slate-300 text-[11.5px] leading-relaxed pl-1">
+            <p><strong>Bước 1 — Thanh toán bằng Ví Xu:</strong> Nạp đủ Xu qua VietQR MBBank rồi bấm xác nhận đặt đơn gói <strong>${escapeHTML(currentProduct.name)}</strong>.</p>
+            <p><strong>Bước 2 — Gửi Mã Đơn &amp; Email Canva qua Zalo:</strong> Sau khi thanh toán thành công, hệ thống cấp ngay <strong>Mã Đơn Hàng</strong>, mẫu tin nhắn copy nhanh và nút nhắn trực tiếp Zalo <strong>0986.019.623</strong>.</p>
+            <p><strong>Bước 3 — Nhận lời mời &amp; Kích hoạt:</strong> Admin Bùi Thái gửi lời mời lớp Canva Edu vào đúng Email của bạn trong <strong>1–5 phút</strong>. Toàn bộ thiết kế cũ giữ nguyên 100%, không cần giao mật khẩu.</p>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-[11px] space-y-1.5">
+          <div class="flex items-center justify-between font-bold text-slate-900 dark:text-white">
+            <span>Chế Độ Bảo Hành &amp; Hỗ Trợ 24/7</span>
+            <span class="text-emerald-600 dark:text-emerald-400">${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}</span>
+          </div>
+          <p class="text-slate-500 dark:text-slate-400 text-[10.5px] leading-relaxed">
+            • Thời hạn sử dụng: <strong>${escapeHTML(currentProduct.duration || '1 Năm (12 Tháng)')}</strong>.<br>
+            • Bảo hành <strong>3 tháng</strong> (1 đổi 1 / cấp lại slot Edu mới miễn phí nếu gặp sự cố mất quyền trong 3 tháng đầu).<br>
+            • Hỗ trợ trực tiếp qua Zalo CSKH: <strong class="text-[#0071E3] dark:text-[#3B9EFF]">0986.019.623 (Bùi Thái Studio)</strong>.
+          </p>
+        </div>
+      </div>`;
+    }
     const isAllInOne = currentProduct.id === 'skill-combo-allinone';
     const isOpenJarvis = currentProduct.id === 'skill-openjarvis-local-ai';
     const isSourceStarter = !isAllInOne && !isOpenJarvis && (
@@ -715,6 +752,7 @@ window.ShopVietViews.modal = (function () {
       const hasGallery = Array.isArray(currentProduct.gallery) && currentProduct.gallery.length > 0;
       const isSourceStarter = String(currentProduct.id || '').startsWith('source-') || String(currentProduct.id || '').startsWith('template-') || String(currentProduct.id || '').startsWith('free-starter-') || Boolean(currentProduct.unlockedPayload && currentProduct.unlockedPayload.codeSnippet);
       const isMetropolis = currentProduct.id === 'source-metropolis-1998-city-builder';
+      const isServiceProduct = Boolean(currentProduct.isService);
       const isFreeProduct = Number(currentProduct.price || 0) === 0 || totalXu === 0;
 
       if (isAlreadyUnlocked && activeOrder) {
@@ -744,10 +782,10 @@ window.ShopVietViews.modal = (function () {
                 </span>
                 <div class="min-w-0">
                   <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
-                    ${isFreeProduct ? 'Nhận Miễn Phí Bộ Starter Kit (0 Xu)' : isSourceStarter ? 'Mở Khóa &amp; Tải Mã Nguồn Bằng Ví Xu' : 'Mua Kỹ Năng Bằng Ví Xu'}
+                    ${isFreeProduct ? 'Nhận Miễn Phí Bộ Starter Kit (0 Xu)' : isServiceProduct ? 'Nâng Cấp Tài Khoản Bằng Ví Xu' : isSourceStarter ? 'Mở Khóa &amp; Tải Mã Nguồn Bằng Ví Xu' : 'Mua Kỹ Năng Bằng Ví Xu'}
                   </h3>
                   <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                    ${isFreeProduct ? 'Mở khóa tức thì không tốn Xu · Tải trực tiếp trên web' : 'Trừ Xu tự động &amp; tải trọn bộ file trực tiếp trên web'}
+                    ${isFreeProduct ? 'Mở khóa tức thì không tốn Xu · Tải trực tiếp trên web' : isServiceProduct ? 'Trừ Xu tự động &amp; hướng dẫn kích hoạt chính chủ qua Zalo 0986.019.623' : 'Trừ Xu tự động &amp; tải trọn bộ file trực tiếp trên web'}
                   </p>
                 </div>
               </div>
@@ -926,10 +964,12 @@ window.ShopVietViews.modal = (function () {
                   <div class="pt-2.5 border-t border-slate-900/10 dark:border-white/10 space-y-1.5">
                     <span class="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
                       <svg class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                      <span>${isSourceStarter ? 'Bao gồm trong gói Source Starter:' : 'Đặc quyền sở hữu Hộp Công Cụ:'}</span>
+                      <span>${isServiceProduct ? 'Quyền lợi &amp; Cam kết bảo hành:' : isSourceStarter ? 'Bao gồm trong gói Source Starter:' : 'Đặc quyền sở hữu Hộp Công Cụ:'}</span>
                     </span>
                     <ul class="space-y-1 text-[11px] text-slate-600 dark:text-slate-400 pl-4 list-disc">
-                      ${isSourceStarter ? `
+                      ${isServiceProduct && Array.isArray(currentProduct.features) && currentProduct.features.length > 0 ? `
+                        ${currentProduct.features.map(f => `<li>${escapeHTML(f)}</li>`).join('')}
+                      ` : isSourceStarter ? `
                         <li><strong>Toàn bộ Source Code sạch (.zip)</strong> giải nén chạy ngay, tự do chỉnh sửa và phát triển tiếp</li>
                         <li><strong>Master Prompt Kiến Trúc + Cheat Sheet</strong> để AI (Cursor/Claude) hiểu codebase và viết tiếp feature mới</li>
                         <li>Sở hữu vĩnh viễn không giới hạn dự án cá nhân hoặc thương mại</li>
@@ -944,9 +984,9 @@ window.ShopVietViews.modal = (function () {
 
                 <!-- HÌNH THỨC CẤP PHÉP -->
                 <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10">
-                  <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Hình thức cấp phép:</span>
+                  <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${isServiceProduct ? 'Thời hạn &amp; Bảo hành:' : 'Hình thức cấp phép:'}</span>
                   <span class="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                    ${isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn' : 'Bản quyền vĩnh viễn (1-Click Copy)'}
+                    ${isServiceProduct ? `${escapeHTML(currentProduct.duration || '1 Năm (12 Tháng)')} · ${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}` : isSourceStarter ? 'Mã nguồn mở khóa vĩnh viễn' : 'Bản quyền vĩnh viễn (1-Click Copy)'}
                   </span>
                 </div>
 
@@ -959,14 +999,25 @@ window.ShopVietViews.modal = (function () {
                     </span>
                   </div>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
-                    <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
-                      <div class="font-bold text-slate-800 dark:text-slate-200">Cần biết code sâu để dùng không?</div>
-                      <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Không bắt buộc. Chỉ cần giải nén &amp; dán Master Prompt kèm Cheat Sheet vào AI IDE là sửa được theo ý.</p>
-                    </div>
-                    <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
-                      <div class="font-bold text-slate-800 dark:text-slate-200">Mở khóa 1 lần dùng vĩnh viễn chứ?</div>
-                      <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Đúng. Tải lại bất kỳ lúc nào trong lịch sử đơn hàng &amp; đồng bộ Cloud trên mọi thiết bị.</p>
-                    </div>
+                    ${isServiceProduct ? `
+                      <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Có cần gửi mật khẩu Canva không?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Không. Chỉ cần gửi đúng Email Canva qua Zalo 0986.019.623 để nhận lời mời nâng cấp chính chủ, giữ nguyên thiết kế cũ.</p>
+                      </div>
+                      <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Chế độ bảo hành 3 tháng thế nào?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Thời hạn dùng 1 năm, bảo hành 3 tháng đầu 1 đổi 1 (cấp lại slot Edu mới miễn phí ngay nếu phát sinh tụt gói).</p>
+                      </div>
+                    ` : `
+                      <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Cần biết code sâu để dùng không?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Không bắt buộc. Chỉ cần giải nén &amp; dán Master Prompt kèm Cheat Sheet vào AI IDE là sửa được theo ý.</p>
+                      </div>
+                      <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Mở khóa 1 lần dùng vĩnh viễn chứ?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Đúng. Tải lại bất kỳ lúc nào trong lịch sử đơn hàng &amp; đồng bộ Cloud trên mọi thiết bị.</p>
+                      </div>
+                    `}
                   </div>
                 </div>
 
@@ -1087,7 +1138,7 @@ window.ShopVietViews.modal = (function () {
                   class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer"
                 >
                   <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                  <span>Đã Mở Khóa · Bấm Tải Code &amp; Xem Chi Tiết</span>
+                  <span>${isServiceProduct ? 'Đã Đặt Gói · Bấm Xem Hướng Dẫn Kích Hoạt' : 'Đã Mở Khóa · Bấm Tải Code &amp; Xem Chi Tiết'}</span>
                 </button>
               ` : isFreeProduct ? `
                 <button
@@ -1105,7 +1156,7 @@ window.ShopVietViews.modal = (function () {
                   class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
                 >
                   <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>
-                  <span>Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay</span>
+                  <span>${isServiceProduct ? `Thanh Toán (-${formatMoney(totalXu)} Xu) · Đặt Nâng Cấp Ngay` : `Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay`}</span>
                 </button>
               ` : `
                 <button
@@ -1217,7 +1268,7 @@ window.ShopVietViews.modal = (function () {
             class="w-full py-3.5 px-4 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-colors cursor-pointer tabular-nums"
           >
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v8m-3-5h6"/></svg>
-            <span>Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay</span>
+            <span>${currentProduct && currentProduct.isService ? `Thanh Toán (-${formatMoney(totalXu)} Xu) · Đặt Nâng Cấp Ngay` : `Mua Bằng Xu (-${formatMoney(totalXu)} Xu) · Mở Khóa Ngay`}</span>
           </button>
         ` : `
           <button
@@ -1438,7 +1489,7 @@ window.ShopVietViews.modal = (function () {
 
           <div class="p-2.5 rounded-xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 text-slate-700 dark:text-slate-200 text-[11px] text-left leading-relaxed flex items-center gap-2 border border-[#0071E3]/20">
             <svg class="w-4 h-4 shrink-0 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời. Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
+            <span>${currentProduct.isService ? `Nâng cấp chính chủ trên Email Canva của bạn trong 1–5 phút qua Zalo 0986.019.623 (${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}).` : 'Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời.'} Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2.5 pt-1">
@@ -1673,8 +1724,8 @@ window.ShopVietViews.modal = (function () {
               <strong class="font-mono text-emerald-600 dark:text-emerald-400 font-bold tabular-nums">${formatMoney(newBalance)} Xu</strong>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-slate-500 dark:text-slate-400">Thời hạn mở khóa:</span>
-              <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Sở hữu vĩnh viễn · Trọn đời</span>
+              <span class="text-slate-500 dark:text-slate-400">Thời hạn &amp; Bảo hành:</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-semibold">${currentProduct.isService ? `${escapeHTML(currentProduct.duration || '1 Năm (12 Tháng)')} · ${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}` : 'Sở hữu vĩnh viễn · Trọn đời'}</span>
             </div>
           </div>
 
@@ -1683,7 +1734,7 @@ window.ShopVietViews.modal = (function () {
             onclick="ShopVietViews.modal.finishSuccessCelebration()"
             class="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm transition-colors cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>Mở Kho Tải Code &amp; Sao Chép Prompt Ngay</span>
+            <span>${currentProduct.isService ? 'Xem Hướng Dẫn Kích Hoạt &amp; Nhắn Zalo Ngay' : 'Mở Kho Tải Code &amp; Sao Chép Prompt Ngay'}</span>
           </button>
         </div>
       `;
@@ -2278,6 +2329,37 @@ window.ShopVietViews.modal = (function () {
                   >
                     <span>Bản .doc</span>
                   </button>
+                </div>
+              </div>
+            ` : ''}
+
+            ${prod.isService ? `
+              <div class="mx-5 mt-3 p-4 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 border border-[#0071E3]/30 flex items-center justify-between gap-3 flex-wrap shrink-0">
+                <div class="space-y-0.5 min-w-0">
+                  <div class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                    Kích hoạt chính chủ qua Zalo 0986.019.623 (1–5 phút)
+                  </div>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-300">
+                    Mã đơn: <strong class="font-mono text-[#0071E3] dark:text-[#3B9EFF] select-all">${escapeHTML(order.id || '')}</strong> · Thời hạn: <strong>${escapeHTML(prod.duration || '1 Năm')}</strong> · <strong class="text-emerald-600 dark:text-emerald-400">${escapeHTML(prod.warranty || 'Bảo hành 3 tháng')}</strong>
+                  </p>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap shrink-0">
+                  <button
+                    type="button"
+                    data-order-id="${escapeHTML(order.id || '')}"
+                    onclick="var oid=this.getAttribute('data-order-id')||'';var msg='Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Edu 1 Năm (BH 3 tháng). Mã đơn: '+oid+' | Email Canva của mình: ';if(navigator.clipboard){navigator.clipboard.writeText(msg);}if(window.ShopVietState&&window.ShopVietState.showToast){window.ShopVietState.showToast('Đã sao chép mẫu tin nhắn. Hãy dán vào Zalo và điền Email Canva của bạn.','success');}"
+                    class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-900/10 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs transition cursor-pointer"
+                  >
+                    Copy Mẫu Tin Nhắn
+                  </button>
+                  <a
+                    href="https://zalo.me/0986019623"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="px-3.5 py-2 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-2xs transition no-underline flex items-center gap-1.5"
+                  >
+                    <span>Nhắn Zalo 0986.019.623</span>
+                  </a>
                 </div>
               </div>
             ` : ''}

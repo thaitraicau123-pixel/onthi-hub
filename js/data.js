@@ -11,11 +11,119 @@ window.ShopVietData = {
       'metropolis-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><path d="M12 22V12"/><path d="M21 7l-9 5-9-5"/></svg>',
       'diet-soda-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 2h6"/></svg>',
       'flowstate-webgl': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12c2.5-3 5.5-3 8 0s5.5 3 8 0 4-3 4-3"/><path d="M2 17c2.5-3 5.5-3 8 0s5.5 3 8 0"/></svg>',
+      'canva': '<svg class="w-5 h-5 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3.5 3.5 0 1 0 0 5"/></svg>',
       'game': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="15.5" cy="11" r="1"/><circle cx="17.5" cy="13" r="1"/></svg>'
     };
     return icons[iconType] || '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9 12 2"/></svg>';
   },
   "products": [
+  {
+    "id": "service-canva-edu-1y",
+    "isService": true,
+    "name": "Up Canva Edu 1 Năm Chính Chủ (Bảo Hành 3 Tháng)",
+    "module": "CANVA PRO EDU · 1 NĂM · BH 3 THÁNG",
+    "tag": "Nâng Cấp Chính Chủ",
+    "category": "Design & Creative",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "HOT · BẢO HÀNH 3 THÁNG",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 100000,
+    "oldPrice": 299000,
+    "discount": "-67%",
+    "stock": 999,
+    "duration": "1 Năm (12 Tháng)",
+    "warranty": "Bảo hành 3 tháng (1 đổi 1)",
+    "rating": 5,
+    "soldCount": 42,
+    "image": "/img/canva-edu-1y.jpg",
+    "imageUrl": "/img/canva-edu-1y.jpg",
+    "iconType": "canva",
+    "ctaText": "Nâng Cấp (100k Xu)",
+    "desc": "DỊCH VỤ NÂNG CẤP CANVA EDU 1 NĂM CHÍNH CHỦ — BẢO HÀNH 3 THÁNG: Nâng cấp trực tiếp trên chính Email Canva cá nhân của bạn, giữ nguyên 100% thiết kế cũ, không cần giao mật khẩu. Mở khóa toàn bộ kho mẫu Pro, 100+ triệu ảnh/video/âm thanh bản quyền, Xóa phông nền 1-Click, Magic Studio AI, Brand Kit, Magic Switch và xuất file PNG/SVG/PDF chất lượng cao không watermark. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email Canva để kích hoạt trong 1–5 phút.",
+    "tags": [
+      "Canva Edu",
+      "Canva Pro",
+      "Design & Creative",
+      "Nâng Cấp Chính Chủ",
+      "Bảo Hành 3 Tháng"
+    ],
+    "features": [
+      "Nâng cấp trực tiếp trên Email Canva chính chủ của bạn (giữ nguyên 100% thiết kế cũ, không cần mật khẩu)",
+      "Thời hạn sử dụng 1 Năm (12 tháng) ổn định trên Web, PC/Mac và App iOS/Android",
+      "Bảo hành 3 tháng (1 đổi 1 / cấp lại slot Edu mới miễn phí nếu mất quyền trong 3 tháng đầu)",
+      "Mở khóa full tính năng Pro/Edu: Xóa nền ảnh 1 chạm, Magic Switch, Magic Eraser & Magic Studio AI",
+      "Truy cập 100+ triệu ảnh, video, font chữ Việt hóa Pro, mẫu thuyết trình & poster không watermark",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email Canva — kích hoạt trong 1–5 phút"
+    ],
+    "highlights": [
+      "Nâng cấp chính chủ trên Email cá nhân (1–5 phút)",
+      "Thời hạn 1 Năm · Bảo hành 3 tháng uy tín",
+      "Mở khóa full kho ảnh, font Pro, Xóa phông & Magic AI",
+      "Không cần mật khẩu tài khoản, giữ nguyên thiết kế cũ"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng Canva Free mặc định",
+        "summary": "Bị dính watermark trả phí, khóa tính năng Xóa phông nền, thiếu font đẹp và phải trả chi phí cao nếu mua lẻ.",
+        "points": [
+          "Hình ảnh, mẫu slide đẹp đều gắn vương miện Pro phải trả phí",
+          "Không dùng được Xóa phông (Background Remover) & Magic Switch",
+          "Không xuất được PNG nền trong suốt hoặc PDF chất lượng cao",
+          "Mua gói chính hãng trực tiếp tốn hơn 1.200.000đ/năm"
+        ]
+      },
+      "after": {
+        "title": "Up Canva Edu 1 Năm tại Bùi Thái Studio",
+        "summary": "Mở khóa full quyền thiết kế cao cấp chỉ 100.000 Xu/năm, kích hoạt trên Email cá nhân và được bảo hành 3 tháng.",
+        "points": [
+          "Mở khóa 100+ triệu tài nguyên Pro, font Việt hóa & Magic AI",
+          "Xuất file PNG trong suốt, SVG, PDF in ấn không dính watermark",
+          "Thiết kế riêng tư trong tài khoản cá nhân, không lộ dự án",
+          "Kích hoạt 1–5 phút & bảo hành 3 tháng qua Zalo 0986.019.623"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_Kich_Hoat_Canva_Edu_1_Nam.md",
+      "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT CANVA EDU 1 NĂM (BẢO HÀNH 3 THÁNG)\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **100.000 Xu** trên website, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email Canva cần nâng cấp**: (Điền chính xác Gmail/Email bạn đang đăng nhập Canva)\n\n> **Lưu ý bảo mật**: Shop **KHÔNG BAO GIỜ** hỏi mật khẩu tài khoản Canva hay mật khẩu Gmail của bạn.\n\n---\n\n## BƯỚC 2: CHẤP NHẬN LỜI MỜI VÀO LỚP CANVA EDU (1–5 PHÚT)\n1. Admin sẽ gửi lời mời tham gia lớp Canva Education vào đúng Email của bạn.\n2. Bạn mở hộp thư Email (kiểm tra cả mục **Quảng cáo / Spam** nếu chưa thấy) và bấm nút **Tham gia lớp học / Join Class**.\n3. Hoặc truy cập trực tiếp **canva.com** -> bấm vào biểu tượng **Thông báo (hình chuông)** -> Chấp nhận lời mời.\n4. Chuyển Workspace ở góc trên bên trái sang nhóm Edu mới để mở khóa toàn bộ tài nguyên Pro/Edu.\n\n---\n\n## BƯỚC 3: CHÍNH SÁCH BẢO HÀNH 3 THÁNG\n- **Thời hạn sử dụng**: **1 Năm (12 tháng)** kể từ ngày kích hoạt.\n- **Bảo hành**: **3 tháng** kể từ ngày đơn hàng hoàn tất. Trong 3 tháng đầu, nếu tài khoản bị rớt gói Edu hoặc lỗi truy cập tài nguyên Pro, nhắn ngay Zalo **0986.019.623** kèm Mã đơn hàng để được cấp lại slot mới hoàn toàn miễn phí.\n- **Khuyến nghị**: Nên sao lưu định kỳ các dự án quan trọng về tài khoản cá nhân để luôn chủ động dữ liệu.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Edu 1 Năm (Bảo hành 3 tháng).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Canva của mình: [NHAP_EMAIL_CANVA_CUA_BAN]\nNhờ admin gửi lời mời kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Canva rồi gửi qua Zalo 0986.019.623 để duyệt trong 1–5 phút."
+        },
+        {
+          "title": "2. Kiểm tra nhanh sau khi nhận lời mời Canva Edu",
+          "template": "1. Mở Email hoặc vào canva.com -> biểu tượng Chuông thông báo -> Chấp nhận lời mời (Accept invitation).\n2. Bấm vào Avatar / Tên nhóm ở góc trên bên trái màn hình Canva để chọn Workspace lớp Edu vừa tham gia.\n3. Thử chèn 1 ảnh có biểu tượng vương miện Pro và bấm Tải xuống PNG nền trong suốt để xác nhận đã lên gói thành công.",
+          "example": "Nếu vẫn thấy biểu tượng Free, hãy kiểm tra lại xem bạn đã chuyển đúng sang Team/Workspace Edu ở góc trái chưa."
+        },
+        {
+          "title": "3. Quy định Bảo hành 3 tháng (1 đổi 1)",
+          "template": "Thời hạn gói: 1 Năm (12 tháng)\nThời gian bảo hành: 3 tháng kể từ ngày mua\nKênh hỗ trợ bảo hành: Zalo 0986.019.623 (kèm Mã đơn hàng #DJ2026...)\nCam kết: Hỗ trợ cấp slot Edu mới miễn phí nếu bị mất quyền Edu trong thời gian bảo hành 3 tháng.",
+          "example": "Lưu lại Mã đơn hàng trên web (hoặc trong mục Lịch sử đơn hàng) để đối chiếu bảo hành nhanh nhất."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Edu 1 Năm (Bảo hành 3 tháng).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Canva của mình: [NHAP_EMAIL_CANVA_CUA_BAN]\nNhờ admin gửi lời mời kích hoạt giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email Canva rồi gửi qua Zalo 0986.019.623 để duyệt trong 1–5 phút."
+      },
+      {
+        "title": "2. Kiểm tra nhanh sau khi nhận lời mời Canva Edu",
+        "template": "1. Mở Email hoặc vào canva.com -> biểu tượng Chuông thông báo -> Chấp nhận lời mời (Accept invitation).\n2. Bấm vào Avatar / Tên nhóm ở góc trên bên trái màn hình Canva để chọn Workspace lớp Edu vừa tham gia.\n3. Thử chèn 1 ảnh có biểu tượng vương miện Pro và bấm Tải xuống PNG nền trong suốt để xác nhận đã lên gói thành công.",
+        "example": "Nếu vẫn thấy biểu tượng Free, hãy kiểm tra lại xem bạn đã chuyển đúng sang Team/Workspace Edu ở góc trái chưa."
+      },
+      {
+        "title": "3. Quy định Bảo hành 3 tháng (1 đổi 1)",
+        "template": "Thời hạn gói: 1 Năm (12 tháng)\nThời gian bảo hành: 3 tháng kể từ ngày mua\nKênh hỗ trợ bảo hành: Zalo 0986.019.623 (kèm Mã đơn hàng #DJ2026...)\nCam kết: Hỗ trợ cấp slot Edu mới miễn phí nếu bị mất quyền Edu trong thời gian bảo hành 3 tháng.",
+        "example": "Lưu lại Mã đơn hàng trên web (hoặc trong mục Lịch sử đơn hàng) để đối chiếu bảo hành nhanh nhất."
+      }
+    ]
+  },
   {
     "id": "source-metropolis-1998-city-builder",
     "name": "Metropolis 1998 — Mã Nguồn Game Xây Thành Phố Isometric 3D & Nội Thất (React + Three.js)",
@@ -36,13 +144,34 @@ window.ShopVietData = {
     "image": "/assets/aistudio/r1-title_bb056220.png",
     "imageUrl": "/assets/aistudio/r1-title_bb056220.png",
     "gallery": [
-      { "label": "Title Oakwood", "url": "/assets/aistudio/r1-title_bb056220.png" },
-      { "label": "Ban ngày & Dock", "url": "/assets/aistudio/r1-day_0b668521.png" },
-      { "label": "Ban đêm & Đèn phố", "url": "/assets/aistudio/r1-night_bfd6b447.png" },
-      { "label": "Interior Cutaway [X]", "url": "/assets/aistudio/r1-cutaway_5ff36592.png" },
-      { "label": "Khu căn hộ", "url": "/assets/aistudio/r6-apartment_499ccb5c.png" },
-      { "label": "Thời tiết Mưa", "url": "/assets/aistudio/r6-rain_ffab6a8e.png" },
-      { "label": "Thời tiết Tuyết", "url": "/assets/aistudio/r6-snow_d4afa5c9.png" }
+      {
+        "label": "Title Oakwood",
+        "url": "/assets/aistudio/r1-title_bb056220.png"
+      },
+      {
+        "label": "Ban ngày & Dock",
+        "url": "/assets/aistudio/r1-day_0b668521.png"
+      },
+      {
+        "label": "Ban đêm & Đèn phố",
+        "url": "/assets/aistudio/r1-night_bfd6b447.png"
+      },
+      {
+        "label": "Interior Cutaway [X]",
+        "url": "/assets/aistudio/r1-cutaway_5ff36592.png"
+      },
+      {
+        "label": "Khu căn hộ",
+        "url": "/assets/aistudio/r6-apartment_499ccb5c.png"
+      },
+      {
+        "label": "Thời tiết Mưa",
+        "url": "/assets/aistudio/r6-rain_ffab6a8e.png"
+      },
+      {
+        "label": "Thời tiết Tuyết",
+        "url": "/assets/aistudio/r6-snow_d4afa5c9.png"
+      }
     ],
     "iconType": "metropolis-3d",
     "demoUrl": "/demo/metropolis-1998/",
@@ -149,7 +278,13 @@ window.ShopVietData = {
     "zipFileName": "OpenDesign_Starter_Free_Kit.zip",
     "zipFileSize": "2.1 KB",
     "desc": "GÓI DÙNG THỬ MIỄN PHÍ 0 XU: Tải ngay bộ khung Apple Liquid Glass + Cool Obsidian + Sapphire Accent chuẩn hóa kèm tệp .cursorrules để AI IDE (Cursor, Claude, Antigravity) sinh UI chuẩn thẩm mỹ ngay lập tức.",
-    "tags": ["Miễn phí 0 Xu", "Mã nguồn", "Open-Design", "Liquid Glass", "Cursorrules"],
+    "tags": [
+      "Miễn phí 0 Xu",
+      "Mã nguồn",
+      "Open-Design",
+      "Liquid Glass",
+      "Cursorrules"
+    ],
     "features": [
       "Tệp liquid-glass-tokens.css chuẩn Dark/Light Mode không cần Tailwind build",
       "Bộ quy tắc .cursorrules khóa chuẩn Zero-Pill & tabular-nums cho AI Coding",
@@ -212,7 +347,14 @@ window.ShopVietData = {
     "zipFileName": "SePay_VietQR_Wallet_Starter.zip",
     "zipFileSize": "2.0 KB",
     "desc": "BỘ MÃ NGUỒN KHỞI TẠO HỆ THỐNG NẠP XU TỰ ĐỘNG QUA VIETQR & SEPAY WEBHOOK: Tách chuẩn Express + SePay Webhook Auth + Sinh QR VietQR động theo mã memo + Bảo vệ endpoint tải file trả phí. Tải ZIP sạch về gắn .env là bán sản phẩm số ngay.",
-    "tags": ["Mã nguồn", "SePay", "VietQR", "SaaS", "Node.js", "Express"],
+    "tags": [
+      "Mã nguồn",
+      "SePay",
+      "VietQR",
+      "SaaS",
+      "Node.js",
+      "Express"
+    ],
     "features": [
       "Hàm extractTopupMemo & buildVietQRUrl sinh mã QR MBBank/Vietcombank tức thì",
       "Webhook /api/sepay-webhook kiểm tra Apikey secret, chống cộng tiền trùng lặp",
@@ -275,7 +417,13 @@ window.ShopVietData = {
     "zipFileName": "Gemini_Glass_Workspace_Kit.zip",
     "zipFileSize": "2.5 KB",
     "desc": "MÃ NGUỒN STARTER WEB APP TÍCH HỢP GEMINI AI CHUẨN BẢO MẬT: Toàn bộ API key được giữ kín ở backend Express qua SDK chính thức @google/genai, đi kèm giao diện Liquid Glass tối giản sẵn sàng phát triển thành công cụ AI viết nội dung, tóm tắt hoặc trợ lý riêng.",
-    "tags": ["Mã nguồn", "Template web", "Gemini API", "Node.js", "AI Workspace"],
+    "tags": [
+      "Mã nguồn",
+      "Template web",
+      "Gemini API",
+      "Node.js",
+      "AI Workspace"
+    ],
     "features": [
       "Tích hợp @google/genai SDK bản mới nhất gọi gemini-2.5-flash qua /api/ai",
       "Giữ 100% GEMINI_API_KEY phía server, tuyệt đối không lộ khóa trên trình duyệt",
@@ -336,7 +484,13 @@ window.ShopVietData = {
     "zipFileName": "Dungeon_Co_Ve_Thach_2D_Starter.zip",
     "zipFileSize": "9.2 MB",
     "desc": "TRỌN BỘ MÃ NGUỒN GAME 2D PIXEL ACTION DUNGEON CỔ VỆ THẠCH: Kèm đầy đủ code chiến đấu Canvas, 3 vũ khí (Kiếm / Búa / Súng Tommy), 4 loại quái vật (Slime, Goblin, Bộ xương, Nấm độc), Boss Cổ Vệ Thạch 360 HP đa pha, toàn bộ sprite PNG và sound-data.json để tự phát triển thêm màn chơi.",
-    "tags": ["Mã nguồn", "Game 2D", "Action RPG", "Sprite Sheet", "Canvas"],
+    "tags": [
+      "Mã nguồn",
+      "Game 2D",
+      "Action RPG",
+      "Sprite Sheet",
+      "Canvas"
+    ],
     "features": [
       "Full source HTML5 Canvas + sprite PNG sắc nét (Knight, Golem Boss, 4 quái, 3 vũ khí)",
       "Hệ thống dash Spacebar né đòn, hitbox debug, ngắm chuột 360° & âm thanh WAV nhúng sẵn",

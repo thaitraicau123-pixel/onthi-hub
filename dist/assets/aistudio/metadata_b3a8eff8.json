@@ -1,0 +1,8 @@
+{
+  "name": "Metropolis 1998",
+  "description": "A retro 1998 isometric city builder and interior architect diorama where you design every street, storefront, and room.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

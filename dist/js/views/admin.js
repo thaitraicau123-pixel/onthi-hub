@@ -113,13 +113,13 @@
 
   function getBroadcastTypeTitle(type) {
     switch (type) {
-      case 'products_updated': return '📦 Cập nhật Sản phẩm';
-      case 'vietqr_updated': return '💳 Cập nhật Cấu hình VietQR';
-      case 'orders_updated': return '📋 Cập nhật Đơn hàng & License';
-      case 'vouchers_updated': return '🎁 Cập nhật Mã giảm giá';
-      case 'schedules_updated': return '📅 Cập nhật Lịch hẹn khách';
-      case 'test_ping': return '⚡ Phát Tín Hiệu Thử Nghiệm (Ping)';
-      default: return '📡 Tín hiệu Realtime';
+      case 'products_updated': return 'Cập nhật Sản phẩm';
+      case 'vietqr_updated': return 'Cập nhật Cấu hình VietQR';
+      case 'orders_updated': return 'Cập nhật Đơn hàng & License';
+      case 'vouchers_updated': return 'Cập nhật Mã giảm giá';
+      case 'schedules_updated': return 'Cập nhật Lịch hẹn khách';
+      case 'test_ping': return 'Phát Tín Hiệu Thử Nghiệm (Ping)';
+      default: return 'Tín hiệu Realtime';
     }
   }
 
@@ -230,7 +230,7 @@
     if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
       window.ShopVietState.showToast(msg, type);
     } else {
-      alert(msg);
+      console.log('[Admin]', msg);
     }
   }
 
@@ -239,17 +239,13 @@
   // =========================================================================
   function renderPinAuthModal() {
     return `
-      <div id="adminPinBackdrop" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
-        <div id="adminPinCard" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 animate-slide-up relative overflow-hidden">
-          
-          <!-- Decorative Top Glow -->
-          <div class="absolute -top-20 -left-20 w-44 h-44 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute -top-20 -right-20 w-44 h-44 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div id="adminPinBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in">
+        <div id="adminPinCard" class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-md p-6 sm:p-8 animate-slide-up relative overflow-hidden">
 
           <!-- Header -->
           <div class="text-center space-y-3 relative z-10">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 text-white flex items-center justify-center mx-auto shadow-xl shadow-amber-900/20">
-              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <div class="w-14 h-14 rounded-2xl bg-[#0071E3] text-white flex items-center justify-center mx-auto shadow-2xs">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                 <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
@@ -271,7 +267,7 @@
                   placeholder="Nhập mã PIN bí mật..." 
                   autocomplete="current-password"
                   autofocus
-                  class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] text-sm tracking-widest font-mono"
+                  class="w-full px-4 py-3 rounded-xl border border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3] text-sm tracking-widest font-mono"
                 >
                 <button 
                   type="button" 
@@ -279,15 +275,15 @@
                   onclick="window.ShopVietViews.admin.togglePinVisibility()" 
                   class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                 >
-                  <svg id="adminEyeSvg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <svg id="adminEyeSvg" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
                     <circle cx="12" cy="12" r="3"/>
                   </svg>
                 </button>
               </div>
               <p id="adminPinError" class="text-xs text-rose-500 font-medium mt-1.5 hidden flex items-center gap-1">
-                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                <span>Mã PIN không chính xác! Vui lòng thử lại.</span>
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Mã PIN không chính xác. Vui lòng thử lại.</span>
               </p>
             </div>
 
@@ -296,15 +292,15 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.close()" 
-                class="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                class="flex-1 px-4 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button 
                 type="submit" 
-                class="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs transition shadow-md shadow-amber-900/20 flex items-center justify-center gap-1.5"
+                class="flex-1 px-4 py-2.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold text-xs transition shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
                   <polyline points="10 17 15 12 10 7"/>
                   <line x1="15" x2="3" y1="12" y2="12"/>
@@ -334,49 +330,44 @@
     const adminDisplayName = curUser.name || (curUser.email === 'thaitraicau123@gmail.com' ? 'Bùi Thái (Admin)' : (curUser.email || 'Bùi Thái (Admin)'));
 
     return `
-      <div id="adminPortalBackdrop" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 lg:p-6 animate-fade-in">
-        <div id="adminPortalContainer" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-7xl h-[92vh] max-h-[920px] flex flex-col overflow-hidden animate-slide-up">
+      <div id="adminPortalBackdrop" class="fixed inset-0 z-50 bg-slate-950/75 flex items-center justify-center p-2 sm:p-4 lg:p-6 animate-fade-in">
+        <div id="adminPortalContainer" class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-7xl h-[92vh] max-h-[920px] flex flex-col overflow-hidden animate-slide-up">
           
-          <!-- ==================== HEADER MODAL CHUẨN ẢNH 3 ==================== -->
-          <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 bg-slate-50/70 dark:bg-slate-950/70 shrink-0">
+          <!-- ==================== HEADER MODAL ==================== -->
+          <div class="px-5 py-4 border-b border-slate-900/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-4 bg-[#F7F8FA] dark:bg-[#090B10] shrink-0">
             
             <!-- Left Info Cluster -->
             <div class="flex items-center gap-3.5">
-              <!-- Icon Bánh Răng Cài Đặt Tím/Xanh -->
-              <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-amber-900/15 shrink-0">
-                <svg class="w-6 h-6 animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <div class="w-11 h-11 rounded-xl bg-[#0071E3] text-white flex items-center justify-center shadow-2xs shrink-0">
+                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
                   <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
                   <circle cx="12" cy="12" r="3"/>
                 </svg>
               </div>
 
-              <!-- Tiêu đề lớn & Dòng phụ -->
               <div>
                 <div class="flex items-center gap-2">
                   <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                     <span>Phiên quản trị</span>
                   </h2>
-                  <!-- Badge xanh Admin Session -->
-                  <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25">
                     Admin Session
                   </span>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 font-mono">
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25 font-mono">
                     v1.0.4
                   </span>
                 </div>
-                <!-- Dòng phụ chuẩn Ảnh 3 -->
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Tài khoản quản trị: <strong class="text-slate-700 dark:text-slate-200">${adminDisplayName}</strong> • Phiên: <span id="adminSessionTimer" class="font-mono font-semibold text-indigo-600 dark:text-indigo-400">${formatSessionTime(sessionCountdownSeconds)}</span> • Cấu hình: <span class="font-semibold text-amber-500 font-mono font-bold">v1.0.4</span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 tabular-nums">
+                  Tài khoản quản trị: <strong class="text-slate-700 dark:text-slate-200">${adminDisplayName}</strong> • Phiên: <span id="adminSessionTimer" class="font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">${formatSessionTime(sessionCountdownSeconds)}</span> • Cấu hình: <span class="text-amber-600 dark:text-amber-400 font-mono font-bold">v1.0.4</span>
                 </p>
               </div>
             </div>
 
-            <!-- Cụm Nút Phải: Làm Mới, Về Trang Chủ, Đăng Xuất (Đã tinh gọn chuẩn Clean SaaS, bảo toàn 100% logic ngầm) -->
-            <div class="flex items-center gap-2">
+            <!-- Cụm Nút Phải -->
+            <div class="flex items-center gap-2 flex-wrap">
               <!-- Số Dư Ví Admin Realtime -->
-              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold text-xs shrink-0 shadow-2xs">
-                <span class="text-sm">🪙</span>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-700 dark:text-amber-300 font-bold text-xs shrink-0 shadow-2xs">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10m-3-7h6m-6 4h6"/></svg>
                 <span>Số dư ví:</span>
                 <span id="adminSessionBalanceText" class="font-mono text-sm font-black tabular-nums text-amber-700 dark:text-amber-300">${Number(curUser.balance || 0).toLocaleString('vi-VN')} Xu</span>
               </div>
@@ -385,9 +376,9 @@
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshData()" 
                 title="Làm mới dữ liệu (Refresh)"
-                class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+                class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4 text-slate-500 hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                   <path d="M3 3v5h5"/>
                   <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
@@ -402,7 +393,7 @@
                 onclick="window.ShopVietViews.admin.close()" 
                 class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                   <polyline points="9 22 9 12 15 12 15 22"/>
                 </svg>
@@ -415,7 +406,7 @@
                 onclick="window.ShopVietViews.admin.logout()" 
                 class="px-3.5 py-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/50 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
                   <polyline points="16 17 21 12 16 7"/>
                   <line x1="21" x2="9" y1="12" y2="12"/>
@@ -427,15 +418,15 @@
           </div>
 
           <!-- ==================== BANNER CẢNH BÁO YÊU CẦU NẠP XU MỚI ==================== -->
-          <div id="adminTopupAlertBanner" class="${pendingTopupsCount > 0 ? 'flex' : 'hidden'} px-5 py-3 bg-gradient-to-r from-amber-500/20 via-orange-500/25 to-amber-500/15 border-b border-amber-500/30 items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold shrink-0 animate-fade-in">
+          <div id="adminTopupAlertBanner" class="${pendingTopupsCount > 0 ? 'flex' : 'hidden'} px-5 py-3 bg-amber-500/10 border-b border-amber-500/25 items-center justify-between gap-3 text-amber-900 dark:text-amber-200 text-xs font-semibold shrink-0 animate-fade-in">
             <div class="flex items-center gap-2.5">
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping shrink-0"></span>
-              <span>🔔 <strong>CÓ <span id="adminPendingTopupCountText">${pendingTopupsCount}</span> YÊU CẦU NẠP XU MỚI TỪ TECHCOMBANK 0986019623 ĐANG CHỜ DUYỆT!</strong></span>
+              <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span><strong>CÓ <span id="adminPendingTopupCountText" class="tabular-nums">${pendingTopupsCount}</span> YÊU CẦU NẠP XU MỚI TỪ MBBANK 0986019623 ĐANG CHỜ DUYỆT</strong></span>
             </div>
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('orders')" 
-              class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 shrink-0 transition active:scale-95"
+              class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-2xs cursor-pointer flex items-center gap-1.5 shrink-0 transition"
             >
               <span>Vào Duyệt Ngay</span>
               <span>→</span>
@@ -443,17 +434,17 @@
           </div>
 
           <!-- ==================== THANH TAB ĐIỀU HƯỚNG NGANG ==================== -->
-          <div class="px-5 pt-3 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center gap-2 overflow-x-auto shrink-0">
+          <div class="px-5 pt-3 border-b border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] flex items-center gap-2 overflow-x-auto shrink-0">
             <!-- Tab 1: Giá & gói -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('pricing')" 
               id="adminTabBtn-pricing"
-              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'pricing' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'pricing' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
               <span>Giá & gói</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold">${products.length}</span>
+              <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold tabular-nums">${products.length}</span>
             </button>
 
             <!-- Tab 2: Thanh toán VietQR & Duyệt nạp xu -->
@@ -461,12 +452,12 @@
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('orders')" 
               id="adminTabBtn-orders"
-              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'orders' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'orders' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               <span>Thanh toán & Duyệt Nạp Xu</span>
-              <span class="px-2 py-0.5 rounded-md ${pendingTopupsCount > 0 ? 'bg-amber-500 text-white font-extrabold animate-pulse shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold'} text-[10px]" id="adminOrderTabBadge">
-                ${orders.length} đơn${pendingTopupsCount > 0 ? ` • ${pendingTopupsCount} chờ duyệt` : ''}
+              <span class="px-2 py-0.5 rounded-md tabular-nums ${pendingTopupsCount > 0 ? 'bg-amber-500 text-white font-extrabold shadow-2xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold'} text-[10px]" id="adminOrderTabBadge">
+                ${orders.length} đơn${pendingTopupsCount > 0 ? ` · ${pendingTopupsCount} chờ duyệt` : ''}
               </span>
             </button>
 
@@ -475,7 +466,7 @@
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('vietqr')" 
               id="adminTabBtn-vietqr"
-              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'vietqr' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'vietqr' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
               <span>Cấu hình VietQR</span>
@@ -486,7 +477,7 @@
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('vouchers')" 
               id="adminTabBtn-vouchers"
-              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'vouchers' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'vouchers' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 12 20 22 4 22 4 12" />
@@ -496,7 +487,7 @@
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
               </svg>
               <span>Mã quà tặng & Giảm giá</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold" id="adminVoucherTabBadge">${vouchers.length}</span>
+              <span class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-semibold tabular-nums" id="adminVoucherTabBadge">${vouchers.length}</span>
             </button>
 
             <!-- Tab 5: Quản lý khách & Hẹn lịch (Excel) -->
@@ -504,7 +495,7 @@
               type="button" 
               onclick="window.ShopVietViews.admin.switchTab('schedules')" 
               id="adminTabBtn-schedules"
-              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${currentActiveTab === 'schedules' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'schedules' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -514,12 +505,12 @@
                 <path d="M15 3v18" />
               </svg>
               <span>Hẹn lịch khách (Excel)</span>
-              <span class="px-1.5 py-0.2 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-[10px] text-emerald-700 dark:text-emerald-300 font-bold" id="adminScheduleTabBadge">${schedules.length}</span>
+              <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300 font-bold tabular-nums" id="adminScheduleTabBadge">${schedules.length}</span>
             </button>
           </div>
 
           <!-- ==================== BODY CONTENT THEO TAB ==================== -->
-          <div id="adminTabContent" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/50 dark:bg-slate-950/50">
+          <div id="adminTabContent" class="flex-1 overflow-y-auto p-4 sm:p-6 bg-[#F7F8FA] dark:bg-[#090B10]">
             ${renderTabBody(currentActiveTab)}
           </div>
 
@@ -555,37 +546,34 @@
     return `
       <div class="space-y-5">
         
-        <!-- Toolbar Phía Trên: Nút Thêm Sản Phẩm Mới & Ô Tìm Kiếm -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <!-- Toolbar Phía Trên -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm">
           
           <div class="flex items-center gap-2">
-            <!-- Nút + Thêm sản phẩm mới theo đúng yêu cầu đề bài -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openProductModal(null)" 
-              class="bg-indigo-600 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm hover:bg-indigo-700 flex items-center gap-1.5 shadow-sm transition-colors shrink-0"
+              class="bg-[#0071E3] text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm hover:bg-[#0062C4] flex items-center gap-1.5 shadow-sm transition-colors shrink-0 cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
               <span>Thêm sản phẩm mới</span>
             </button>
 
-            <!-- Nút Khôi phục dữ liệu gốc -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultProducts()" 
               title="Khôi phục danh sách sản phẩm mẫu ban đầu"
-              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition"
+              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-medium transition cursor-pointer"
             >
               Khôi phục mẫu
             </button>
           </div>
 
-          <!-- Ô Tìm kiếm sản phẩm -->
           <div class="relative flex-1 max-w-sm">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -594,17 +582,17 @@
               id="adminProductSearchInput" 
               oninput="window.ShopVietViews.admin.filterProductTable(this.value)" 
               placeholder="Tìm kiếm sản phẩm theo tên, danh mục..." 
-              class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+              class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
             >
           </div>
 
         </div>
 
-        <!-- Bảng Danh Sách Sản Phẩm Trực Quan -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
+        <!-- Bảng Danh Sách Sản Phẩm -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+              <thead class="bg-slate-50 dark:bg-[#090B10] text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-900/10 dark:border-white/10">
                 <tr>
                   <th class="py-3 px-3.5 w-16 text-center">ẢNH / ICON</th>
                   <th class="py-3 px-4">TÊN SẢN PHẨM</th>
@@ -616,15 +604,15 @@
                   <th class="py-3 px-4 text-right">THAO TÁC</th>
                 </tr>
               </thead>
-              <tbody id="adminProductTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/80">
-                ${products.length > 0 ? products.map(renderProductTableRow).join('') : '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Toàn bộ sản phẩm đã được xóa sạch hoàn toàn khỏi hệ thống (v1.0.4).</td></tr>'}
+              <tbody id="adminProductTableBody" class="divide-y divide-slate-900/5 dark:divide-white/5">
+                ${products.length > 0 ? products.map(renderProductTableRow).join('') : '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Toàn bộ sản phẩm đã được xóa sạch khỏi hệ thống (v1.0.4).</td></tr>'}
               </tbody>
             </table>
           </div>
 
           ${products.length === 0 ? `
             <div class="py-12 text-center text-slate-400 text-sm">
-              Chưa có sản phẩm nào. Hãy bấm "+ Thêm sản phẩm mới" để bắt đầu!
+              Chưa có sản phẩm nào. Hãy bấm "+ Thêm sản phẩm mới" để bắt đầu.
             </div>
           ` : ''}
         </div>
@@ -637,80 +625,72 @@
   function renderProductTableRow(prod) {
     const iconSvg = (window.ShopVietData && typeof window.ShopVietData.getBrandIcon === 'function') 
       ? window.ShopVietData.getBrandIcon(prod.iconType || 'gemini') 
-      : `<svg class="w-5 h-5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/></svg>`;
+      : `<svg class="w-5 h-5 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/></svg>`;
 
     let statusBadge = '';
     if (prod.status === 'out_of_stock' || prod.stock <= 0) {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">Hết hàng</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">Hết hàng</span>`;
     } else if (prod.status === 'low_stock' || prod.stock <= 5) {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">Sắp hết</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">Sắp hết</span>`;
     } else {
-      statusBadge = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">Còn hàng</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">Còn hàng</span>`;
     }
 
     return `
-      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors group">
-        <!-- ẢNH / ICON -->
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors group">
         <td class="py-3 px-3.5 text-center">
-          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-2 mx-auto border border-slate-200 dark:border-slate-700 shadow-sm">
+          <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-[#090B10] flex items-center justify-center p-2 mx-auto border border-slate-900/10 dark:border-white/10">
             ${iconSvg}
           </div>
         </td>
 
-        <!-- TÊN SẢN PHẨM -->
         <td class="py-3 px-4">
-          <div class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">${prod.name}</div>
-          <div class="text-[11px] text-slate-500 flex items-center gap-2 mt-0.5">
+          <div class="font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#0071E3] dark:group-hover:text-[#3B9EFF] transition-colors">${prod.name}</div>
+          <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5">
             <span>ID: <code class="font-mono text-slate-400">${prod.id}</code></span>
-            ${prod.badge ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${prod.badgeColor || 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'} shadow-xs inline-block">${prod.badge}</span>` : ''}
+            ${prod.badge ? `<span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/20 inline-block">${prod.badge}</span>` : ''}
           </div>
         </td>
 
-        <!-- DANH MỤC -->
         <td class="py-3 px-3.5">
-          <span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
+          <span class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-700 dark:text-slate-300">
             ${prod.tag || 'AI Tool'}
           </span>
         </td>
 
-        <!-- GIÁ BÁN -->
-        <td class="py-3 px-3.5 font-bold text-indigo-600 dark:text-indigo-400">
+        <td class="py-3 px-3.5 font-bold text-[#0071E3] dark:text-[#3B9EFF] tabular-nums">
           ${formatVND(prod.price)}
         </td>
 
-        <!-- GIÁ GỐC -->
-        <td class="py-3 px-3.5 text-slate-400 line-through text-xs">
+        <td class="py-3 px-3.5 text-slate-400 line-through text-xs tabular-nums">
           ${formatVND(prod.oldPrice || prod.price * 2)}
         </td>
 
-        <!-- TỒN KHO -->
-        <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-200">
+        <td class="py-3 px-3 text-center font-bold text-slate-800 dark:text-slate-200 tabular-nums">
           ${prod.stock}
         </td>
 
-        <!-- TRẠNG THÁI -->
         <td class="py-3 px-3 text-center">
           ${statusBadge}
         </td>
 
-        <!-- THAO TÁC -->
         <td class="py-3 px-4 text-right">
           <div class="flex items-center justify-end gap-1.5">
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openProductModal('${prod.id}')" 
-              class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition flex items-center gap-1"
+              class="px-2.5 py-1.5 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
             >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
               <span>Sửa</span>
             </button>
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.deleteProduct('${prod.id}')" 
-              class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-semibold transition"
+              class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-semibold transition cursor-pointer"
               title="Xóa sản phẩm"
             >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
           </div>
         </td>
@@ -735,58 +715,57 @@
         
         <!-- Thống Kê 3 Khối -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             </div>
             <div>
               <div class="text-xs font-medium text-slate-500">Tổng Đơn Hàng</div>
-              <div class="text-xl font-black text-slate-900 dark:text-white mt-0.5">${orders.length} đơn</div>
+              <div class="text-xl font-black text-slate-900 dark:text-white mt-0.5 tabular-nums">${orders.length} đơn</div>
             </div>
           </div>
 
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
               <div class="text-xs font-medium text-slate-500">Đã Hoàn Tất</div>
-              <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${completedCount} đơn</div>
+              <div class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 tabular-nums">${completedCount} đơn</div>
             </div>
           </div>
 
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
               <div class="text-xs font-medium text-slate-500">Chờ Duyệt Giao Dịch</div>
-              <div class="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${pendingReviewCount} đơn</div>
+              <div class="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5 tabular-nums">${pendingReviewCount} đơn</div>
             </div>
           </div>
         </div>
 
-        <!-- KHU VỰC 1: TRẠM THÔNG BÁO ĐẨY NTFY (ZERO-CONFIG MOBILE PUSH) -->
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-900 dark:to-slate-900/90 rounded-2xl p-4 sm:p-5 border border-amber-200/80 dark:border-amber-900/40 shadow-sm">
+        <!-- KHU VỰC 1: TRẠM THÔNG BÁO ĐẨY NTFY -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl p-4 sm:p-5 border border-amber-500/25 shadow-2xs">
           <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-start gap-3">
-              <div class="w-10 h-10 rounded-xl bg-[#8A5F26] text-white flex items-center justify-center shrink-0 shadow-sm">
-                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <div class="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
               </div>
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="font-bold text-slate-900 dark:text-white text-sm">Trạm Thông Báo Đẩy Điện Thoại (ntfy.sh)</h4>
-                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                     Realtime Active
                   </span>
                 </div>
                 <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
-                  Mỗi khi có khách nạp xu hoặc đặt mua skill, máy điện thoại của anh Thái sẽ rung chuông ngay tức khắc!
+                  Mỗi khi có khách nạp xu hoặc đặt mua skill, thiết bị di động của admin sẽ nhận thông báo ngay lập tức.
                 </p>
-                <div class="flex items-center gap-2 mt-2 text-[11px] font-mono text-amber-800 dark:text-amber-300">
+                <div class="flex items-center gap-2 mt-2 text-[11px] font-mono text-amber-700 dark:text-amber-300">
                   <span>Topic cá nhân:</span>
-                  <code class="px-2 py-0.5 rounded-md bg-white/80 dark:bg-slate-800 border border-amber-200 dark:border-amber-800/60 font-bold">buithai_studio_0986019623</code>
+                  <code class="px-2 py-0.5 rounded-md bg-[#F7F8FA] dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 font-bold">buithai_studio_0986019623</code>
                 </div>
               </div>
             </div>
@@ -795,72 +774,72 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.testNtfyNotification && window.ShopVietViews.admin.testNtfyNotification()"
-                class="flex-1 md:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-[#8A5F26] hover:bg-[#704B2A] shadow-sm transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                class="flex-1 md:flex-initial px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                <span>🔔 Bắn Thông Báo Thử</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span>Bắn Thông Báo Thử</span>
               </button>
               <a 
                 href="https://ntfy.sh/buithai_studio_0986019623" 
                 target="_blank" 
-                class="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-50 border border-slate-200 dark:border-slate-700 shadow-xs transition flex items-center justify-center gap-1.5"
+                class="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-[#F7F8FA] dark:bg-[#090B10] hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-900/10 dark:border-white/10 shadow-2xs transition flex items-center justify-center gap-1.5"
                 title="Mở ntfy.sh để đăng ký nhận thông báo trên điện thoại hoặc trình duyệt"
               >
-                <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                 <span>Mở App ntfy</span>
               </a>
             </div>
           </div>
         </div>
 
-        <!-- KHU VỰC 2: DUYỆT NẠP TIỀN XU TECHCOMBANK VIETQR (FIREBASE CLOUD SYNC) -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2">
+        <!-- KHU VỰC 2: DUYỆT NẠP TIỀN XU MBBANK VIETQR -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="p-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2.5">
-              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
-                💰
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10m-3-7h6m-6 4h6"/></svg>
               </div>
               <div>
                 <h4 class="font-bold text-slate-900 dark:text-white text-sm">Duyệt Yêu Cầu Nạp Xu MBBank 0986019623 (Firebase Cloud)</h4>
-                <span class="text-xs text-slate-500">Khách chuyển khoản VietQR xong, anh Thái bấm Duyệt để kích hoạt xu</span>
+                <span class="text-xs text-slate-500">Khách chuyển khoản VietQR xong, bấm Duyệt để kích hoạt xu</span>
               </div>
             </div>
             
             <!-- Form nạp xu nhanh cho khách -->
             <div class="flex items-center gap-2 flex-wrap">
-              <input type="text" id="adminManualCoinEmail" placeholder="Email khách..." class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-40 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-              <input type="number" id="adminManualCoinAmount" placeholder="Số xu..." value="100000" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white w-24 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <input type="text" id="adminManualCoinEmail" placeholder="Email khách..." class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] text-slate-900 dark:text-white w-40 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+              <input type="number" id="adminManualCoinAmount" placeholder="Số xu..." value="100000" class="px-2.5 py-1.5 text-xs rounded-lg border border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] text-slate-900 dark:text-white w-24 focus:outline-none focus:ring-1 focus:ring-emerald-500 tabular-nums">
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.manualAddCoins && window.ShopVietViews.admin.manualAddCoins()"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition cursor-pointer"
               >
                 + Cộng Xu
               </button>
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.replayPendingCredits && window.ShopVietViews.admin.replayPendingCredits()"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition cursor-pointer"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-[#0071E3] hover:bg-[#0062C4] shadow-2xs transition cursor-pointer"
                 title="Các khoản tiền đã vào nhưng chưa cộng được Xu (Firestore lỗi/hết hạn mức) — bấm để cộng lại vào ví"
               >
-                ⏳ Khoản chờ cộng
+                Khoản chờ cộng
               </button>
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshData && window.ShopVietViews.admin.refreshData()"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-100/90 dark:bg-amber-950/80 hover:bg-amber-200 border border-amber-300/80 transition flex items-center gap-1 cursor-pointer"
+                class="px-3 py-1.5 rounded-lg text-xs font-bold text-amber-700 dark:text-amber-300 bg-amber-500/10 hover:bg-amber-500/15 border border-amber-500/25 transition flex items-center gap-1 cursor-pointer"
                 title="Đồng bộ danh sách yêu cầu nạp mới nhất từ Cloud"
               >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                <span>🔄 Làm mới</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                <span>Làm mới</span>
               </button>
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.promptBanUser && window.ShopVietViews.admin.promptBanUser()"
-                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 border border-slate-700 shadow-xs transition flex items-center gap-1 cursor-pointer"
+                class="px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 border border-slate-700 shadow-2xs transition flex items-center gap-1 cursor-pointer"
                 title="Khóa/Ban tài khoản bất kỳ"
               >
-                <span>🚫 Khóa Email</span>
+                <span>Khóa Email</span>
               </button>
             </div>
           </div>
@@ -874,15 +853,15 @@
               if (topups.length === 0) {
                 return `
                   <div class="py-6 text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-1.5">
-                    <svg class="w-7 h-7 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                    <span>Hiện chưa có yêu cầu nạp xu nào mới. Khi khách quét mã VietQR nạp tiền, danh sách sẽ hiện ở đây để anh duyệt!</span>
+                    <svg class="w-7 h-7 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                    <span>Hiện chưa có yêu cầu nạp xu nào mới. Khi khách quét mã VietQR nạp tiền, danh sách sẽ hiện ở đây để duyệt.</span>
                   </div>
                 `;
               }
               return `
                 <div class="overflow-x-auto">
                   <table class="w-full text-xs text-left">
-                    <thead class="text-slate-400 uppercase font-bold border-b border-slate-100 dark:border-slate-800 pb-2">
+                    <thead class="text-slate-400 uppercase font-bold border-b border-slate-900/10 dark:border-white/10 pb-2">
                       <tr>
                         <th class="py-2 px-2">MÃ YÊU CẦU</th>
                         <th class="py-2 px-2">KHÁCH HÀNG</th>
@@ -892,21 +871,20 @@
                         <th class="py-2 px-2 text-right">THAO TÁC</th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody class="divide-y divide-slate-900/5 dark:divide-white/5">
                       ${topups.map(function(t) {
-                        const isPending = t.status === 'pending_approval';
                         return `
-                          <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                          <tr class="hover:bg-slate-50/60 dark:hover:bg-white/[0.02]">
                             <td class="py-2.5 px-2 font-mono font-bold text-slate-900 dark:text-white">${t.id}</td>
                             <td class="py-2.5 px-2">
                               <div class="font-bold text-slate-900 dark:text-white">${t.userName || t.userEmail}</div>
                               <div class="text-[10px] text-slate-400 font-mono">${t.userEmail}</div>
                             </td>
-                            <td class="py-2.5 px-2 font-bold text-emerald-600 dark:text-emerald-400">+${(t.amount || 0).toLocaleString('vi-VN')} Xu</td>
+                            <td class="py-2.5 px-2 font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">+${(t.amount || 0).toLocaleString('vi-VN')} Xu</td>
                             <td class="py-2.5 px-2 font-mono text-[11px] text-slate-600 dark:text-slate-300">${t.memo || 'NAP TIEN'}</td>
                             <td class="py-2.5 px-2">
-                              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${t.status === 'completed' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-rose-50 text-rose-600 border border-rose-200'}">
-                                ${t.status === 'completed' ? '✅ SePay Tự Động' : '✕ Đã từ chối'}
+                              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${t.status === 'completed' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 border border-rose-500/20'}">
+                                ${t.status === 'completed' ? 'SePay Tự Động' : 'Đã từ chối'}
                               </span>
                             </td>
                             <td class="py-2.5 px-2 text-right">
@@ -914,18 +892,18 @@
                                 <button 
                                   type="button" 
                                   onclick="window.ShopVietViews.admin.approveTopupManually('${t.id}', '${t.userEmail}', ${t.amount || 0})"
-                                  class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs transition cursor-pointer flex items-center gap-1"
+                                  class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-2xs transition cursor-pointer flex items-center gap-1"
                                   title="Duyệt và cộng Xu ngay lập tức cho tài khoản này"
                                 >
-                                  <span>⚡ Duyệt & Cộng Xu</span>
+                                  <span>Duyệt & Cộng Xu</span>
                                 </button>
                                 <button 
                                   type="button" 
                                   onclick="window.ShopVietViews.admin.banUserFromTopup && window.ShopVietViews.admin.banUserFromTopup('${t.userEmail}', '${t.id}')"
-                                  class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 border border-rose-200 transition cursor-pointer"
+                                  class="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950 border border-rose-200 dark:border-rose-900/40 transition cursor-pointer"
                                   title="Khóa tài khoản này"
                                 >
-                                  🚫 Khóa
+                                  Khóa
                                 </button>
                               </div>
                             </td>
@@ -941,8 +919,8 @@
         </div>
 
         <!-- Bảng Danh Sách Đơn Hàng -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2">
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="p-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
             <div>
               <h4 class="font-bold text-slate-900 dark:text-white text-sm">Danh Sách Đơn Hàng VietQR Mới Nhất</h4>
               <span class="text-xs text-slate-500">Đồng bộ tự động từ hệ thống thanh toán</span>
@@ -952,30 +930,30 @@
                 type="button" 
                 onclick="window.ShopVietViews.admin.refreshOrdersTab && window.ShopVietViews.admin.refreshOrdersTab()" 
                 id="adminRefreshOrdersBtn"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:text-indigo-400 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800 shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] hover:bg-[#0071E3]/15 border border-[#0071E3]/25 shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
                 title="Bấm để tải lại đơn hàng mới nhất tức thì"
               >
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
                 <span>Làm mới đơn hàng</span>
               </button>
               <button 
                 type="button" 
                 onclick="window.requestAdminNotificationPermission && window.requestAdminNotificationPermission(true)" 
                 id="adminPushNotifToggleBtn"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800'}"
+                class="px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25' : 'bg-[#0071E3]/10 text-[#0071E3] hover:bg-[#0071E3]/15 dark:text-[#3B9EFF] border border-[#0071E3]/25'}"
                 title="Bật/Kiểm tra thông báo PWA trên màn hình khóa iPhone (iOS 16.4+) và Desktop"
               >
-                <span>🔔</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                 <span id="adminPushNotifStatusText">${typeof Notification !== 'undefined' && Notification.permission === 'granted' ? 'Thông báo iPhone: Đang bật' : 'Bật Thông Báo iPhone'}</span>
               </button>
               <button 
                 type="button" 
                 onclick="window.testAdminPushNotification && window.testAdminPushNotification()" 
                 id="adminPushNotifTestBtn"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500 text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-600 text-white hover:bg-amber-700 shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
                 title="Bấm để kiểm tra iPhone nhận thông báo tức thì trên màn hình khóa"
               >
-                <span>⚡</span>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 <span>Thử nghiệm thông báo iPhone</span>
               </button>
             </div>
@@ -983,7 +961,7 @@
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+              <thead class="bg-[#F7F8FA] dark:bg-[#090B10] text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-900/10 dark:border-white/10">
                 <tr>
                   <th class="py-3 px-4">MÃ ĐƠN</th>
                   <th class="py-3 px-3.5">NGÀY TẠO</th>
@@ -995,7 +973,7 @@
                   <th class="py-3 px-4 text-right">THAO TÁC</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80">
+              <tbody class="divide-y divide-slate-900/5 dark:divide-white/5">
                 ${orders.length > 0 ? orders.map(renderOrderTableRow).join('') : `
                   <tr>
                     <td colspan="8" class="py-12 text-center text-slate-400">Chưa có đơn hàng nào phát sinh</td>
@@ -1025,14 +1003,14 @@
     const isCompleted = order.status === 'completed';
 
     return `
-      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors">
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors">
         <!-- MÃ ĐƠN -->
-        <td class="py-3 px-4 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+        <td class="py-3 px-4 font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF]">
           ${code}
         </td>
 
         <!-- NGÀY TẠO -->
-        <td class="py-3 px-3.5 text-xs text-slate-500">
+        <td class="py-3 px-3.5 text-xs text-slate-500 tabular-nums">
           ${dateStr}
         </td>
 
@@ -1053,33 +1031,26 @@
         </td>
 
         <!-- SỐ TIỀN -->
-        <td class="py-3 px-3.5 font-bold text-slate-900 dark:text-white">
+        <td class="py-3 px-3.5 font-bold text-slate-900 dark:text-white tabular-nums">
           ${formatVND(amount)}
         </td>
 
         <!-- TRẠNG THÁI -->
         <td class="py-3 px-3 text-center">
           ${order.status === 'completed' ? `
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/50">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              ✓ Hoàn tất
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 dark:text-emerald-400">
+              Hoàn tất
             </span>
           ` : order.status === 'rejected' ? `
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/50">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-              ✕ Đã từ chối
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20 dark:text-rose-400">
+              Đã từ chối
             </span>
           ` : order.status === 'pending_review' ? `
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 backdrop-blur-xs shadow-xs">
-              <svg class="w-3.5 h-3.5 animate-[spin_3s_linear_infinite]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10" stroke-width="2" stroke-dasharray="4 2"/>
-                <polyline points="12 6 12 12 15 14" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/25">
               <span>Chờ duyệt</span>
             </span>
           ` : `
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/50">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-700 border border-amber-500/20 dark:text-amber-400">
               Chờ thanh toán
             </span>
           `}
@@ -1090,9 +1061,9 @@
           <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.viewBillModal('${code}', '${amount}')" 
-                class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                class="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0071E3] dark:text-[#3B9EFF] hover:underline cursor-pointer"
           >
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
             <span>Xem bill</span>
           </button>
         </td>
@@ -1104,30 +1075,30 @@
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.openDeliveryModal('${code}')" 
-                class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1 cursor-pointer"
+                class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer"
               >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>Duyệt đơn</span>
               </button>
               ${order.status !== 'rejected' ? `
                 <button 
                   type="button" 
                   onclick="window.ShopVietViews.admin.rejectOrder('${code}')" 
-                  class="px-2.5 py-1.5 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800 font-bold text-xs shadow-sm transition flex items-center gap-1 cursor-pointer"
+                  class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 text-rose-600 border border-rose-500/20 hover:bg-rose-500/15 dark:text-rose-300 font-bold text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer"
                   title="Từ chối đơn hàng & hoàn trả lại số lượng vào kho"
                 >
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                  <span>✕ Từ chối</span>
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <span>Từ chối</span>
                 </button>
               ` : ''}
             ` : `
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.openDeliveryModal('${code}')" 
-                class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs shadow-sm transition flex items-center gap-1 cursor-pointer" 
+                class="px-2.5 py-1.5 rounded-lg bg-[#0071E3] hover:bg-[#0062C4] text-white font-medium text-xs shadow-2xs transition flex items-center gap-1 cursor-pointer" 
                 title="Sửa link bản quyền riêng hoặc gửi lại tin nhắn dặn dò"
               >
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 <span>Tùy chỉnh gửi link</span>
               </button>
             `}
@@ -1135,9 +1106,9 @@
               type="button" 
               onclick="window.ShopVietViews.admin.deleteOrder('${order.id || code}')" 
               title="Xóa đơn hàng" 
-              class="p-2 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-xl transition-all cursor-pointer shrink-0 ml-1.5"
+              class="p-2 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-xl transition cursor-pointer shrink-0 ml-1.5"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
             </button>
           </div>
           ${order.customDeliveryLink ? `
@@ -1165,23 +1136,22 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
           
           <!-- Cột Trái: Form Chỉnh Sửa Thông Tin Ngân Hàng -->
-          <div class="md:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="md:col-span-7 bg-white dark:bg-[#111520] p-6 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm space-y-4">
             <div>
               <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 <span>Cấu hình tài khoản nhận tiền VietQR</span>
               </h3>
-              <p class="text-xs text-slate-500 mt-1">Thông tin này sẽ được gắn tự động vào mã QR tạo ra khi khách bấm Đặt Hàng.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Thông tin này sẽ được gắn tự động vào mã QR tạo ra khi khách bấm Đặt Hàng.</p>
             </div>
 
             <form id="adminVietQRForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveVietQRSettings();" class="space-y-4 pt-2">
               
-              <!-- Chọn Ngân Hàng -->
               <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Ngân hàng thụ hưởng</label>
                 <select 
                   id="adminVietQRBank" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-medium"
                   onchange="window.ShopVietViews.admin.updateQRPreview()"
                 >
                   ${SUPPORTED_BANKS.map(b => `
@@ -1190,7 +1160,6 @@
                 </select>
               </div>
 
-              <!-- Số Tài Khoản (STK) -->
               <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Số tài khoản (STK)</label>
                 <input 
@@ -1198,12 +1167,11 @@
                   id="adminVietQRAccountNumber" 
                   value="${config.accountNumber}" 
                   placeholder="Ví dụ: 00223366888" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono font-bold"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-mono font-bold tabular-nums"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
               </div>
 
-              <!-- Tên Chủ Tài Khoản -->
               <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tên chủ tài khoản (In hoa không dấu)</label>
                 <input 
@@ -1211,12 +1179,11 @@
                   id="adminVietQRAccountName" 
                   value="${config.accountName}" 
                   placeholder="Ví dụ: NGUYEN VAN HUY" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] uppercase font-semibold"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3] uppercase font-semibold"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
               </div>
 
-              <!-- Tiền Tố Lời Nhắn Chuyển Khoản -->
               <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tiền tố cú pháp chuyển khoản</label>
                 <input 
@@ -1224,19 +1191,18 @@
                   id="adminVietQRMemoPrefix" 
                   value="${config.memoPrefix}" 
                   placeholder="Ví dụ: THAIBUI" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono font-bold uppercase"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-mono font-bold uppercase"
                   oninput="window.ShopVietViews.admin.updateQRPreview()"
                 >
                 <span class="text-[11px] text-slate-400 mt-1 block">Ví dụ tạo nội dung: <code>${config.memoPrefix} DJ202688</code></span>
               </div>
 
-              <!-- Nút Lưu -->
               <div class="pt-2">
                 <button 
                   type="submit" 
-                  class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-amber-900/15 transition flex items-center justify-center gap-2"
+                  class="w-full py-2.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                   <span>Lưu Cấu Hình VietQR</span>
                 </button>
               </div>
@@ -1245,10 +1211,10 @@
           </div>
 
           <!-- Cột Phải: Live VietQR Preview -->
-          <div class="md:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Xem Trước Mã VietQR Live</span>
+          <div class="md:col-span-5 bg-white dark:bg-[#111520] p-6 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Xem Trước Mã VietQR Live</span>
             
-            <div class="p-3 bg-white rounded-2xl shadow-lg border border-slate-200 max-w-[240px] w-full">
+            <div class="p-3 bg-white rounded-2xl shadow-md border border-slate-900/10 max-w-[240px] w-full">
               <img 
                 id="adminVietQRPreviewImg" 
                 src="${qrPreviewUrl}" 
@@ -1258,24 +1224,26 @@
               >
             </div>
 
-            <div class="text-xs text-slate-500 space-y-1">
+            <div class="text-xs text-slate-500 dark:text-slate-400 space-y-1">
               <div class="font-bold text-slate-900 dark:text-white" id="adminPreviewBankTitle">${config.bankName}</div>
-              <div class="font-mono" id="adminPreviewSTK">STK: ${config.accountNumber}</div>
-              <div class="font-semibold text-indigo-600 dark:text-indigo-400" id="adminPreviewOwner">${config.accountName}</div>
+              <div class="font-mono tabular-nums" id="adminPreviewSTK">STK: ${config.accountNumber}</div>
+              <div class="font-semibold text-[#0071E3] dark:text-[#3B9EFF]" id="adminPreviewOwner">${config.accountName}</div>
             </div>
           </div>
 
         </div>
 
-        <!-- ==================== THẺ CẤU HÌNH SEPAY WEBHOOK TỰ ĐỘNG 24/7 ==================== -->
-        <div class="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 p-6 rounded-2xl border border-emerald-500/30 shadow-sm space-y-4">
+        <!-- THẺ CẤU HÌNH SEPAY WEBHOOK TỰ ĐỘNG 24/7 -->
+        <div class="bg-emerald-50/70 dark:bg-emerald-950/20 p-6 rounded-2xl border border-emerald-500/25 shadow-sm space-y-4">
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2.5">
-              <span class="w-9 h-9 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-lg font-bold shadow-xs">⚡</span>
+              <span class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </span>
               <div>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2 flex-wrap">
                   <span>Cổng Thanh Toán SePay Tự Động 24/7 (sepay.vn)</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider">🟢 Đang Hoạt Động</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold uppercase tracking-wider border border-emerald-500/20">Đang Hoạt Động</span>
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tự động nhận diện biến động số dư MBBank 0986019623 và duyệt cộng Xu cho khách trong 2-5 giây.</p>
               </div>
@@ -1283,28 +1251,29 @@
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.testSepayWebhook && window.ShopVietViews.admin.testSepayWebhook()"
-              class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs cursor-pointer flex items-center gap-1.5 transition active:scale-95"
+              class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer flex items-center gap-1.5 transition active:scale-95"
             >
-              <span>🧪 Test Giả Lập SePay</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 3h6"/><path d="M10 3v6l-4 8a2 2 0 0 0 1.8 3h8.4a2 2 0 0 0 1.8-3l-4-8V3"/></svg>
+              <span>Kiểm tra cấu hình SePay</span>
             </button>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            <div class="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
+            <div class="bg-white dark:bg-[#111520] p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
               <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">1. URL Webhook (Dán vào SePay.vn)</span>
               <div class="flex items-center gap-2">
-                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-emerald-700 dark:text-emerald-300 flex-1 break-all select-all">${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay</code>
-                <button type="button" onclick="navigator.clipboard.writeText('${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay'); alert('Đã sao chép URL Webhook SePay!');" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] cursor-pointer shrink-0">Copy</button>
+                <code class="px-2 py-1 bg-slate-100 dark:bg-[#090B10] rounded font-mono text-[11px] text-emerald-700 dark:text-emerald-300 flex-1 break-all select-all">${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay</code>
+                <button type="button" onclick="navigator.clipboard.writeText('${(window.location.origin || 'https://www.promptmmo.store')}/api/sepay'); window.ShopVietState && window.ShopVietState.showToast && window.ShopVietState.showToast('Đã sao chép URL Webhook SePay.', 'success');" class="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] cursor-pointer shrink-0">Copy</button>
               </div>
-              <p class="text-[11px] text-slate-500">Vào SePay.vn &rarr; Webhooks &rarr; Thêm Webhook &rarr; Dán URL trên và chọn Sự kiện: <em>Giao dịch chuyển tiền vào</em>.</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Vào SePay.vn &rarr; Webhooks &rarr; Thêm Webhook &rarr; Dán URL trên và chọn Sự kiện: <em>Giao dịch chuyển tiền vào</em>.</p>
             </div>
 
-            <div class="bg-white/80 dark:bg-slate-900/80 p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
+            <div class="bg-white dark:bg-[#111520] p-3.5 rounded-xl border border-emerald-500/20 space-y-1.5">
               <span class="font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block text-[10px]">2. Cấu Trúc Mã QR SePay Động</span>
               <div class="flex items-center gap-2">
-                <code class="px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-mono text-[11px] text-slate-800 dark:text-slate-200 flex-1 truncate select-all">https://qr.sepay.vn/img?acc=0986019623&bank=MBBank...</code>
+                <code class="px-2 py-1 bg-slate-100 dark:bg-[#090B10] rounded font-mono text-[11px] text-slate-800 dark:text-slate-200 flex-1 truncate select-all">https://qr.sepay.vn/img?acc=0986019623&bank=MBBank...</code>
               </div>
-              <p class="text-[11px] text-slate-500">Mã QR nạp xu ở modal đã tự động liên kết chuẩn SePay, giúp app ngân hàng tự điền đúng nội dung và số tiền 100%.</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Mã QR nạp xu ở modal đã tự động liên kết chuẩn SePay, giúp app ngân hàng tự điền đúng nội dung và số tiền 100%.</p>
             </div>
           </div>
         </div>
@@ -1328,12 +1297,11 @@
     return `
       <div class="space-y-5">
         
-        <!-- Thống Kê 4 Khối Thẻ Hiện Đại -->
+        <!-- Thống Kê 4 Khối Thẻ -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <!-- Tổng mã -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 12 20 22 4 22 4 12" />
                 <rect x="2" y="7" width="20" height="5" />
                 <line x1="12" y1="22" x2="12" y2="7" />
@@ -1342,76 +1310,70 @@
               </svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng mã voucher</div>
-              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5" id="adminVoucherTotalCount">${totalCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng mã voucher</div>
+              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5 tabular-nums" id="adminVoucherTotalCount">${totalCount} mã</div>
             </div>
           </div>
 
-          <!-- Sẵn sàng dùng -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Chưa sử dụng</div>
-              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5" id="adminVoucherAvailableCount">${availableCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Chưa sử dụng</div>
+              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 tabular-nums" id="adminVoucherAvailableCount">${availableCount} mã</div>
             </div>
           </div>
 
-          <!-- Đã dùng -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đã sử dụng</div>
-              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5" id="adminVoucherUsedCount">${usedCount} mã</div>
+              <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Đã sử dụng</div>
+              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5 tabular-nums" id="adminVoucherUsedCount">${usedCount} mã</div>
             </div>
           </div>
 
-          <!-- Tổng tiền đã giảm -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng tiền đã giảm</div>
-              <div class="text-lg sm:text-xl font-black text-indigo-600 dark:text-indigo-400 mt-0.5" id="adminVoucherTotalDiscount">${formatVND(totalDiscountGiven)}</div>
+              <div class="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Tổng tiền đã giảm</div>
+              <div class="text-lg sm:text-xl font-black text-[#0071E3] dark:text-[#3B9EFF] mt-0.5 tabular-nums" id="adminVoucherTotalDiscount">${formatVND(totalDiscountGiven)}</div>
             </div>
           </div>
         </div>
 
-        <!-- Toolbar Phía Trên: Nút + Tạo mã mới & Ô Tìm kiếm -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <!-- Toolbar Phía Trên -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm">
           
           <div class="flex items-center gap-2">
-            <!-- Nút + Tạo mã mới -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openVoucherModal()" 
-              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-sm transition-colors shrink-0"
+              class="bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-sm transition-colors shrink-0 cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
               <span>Tạo mã mới</span>
             </button>
 
-            <!-- Nút Nạp mã mặc định mẫu -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultVouchers()" 
               title="Khôi phục mã mẫu nếu rỗng"
-              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition"
+              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-medium transition cursor-pointer"
             >
               Khôi phục mẫu
             </button>
           </div>
 
-          <!-- Ô Tìm kiếm voucher -->
           <div class="relative flex-1 max-w-sm">
-            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -1420,17 +1382,17 @@
               id="adminVoucherSearchInput" 
               oninput="window.ShopVietViews.admin.filterVouchers(this.value)" 
               placeholder="Tìm mã voucher, người dùng, loại mã..." 
-              class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
+              class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white placeholder:text-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-medium"
             >
           </div>
 
         </div>
 
         <!-- Bảng Danh Sách Voucher -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between flex-wrap gap-2">
             <h4 class="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
-              <svg class="w-4 h-4 text-indigo-600 dark:text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 12 20 22 4 22 4 12"/>
                 <rect x="2" y="7" width="20" height="5"/>
                 <line x1="12" y1="22" x2="12" y2="7"/>
@@ -1438,14 +1400,14 @@
                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
               </svg>
               <span>Kho mã quà tặng & giảm giá</span>
-              <span class="text-xs px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-semibold" id="adminVoucherTableBadge">${vouchers.length} mã</span>
+              <span class="text-xs px-2 py-0.5 rounded-md bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] font-semibold tabular-nums" id="adminVoucherTableBadge">${vouchers.length} mã</span>
             </h4>
-            <span class="text-xs text-slate-500">Mã có hiệu lực áp dụng tại trang Đặt hàng & Nạp ví</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400">Mã có hiệu lực áp dụng tại trang Đặt hàng & Nạp ví</span>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm" id="adminVoucherTable">
-              <thead class="bg-slate-50 dark:bg-slate-950/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+              <thead class="bg-slate-50 dark:bg-[#090B10] text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-900/10 dark:border-white/10">
                 <tr>
                   <th class="py-3 px-4">MÃ VOUCHER</th>
                   <th class="py-3 px-3.5">LOẠI MÃ</th>
@@ -1457,13 +1419,13 @@
                   <th class="py-3 px-4 text-right">THAO TÁC</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80" id="adminVoucherTableTbody">
+              <tbody class="divide-y divide-slate-900/5 dark:divide-white/5" id="adminVoucherTableTbody">
                 ${vouchers.length > 0 ? vouchers.map(renderVoucherTableRow).join('') : `
                   <tr>
                     <td colspan="8" class="py-12 text-center text-slate-400">
                       <div class="flex flex-col items-center justify-center gap-2">
                         <svg class="w-10 h-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /></svg>
-                        <span>Chưa có mã voucher nào. Hãy bấm "+ Tạo mã mới" để thêm mã đầu tiên!</span>
+                        <span>Chưa có mã voucher nào. Hãy bấm "+ Tạo mã mới" để thêm mã đầu tiên.</span>
                       </div>
                     </td>
                   </tr>
@@ -1485,62 +1447,55 @@
       ? 'Nạp tiền vào ví' 
       : (isPercent ? 'Giảm theo % đơn hàng' : 'Giảm số tiền cố định (VNĐ)');
     const typeBadge = v.type === 'wallet_gift' 
-      ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+      ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-300 border-sky-200 dark:border-sky-800'
       : (isPercent 
         ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' 
-        : 'bg-amber-50 text-[#8A5F26] dark:bg-amber-950/40 dark:text-[#BE9455] border-amber-200 dark:border-amber-800');
+        : 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border-amber-200 dark:border-amber-800');
 
     const discountText = isPercent ? `-${v.percent || v.value}%` : `-${formatVND(v.value)}`;
 
     return `
-      <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors" data-code="${(v.code || '').toLowerCase()}" data-user="${(v.usedBy || '').toLowerCase()}">
-        <!-- MÃ VOUCHER -->
+      <tr class="hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors" data-code="${(v.code || '').toLowerCase()}" data-user="${(v.usedBy || '').toLowerCase()}">
         <td class="py-3 px-4">
           <div class="flex items-center gap-2">
-            <span class="font-mono font-bold text-sm text-indigo-600 dark:text-indigo-400 px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/60 dark:border-indigo-800/60">${v.code}</span>
+            <span class="font-mono font-bold text-sm text-[#0071E3] dark:text-[#3B9EFF] px-2.5 py-1 rounded-md bg-[#0071E3]/10 border border-[#0071E3]/20">${v.code}</span>
             <button 
               type="button" 
-              onclick="navigator.clipboard.writeText('${v.code}'); window.ShopVietState.showToast('Đã sao chép mã ${v.code}!', 'info');" 
+              onclick="navigator.clipboard.writeText('${v.code}'); window.ShopVietState.showToast('Đã sao chép mã ${v.code}.', 'info');" 
               title="Sao chép mã"
-              class="text-slate-400 hover:text-indigo-600 transition p-1"
+              class="text-slate-400 hover:text-[#0071E3] dark:hover:text-[#3B9EFF] transition p-1 cursor-pointer"
             >
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
           </div>
         </td>
 
-        <!-- LOẠI MÃ -->
         <td class="py-3 px-3.5">
           <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border ${typeBadge}">
             ${typeLabel}
           </span>
         </td>
 
-        <!-- GIÁ TRỊ GIẢM -->
-        <td class="py-3 px-3.5 font-bold text-emerald-600 dark:text-emerald-400 text-sm">
+        <td class="py-3 px-3.5 font-bold text-emerald-600 dark:text-emerald-400 text-sm tabular-nums">
           ${discountText}
         </td>
 
-        <!-- TRẠNG THÁI -->
         <td class="py-3 px-3.5 text-center">
           ${isUsed ? `
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600 dark:bg-white/5 dark:text-slate-400 border border-slate-900/10 dark:border-white/10">
               Đã sử dụng
             </span>
           ` : `
-            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
               Chưa sử dụng
             </span>
           `}
         </td>
 
-        <!-- NGƯỜI ĐÃ DÙNG (EMAIL) -->
         <td class="py-3 px-4">
           ${isUsed && v.usedBy ? `
             <div class="flex items-center gap-1.5">
-              <div class="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
+              <div class="w-5 h-5 rounded-md bg-slate-100 dark:bg-white/10 flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
                 ${v.usedBy.charAt(0).toUpperCase()}
               </div>
               <span class="font-medium text-slate-800 dark:text-slate-200 text-xs">${v.usedBy}</span>
@@ -1551,17 +1506,15 @@
           `}
         </td>
 
-        <!-- ĐƠN HÀNG -->
         <td class="py-3 px-3.5">
           ${v.orderCode ? `
-            <span class="font-mono text-xs font-semibold text-indigo-600 dark:text-indigo-400">${v.orderCode}</span>
+            <span class="font-mono text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">${v.orderCode}</span>
           ` : `
             <span class="text-slate-400">-</span>
           `}
         </td>
 
-        <!-- THỜI GIAN -->
-        <td class="py-3 px-3.5 text-xs text-slate-500">
+        <td class="py-3 px-3.5 text-xs text-slate-500 dark:text-slate-400 tabular-nums">
           ${isUsed && v.usedAt ? `
             <div class="font-medium text-slate-700 dark:text-slate-300">${formatDateTime(v.usedAt)}</div>
             <div class="text-[10px] text-slate-400">Tạo: ${formatDateTime(v.createdAt)}</div>
@@ -1570,15 +1523,14 @@
           `}
         </td>
 
-        <!-- THAO TÁC -->
         <td class="py-3 px-4 text-right">
           <button 
             type="button" 
             onclick="window.ShopVietViews.admin.deleteVoucher('${v.code}')" 
             title="Xóa voucher" 
-            class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition"
+            class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
           </button>
         </td>
       </tr>
@@ -1616,64 +1568,64 @@
     return `
       <div class="space-y-5">
         
-        <!-- Thống Kê 4 Khối Thẻ Hiện Đại -->
+        <!-- Thống Kê 4 Khối Thẻ -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <!-- Tổng khách hẹn lịch -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
-            <div class="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             </div>
             <div>
               <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Tổng khách hẹn lịch</div>
-              <div class="text-lg sm:text-xl font-black text-slate-900 dark:text-white mt-0.5">${schedules.length} khách</div>
+              <div class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-0.5 tabular-nums">${schedules.length} khách</div>
             </div>
           </div>
 
           <!-- Đang hoạt động -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đang sử dụng (>7 ngày)</div>
-              <div class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5">${activeCount} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đang sử dụng (&gt;7 ngày)</div>
+              <div class="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 tabular-nums">${activeCount} khách</div>
             </div>
           </div>
 
           <!-- Sắp hết hạn -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             </div>
             <div>
-              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Sắp hết hạn (≤7 ngày)</div>
-              <div class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5">${expiringCount} khách</div>
+              <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Sắp hết hạn (&le;7 ngày)</div>
+              <div class="text-lg sm:text-xl font-bold text-amber-600 dark:text-amber-400 mt-0.5 tabular-nums">${expiringCount} khách</div>
             </div>
           </div>
 
           <!-- Đã hết hạn -->
-          <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-center gap-3.5">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex items-center gap-3.5">
             <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             </div>
             <div>
               <div class="text-[11px] font-medium text-slate-500 uppercase tracking-wider">Đã hết hạn</div>
-              <div class="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400 mt-0.5">${expiredCount} khách</div>
+              <div class="text-lg sm:text-xl font-bold text-rose-600 dark:text-rose-400 mt-0.5 tabular-nums">${expiredCount} khách</div>
             </div>
           </div>
         </div>
 
-        <!-- Toolbar Phía Trên: Nút + Thêm email khách hàng, Xuất Excel & Ô Tìm kiếm -->
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <!-- Toolbar Phía Trên -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm">
           
           <div class="flex items-center flex-wrap gap-2">
             <!-- Nút + Thêm email khách hàng -->
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.openScheduleModal(null)" 
-              class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors shrink-0"
+              class="bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors shrink-0 cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                 <line x1="12" y1="5" x2="12" y2="19"/>
                 <line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
@@ -1684,10 +1636,10 @@
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.exportSchedulesToExcel()" 
-              class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors shrink-0"
+              class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shadow-sm transition-colors shrink-0 cursor-pointer"
               title="Xuất bảng tính hiện tại ra file CSV tương thích Microsoft Excel"
             >
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                 <polyline points="14 2 14 8 20 8"/>
                 <line x1="12" y1="18" x2="12" y2="12"/>
@@ -1701,7 +1653,7 @@
               type="button" 
               onclick="window.ShopVietViews.admin.resetDefaultSchedules()" 
               title="Khôi phục danh sách hẹn lịch mẫu" 
-              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition shrink-0"
+              class="p-2 sm:px-3 sm:py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors shrink-0 cursor-pointer"
             >
               Khôi phục mẫu
             </button>
@@ -1709,7 +1661,7 @@
 
           <!-- Ô Tìm Kiếm Email khách, Quản lý, Gói -->
           <div class="relative w-full sm:w-72">
-            <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
               <circle cx="11" cy="11" r="8"/>
               <line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
@@ -1718,36 +1670,35 @@
               id="adminScheduleSearchInput"
               oninput="window.ShopVietViews.admin.filterSchedules(this.value)" 
               placeholder="Tìm email khách, slot, gói..." 
-              class="w-full pl-9 pr-4 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] transition-all"
+              class="w-full pl-9 pr-4 py-2 rounded-xl text-xs border border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3] transition-colors"
             >
           </div>
 
         </div>
 
-        <!-- Bảng Tính Excel Thông Minh (Smart Spreadsheet Table) -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-950/50">
+        <!-- Bảng Tính Excel -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-slate-900/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 bg-[#F7F8FA] dark:bg-[#090B10]">
             <div class="flex items-center gap-2">
               <span class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/>
                 </svg>
-                <span>Bảng tính Excel quản lý khách & hẹn lịch slot</span>
+                <span>Bảng tính Excel quản lý khách &amp; hẹn lịch slot</span>
               </span>
-              <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 text-xs font-semibold" id="adminScheduleTableBadge">
+              <span class="px-2 py-0.5 rounded-md bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold tabular-nums" id="adminScheduleTableBadge">
                 ${schedules.length} bản ghi
               </span>
             </div>
-            <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Click trực tiếp vào ô để sửa & ấn nút <b>Lưu</b> (hoặc Enter) để đồng bộ tức thì lên Đám Mây Cloud</span>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400">
+              Click trực tiếp vào ô để sửa &amp; ấn nút <b>Lưu</b> (hoặc Enter) để đồng bộ lên Cloud
             </div>
           </div>
 
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-xs">
               <thead>
-                <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-800/50 text-[11px] text-slate-500 uppercase tracking-wider font-bold">
+                <tr class="border-b border-slate-900/10 dark:border-white/10 bg-[#F7F8FA] dark:bg-[#090B10] text-[11px] text-slate-500 uppercase tracking-wider font-bold">
                   <th class="py-3 px-3 text-center w-12">STT</th>
                   <th class="py-3 px-3.5">Email Khách Hàng</th>
                   <th class="py-3 px-3.5">Email Quản Lý / Slot</th>
@@ -1758,7 +1709,7 @@
                   <th class="py-3 px-3 text-right">Thao Tác</th>
                 </tr>
               </thead>
-              <tbody id="adminScheduleTableTbody" class="divide-y divide-slate-100 dark:divide-slate-800/60">
+              <tbody id="adminScheduleTableTbody" class="divide-y divide-slate-900/5 dark:divide-white/5">
                 ${schedules.length > 0 ? schedules.map((s, idx) => renderScheduleTableRow(s, idx)).join('') : `
                   <tr>
                     <td colspan="8" class="py-12 text-center text-slate-400">Chưa có lịch hẹn khách hàng nào được tạo</td>
@@ -1784,11 +1735,11 @@
 
     let statusBadge = '';
     if (daysLeft > 7) {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Còn ${daysLeft} ngày</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">Còn ${daysLeft} ngày</span>`;
     } else if (daysLeft > 0) {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sắp hết (${daysLeft} ngày)</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800">Sắp hết (${daysLeft} ngày)</span>`;
     } else {
-      statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Đã hết hạn</span>`;
+      statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800">Đã hết hạn</span>`;
     }
 
     const customerEmail = s.customerEmail || 'thaitraicau123@gmail.com';
@@ -1800,7 +1751,7 @@
     return `
       <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors" data-id="${s.id}" data-customer="${customerEmail.toLowerCase()}" data-manager="${managerEmail.toLowerCase()}" data-service="${serviceName.toLowerCase()}" data-notes="${notes.toLowerCase()}">
         <!-- STT -->
-        <td class="py-2.5 px-3 text-center font-mono text-slate-400 font-semibold text-xs">
+        <td class="py-2.5 px-3 text-center font-mono text-slate-400 font-semibold text-xs tabular-nums">
           ${index + 1}
         </td>
 
@@ -1813,7 +1764,7 @@
             placeholder="thaitraicau123@gmail.com"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
             title="Click trực tiếp vào ô để sửa Email Khách Hàng (Enter để Lưu)"
-            class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 dark:text-white focus:outline-none transition-all"
+            class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#0071E3] focus:bg-white dark:focus:bg-[#111520] rounded-lg px-2 py-1 text-xs font-bold text-slate-900 dark:text-white focus:outline-none transition-colors"
           />
           <div class="px-2 text-[10px] text-slate-400 font-medium truncate max-w-[200px]" title="${customerName}">
             ${customerName}
@@ -1829,7 +1780,7 @@
             placeholder="slot1-pro@shopviet.vip"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
             title="Click trực tiếp vào ô để sửa Email Slot (Enter để Lưu)"
-            class="w-full bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 hover:border-indigo-400 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400 focus:outline-none transition-all"
+            class="w-full bg-[#0071E3]/5 border border-[#0071E3]/20 hover:border-[#0071E3]/40 focus:border-[#0071E3] focus:bg-white dark:focus:bg-[#111520] rounded-lg px-2.5 py-1 text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF] focus:outline-none transition-colors"
           />
         </td>
 
@@ -1842,7 +1793,7 @@
             placeholder="Tên gói dịch vụ..."
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
             title="Click trực tiếp vào ô để sửa Gói Dịch Vụ (Enter để Lưu)"
-            class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none transition-all"
+            class="w-full bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#0071E3] focus:bg-white dark:focus:bg-[#111520] rounded-lg px-2 py-1 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none transition-colors"
           />
           ${notes ? `<div class="px-2 text-[10px] text-slate-400 line-clamp-1 italic">${notes}</div>` : ''}
         </td>
@@ -1856,7 +1807,7 @@
             onchange="window.ShopVietViews.admin.updateScheduleDaysLeftBadge('${s.id}')"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
             title="Click để chọn Ngày bắt đầu"
-            class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-1.5 py-1 text-xs font-mono text-slate-600 dark:text-slate-400 focus:outline-none transition-all"
+            class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#0071E3] focus:bg-white dark:focus:bg-[#111520] rounded-lg px-1.5 py-1 text-xs font-mono tabular-nums text-slate-600 dark:text-slate-400 focus:outline-none transition-colors"
           />
         </td>
 
@@ -1869,7 +1820,7 @@
             onchange="window.ShopVietViews.admin.updateScheduleDaysLeftBadge('${s.id}')"
             onkeydown="if(event.key==='Enter') window.ShopVietViews.admin.saveInlineSchedule('${s.id}')"
             title="Click để chọn Ngày hết hạn"
-            class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#8A5F26] focus:bg-white dark:focus:bg-slate-900 rounded-lg px-1.5 py-1 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 focus:outline-none transition-all"
+            class="bg-transparent hover:bg-slate-100/80 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-300 dark:hover:border-slate-700 focus:border-[#0071E3] focus:bg-white dark:focus:bg-[#111520] rounded-lg px-1.5 py-1 text-xs font-mono font-bold tabular-nums text-slate-800 dark:text-slate-200 focus:outline-none transition-colors"
           />
         </td>
 
@@ -1878,7 +1829,7 @@
           ${statusBadge}
         </td>
 
-        <!-- THAO TÁC: NÚT LƯU CLOUD (THAY NÚT BÚT CHÌ) & NÚT XÓA -->
+        <!-- THAO TÁC: NÚT LƯU CLOUD & NÚT XÓA -->
         <td class="py-2 px-3 text-right whitespace-nowrap">
           <div class="flex items-center justify-end gap-1.5">
             <button 
@@ -1886,9 +1837,9 @@
               id="btn-save-sched-${s.id}" 
               onclick="window.ShopVietViews.admin.saveInlineSchedule('${s.id}')" 
               title="Lưu thay đổi dòng này lên Đám mây Cloud (không mất khi reset hoặc đổi máy)" 
-              class="px-2.5 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-800 rounded-lg transition-all flex items-center gap-1 cursor-pointer shadow-xs active:scale-95"
+              class="px-2.5 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-800 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
             >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                 <polyline points="17 21 17 13 7 13 7 21"/>
                 <polyline points="7 3 7 8 15 8"/>
@@ -1899,9 +1850,9 @@
               type="button" 
               onclick="window.ShopVietViews.admin.deleteSchedule('${s.id}')" 
               title="Xóa lịch hẹn" 
-              class="p-1.5 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-lg transition-all"
+              class="p-1.5 text-rose-500 hover:text-rose-700 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-lg transition-colors cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             </button>
           </div>
         </td>
@@ -1931,14 +1882,13 @@
     const notes = schedule ? schedule.notes : '';
 
     return `
-      <div id="adminAddScheduleModal" class="fixed inset-0 z-[65] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden animate-slide-up">
+      <div id="adminAddScheduleModal" class="fixed inset-0 z-[65] bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-lg flex flex-col overflow-hidden animate-slide-up">
           
-          <!-- Header Modal -->
-          <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-950/70">
+          <div class="px-6 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between bg-slate-50 dark:bg-[#090B10]">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md shadow-emerald-600/30">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                   <line x1="16" y1="2" x2="16" y2="6"/>
                   <line x1="8" y1="2" x2="8" y2="6"/>
@@ -1947,23 +1897,21 @@
               </div>
               <div>
                 <h3 class="font-extrabold text-base text-slate-900 dark:text-white">${isEdit ? 'Cập Nhật Lịch Hẹn Khách Hàng' : 'Thêm Email Khách Hàng Vào Bảng Excel'}</h3>
-                <p class="text-xs text-slate-500">${isEdit ? `Mã lịch: ${schedule.id}` : 'Quản lý lịch hẹn slot bản quyền trực tiếp trên bảng tính'}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">${isEdit ? `Mã lịch: ${schedule.id}` : 'Quản lý lịch hẹn slot bản quyền trực tiếp trên bảng tính'}</p>
               </div>
             </div>
 
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.closeScheduleModal()" 
-              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition"
+              class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
-          <!-- Body Form -->
           <form id="scheduleForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveScheduleFromModal('${scheduleId || ''}');" class="p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Email & Tên khách hàng -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Khách Hàng (*)</label>
@@ -1973,7 +1921,7 @@
                   required 
                   value="${customerEmail}"
                   placeholder="thaitraicau123@gmail.com" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
               <div>
@@ -1983,12 +1931,11 @@
                   id="modalSchCustomerName" 
                   value="${customerName}"
                   placeholder="Bùi Thái" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
             </div>
 
-            <!-- Email Quản Lý (Slot) -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Quản Lý Slot (*)</label>
               <input 
@@ -1997,17 +1944,16 @@
                 required 
                 value="${managerEmail}"
                 placeholder="slot1-pro@shopviet.vip hoặc admin-slot@shopviet.vip" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-mono font-semibold text-indigo-600 dark:text-indigo-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-[#0071E3] dark:text-[#3B9EFF] font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >
               <p class="text-[11px] text-slate-400 mt-1">Dùng để phân chia slot quản trị và thông báo khi gia hạn.</p>
             </div>
 
-            <!-- Gói Dịch Vụ -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Gói Dịch Vụ (*)</label>
               <select 
                 id="modalSchService" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-semibold"
               >
                 <option value="[1 Tháng] Gemini Argon 4 Pro + 5TB Drive" ${serviceName.includes('Argon') || serviceName.includes('Gemini') ? 'selected' : ''}>[1 Tháng] Gemini Argon 4 Pro + 5TB Drive</option>
                 <option value="[1 Năm] Gemini Argon 4 Pro + 2TB Google One" ${serviceName.includes('1 Năm] Gemini') ? 'selected' : ''}>[1 Năm] Gemini Argon 4 Pro + 2TB Google One</option>
@@ -2019,7 +1965,6 @@
               </select>
             </div>
 
-            <!-- Ngày bắt đầu & Ngày hết hạn -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ngày Bắt Đầu</label>
@@ -2027,7 +1972,7 @@
                   type="date" 
                   id="modalSchStartDate" 
                   value="${startDate}" 
-                  class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-mono focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white font-mono tabular-nums focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
               <div>
@@ -2037,46 +1982,43 @@
                   id="modalSchExpireDate" 
                   required 
                   value="${expireDate}" 
-                  class="w-full px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-mono font-bold text-indigo-600 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-[#0071E3] dark:text-[#3B9EFF] font-mono font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
             </div>
 
-            <!-- Nút chọn nhanh thời hạn -->
             <div>
-              <span class="block text-[11px] font-bold text-slate-500 mb-1.5">Chọn nhanh thời hạn (tính từ ngày bắt đầu):</span>
+              <span class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1.5">Chọn nhanh thời hạn (tính từ ngày bắt đầu):</span>
               <div class="flex flex-wrap gap-1.5">
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(1)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(3)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+3 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(6)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+6 Tháng</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(12)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+1 Năm</button>
-                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(18)" class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-semibold transition">+18 Tháng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(1)" class="px-2.5 py-1 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition cursor-pointer">+1 Tháng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(3)" class="px-2.5 py-1 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition cursor-pointer">+3 Tháng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(6)" class="px-2.5 py-1 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition cursor-pointer">+6 Tháng</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(12)" class="px-2.5 py-1 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition cursor-pointer">+1 Năm</button>
+                <button type="button" onclick="window.ShopVietViews.admin.setScheduleQuickExpire(18)" class="px-2.5 py-1 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] text-xs font-semibold transition cursor-pointer">+18 Tháng</button>
               </div>
             </div>
 
-            <!-- Ghi Chú -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Ghi Chú</label>
               <textarea 
                 id="modalSchNotes" 
                 rows="2" 
                 placeholder="Khách VIP nâng cấp chính chủ, cần gọi nhắc trước 3 ngày..." 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >${notes}</textarea>
             </div>
 
-            <!-- Footer Buttons -->
-            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2.5">
+            <div class="pt-3 border-t border-slate-900/10 dark:border-white/10 flex items-center justify-end gap-2.5">
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.closeScheduleModal()" 
-                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold transition text-xs"
+                class="px-4 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 font-semibold transition text-xs cursor-pointer"
               >
                 Hủy
               </button>
               <button 
                 type="submit" 
-                class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 shadow-md shadow-emerald-600/20 text-xs"
+                class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition flex items-center gap-1.5 shadow-sm text-xs cursor-pointer"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
@@ -2108,19 +2050,15 @@
       <div class="max-w-5xl mx-auto space-y-6 animate-fade-in">
         
         <!-- BANNER TRẠM PHÁT SÓNG REALTIME CHÍNH -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#18110A] via-slate-900 to-emerald-950 p-6 sm:p-8 text-white border border-amber-700/25 shadow-2xl">
-          <!-- Background Glow Effect -->
-          <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="rounded-2xl bg-[#111520] p-6 sm:p-8 text-white border border-white/10 shadow-sm">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-3">
               <div class="flex flex-wrap items-center gap-2.5">
-                <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                  <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-400/30 text-emerald-400 flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                     <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
                     <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
-                    <circle cx="12" cy="2"/>
+                    <circle cx="12" cy="12" r="2"/>
                     <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/>
                     <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/>
                   </svg>
@@ -2133,67 +2071,53 @@
                 </div>
               </div>
 
-              <!-- Badges -->
               <div class="flex flex-wrap items-center gap-2 pt-1">
-                <!-- Huy hiệu 🟢 Phát sóng Live Active -->
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 backdrop-blur-sm shadow-sm">
-                  <span class="relative flex h-2.5 w-2.5">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-                  </span>
-                  <span>🟢 Phát sóng Live Active</span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
+                  <span>Phát sóng Live Active</span>
                 </span>
 
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-slate-200 border border-white/10">
-                  <svg class="w-3.5 h-3.5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white/5 text-slate-200 border border-white/10">
+                  <svg class="w-3.5 h-3.5 text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                   <span>Kênh: shopviet_realtime_sync</span>
                 </span>
 
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/10 text-slate-200 border border-white/10">
-                  <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white/5 text-slate-200 border border-white/10 tabular-nums">
+                  <svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                   <span>Độ trễ: &lt; 30ms</span>
                 </span>
               </div>
             </div>
 
-            <!-- Nút Hành Động Phát Sóng Nổi Bật -->
             <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
-              <!-- NÚT MASTER PHỤ TRONG TRẠM REALTIME HUB -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.masterPublish()" 
-                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-emerald-500 hover:from-indigo-500 hover:to-emerald-400 text-white font-black text-xs sm:text-sm tracking-wide shadow-xl shadow-amber-900/25 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                class="px-5 py-3 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs sm:text-sm tracking-wide shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span class="relative flex h-2.5 w-2.5 shrink-0">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
-                </span>
-                <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <svg class="w-4 h-4 text-white shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
                   <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
-                  <path d="M12 9V4s3.03.55 4 2c1.08 1.62 0 5 0 5"/>
                 </svg>
-                <span>🚀 XUẤT BẢN &amp; ĐỒNG BỘ TOÀN CẦU TỨC THÌ</span>
+                <span>XUẤT BẢN &amp; ĐỒNG BỘ TOÀN CẦU TỨC THÌ</span>
               </button>
 
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastTestPing()" 
-                class="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs sm:text-sm tracking-wide shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wide transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
-                <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
                 </svg>
-                <span>⚡ Phát Tín Hiệu Đồng Bộ Thử Nghiệm (Broadcast Test Ping)</span>
+                <span>Phát Tín Hiệu Đồng Bộ Thử Nghiệm (Broadcast Test Ping)</span>
               </button>
 
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastProductsSync()" 
-                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/15 transition flex items-center justify-center gap-2 cursor-pointer"
+                class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/10 transition flex items-center justify-center gap-2 cursor-pointer"
               >
-                <svg class="w-3.5 h-3.5 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-3.5 h-3.5 text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
                   <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
                   <path d="M3 3v5h5"/>
                   <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
@@ -2205,65 +2129,60 @@
           </div>
         </div>
 
-        <!-- BENTO THÔNG SỐ TRẠM PHÁT SÓNG (4 CARD) -->
+        <!-- BENTO THÔNG SỐ TRẠM PHÁT SÓNG -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Card 1: Số lượng sản phẩm đang đồng bộ -->
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div class="bg-white dark:bg-[#111520] p-5 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sản phẩm đồng bộ</span>
-              <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <div class="w-8 h-8 rounded-xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white" id="adminRealtimeProductCount">${products.length}</div>
-              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <div class="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tabular-nums" id="adminRealtimeProductCount">${products.length}</div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
                 <span>Đang phát trực tiếp tới tất cả máy khách</span>
               </p>
             </div>
           </div>
 
-          <!-- Card 2: Thời gian phát sóng cuối cùng -->
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div class="bg-white dark:bg-[#111520] p-5 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lần phát sóng cuối</span>
               <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-mono" id="adminRealtimeLastBroadcast">${lastTimeDisplay}</div>
-              <p class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1">
-                <span>⚡ Cập nhật tự động khi Admin lưu</span>
+              <div class="text-sm sm:text-base font-bold text-slate-900 dark:text-white font-mono tabular-nums" id="adminRealtimeLastBroadcast">${lastTimeDisplay}</div>
+              <p class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">
+                <span>Cập nhật tự động khi Admin lưu</span>
               </p>
             </div>
           </div>
 
-          <!-- Card 3: Cấu hình VietQR hiện thời -->
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div class="bg-white dark:bg-[#111520] p-5 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">VietQR Live Target</span>
               <div class="w-8 h-8 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-sm font-bold text-slate-900 dark:text-white truncate">0986019623</div>
+              <div class="text-sm font-bold text-slate-900 dark:text-white truncate tabular-nums">0986019623</div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 truncate">BUI THAI (STB)</p>
             </div>
           </div>
 
-          <!-- Card 4: Gói Voucher & Đơn hàng -->
-          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div class="bg-white dark:bg-[#111520] p-5 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between">
               <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Hệ sinh thái đồng bộ</span>
               <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
               </div>
             </div>
             <div class="mt-4">
-              <div class="text-base font-bold text-slate-900 dark:text-white">${vouchers.length} Vouchers • ${orders.length} Đơn</div>
+              <div class="text-base font-bold text-slate-900 dark:text-white tabular-nums">${vouchers.length} Vouchers • ${orders.length} Đơn</div>
               <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Đồng bộ đa luồng 2 chiều</p>
             </div>
           </div>
@@ -2272,111 +2191,103 @@
         <!-- CỘT CHỨC NĂNG PHÁT SÓNG NHANH & NHẬT KÝ BROADCAST -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          <!-- Trái: Khối điều khiển phát sóng thủ công -->
-          <div class="lg:col-span-5 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4">
+          <div class="lg:col-span-5 bg-white dark:bg-[#111520] p-6 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm space-y-4">
             <div>
               <h4 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 <span>Khối Điều Khiển Tín Hiệu Thủ Công</span>
               </h4>
-              <p class="text-xs text-slate-500 mt-0.5">Bấm để ép phát sóng tín hiệu tới tất cả tab & client đang mở trang.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Bấm để ép phát sóng tín hiệu tới tất cả tab & client đang mở trang.</p>
             </div>
 
             <div class="space-y-2.5 pt-1">
-              <!-- Nút 1: Test Ping -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastTestPing()" 
                 class="w-full px-4 py-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-bold text-xs flex items-center justify-between transition cursor-pointer"
               >
                 <div class="flex items-center gap-2.5">
-                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                  <span>⚡ Phát Tín Hiệu Đồng Bộ Thử Nghiệm</span>
+                  <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span>Phát Tín Hiệu Đồng Bộ Thử Nghiệm</span>
                 </div>
                 <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-800/60">Test Ping</span>
               </button>
 
-              <!-- Nút 2: Phát sóng Sản phẩm -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastProductsSync()" 
-                class="w-full px-4 py-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 font-bold text-xs flex items-center justify-between transition cursor-pointer"
+                class="w-full px-4 py-3 rounded-xl bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] border border-[#0071E3]/25 font-bold text-xs flex items-center justify-between transition cursor-pointer"
               >
                 <div class="flex items-center gap-2.5">
-                  <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                  <span>📦 Phát Sóng Đồng Bộ Lại Sản Phẩm</span>
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  <span>Phát Sóng Đồng Bộ Lại Sản Phẩm</span>
                 </div>
-                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-800/60">${products.length} Gói</span>
+                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-[#0071E3]/15 tabular-nums">${products.length} Gói</span>
               </button>
 
-              <!-- Nút 3: Phát sóng VietQR -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.broadcastVietQRSync()" 
                 class="w-full px-4 py-3 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/40 dark:hover:bg-sky-900/40 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800/60 font-bold text-xs flex items-center justify-between transition cursor-pointer"
               >
                 <div class="flex items-center gap-2.5">
-                  <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                  <span>💳 Phát Sóng Cấu Hình VietQR Mới</span>
+                  <svg class="w-4 h-4 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  <span>Phát Sóng Cấu Hình VietQR Mới</span>
                 </div>
                 <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-sky-200/60 dark:bg-sky-800/60">MBBank</span>
               </button>
 
-              <!-- Nút 4: Đồng bộ Cloud 2 chiều toàn hệ thống -->
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.syncCloudAll()" 
-                class="w-full px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-between transition cursor-pointer"
+                class="w-full px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-between transition cursor-pointer"
               >
                 <div class="flex items-center gap-2.5">
-                  <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-                  <span>☁️ Đồng Bộ 2 Chiều Cloud REST API</span>
+                  <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                  <span>Đồng Bộ 2 Chiều Cloud REST API</span>
                 </div>
-                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700">REST Sync</span>
+                <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-white/10">REST Sync</span>
               </button>
             </div>
 
-            <!-- Giải thích cơ chế -->
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200/60 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5 leading-relaxed">
-              <p class="font-semibold text-slate-700 dark:text-slate-300">💡 Cơ chế Tự Động Phát Sóng:</p>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 space-y-1.5 leading-relaxed">
+              <p class="font-semibold text-slate-700 dark:text-slate-300">Cơ chế Tự Động Phát Sóng:</p>
               <p>Mỗi khi bạn Lưu/Sửa/Xóa sản phẩm, Cập nhật VietQR, Tạo Voucher hoặc Duyệt Đơn trong Admin Portal, hệ thống sẽ <strong>tự động phát tín hiệu</strong> qua BroadcastChannel & Cloud Event Bus.</p>
-              <p>Tất cả khách hàng đang xem trang chủ, giỏ hàng hoặc cổng thanh toán sẽ nhận được dữ liệu mới nhất mà <strong>không cần bấm F5</strong> tải lại trang!</p>
+              <p>Tất cả khách hàng đang xem trang chủ, giỏ hàng hoặc cổng thanh toán sẽ nhận được dữ liệu mới nhất mà <strong>không cần bấm F5</strong> tải lại trang.</p>
             </div>
           </div>
 
-          <!-- Phải: Nhật ký phát sóng trực quan (Broadcast History) -->
-          <div class="lg:col-span-7 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div class="lg:col-span-7 bg-white dark:bg-[#111520] p-6 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-sm flex flex-col justify-between">
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div>
                   <h4 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     <span>Nhật Ký Tín Hiệu Phát Sóng Gần Nhất</span>
                   </h4>
-                  <p class="text-xs text-slate-500 mt-0.5">Lưu vết các đợt phát sóng tự động và thủ công của Admin Portal</p>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Lưu vết các đợt phát sóng tự động và thủ công của Admin Portal</p>
                 </div>
                 <button 
                   type="button" 
                   onclick="window.ShopVietViews.admin.clearBroadcastHistory()" 
-                  class="text-[11px] font-semibold text-slate-400 hover:text-rose-500 transition"
+                  class="text-[11px] font-semibold text-slate-400 hover:text-rose-500 transition cursor-pointer"
                   title="Xóa lịch sử"
                 >
                   Xóa log
                 </button>
               </div>
 
-              <!-- Danh sách log -->
               <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
                 ${history.map(item => `
-                  <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-slate-800/80 flex items-start justify-between gap-3 text-xs">
+                  <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 flex items-start justify-between gap-3 text-xs">
                     <div class="space-y-0.5">
                       <div class="flex items-center gap-2">
                         <span class="font-bold text-slate-800 dark:text-slate-200">${item.title}</span>
-                        <span class="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300">Delivered</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded font-mono font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300">Delivered</span>
                       </div>
                       <p class="text-slate-500 dark:text-slate-400 text-[11px]">${item.detail}</p>
                     </div>
-                    <div class="text-right shrink-0">
+                    <div class="text-right shrink-0 tabular-nums">
                       <span class="text-[11px] font-mono font-semibold text-slate-400 dark:text-slate-500 block">${item.time}</span>
                       <span class="text-[10px] text-slate-400 block">${item.date || ''}</span>
                     </div>
@@ -2385,12 +2296,8 @@
               </div>
             </div>
 
-            <!-- Footer log -->
-            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-4 flex items-center justify-between text-[11px] text-slate-400">
-              <span class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>WebSockets & BroadcastChannel Sync Active</span>
-              </span>
+            <div class="pt-4 border-t border-slate-900/10 dark:border-white/10 mt-4 flex items-center justify-between text-[11px] text-slate-400">
+              <span>WebSockets & BroadcastChannel Sync Active</span>
               <span class="font-mono">BuiThai AI Studio Cloud v12</span>
             </div>
           </div>
@@ -2406,14 +2313,13 @@
   // =========================================================================
   function renderCreateVoucherModal() {
     return `
-      <div id="adminCreateVoucherModal" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-lg flex flex-col overflow-hidden animate-slide-up">
+      <div id="adminCreateVoucherModal" class="fixed inset-0 z-[60] bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-lg flex flex-col overflow-hidden animate-slide-up">
           
-          <!-- Header Modal -->
-          <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-950/70">
+          <div class="px-6 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between bg-slate-50 dark:bg-[#090B10]">
             <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-600/30">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <div class="w-9 h-9 rounded-xl bg-[#0071E3] text-white flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="20 12 20 22 4 22 4 12" />
                   <rect x="2" y="7" width="20" height="5" />
                   <line x1="12" y1="22" x2="12" y2="7" />
@@ -2423,23 +2329,21 @@
               </div>
               <div>
                 <h3 class="font-extrabold text-base text-slate-900 dark:text-white">Tạo Mã Quà Tặng & Giảm Giá Mới</h3>
-                <p class="text-xs text-slate-500">Mã có hiệu lực sử dụng ngay lập tức</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Mã có hiệu lực sử dụng ngay lập tức</p>
               </div>
             </div>
 
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.closeVoucherModal()" 
-              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center transition"
+              class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition cursor-pointer"
             >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
-          <!-- Body Form -->
           <form id="createVoucherForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.createVoucherSubmit(event);" class="p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Mã Code & Nút Random -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Mã Voucher (*)</label>
               <div class="flex gap-2">
@@ -2448,27 +2352,26 @@
                   id="voucherCodeInput" 
                   required 
                   placeholder="Ví dụ: DISCOUNT20K, VIP100K..." 
-                  class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white uppercase font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white uppercase font-mono font-bold focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
                 <button 
                   type="button" 
                   onclick="window.ShopVietViews.admin.generateRandomVoucherCode()" 
-                  class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 transition shrink-0"
+                  class="px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center gap-1.5 transition shrink-0 cursor-pointer"
                 >
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                   <span>Sinh ngẫu nhiên</span>
                 </button>
               </div>
               <p class="text-[11px] text-slate-400 mt-1">Mã tự động chuyển thành chữ HOA không dấu.</p>
             </div>
 
-            <!-- Loại Mã -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Loại mã (*)</label>
               <select 
                 id="voucherTypeInput" 
                 onchange="window.ShopVietViews.admin.onVoucherTypeChange(this.value)"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-medium"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-medium"
               >
                 <option value="percent_discount" selected>Giảm theo phần trăm (%) - Mặc định</option>
                 <option value="order_discount">Giảm số tiền cố định (VNĐ)</option>
@@ -2476,7 +2379,6 @@
               </select>
             </div>
 
-            <!-- Giá trị giảm -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1" id="voucherValueLabel">Giá trị giảm (% hoặc VNĐ) (*)</label>
               <input 
@@ -2488,43 +2390,40 @@
                 step="1" 
                 value="20" 
                 placeholder="Nhập số % (VD: 20 tức giảm 20%) hoặc số tiền VNĐ (VD: 20000)" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-bold text-emerald-600 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] text-base"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] font-bold text-emerald-600 dark:text-emerald-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3] text-base tabular-nums"
               >
-              <!-- Các nút chọn nhanh -->
               <div class="flex items-center gap-1.5 mt-2 flex-wrap" id="voucherQuickSelectBtns">
                 <span class="text-[11px] text-slate-400">Chọn nhanh:</span>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 10; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">10%</button>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 20; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">20%</button>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 30; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">30%</button>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 50; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">50%</button>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 20000; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">20k</button>
-                <button type="button" onclick="document.getElementById('voucherValueInput').value = 50000; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600">50k</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 10; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">10%</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 20; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">20%</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 30; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">30%</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 50; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">50%</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 20000; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">20k</button>
+                <button type="button" onclick="document.getElementById('voucherValueInput').value = 50000; window.ShopVietViews.admin.generateRandomVoucherCode();" class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-[#0071E3]/10 hover:text-[#0071E3] cursor-pointer">50k</button>
               </div>
             </div>
 
-            <!-- Thiết lập dùng 1 lần -->
-            <div class="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200/60 dark:border-slate-800/60 flex items-center justify-between">
+            <div class="p-3 bg-slate-50 dark:bg-[#090B10] rounded-xl border border-slate-900/10 dark:border-white/10 flex items-center justify-between">
               <div>
                 <div class="font-bold text-slate-800 dark:text-slate-200 text-xs">Giới hạn sử dụng 1 lần</div>
-                <div class="text-[11px] text-slate-500">Mỗi mã chỉ được 1 khách nhập thành công 1 lần duy nhất</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400">Mỗi mã chỉ được 1 khách nhập thành công 1 lần duy nhất</div>
               </div>
-              <input type="checkbox" id="voucherSingleUseInput" checked class="w-4 h-4 text-indigo-600 rounded">
+              <input type="checkbox" id="voucherSingleUseInput" checked class="w-4 h-4 accent-[#0071E3] rounded">
             </div>
 
-            <!-- Footer Buttons -->
             <div class="pt-2 flex items-center justify-end gap-2">
               <button 
                 type="button" 
                 onclick="window.ShopVietViews.admin.closeVoucherModal()" 
-                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition"
+                class="px-4 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 text-xs font-semibold transition cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button 
                 type="submit" 
-                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-600/30 transition flex items-center gap-1.5"
+                class="px-5 py-2.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>Tạo mã ngay</span>
               </button>
             </div>
@@ -2591,33 +2490,30 @@
     const badgeSelectValue = isCustom ? 'custom' : (matchedStandard || 'Bán chạy nhất');
 
     return `
-      <div id="productEditBackdrop" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
+      <div id="productEditBackdrop" class="fixed inset-0 z-[60] bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in">
+        <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
           
-          <!-- Header -->
-          <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-950/70">
+          <div class="px-6 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between bg-slate-50 dark:bg-[#090B10]">
             <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <span class="flex items-center gap-1.5">
                 ${isEdit 
-                  ? `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Chỉnh Sửa Sản Phẩm</span>` 
-                  : `<svg class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Thêm Sản Phẩm Mới</span>`
+                  ? `<svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg><span>Chỉnh Sửa Sản Phẩm</span>` 
+                  : `<svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Thêm Sản Phẩm Mới</span>`
                 }
               </span>
-              <code class="text-xs font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded">${prod.id}</code>
+              <code class="text-xs font-mono text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/10 px-2 py-0.5 rounded">${prod.id}</code>
             </h3>
             <button 
               type="button" 
               onclick="document.getElementById('productEditBackdrop').remove()" 
-              class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+              class="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-lg cursor-pointer"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
-          <!-- Body Form -->
           <form id="productEditForm" onsubmit="event.preventDefault(); window.ShopVietViews.admin.saveProduct('${prod.id}', ${isEdit});" class="flex-1 overflow-y-auto p-6 space-y-4 text-xs sm:text-sm">
             
-            <!-- Tên sản phẩm -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Tên sản phẩm (*)</label>
               <input 
@@ -2626,11 +2522,10 @@
                 value="${prod.name.replace(/"/g, '&quot;')}" 
                 required 
                 placeholder="Ví dụ: [PROMPT] Hộp Công Cụ Master Prompts v12.0" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-semibold"
               >
             </div>
 
-            <!-- Giá Bán & Giá Gốc -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Giá bán (VNĐ) (*)</label>
@@ -2642,7 +2537,7 @@
                   min="0" 
                   step="1000" 
                   placeholder="Ví dụ: 69000" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-bold text-indigo-600 focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-[#0071E3] dark:text-[#3B9EFF] font-bold tabular-nums focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
 
@@ -2655,18 +2550,17 @@
                   min="0" 
                   step="1000" 
                   placeholder="Ví dụ: 250000" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white tabular-nums focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
             </div>
 
-            <!-- Danh Mục & Tag -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Danh mục sản phẩm</label>
                 <select 
                   id="editProdCategory" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
                   <option value="cat_gemini" ${prod.category === 'cat_gemini' ? 'selected' : ''}>Gemini 4 Argon Pro & Antigravity 2.0</option>
                   <option value="cat_cursor" ${prod.category === 'cat_cursor' ? 'selected' : ''}>Cursor New</option>
@@ -2684,12 +2578,11 @@
                   id="editProdTag" 
                   value="${prod.tag || 'Tất cả'}" 
                   placeholder="Ví dụ: Cursor New, Capcut, Canva..." 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
             </div>
 
-            <!-- Tồn Kho & Trạng Thái -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Số lượng tồn kho</label>
@@ -2698,7 +2591,7 @@
                   id="editProdStock" 
                   value="${prod.stock || 100}" 
                   min="0" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-bold"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-bold tabular-nums"
                 >
               </div>
 
@@ -2706,7 +2599,7 @@
                 <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Trạng thái kho hàng</label>
                 <select 
                   id="editProdStatus" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
                   <option value="in_stock" ${prod.status === 'in_stock' ? 'selected' : ''}>Còn hàng (In Stock)</option>
                   <option value="low_stock" ${prod.status === 'low_stock' ? 'selected' : ''}>Sắp hết hàng (Low Stock)</option>
@@ -2715,8 +2608,7 @@
               </div>
             </div>
 
-            <!-- ẢNH ĐẠI DIỆN SẢN PHẨM (TẢI LÊN FILE HOẶC DÁN URL) -->
-            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+            <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 space-y-3">
               <div class="flex items-center justify-between">
                 <label class="flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">
                   <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -2730,8 +2622,7 @@
               </div>
 
               <div class="flex items-center gap-4">
-                <!-- Khung Preview Ảnh Trực Quan -->
-                <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl border-2 border-dashed border-slate-300 dark:border-white/15 bg-white dark:bg-[#111520] flex items-center justify-center overflow-hidden shrink-0">
                   <img 
                     id="adminProdImagePreview" 
                     src="${prod.imageUrl || ''}" 
@@ -2739,27 +2630,26 @@
                     class="${prod.imageUrl ? '' : 'hidden'} w-full h-full object-cover"
                   />
                   <div id="adminProdImagePlaceholder" class="${prod.imageUrl ? 'hidden' : 'flex'} flex-col items-center justify-center text-slate-400 p-2 text-center">
-                    <svg class="w-6 h-6 mb-1 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                    <svg class="w-6 h-6 mb-1 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                     <span class="text-[9px] font-medium leading-tight">Chưa có ảnh</span>
                   </div>
                 </div>
 
-                <!-- Cột Nút Hành Động & Input URL -->
                 <div class="flex-1 space-y-2">
                   <div class="flex items-center gap-2">
                     <input type="file" id="adminProdFileInput" accept="image/*" class="hidden" onchange="window.ShopVietViews.admin.handleProductImageUpload(this)">
                     <button 
                       type="button" 
                       onclick="document.getElementById('adminProdFileInput').click()" 
-                      class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold text-xs border border-indigo-200/60 dark:border-indigo-800 transition flex items-center gap-1.5 cursor-pointer"
+                      class="px-3 py-1.5 rounded-lg bg-[#0071E3]/10 hover:bg-[#0071E3]/15 text-[#0071E3] dark:text-[#3B9EFF] font-bold text-xs border border-[#0071E3]/25 transition flex items-center gap-1.5 cursor-pointer"
                     >
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                       <span>Chọn ảnh từ máy...</span>
                     </button>
                     <button 
                       type="button" 
                       onclick="window.ShopVietViews.admin.clearProductImage()" 
-                      class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium text-xs transition cursor-pointer"
+                      class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 font-medium text-xs transition cursor-pointer"
                       title="Xóa ảnh về mặc định"
                     >
                       Xóa ảnh
@@ -2773,19 +2663,18 @@
                       value="${prod.imageUrl || ''}" 
                       placeholder="Hoặc dán link URL ảnh (https://...)" 
                       oninput="window.ShopVietViews.admin.handleProductImageUrlInput(this.value)"
-                      class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-mono"
+                      class="w-full px-3 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-mono"
                     >
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- Icon Loại Thương Hiệu -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Thương hiệu / Icon nhận diện</label>
               <select 
                 id="editProdIconType" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >
                 <option value="gemini" ${prod.iconType === 'gemini' ? 'selected' : ''}>Gemini / Google AI</option>
                 <option value="cursor" ${prod.iconType === 'cursor' ? 'selected' : ''}>Cursor IDE</option>
@@ -2798,22 +2687,21 @@
               </select>
             </div>
 
-            <!-- Badge & Bảo hành -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1.5">
-                <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">Huy hiệu nổi bật (Top-Right Bookmark Ribbon)</label>
+                <label class="block font-bold text-slate-700 dark:text-slate-300 text-xs sm:text-sm">Huy hiệu nổi bật (Ribbon)</label>
                 <select 
                   id="editProdBadgeSelect" 
                   onchange="const c = document.getElementById('editProdBadgeCustomWrap'); if(c) { c.classList.toggle('hidden', this.value !== 'custom'); const hid = document.getElementById('editProdBadge'); if(hid && this.value !== 'custom') hid.value = this.value; }"
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-semibold text-xs sm:text-sm cursor-pointer"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-semibold text-xs sm:text-sm cursor-pointer"
                 >
-                  <option value="Bán chạy nhất" ${badgeSelectValue === 'Bán chạy nhất' ? 'selected' : ''}>⭐ Bán chạy nhất (Best Seller - Vàng Gold hoàng gia)</option>
-                  <option value="HOT" ${badgeSelectValue === 'HOT' ? 'selected' : ''}>🔥 HOT (Cực hot - Đỏ Cam rực lửa AI)</option>
-                  <option value="Rẻ vô địch" ${badgeSelectValue === 'Rẻ vô địch' ? 'selected' : ''}>🏷️ Rẻ vô địch (Siêu tiết kiệm - Xanh Emerald & Tag kim cương)</option>
-                  <option value="Mới ra mắt" ${badgeSelectValue === 'Mới ra mắt' ? 'selected' : ''}>✨ Mới ra mắt (New Arrival - Xanh Sky Cyber & Sparkle)</option>
-                  <option value="Khuyên dùng" ${badgeSelectValue === 'Khuyên dùng' ? 'selected' : ''}>👑 Khuyên dùng (Đặc quyền VIP - Tím hoàng gia & Vương miện)</option>
-                  <option value="Flash Sale" ${badgeSelectValue === 'Flash Sale' ? 'selected' : ''}>⚡ Flash Sale (Giảm sốc - Hồng Đỏ & Tia chớp)</option>
-                  <option value="custom" ${badgeSelectValue === 'custom' ? 'selected' : ''}>✍️ Tùy chỉnh chữ riêng...</option>
+                  <option value="Bán chạy nhất" ${badgeSelectValue === 'Bán chạy nhất' ? 'selected' : ''}>Bán chạy nhất (Best Seller - Vàng Gold)</option>
+                  <option value="HOT" ${badgeSelectValue === 'HOT' ? 'selected' : ''}>HOT (Cực hot - Đỏ Cam)</option>
+                  <option value="Rẻ vô địch" ${badgeSelectValue === 'Rẻ vô địch' ? 'selected' : ''}>Rẻ vô địch (Siêu tiết kiệm - Emerald)</option>
+                  <option value="Mới ra mắt" ${badgeSelectValue === 'Mới ra mắt' ? 'selected' : ''}>Mới ra mắt (New Arrival - Xanh Cobalt)</option>
+                  <option value="Khuyên dùng" ${badgeSelectValue === 'Khuyên dùng' ? 'selected' : ''}>Khuyên dùng (Đặc quyền VIP)</option>
+                  <option value="Flash Sale" ${badgeSelectValue === 'Flash Sale' ? 'selected' : ''}>Flash Sale (Giảm sốc - Hồng Đỏ)</option>
+                  <option value="custom" ${badgeSelectValue === 'custom' ? 'selected' : ''}>Tùy chỉnh chữ riêng...</option>
                 </select>
                 <div id="editProdBadgeCustomWrap" class="${isCustom ? '' : 'hidden'} mt-1.5">
                   <input 
@@ -2822,7 +2710,7 @@
                     value="${isCustom ? currentBadge.replace(/"/g, '&quot;') : ''}"
                     placeholder="Nhập tên huy hiệu riêng (VD: Phiên bản VIP, Limited...)" 
                     oninput="const hid = document.getElementById('editProdBadge'); if(hid) hid.value = this.value.trim();"
-                    class="w-full px-3.5 py-2 rounded-lg border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#8A5F26]"
+                    class="w-full px-3.5 py-2 rounded-lg border border-[#0071E3]/25 bg-white dark:bg-[#090B10] text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#0071E3]"
                   />
                 </div>
                 <input type="hidden" id="editProdBadge" value="${currentBadge.replace(/"/g, '&quot;')}" />
@@ -2835,63 +2723,59 @@
                   id="editProdWarranty" 
                   value="${prod.warranty || '18 tháng (1 đổi 1)'}" 
                   placeholder="Ví dụ: 18 tháng (1 đổi 1)" 
-                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
                 >
               </div>
             </div>
 
-            <!-- Mô tả sản phẩm -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Mô tả chi tiết</label>
               <textarea 
                 id="editProdDesc" 
                 rows="3" 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26]"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >${prod.desc || ''}</textarea>
             </div>
 
-            <!-- Đặc quyền khi mua tại Bùi Thái AI Studio (Mỗi dòng một đặc quyền) -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 <span>Đặc quyền khi mua tại Bùi Thái AI Studio (Mỗi dòng một đặc quyền)</span>
               </label>
               <textarea 
                 id="editProdBenefits" 
                 rows="3" 
                 placeholder="Ví dụ:&#10;Kích hoạt qua link mời chính chủ Google&#10;Tích hợp Antigravity 2.0 & Veo Video AI&#10;Bảo hành chính chủ 1 đổi 1&#10;Tự động cấp link ngay sau khi thanh toán"
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-sans text-xs sm:text-sm"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-sans text-xs sm:text-sm"
               >${(Array.isArray(prod.benefits) ? prod.benefits.join('\n') : (prod.benefits || ''))}</textarea>
             </div>
 
-            <!-- Mô tả & Hướng dẫn sử dụng -->
             <div>
               <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <svg class="w-4 h-4 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
                 <span>Mô tả & Hướng dẫn sử dụng</span>
               </label>
               <textarea 
                 id="editProdUsageGuide" 
                 rows="3" 
                 placeholder="Nhập thông tin hướng dẫn sử dụng, điều kiện bảo hành hoặc cách nhận tài khoản..."
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#8A5F26] font-sans text-xs sm:text-sm"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-slate-50 dark:bg-[#090B10] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] font-sans text-xs sm:text-sm"
               >${prod.usageGuide || prod.desc || ''}</textarea>
             </div>
 
-            <!-- Nút Hành Động -->
-            <div class="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2.5">
+            <div class="pt-3 border-t border-slate-900/10 dark:border-white/10 flex items-center justify-end gap-2.5">
               <button 
                 type="button" 
                 onclick="document.getElementById('productEditBackdrop').remove()" 
-                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                class="px-4 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 text-slate-600 dark:text-slate-300 font-semibold text-xs hover:bg-slate-100 dark:hover:bg-white/5 transition cursor-pointer"
               >
                 Hủy bỏ
               </button>
               <button 
                 type="submit" 
-                class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-amber-900/15 transition flex items-center gap-1.5"
+                class="px-5 py-2.5 rounded-xl bg-[#0071E3] hover:bg-[#0062C4] text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="20 6 9 17 4 12"/></svg>
                 <span>Lưu Sản Phẩm</span>
               </button>
             </div>
@@ -2909,20 +2793,19 @@
   function renderBillModal(orderCode, amount) {
     const config = getVietQRConfig();
     return `
-      <div id="adminBillBackdrop" class="fixed inset-0 z-[60] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onclick="if(event.target === this) this.remove()">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-slide-up p-6 text-center space-y-4">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      <div id="adminBillBackdrop" class="fixed inset-0 z-[60] bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in" onclick="if(event.target === this) this.remove()">
+        <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-slide-up p-6 text-center space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
 
           <div>
-            <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Hóa đơn điện tử VietQR</span>
+            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Hóa đơn điện tử VietQR</span>
             <h4 class="text-lg font-black text-slate-900 dark:text-white mt-1">Đã Xác Thực Thanh Toán</h4>
-            <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-2">${formatVND(amount)}</div>
+            <div class="text-2xl font-black text-[#0071E3] dark:text-[#3B9EFF] mt-2 tabular-nums">${formatVND(amount)}</div>
           </div>
 
-          <!-- Thông tin chuyển khoản -->
-          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 text-left text-xs space-y-2 border border-slate-100 dark:border-slate-800">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#090B10] text-left text-xs space-y-2 border border-slate-900/10 dark:border-white/10">
             <div class="flex justify-between">
               <span class="text-slate-400">Mã đơn hàng:</span>
               <span class="font-mono font-bold text-slate-800 dark:text-slate-200">${orderCode}</span>
@@ -2937,14 +2820,14 @@
             </div>
             <div class="flex justify-between">
               <span class="text-slate-400">Nội dung CK:</span>
-              <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400">${config.memoPrefix} ${orderCode.replace('#', '')}</span>
+              <span class="font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF]">${config.memoPrefix} ${orderCode.replace('#', '')}</span>
             </div>
           </div>
 
           <button 
             type="button" 
             onclick="document.getElementById('adminBillBackdrop').remove()" 
-            class="w-full py-2.5 rounded-xl bg-slate-900 text-white dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 font-semibold text-xs transition"
+            class="w-full py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white/10 hover:bg-slate-800 dark:hover:bg-white/15 font-semibold text-xs transition cursor-pointer"
           >
             Đóng
           </button>
@@ -2961,54 +2844,51 @@
     const productName = order.productName || (order.items && order.items[0] && order.items[0].name) || 'Gói Bản Quyền Pro';
     const amount = order.amount || order.total || order.price || 69000;
     const currentLink = order.customDeliveryLink || (order.licenseKey && order.licenseKey.startsWith('http') ? order.licenseKey : '') || 'https://one.google.com/inv/gemini-pro-shopskill247-vip';
-    const currentMsg = order.adminMessage || (order.deliveryInfo && order.deliveryInfo.guide) || 'Cảm ơn bạn đã mua hàng tại Bùi Thái AI Studio! Bạn bấm vào đường link trên để kích hoạt bản quyền nhé.';
+    const currentMsg = order.adminMessage || (order.deliveryInfo && order.deliveryInfo.guide) || 'Cảm ơn bạn đã mua hàng tại Bùi Thái AI Studio. Bạn bấm vào đường link trên để kích hoạt bản quyền.';
 
     return `
-      <div id="adminDeliveryBackdrop" class="fixed inset-0 z-[70] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onclick="if(event.target === this) this.remove()">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden animate-slide-up p-6 space-y-5 relative" onclick="event.stopPropagation()">
-          <!-- Close button -->
+      <div id="adminDeliveryBackdrop" class="fixed inset-0 z-[70] bg-slate-950/75 flex items-center justify-center p-4 animate-fade-in" onclick="if(event.target === this) this.remove()">
+        <div class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-slide-up p-6 space-y-5 relative" onclick="event.stopPropagation()">
           <button 
             type="button" 
             onclick="document.getElementById('adminDeliveryBackdrop').remove()" 
-            class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer text-sm"
+            aria-label="Đóng"
+            class="absolute top-4 right-4 w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center justify-center transition cursor-pointer"
           >
-            ✕
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
 
-          <!-- Header -->
           <div class="flex items-start gap-3.5">
-            <div class="w-11 h-11 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 shadow-inner">
+            <div class="w-11 h-11 rounded-xl bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center flex-shrink-0">
               <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/>
               </svg>
             </div>
             <div>
               <h3 class="text-base font-bold text-slate-900 dark:text-white">Duyệt Đơn & Gửi Link Riêng Cho Khách</h3>
-              <div class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 mt-0.5">#${code}</div>
+              <div class="text-xs font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF] mt-0.5">#${code}</div>
             </div>
           </div>
 
-          <!-- Tóm tắt đơn hàng -->
-          <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-slate-800/80 space-y-1.5 text-xs">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 space-y-1.5 text-xs">
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Khách hàng:</span>
+              <span class="text-slate-500 dark:text-slate-400">Khách hàng:</span>
               <span class="font-semibold text-slate-800 dark:text-slate-200">${customerName} <span class="text-slate-400 font-normal">(${customerEmail})</span></span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Gói sản phẩm:</span>
+              <span class="text-slate-500 dark:text-slate-400">Gói sản phẩm:</span>
               <span class="font-medium text-slate-800 dark:text-slate-200 line-clamp-1">${productName}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-slate-500">Số tiền thanh toán:</span>
-              <span class="font-bold text-emerald-600 dark:text-emerald-400">${formatVND(amount)}</span>
+              <span class="text-slate-500 dark:text-slate-400">Số tiền thanh toán:</span>
+              <span class="font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">${formatVND(amount)}</span>
             </div>
           </div>
 
-          <!-- Form nhập liệu -->
           <div class="space-y-4">
             <div>
               <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
                   <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                 </svg>
@@ -3019,14 +2899,14 @@
                 id="adminDeliveryLinkInput" 
                 value="${currentLink}" 
                 placeholder="https://one.google.com/inv/gemini-..." 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-[#8A5F26] outline-none"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#090B10] text-slate-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-[#0071E3] outline-none"
               />
               <p class="text-[11px] text-slate-400 mt-1">Đường dẫn này sẽ hiển thị trực tiếp cho khách hàng trong trang Đơn hàng / Bản quyền để họ kích hoạt ngay.</p>
             </div>
 
             <div>
               <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
-                <svg class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   <circle cx="9" cy="10" r="1" fill="currentColor"/>
                   <circle cx="12" cy="10" r="1" fill="currentColor"/>
@@ -3038,26 +2918,25 @@
                 id="adminDeliveryMessageInput" 
                 rows="3" 
                 placeholder="Lời nhắn kèm theo cho khách..." 
-                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#8A5F26] outline-none resize-none"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#090B10] text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-[#0071E3] outline-none resize-none"
               >${currentMsg}</textarea>
             </div>
           </div>
 
-          <!-- Actions -->
-          <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-900/10 dark:border-white/10">
             <button 
               type="button" 
               onclick="document.getElementById('adminDeliveryBackdrop').remove()" 
-              class="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold transition cursor-pointer"
+              class="px-4 py-2 rounded-xl border border-slate-900/10 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300 text-xs font-semibold transition cursor-pointer"
             >
               Hủy
             </button>
             <button 
               type="button" 
               onclick="window.ShopVietViews.admin.submitApproveWithDelivery('${code}')" 
-              class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition flex items-center gap-1.5 cursor-pointer"
+              class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center gap-1.5 cursor-pointer"
             >
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
               <span>Phê duyệt & gửi ngay</span>
@@ -3075,13 +2954,13 @@
     // Duyệt yêu cầu nạp xu và cộng trực tiếp vào ví người dùng
     approveTopupManually: function (topupId, userEmail, amount) {
       if (!userEmail || !amount) {
-        notify('Thiếu thông tin người nhận hoặc số tiền nạp!', 'warning');
+        notify('Thiếu thông tin người nhận hoặc số tiền nạp.', 'warning');
         return;
       }
       const cleanEmail = userEmail.trim().toLowerCase();
       const numAmount = Number(amount) || 0;
       if (numAmount <= 0) {
-        notify('Số tiền nạp không hợp lệ!', 'warning');
+        notify('Số tiền nạp không hợp lệ.', 'warning');
         return;
       }
       if (!confirm(`Xác nhận DUYỆT & CỘNG +${numAmount.toLocaleString('vi-VN')} Xu cho tài khoản ${cleanEmail}?`)) return;
@@ -3107,7 +2986,7 @@
           if (balEl) balEl.textContent = `${Number(newBal).toLocaleString('vi-VN')} Xu`;
         }
 
-        notify(`🎉 Đã duyệt và cộng thành công +${numAmount.toLocaleString('vi-VN')} Xu cho tài khoản ${cleanEmail}! Số dư mới: ${Number(newBal).toLocaleString('vi-VN')} Xu.`, 'success');
+        notify(`Đã duyệt và cộng thành công +${numAmount.toLocaleString('vi-VN')} Xu cho tài khoản ${cleanEmail}. Số dư mới: ${Number(newBal).toLocaleString('vi-VN')} Xu.`, 'success');
 
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) {
@@ -3132,7 +3011,7 @@
           ? await window.ShopVietFirebase.getIdToken()
           : '';
         if (!token) {
-          notify('Cần đăng nhập tài khoản quản trị để cộng lại Xu!', 'warning');
+          notify('Cần đăng nhập tài khoản quản trị để cộng lại Xu.', 'warning');
           return;
         }
         const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
@@ -3155,7 +3034,7 @@
 
         const items = Array.isArray(listJson.items) ? listJson.items : [];
         if (items.length === 0) {
-          notify('Không có khoản nào đang chờ cộng. 👍', 'success');
+          notify('Không có khoản nào đang chờ cộng.', 'success');
           return;
         }
 
@@ -3177,7 +3056,7 @@
           notify('Cộng lại thất bại: ' + ((repJson && (repJson.reason || repJson.message)) || repRes.status), 'warning');
           return;
         }
-        notify('✅ Đã cộng ' + (repJson.credited || 0) + ' khoản (' + (repJson.creditedAmount || 0).toLocaleString('vi-VN') + ' Xu). Còn lại ' + (repJson.remaining || 0) + ' khoản.', 'success');
+        notify('Đã cộng ' + (repJson.credited || 0) + ' khoản (' + (repJson.creditedAmount || 0).toLocaleString('vi-VN') + ' Xu). Còn lại ' + (repJson.remaining || 0) + ' khoản.', 'success');
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent && currentActiveTab === 'orders') tabContent.innerHTML = renderTabOrders();
       } catch (e) {
@@ -3189,7 +3068,7 @@
       if (window.ShopVietState && typeof window.ShopVietState.rejectTopupRequest === 'function') {
         const ok = window.ShopVietState.rejectTopupRequest(topupId);
         if (ok) {
-          notify(`Đã từ chối yêu cầu nạp #${topupId}!`, 'info');
+          notify(`Đã từ chối yêu cầu nạp #${topupId}.`, 'info');
           const tabContent = document.getElementById('adminTabContent');
           if (tabContent && currentActiveTab === 'orders') {
             tabContent.innerHTML = renderTabOrders();
@@ -3201,13 +3080,13 @@
     banUserFromTopup: function (userEmail, topupId) {
       if (!userEmail) return;
       const cleanEmail = userEmail.trim().toLowerCase();
-      if (!confirm(`⚠️ XÁC NHẬN KHÓA VĨNH VIỄN TÀI KHOẢN: ${cleanEmail}?\n\n- Tài khoản sẽ bị cấm đăng nhập và cấm nạp tiền.\n- Toàn bộ yêu cầu nạp tiền chờ duyệt của user này sẽ bị hủy bỏ ngay lập tức.\n- Máy chủ Vercel sẽ chặn 403 Forbidden.`)) {
+      if (!confirm(`XÁC NHẬN KHÓA VĨNH VIỄN TÀI KHOẢN: ${cleanEmail}?\n\n- Tài khoản sẽ bị cấm đăng nhập và cấm nạp tiền.\n- Toàn bộ yêu cầu nạp tiền chờ duyệt của user này sẽ bị hủy bỏ ngay lập tức.\n- Máy chủ Vercel sẽ chặn 403 Forbidden.`)) {
         return;
       }
       if (window.ShopVietState && typeof window.ShopVietState.banUser === 'function') {
         window.ShopVietState.banUser(cleanEmail, 'Spam yêu cầu nạp tiền phá hoại');
       }
-      notify(`🚫 Đã khóa vĩnh viễn tài khoản ${cleanEmail} và hủy toàn bộ yêu cầu nạp rác!`, 'success');
+      notify(`Đã khóa vĩnh viễn tài khoản ${cleanEmail} và hủy toàn bộ yêu cầu nạp rác.`, 'success');
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'orders') {
         tabContent.innerHTML = renderTabOrders();
@@ -3223,7 +3102,7 @@
       if (window.ShopVietState && typeof window.ShopVietState.cleanSpamTopupsByEmail === 'function') {
         window.ShopVietState.cleanSpamTopupsByEmail(cleanEmail);
       }
-      notify(`🗑️ Đã khóa vĩnh viễn và dọn sạch toàn bộ yêu cầu nạp rác của ${cleanEmail}!`, 'success');
+      notify(`Đã khóa vĩnh viễn và dọn sạch toàn bộ yêu cầu nạp rác của ${cleanEmail}.`, 'success');
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent && currentActiveTab === 'orders') {
         tabContent.innerHTML = renderTabOrders();
@@ -3237,7 +3116,7 @@
       if (window.ShopVietState && typeof window.ShopVietState.resetUserBalance === 'function') {
         window.ShopVietState.resetUserBalance(cleanEmail, 0);
       }
-      notify(`🔄 Đã reset số dư tài khoản ${cleanEmail} về 0 Xu thành công!`, 'success');
+      notify(`Đã reset số dư tài khoản ${cleanEmail} về 0 Xu thành công.`, 'success');
       const tabContent = document.getElementById('adminTabContent');
       if (tabContent) {
         if (currentActiveTab === 'orders') tabContent.innerHTML = renderTabOrders();
@@ -3256,7 +3135,7 @@
       if (window.BuiThaiNtfy && typeof window.BuiThaiNtfy.testNotification === 'function') {
         const ok = await window.BuiThaiNtfy.testNotification();
         if (ok) {
-          notify('🔔 Đã bắn thông báo ntfy thành công! Hãy kiểm tra điện thoại của anh ngay nhé.', 'success');
+          notify('Đã bắn thông báo ntfy thành công. Hãy kiểm tra điện thoại của anh ngay nhé.', 'success');
         } else {
           notify('Không thể kết nối ntfy.sh lúc này. Hãy kiểm tra lại kết nối mạng.', 'warning');
         }
@@ -3271,14 +3150,14 @@
       const amount = Number(amountInput ? amountInput.value : 0);
 
       if (!email || !amount || amount <= 0) {
-        notify('Vui lòng nhập email hợp lệ và số xu lớn hơn 0!', 'warning');
+        notify('Vui lòng nhập email hợp lệ và số xu lớn hơn 0.', 'warning');
         return;
       }
 
       if (window.ShopVietState && typeof window.ShopVietState.directCreditCoins === 'function') {
         const res = window.ShopVietState.directCreditCoins(email, amount, 'Cộng trực tiếp từ Admin Portal');
         const newBal = (res && res.newBalance) || amount;
-        notify(`🎉 Đã cộng thành công +${amount.toLocaleString('vi-VN')} Xu cho tài khoản ${email}! Số dư mới: ${newBal.toLocaleString('vi-VN')} Xu.`, 'success');
+        notify(`Đã cộng thành công +${amount.toLocaleString('vi-VN')} Xu cho tài khoản ${email}. Số dư mới: ${newBal.toLocaleString('vi-VN')} Xu.`, 'success');
         if (emailInput) emailInput.value = '';
         if (amountInput) amountInput.value = '100000';
         const tabContent = document.getElementById('adminTabContent');
@@ -3294,7 +3173,7 @@
         const curBalance = user ? (user.balance || 0) : 0;
         const newBalance = curBalance + amount;
         window.ShopVietState.updateUserBalance(email, newBalance);
-        notify(`Đã nạp thành công +${amount.toLocaleString('vi-VN')} Xu cho tài khoản ${email}! Số dư mới: ${newBalance.toLocaleString('vi-VN')} Xu.`, 'success');
+        notify(`Đã nạp thành công +${amount.toLocaleString('vi-VN')} Xu cho tài khoản ${email}. Số dư mới: ${newBalance.toLocaleString('vi-VN')} Xu.`, 'success');
         if (emailInput) emailInput.value = '';
         if (amountInput) amountInput.value = '100000';
         const tabContent = document.getElementById('adminTabContent');
@@ -3314,7 +3193,7 @@
           window.location.hash = '#home';
         }
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com.', 'error');
         }
         return;
       }
@@ -3388,7 +3267,7 @@
 
       if (VALID_PINS.includes(entered)) {
         setAuthenticated(true);
-        notify('Xác thực quyền Quản trị viên thành công!', 'success');
+        notify('Xác thực quyền Quản trị viên thành công.', 'success');
         if (typeof window.requestAdminNotificationPermission === 'function') {
           window.requestAdminNotificationPermission();
         }
@@ -3419,7 +3298,7 @@
     logout: function () {
       setAuthenticated(false);
       this.close();
-      notify('Đã đăng xuất khỏi Phiên Quản Trị an toàn!', 'info');
+      notify('Đã đăng xuất khỏi Phiên Quản Trị an toàn.', 'info');
     },
 
     // 8. Chuyển Tab (5 Tab kinh doanh cốt lõi, tự động fallback mượt về pricing nếu gọi realtime hoặc overview)
@@ -3444,11 +3323,11 @@
 
       // Cập nhật style tab button
       document.querySelectorAll('.admin-nav-tab').forEach(btn => {
-        btn.className = 'admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
+        btn.className = 'admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-colors border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200';
       });
       const activeBtn = document.getElementById(`adminTabBtn-${tabKey}`);
       if (activeBtn) {
-        activeBtn.className = 'admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all border-indigo-600 text-indigo-600 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/30';
+        activeBtn.className = 'admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-colors border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/10';
       }
     },
 
@@ -3472,7 +3351,7 @@
           tabContent.innerHTML = renderTabBody(currentActiveTab);
         }
       }
-      notify('Đã làm mới dữ liệu và đồng bộ yêu cầu nạp Xu từ Cloud (ntfy.sh)!', 'success');
+      notify('Đã làm mới dữ liệu và đồng bộ yêu cầu nạp Xu từ Cloud (ntfy.sh).', 'success');
     },
 
     // 9b. Đồng bộ Đám Mây 2 chiều tức thì cho Toàn Hệ Thống (Sản phẩm, Voucher, Excel, Đơn hàng)
@@ -3496,7 +3375,7 @@
         if (tabContent) {
           tabContent.innerHTML = renderTabBody(currentActiveTab);
         }
-        notify('Đã đồng bộ toàn hệ thống (Sản phẩm, Voucher, Excel, Đơn hàng) lên Cloud thành công!', 'success');
+        notify('Đã đồng bộ toàn hệ thống (Sản phẩm, Voucher, Excel, Đơn hàng) lên Cloud thành công.', 'success');
       } catch (err) {
         console.error('[Admin Cloud Sync Error]:', err);
         notify('Lỗi trong quá trình đồng bộ Cloud: ' + (err.message || err), 'error');
@@ -3540,7 +3419,7 @@
         if (svg) svg.classList.remove('animate-spin');
       }
 
-      notify('Đã cập nhật danh sách đơn hàng mới nhất!', 'success');
+      notify('Đã cập nhật danh sách đơn hàng mới nhất.', 'success');
     },
 
     // 10. Mở Modal Thêm / Sửa Sản phẩm
@@ -3681,28 +3560,28 @@
         badge = document.getElementById('editProdBadge').value.trim() || 'Bán chạy nhất';
       }
 
-      // Tự động gán badgeColor theo loại Mark chuẩn Bùi Thái AI Studio
+      // Tự động gán badgeColor theo loại Mark chuẩn Studio
       function getMarkBadgeColor(bName) {
         const b = (bName || '').toLowerCase();
         if (b.includes('hot') || b.includes('thịnh hành')) {
-          return 'bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 text-white shadow-rose-500/30';
+          return 'bg-rose-600 text-white';
         }
         if (b.includes('rẻ') || b.includes('tiết kiệm')) {
-          return 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-white shadow-emerald-500/30';
+          return 'bg-emerald-600 text-white';
         }
         if (b.includes('mới') || b.includes('new')) {
-          return 'bg-gradient-to-r from-amber-600 via-[#8A5F26] to-[#6e4b1e] text-white shadow-amber-500/30';
+          return 'bg-[#0071E3] text-white';
         }
         if (b.includes('khuyên dùng') || b.includes('pro') || b.includes('vip')) {
-          return 'bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-600 text-white shadow-violet-500/30';
+          return 'bg-slate-800 text-white';
         }
         if (b.includes('flash') || b.includes('sale')) {
-          return 'bg-gradient-to-r from-pink-600 via-rose-600 to-red-600 text-white shadow-pink-500/30';
+          return 'bg-rose-600 text-white';
         }
         if (b.includes('bán chạy') || b.includes('best seller')) {
-          return 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500 text-white shadow-amber-500/30';
+          return 'bg-amber-600 text-white';
         }
-        return 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-slate-800 text-white shadow-amber-900/25';
+        return 'bg-[#0071E3] text-white';
       }
 
       const badgeColor = getMarkBadgeColor(badge);
@@ -3718,7 +3597,7 @@
       const usageGuide = document.getElementById('editProdUsageGuide') ? document.getElementById('editProdUsageGuide').value.trim() : '';
 
       if (!name) {
-        notify('Vui lòng nhập tên sản phẩm!', 'warning');
+        notify('Vui lòng nhập tên sản phẩm.', 'warning');
         return;
       }
 
@@ -3846,8 +3725,8 @@
       }
       recordBroadcast('products_updated', `Lưu sản phẩm "${name}"`);
 
-      notify(`Đã lưu sản phẩm "${name.slice(0, 30)}..." và đồng bộ Cloud thành công!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`Đã lưu sản phẩm "${name.slice(0, 30)}..." và đồng bộ Cloud thành công.`, 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
     // 12. Xóa Sản Phẩm (Hạt Nhân Toàn Bộ Sản Phẩm)
@@ -4022,8 +3901,8 @@
       }
       recordBroadcast('orders_updated', `Duyệt đơn hàng ${orderCode}`);
 
-      notify(`Đã duyệt hoàn tất và kích hoạt license cho đơn hàng ${orderCode}!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`Đã duyệt hoàn tất và kích hoạt license cho đơn hàng ${orderCode}.`, 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
     // 15a. Từ chối đơn hàng & Tự động hoàn trả số lượng vào kho
@@ -4131,8 +4010,8 @@
       }
       recordBroadcast('orders_updated', `Từ chối đơn hàng #${orderCode}`);
 
-      notify(`Đã từ chối đơn hàng #${orderCode}!${restoredStockInfo}`, 'info');
-      notify('⚡ Đã cập nhật trạng thái đơn hàng và phát sóng Realtime Cloud thành công!', 'success');
+      notify(`Đã từ chối đơn hàng #${orderCode}.${restoredStockInfo}`, 'info');
+      notify('Đã cập nhật trạng thái đơn hàng và phát sóng Realtime Cloud thành công.', 'success');
     },
 
     // 15b. Mở Modal Admin Duyệt Đơn & Gửi Link Riêng Cho Khách
@@ -4222,8 +4101,8 @@
       }
       recordBroadcast('orders_updated', `Giao link đơn hàng #${orderCode}`);
 
-      notify(`Đã phê duyệt đơn hàng #${orderCode} và bàn giao link riêng thành công!`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`Đã phê duyệt đơn hàng #${orderCode} và bàn giao link riêng thành công.`, 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
     // Xóa vĩnh viễn đơn hàng
@@ -4259,10 +4138,10 @@
             tabBadge.textContent = window.ShopVietState.getOrders().length;
           }
 
-          notify(`Đã xóa đơn hàng #${orderId} thành công!`, 'success');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify(`Đã xóa đơn hàng #${orderId} thành công.`, 'success');
+          notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
         } else {
-          notify((res && res.message) || 'Không thể xóa đơn hàng!', 'error');
+          notify((res && res.message) || 'Không thể xóa đơn hàng.', 'error');
         }
       }
     },
@@ -4308,23 +4187,21 @@
     // 18. Lưu cấu hình VietQR
     testSepayWebhook: async function () {
       try {
-        const origin = window.location.origin || "https://www.promptmmo.store";
-        const res = await fetch(origin + "/api/sepay", { method: "GET", headers: { Accept: "application/json" } });
+        const origin = window.location.origin || 'https://www.promptmmo.store';
+        const res = await fetch(origin + '/api/sepay', { method: 'GET', headers: { Accept: 'application/json' } });
         const data = await res.json().catch(() => null);
         if (!res.ok || !data || !data.ok) {
-          alert("❌ Không đọc được cấu hình webhook SePay (HTTP " + res.status + ").");
+          notify('Không đọc được cấu hình webhook SePay (HTTP ' + res.status + ').', 'error');
           return;
         }
-        alert([
-          "Webhook: " + origin + "/api/sepay",
-          "API Key webhook: " + (data.webhookSecretConfigured ? "✅ đã cấu hình" : "❌ CHƯA cấu hình SEPAY_WEBHOOK_SECRET"),
-          "Ghi ví trên server: " + (data.walletWritesConfigured ? "✅ đã cấu hình" : "❌ CHƯA cấu hình FIREBASE_SERVICE_ACCOUNT"),
-          "Mã nạp: " + (data.memoFormat || "NAPXU + 8 ký tự"),
-          "",
-          "Để test thật: vào SePay → Webhooks → chọn webhook này → bấm Gửi thử (Test)."
-        ].join("\n"));
+        const statusMsg = [
+          'Webhook: ' + origin + '/api/sepay',
+          'Secret: ' + (data.webhookSecretConfigured ? 'OK' : 'Thiếu SEPAY_WEBHOOK_SECRET'),
+          'Wallet: ' + (data.walletWritesConfigured ? 'OK' : 'Thiếu FIREBASE_SERVICE_ACCOUNT')
+        ].join(' · ');
+        notify(statusMsg, data.webhookSecretConfigured && data.walletWritesConfigured ? 'success' : 'warning');
       } catch (err) {
-        alert("❌ Lỗi kết nối /api/sepay: " + err.message);
+        notify('Lỗi kết nối /api/sepay: ' + (err && err.message ? err.message : 'Unknown'), 'error');
       }
     },
 
@@ -4358,8 +4235,8 @@
       }
       recordBroadcast('vietqr_updated', `Cập nhật VietQR ${config.shortName} - ${config.accountNumber} (${config.accountName})`);
 
-      notify('Đã lưu cấu hình tài khoản VietQR thành công! Các luồng thanh toán sẽ cập nhật tức thì.', 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify('Đã lưu cấu hình tài khoản VietQR thành công. Các luồng thanh toán sẽ cập nhật tức thì.', 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
     },
 
     // 19. Bộ đếm thời gian phiên (Session Countdown)
@@ -4455,16 +4332,16 @@
       const singleUse = singleUseInput ? singleUseInput.checked : true;
 
       if (!code) {
-        notify('Vui lòng nhập mã voucher!', 'error');
+        notify('Vui lòng nhập mã voucher.', 'error');
         return;
       }
       if (rawVal <= 0) {
-        notify('Giá trị giảm phải lớn hơn 0!', 'error');
+        notify('Giá trị giảm phải lớn hơn 0.', 'error');
         return;
       }
 
       if (type === 'percent_discount' && (rawVal < 1 || rawVal > 99)) {
-        notify('Mã giảm theo phần trăm phải từ 1% đến 99%!', 'error');
+        notify('Mã giảm theo phần trăm phải từ 1% đến 99%.', 'error');
         return;
       }
 
@@ -4473,7 +4350,7 @@
         return v.code && v.code.trim().toUpperCase() === code;
       });
       if (exists) {
-        notify(`Mã voucher "${code}" đã tồn tại trong hệ thống!`, 'error');
+        notify(`Mã voucher "${code}" đã tồn tại trong hệ thống.`, 'error');
         return;
       }
 
@@ -4518,8 +4395,8 @@
       this.closeVoucherModal();
 
       const labelText = type === 'percent_discount' ? `${newVoucher.percent}%` : formatVND(rawVal);
-      notify(`Đã tạo thành công mã voucher "${code}" giảm ${labelText}! Tự động đồng bộ toàn hệ thống.`, 'success');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify(`Đã tạo thành công mã voucher "${code}" giảm ${labelText}. Tự động đồng bộ toàn hệ thống.`, 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
 
       // Phát sóng realtime broadcast nội bộ
       if (window.ShopVietState && window.ShopVietState.broadcastAdminChange) {
@@ -4566,11 +4443,11 @@
         tempTable.innerHTML = renderVoucherTableRow(newVoucher);
         const newRow = tempTable.firstElementChild;
         if (newRow) {
-          // Hiệu ứng highlight tím nhẹ êm ái
-          newRow.classList.add('bg-indigo-100/70', 'dark:bg-indigo-950/70', 'transition-all', 'duration-700');
+          // Highlight êm dịu
+          newRow.classList.add('bg-[#0071E3]/10', 'transition-colors', 'duration-200');
           tbody.prepend(newRow);
           setTimeout(() => {
-            newRow.classList.remove('bg-indigo-100/70', 'dark:bg-indigo-950/70');
+            newRow.classList.remove('bg-[#0071E3]/10');
           }, 1200);
         }
       } else {
@@ -4638,9 +4515,8 @@
           if (tbody) {
             const row = tbody.querySelector(`tr[data-code="${code.toLowerCase()}"]`);
             if (row) {
-              row.style.transition = 'all 0.3s ease';
+              row.style.transition = 'opacity 0.2s ease';
               row.style.opacity = '0';
-              row.style.transform = 'scale(0.95)';
               setTimeout(() => {
                 row.remove();
                 if (vouchers.length === 0) {
@@ -4649,22 +4525,22 @@
                       <td colspan="8" class="py-12 text-center text-slate-400">
                         <div class="flex flex-col items-center justify-center gap-2">
                           <svg class="w-10 h-10 text-slate-300 dark:text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12" /><rect x="2" y="7" width="20" height="5" /><line x1="12" y1="22" x2="12" y2="7" /></svg>
-                          <span>Chưa có mã voucher nào. Hãy bấm "+ Tạo mã mới" để thêm mã đầu tiên!</span>
+                          <span>Chưa có mã voucher nào. Bấm "+ Tạo mã mới" để thêm mã đầu tiên.</span>
                         </div>
                       </td>
                     </tr>
                   `;
                 }
-              }, 300);
+              }, 200);
             }
           } else if (currentActiveTab === 'vouchers') {
             this.switchTab('vouchers');
           }
 
-          notify(`Đã xóa mã voucher "${code}" thành công!`, 'info');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify(`Đã xóa mã voucher "${code}" thành công.`, 'info');
+          notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
         } else {
-          notify(res.message || 'Không thể xóa mã!', 'error');
+          notify(res.message || 'Không thể xóa mã.', 'error');
         }
       }
     },
@@ -4716,7 +4592,7 @@
         if (tabBadge) {
           tabBadge.textContent = list.length;
         }
-        notify('Đã khôi phục danh sách voucher mẫu ban đầu!', 'success');
+        notify('Đã khôi phục danh sách voucher mẫu ban đầu.', 'success');
       }
     },
 
@@ -4794,11 +4670,11 @@
       const notes = (notesInput ? notesInput.value : '').trim();
 
       if (!customerEmail || !customerEmail.includes('@')) {
-        notify('Vui lòng nhập địa chỉ email khách hàng hợp lệ!', 'error');
+        notify('Vui lòng nhập địa chỉ email khách hàng hợp lệ.', 'error');
         return;
       }
       if (!expireDate) {
-        notify('Vui lòng chọn ngày hết hạn cho khách!', 'error');
+        notify('Vui lòng chọn ngày hết hạn cho khách.', 'error');
         return;
       }
 
@@ -4815,10 +4691,10 @@
       if (window.ShopVietState) {
         if (scheduleId) {
           window.ShopVietState.updateSchedule(scheduleId, scheduleData);
-          notify(`Đã cập nhật lịch hẹn cho ${customerEmail}!`, 'success');
+          notify(`Đã cập nhật lịch hẹn cho ${customerEmail}.`, 'success');
         } else {
           window.ShopVietState.addSchedule(scheduleData);
-          notify(`Đã thêm ${customerEmail} vào bảng tính Excel!`, 'success');
+          notify(`Đã thêm ${customerEmail} vào bảng tính Excel.`, 'success');
         }
 
         if (typeof window.ShopVietState.pushAllToCloud === 'function') {
@@ -4833,7 +4709,7 @@
           });
         }
         recordBroadcast('schedules_updated', `Lịch hẹn: ${customerEmail}`);
-        notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+        notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
 
         this.closeScheduleModal();
         this.switchTab('schedules');
@@ -4868,10 +4744,10 @@
           if (tabBadge && window.ShopVietState.getSchedules) {
             tabBadge.textContent = window.ShopVietState.getSchedules().length;
           }
-          notify('Đã xóa lịch hẹn khỏi bảng Excel thành công!', 'info');
-          notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+          notify('Đã xóa lịch hẹn khỏi bảng Excel thành công.', 'info');
+          notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
         } else {
-          notify('Không tìm thấy lịch hẹn cần xóa!', 'error');
+          notify('Không tìm thấy lịch hẹn cần xóa.', 'error');
         }
       }
     },
@@ -4894,17 +4770,17 @@
       const expireDate = expireInput.value.trim();
 
       if (!customerEmail || !customerEmail.includes('@')) {
-        notify('Vui lòng nhập Email Khách Hàng hợp lệ!', 'error');
+        notify('Vui lòng nhập Email Khách Hàng hợp lệ.', 'error');
         customerInput.focus();
         return;
       }
       if (!managerEmail) {
-        notify('Vui lòng nhập Email Quản Lý / Slot!', 'error');
+        notify('Vui lòng nhập Email Quản Lý / Slot.', 'error');
         managerInput.focus();
         return;
       }
       if (!expireDate) {
-        notify('Vui lòng chọn Ngày Hết Hạn!', 'error');
+        notify('Vui lòng chọn Ngày Hết Hạn.', 'error');
         expireInput.focus();
         return;
       }
@@ -4912,7 +4788,7 @@
       const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
       const item = schedules.find(s => s.id === id);
       if (!item) {
-        notify('Không tìm thấy bản ghi cần lưu!', 'error');
+        notify('Không tìm thấy bản ghi cần lưu.', 'error');
         return;
       }
 
@@ -4939,13 +4815,13 @@
       // 2. Cập nhật badge hạn dùng tức thì trên giao diện
       this.updateScheduleDaysLeftBadge(id);
 
-      // 3. Hiệu ứng nút Lưu Đám Mây: Đang lưu... -> Đã lưu ✓
+      // 3. Hiệu ứng nút Lưu Đám Mây: Đang lưu... -> Đã lưu
       let originalBtnHTML = '';
       if (saveBtn) {
         originalBtnHTML = saveBtn.innerHTML;
         saveBtn.disabled = true;
         saveBtn.classList.remove('bg-emerald-50', 'text-emerald-700', 'dark:bg-emerald-950/60', 'dark:text-emerald-400', 'border-emerald-300', 'dark:border-emerald-800');
-        saveBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+        saveBtn.classList.add('bg-[#0071E3]', 'text-white', 'border-[#0071E3]');
         saveBtn.innerHTML = `
           <svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -4961,13 +4837,13 @@
           await window.ShopVietState.pushAllToCloud();
         }
         if (saveBtn) {
-          saveBtn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+          saveBtn.classList.remove('bg-[#0071E3]', 'text-white', 'border-[#0071E3]');
           saveBtn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-600');
           saveBtn.innerHTML = `
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"/>
             </svg>
-            <span>Đã lưu ✓</span>
+            <span>Đã lưu</span>
           `;
           setTimeout(() => {
             saveBtn.disabled = false;
@@ -4976,16 +4852,16 @@
             saveBtn.innerHTML = originalBtnHTML;
           }, 2000);
         }
-        notify(`Đã lưu "${managerEmail}" lên Đám mây Cloud thành công! Không bị mất dữ liệu khi đổi máy.`, 'success');
+        notify(`Đã lưu "${managerEmail}" lên Đám mây Cloud thành công. Không bị mất dữ liệu khi đổi máy.`, 'success');
       } catch (err) {
         console.warn('[Save Inline Schedule Cloud Sync Error]:', err);
         if (saveBtn) {
           saveBtn.disabled = false;
-          saveBtn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+          saveBtn.classList.remove('bg-[#0071E3]', 'text-white', 'border-[#0071E3]');
           saveBtn.classList.add('bg-emerald-50', 'text-emerald-700', 'dark:bg-emerald-950/60', 'dark:text-emerald-400', 'border-emerald-300', 'dark:border-emerald-800');
           saveBtn.innerHTML = originalBtnHTML;
         }
-        notify(`Đã lưu cục bộ! Đám mây sẽ tự đồng bộ khi có kết nối mạng.`, 'info');
+        notify(`Đã lưu cục bộ. Đám mây sẽ tự đồng bộ khi có kết nối mạng.`, 'info');
       }
     },
 
@@ -5003,11 +4879,11 @@
 
       let statusBadge = '';
       if (daysLeft > 7) {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Còn ${daysLeft} ngày</span>`;
+        statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">Còn ${daysLeft} ngày</span>`;
       } else if (daysLeft > 0) {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800 shadow-sm animate-pulse"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Sắp hết (${daysLeft} ngày)</span>`;
+        statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-300 dark:border-amber-800">Sắp hết (${daysLeft} ngày)</span>`;
       } else {
-        statusBadge = `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800 shadow-sm"><span class="w-2 h-2 rounded-full bg-rose-500"></span>Đã hết hạn</span>`;
+        statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold tabular-nums bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-300 dark:border-rose-800">Đã hết hạn</span>`;
       }
       badgeCell.innerHTML = statusBadge;
     },
@@ -5025,7 +4901,7 @@
             window.ShopVietState.pushAllToCloud().catch(function () {});
           }
           this.switchTab('schedules');
-          notify('Đã cập nhật Email Quản Lý!', 'success');
+          notify('Đã cập nhật Email Quản Lý.', 'success');
         }
       } else if (field === 'expireDate') {
         const newVal = prompt('Nhập Ngày Hết Hạn mới (YYYY-MM-DD):', item.expireDate);
@@ -5035,7 +4911,7 @@
             window.ShopVietState.pushAllToCloud().catch(function () {});
           }
           this.switchTab('schedules');
-          notify('Đã cập nhật Ngày Hết Hạn!', 'success');
+          notify('Đã cập nhật Ngày Hết Hạn.', 'success');
         }
       }
     },
@@ -5043,7 +4919,7 @@
     exportSchedulesToExcel: function () {
       const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
       if (!schedules || schedules.length === 0) {
-        notify('Danh sách khách hàng đang trống, không thể xuất file!', 'warning');
+        notify('Danh sách khách hàng đang trống, không thể xuất file.', 'warning');
         return;
       }
 
@@ -5090,7 +4966,7 @@
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
 
-      notify('Đã xuất danh sách khách hàng sang file Excel (CSV) thành công!', 'success');
+      notify('Đã xuất danh sách khách hàng sang file Excel (CSV) thành công.', 'success');
     },
 
     filterSchedules: function (query) {
@@ -5152,14 +5028,14 @@
         if (tabBadge) {
           tabBadge.textContent = DEFAULT_SCHEDULES.length;
         }
-        notify('Đã khôi phục danh sách hẹn lịch mẫu ban đầu!', 'success');
+        notify('Đã khôi phục danh sách hẹn lịch mẫu ban đầu.', 'success');
       }
     },
 
     // 21. Phát tín hiệu thử nghiệm Realtime Hub (Broadcast Test Ping)
     broadcastTestPing: function () {
       const payload = {
-        msg: 'Admin vừa gửi tín hiệu đồng bộ!',
+        msg: 'Admin vừa gửi tín hiệu đồng bộ.',
         time: new Date().toLocaleTimeString('vi-VN'),
         timestamp: Date.now()
       };
@@ -5175,8 +5051,8 @@
         } catch (e) {}
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'test_ping', payload: payload } }));
       }
-      recordBroadcast('test_ping', 'Admin vừa gửi tín hiệu đồng bộ!');
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      recordBroadcast('test_ping', 'Admin vừa gửi tín hiệu đồng bộ.');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
@@ -5204,7 +5080,7 @@
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'products_updated', payload: payload } }));
       }
       recordBroadcast('products_updated', `Đồng bộ toàn bộ ${prods.length} sản phẩm`);
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
@@ -5231,7 +5107,7 @@
         window.dispatchEvent(new CustomEvent('shopviet_realtime_change', { detail: { type: 'vietqr_updated', payload: payload } }));
       }
       recordBroadcast('vietqr_updated', `Cập nhật cấu hình VietQR (${config.accountName} - ${config.accountNumber})`);
-      notify('⚡ Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công! Mọi máy khách đang cập nhật tức thì.', 'success');
+      notify('Đã phát sóng dữ liệu thay đổi lên Cloud Realtime thành công. Mọi máy khách đang cập nhật tức thì.', 'success');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
@@ -5241,7 +5117,7 @@
     // 24. Xóa nhật ký phát sóng
     clearBroadcastHistory: function () {
       localStorage.removeItem('shopviet_broadcast_history');
-      notify('Đã xóa sạch nhật ký phát sóng!', 'info');
+      notify('Đã xóa sạch nhật ký phát sóng.', 'info');
       if (currentActiveTab === 'realtime') {
         const tabContent = document.getElementById('adminTabContent');
         if (tabContent) tabContent.innerHTML = renderTabRealtime();
@@ -5293,16 +5169,16 @@
         // 4. Ghi nhận nhật ký phát sóng trong Admin Portal
         recordBroadcast('master_publish', `Xuất bản toàn cầu (${prods.length} sản phẩm)`);
 
-        // 5. Hiển thị Toast / Modal thành công rực rỡ
-        notify('🎉 Đã phát sóng cập nhật dữ liệu tới toàn bộ các thiết bị đang truy cập!', 'success');
+        // 5. Hiển thị Toast thông báo thành công
+        notify('Đã phát sóng cập nhật dữ liệu tới toàn bộ các thiết bị đang truy cập.', 'success');
 
-        // Bắn CustomEvent shopviet_realtime_update để màn hình Home nhấp nháy phát sáng
+        // Bắn CustomEvent shopviet_realtime_update để màn hình Home đồng bộ
         if (typeof window !== 'undefined' && typeof window.dispatchEvent === 'function') {
           try {
             window.dispatchEvent(new CustomEvent('shopviet_realtime_update', {
               detail: {
                 type: 'master_publish',
-                message: '🔔 Cửa hàng vừa cập nhật sản phẩm mới!',
+                message: 'Cửa hàng vừa cập nhật sản phẩm mới.',
                 updatedAt: now
               }
             }));
@@ -5316,10 +5192,10 @@
         }
       } catch (err) {
         console.warn('[Admin Master Publish Error]:', err);
-        notify('Lỗi xuất bản lên Đám Mây: ' + (err.message || 'Vui lòng kiểm tra kết nối mạng!'), 'error');
+        notify('Lỗi xuất bản lên Đám Mây: ' + (err.message || 'Vui lòng kiểm tra kết nối mạng.'), 'error');
       } finally {
         if (btn) btn.disabled = false;
-        if (text) text.textContent = '🚀 XUẤT BẢN & ĐỒNG BỘ TOÀN CẦU TỨC THÌ';
+        if (text) text.textContent = 'XUẤT BẢN & ĐỒNG BỘ TOÀN CẦU TỨC THÌ';
         if (icon) icon.classList.remove('animate-spin');
       }
     },
@@ -5345,13 +5221,13 @@
     if (!textEl || !btnEl) return;
     if (status === 'granted') {
       textEl.textContent = 'Thông báo iPhone: Đang bật';
-      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
     } else if (status === 'denied') {
       textEl.textContent = 'Thông báo iPhone: Đã bị chặn';
-      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
+      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-300 border border-rose-200 dark:border-rose-800';
     } else {
       textEl.textContent = 'Bật Thông Báo iPhone';
-      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800';
+      btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer bg-[#0071E3]/10 text-[#0071E3] dark:text-[#3B9EFF] hover:bg-[#0071E3]/15 border border-[#0071E3]/25';
     }
   }
 
@@ -5379,7 +5255,7 @@
     if (Notification.permission === 'granted') {
       updateAdminNotifButtonUI('granted');
       if (userInitiated && window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast('🔔 Thông báo PWA iPhone Admin đã được bật sẵn sàng!', 'success');
+        window.ShopVietState.showToast('Thông báo PWA iPhone Admin đã được bật sẵn sàng.', 'success');
       }
       return true;
     }
@@ -5387,7 +5263,7 @@
     if (Notification.permission === 'denied') {
       updateAdminNotifButtonUI('denied');
       if (userInitiated && window.ShopVietState && window.ShopVietState.showToast) {
-        window.ShopVietState.showToast('Bạn đã tắt quyền thông báo trên trình duyệt. Hãy vào Cài đặt để cho phép!', 'warning');
+        window.ShopVietState.showToast('Bạn đã tắt quyền thông báo trên trình duyệt. Hãy vào Cài đặt để cho phép.', 'warning');
       }
       return false;
     }
@@ -5397,7 +5273,7 @@
       updateAdminNotifButtonUI(permission);
       if (permission === 'granted') {
         if (window.ShopVietState && window.ShopVietState.showToast) {
-          window.ShopVietState.showToast('🔔 Đã kích hoạt thông báo đơn hàng PWA cho iPhone của Admin!', 'success');
+          window.ShopVietState.showToast('Đã kích hoạt thông báo đơn hàng PWA cho iPhone của Admin.', 'success');
         }
         return true;
       }
@@ -5427,7 +5303,7 @@
       await window.triggerAdminOrderNotification(mockOrder, true);
     }
     if (window.ShopVietState && window.ShopVietState.showToast) {
-      window.ShopVietState.showToast('🚀 Đã gửi thông báo iPhone thử nghiệm! Hãy kiểm tra màn hình khóa hoặc Notification Center.', 'success');
+      window.ShopVietState.showToast('Đã gửi thông báo iPhone thử nghiệm. Hãy kiểm tra màn hình khóa hoặc Notification Center.', 'success');
     }
   };
 
@@ -5456,9 +5332,9 @@
       ? new Intl.NumberFormat('vi-VN').format(rawAmount) 
       : rawAmount;
 
-    // Tiêu đề & nội dung chuẩn chỉ theo yêu cầu
-    const title = `🔔 Đơn hàng mới ${orderCode} - Chờ duyệt!`;
-    const body = `Khách vừa báo chuyển khoản ${amountStr}đ. Bấm để vào duyệt đơn ngay!`;
+    // Tiêu đề & nội dung
+    const title = `Đơn hàng mới ${orderCode} - Chờ duyệt`;
+    const body = `Khách vừa báo chuyển khoản ${amountStr}đ. Bấm để vào duyệt đơn ngay.`;
 
     console.log('[PWA-Admin-Notify] Phát thông báo PWA Admin:', title, body);
 
@@ -5686,9 +5562,24 @@
       });
     }
 
+    function isAdminWatcherAllowed() {
+      const currentUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) ||
+                          (window.ShopVietState && window.ShopVietState.currentUser);
+      const email = currentUser && currentUser.email ? String(currentUser.email).trim().toLowerCase() : '';
+      const isUserAdmin = Boolean(currentUser && currentUser.isLoggedIn && (email === 'thaitraicau123@gmail.com' || currentUser.role === 'admin'));
+      const isPortalActive = Boolean(
+        (window.ShopVietViews && window.ShopVietViews.admin && window.ShopVietViews.admin.isOpen) ||
+        document.getElementById('adminPortalModal') ||
+        (document.getElementById('adminMount') && document.getElementById('adminMount').children.length > 0) ||
+        (typeof isAuthenticated === 'function' && isAuthenticated())
+      );
+      return isUserAdmin || isPortalActive;
+    }
+
     // Helper kiểm tra yêu cầu nạp xu mới và phát chuông cảnh báo cho Admin
     let lastPendingTopupSignature = '';
     function handleTopupsRealtimeUI(topups) {
+      if (!isAdminWatcherAllowed()) return;
       const isBannedUser = (email) => (window.ShopVietState && window.ShopVietState.isUserBanned && window.ShopVietState.isUserBanned(email)) || String(email || '').trim().toLowerCase() === 'thaihoa27492@gmail.com';
       const list = (Array.isArray(topups) ? topups : []).filter(t => t && !isBannedUser(t.userEmail));
       const pendingList = list.filter(t => t && t.status === 'pending_approval');
@@ -5709,7 +5600,7 @@
             }
             if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
               window.ShopVietState.showToast(
-                '💰 Yêu cầu nạp mới: +' + Number(t.amount || 0).toLocaleString('vi-VN') + ' Xu từ ' + (t.userEmail || 'Khách hàng'),
+                'Yêu cầu nạp mới: +' + Number(t.amount || 0).toLocaleString('vi-VN') + ' Xu từ ' + (t.userEmail || 'Khách hàng'),
                 'success'
               );
             }
@@ -5724,11 +5615,11 @@
       const badge = document.getElementById('adminOrderTabBadge');
       if (badge) {
         const orders = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.orders) || [];
-        badge.textContent = `${orders.length} đơn${pending > 0 ? ` • ${pending} chờ duyệt` : ''}`;
+        badge.textContent = `${orders.length} đơn${pending > 0 ? ` · ${pending} chờ duyệt` : ''}`;
         if (pending > 0) {
-          badge.className = 'px-2 py-0.5 rounded-md bg-amber-500 text-white font-extrabold animate-pulse shadow-xs text-[10px]';
+          badge.className = 'px-2 py-0.5 rounded-md bg-amber-600 text-white font-bold text-[10px] tabular-nums';
         } else {
-          badge.className = 'px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-[10px]';
+          badge.className = 'px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold text-[10px] tabular-nums';
         }
       }
       const banner = document.getElementById('adminTopupAlertBanner');
@@ -5758,9 +5649,10 @@
       }
     }
 
-    // 1. Quét định kỳ mỗi 3.5 giây khi Admin đang mở app (Đơn hàng & Yêu cầu nạp xu từ Firestore Cloud)
+    // 1. Quét định kỳ khi Admin đang mở app hoặc đã đăng nhập Admin
     setInterval(function () {
       if (typeof document !== 'undefined' && document.hidden) return;
+      if (!isAdminWatcherAllowed()) return;
       checkPendingReviewOrders();
       if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
         window.ShopVietState.syncTopupsFromCloud().then(function (topups) {
@@ -5769,12 +5661,16 @@
       }
     }, 60000);
 
-    // 2. Lắng nghe Firestore Realtime onSnapshot nếu có ShopVietFirebase
+    // 2. Lắng nghe Firestore Realtime onSnapshot nếu đang ở phiên Admin
+    let firestoreAdminListenerAttached = false;
     function setupFirestoreOrderListener() {
+      if (firestoreAdminListenerAttached || !isAdminWatcherAllowed()) return;
+      firestoreAdminListenerAttached = true;
       try {
         if (window.ShopVietFirebase && window.ShopVietFirebase.db && typeof window.ShopVietFirebase.db.collection === 'function') {
           window.ShopVietFirebase.db.collection('orders').where('status', '==', 'pending_review')
             .onSnapshot(function (snapshot) {
+              if (!isAdminWatcherAllowed()) return;
               snapshot.docChanges().forEach(function (change) {
                 if (change.type === 'added' || change.type === 'modified') {
                   const ord = change.doc.data();
@@ -5787,6 +5683,7 @@
         }
         if (window.ShopVietFirebase && typeof window.ShopVietFirebase.listenToTopups === 'function') {
           window.ShopVietFirebase.listenToTopups(function () {
+            if (!isAdminWatcherAllowed()) return;
             if (window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function') {
               window.ShopVietState.syncTopupsFromCloud(true).then(handleTopupsRealtimeUI).catch(function () {});
             }
@@ -5794,7 +5691,7 @@
         }
         if (window.ShopVietState && typeof window.ShopVietState.subscribe === 'function') {
           window.ShopVietState.subscribe(function (event, data) {
-            if (event === 'topups_updated') {
+            if (event === 'topups_updated' && isAdminWatcherAllowed()) {
               handleTopupsRealtimeUI(data);
             }
           });
@@ -5802,6 +5699,13 @@
       } catch (e) {
         console.warn('[AdminWatcher] Firestore setup warning:', e);
       }
+    }
+    if (window.ShopVietState && typeof window.ShopVietState.subscribe === 'function') {
+      window.ShopVietState.subscribe(function (event) {
+        if ((event === 'user_login' || event === 'user_updated') && isAdminWatcherAllowed()) {
+          setupFirestoreOrderListener();
+        }
+      });
     }
     setTimeout(setupFirestoreOrderListener, 1200);
 
@@ -5856,7 +5760,7 @@
         sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
         localStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com.', 'error');
         }
         return;
       }
@@ -5869,7 +5773,7 @@
       if (!isAllowedAdminUser()) {
         window.location.hash = '#home';
         if (window.ShopVietState && typeof window.ShopVietState.showToast === 'function') {
-          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com!', 'error');
+          window.ShopVietState.showToast('Truy cập bị từ chối: Cổng quản trị chỉ dành riêng cho tài khoản thaitraicau123@gmail.com.', 'error');
         }
         return;
       }

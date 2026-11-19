@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#090B10"/>
+      <stop offset="0.55" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#071B33"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(590 140) rotate(90) scale(260 320)">
+      <stop offset="0" stop-color="#3B9EFF" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#3B9EFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect width="800" height="500" fill="url(#glow)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#FFFFFF" stroke-opacity="0.14"/>
+  <rect x="80" y="88" width="150" height="32" rx="8" fill="#10B981" fill-opacity="0.16" stroke="#10B981" stroke-opacity="0.45"/>
+  <text x="155" y="109" text-anchor="middle" font-family="ui-monospace, monospace" font-size="14" font-weight="700" fill="#6EE7B7">FREE · 0 XU</text>
+  <text x="80" y="182" font-family="system-ui, sans-serif" font-size="38" font-weight="800" fill="#F5F5F7">Open-Design Starter Kit</text>
+  <text x="80" y="224" font-family="system-ui, sans-serif" font-size="18" fill="#9CA3AF">Liquid Glass CSS Tokens + .cursorrules + HTML Shell</text>
+  <rect x="80" y="268" width="300" height="142" rx="16" fill="#05070B" stroke="#FFFFFF" stroke-opacity="0.12"/>
+  <text x="104" y="304" font-family="ui-monospace, monospace" font-size="14" fill="#3B9EFF">OpenDesign_Starter_Free_Kit.zip</text>
+  <text x="104" y="334" font-family="ui-monospace, monospace" font-size="13" fill="#CBD5E1">├─ .cursorrules (AI Prompt Rules)</text>
+  <text x="104" y="360" font-family="ui-monospace, monospace" font-size="13" fill="#CBD5E1">├─ liquid-glass-tokens.css</text>
+  <text x="104" y="386" font-family="ui-monospace, monospace" font-size="13" fill="#CBD5E1">└─ index.html (Zero-Build Starter)</text>
+  <rect x="416" y="268" width="304" height="142" rx="16" fill="#0071E3" fill-opacity="0.14" stroke="#3B9EFF" stroke-opacity="0.35"/>
+  <circle cx="568" cy="332" r="36" fill="#0071E3" fill-opacity="0.3" stroke="#3B9EFF" stroke-width="2"/>
+  <path d="M568 314v28m0 0l-10-10m10 10l10-10M550 352h36" stroke="#F5F5F7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
