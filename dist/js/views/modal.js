@@ -3294,11 +3294,6 @@ ${escapeHTML(item.template || item.prompt || "")}
                             <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 6 tháng (1 đổi 1)</td>
                           </tr>
                           <tr>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">API Claude 100M Token (150k)</td>
-                            <td class="py-2 px-3">3 Ngày (72h) hoặc 100M Token</td>
-                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 1 đổi 1 suốt 3 ngày</td>
-                          </tr>
-                          <tr>
                             <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Antigravity Neon + Gemini Pro (129k–299k)</td>
                             <td class="py-2 px-3">3 Tháng</td>
                             <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Tùy gói: KBH / BH 1 tuần / BH 1 tháng / BH 3 tháng</td>
