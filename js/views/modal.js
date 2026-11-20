@@ -310,6 +310,8 @@ window.ShopVietViews.modal = (function () {
   function renderModalGuidePaneHTML(currentProduct, totalXu, userBalance, isSufficient, currentUser) {
     if (!currentProduct) return '';
     if (currentProduct.isService) {
+      const warrantyStr = String(currentProduct.warranty || 'Theo thông số gói');
+      const isNoWarranty = /kbh|không bảo hành/i.test(warrantyStr);
       return `
       <div class="space-y-4 text-xs">
         <div class="p-4 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/[0.08] border border-[#0071E3]/25 dark:border-[#3B9EFF]/25 space-y-2.5">
@@ -319,29 +321,31 @@ window.ShopVietViews.modal = (function () {
             </span>
             <div class="min-w-0">
               <div class="text-[10px] font-bold uppercase tracking-wider text-[#0071E3] dark:text-[#3B9EFF]">
-                Quy Trình Nâng Cấp Chính Chủ
+                Quy Trình Kích Hoạt &amp; Bàn Giao
               </div>
               <h4 class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">
-                Kích Hoạt Trực Tiếp Trên Email Canva Cá Nhân (1–5 Phút)
+                Đặt Đơn Bằng Ví Xu &amp; Nhận Hàng Qua Zalo 0986.019.623
               </h4>
             </div>
           </div>
           <div class="space-y-1.5 text-slate-700 dark:text-slate-300 text-[11.5px] leading-relaxed pl-1">
             <p><strong>Bước 1 — Thanh toán bằng Ví Xu:</strong> Nạp đủ Xu qua VietQR MBBank rồi bấm xác nhận đặt đơn gói <strong>${escapeHTML(currentProduct.name)}</strong>.</p>
-            <p><strong>Bước 2 — Gửi Mã Đơn &amp; Email Canva qua Zalo:</strong> Sau khi thanh toán thành công, hệ thống cấp ngay <strong>Mã Đơn Hàng</strong>, mẫu tin nhắn copy nhanh và nút nhắn trực tiếp Zalo <strong>0986.019.623</strong>.</p>
-            <p><strong>Bước 3 — Nhận lời mời &amp; Kích hoạt:</strong> Admin Bùi Thái gửi lời mời lớp Canva Edu vào đúng Email của bạn trong <strong>1–5 phút</strong>. Toàn bộ thiết kế cũ giữ nguyên 100%, không cần giao mật khẩu.</p>
+            <p><strong>Bước 2 — Gửi Mã Đơn &amp; Email qua Zalo:</strong> Sau khi thanh toán, hệ thống cấp <strong>Mã Đơn Hàng</strong>, mẫu tin nhắn copy nhanh và nút nhắn trực tiếp Zalo <strong>0986.019.623</strong>.</p>
+            <p><strong>Bước 3 — Kích hoạt / Bàn giao:</strong> Admin xử lý kích hoạt chính chủ hoặc bàn giao tài khoản/slot trong giờ hỗ trợ (<strong>08:00 – 24:00</strong>, thường 15–30 phút khi online, tối đa trong ngày).</p>
           </div>
         </div>
 
         <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-900/10 dark:border-white/10 text-[11px] space-y-1.5">
           <div class="flex items-center justify-between font-bold text-slate-900 dark:text-white">
-            <span>Chế Độ Bảo Hành &amp; Hỗ Trợ 24/7</span>
-            <span class="text-emerald-600 dark:text-emerald-400">${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}</span>
+            <span>Chế Độ Bảo Hành &amp; Hỗ Trợ</span>
+            <span class="${isNoWarranty ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">${escapeHTML(warrantyStr)}</span>
           </div>
           <p class="text-slate-500 dark:text-slate-400 text-[10.5px] leading-relaxed">
-            • Thời hạn sử dụng: <strong>${escapeHTML(currentProduct.duration || '1 Năm (12 Tháng)')}</strong>.<br>
-            • Bảo hành <strong>3 tháng</strong> (1 đổi 1 / cấp lại slot Edu mới miễn phí nếu gặp sự cố mất quyền trong 3 tháng đầu).<br>
-            • Hỗ trợ trực tiếp qua Zalo CSKH: <strong class="text-[#0071E3] dark:text-[#3B9EFF]">0986.019.623 (Bùi Thái Studio)</strong>.
+            • Thời hạn gói: <strong>${escapeHTML(currentProduct.duration || 'Theo mô tả gói')}</strong>.<br>
+            • Chế độ bảo hành: ${isNoWarranty
+              ? '<strong>Gói KBH (Không bảo hành)</strong> — Shop hỗ trợ kích hoạt/bàn giao lên gói thành công ngay lúc giao nhận; sau khi kích hoạt thành công không áp dụng bảo hành 1 đổi 1.'
+              : `<strong>${escapeHTML(warrantyStr)}</strong> — hỗ trợ 1 đổi 1 miễn phí nếu phát sinh lỗi hệ thống trong thời gian bảo hành.`}<br>
+            • Kênh hỗ trợ chính thức: Zalo <strong class="text-[#0071E3] dark:text-[#3B9EFF]">0986.019.623 (Bùi Thái Studio)</strong>.
           </p>
         </div>
       </div>`;
@@ -1001,12 +1005,12 @@ window.ShopVietViews.modal = (function () {
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200/70 dark:border-slate-800/80">
                     ${isServiceProduct ? `
                       <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
-                        <div class="font-bold text-slate-800 dark:text-slate-200">Có cần gửi mật khẩu Canva không?</div>
-                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Không. Chỉ cần gửi đúng Email Canva qua Zalo 0986.019.623 để nhận lời mời nâng cấp chính chủ, giữ nguyên thiết kế cũ.</p>
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Thời gian kích hoạt &amp; bàn giao?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Thanh toán xong gửi Mã đơn qua Zalo 0986.019.623 (08:00–24:00), thường xử lý trong 15–30 phút (tối đa trong ngày).</p>
                       </div>
                       <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
-                        <div class="font-bold text-slate-800 dark:text-slate-200">Chế độ bảo hành 3 tháng thế nào?</div>
-                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">Thời hạn dùng 1 năm, bảo hành 3 tháng đầu 1 đổi 1 (cấp lại slot Edu mới miễn phí ngay nếu phát sinh tụt gói).</p>
+                        <div class="font-bold text-slate-800 dark:text-slate-200">Chính sách bảo hành gói này?</div>
+                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">${escapeHTML(currentProduct.duration || 'Theo gói')} · ${escapeHTML(currentProduct.warranty || 'Theo thông số gói')}.</p>
                       </div>
                     ` : `
                       <div class="p-2.5 rounded-xl bg-slate-50/90 dark:bg-[#0B0F17] border border-slate-200/70 dark:border-slate-800/80 space-y-0.5">
@@ -2347,7 +2351,8 @@ window.ShopVietViews.modal = (function () {
                   <button
                     type="button"
                     data-order-id="${escapeHTML(order.id || '')}"
-                    onclick="var oid=this.getAttribute('data-order-id')||'';var msg='Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Edu 1 Năm (BH 3 tháng). Mã đơn: '+oid+' | Email Canva của mình: ';if(navigator.clipboard){navigator.clipboard.writeText(msg);}if(window.ShopVietState&&window.ShopVietState.showToast){window.ShopVietState.showToast('Đã sao chép mẫu tin nhắn. Hãy dán vào Zalo và điền Email Canva của bạn.','success');}"
+                    data-product-name="${escapeHTML(order.productName || prod.name || '')}"
+                    onclick="var oid=this.getAttribute('data-order-id')||'';var pname=this.getAttribute('data-product-name')||'';var msg='Chào Bùi Thái Studio, mình vừa thanh toán gói '+pname+'. Mã đơn: '+oid+' | Email/Thông tin nhận hàng: ';if(navigator.clipboard){navigator.clipboard.writeText(msg);}if(window.ShopVietState&&window.ShopVietState.showToast){window.ShopVietState.showToast('Đã sao chép mẫu tin nhắn. Hãy dán vào Zalo 0986.019.623 và điền Email của bạn.','success');}"
                     class="px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-900/10 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold text-xs transition cursor-pointer"
                   >
                     Copy Mẫu Tin Nhắn
@@ -3292,6 +3297,16 @@ ${escapeHTML(item.template || item.prompt || "")}
                             <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">API Claude 100M Token (150k)</td>
                             <td class="py-2 px-3">3 Ngày (72h) hoặc 100M Token</td>
                             <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 1 đổi 1 suốt 3 ngày</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Antigravity Neon + Gemini Pro (129k–299k)</td>
+                            <td class="py-2 px-3">3 Tháng</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Tùy gói: KBH / BH 1 tuần / BH 1 tháng / BH 3 tháng</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Gemini Pro + 5TB Drive — KBH (39k / 79k)</td>
+                            <td class="py-2 px-3">3 Tháng / 1 Năm</td>
+                            <td class="py-2 px-3 text-amber-600 dark:text-amber-400 font-semibold">Gói KBH (Bao kích hoạt thành công lúc giao)</td>
                           </tr>
                           <tr>
                             <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Source Code, Template &amp; Prompt</td>

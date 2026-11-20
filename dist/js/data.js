@@ -11,12 +11,576 @@ window.ShopVietData = {
       'metropolis-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><path d="M12 22V12"/><path d="M21 7l-9 5-9-5"/></svg>',
       'diet-soda-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 2h6"/></svg>',
       'flowstate-webgl': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12c2.5-3 5.5-3 8 0s5.5 3 8 0 4-3 4-3"/><path d="M2 17c2.5-3 5.5-3 8 0s5.5 3 8 0"/></svg>',
+      'antigravity': '<svg class="w-5 h-5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3L4 20c2.5-1.5 5-4 8-4s5.5 2.5 8 4L12 3z"/></svg>',
+      'gemini': '<svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c0 5.5-4.5 10-10 10 5.5 0 10 4.5 10 10 0-5.5 4.5-10 10-10-5.5 0-10-4.5-10-10z"/></svg>',
       'canva': '<svg class="w-5 h-5 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15 9.5a3.5 3.5 0 1 0 0 5"/></svg>',
       'game': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="15.5" cy="11" r="1"/><circle cx="17.5" cy="13" r="1"/></svg>'
     };
     return icons[iconType] || '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15 9 22 9 17 14 19 21 12 17 5 21 7 14 2 9 9 9 12 2"/></svg>';
   },
   "products": [
+  {
+    "id": "service-antigravity-neon-3m-kbh",
+    "isService": true,
+    "name": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH",
+    "module": "ANTIGRAVITY NEON · 3 THÁNG · KBH",
+    "tag": "Nâng Cấp Chính Chủ",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "KBH · 129K",
+    "badgeColor": "bg-sky-600 text-white",
+    "price": 129000,
+    "oldPrice": 199000,
+    "discount": "-35%",
+    "stock": 999,
+    "duration": "3 Tháng",
+    "warranty": "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
+    "rating": 5,
+    "soldCount": 25,
+    "image": "/img/antigravity-neon-3m-kbh.svg",
+    "imageUrl": "/img/antigravity-neon-3m-kbh.svg",
+    "iconType": "antigravity",
+    "ctaText": "Nâng Cấp (129k Xu)",
+    "desc": "DỊCH VỤ ANTIGRAVITY NEON + FULL QUYỀN LỢI GEMINI PRO 3 THÁNG – UP CHÍNH CHỦ – KBH: Nâng cấp trực tiếp chính chủ trọn bộ Antigravity Neon kết hợp Full quyền lợi Gemini Pro trong 3 Tháng. Sử dụng các model AI cao cấp nhất, Deep Research, tích hợp Google Workspace và coding agent tốc độ cao. Chế độ: Không bảo hành (KBH · Bao kích hoạt lúc giao). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email cần nâng cấp.",
+    "tags": [
+      "Antigravity Neon",
+      "Gemini Pro",
+      "Up Chính Chủ",
+      "Nâng Cấp Chính Chủ",
+      "KBH"
+    ],
+    "features": [
+      "Up trực tiếp chính chủ trên tài khoản Google / Email của bạn, riêng tư & ổn định",
+      "Trọn bộ quyền lợi Antigravity Neon + Full quyền lợi Gemini Pro suốt 3 tháng",
+      "Truy cập model AI cao cấp, Deep Research, xử lý context lớn & hỗ trợ lập trình",
+      "Gói KBH (Không bảo hành) giá siêu tiết kiệm — bao kích hoạt lên gói thành công lúc giao nhận",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt (08:00–24:00)"
+    ],
+    "highlights": [
+      "Up chính chủ trực tiếp trên tài khoản của bạn",
+      "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng",
+      "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
+      "Hỗ trợ kích hoạt & đối soát nhanh qua Zalo 0986.019.623"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Free giới hạn",
+        "summary": "Bị bóp quota nhanh, không dùng được đầy đủ tính năng Antigravity Neon và Gemini Pro cao cấp.",
+        "points": [
+          "Giới hạn lượt dùng model thông minh và cửa sổ ngữ cảnh",
+          "Thiếu quyền lợi Gemini Pro & công cụ AI chuyên sâu",
+          "Chi phí đăng ký lẻ chính hãng hàng tháng cao"
+        ]
+      },
+      "after": {
+        "title": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH",
+        "summary": "Sở hữu đầy đủ Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng chỉ 129k Xu (Không bảo hành (KBH · Bao kích hoạt lúc giao)).",
+        "points": [
+          "Up chính chủ trực tiếp trên tài khoản cá nhân, giữ nguyên dữ liệu",
+          "Full quyền lợi Antigravity Neon + Gemini Pro mượt mà",
+          "Mức giá KBH tiết kiệm nhất hệ thống"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-antigravity-neon-3m-kbh.md",
+      "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **129.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email tài khoản cần nâng cấp**: (Điền chính xác Email của bạn)\n\n---\n\n## BƯỚC 2: KÍCH HOẠT CHÍNH CHỦ\n1. Admin tiếp nhận đơn và tiến hành nâng cấp gói **Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng** cho tài khoản của bạn.\n2. Thời gian xử lý trong giờ hỗ trợ (**08:00 – 24:00**): thường từ **15–30 phút** khi online, tối đa trong ngày.\n\n---\n\n## BƯỚC 3: THỜI HẠN & BẢO HÀNH\n- **Thời hạn gói**: 3 Tháng.\n- **Chế độ KBH (Không bảo hành)**: Đây là gói giá tối ưu không kèm bảo hành; Shop cam kết **kích hoạt/bàn giao lên gói thành công 100%** lúc giao nhận.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Chính sách thời hạn & bảo hành của gói",
+          "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Không bảo hành (KBH · Bao kích hoạt lúc giao)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Chính sách thời hạn & bảo hành của gói",
+        "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – KBH\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Không bảo hành (KBH · Bao kích hoạt lúc giao)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+      }
+    ]
+  },
+  {
+    "id": "service-antigravity-neon-3m-bh1w",
+    "isService": true,
+    "name": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần",
+    "module": "ANTIGRAVITY NEON · 3 THÁNG · BH 1 TUẦN",
+    "tag": "Nâng Cấp Chính Chủ",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "BH 1 TUẦN · 169K",
+    "badgeColor": "bg-indigo-600 text-white",
+    "price": 169000,
+    "oldPrice": 249000,
+    "discount": "-32%",
+    "stock": 999,
+    "duration": "3 Tháng",
+    "warranty": "Bảo hành 1 tuần (1 đổi 1)",
+    "rating": 5,
+    "soldCount": 9,
+    "image": "/img/antigravity-neon-3m-bh1w.svg",
+    "imageUrl": "/img/antigravity-neon-3m-bh1w.svg",
+    "iconType": "antigravity",
+    "ctaText": "Nâng Cấp (169k Xu)",
+    "desc": "DỊCH VỤ ANTIGRAVITY NEON + FULL QUYỀN LỢI GEMINI PRO 3 THÁNG – UP CHÍNH CHỦ – BH 1 TUẦN: Nâng cấp trực tiếp chính chủ trọn bộ Antigravity Neon kết hợp Full quyền lợi Gemini Pro trong 3 Tháng. Sử dụng các model AI cao cấp nhất, Deep Research, tích hợp Google Workspace và coding agent tốc độ cao. Chế độ: Bảo hành 1 tuần (1 đổi 1). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email cần nâng cấp.",
+    "tags": [
+      "Antigravity Neon",
+      "Gemini Pro",
+      "Up Chính Chủ",
+      "Nâng Cấp Chính Chủ",
+      "Bảo hành 1 tuần (1 đổi 1)"
+    ],
+    "features": [
+      "Up trực tiếp chính chủ trên tài khoản Google / Email của bạn, riêng tư & ổn định",
+      "Trọn bộ quyền lợi Antigravity Neon + Full quyền lợi Gemini Pro suốt 3 tháng",
+      "Truy cập model AI cao cấp, Deep Research, xử lý context lớn & hỗ trợ lập trình",
+      "Chế độ bảo hành rõ ràng: Bảo hành 1 tuần (1 đổi 1) (hỗ trợ xử lý nhanh qua Zalo 0986.019.623)",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt (08:00–24:00)"
+    ],
+    "highlights": [
+      "Up chính chủ trực tiếp trên tài khoản của bạn",
+      "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng",
+      "Bảo hành 1 tuần (1 đổi 1)",
+      "Hỗ trợ kích hoạt & đối soát nhanh qua Zalo 0986.019.623"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Free giới hạn",
+        "summary": "Bị bóp quota nhanh, không dùng được đầy đủ tính năng Antigravity Neon và Gemini Pro cao cấp.",
+        "points": [
+          "Giới hạn lượt dùng model thông minh và cửa sổ ngữ cảnh",
+          "Thiếu quyền lợi Gemini Pro & công cụ AI chuyên sâu",
+          "Chi phí đăng ký lẻ chính hãng hàng tháng cao"
+        ]
+      },
+      "after": {
+        "title": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần",
+        "summary": "Sở hữu đầy đủ Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng chỉ 169k Xu (Bảo hành 1 tuần (1 đổi 1)).",
+        "points": [
+          "Up chính chủ trực tiếp trên tài khoản cá nhân, giữ nguyên dữ liệu",
+          "Full quyền lợi Antigravity Neon + Gemini Pro mượt mà",
+          "An tâm sử dụng với chính sách Bảo hành 1 tuần (1 đổi 1)"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-antigravity-neon-3m-bh1w.md",
+      "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **169.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email tài khoản cần nâng cấp**: (Điền chính xác Email của bạn)\n\n---\n\n## BƯỚC 2: KÍCH HOẠT CHÍNH CHỦ\n1. Admin tiếp nhận đơn và tiến hành nâng cấp gói **Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng** cho tài khoản của bạn.\n2. Thời gian xử lý trong giờ hỗ trợ (**08:00 – 24:00**): thường từ **15–30 phút** khi online, tối đa trong ngày.\n\n---\n\n## BƯỚC 3: THỜI HẠN & BẢO HÀNH\n- **Thời hạn gói**: 3 Tháng.\n- **Chế độ bảo hành**: **Bảo hành 1 tuần (1 đổi 1)**. Nếu phát sinh lỗi mất quyền gói từ phía hệ thống trong thời gian bảo hành, nhắn Zalo **0986.019.623** kèm Mã đơn để được xử lý 1 đổi 1.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Chính sách thời hạn & bảo hành của gói",
+          "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành 1 tuần (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Chính sách thời hạn & bảo hành của gói",
+        "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tuần\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành 1 tuần (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+      }
+    ]
+  },
+  {
+    "id": "service-antigravity-neon-3m-bh1m",
+    "isService": true,
+    "name": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng",
+    "module": "ANTIGRAVITY NEON · 3 THÁNG · BH 1 THÁNG",
+    "tag": "Nâng Cấp Chính Chủ",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "HOT · BH 1 THÁNG · 199K",
+    "badgeColor": "bg-purple-600 text-white",
+    "price": 199000,
+    "oldPrice": 299000,
+    "discount": "-33%",
+    "stock": 999,
+    "duration": "3 Tháng",
+    "warranty": "Bảo hành 1 tháng (1 đổi 1)",
+    "rating": 5,
+    "soldCount": 23,
+    "image": "/img/antigravity-neon-3m-bh1m.svg",
+    "imageUrl": "/img/antigravity-neon-3m-bh1m.svg",
+    "iconType": "antigravity",
+    "ctaText": "Nâng Cấp (199k Xu)",
+    "desc": "DỊCH VỤ ANTIGRAVITY NEON + FULL QUYỀN LỢI GEMINI PRO 3 THÁNG – UP CHÍNH CHỦ – BH 1 THÁNG: Nâng cấp trực tiếp chính chủ trọn bộ Antigravity Neon kết hợp Full quyền lợi Gemini Pro trong 3 Tháng. Sử dụng các model AI cao cấp nhất, Deep Research, tích hợp Google Workspace và coding agent tốc độ cao. Chế độ: Bảo hành 1 tháng (1 đổi 1). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email cần nâng cấp.",
+    "tags": [
+      "Antigravity Neon",
+      "Gemini Pro",
+      "Up Chính Chủ",
+      "Nâng Cấp Chính Chủ",
+      "Bảo hành 1 tháng (1 đổi 1)"
+    ],
+    "features": [
+      "Up trực tiếp chính chủ trên tài khoản Google / Email của bạn, riêng tư & ổn định",
+      "Trọn bộ quyền lợi Antigravity Neon + Full quyền lợi Gemini Pro suốt 3 tháng",
+      "Truy cập model AI cao cấp, Deep Research, xử lý context lớn & hỗ trợ lập trình",
+      "Chế độ bảo hành rõ ràng: Bảo hành 1 tháng (1 đổi 1) (hỗ trợ xử lý nhanh qua Zalo 0986.019.623)",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt (08:00–24:00)"
+    ],
+    "highlights": [
+      "Up chính chủ trực tiếp trên tài khoản của bạn",
+      "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng",
+      "Bảo hành 1 tháng (1 đổi 1)",
+      "Hỗ trợ kích hoạt & đối soát nhanh qua Zalo 0986.019.623"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Free giới hạn",
+        "summary": "Bị bóp quota nhanh, không dùng được đầy đủ tính năng Antigravity Neon và Gemini Pro cao cấp.",
+        "points": [
+          "Giới hạn lượt dùng model thông minh và cửa sổ ngữ cảnh",
+          "Thiếu quyền lợi Gemini Pro & công cụ AI chuyên sâu",
+          "Chi phí đăng ký lẻ chính hãng hàng tháng cao"
+        ]
+      },
+      "after": {
+        "title": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng",
+        "summary": "Sở hữu đầy đủ Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng chỉ 199k Xu (Bảo hành 1 tháng (1 đổi 1)).",
+        "points": [
+          "Up chính chủ trực tiếp trên tài khoản cá nhân, giữ nguyên dữ liệu",
+          "Full quyền lợi Antigravity Neon + Gemini Pro mượt mà",
+          "An tâm sử dụng với chính sách Bảo hành 1 tháng (1 đổi 1)"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-antigravity-neon-3m-bh1m.md",
+      "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **199.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email tài khoản cần nâng cấp**: (Điền chính xác Email của bạn)\n\n---\n\n## BƯỚC 2: KÍCH HOẠT CHÍNH CHỦ\n1. Admin tiếp nhận đơn và tiến hành nâng cấp gói **Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng** cho tài khoản của bạn.\n2. Thời gian xử lý trong giờ hỗ trợ (**08:00 – 24:00**): thường từ **15–30 phút** khi online, tối đa trong ngày.\n\n---\n\n## BƯỚC 3: THỜI HẠN & BẢO HÀNH\n- **Thời hạn gói**: 3 Tháng.\n- **Chế độ bảo hành**: **Bảo hành 1 tháng (1 đổi 1)**. Nếu phát sinh lỗi mất quyền gói từ phía hệ thống trong thời gian bảo hành, nhắn Zalo **0986.019.623** kèm Mã đơn để được xử lý 1 đổi 1.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Chính sách thời hạn & bảo hành của gói",
+          "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành 1 tháng (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Chính sách thời hạn & bảo hành của gói",
+        "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 1 tháng\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành 1 tháng (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+      }
+    ]
+  },
+  {
+    "id": "service-antigravity-neon-3m-bh3m",
+    "isService": true,
+    "name": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng",
+    "module": "ANTIGRAVITY NEON · 3 THÁNG · BH 3 THÁNG",
+    "tag": "Nâng Cấp Chính Chủ",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "VIP · BH 3 THÁNG · 299K",
+    "badgeColor": "bg-emerald-600 text-white",
+    "price": 299000,
+    "oldPrice": 450000,
+    "discount": "-34%",
+    "stock": 999,
+    "duration": "3 Tháng",
+    "warranty": "Bảo hành Full 3 tháng (1 đổi 1)",
+    "rating": 5,
+    "soldCount": 12,
+    "image": "/img/antigravity-neon-3m-bh3m.svg",
+    "imageUrl": "/img/antigravity-neon-3m-bh3m.svg",
+    "iconType": "antigravity",
+    "ctaText": "Nâng Cấp (299k Xu)",
+    "desc": "DỊCH VỤ ANTIGRAVITY NEON + FULL QUYỀN LỢI GEMINI PRO 3 THÁNG – UP CHÍNH CHỦ – BH 3 THÁNG: Nâng cấp trực tiếp chính chủ trọn bộ Antigravity Neon kết hợp Full quyền lợi Gemini Pro trong 3 Tháng. Sử dụng các model AI cao cấp nhất, Deep Research, tích hợp Google Workspace và coding agent tốc độ cao. Chế độ: Bảo hành Full 3 tháng (1 đổi 1). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email cần nâng cấp.",
+    "tags": [
+      "Antigravity Neon",
+      "Gemini Pro",
+      "Up Chính Chủ",
+      "Nâng Cấp Chính Chủ",
+      "Bảo hành Full 3 tháng (1 đổi 1)"
+    ],
+    "features": [
+      "Up trực tiếp chính chủ trên tài khoản Google / Email của bạn, riêng tư & ổn định",
+      "Trọn bộ quyền lợi Antigravity Neon + Full quyền lợi Gemini Pro suốt 3 tháng",
+      "Truy cập model AI cao cấp, Deep Research, xử lý context lớn & hỗ trợ lập trình",
+      "Chế độ bảo hành rõ ràng: Bảo hành Full 3 tháng (1 đổi 1) (hỗ trợ xử lý nhanh qua Zalo 0986.019.623)",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt (08:00–24:00)"
+    ],
+    "highlights": [
+      "Up chính chủ trực tiếp trên tài khoản của bạn",
+      "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng",
+      "Bảo hành Full 3 tháng (1 đổi 1)",
+      "Hỗ trợ kích hoạt & đối soát nhanh qua Zalo 0986.019.623"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Free giới hạn",
+        "summary": "Bị bóp quota nhanh, không dùng được đầy đủ tính năng Antigravity Neon và Gemini Pro cao cấp.",
+        "points": [
+          "Giới hạn lượt dùng model thông minh và cửa sổ ngữ cảnh",
+          "Thiếu quyền lợi Gemini Pro & công cụ AI chuyên sâu",
+          "Chi phí đăng ký lẻ chính hãng hàng tháng cao"
+        ]
+      },
+      "after": {
+        "title": "Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng",
+        "summary": "Sở hữu đầy đủ Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng chỉ 299k Xu (Bảo hành Full 3 tháng (1 đổi 1)).",
+        "points": [
+          "Up chính chủ trực tiếp trên tài khoản cá nhân, giữ nguyên dữ liệu",
+          "Full quyền lợi Antigravity Neon + Gemini Pro mượt mà",
+          "An tâm sử dụng với chính sách Bảo hành Full 3 tháng (1 đổi 1)"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-antigravity-neon-3m-bh3m.md",
+      "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **299.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email tài khoản cần nâng cấp**: (Điền chính xác Email của bạn)\n\n---\n\n## BƯỚC 2: KÍCH HOẠT CHÍNH CHỦ\n1. Admin tiếp nhận đơn và tiến hành nâng cấp gói **Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng** cho tài khoản của bạn.\n2. Thời gian xử lý trong giờ hỗ trợ (**08:00 – 24:00**): thường từ **15–30 phút** khi online, tối đa trong ngày.\n\n---\n\n## BƯỚC 3: THỜI HẠN & BẢO HÀNH\n- **Thời hạn gói**: 3 Tháng.\n- **Chế độ bảo hành**: **Bảo hành Full 3 tháng (1 đổi 1)**. Nếu phát sinh lỗi mất quyền gói từ phía hệ thống trong thời gian bảo hành, nhắn Zalo **0986.019.623** kèm Mã đơn để được xử lý 1 đổi 1.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Chính sách thời hạn & bảo hành của gói",
+          "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành Full 3 tháng (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email Google/Gmail cần nâng cấp chính chủ: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ kích hoạt giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email Google cần up chính chủ rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Chính sách thời hạn & bảo hành của gói",
+        "template": "Sản phẩm: Antigravity Neon + Full quyền lợi Gemini Pro 3 tháng – Up Chính Chủ – BH 3 tháng\nThời hạn sử dụng: 3 Tháng\nChế độ bảo hành: Bảo hành Full 3 tháng (1 đổi 1)\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Lưu lại Mã đơn hàng (#DJ2026...) trong mục Lịch sử đơn hàng để đối chiếu nhanh."
+      }
+    ]
+  },
+  {
+    "id": "service-gemini-pro-5tb-3m-kbh",
+    "isService": true,
+    "name": "[3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
+    "module": "GEMINI PRO + 5TB · 3 THÁNG · KBH",
+    "tag": "Tài Khoản & AI",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "TIẾT KIỆM · 39K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 39000,
+    "oldPrice": 99000,
+    "discount": "-61%",
+    "stock": 999,
+    "duration": "3 Tháng",
+    "warranty": "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
+    "rating": 5,
+    "soldCount": 15,
+    "image": "/img/gemini-pro-5tb-3m-kbh.svg",
+    "imageUrl": "/img/gemini-pro-5tb-3m-kbh.svg",
+    "iconType": "gemini",
+    "ctaText": "Mua Ngay (39k Xu)",
+    "desc": "GÓI TIẾT KIỆM [3 THÁNG] FULL QUYỀN LỢI GEMINI PRO + 5TB DRIVE – KBH: Sở hữu trọn vẹn Full quyền lợi Google Gemini Pro kết hợp dung lượng lưu trữ khổng lồ 5TB Google Drive trong thời hạn 3 Tháng. Mức giá siêu rẻ (gói KBH — không bảo hành, bao kích hoạt lên gói thành công lúc bàn giao). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận gói.",
+    "tags": [
+      "Gemini Pro",
+      "5TB Drive",
+      "Google One",
+      "KBH",
+      "Tài Khoản & AI"
+    ],
+    "features": [
+      "Thời hạn gói 3 Tháng với đầy đủ quyền lợi Gemini Pro (model cao cấp, Deep Research, Workspace AI)",
+      "Dung lượng lưu trữ Google Drive / Google One lên tới 5TB siêu rộng rãi",
+      "Mức giá tiết kiệm tối đa (Gói KBH — Không bảo hành, bao kích hoạt thành công khi bàn giao)",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để xử lý nhanh trong ngày"
+    ],
+    "highlights": [
+      "Full quyền lợi Gemini Pro + 5TB Google Drive",
+      "Thời hạn 3 Tháng · Giá siêu tiết kiệm",
+      "Bao kiểm tra & kích hoạt thành công lúc giao nhận",
+      "Hỗ trợ giao nhanh qua Zalo 0986.019.623 (08:00–24:00)"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Google Free 15GB",
+        "summary": "Nhanh chóng đầy bộ nhớ 15GB Drive/Gmail và bị giới hạn các tính năng Gemini Pro cao cấp.",
+        "points": [
+          "15GB Drive nhanh chóng báo đầy không nhận được mail/ảnh",
+          "Không có Gemini Pro tích hợp Docs, Gmail, Deep Research",
+          "Mua gói 2TB–5TB chính hãng rất đắt đỏ"
+        ]
+      },
+      "after": {
+        "title": "[3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
+        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 3 Tháng chỉ với 39k Xu.",
+        "points": [
+          "Thoải mái lưu trữ tài liệu, video, backup với 5TB Drive",
+          "Trải nghiệm trọn bộ tính năng AI Gemini Pro mới nhất",
+          "Chi phí cực nhẹ cho sinh viên, freelancer & MMO"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-gemini-pro-5tb-3m-kbh.md",
+      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **39.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (3 Tháng)**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email nhận thông tin/kích hoạt: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ bàn giao giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email của bạn rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Lưu ý gói KBH (Không bảo hành)",
+          "template": "Sản phẩm: [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\nThời hạn gói: 3 Tháng\nChế độ: Không bảo hành (KBH) — Bao kích hoạt & bàn giao thành công lúc nhận hàng\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Nên sao lưu định kỳ dữ liệu quan trọng trên Google Drive về máy cá nhân."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email nhận thông tin/kích hoạt: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ bàn giao giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email của bạn rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Lưu ý gói KBH (Không bảo hành)",
+        "template": "Sản phẩm: [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\nThời hạn gói: 3 Tháng\nChế độ: Không bảo hành (KBH) — Bao kích hoạt & bàn giao thành công lúc nhận hàng\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Nên sao lưu định kỳ dữ liệu quan trọng trên Google Drive về máy cá nhân."
+      }
+    ]
+  },
+  {
+    "id": "service-gemini-pro-5tb-1y-kbh",
+    "isService": true,
+    "name": "[1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
+    "module": "GEMINI PRO + 5TB · 1 NĂM · KBH",
+    "tag": "Tài Khoản & AI",
+    "category": "AI & Cloud Storage",
+    "filterGroup": "Web & UI Thượng Lưu",
+    "badge": "HOT · 1 NĂM · 79K",
+    "badgeColor": "bg-blue-700 text-white",
+    "price": 79000,
+    "oldPrice": 199000,
+    "discount": "-60%",
+    "stock": 999,
+    "duration": "1 Năm (12 Tháng)",
+    "warranty": "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
+    "rating": 5,
+    "soldCount": 16,
+    "image": "/img/gemini-pro-5tb-1y-kbh.svg",
+    "imageUrl": "/img/gemini-pro-5tb-1y-kbh.svg",
+    "iconType": "gemini",
+    "ctaText": "Mua Ngay (79k Xu)",
+    "desc": "GÓI TIẾT KIỆM [1 NĂM] FULL QUYỀN LỢI GEMINI PRO + 5TB DRIVE – KBH: Sở hữu trọn vẹn Full quyền lợi Google Gemini Pro kết hợp dung lượng lưu trữ khổng lồ 5TB Google Drive trong thời hạn 1 Năm (12 Tháng). Mức giá siêu rẻ (gói KBH — không bảo hành, bao kích hoạt lên gói thành công lúc bàn giao). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận gói.",
+    "tags": [
+      "Gemini Pro",
+      "5TB Drive",
+      "Google One",
+      "KBH",
+      "Tài Khoản & AI"
+    ],
+    "features": [
+      "Thời hạn gói 1 Năm (12 Tháng) với đầy đủ quyền lợi Gemini Pro (model cao cấp, Deep Research, Workspace AI)",
+      "Dung lượng lưu trữ Google Drive / Google One lên tới 5TB siêu rộng rãi",
+      "Mức giá tiết kiệm tối đa (Gói KBH — Không bảo hành, bao kích hoạt thành công khi bàn giao)",
+      "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để xử lý nhanh trong ngày"
+    ],
+    "highlights": [
+      "Full quyền lợi Gemini Pro + 5TB Google Drive",
+      "Thời hạn 1 Năm (12 Tháng) · Giá siêu tiết kiệm",
+      "Bao kiểm tra & kích hoạt thành công lúc giao nhận",
+      "Hỗ trợ giao nhanh qua Zalo 0986.019.623 (08:00–24:00)"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Dùng tài khoản Google Free 15GB",
+        "summary": "Nhanh chóng đầy bộ nhớ 15GB Drive/Gmail và bị giới hạn các tính năng Gemini Pro cao cấp.",
+        "points": [
+          "15GB Drive nhanh chóng báo đầy không nhận được mail/ảnh",
+          "Không có Gemini Pro tích hợp Docs, Gmail, Deep Research",
+          "Mua gói 2TB–5TB chính hãng rất đắt đỏ"
+        ]
+      },
+      "after": {
+        "title": "[1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
+        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 1 Năm (12 Tháng) chỉ với 79k Xu.",
+        "points": [
+          "Thoải mái lưu trữ tài liệu, video, backup với 5TB Drive",
+          "Trải nghiệm trọn bộ tính năng AI Gemini Pro mới nhất",
+          "Chi phí cực nhẹ cho sinh viên, freelancer & MMO"
+        ]
+      }
+    },
+    "unlockedPayload": {
+      "fileName": "Huong_Dan_service-gemini-pro-5tb-1y-kbh.md",
+      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **79.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (1 Năm (12 Tháng))**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email nhận thông tin/kích hoạt: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ bàn giao giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email của bạn rồi gửi qua Zalo 0986.019.623."
+        },
+        {
+          "title": "2. Lưu ý gói KBH (Không bảo hành)",
+          "template": "Sản phẩm: [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\nThời hạn gói: 1 Năm (12 Tháng)\nChế độ: Không bảo hành (KBH) — Bao kích hoạt & bàn giao thành công lúc nhận hàng\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+          "example": "Nên sao lưu định kỳ dữ liệu quan trọng trên Google Drive về máy cá nhân."
+        }
+      ]
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "cheatSheet": [
+      {
+        "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
+        "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH.\n- Mã đơn hàng: [MA_DON_HANG]\n- Email nhận thông tin/kích hoạt: [NHAP_EMAIL_CUA_BAN]\nNhờ admin hỗ trợ bàn giao giúp mình nhé!",
+        "example": "Chép mẫu này, điền Mã đơn & Email của bạn rồi gửi qua Zalo 0986.019.623."
+      },
+      {
+        "title": "2. Lưu ý gói KBH (Không bảo hành)",
+        "template": "Sản phẩm: [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\nThời hạn gói: 1 Năm (12 Tháng)\nChế độ: Không bảo hành (KBH) — Bao kích hoạt & bàn giao thành công lúc nhận hàng\nKênh hỗ trợ (08:00–24:00): Zalo 0986.019.623",
+        "example": "Nên sao lưu định kỳ dữ liệu quan trọng trên Google Drive về máy cá nhân."
+      }
+    ]
+  },
   {
     "id": "service-spotify-premium-1m",
     "isService": true,

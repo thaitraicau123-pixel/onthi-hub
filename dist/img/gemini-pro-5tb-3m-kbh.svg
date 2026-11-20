@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#090D1C"/>
+      <stop offset="1" stop-color="#141C3A"/>
+    </linearGradient>
+    <linearGradient id="gem" x1="595" y1="84" x2="725" y2="214" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#EF4444"/>
+      <stop offset="0.35" stop-color="#FACC15"/>
+      <stop offset="0.7" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#60A5FA" stroke-opacity="0.4"/>
+  <path d="M660 84 C660 120 632 148 596 148 C632 148 660 176 660 212 C660 176 688 148 724 148 C688 148 660 120 660 84 Z" fill="url(#gem)"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#60A5FA">GOOGLE AI · GEMINI PRO + 5TB DRIVE · KBH</text>
+  <text x="80" y="164" font-family="system-ui, sans-serif" font-size="38" font-weight="800" fill="#F5F5F7">Gemini Pro + 5TB Drive</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#CBD5E1">Thời hạn 3 Tháng · Full Quyền Lợi · Gói KBH</text>
+  <rect x="80" y="252" width="640" height="156" rx="18" fill="#060914" stroke="#60A5FA" stroke-opacity="0.32"/>
+  <text x="108" y="292" font-family="ui-monospace, monospace" font-size="15" fill="#93C5FD">✓ Full quyền lợi Gemini Pro, Deep Research &amp; Workspace AI</text>
+  <text x="108" y="324" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Kèm 5TB dung lượng Google Drive / Google One lưu trữ</text>
+  <text x="108" y="356" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Gói tiết kiệm KBH — hỗ trợ bàn giao kích hoạt thành công</text>
+  <text x="108" y="388" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#FBBF24">★ Chỉ 39.000 Xu / 3 Tháng · Đã bán 15 · Zalo 0986.019.623</text>
+</svg>

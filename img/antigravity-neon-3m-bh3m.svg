@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#070913"/>
+      <stop offset="1" stop-color="#11162B"/>
+    </linearGradient>
+    <linearGradient id="neonA" x1="560" y1="70" x2="720" y2="230" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF3B5C"/>
+      <stop offset="0.33" stop-color="#FACC15"/>
+      <stop offset="0.66" stop-color="#22C55E"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.035" stroke="#10B981" stroke-opacity="0.42"/>
+  <!-- Antigravity Neon Stylized A + Star Emblem -->
+  <path d="M645 78 C625 78 588 188 574 214 C568 224 582 228 594 218 C610 204 626 176 645 176 C664 176 680 204 696 218 C708 228 722 224 716 214 C702 188 665 78 645 78 Z" fill="url(#neonA)"/>
+  <path d="M645 110 C645 133 628 150 605 150 C628 150 645 167 645 190 C645 167 662 150 685 150 C662 150 645 133 645 110 Z" fill="#070913"/>
+  <path d="M645 120 C645 137 632 150 615 150 C632 150 645 163 645 180 C645 163 658 150 675 150 C658 150 645 137 645 120 Z" fill="url(#neonA)"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#10B981">ANTIGRAVITY NEON · UP CHÍNH CHỦ · BH 3 THÁNG</text>
+  <text x="80" y="164" font-family="system-ui, sans-serif" font-size="38" font-weight="800" fill="#F5F5F7">Antigravity Neon</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#CBD5E1">Full quyền lợi Gemini Pro 3 tháng (BH Full 3 tháng)</text>
+  <rect x="80" y="252" width="640" height="156" rx="18" fill="#05070E" stroke="#10B981" stroke-opacity="0.32"/>
+  <text x="108" y="292" font-family="ui-monospace, monospace" font-size="15" fill="#93C5FD">✓ Nâng cấp trực tiếp trên Gmail / Tài khoản chính chủ</text>
+  <text x="108" y="324" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Full quyền lợi Antigravity Neon + Gemini Pro 3 Tháng</text>
+  <text x="108" y="356" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Chế độ: Bảo hành Full 3 tháng (1 đổi 1)</text>
+  <text x="108" y="388" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#FBBF24">★ Chỉ 299.000 Xu / 3 Tháng · An tâm tuyệt đối · Zalo 0986.019.623</text>
+</svg>
