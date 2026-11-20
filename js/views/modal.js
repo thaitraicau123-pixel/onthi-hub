@@ -1489,7 +1489,7 @@ window.ShopVietViews.modal = (function () {
 
           <div class="p-2.5 rounded-xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 text-slate-700 dark:text-slate-200 text-[11px] text-left leading-relaxed flex items-center gap-2 border border-[#0071E3]/20">
             <svg class="w-4 h-4 shrink-0 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>${currentProduct.isService ? `Kích hoạt / bàn giao chính chủ trong 1–5 phút qua Zalo 0986.019.623 (${escapeHTML(currentProduct.warranty || 'Bảo hành uy tín')}).` : 'Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời.'} Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
+            <span>${currentProduct.isService ? `Kích hoạt / bàn giao qua Zalo 0986.019.623 trong khung giờ 08:00–24:00 (từ vài phút đến vài tiếng tùy thời điểm, ${escapeHTML(currentProduct.warranty || 'bảo hành uy tín')}).` : 'Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời.'} Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2.5 pt-1">
@@ -3247,7 +3247,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                     <p class="mt-1 text-slate-600 dark:text-slate-300">
                       - <strong>Khung giờ hỗ trợ:</strong> <strong class="text-emerald-600 dark:text-emerald-400">08:00 – 24:00 hằng ngày</strong> (bao gồm Thứ 7, Chủ Nhật &amp; ngày lễ).<br>
                       - <strong>Zalo CSKH chính thức:</strong> <a href="https://zalo.me/0986019623" target="_blank" class="font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF] underline">0986.019.623</a> · Email: <span class="font-mono">thaitraicau123@gmail.com</span>.<br>
-                      - <strong>Tốc độ kích hoạt / bàn giao:</strong> Từ <strong>1 – 5 phút</strong> sau khi nhận được Mã đơn hàng (<code class="font-mono">#DJ...</code>) qua Zalo (tối đa 30 phút vào giờ cao điểm).
+                      - <strong>Tốc độ phản hồi &amp; bàn giao:</strong> Thường từ <strong>15 – 30 phút</strong> khi online; trường hợp bận hoặc ngoài giờ có thể mất <strong>1 – vài tiếng</strong> (cam kết xử lý đầy đủ mọi đơn hàng trong ngày).
                     </p>
                   </div>
 
@@ -3331,11 +3331,11 @@ ${escapeHTML(item.template || item.prompt || "")}
                       </div>
                       <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
                         <span class="font-bold text-[#0071E3] dark:text-[#3B9EFF]">Bước 2:</span>
-                        <p class="text-xs mt-1">Gửi trực tiếp qua Zalo <strong class="font-mono">0986.019.623</strong> để kỹ thuật viên kiểm tra.</p>
+                        <p class="text-xs mt-1">Gửi trực tiếp qua Zalo <strong class="font-mono">0986.019.623</strong> để kỹ thuật viên tiếp nhận.</p>
                       </div>
                       <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
                         <span class="font-bold text-emerald-600 dark:text-emerald-400">Bước 3:</span>
-                        <p class="text-xs mt-1">Cấp lại slot/Key mới trong <strong>5–30 phút</strong> hoặc hoàn Xu/tiền 100% nếu lỗi bất khả kháng.</p>
+                        <p class="text-xs mt-1">Cấp lại slot/Key mới trong ngày (<strong>từ vài phút đến vài tiếng</strong>) hoặc hoàn Xu/tiền 100% nếu lỗi bất khả kháng.</p>
                       </div>
                     </div>
                   </div>
