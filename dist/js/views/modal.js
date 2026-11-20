@@ -3144,12 +3144,20 @@ ${escapeHTML(item.template || item.prompt || "")}
                 <span>Điều Khoản Dịch Vụ</span>
               </button>
               <button
+                id="policyTabBtnSupport"
+                onclick="ShopVietViews.modal.switchPolicyTab('support')"
+                class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/></svg>
+                <span>Hỗ Trợ &amp; Bảo Hành</span>
+              </button>
+              <button
                 id="policyTabBtnRefund"
                 onclick="ShopVietViews.modal.switchPolicyTab('refund')"
                 class="px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer"
               >
                 <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                <span>Hoàn Tiền 100% &amp; Bảo Hành</span>
+                <span>Hoàn Tiền 100%</span>
               </button>
               <button
                 id="policyTabBtnPrivacy"
@@ -3226,7 +3234,115 @@ ${escapeHTML(item.template || item.prompt || "")}
                 </div>
               </div>
 
-              <!-- PANE 2: HOÀN TIỀN 100% & BẢO HÀNH -->
+              <!-- PANE 2: CHÍNH SÁCH HỖ TRỢ & BẢO HÀNH -->
+              <div id="policyPaneSupport" class="space-y-4 hidden">
+                <div class="p-3.5 rounded-2xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 border border-[#0071E3]/25">
+                  <h4 class="font-bold text-slate-900 dark:text-white text-sm mb-1">CHÍNH SÁCH HỖ TRỢ KỸ THUẬT &amp; BẢO HÀNH 1 ĐỔI 1</h4>
+                  <p class="text-xs text-slate-600 dark:text-slate-300">Áp dụng cho toàn bộ dịch vụ nâng cấp tài khoản, API Key và mã nguồn số tại Bùi Thái AI Studio (<code class="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded">promptmmo.store</code>).</p>
+                </div>
+
+                <div class="space-y-3.5">
+                  <div>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">1. Thời gian &amp; Kênh hỗ trợ trực tiếp</h5>
+                    <p class="mt-1 text-slate-600 dark:text-slate-300">
+                      - <strong>Khung giờ hỗ trợ:</strong> <strong class="text-emerald-600 dark:text-emerald-400">08:00 – 24:00 hằng ngày</strong> (bao gồm Thứ 7, Chủ Nhật &amp; ngày lễ).<br>
+                      - <strong>Zalo CSKH chính thức:</strong> <a href="https://zalo.me/0986019623" target="_blank" class="font-mono font-bold text-[#0071E3] dark:text-[#3B9EFF] underline">0986.019.623</a> · Email: <span class="font-mono">thaitraicau123@gmail.com</span>.<br>
+                      - <strong>Tốc độ kích hoạt / bàn giao:</strong> Từ <strong>1 – 5 phút</strong> sau khi nhận được Mã đơn hàng (<code class="font-mono">#DJ...</code>) qua Zalo (tối đa 30 phút vào giờ cao điểm).
+                    </p>
+                  </div>
+
+                  <div>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">2. Bảng thời hạn &amp; Chính sách bảo hành từng nhóm sản phẩm</h5>
+                    <div class="mt-2 overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+                      <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                          <tr class="bg-slate-100 dark:bg-slate-900/70 text-slate-700 dark:text-slate-200 border-b border-slate-200 dark:border-slate-800">
+                            <th class="py-2 px-3 font-bold">Sản phẩm / Dịch vụ</th>
+                            <th class="py-2 px-3 font-bold">Thời hạn gói</th>
+                            <th class="py-2 px-3 font-bold">Chế độ bảo hành</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800 text-slate-600 dark:text-slate-300">
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Spotify Premium (50k)</td>
+                            <td class="py-2 px-3">1 Tháng (30 ngày)</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành Full 1 tháng (1 đổi 1)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Zoom Pro (50k)</td>
+                            <td class="py-2 px-3">1 Tháng (30 ngày)</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành Full 1 tháng (1 đổi 1)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Gemini Plus (50k)</td>
+                            <td class="py-2 px-3">6 Tháng</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 3 tháng (1 đổi 1)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Canva Edu 1 Năm (100k)</td>
+                            <td class="py-2 px-3">1 Năm (12 tháng)</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 3 tháng (cấp lại slot)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Canva Pro 2 Năm (150k)</td>
+                            <td class="py-2 px-3">2 Năm (24 tháng)</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 6 tháng (1 đổi 1)</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">API Claude 100M Token (150k)</td>
+                            <td class="py-2 px-3">3 Ngày (72h) hoặc 100M Token</td>
+                            <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Bảo hành 1 đổi 1 suốt 3 ngày</td>
+                          </tr>
+                          <tr>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Source Code, Template &amp; Prompt</td>
+                            <td class="py-2 px-3">Vĩnh viễn trọn đời</td>
+                            <td class="py-2 px-3 text-[#0071E3] dark:text-[#3B9EFF] font-semibold">Hỗ trợ fix lỗi &amp; cập nhật miễn phí</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-3 rounded-xl bg-emerald-500/[0.06] border border-emerald-500/20">
+                      <h5 class="font-bold text-emerald-700 dark:text-emerald-400 text-xs uppercase tracking-wide mb-1.5">3. Điều kiện được bảo hành</h5>
+                      <ul class="list-disc list-inside space-y-1 text-xs text-slate-600 dark:text-slate-300">
+                        <li>Sản phẩm đang trong thời gian bảo hành theo bảng trên.</li>
+                        <li>Lỗi rớt gói, mất quyền Pro/Edu, lỗi kết nối API từ phía hệ thống cung cấp.</li>
+                        <li>Cung cấp đúng <strong>Mã đơn hàng (#DJ...)</strong> hoặc Email đã đăng ký mua.</li>
+                      </ul>
+                    </div>
+                    <div class="p-3 rounded-xl bg-rose-500/[0.06] border border-rose-500/20">
+                      <h5 class="font-bold text-rose-700 dark:text-rose-400 text-xs uppercase tracking-wide mb-1.5">4. Trường hợp từ chối bảo hành</h5>
+                      <ul class="list-disc list-inside space-y-1 text-xs text-slate-600 dark:text-slate-300">
+                        <li>Tự ý đổi mật khẩu/email hoặc thay đổi thông tin bảo mật của tài khoản cấp sẵn.</li>
+                        <li>Chia sẻ công khai API Key hoặc đăng nhập quá nhiều thiết bị gây khóa tài khoản.</li>
+                        <li>Tự ý rời nhóm/lớp (Canva, Spotify Family) mà không liên hệ trước với Admin.</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h5 class="font-bold text-slate-900 dark:text-white text-sm">5. Quy trình tiếp nhận hỗ trợ &amp; bảo hành nhanh (3 bước)</h5>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-2">
+                      <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
+                        <span class="font-bold text-[#0071E3] dark:text-[#3B9EFF]">Bước 1:</span>
+                        <p class="text-xs mt-1">Lấy <strong>Mã đơn hàng</strong> trong mục <em>Lịch sử đơn</em> &amp; chụp màn hình thông báo lỗi.</p>
+                      </div>
+                      <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
+                        <span class="font-bold text-[#0071E3] dark:text-[#3B9EFF]">Bước 2:</span>
+                        <p class="text-xs mt-1">Gửi trực tiếp qua Zalo <strong class="font-mono">0986.019.623</strong> để kỹ thuật viên kiểm tra.</p>
+                      </div>
+                      <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-[#090B10] border border-slate-200 dark:border-slate-800">
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400">Bước 3:</span>
+                        <p class="text-xs mt-1">Cấp lại slot/Key mới trong <strong>5–30 phút</strong> hoặc hoàn Xu/tiền 100% nếu lỗi bất khả kháng.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PANE 3: HOÀN TIỀN 100% -->
               <div id="policyPaneRefund" class="space-y-4 hidden">
                 <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25">
                   <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm mb-1">CHÍNH SÁCH HOÀN TIỀN 100% TRONG 24 GIỜ &amp; BẢO HÀNH TRỌN ĐỜI</h4>
@@ -3368,7 +3484,7 @@ ${escapeHTML(item.template || item.prompt || "")}
     },
 
     switchPolicyTab: function (tabName) {
-      const tabs = ['terms', 'refund', 'privacy', 'dispute'];
+      const tabs = ['terms', 'support', 'refund', 'privacy', 'dispute'];
       const activeBtnClass = 'px-3.5 py-2.5 text-xs sm:text-sm font-bold border-b-2 border-[#0071E3] dark:border-[#3B9EFF] text-[#0071E3] dark:text-[#3B9EFF] transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer';
       const inactiveBtnClass = 'px-3.5 py-2.5 text-xs sm:text-sm font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0 flex items-center gap-1.5 cursor-pointer';
 
