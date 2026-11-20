@@ -10,6 +10,446 @@
   ],
   "products": [
     {
+      "id": "service-spotify-premium-1m",
+      "isService": true,
+      "name": "Spotify Premium 1 Tháng Chính Chủ (Bảo Hành Full 1 Tháng)",
+      "module": "SPOTIFY PREMIUM · 1 THÁNG · BH FULL",
+      "tag": "Nâng Cấp Chính Chủ",
+      "category": "Giải Trí & Streaming",
+      "filterGroup": "Web & UI Thượng Lưu",
+      "badge": "HOT · 50K / THÁNG",
+      "badgeColor": "bg-[#1DB954] text-white",
+      "price": 50000,
+      "oldPrice": 79000,
+      "discount": "-37%",
+      "stock": 999,
+      "duration": "1 Tháng (30 Ngày)",
+      "warranty": "Bảo hành full 1 tháng (1 đổi 1)",
+      "rating": 5,
+      "soldCount": 28,
+      "image": "/img/spotify-premium-1m.svg",
+      "imageUrl": "/img/spotify-premium-1m.svg",
+      "iconType": "spotify",
+      "ctaText": "Nâng Cấp (50k Xu)",
+      "desc": "DỊCH VỤ NÂNG CẤP SPOTIFY PREMIUM 1 THÁNG CHÍNH CHỦ — BẢO HÀNH FULL 30 NGÀY: Nâng cấp trực tiếp trên tài khoản Spotify cá nhân của bạn, giữ nguyên 100% Playlist, Podcast và lịch sử nghe nhạc. Nghe nhạc chất lượng cao 320kbps không quảng cáo, tải nhạc nghe Offline, chuyển bài không giới hạn trên PC, điện thoại, Smart TV. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt trong 1–5 phút.",
+      "tags": [
+        "Spotify Premium",
+        "Nghe nhạc không quảng cáo",
+        "Nâng Cấp Chính Chủ",
+        "Bảo Hành Full"
+      ],
+      "features": [
+        "Nâng cấp trực tiếp trên tài khoản Spotify chính chủ của bạn (giữ nguyên Playlist & Podcast)",
+        "Nghe nhạc chất lượng cao (Very High 320kbps), loại bỏ hoàn toàn quảng cáo làm phiền",
+        "Tải nhạc & Podcast nghe Offline mọi lúc mọi nơi, chuyển bài (skip) không giới hạn",
+        "Sử dụng mượt mà trên đa thiết bị: iOS, Android, Windows, macOS, Web & Smart TV",
+        "Bảo hành full 1 tháng (30 ngày) — hỗ trợ 1 đổi 1 miễn phí nếu phát sinh lỗi gói",
+        "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn — kích hoạt trong 1–5 phút"
+      ],
+      "highlights": [
+        "Nâng cấp chính chủ trên tài khoản cá nhân (1–5 phút)",
+        "Thời hạn 1 Tháng · Bảo hành full 30 ngày",
+        "Không quảng cáo · Tải Offline · Chất lượng 320kbps",
+        "Giữ nguyên toàn bộ Playlist & bài hát yêu thích"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Dùng Spotify Free mặc định",
+          "summary": "Liên tục bị chèn quảng cáo giữa các bài hát, giới hạn lượt chuyển bài và không thể tải nhạc Offline.",
+          "points": [
+            "Quảng cáo âm thanh & banner xuất hiện liên tục",
+            "Trên điện thoại chỉ phát ngẫu nhiên, giới hạn số lần chuyển bài",
+            "Không thể tải nhạc nghe Offline khi mất mạng",
+            "Chất lượng âm thanh bị giới hạn ở mức trung bình"
+          ]
+        },
+        "after": {
+          "title": "Spotify Premium 1 Tháng tại Bùi Thái Studio",
+          "summary": "Trải nghiệm âm nhạc đỉnh cao không quảng cáo chỉ 50.000 Xu/tháng, bảo hành trọn vẹn 30 ngày.",
+          "points": [
+            "Nghe bất kỳ bài hát nào theo ý muốn, bỏ qua bài không giới hạn",
+            "Tải hàng nghìn bài hát về máy nghe Offline mượt mà",
+            "Âm thanh chất lượng cao 320kbps cực kỳ sắc nét",
+            "Kích hoạt nhanh 1–5 phút & bảo hành full tháng qua Zalo 0986.019.623"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "Huong_Dan_Kich_Hoat_Spotify_Premium_1_Thang.md",
+        "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT SPOTIFY PREMIUM 1 THÁNG (BẢO HÀNH FULL)\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **50.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` trên màn hình)\n- **Email đăng nhập Spotify**: (Điền chính xác Email tài khoản Spotify của bạn)\n\n---\n\n## BƯỚC 2: XÁC NHẬN LỜI MỜI NÂNG CẤP PREMIUM (1–5 PHÚT)\n1. Admin sẽ gửi link mời nâng cấp hoặc kích hoạt trực tiếp vào tài khoản Spotify của bạn.\n2. Bạn bấm chấp nhận lời mời và khởi động lại app Spotify.\n3. Kiểm tra mục **Tài khoản / Tài khoản của bạn** thấy trạng thái **Spotify Premium** là hoàn tất.\n\n---\n\n## BƯỚC 3: CHÍNH SÁCH BẢO HÀNH FULL 1 THÁNG\n- **Thời hạn sử dụng**: **1 Tháng (30 ngày)** kể từ ngày kích hoạt.\n- **Bảo hành**: **Full 30 ngày** (1 đổi 1 nếu rớt gói hoặc lỗi kỹ thuật). Nhắn Zalo **0986.019.623** kèm Mã đơn để được xử lý ngay.",
+        "cheatSheet": [
+          {
+            "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+            "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Spotify Premium 1 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Spotify của mình: [NHAP_EMAIL_SPOTIFY]\nNhờ admin kích hoạt giúp mình nhé!",
+            "example": "Chép mẫu này, điền Mã đơn & Email Spotify rồi gửi qua Zalo 0986.019.623 để kích hoạt trong 1–5 phút."
+          },
+          {
+            "title": "2. Quy định Bảo hành Full 1 Tháng",
+            "template": "Thời hạn gói: 1 Tháng (30 ngày)\nBảo hành: Full 1 tháng (1 đổi 1)\nKênh hỗ trợ: Zalo 0986.019.623 (kèm Mã đơn hàng)",
+            "example": "Lưu lại Mã đơn hàng trong Lịch sử đơn hàng để được hỗ trợ bảo hành nhanh nhất."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false,
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Spotify Premium 1 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Spotify của mình: [NHAP_EMAIL_SPOTIFY]\nNhờ admin kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Spotify rồi gửi qua Zalo 0986.019.623 để kích hoạt trong 1–5 phút."
+        }
+      ]
+    },
+    {
+      "id": "service-zoom-pro-1m",
+      "isService": true,
+      "name": "Zoom Pro 1 Tháng Không Giới Hạn 40 Phút (Bảo Hành Full)",
+      "module": "ZOOM PRO · 1 THÁNG · 100 NGƯỜI",
+      "tag": "Nâng Cấp Chính Chủ",
+      "category": "Work & Code",
+      "filterGroup": "Web & UI Thượng Lưu",
+      "badge": "HOT · KHÔNG GIỚI HẠN 40P",
+      "badgeColor": "bg-[#2D8CFF] text-white",
+      "price": 50000,
+      "oldPrice": 390000,
+      "discount": "-87%",
+      "stock": 999,
+      "duration": "1 Tháng (30 Ngày)",
+      "warranty": "Bảo hành full 1 tháng (1 đổi 1)",
+      "rating": 5,
+      "soldCount": 19,
+      "image": "/img/zoom-pro-1m.svg",
+      "imageUrl": "/img/zoom-pro-1m.svg",
+      "iconType": "zoom",
+      "ctaText": "Nâng Cấp (50k Xu)",
+      "desc": "DỊCH VỤ ZOOM PRO 1 THÁNG (BẢN QUYỀN CHÍNH HÃNG — BẢO HÀNH FULL 30 NGÀY): Mở khóa phòng họp/lớp học trực tuyến không bị giới hạn 40 phút (họp liên tục tới 30 giờ/phiên), sức chứa 100 người tham gia, hỗ trợ chia phòng Breakout Rooms, ghi hình Cloud Recording và Livestream YouTube/Facebook. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận tài khoản hoặc kích hoạt trong 1–5 phút.",
+      "tags": [
+        "Zoom Pro",
+        "Họp trực tuyến",
+        "Dạy học Online",
+        "Không giới hạn 40 phút",
+        "Bảo Hành Full"
+      ],
+      "features": [
+        "Họp & giảng dạy trực tuyến không giới hạn 40 phút (liên tục lên tới 30 giờ mỗi phiên)",
+        "Sức chứa tối đa 100 người tham gia cùng lúc, âm thanh & hình ảnh HD ổn định",
+        "Đầy đủ tính năng Host Pro: Chia phòng Breakout Rooms, Co-host, Poll bình chọn, Bảng trắng",
+        "Hỗ trợ ghi hình lưu Cloud Recording hoặc về máy tính, Livestream trực tiếp lên YouTube/FB",
+        "Bảo hành full 1 tháng (30 ngày) — hỗ trợ 1 đổi 1 ngay lập tức nếu có sự cố",
+        "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn — bàn giao trong 1–5 phút"
+      ],
+      "highlights": [
+        "Phá bỏ giới hạn 40 phút · Họp liên tục tới 30h",
+        "Tối đa 100 người tham gia · Full quyền Host Pro",
+        "Thời hạn 1 Tháng · Bảo hành full 30 ngày uy tín",
+        "Chi phí chỉ 50k Xu (tiết kiệm 87% so với giá gốc)"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Dùng Zoom Basic miễn phí",
+          "summary": "Cứ đúng 40 phút là tự động văng cả lớp/cuộc họp ra ngoài, rất bất tiện khi đang giảng dạy hoặc họp quan trọng.",
+          "points": [
+            "Bị ngắt kết nối đột ngột sau mỗi 40 phút họp nhóm từ 3 người trở lên",
+            "Không có Cloud Recording, không Livestream được",
+            "Thiếu nhiều quyền điều phối Host nâng cao",
+            "Mua trực tiếp trên web Zoom tốn ~390.000đ/tháng"
+          ]
+        },
+        "after": {
+          "title": "Zoom Pro 1 Tháng tại Bùi Thái Studio",
+          "summary": "Họp & dạy học xuyên suốt không gián đoạn chỉ 50.000 Xu/tháng, bảo hành trọn vẹn 30 ngày.",
+          "points": [
+            "Họp liên tục tới 30 giờ không lo bị out giữa chừng",
+            "Hỗ trợ 100 thành viên, chia phòng Breakout Rooms mượt mà",
+            "Đầy đủ quyền Co-host, Ghi hình Cloud & Livestream",
+            "Bàn giao/kích hoạt 1–5 phút qua Zalo 0986.019.623"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "Huong_Dan_Kich_Hoat_Zoom_Pro_1_Thang.md",
+        "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT ZOOM PRO 1 THÁNG (BẢO HÀNH FULL)\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **50.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` trên màn hình)\n- **Email cần nâng cấp / nhận Zoom Pro**: (Ghi rõ email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN QUYỀN ZOOM PRO (1–5 PHÚT)\n1. Admin sẽ gửi lời mời nâng cấp License Zoom Pro hoặc bàn giao tài khoản Zoom Pro riêng cho bạn.\n2. Đăng nhập vào app Zoom Workplace và kiểm tra biểu tượng **LICENSED / PRO** ở góc hồ sơ.\n3. Tạo phòng họp và trải nghiệm không giới hạn thời gian 40 phút.\n\n---\n\n## BƯỚC 3: CHÍNH SÁCH BẢO HÀNH FULL 1 THÁNG\n- **Thời hạn sử dụng**: **1 Tháng (30 ngày)**.\n- **Bảo hành**: **Full 30 ngày** (1 đổi 1 nếu rớt License). Nhắn Zalo **0986.019.623** kèm Mã đơn để được xử lý ngay.",
+        "cheatSheet": [
+          {
+            "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận Zoom Pro",
+            "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Zoom Pro 1 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Zoom của mình: [NHAP_EMAIL_ZOOM]\nNhờ admin kích hoạt giúp mình nhé!",
+            "example": "Chép mẫu này, điền Mã đơn & Email rồi gửi qua Zalo 0986.019.623 để xử lý trong 1–5 phút."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false,
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận Zoom Pro",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Zoom Pro 1 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Zoom của mình: [NHAP_EMAIL_ZOOM]\nNhờ admin kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email rồi gửi qua Zalo 0986.019.623 để xử lý trong 1–5 phút."
+        }
+      ]
+    },
+    {
+      "id": "service-gemini-plus-6m",
+      "isService": true,
+      "name": "Gemini Plus 6 Tháng Chính Chủ (Google AI · Bảo Hành Uy Tín)",
+      "module": "GEMINI PLUS · 6 THÁNG · GOOGLE AI",
+      "tag": "Nâng Cấp Chính Chủ",
+      "category": "Automation & AI Agents",
+      "filterGroup": "Web & UI Thượng Lưu",
+      "badge": "SIÊU HỜI · 6 THÁNG 50K",
+      "badgeColor": "bg-[#7C3AED] text-white",
+      "price": 50000,
+      "oldPrice": 299000,
+      "discount": "-83%",
+      "stock": 999,
+      "duration": "6 Tháng",
+      "warranty": "Bảo hành 3 tháng (1 đổi 1)",
+      "rating": 5,
+      "soldCount": 35,
+      "image": "/img/gemini-plus-6m.svg",
+      "imageUrl": "/img/gemini-plus-6m.svg",
+      "iconType": "gemini",
+      "ctaText": "Nâng Cấp (50k Xu)",
+      "desc": "DỊCH VỤ GEMINI PLUS 6 THÁNG CHÍNH CHỦ — SIÊU TIẾT KIỆM CHỈ 50K: Mở khóa trải nghiệm Google AI Gemini Plus với các mô hình Gemini Pro / Thinking thông minh, tốc độ phản hồi nhanh, hỗ trợ Deep Research, phân tích tài liệu dài, viết code và xử lý hình ảnh vượt trội. Thời hạn sử dụng 6 Tháng ổn định, bảo hành 3 tháng. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn để kích hoạt trong 1–5 phút.",
+      "tags": [
+        "Gemini Plus",
+        "Google AI",
+        "AI Agents",
+        "6 Tháng",
+        "Nâng Cấp Chính Chủ"
+      ],
+      "features": [
+        "Thời hạn sử dụng lên tới 6 Tháng chỉ với 50.000 Xu (chưa tới 9k/tháng)",
+        "Truy cập các model Gemini thế hệ mới (Pro / Thinking) với giới hạn sử dụng cao hơn bản Free",
+        "Hỗ trợ Deep Research nghiên cứu chuyên sâu, tóm tắt PDF, phân tích code & dữ liệu lớn",
+        "Tạo ảnh AI sắc nét và đồng bộ mượt mà trong hệ sinh thái Google trên Web & App",
+        "Bảo hành 3 tháng (1 đổi 1 miễn phí nếu phát sinh lỗi quyền truy cập)",
+        "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn — kích hoạt trong 1–5 phút"
+      ],
+      "highlights": [
+        "Gói dài hạn 6 Tháng chỉ 50.000 Xu",
+        "Mở khóa model Gemini Pro / Thinking & Deep Research",
+        "Bảo hành 3 tháng (1 đổi 1) uy tín",
+        "Kích hoạt nhanh 1–5 phút qua Zalo 0986.019.623"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Dùng Gemini bản Free",
+          "summary": "Bị giới hạn lượt dùng model thông minh, thiếu tính năng nghiên cứu sâu và tốc độ xử lý chậm vào giờ cao điểm.",
+          "points": [
+            "Giới hạn số lượt truy vấn các model Gemini cao cấp",
+            "Không tối ưu cho việc phân tích tài liệu dài & dự án code lớn",
+            "Hạn chế tính năng Deep Research chuyên sâu"
+          ]
+        },
+        "after": {
+          "title": "Gemini Plus 6 Tháng tại Bùi Thái Studio",
+          "summary": "Sở hữu trợ lý AI Google cao cấp suốt 6 tháng chỉ với 50.000 Xu.",
+          "points": [
+            "Thoải mái sử dụng model Pro / Thinking & Deep Research",
+            "Phân tích tài liệu, viết code, làm nghiên cứu cực nhanh",
+            "Hỗ trợ kích hoạt & bảo hành 3 tháng qua Zalo 0986.019.623"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "Huong_Dan_Kich_Hoat_Gemini_Plus_6_Thang.md",
+        "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT GEMINI PLUS 6 THÁNG\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **50.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` trên màn hình)\n- **Gmail cần kích hoạt Gemini Plus**: (Điền chính xác Gmail của bạn)\n\n---\n\n## BƯỚC 2: KÍCH HOẠT & SỬ DỤNG (1–5 PHÚT)\n1. Admin sẽ hướng dẫn chấp nhận lời mời hoặc bàn giao quyền truy cập Gemini Plus 6 Tháng.\n2. Truy cập **gemini.google.com**, chọn model nâng cao và bắt đầu sử dụng.\n\n---\n\n## BƯỚC 3: CHÍNH SÁCH BẢO HÀNH\n- **Thời hạn sử dụng**: **6 Tháng**.\n- **Bảo hành**: **3 tháng** (1 đổi 1). Nhắn Zalo **0986.019.623** kèm Mã đơn để được hỗ trợ ngay.",
+        "cheatSheet": [
+          {
+            "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+            "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Gemini Plus 6 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Gmail của mình: [NHAP_GMAIL_CUA_BAN]\nNhờ admin kích hoạt giúp mình nhé!",
+            "example": "Chép mẫu này, điền Mã đơn & Gmail rồi gửi qua Zalo 0986.019.623 để kích hoạt trong 1–5 phút."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false,
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Gemini Plus 6 Tháng (50k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Gmail của mình: [NHAP_GMAIL_CUA_BAN]\nNhờ admin kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Gmail rồi gửi qua Zalo 0986.019.623 để kích hoạt trong 1–5 phút."
+        }
+      ]
+    },
+    {
+      "id": "service-canva-pro-2y",
+      "isService": true,
+      "name": "Up Canva Pro 2 Năm Chính Chủ (Bảo Hành 6 Tháng)",
+      "module": "CANVA PRO · 2 NĂM · BH 6 THÁNG",
+      "tag": "Nâng Cấp Chính Chủ",
+      "category": "Design & Creative",
+      "filterGroup": "Web & UI Thượng Lưu",
+      "badge": "VIP · 2 NĂM · BH 6 THÁNG",
+      "badgeColor": "bg-[#0071E3] text-white",
+      "price": 150000,
+      "oldPrice": 599000,
+      "discount": "-75%",
+      "stock": 999,
+      "duration": "2 Năm (24 Tháng)",
+      "warranty": "Bảo hành 6 tháng (1 đổi 1)",
+      "rating": 5,
+      "soldCount": 24,
+      "image": "/img/canva-pro-2y.svg",
+      "imageUrl": "/img/canva-pro-2y.svg",
+      "iconType": "canva",
+      "ctaText": "Nâng Cấp (150k Xu)",
+      "desc": "DỊCH VỤ NÂNG CẤP CANVA PRO 2 NĂM CHÍNH CHỦ — BẢO HÀNH 6 THÁNG: Gói siêu dài hạn 24 tháng nâng cấp trực tiếp trên chính Email Canva cá nhân của bạn, giữ nguyên 100% thiết kế cũ, không cần giao mật khẩu. Mở khóa toàn bộ kho mẫu Pro, 100+ triệu ảnh/video/âm thanh bản quyền, Xóa phông nền 1-Click, Magic Studio AI, Brand Kit, Magic Switch và xuất file PNG/SVG/PDF chất lượng cao không watermark. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email Canva để kích hoạt trong 1–5 phút.",
+      "tags": [
+        "Canva Pro",
+        "Canva 2 Năm",
+        "Design & Creative",
+        "Nâng Cấp Chính Chủ",
+        "Bảo Hành 6 Tháng"
+      ],
+      "features": [
+        "Nâng cấp trực tiếp trên Email Canva chính chủ của bạn (giữ nguyên 100% thiết kế cũ, không cần mật khẩu)",
+        "Thời hạn sử dụng siêu dài 2 Năm (24 tháng) ổn định trên Web, PC/Mac và App iOS/Android",
+        "Bảo hành 6 tháng (1 đổi 1 / cấp lại slot mới miễn phí nếu mất quyền trong 6 tháng đầu)",
+        "Mở khóa full tính năng Pro: Xóa nền ảnh 1 chạm, Magic Switch, Magic Eraser & Magic Studio AI",
+        "Truy cập 100+ triệu ảnh, video, font chữ Việt hóa Pro, mẫu thuyết trình & poster không watermark",
+        "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn & Email Canva — kích hoạt trong 1–5 phút"
+      ],
+      "highlights": [
+        "Nâng cấp chính chủ trên Email cá nhân (1–5 phút)",
+        "Thời hạn 2 Năm (24 tháng) · Bảo hành 6 tháng uy tín",
+        "Mở khóa full kho ảnh, font Pro, Xóa phông & Magic AI",
+        "Không cần mật khẩu tài khoản, giữ nguyên thiết kế cũ"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Dùng Canva Free mặc định",
+          "summary": "Bị dính watermark trả phí, khóa tính năng Xóa phông nền, thiếu font đẹp và tốn hơn 2.4 triệu đồng nếu mua lẻ 2 năm.",
+          "points": [
+            "Hình ảnh, mẫu slide đẹp đều gắn vương miện Pro phải trả phí",
+            "Không dùng được Xóa phông (Background Remover) & Magic Switch",
+            "Không xuất được PNG nền trong suốt hoặc PDF chất lượng cao",
+            "Mua gói chính hãng 2 năm trực tiếp tốn hơn 2.400.000đ"
+          ]
+        },
+        "after": {
+          "title": "Up Canva Pro 2 Năm tại Bùi Thái Studio",
+          "summary": "Mở khóa full quyền thiết kế cao cấp suốt 24 tháng chỉ 150.000 Xu, kích hoạt trên Email cá nhân và bảo hành 6 tháng.",
+          "points": [
+            "Mở khóa 100+ triệu tài nguyên Pro, font Việt hóa & Magic AI",
+            "Xuất file PNG trong suốt, SVG, PDF in ấn không dính watermark",
+            "Thiết kế riêng tư trong tài khoản cá nhân, không lộ dự án",
+            "Kích hoạt 1–5 phút & bảo hành 6 tháng qua Zalo 0986.019.623"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "Huong_Dan_Kich_Hoat_Canva_Pro_2_Nam.md",
+        "masterPrompt": "# HƯỚNG DẪN KÍCH HOẠT CANVA PRO 2 NĂM (BẢO HÀNH 6 THÁNG)\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI THÔNG TIN KÍCH HOẠT QUA ZALO\nSau khi thanh toán thành công **150.000 Xu** trên website, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email Canva cần nâng cấp**: (Điền chính xác Gmail/Email bạn đang đăng nhập Canva)\n\n> **Lưu ý bảo mật**: Shop **KHÔNG BAO GIỜ** hỏi mật khẩu tài khoản Canva hay mật khẩu Gmail của bạn.\n\n---\n\n## BƯỚC 2: CHẤP NHẬN LỜI MỜI NÂNG CẤP CANVA PRO (1–5 PHÚT)\n1. Admin sẽ gửi lời mời tham gia nhóm Canva Pro vào đúng Email của bạn.\n2. Bạn mở hộp thư Email (kiểm tra cả mục **Quảng cáo / Spam** nếu chưa thấy) và bấm nút **Tham gia / Join**.\n3. Chuyển Workspace ở góc trên bên trái sang nhóm Pro mới để mở khóa toàn bộ tài nguyên.\n\n---\n\n## BƯỚC 3: CHÍNH SÁCH BẢO HÀNH 6 THÁNG\n- **Thời hạn sử dụng**: **2 Năm (24 tháng)** kể từ ngày kích hoạt.\n- **Bảo hành**: **6 tháng** kể từ ngày đơn hàng hoàn tất (1 đổi 1 miễn phí nếu rớt gói). Nhắn Zalo **0986.019.623** kèm Mã đơn hàng để được hỗ trợ ngay.",
+        "cheatSheet": [
+          {
+            "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+            "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Pro 2 Năm (150k · Bảo hành 6 tháng).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Canva của mình: [NHAP_EMAIL_CANVA_CUA_BAN]\nNhờ admin gửi lời mời kích hoạt giúp mình nhé!",
+            "example": "Chép mẫu này, điền Mã đơn & Email Canva rồi gửi qua Zalo 0986.019.623 để duyệt trong 1–5 phút."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false,
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để kích hoạt ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói Up Canva Pro 2 Năm (150k · Bảo hành 6 tháng).\n- Mã đơn hàng: [MA_DON_HANG]\n- Email tài khoản Canva của mình: [NHAP_EMAIL_CANVA_CUA_BAN]\nNhờ admin gửi lời mời kích hoạt giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn & Email Canva rồi gửi qua Zalo 0986.019.623 để duyệt trong 1–5 phút."
+        }
+      ]
+    },
+    {
+      "id": "service-claude-api-100m-3d",
+      "isService": true,
+      "name": "API Claude 100M Token · Hạn 3 Ngày (Tốc Độ Cao)",
+      "module": "CLAUDE API · 100M TOKEN · 3 DAYS",
+      "tag": "Cấp API Key Riêng",
+      "category": "Automation & AI Agents",
+      "filterGroup": "Fullstack & Bảo Mật",
+      "badge": "DEV VIP · 100M TOKEN / 3D",
+      "badgeColor": "bg-[#D97757] text-white",
+      "price": 150000,
+      "oldPrice": 350000,
+      "discount": "-57%",
+      "stock": 999,
+      "duration": "3 Ngày (72 Giờ) · 100M Token",
+      "warranty": "Bảo hành 1 đổi 1 suốt 3 ngày",
+      "rating": 5,
+      "soldCount": 16,
+      "image": "/img/claude-api-100m-3d.svg",
+      "imageUrl": "/img/claude-api-100m-3d.svg",
+      "iconType": "claude",
+      "ctaText": "Mua API (150k Xu)",
+      "desc": "DỊCH VỤ CẤP API CLAUDE 100M TOKEN (HẠN SỬ DỤNG 3 NGÀY / 72 GIỜ): Cung cấp API Key & Endpoint tương thích chuẩn Anthropic/Claude với hạn mức khủng lên tới 100.000.000 Token dùng trong 3 ngày — cực kỳ phù hợp cho anh em chạy sprint code dự án lớn trên Claude Code, Cursor, Cline, Roo Code, OpenClaw hoặc workflow Automation n8n. Thanh toán xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận API Key ngay trong 1–5 phút.",
+      "tags": [
+        "API Claude",
+        "100M Token",
+        "Claude Code",
+        "Cursor",
+        "Automation & AI Agents"
+      ],
+      "features": [
+        "Hạn mức siêu khủng 100.000.000 Token (100M Token) sử dụng thoải mái trong 3 ngày (72 giờ)",
+        "Hỗ trợ các dòng model Claude thông minh (Sonnet / Opus) cho lập trình & agentic coding",
+        "Cắm trực tiếp vào Claude Code CLI, Cursor, Cline, Roo Code, Windsurf, OpenClaw hoặc n8n",
+        "Bàn giao API Key + Base URL riêng tư, hướng dẫn cấu hình chi tiết trong 1 phút",
+        "Bảo hành 1 đổi 1 suốt 3 ngày sử dụng nếu phát sinh lỗi kết nối từ phía hệ thống",
+        "Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn — nhận Key ngay trong 1–5 phút"
+      ],
+      "highlights": [
+        "Quota cực lớn 100M Token trong 3 ngày (72h)",
+        "Tương thích Claude Code, Cursor, Cline, Roo Code & n8n",
+        "Tiết kiệm hàng triệu đồng chi phí API cho sprint dự án",
+        "Bàn giao Key nhanh 1–5 phút qua Zalo 0986.019.623"
+      ],
+      "beforeAfter": {
+        "before": {
+          "title": "Nạp tiền API trực tiếp hoặc dùng gói giới hạn",
+          "summary": "Chi phí API Anthropic trực tiếp rất đắt đỏ nếu chạy agentic coding liên tục, hoặc thường xuyên bị rate-limit giữa chừng.",
+          "points": [
+            "Chạy Claude Code / Cursor vài tiếng có thể tốn vài chục USD",
+            "Gói Pro thông thường nhanh chóng chạm giới hạn 5 giờ / tuần",
+            "Khó thanh toán quốc tế & dễ bị khóa thẻ"
+          ]
+        },
+        "after": {
+          "title": "API Claude 100M Token (3 Ngày) tại Bùi Thái Studio",
+          "summary": "Thoải mái cày dự án, refactor codebase lớn với 100 triệu Token chỉ 150.000 Xu.",
+          "points": [
+            "Quota 100M Token đủ sức chạy hàng trăm tác vụ coding lớn trong 3 ngày",
+            "Tốc độ ổn định, hỗ trợ đầy đủ tool-calling & context dài",
+            "Nhận Key & hỗ trợ kỹ thuật cấu hình 1–5 phút qua Zalo 0986.019.623"
+          ]
+        }
+      },
+      "unlockedPayload": {
+        "fileName": "Huong_Dan_Nhan_API_Claude_100M_Token_3_Ngay.md",
+        "masterPrompt": "# HƯỚNG DẪN NHẬN API CLAUDE 100M TOKEN (3 NGÀY)\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN HÀNG QUA ZALO ĐỂ NHẬN KEY\nSau khi thanh toán thành công **150.000 Xu**, bạn vui lòng nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623) với nội dung:\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` trên màn hình)\n- **Gói đã mua**: API Claude 100M Token (3 Ngày)\n- **Tool bạn muốn dùng**: (Ví dụ: Claude Code / Cursor / Cline / Roo Code / API trực tiếp)\n\n---\n\n## BƯỚC 2: CẤU HÌNH API KEY & BASE URL (1 PHÚT)\n1. Admin sẽ gửi cho bạn `ANTHROPIC_API_KEY` và `ANTHROPIC_BASE_URL` (nếu dùng proxy).\n2. Dán vào biến môi trường hoặc phần cài đặt Custom API trong Cursor / Claude Code / Cline.\n3. Kiểm tra kết nối và bắt đầu chạy task.\n\n---\n\n## BƯỚC 3: LƯU Ý & BẢO HÀNH\n- **Thời hạn & Quota**: **3 Ngày (72 giờ)** hoặc hết **100M Token** (tùy điều kiện nào đến trước).\n- **Bảo hành**: **1 đổi 1 suốt 3 ngày** nếu lỗi hệ thống. Không chia sẻ Key công khai để tránh bị người khác dùng hết Quota.",
+        "cheatSheet": [
+          {
+            "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận API Key ngay",
+            "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói API Claude 100M Token 3 Ngày (150k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Tool sử dụng: [Claude Code / Cursor / Cline...]\nNhờ admin cấp API Key giúp mình nhé!",
+            "example": "Chép mẫu này, điền Mã đơn rồi gửi qua Zalo 0986.019.623 để nhận Key trong 1–5 phút."
+          },
+          {
+            "title": "2. Mẫu cấu hình nhanh cho Claude Code CLI",
+            "template": "export ANTHROPIC_BASE_URL=\"https://[BASE_URL_ADMIN_CAP]\"\nexport ANTHROPIC_API_KEY=\"sk-[KEY_ADMIN_CAP]\"\nclaude",
+            "example": "Chạy 3 dòng lệnh này trong Terminal (macOS/Linux/Git Bash) sau khi nhận Key từ Admin."
+          }
+        ]
+      },
+      "status": "in_stock",
+      "isBestSeller": false,
+      "cheatSheet": [
+        {
+          "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận API Key ngay",
+          "template": "Chào Bùi Thái Studio, mình vừa thanh toán gói API Claude 100M Token 3 Ngày (150k).\n- Mã đơn hàng: [MA_DON_HANG]\n- Tool sử dụng: [Claude Code / Cursor / Cline...]\nNhờ admin cấp API Key giúp mình nhé!",
+          "example": "Chép mẫu này, điền Mã đơn rồi gửi qua Zalo 0986.019.623 để nhận Key trong 1–5 phút."
+        }
+      ]
+    },
+    {
       "id": "service-canva-edu-1y",
       "isService": true,
       "name": "Up Canva Edu 1 Năm Chính Chủ (Bảo Hành 3 Tháng)",
@@ -14966,7 +15406,7 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-19T18:34:18.982Z",
+  "updatedAt": "2026-11-20T05:18:33.648Z",
   "orders": [],
   "topups": [
     {

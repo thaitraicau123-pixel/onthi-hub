@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B0F1E"/>
+      <stop offset="1" stop-color="#1A1840"/>
+    </linearGradient>
+    <linearGradient id="gem" x1="600" y1="90" x2="720" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4285F4"/>
+      <stop offset="0.5" stop-color="#9B72CB"/>
+      <stop offset="1" stop-color="#D96570"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#9B72CB" stroke-opacity="0.38"/>
+  <path d="M660 88c0 34-26 60-60 60 34 0 60 26 60 60 0-34 26-60 60-60-34 0-60-26-60-60z" fill="url(#gem)"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#A78BFA">GOOGLE AI · GEMINI PLUS 6 THÁNG</text>
+  <text x="80" y="166" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#F5F5F7">Gemini Plus 6 Tháng</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="19" fill="#CBD5E1">Truy cập model AI cao cấp · Deep Research · Tích hợp Workspace</text>
+  <rect x="80" y="254" width="640" height="154" rx="18" fill="#070914" stroke="#9B72CB" stroke-opacity="0.28"/>
+  <text x="108" y="294" font-family="ui-monospace, monospace" font-size="15" fill="#C4B5FD">✓ Sử dụng các model Gemini Pro / Thinking ưu tiên tốc độ cao</text>
+  <text x="108" y="326" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Hỗ trợ phân tích tài liệu dài, code, ảnh &amp; Deep Research</text>
+  <text x="108" y="358" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Thời hạn sử dụng lên tới 6 Tháng siêu tiết kiệm</text>
+  <text x="108" y="390" font-family="ui-monospace, monospace" font-size="15" fill="#FBBF24">★ Chỉ 50.000 Xu / 6 Tháng · Bảo hành 3 tháng uy tín</text>
+</svg>

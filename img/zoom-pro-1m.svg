@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#071226"/>
+      <stop offset="1" stop-color="#0D2754"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.25" r="0.55">
+      <stop offset="0" stop-color="#2D8CFF" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#2D8CFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect width="800" height="500" fill="url(#glow)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#2D8CFF" stroke-opacity="0.38"/>
+  <rect x="604" y="92" width="112" height="112" rx="28" fill="#2D8CFF"/>
+  <rect x="624" y="128" width="44" height="40" rx="8" fill="#FFFFFF"/>
+  <path d="M674 140l22-12v40l-22-12v-16z" fill="#FFFFFF"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#60A5FA">ZOOM WORKPLACE PRO · HỌP KHÔNG GIỚI HẠN</text>
+  <text x="80" y="166" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#F5F5F7">Zoom Pro 1 Tháng</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="19" fill="#CBD5E1">Không giới hạn 40 phút · 100 Người tham gia · Ghi hình Cloud</text>
+  <rect x="80" y="254" width="640" height="154" rx="18" fill="#040B1A" stroke="#2D8CFF" stroke-opacity="0.28"/>
+  <text x="108" y="294" font-family="ui-monospace, monospace" font-size="15" fill="#60A5FA">✓ Họp &amp; dạy học trực tuyến liên tục tới 30 giờ/phiên</text>
+  <text x="108" y="326" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Hỗ trợ tới 100 người tham gia, chia phòng Breakout Rooms</text>
+  <text x="108" y="358" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Lưu trữ Cloud Recording &amp; Livestream YouTube / Facebook</text>
+  <text x="108" y="390" font-family="ui-monospace, monospace" font-size="15" fill="#FBBF24">★ Chỉ 50.000 Xu / Tháng · Bảo hành full 30 ngày (1 đổi 1)</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A192F"/>
+      <stop offset="1" stop-color="#1E103C"/>
+    </linearGradient>
+    <linearGradient id="canvaGrad" x1="600" y1="90" x2="720" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#00C4CC"/>
+      <stop offset="1" stop-color="#7D2AE8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#00C4CC" stroke-opacity="0.38"/>
+  <circle cx="660" cy="148" r="56" fill="url(#canvaGrad)"/>
+  <text x="660" y="164" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="38" font-weight="700" fill="#FFFFFF">Canva</text>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#22D3EE">NÂNG CẤP CHÍNH CHỦ · GÓI DÀI HẠN 2 NĂM</text>
+  <text x="80" y="166" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#F5F5F7">Canva Pro 2 Năm</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="19" fill="#CBD5E1">100M+ Tài nguyên Pro · Xóa nền 1-Click · Magic Studio AI</text>
+  <rect x="80" y="254" width="640" height="154" rx="18" fill="#060D1E" stroke="#00C4CC" stroke-opacity="0.28"/>
+  <text x="108" y="294" font-family="ui-monospace, monospace" font-size="15" fill="#22D3EE">✓ Nâng cấp trên Email Canva cá nhân (giữ nguyên thiết kế)</text>
+  <text x="108" y="326" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Mở khóa toàn bộ Font Việt hóa, Stock Pro, Brand Kit &amp; AI</text>
+  <text x="108" y="358" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Xuất PNG nền trong suốt, SVG, PDF in ấn không watermark</text>
+  <text x="108" y="390" font-family="ui-monospace, monospace" font-size="15" fill="#FBBF24">★ Chỉ 150.000 Xu / 2 Năm · Bảo hành 6 tháng (1 đổi 1)</text>
+</svg>

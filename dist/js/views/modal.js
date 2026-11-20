@@ -1489,7 +1489,7 @@ window.ShopVietViews.modal = (function () {
 
           <div class="p-2.5 rounded-xl bg-[#0071E3]/[0.06] dark:bg-[#3B9EFF]/10 text-slate-700 dark:text-slate-200 text-[11px] text-left leading-relaxed flex items-center gap-2 border border-[#0071E3]/20">
             <svg class="w-4 h-4 shrink-0 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            <span>${currentProduct.isService ? `Nâng cấp chính chủ trên Email Canva của bạn trong 1–5 phút qua Zalo 0986.019.623 (${escapeHTML(currentProduct.warranty || 'Bảo hành 3 tháng')}).` : 'Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời.'} Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
+            <span>${currentProduct.isService ? `Kích hoạt / bàn giao chính chủ trong 1–5 phút qua Zalo 0986.019.623 (${escapeHTML(currentProduct.warranty || 'Bảo hành uy tín')}).` : 'Mở khóa tức thì &amp; sở hữu vĩnh viễn trọn đời.'} Cam kết <button type="button" onclick="ShopVietViews.modal.openPolicy('refund')" class="underline font-bold text-[#0071E3] dark:text-[#3B9EFF] cursor-pointer">Hoàn tiền 100%</button> trong 24h nếu gặp lỗi kỹ thuật.</span>
           </div>
 
           <div class="grid grid-cols-2 gap-2.5 pt-1">

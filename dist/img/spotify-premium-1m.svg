@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="800" y2="500" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07150E"/>
+      <stop offset="1" stop-color="#0E2E1D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.8" cy="0.25" r="0.55">
+      <stop offset="0" stop-color="#1DB954" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#1DB954" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#bg)"/>
+  <rect width="800" height="500" fill="url(#glow)"/>
+  <rect x="44" y="44" width="712" height="412" rx="28" fill="#FFFFFF" fill-opacity="0.04" stroke="#1DB954" stroke-opacity="0.35"/>
+  <circle cx="660" cy="145" r="56" fill="#1DB954"/>
+  <path d="M632 132c18-5 40-3 56 6M636 148c14-4 32-2 45 5M640 163c11-3 24-2 34 4" stroke="#07150E" stroke-width="6.5" stroke-linecap="round"/>
+  <text x="80" y="106" font-family="ui-monospace, monospace" font-size="15" font-weight="700" fill="#1DB954">NÂNG CẤP CHÍNH CHỦ · BẢO HÀNH FULL 1 THÁNG</text>
+  <text x="80" y="166" font-family="system-ui, sans-serif" font-size="42" font-weight="800" fill="#F5F5F7">Spotify Premium 1 Tháng</text>
+  <text x="80" y="208" font-family="system-ui, sans-serif" font-size="19" fill="#CBD5E1">Không quảng cáo · Nghe Offline · Nhạc Lossless &amp; Very High</text>
+  <rect x="80" y="254" width="640" height="154" rx="18" fill="#040D08" stroke="#1DB954" stroke-opacity="0.25"/>
+  <text x="108" y="294" font-family="ui-monospace, monospace" font-size="15" fill="#4ADE80">✓ Nâng cấp trực tiếp trên tài khoản Spotify cá nhân</text>
+  <text x="108" y="326" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Giữ nguyên 100% Playlist, Podcast &amp; Lịch sử nghe</text>
+  <text x="108" y="358" font-family="ui-monospace, monospace" font-size="15" fill="#E2E8F0">✓ Tải nhạc nghe Offline, chuyển bài không giới hạn</text>
+  <text x="108" y="390" font-family="ui-monospace, monospace" font-size="15" fill="#FBBF24">★ Chỉ 50.000 Xu / Tháng · Kích hoạt nhanh qua Zalo 1–5 phút</text>
+</svg>
