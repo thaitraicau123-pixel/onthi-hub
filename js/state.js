@@ -9,6 +9,12 @@
   const STORAGE_KEY = 'shopviet247_app_state_v560_roadmap_guide_v1';
   const USERS_DB_KEY = 'shopviet_users_database';
   const LOCAL_CLOUD_DB_PATH = '/cloud-db.json';
+  const MARKETPLACE_LISTINGS_KEY = 'shopviet_marketplace_listings';
+  const MARKETPLACE_WITHDRAWALS_KEY = 'shopviet_marketplace_withdrawals';
+  const MARKETPLACE_EARNINGS_KEY = 'shopviet_marketplace_earnings';
+  const MARKETPLACE_REF_ATTR_KEY = 'shopviet_ref_attribution';
+  const MARKETPLACE_REF_STATS_KEY = 'shopviet_ref_stats';
+  const MARKETPLACE_DIST_ORDERS_KEY = 'shopviet_distributed_orders';
 
   // Gắn Firebase ID Token để server biết ai đang gọi các action quản trị.
   async function adminAuthHeaders() {
@@ -196,19 +202,19 @@
           ? window.ShopVietData.products
           : ((window.ShopVietData && window.ShopVietData.defaultProducts) || []);
 
-        // ƯU TIÊN 1: Kiểm tra localStorage (bắt buộc đủ tối thiểu 12 Hộp Công Cụ, có stock & unlockedPayload)
+        // ƯU TIÊN 1: Kiểm tra localStorage (bắt buộc đủ tối thiểu 12 Hộp Công Cụ, cho phép 0 Xu tới 5.000.000 Xu)
         const raw = localStorage.getItem("shopviet_custom_products") || localStorage.getItem("shopviet_admin_products") || localStorage.getItem("shopviet247_custom_products_v1");
+        let officialList = [];
         if (raw) {
           let parsed = JSON.parse(raw);
           if (Array.isArray(parsed) && parsed.length >= 12) {
             const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
-            parsed = parsed.filter(function (p) { return p && !deletedProds.includes(p.id); });
+            parsed = parsed.filter(function (p) { return p && !p.isCommunityListing && !deletedProds.includes(p.id); });
 
-            const isValid12 = parsed.every(function (p) {
-              return p && typeof p.price === "number" && p.price >= 1000 && p.price <= 990000 && p.stock && p.unlockedPayload;
+            const isValid12 = parsed.length >= 12 && parsed.every(function (p) {
+              return p && typeof p.price === "number" && p.price >= 0 && p.price <= 5000000 && p.stock && p.unlockedPayload;
             });
             if (isValid12) {
-              // Tự động bổ sung bất kỳ sản phẩm mới nào từ data.js và cập nhật các sản phẩm thay đổi
               if (defaultList.length > 0) {
                 const defaultMap = new Map(defaultList.map(function (p) { return [p.id, p]; }));
                 parsed = parsed.map(function (p) {
@@ -217,7 +223,7 @@
                 const existingIds = new Set(parsed.map(function (p) { return p.id; }));
                 let hasNew = false;
                 defaultList.forEach(function (dp) {
-                  if (!existingIds.has(dp.id) && !deletedProds.includes(dp.id)) {
+                  if (!dp.isCommunityListing && !existingIds.has(dp.id) && !deletedProds.includes(dp.id)) {
                     parsed.push(dp);
                     hasNew = true;
                   }
@@ -229,26 +235,32 @@
                   } catch (e) {}
                 }
               }
-              if (window.ShopVietData) {
-                window.ShopVietData.products = parsed;
-              }
-              return parsed;
+              officialList = parsed;
             }
           }
-          localStorage.removeItem("shopviet_custom_products");
-          localStorage.removeItem("shopviet_admin_products");
-          localStorage.removeItem("shopviet247_custom_products_v1");
+          if (officialList.length === 0) {
+            localStorage.removeItem("shopviet_custom_products");
+            localStorage.removeItem("shopviet_admin_products");
+            localStorage.removeItem("shopviet247_custom_products_v1");
+          }
         }
 
-        // ƯU TIÊN 2: Luôn khôi phục đầy đủ toàn bộ 16 sản phẩm chuẩn từ data.js
-        if (defaultList.length > 0) {
+        // ƯU TIÊN 2: Khôi phục đầy đủ toàn bộ sản phẩm chuẩn từ data.js
+        if (officialList.length === 0 && defaultList.length > 0) {
+          officialList = defaultList.filter(function (p) { return p && !p.isCommunityListing; });
           try {
-            localStorage.setItem("shopviet_custom_products", JSON.stringify(defaultList));
+            localStorage.setItem("shopviet_custom_products", JSON.stringify(officialList));
           } catch (e) {}
-          if (window.ShopVietData) window.ShopVietData.products = defaultList;
-          return defaultList;
         }
-        return [];
+
+        const approvedCommunity = (typeof this.getMarketplaceListings === 'function')
+          ? this.getMarketplaceListings(false)
+          : [];
+        const combined = officialList.concat(approvedCommunity);
+        if (window.ShopVietData) {
+          window.ShopVietData.products = combined;
+        }
+        return combined;
       } catch (e) {
         console.warn("[ShopVietState] Lỗi getCustomProducts:", e);
         return (window.ShopVietData && window.ShopVietData.products) || [];
@@ -267,13 +279,18 @@
     saveCustomProducts: function (products) {
       try {
         if (!Array.isArray(products)) return false;
-        const jsonStr = JSON.stringify(products);
+        const officialOnly = products.filter(function (p) { return p && !p.isCommunityListing; });
+        const jsonStr = JSON.stringify(officialOnly);
         localStorage.setItem('shopviet_custom_products', jsonStr);
         localStorage.setItem('shopviet_admin_products', jsonStr);
+        const approvedCommunity = (typeof this.getMarketplaceListings === 'function')
+          ? this.getMarketplaceListings(false)
+          : [];
+        const combined = officialOnly.concat(approvedCommunity);
         if (window.ShopVietData) {
-          window.ShopVietData.products = products;
+          window.ShopVietData.products = combined;
         }
-        this.notify('products_updated', products);
+        this.notify('products_updated', combined);
         return true;
       } catch (e) {
         console.warn('[ShopVietState] Lỗi saveCustomProducts:', e);
@@ -525,14 +542,14 @@
           }
         }
 
-        // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Chuẩn Nguồn Chân Lý Dữ Liệu Thật)
-        if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 1000 && p.price <= 990000 && p.stock; })) {
+        // 2. Đồng bộ Products (Sản phẩm tùy chỉnh bởi Admin - Hỗ trợ 0 Xu tới 5.000.000 Xu)
+        if (Array.isArray(data.products) && data.products.length >= 12 && data.products.every(function (p) { return p && typeof p.price === 'number' && p.price >= 0 && p.price <= 5000000 && p.stock; })) {
           const deletedProds = ['template-ascend-saas-planet-webgl', 'template-kimi-f1-racing-3d', 'source-luckyspin-minigame-marketing', 'template-ascend-1file-luxury', 'template-kimi-1file-studio'];
-          data.products = data.products.filter(function (p) { return p && !deletedProds.includes(p.id); });
+          data.products = data.products.filter(function (p) { return p && !p.isCommunityListing && !deletedProds.includes(p.id); });
           if (window.ShopVietData && Array.isArray(window.ShopVietData.products)) {
             const cloudIds = new Set(data.products.map(function (p) { return p.id; }));
             window.ShopVietData.products.forEach(function (dp) {
-              if (!cloudIds.has(dp.id) && !deletedProds.includes(dp.id)) {
+              if (!dp.isCommunityListing && !cloudIds.has(dp.id) && !deletedProds.includes(dp.id)) {
                 data.products.push(dp);
               }
             });
@@ -542,17 +559,9 @@
           if (prodJson !== oldProdJson) {
             hasChange = true;
           }
-          try {
-            localStorage.setItem('shopviet_custom_products', prodJson);
-            localStorage.setItem('shopviet_admin_products', prodJson);
-            localStorage.setItem('shopviet247_custom_products_v1', prodJson);
-          } catch (e) {}
-          if (window.ShopVietData) {
-            window.ShopVietData.products = data.products;
-          }
           this.saveCustomProducts(data.products);
           hasChange = true;
-          console.log('[ShopVietState] Đã đồng bộ ' + data.products.length + ' sản phẩm (kèm ảnh upload & mô tả) từ Cloud Storage!');
+          console.log('[ShopVietState] Đã đồng bộ ' + data.products.length + ' sản phẩm từ Cloud Storage!');
         }
 
         // 3. Đồng bộ Vouchers (Mã giảm giá & quà tặng ví)
@@ -685,6 +694,60 @@
           }
         }
 
+        // 7. Đồng bộ Sàn Creator & Affiliate (Listings, Withdrawals, Earnings)
+        if (Array.isArray(data.marketplaceListings) && data.marketplaceListings.length > 0 && typeof this.getMarketplaceListings === 'function') {
+          const curListings = this.getMarketplaceListings(true);
+          const lMap = new Map(curListings.map(function (item) { return [item.id, item]; }));
+          let lChanged = false;
+          data.marketplaceListings.forEach(function (cl) {
+            if (!cl || !cl.id) return;
+            if (!lMap.has(cl.id)) {
+              curListings.unshift(cl);
+              lMap.set(cl.id, cl);
+              lChanged = true;
+            }
+          });
+          if (lChanged) {
+            this.saveMarketplaceListings(curListings);
+            this.getCustomProducts();
+            hasChange = true;
+          }
+        }
+        if (Array.isArray(data.marketplaceWithdrawals) && data.marketplaceWithdrawals.length > 0 && typeof this.getWithdrawals === 'function') {
+          const curWd = this.getWithdrawals('all');
+          const wMap = new Map(curWd.map(function (w) { return [w.id, w]; }));
+          let wChanged = false;
+          data.marketplaceWithdrawals.forEach(function (cw) {
+            if (!cw || !cw.id) return;
+            if (!wMap.has(cw.id)) {
+              curWd.unshift(cw);
+              wMap.set(cw.id, cw);
+              wChanged = true;
+            }
+          });
+          if (wChanged) {
+            this.saveWithdrawals(curWd);
+            hasChange = true;
+          }
+        }
+        if (Array.isArray(data.marketplaceEarnings) && data.marketplaceEarnings.length > 0 && typeof this.getMarketplaceEarnings === 'function') {
+          const curEarn = this.getMarketplaceEarnings('all');
+          const eMap = new Map(curEarn.map(function (e) { return [e.id, e]; }));
+          let eChanged = false;
+          data.marketplaceEarnings.forEach(function (ce) {
+            if (!ce || !ce.id) return;
+            if (!eMap.has(ce.id)) {
+              curEarn.unshift(ce);
+              eMap.set(ce.id, ce);
+              eChanged = true;
+            }
+          });
+          if (eChanged) {
+            this.saveMarketplaceEarnings(curEarn);
+            hasChange = true;
+          }
+        }
+
         // Cập nhật lại giao diện trang chủ ngay lập tức
         if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
           window.ShopVietViews.home.renderProducts();
@@ -793,9 +856,16 @@
         const isoNow = new Date(now).toISOString();
         this.setLastUpdatedAt(now);
 
+        const marketplaceListings = (typeof this.getMarketplaceListings === 'function') ? this.getMarketplaceListings(true) : [];
+        const marketplaceWithdrawals = (typeof this.getWithdrawals === 'function') ? this.getWithdrawals('all') : [];
+        const marketplaceEarnings = (typeof this.getMarketplaceEarnings === 'function') ? this.getMarketplaceEarnings('all') : [];
+
         const dbData = {
           users: users,
-          products: customProducts,
+          products: customProducts.filter(function (p) { return p && !p.isCommunityListing; }),
+          marketplaceListings: marketplaceListings,
+          marketplaceWithdrawals: marketplaceWithdrawals,
+          marketplaceEarnings: marketplaceEarnings,
           vouchers: vouchers,
           schedules: schedules,
           orders: orders,
@@ -2033,11 +2103,13 @@
           // Số dư mới = số dư hiện tại + số tiền nạp mới.
           targetBalance = curLocalBal + newlyCreditedAmount;
 
-          // Kiểm tra chặn trần an toàn theo số Xu đã tiêu:
-          // Số dư không bao giờ vượt quá (tổng đã nạp - tổng đã tiêu)
+          // Kiểm tra chặn trần an toàn theo tổng nạp + thu nhập sàn/CTV + hoàn rút tiền - tổng chi tiêu
           const totalSpent = (typeof this.getSpentCoins === 'function') ? this.getSpentCoins(currentEmail) : 0;
-          if (totalSpent > 0 && targetBalance > Math.max(0, totalCompletedSum - totalSpent)) {
-            targetBalance = Math.max(0, totalCompletedSum - totalSpent);
+          const totalEarned = (typeof this.getTotalEarnedCoins === 'function') ? this.getTotalEarnedCoins(currentEmail) : 0;
+          const totalRefunds = (typeof this.getTotalWithdrawalRefunds === 'function') ? this.getTotalWithdrawalRefunds(currentEmail) : 0;
+          const balanceCeiling = Math.max(0, totalCompletedSum + totalEarned + totalRefunds - totalSpent);
+          if (totalSpent > 0 && targetBalance > balanceCeiling) {
+            targetBalance = balanceCeiling;
           }
 
           this.state.user.balance = targetBalance;
@@ -3609,6 +3681,479 @@
       if (list.length === initialLen) return false;
       this.saveSchedules(list);
       return true;
+    },
+
+    // =========================================================================
+    // SÀN CREATOR (80/20), CTV AFFILIATE (25%) & RÚT XU NGÂN HÀNG (>= 20K)
+    // =========================================================================
+    _getRefStatsMap: function () {
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_REF_STATS_KEY);
+        const parsed = raw ? JSON.parse(raw) : {};
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    },
+
+    _saveRefStatsMap: function (map) {
+      try {
+        localStorage.setItem(MARKETPLACE_REF_STATS_KEY, JSON.stringify(map || {}));
+      } catch (e) {}
+    },
+
+    captureReferralFromUrl: function () {
+      try {
+        if (typeof window === 'undefined' || !window.location) return null;
+        const params = new URLSearchParams(window.location.search || '');
+        const rawRef = params.get('ref');
+        if (!rawRef) return this.getActiveReferrer();
+        const mp = window.ShopVietMarketplace;
+        const code = mp ? mp.normalizeRefCode(rawRef) : String(rawRef).trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+        if (!code || code.length < 3) return this.getActiveReferrer();
+
+        // Tìm email tương ứng với mã ref trong usersDB (nếu có)
+        let refEmail = '';
+        const users = this.getUsersDB();
+        const matched = users.find(function (u) {
+          if (!u || !u.email) return false;
+          const uCode = mp ? mp.buildRefCodeForEmail(u.email) : ('BT' + u.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8));
+          return uCode === code;
+        });
+        if (matched) refEmail = matched.email.trim().toLowerCase();
+
+        const attr = {
+          code: code,
+          email: refEmail,
+          capturedAt: new Date().toISOString()
+        };
+        localStorage.setItem(MARKETPLACE_REF_ATTR_KEY, JSON.stringify(attr));
+
+        // Tăng lượt click cho mã ref (tránh đếm trùng quá 1 lần trong cùng sessionStorage)
+        const sessionClickKey = 'shopviet_ref_clicked_' + code;
+        let alreadyClickedInSession = false;
+        try {
+          alreadyClickedInSession = sessionStorage.getItem(sessionClickKey) === '1';
+          if (!alreadyClickedInSession) sessionStorage.setItem(sessionClickKey, '1');
+        } catch (e) {}
+
+        if (!alreadyClickedInSession) {
+          const statsMap = this._getRefStatsMap();
+          const cur = statsMap[code] || { clicks: 0, signups: 0, orders: 0, commissionXu: 0 };
+          cur.clicks = (Number(cur.clicks) || 0) + 1;
+          if (refEmail && !cur.email) cur.email = refEmail;
+          statsMap[code] = cur;
+          this._saveRefStatsMap(statsMap);
+        }
+
+        return attr;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    getActiveReferrer: function () {
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_REF_ATTR_KEY);
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (!parsed || !parsed.code) return null;
+        // Bổ sung email nếu tài khoản mới đăng ký khớp mã ref
+        if (!parsed.email) {
+          const mp = window.ShopVietMarketplace;
+          const users = this.getUsersDB();
+          const matched = users.find(function (u) {
+            if (!u || !u.email) return false;
+            const uCode = mp ? mp.buildRefCodeForEmail(u.email) : ('BT' + u.email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8));
+            return uCode === parsed.code;
+          });
+          if (matched) {
+            parsed.email = matched.email.trim().toLowerCase();
+            localStorage.setItem(MARKETPLACE_REF_ATTR_KEY, JSON.stringify(parsed));
+          }
+        }
+        return parsed;
+      } catch (e) {
+        return null;
+      }
+    },
+
+    trackReferralSignup: function (newUserEmail) {
+      const cleanNew = String(newUserEmail || '').trim().toLowerCase();
+      if (!cleanNew) return false;
+      const attr = this.getActiveReferrer();
+      if (!attr || !attr.code) return false;
+      const mp = window.ShopVietMarketplace;
+      const newUserCode = mp ? mp.buildRefCodeForEmail(cleanNew) : '';
+      if ((attr.email && attr.email === cleanNew) || (newUserCode && newUserCode === attr.code)) {
+        return false; // Chặn tự giới thiệu
+      }
+
+      const signedTrackKey = 'shopviet_ref_signup_' + cleanNew;
+      try {
+        if (localStorage.getItem(signedTrackKey) === '1') return false;
+        localStorage.setItem(signedTrackKey, '1');
+      } catch (e) {}
+
+      const statsMap = this._getRefStatsMap();
+      const cur = statsMap[attr.code] || { clicks: 0, signups: 0, orders: 0, commissionXu: 0 };
+      cur.signups = (Number(cur.signups) || 0) + 1;
+      statsMap[attr.code] = cur;
+      this._saveRefStatsMap(statsMap);
+      return true;
+    },
+
+    getReferralStats: function (email) {
+      const clean = String(email || '').trim().toLowerCase();
+      const mp = window.ShopVietMarketplace;
+      const code = mp ? mp.buildRefCodeForEmail(clean) : ('BT' + clean.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8));
+      const statsMap = this._getRefStatsMap();
+      const s = statsMap[code] || { clicks: 0, signups: 0, orders: 0, commissionXu: 0 };
+      const earnings = this.getMarketplaceEarnings(clean).filter(function (e) { return e.type === 'ctv_commission'; });
+      const sumEarn = earnings.reduce(function (acc, item) { return acc + (Number(item.amountXu) || 0); }, 0);
+      return {
+        refCode: code,
+        clicks: Number(s.clicks) || 0,
+        signups: Number(s.signups) || 0,
+        orders: Math.max(Number(s.orders) || 0, earnings.length),
+        commissionXu: Math.max(Number(s.commissionXu) || 0, sumEarn),
+        earnings: earnings
+      };
+    },
+
+    getMarketplaceListings: function (includeAll) {
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_LISTINGS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) return [];
+        const clean = list.filter(function (item) { return item && item.id; });
+        if (includeAll) return clean;
+        return clean.filter(function (item) { return item.status === 'approved'; });
+      } catch (e) {
+        return [];
+      }
+    },
+
+    saveMarketplaceListings: function (list) {
+      try {
+        localStorage.setItem(MARKETPLACE_LISTINGS_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+        this.getCustomProducts();
+        this.notify('marketplace_updated', list);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    submitCreatorListing: function (input) {
+      const u = this.state && this.state.user;
+      if (!u || !u.isLoggedIn || !u.email) {
+        return { valid: false, errors: ['Vui lòng đăng nhập để đăng bán sản phẩm lên Sàn Creator.'], listing: null };
+      }
+      const mp = window.ShopVietMarketplace;
+      const payload = Object.assign({}, input, {
+        sellerEmail: u.email,
+        sellerName: u.name || u.email.split('@')[0]
+      });
+      const res = mp ? mp.validateListingSubmission(payload) : { valid: false, errors: ['Module marketplace chưa sẵn sàng.'], listing: null };
+      if (!res || !res.valid || !res.listing) {
+        return res;
+      }
+
+      const list = this.getMarketplaceListings(true);
+      list.unshift(res.listing);
+      this.saveMarketplaceListings(list);
+      this.pushAllToCloud(true).catch(function () {});
+      if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
+        window.ShopVietViews.home.renderProducts();
+      }
+      return res;
+    },
+
+    moderateCreatorListing: function (listingId, decision, note) {
+      const u = this.state && this.state.user;
+      const isAdmin = Boolean(u && u.isLoggedIn && u.email && (u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com' || u.role === 'admin'));
+      if (!isAdmin) {
+        return { ok: false, error: 'unauthorized' };
+      }
+      const list = this.getMarketplaceListings(true);
+      const idx = list.findIndex(function (it) { return it && it.id === listingId; });
+      if (idx === -1) return { ok: false, error: 'listing_not_found' };
+
+      const mp = window.ShopVietMarketplace;
+      const res = mp ? mp.transitionListingStatus(list[idx], decision, u.email, note) : { ok: false, error: 'missing_module' };
+      if (!res.ok) return res;
+
+      list[idx] = res.listing;
+      this.saveMarketplaceListings(list);
+      this.pushAllToCloud(true).catch(function () {});
+      if (window.ShopVietViews && window.ShopVietViews.home && typeof window.ShopVietViews.home.renderProducts === 'function') {
+        window.ShopVietViews.home.renderProducts();
+      }
+      return res;
+    },
+
+    getMarketplaceEarnings: function (emailOrAll) {
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_EARNINGS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) return [];
+        if (!emailOrAll || emailOrAll === 'all') return list;
+        const clean = String(emailOrAll || '').trim().toLowerCase();
+        return list.filter(function (e) {
+          return e && e.recipientEmail && e.recipientEmail.trim().toLowerCase() === clean;
+        });
+      } catch (e) {
+        return [];
+      }
+    },
+
+    saveMarketplaceEarnings: function (list) {
+      try {
+        localStorage.setItem(MARKETPLACE_EARNINGS_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+        this.notify('marketplace_earnings_updated', list);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    getTotalEarnedCoins: function (email) {
+      const clean = String(email || '').trim().toLowerCase();
+      if (!clean) return 0;
+      return this.getMarketplaceEarnings(clean).reduce(function (sum, item) {
+        return sum + Math.max(0, Number(item && item.amountXu) || 0);
+      }, 0);
+    },
+
+    getTotalWithdrawalRefunds: function (email) {
+      const clean = String(email || '').trim().toLowerCase();
+      if (!clean) return 0;
+      return this.getWithdrawals(clean)
+        .filter(function (w) { return w && w.status === 'rejected'; })
+        .reduce(function (sum, w) {
+          return sum + Math.max(0, Number(w.amountXu) || 0);
+        }, 0);
+    },
+
+    creditEarnedCoins: function (recipientEmail, amountXu, meta) {
+      const clean = String(recipientEmail || '').trim().toLowerCase();
+      const amt = Math.max(0, Math.round(Number(amountXu) || 0));
+      if (!clean || amt <= 0) return null;
+
+      meta = meta || {};
+      const record = {
+        id: 'EARN-' + Date.now().toString(36).toUpperCase() + Math.floor(10 + Math.random() * 89),
+        recipientEmail: clean,
+        amountXu: amt,
+        type: meta.type || 'seller_payout',
+        orderId: meta.orderId || '',
+        productId: meta.productId || '',
+        productName: meta.productName || '',
+        buyerEmail: meta.buyerEmail || '',
+        note: meta.note || '',
+        createdAt: new Date().toISOString()
+      };
+
+      const earnings = this.getMarketplaceEarnings('all');
+      earnings.unshift(record);
+      this.saveMarketplaceEarnings(earnings);
+
+      // Cộng thẳng vào Ví Xu của người nhận
+      const users = this.getUsersDB();
+      const existing = users.find(function (u) {
+        return u && u.email && u.email.trim().toLowerCase() === clean;
+      });
+      const prevBal = existing ? (Number(existing.balance) || 0) : 0;
+      const nextBal = prevBal + amt;
+      this.updateUserBalance(clean, nextBal, false);
+
+      return record;
+    },
+
+    processOrderDistribution: function (order) {
+      if (!order) return null;
+      const orderKey = String(order.id || order.orderCode || '').trim();
+      if (!orderKey) return null;
+
+      let distMap = {};
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_DIST_ORDERS_KEY);
+        distMap = raw ? JSON.parse(raw) : {};
+      } catch (e) { distMap = {}; }
+
+      if (distMap[orderKey]) {
+        return distMap[orderKey]; // Idempotent: không chia 2 lần cho cùng 1 đơn hàng
+      }
+
+      const prodId = order.productId || (order.items && order.items[0] && (order.items[0].id || order.items[0].productId)) || '';
+      const prod = this.getProductById(prodId);
+      const isCommunity = Boolean(prod && prod.isCommunityListing && prod.sellerEmail);
+      const sellerEmail = isCommunity ? prod.sellerEmail : '';
+      const buyerEmail = String(order.userEmail || (order.customer && order.customer.email) || '').trim().toLowerCase();
+      const saleAmountXu = Math.max(0, Math.round(Number(order.amount || order.total || 0)));
+
+      if (saleAmountXu <= 0) {
+        return { grossXu: 0, sellerShareXu: 0, platformFeeXu: 0, ctvCommissionXu: 0, netPlatformXu: 0 };
+      }
+
+      const activeRef = this.getActiveReferrer();
+      const mp = window.ShopVietMarketplace;
+      const dist = mp ? mp.calculateSaleDistribution({
+        saleAmountXu: saleAmountXu,
+        buyerEmail: buyerEmail,
+        sellerEmail: sellerEmail,
+        referrerCode: activeRef ? activeRef.code : '',
+        referrerEmail: activeRef ? activeRef.email : '',
+        isCommunityListing: isCommunity
+      }) : { grossXu: saleAmountXu, sellerShareXu: 0, platformFeeXu: saleAmountXu, ctvCommissionXu: 0, netPlatformXu: saleAmountXu };
+
+      distMap[orderKey] = Object.assign({}, dist, { processedAt: new Date().toISOString() });
+      try {
+        localStorage.setItem(MARKETPLACE_DIST_ORDERS_KEY, JSON.stringify(distMap));
+      } catch (e) {}
+
+      // 1. Cộng 80% doanh thu cho Creator bán hàng
+      if (dist.sellerShareXu > 0 && sellerEmail) {
+        this.creditEarnedCoins(sellerEmail, dist.sellerShareXu, {
+          type: 'seller_payout',
+          orderId: orderKey,
+          productId: prodId,
+          productName: order.productName || (prod && prod.name) || 'Sản phẩm Sàn Creator',
+          buyerEmail: buyerEmail,
+          note: 'Chia sẻ 80% doanh thu Sàn Creator'
+        });
+      }
+
+      // 2. Cộng 25% hoa hồng cho CTV (nếu có referrer hợp lệ & có email CTV)
+      if (dist.ctvCommissionXu > 0 && activeRef && activeRef.code) {
+        const statsMap = this._getRefStatsMap();
+        const cur = statsMap[activeRef.code] || { clicks: 0, signups: 0, orders: 0, commissionXu: 0 };
+        cur.orders = (Number(cur.orders) || 0) + 1;
+        cur.commissionXu = (Number(cur.commissionXu) || 0) + dist.ctvCommissionXu;
+        statsMap[activeRef.code] = cur;
+        this._saveRefStatsMap(statsMap);
+
+        let refEmail = activeRef.email || '';
+        if (!refEmail) {
+          const users = this.getUsersDB();
+          const matchedRefUser = users.find(function (u) {
+            if (!u || !u.email) return false;
+            const c = mp ? mp.buildRefCodeForEmail(u.email) : '';
+            return c === activeRef.code;
+          });
+          if (matchedRefUser) refEmail = matchedRefUser.email.trim().toLowerCase();
+        }
+        if (refEmail) {
+          this.creditEarnedCoins(refEmail, dist.ctvCommissionXu, {
+            type: 'ctv_commission',
+            orderId: orderKey,
+            productId: prodId,
+            productName: order.productName || (prod && prod.name) || '',
+            buyerEmail: buyerEmail,
+            note: 'Hoa hồng 25% CTV · Mã ' + activeRef.code
+          });
+        }
+      }
+
+      this.pushAllToCloud(true).catch(function () {});
+      return dist;
+    },
+
+    getWithdrawals: function (emailOrAll) {
+      try {
+        const raw = localStorage.getItem(MARKETPLACE_WITHDRAWALS_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list)) return [];
+        if (!emailOrAll || emailOrAll === 'all') return list;
+        const clean = String(emailOrAll || '').trim().toLowerCase();
+        return list.filter(function (w) {
+          return w && w.userEmail && w.userEmail.trim().toLowerCase() === clean;
+        });
+      } catch (e) {
+        return [];
+      }
+    },
+
+    saveWithdrawals: function (list) {
+      try {
+        localStorage.setItem(MARKETPLACE_WITHDRAWALS_KEY, JSON.stringify(Array.isArray(list) ? list : []));
+        this.notify('withdrawals_updated', list);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    },
+
+    requestWithdrawal: function (input) {
+      const u = this.state && this.state.user;
+      if (!u || !u.isLoggedIn || !u.email) {
+        return { valid: false, errors: ['Vui lòng đăng nhập để gửi yêu cầu rút tiền.'], withdrawal: null };
+      }
+      const cleanEmail = u.email.trim().toLowerCase();
+      const users = this.getUsersDB();
+      const dbUser = users.find(function (it) { return it && it.email && it.email.trim().toLowerCase() === cleanEmail; });
+      const availableXu = dbUser ? (Number(dbUser.balance) || 0) : (Number(u.balance) || 0);
+
+      const mp = window.ShopVietMarketplace;
+      const res = mp ? mp.validateWithdrawalRequest({
+        userEmail: cleanEmail,
+        availableXu: availableXu,
+        amountXu: input && input.amountXu,
+        bankName: input && input.bankName,
+        accountNumber: input && input.accountNumber,
+        accountHolder: input && input.accountHolder
+      }) : { valid: false, errors: ['Module marketplace chưa sẵn sàng.'], withdrawal: null };
+
+      if (!res || !res.valid || !res.withdrawal) {
+        return res;
+      }
+
+      const deductRes = this.deductUserCoins(cleanEmail, res.withdrawal.amountXu, {
+        type: 'withdrawal',
+        withdrawalId: res.withdrawal.id
+      });
+      if (!deductRes || !deductRes.success) {
+        return {
+          valid: false,
+          errors: [deductRes && deductRes.error ? deductRes.error : 'Không thể trừ Xu ví để tạo lệnh rút tiền.'],
+          withdrawal: null
+        };
+      }
+
+      const list = this.getWithdrawals('all');
+      list.unshift(res.withdrawal);
+      this.saveWithdrawals(list);
+      this.pushAllToCloud(true).catch(function () {});
+      return res;
+    },
+
+    moderateWithdrawal: function (withdrawalId, decision, note) {
+      const u = this.state && this.state.user;
+      const isAdmin = Boolean(u && u.isLoggedIn && u.email && (u.email.trim().toLowerCase() === 'thaitraicau123@gmail.com' || u.role === 'admin'));
+      if (!isAdmin) {
+        return { ok: false, error: 'unauthorized' };
+      }
+      const list = this.getWithdrawals('all');
+      const idx = list.findIndex(function (w) { return w && w.id === withdrawalId; });
+      if (idx === -1) return { ok: false, error: 'withdrawal_not_found' };
+
+      const mp = window.ShopVietMarketplace;
+      const res = mp ? mp.transitionWithdrawalStatus(list[idx], decision, u.email, note) : { ok: false, error: 'missing_module' };
+      if (!res.ok) return res;
+
+      list[idx] = res.withdrawal;
+      this.saveWithdrawals(list);
+
+      if (res.refundXu > 0 && res.withdrawal.userEmail) {
+        const targetEmail = res.withdrawal.userEmail.trim().toLowerCase();
+        const users = this.getUsersDB();
+        const targetUser = users.find(function (it) { return it && it.email && it.email.trim().toLowerCase() === targetEmail; });
+        const curBal = targetUser ? (Number(targetUser.balance) || 0) : 0;
+        this.updateUserBalance(targetEmail, curBal + res.refundXu, false);
+      }
+
+      this.pushAllToCloud(true).catch(function () {});
+      return res;
     },
 
     // Điều hướng SPA Router (Tích hợp Lucian UX/UI Prompt #321 Curtain Page Transition - Ngoại trừ Sản phẩm)

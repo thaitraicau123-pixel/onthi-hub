@@ -187,6 +187,9 @@
               balance: userData.balance
             });
           }
+          if (typeof window.ShopVietState.trackReferralSignup === 'function') {
+            window.ShopVietState.trackReferralSignup(userData.email);
+          }
           if (typeof window.ShopVietState.login === 'function') {
             window.ShopVietState.login(userData);
           }
@@ -272,6 +275,12 @@
       try {
         const gRes = await window.ShopVietFirebase.loginWithGoogle();
         if (gRes && gRes.success && gRes.user) {
+          if (window.ShopVietState && typeof window.ShopVietState.findUserByEmail === 'function' && typeof window.ShopVietState.trackReferralSignup === 'function') {
+            const existedBefore = Boolean(window.ShopVietState.findUserByEmail(gRes.user.email));
+            if (!existedBefore) {
+              window.ShopVietState.trackReferralSignup(gRes.user.email);
+            }
+          }
           if (window.ShopVietState && typeof window.ShopVietState.login === 'function') {
             window.ShopVietState.login(gRes.user);
           }

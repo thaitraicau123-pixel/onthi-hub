@@ -5,7 +5,7 @@ window.ShopVietData = {
   },
   "defaultOrders": [],
   "defaultTopups": [],
-  "filterTags": ["Tất cả", "Miễn phí 0 Xu", "Mã nguồn", "Template web", "Skill", "Prompt Video"],
+  "filterTags": ["Tất cả", "Miễn phí 0 Xu", "Tool & n8n", "Mã nguồn", "Template web", "Skill", "Prompt Video", "Sàn Creator"],
   "getBrandIcon": function(iconType) {
     var icons = {
       'metropolis-3d': '<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5z"/><path d="M12 22V12"/><path d="M21 7l-9 5-9-5"/></svg>',
@@ -16285,6 +16285,294 @@ window.ShopVietData = {
         "title": "15. Tạo Khung Kiểm Thử Tự Động Đánh Giá Độ Chính Xác Của Prompt",
         "prompt": "Thiết lập bảng ma trận 10 tiêu chí kiểm định chất lượng đầu ra của Prompt: Tính đầy đủ, Tính chính xác, Văn phong, Thời gian xử lý, Tuân thủ format. Chấm điểm theo thang điểm 10 để tối ưu hóa liên tục.",
         "example": "Bộ test case kiểm tra chất lượng Prompt sinh code HTML/Tailwind CSS chuẩn chỉnh."
+      }
+    ]
+  },
+  {
+    "id": "source-n8n-chot-don-zalo-sheets",
+    "name": "Workflow n8n Tự Động Chốt Đơn Shopee / TikTok → Zalo OA + Google Sheets",
+    "module": "AUTOMATION n8n v2.0",
+    "tag": "Tool & n8n",
+    "category": "Tool & n8n Automation",
+    "filterGroup": "Tool & n8n",
+    "badge": "BÁN CHẠY · N8N",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 29000,
+    "oldPrice": 99000,
+    "discount": "-71%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full JSON Workflow + Prompt mở rộng",
+    "rating": 5,
+    "soldCount": 48,
+    "imageUrl": "/img/n8n-zalo-sheets-preview.svg",
+    "iconType": "server",
+    "ctaText": "Mở khóa",
+    "desc": "File JSON workflow n8n nhập là chạy ngay: tự động bắt đơn hàng từ webhook Shopee/TikTok Shop, đẩy về Google Sheets đối soát lãi lỗ và bắn tin Zalo OA / Telegram cho khách 24/7.",
+    "features": [
+      "Tương thích n8n Self-Host & n8n Cloud mới nhất",
+      "Tự động ghi nhận doanh thu, phí sàn, lãi ròng vào Google Sheets",
+      "Gửi tin nhắn xác nhận đơn & link tracking qua Zalo OA / Telegram",
+      "Kèm Master Prompt hướng dẫn AI Agent tùy biến thêm node mới"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Quản lý thủ công rời rạc",
+        "summary": "Nhân viên phải copy từng đơn Shopee/TikTok vào Excel, dễ sót đơn và quên nhắn khách.",
+        "points": ["Tốn 2-3 giờ/ngày nhập liệu thủ công", "Không có cảnh báo tức thì khi đơn hủy/hoàn"]
+      },
+      "after": {
+        "title": "Tự động hóa 100% với Workflow n8n",
+        "summary": "Đơn về tự động vào Sheets và báo Zalo/Telegram trong 3 giây.",
+        "points": ["Tiết kiệm 100% thời gian tổng hợp đơn", "Dễ nhân bản cho nhiều shop khác nhau"]
+      }
+    },
+    "status": "in_stock",
+    "isBestSeller": true,
+    "unlockedPayload": {
+      "fileName": "n8n-chot-don-zalo-sheets.md",
+      "installCommand": "Import file workflow JSON vào n8n -> Gắn Webhook Shopee/TikTok & Google Sheets OAuth -> Active Workflow",
+      "masterPrompt": "# WORKFLOW n8n CHỐT ĐƠN ĐA KÊNH → ZALO OA & GOOGLE SHEETS\n\nBạn là Kiến trúc sư Tự động hóa n8n cao cấp. Hãy cấu hình và mở rộng workflow JSON 6 node sau:\n1. Webhook Trigger: Nhận payload đơn hàng JSON { orderId, customerName, phone, items, totalVnd, channel }.\n2. Function Normalize: Chuẩn hóa SĐT Việt Nam (0xxx -> +84xxx), tính phí sàn ước tính và lãi ròng.\n3. Google Sheets Append Row: Ghi bản ghi mới vào tab `DonHang_2026` không trùng `orderId`.\n4. Switch Channel: Phân nhánh Shopee / TikTok / Landing Page.\n5. HTTP Request (Zalo OA / Telegram Bot): Gửi thông báo xác nhận đơn hàng tức thì cho chủ shop và khách.\n6. Error Workflow Trigger: Cảnh báo khi token hết hạn hoặc thiếu cột dữ liệu.\n\n## Lệnh JSON Node mẫu (Google Sheets + Telegram):\n```json\n{\n  \"name\": \"ChotDon_Shopee_TikTok_Zalo\",\n  \"nodes\": [\n    { \"name\": \"Webhook Order\", \"type\": \"n8n-nodes-base.webhook\", \"parameters\": { \"path\": \"order-hook\", \"httpMethod\": \"POST\" } },\n    { \"name\": \"Normalize Order\", \"type\": \"n8n-nodes-base.code\", \"parameters\": { \"jsCode\": \"const o = $input.first().json; return [{ json: { ...o, netVnd: Math.round((o.totalVnd||0)*0.88) } }];\" } },\n    { \"name\": \"Append Google Sheets\", \"type\": \"n8n-nodes-base.googleSheets\", \"parameters\": { \"operation\": \"appendOrUpdate\" } }\n  ]\n}\n```",
+      "skillContent": "# WORKFLOW n8n CHỐT ĐƠN ĐA KÊNH → ZALO OA & GOOGLE SHEETS\nImport JSON node vào n8n và cấu hình biến môi trường `ZALO_OA_TOKEN`, `GOOGLE_SHEET_ID`, `TELEGRAM_BOT_TOKEN`.",
+      "cheatSheet": [
+        {
+          "title": "1. Tự động tính lãi ròng & cảnh báo đơn bất thường",
+          "template": "Viết node Code JS trong n8n tính lãi ròng = Doanh thu - (Giá vốn + Phí sàn 12% + Phí ship), nếu lãi ròng < 0 thì gửi cảnh báo đỏ qua Telegram.",
+          "example": "Áp dụng cho shop bán phụ kiện TikTok Shop."
+        },
+        {
+          "title": "2. Kết nối thêm SePay / VietQR báo tiền về tự động",
+          "template": "Bổ sung node Webhook nhận biến động số dư từ SePay, khớp mã đơn hàng trong nội dung chuyển khoản và cập nhật cột Trạng Thái = Đã Thanh Toán trên Google Sheets.",
+          "example": "Tự động xác nhận cọc cho đơn hàng giá trị cao."
+        }
+      ]
+    },
+    "cheatSheet": [
+      {
+        "title": "1. Tự động tính lãi ròng & cảnh báo đơn bất thường",
+        "prompt": "Viết node Code JS trong n8n tính lãi ròng = Doanh thu - (Giá vốn + Phí sàn 12% + Phí ship), nếu lãi ròng < 0 thì gửi cảnh báo đỏ qua Telegram.",
+        "example": "Áp dụng cho shop bán phụ kiện TikTok Shop."
+      },
+      {
+        "title": "2. Kết nối thêm SePay / VietQR báo tiền về tự động",
+        "prompt": "Bổ sung node Webhook nhận biến động số dư từ SePay, khớp mã đơn hàng trong nội dung chuyển khoản và cập nhật cột Trạng Thái = Đã Thanh Toán trên Google Sheets.",
+        "example": "Tự động xác nhận cọc cho đơn hàng giá trị cao."
+      }
+    ]
+  },
+  {
+    "id": "prompt-ads-tiktok-koc-ai",
+    "name": "Bộ Prompt AI Tạo Video KOC & Chạy Ads TikTok / Facebook Chuyển Đổi Cao",
+    "module": "ADS & KOC PROMPT v3.0",
+    "tag": "Prompt Video",
+    "category": "Prompt Video & Ads MMO",
+    "filterGroup": "Prompt Video",
+    "badge": "XU HƯỚNG · ADS AI",
+    "badgeColor": "bg-emerald-600 text-white",
+    "price": 19000,
+    "oldPrice": 79000,
+    "discount": "-76%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "50+ Kịch bản Hook 3s + Veo/Kling Prompt",
+    "rating": 5,
+    "soldCount": 62,
+    "imageUrl": "/img/tiktok-koc-ads-preview.svg",
+    "iconType": "video",
+    "ctaText": "Mở khóa",
+    "desc": "Tổng hợp bộ công thức viết Hook 3 giây đầu giữ chân người xem, kịch bản KOC review chuyển đổi cao và prompt dựng clip Veo / Kling / CapCut chuẩn chạy Ads TikTok & Facebook Reels.",
+    "features": [
+      "Công thức Hook 3 giây đánh trúng nỗi đau ngành hàng phổ biến",
+      "Prompt sinh video B-roll sản phẩm trên Veo 3 / Kling AI / Sora",
+      "Kịch bản A/B Testing 5 góc tiếp cận giảm CPA cho chiến dịch Ads",
+      "Tối ưu sẵn văn phong KOC Việt Nam tự nhiên, không sượng"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Video Ads mờ nhạt, cắn tiền không ra đơn",
+        "summary": "Hook chậm, thiếu chứng cứ xã hội và lời kêu gọi hành động yếu.",
+        "points": ["Tỷ lệ xem hết 3 giây dưới 18%", "Bí ý tưởng khi cần lên 10 creative mỗi tuần"]
+      },
+      "after": {
+        "title": "Sản xuất hàng loạt Creative chuyển đổi cao",
+        "summary": "Có sẵn 50+ mẫu Hook và prompt hình ảnh/video chi tiết từng khung hình.",
+        "points": ["Lên xong 5 kịch bản KOC hoàn chỉnh trong 10 phút", "Tăng CTR và giữ nhịp xem tới giây cuối"]
+      }
+    },
+    "status": "in_stock",
+    "isBestSeller": true,
+    "unlockedPayload": {
+      "fileName": "bo-prompt-ads-tiktok-koc-ai.md",
+      "installCommand": "Dán Master Prompt vào ChatGPT/Claude/Gemini -> Thay [SAN_PHAM] & [TEV_KHACH] -> Xuất ngay kịch bản + Shotlist Veo/Kling",
+      "masterPrompt": "# BỘ PROMPT CHUYÊN GIA CREATIVE ADS TIKTOK / FACEBOOK & KOC AI\n\nVai trò: Giám đốc Sáng tạo Performance Ads Việt Nam chuyên làm video ngắn chuyển đổi cao.\nNhiệm vụ: Với đầu vào [SAN_PHAM], [GIA_BAN], [NOI_DAU_KHACH_HANG], hãy xuất ra 3 phiên bản kịch bản video 25-35 giây:\n- Phiên bản A: KOC Review chân thật tại nhà (POV).\n- Phiên bản B: So sánh Trước/Sau đánh mạnh kết quả.\n- Phiên bản C: Bóc phốt sai lầm phổ biến + giải pháp.\n\nMỗi phiên bản bắt buộc gồm:\n1. Hook 0-3s (Visual + Text trên màn hình + Lời thoại ngắn < 12 từ).\n2. Body 3-20s (3 cảnh quay cụ thể + Prompt tiếng Anh cho Veo/Kling 9:16).\n3. CTA 20-30s (Khuyến khích inbox/đặt hàng ngay kèm khan hiếm hợp lệ).",
+      "skillContent": "# BỘ PROMPT CREATIVE ADS TIKTOK / FACEBOOK & KOC AI\nSử dụng trực tiếp để sinh hàng loạt kịch bản video ngắn, shotlist quay điện thoại và prompt AI tạo clip B-roll.",
+      "cheatSheet": [
+        {
+          "title": "1. Sinh 10 Hook 3 giây cho sản phẩm bất kỳ",
+          "template": "Viết 10 câu Hook mở đầu < 12 từ đánh vào nỗi đau của [KHACH_HANG] khi chưa dùng [SAN_PHAM], chia theo 3 nhóm: Tò mò, Cảnh báo sai lầm, Khoe kết quả thật.",
+          "example": "Sản phẩm: Đèn học chống cận cho học sinh cấp 2."
+        },
+        {
+          "title": "2. Prompt sinh cảnh quay B-roll 9:16 trên Veo / Kling",
+          "template": "Create a 9:16 vertical UGC lifestyle video, natural window lighting, creator holding [PRODUCT_EN] on a clean wooden desk, realistic handheld camera motion, crisp focus, 4k photorealistic.",
+          "example": "Quay cận cảnh unbox chai serum dưỡng da trên bàn gỗ."
+        }
+      ]
+    },
+    "cheatSheet": [
+      {
+        "title": "1. Sinh 10 Hook 3 giây cho sản phẩm bất kỳ",
+        "prompt": "Viết 10 câu Hook mở đầu < 12 từ đánh vào nỗi đau của [KHACH_HANG] khi chưa dùng [SAN_PHAM], chia theo 3 nhóm: Tò mò, Cảnh báo sai lầm, Khoe kết quả thật.",
+        "example": "Sản phẩm: Đèn học chống cận cho học sinh cấp 2."
+      },
+      {
+        "title": "2. Prompt sinh cảnh quay B-roll 9:16 trên Veo / Kling",
+        "prompt": "Create a 9:16 vertical UGC lifestyle video, natural window lighting, creator holding [PRODUCT_EN] on a clean wooden desk, realistic handheld camera motion, crisp focus, 4k photorealistic.",
+        "example": "Quay cận cảnh unbox chai serum dưỡng da trên bàn gỗ."
+      }
+    ]
+  },
+  {
+    "id": "template-bio-landing-chot-don",
+    "name": "Template Web Landing Page Bán Hàng & Bio Link Chốt Đơn Zalo 1-File",
+    "module": "LANDING KIT v1.5",
+    "tag": "Template web",
+    "category": "Template Web Chuyển Đổi",
+    "filterGroup": "Template web",
+    "badge": "MẪU WEB HOT · 25K",
+    "badgeColor": "bg-[#0071E3] text-white",
+    "price": 25000,
+    "oldPrice": 89000,
+    "discount": "-72%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Source 1-File HTML + Prompt sửa nhanh",
+    "rating": 5,
+    "soldCount": 41,
+    "imageUrl": "/img/bio-landing-zalo-preview.svg",
+    "iconType": "palette",
+    "ctaText": "Mở khóa",
+    "desc": "Template Bio Link & Landing Page bán hàng siêu nhẹ 1 file HTML duy nhất: tích hợp bảng giá 3 gói, FAQ thu gọn, đồng hồ ưu đãi, nút chốt đơn thẳng về Zalo / Messenger / SePay.",
+    "features": [
+      "Chỉ 1 file HTML + Tailwind CSS, up miễn phí lên Vercel/Netlify/Cloudflare",
+      "Chuẩn Mobile-first cho lưu lượng từ TikTok Bio & Facebook Ads",
+      "Tích hợp sẵn Form nhận thông tin khách gửi về Google Sheets / Webhook",
+      "Kèm Master Prompt đổi ngành hàng (Spa, BĐS, Khóa học, Phụ kiện) trong 60 giây"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Bio link sơ sài, mất khách từ TikTok/FB",
+        "summary": "Khách bấm vào link profile chỉ thấy danh sách nút đơn điệu, không có bảng giá hay bằng chứng uy tín.",
+        "points": ["Tỷ lệ nhắn tin Zalo/IB thấp", "Phải trả phí duy trì platform Bio mỗi tháng"]
+      },
+      "after": {
+        "title": "Landing Page bán hàng chuyên nghiệp 0đ hosting",
+        "summary": "Đầy đủ Hero sản phẩm, 3 gói giá, đánh giá khách hàng và CTA chốt đơn nổi bật.",
+        "points": ["Tải trang < 0.5 giây trên 4G", "Không tốn phí thuê SaaS hàng tháng"]
+      }
+    },
+    "status": "in_stock",
+    "isBestSeller": false,
+    "unlockedPayload": {
+      "fileName": "template-bio-landing-chot-don.md",
+      "installCommand": "Lưu code thành index.html -> Thay số Zalo & Link ảnh -> Deploy lên Vercel / Cloudflare Pages trong 30 giây",
+      "masterPrompt": "# MASTER PROMPT TÙY BIẾN LANDING PAGE & BIO LINK 1-FILE HTML\n\nHãy tạo/chỉnh sửa file `index.html` Landing Page bán hàng cho ngành [NGANH_HANG] với Tailwind CSS CDN:\n1. Hero rõ nét: Tiêu đề lợi ích chính, 3 điểm nổi bật, 2 nút CTA (Đặt ngay qua Zalo + Xem bảng giá).\n2. Bảng giá 3 gói rõ ràng (Cơ bản / Phổ biến nhất / Trọn gói) với số liệu tabular-nums.\n3. Section Đánh giá thực tế + FAQ 4 câu hỏi thường gặp.\n4. Form đặt hàng tối giản gửi JSON tới Webhook n8n / Google Apps Script.\n5. Responsive hoàn hảo ở 375px và 1440px, tuyệt đối không tràn ngang.",
+      "skillContent": "# TEMPLATE WEB LANDING PAGE & BIO LINK CHỐT ĐƠN ZALO 1-FILE\nDùng ngay mã nguồn HTML5 + Tailwind CDN hoặc tùy biến sang bất kỳ ngành hàng nào bằng Master Prompt đi kèm.",
+      "cheatSheet": [
+        {
+          "title": "1. Chuyển Landing Page sang ngành Spa / Thẩm mỹ",
+          "template": "Áp dụng bộ bảng màu Kem Ấm (#FAF8F5) + Vàng Champagne (#B8860B), thay 3 gói dịch vụ liệu trình chăm sóc da và gắn form đặt lịch hẹn ngày giờ + SĐT.",
+          "example": "Bio đặt lịch cho Spa quận 1."
+        },
+        {
+          "title": "2. Kết nối Form đặt hàng về Google Sheets miễn phí",
+          "template": "Viết đoạn Google Apps Script `doPost(e)` nhận JSON `{ name, phone, package }` từ Landing Page và lưu vào trang tính Google Sheets ngay lập tức.",
+          "example": "Lưu lead khách đăng ký khóa học online."
+        }
+      ]
+    },
+    "cheatSheet": [
+      {
+        "title": "1. Chuyển Landing Page sang ngành Spa / Thẩm mỹ",
+        "prompt": "Áp dụng bộ bảng màu Kem Ấm (#FAF8F5) + Vàng Champagne (#B8860B), thay 3 gói dịch vụ liệu trình chăm sóc da và gắn form đặt lịch hẹn ngày giờ + SĐT.",
+        "example": "Bio đặt lịch cho Spa quận 1."
+      },
+      {
+        "title": "2. Kết nối Form đặt hàng về Google Sheets miễn phí",
+        "prompt": "Viết đoạn Google Apps Script `doPost(e)` nhận JSON `{ name, phone, package }` từ Landing Page và lưu vào trang tính Google Sheets ngay lập tức.",
+        "example": "Lưu lead khách đăng ký khóa học online."
+      }
+    ]
+  },
+  {
+    "id": "source-telegram-sepay-bot",
+    "name": "Mã Nguồn Bot Telegram + SePay Tự Động Báo Đơn & Giao Key 24/7",
+    "module": "BOT NODEJS v2.1",
+    "tag": "Tool & n8n",
+    "category": "Mã nguồn & Bot Tự Động",
+    "filterGroup": "Tool & n8n",
+    "badge": "KIẾM TIỀN 24/7",
+    "badgeColor": "bg-emerald-600 text-white",
+    "price": 35000,
+    "oldPrice": 120000,
+    "discount": "-71%",
+    "stock": 999999,
+    "duration": "Sở hữu vĩnh viễn",
+    "warranty": "Full Node.js Bot + Webhook SePay",
+    "rating": 5,
+    "soldCount": 53,
+    "imageUrl": "/img/telegram-sepay-bot-preview.svg",
+    "iconType": "code",
+    "ctaText": "Mở khóa",
+    "desc": "Mã nguồn Bot Telegram bán tài khoản / key phần mềm / file số tự động 100%: tạo mã QR chuyển khoản riêng từng đơn, nhận webhook SePay đối soát tiền vào và tự nhả key trong kho cho khách.",
+    "features": [
+      "Kiến trúc Node.js nhẹ, chạy mượt trên VPS 1GB RAM hoặc Render/Railway",
+      "Chống giao trùng key & khóa idempotency theo `referenceCode` ngân hàng",
+      "Tích hợp sẵn lệnh `/nap`, `/mua`, `/kho`, `/doanh_thu` cho Admin Telegram",
+      "Kèm Master Prompt mở rộng thêm cổng thanh toán hoặc ví CTV"
+    ],
+    "beforeAfter": {
+      "before": {
+        "title": "Canh tin nhắn chuyển khoản & gửi key thủ công",
+        "summary": "Khách mua ban đêm phải chờ tới sáng, dễ mất khách và nhầm lẫn giao dịch.",
+        "points": ["Mất đơn ngoài giờ hành chính", "Dễ gửi nhầm key cũ cho 2 khách"]
+      },
+      "after": {
+        "title": "Hệ thống bán hàng tự vận hành 24/7",
+        "summary": "Khách quét QR xong trong 5 giây là Bot tự trừ kho, trả key và báo doanh thu cho bạn.",
+        "points": ["Phục vụ hàng trăm khách song song không cần trực", "Lịch sử giao dịch và tồn kho rõ ràng"]
+      }
+    },
+    "status": "in_stock",
+    "isBestSeller": true,
+    "unlockedPayload": {
+      "fileName": "source-telegram-sepay-bot.md",
+      "installCommand": "npm install express -> Cấu hình BOT_TOKEN & SEPAY_SECRET -> node bot.js",
+      "masterPrompt": "# MÃ NGUỒN BOT TELEGRAM + SEPAY TỰ ĐỘNG BÁN KEY 24/7 (NODE.JS)\n\nTriển khai server Express + Telegram Bot API gồm 4 thành phần chuẩn sản xuất:\n1. Bộ sinh đơn & VietQR: Tạo mã giao dịch `ORDxxxx`, gửi ảnh `https://img.vietqr.io/image/...` theo số tiền & nội dung riêng.\n2. Webhook `/api/sepay`: Xác thực header `Authorization: Apikey <SEPAY_WEBHOOK_SECRET>`, trích mã `ORDxxxx`, kiểm tra `transferAmount >= order.amount`.\n3. Kho Key Atomic (JSON/SQLite): Lấy 1 key chưa dùng (`status === 'available'`), đánh dấu `sold` trước khi gửi cho khách để chống race condition.\n4. Thông báo Admin: Gửi tin nhắn doanh thu ngày + tồn kho còn lại về Telegram Admin.",
+      "skillContent": "# BOT TELEGRAM + SEPAY TỰ ĐỘNG GIAO KEY 24/7\nBao gồm đặc tả webhook SePay an toàn, quản lý kho key atomic và menu mua hàng Telegram inline keyboard.",
+      "cheatSheet": [
+        {
+          "title": "1. Thêm tính năng hoa hồng CTV 25% vào Bot Telegram",
+          "template": "Thêm bảng `affiliates` và lệnh `/ref` cho phép user lấy link `t.me/MyBot?start=REF_CODE`, khi người được mời mua đơn thành công tự động cộng 25% số dư vào ví CTV.",
+          "example": "Mở rộng Bot Telegram thêm mạng lưới CTV bán key."
+        },
+        {
+          "title": "2. Cảnh báo hết hàng tự động cho Admin",
+          "template": "Kiểm tra số lượng key còn lại trong kho sau mỗi đơn hàng; nếu dưới 5 key, gửi cảnh báo khẩn về chat Admin Telegram.",
+          "example": "Quản trị tồn kho Bot tự động."
+        }
+      ]
+    },
+    "cheatSheet": [
+      {
+        "title": "1. Thêm tính năng hoa hồng CTV 25% vào Bot Telegram",
+        "prompt": "Thêm bảng `affiliates` và lệnh `/ref` cho phép user lấy link `t.me/MyBot?start=REF_CODE`, khi người được mời mua đơn thành công tự động cộng 25% số dư vào ví CTV.",
+        "example": "Mở rộng Bot Telegram thêm mạng lưới CTV bán key."
+      },
+      {
+        "title": "2. Cảnh báo hết hàng tự động cho Admin",
+        "prompt": "Kiểm tra số lượng key còn lại trong kho sau mỗi đơn hàng; nếu dưới 5 key, gửi cảnh báo khẩn về chat Admin Telegram.",
+        "example": "Quản trị tồn kho Bot tự động."
       }
     ]
   }

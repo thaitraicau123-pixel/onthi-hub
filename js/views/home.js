@@ -918,31 +918,31 @@ window.ShopVietViews.home = (function () {
     }
 
     return `
-      <div id="odWorkbenchPanel" class="bg-[#0B0F17] text-white rounded-2xl p-4 sm:p-5 border border-white/10 shadow-sm flex flex-col justify-between gap-4 h-full">
+      <div id="odWorkbenchPanel" class="bg-[#131314] text-[#E3E3E3] rounded-2xl p-4 sm:p-5 border border-[#3C4043] shadow-[0_8px_28px_rgba(32,33,36,0.16)] flex flex-col justify-between gap-4 h-full">
         <!-- Workbench Header Controls -->
         <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-white/10">
           <!-- Project Switcher -->
-          <div class="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10 max-w-full overflow-x-auto" role="tablist" aria-label="Chọn dự án mẫu">
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('metropolis')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'metropolis' ? 'bg-[#0071E3] text-white font-semibold' : 'text-slate-300 hover:text-white'}">
+          <div class="flex items-center gap-1 p-1 rounded-full bg-white/5 border border-white/10 max-w-full overflow-x-auto" role="tablist" aria-label="Chọn dự án mẫu">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('metropolis')" class="px-3 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'metropolis' ? 'bg-[#1A73E8] text-white font-semibold' : 'text-[#C4C7C5] hover:text-white'}">
               Metropolis 1998 · 15k
             </button>
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('dietsoda')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'dietsoda' ? 'bg-[#0071E3] text-white font-semibold' : 'text-slate-300 hover:text-white'}">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('dietsoda')" class="px-3 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'dietsoda' ? 'bg-[#1A73E8] text-white font-semibold' : 'text-[#C4C7C5] hover:text-white'}">
               Diet Soda 3D · 15k
             </button>
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('flowstate')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'flowstate' ? 'bg-[#0071E3] text-white font-semibold' : 'text-slate-300 hover:text-white'}">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchProject('flowstate')" class="px-3 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.project === 'flowstate' ? 'bg-[#1A73E8] text-white font-semibold' : 'text-[#C4C7C5] hover:text-white'}">
               Flowstate WebGL
             </button>
           </div>
 
           <!-- View Tabs -->
-          <div class="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/10 shrink-0" role="tablist" aria-label="Chế độ xem Workbench">
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('preview')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'preview' ? 'bg-white/15 text-white font-semibold' : 'text-slate-400 hover:text-white'}">
+          <div class="flex items-center gap-1 p-1 rounded-full bg-white/5 border border-white/10 shrink-0" role="tablist" aria-label="Chế độ xem Workbench">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('preview')" class="px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'preview' ? 'bg-[#8AB4F8]/20 text-[#8AB4F8] font-semibold' : 'text-[#9AA0A6] hover:text-white'}">
               Preview
             </button>
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('code')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'code' ? 'bg-white/15 text-white font-semibold' : 'text-slate-400 hover:text-white'}">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('code')" class="px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'code' ? 'bg-[#8AB4F8]/20 text-[#8AB4F8] font-semibold' : 'text-[#9AA0A6] hover:text-white'}">
               Source Tree
             </button>
-            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('spec')" class="px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'spec' ? 'bg-white/15 text-white font-semibold' : 'text-slate-400 hover:text-white'}">
+            <button type="button" onclick="ShopVietViews.home.setWorkbenchTab('spec')" class="px-2.5 py-1 rounded-full text-[11px] whitespace-nowrap shrink-0 cursor-pointer transition-colors ${workbenchState.tab === 'spec' ? 'bg-[#8AB4F8]/20 text-[#8AB4F8] font-semibold' : 'text-[#9AA0A6] hover:text-white'}">
               Spec &amp; Stack
             </button>
           </div>
@@ -954,15 +954,15 @@ window.ShopVietViews.home = (function () {
         <!-- Workbench Action Footer -->
         <div class="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
           <div class="min-w-0">
-            <div class="text-sm font-semibold text-white truncate">${proj.title}</div>
-            <div class="text-xs text-slate-400 truncate">${proj.subtitle}</div>
+            <div class="text-sm font-semibold text-[#E3E3E3] truncate">${proj.title}</div>
+            <div class="text-xs text-[#9AA0A6] truncate">${proj.subtitle}</div>
           </div>
           <div class="flex items-center gap-2.5 shrink-0">
-            <span class="text-base font-bold text-[#3B9EFF] tabular-nums">${Number(proj.price).toLocaleString('vi-VN')} Xu</span>
+            <span class="text-base font-bold text-[#8AB4F8] tabular-nums">${Number(proj.price).toLocaleString('vi-VN')} Xu</span>
             <button
               type="button"
               onclick="ShopVietViews.modal.open('${proj.id}')"
-              class="lg-btn-primary px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer whitespace-nowrap"
+              class="lg-btn-primary px-4 py-2 rounded-full text-xs font-semibold cursor-pointer whitespace-nowrap"
             >
               Mở khóa &amp; Tải ZIP
             </button>
@@ -994,6 +994,12 @@ window.ShopVietViews.home = (function () {
     if (tag === 'Mã nguồn') {
       return p.tag === 'Mã nguồn' || p.filterGroup === 'Mã nguồn' || idLower.startsWith('source-') || idLower === 'free-starter-opendesign-kit';
     }
+    if (tag === 'Tool & n8n') {
+      return p.tag === 'Tool & n8n' || p.filterGroup === 'Tool & n8n' || pCatLower.includes('n8n') || pCatLower.includes('automation') || idLower.includes('n8n') || idLower.includes('telegram-sepay');
+    }
+    if (tag === 'Sàn Creator') {
+      return Boolean(p.isCommunityListing) || p.filterGroup === 'Sàn Creator' || p.tag === 'Sàn Creator';
+    }
     if (p.tag === tag || p.filterGroup === tag || p.category === tag || p.categoryId === tag) return true;
     if (Array.isArray(p.tags) && p.tags.some(function (t) { return t && t.toLowerCase().includes(tLower); })) return true;
     if (tag === 'Template web' && (idLower.includes('template') || idLower.includes('soda') || idLower.startsWith('source-') || pTagLower.includes('template') || pGroupLower.includes('template') || pCatLower.includes('template'))) return true;
@@ -1020,9 +1026,11 @@ window.ShopVietViews.home = (function () {
       ? 'Miễn phí · 0 Xu'
       : (window.ShopVietState ? window.ShopVietState.formatCurrency(numericPrice) : `${numericPrice.toLocaleString('vi-VN')} Xu`);
     var formattedOldPrice = prod.oldPrice ? (window.ShopVietState ? window.ShopVietState.formatCurrency(prod.oldPrice) : `${Number(prod.oldPrice).toLocaleString('vi-VN')} Xu`) : '';
-    var metaSecondary = prod.zipFileSize
-      ? ('Mã nguồn · ' + prod.zipFileSize)
-      : (prod.module || 'Mở khóa tức thì · Vĩnh viễn');
+    var metaSecondary = prod.isCommunityListing
+      ? ('Creator · ' + (prod.sellerName || 'Cộng đồng'))
+      : (prod.zipFileSize
+        ? ('Mã nguồn · ' + prod.zipFileSize)
+        : (prod.module || 'Mở khóa tức thì · Vĩnh viễn'));
     var inCombo = selectedComboSet.has(prod.id);
 
     return `
@@ -1032,8 +1040,9 @@ window.ShopVietViews.home = (function () {
         data-product-price="${numericPrice}"
         data-product-tag="${prod.tag || ''}"
         data-product-category="${prod.filterGroup || prod.category || ''}"
+        data-community-listing="${prod.isCommunityListing ? 'true' : 'false'}"
         data-product-name="${(prod.name || '').replace(/"/g, '&quot;')}"
-        class="u292-t ${isMatch ? '' : 'out'} bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 hover:border-[#0071E3]/45 dark:hover:border-[#3B9EFF]/45 rounded-xl p-4 flex flex-col justify-between hover:-translate-y-0.5 transition-[transform,border-color] duration-150 group cursor-pointer shadow-2xs"
+        class="u292-t ${isMatch ? '' : 'out'} ag-surface ag-card-lift rounded-2xl p-4 flex flex-col justify-between group cursor-pointer"
         style="${isMatch ? '' : 'display: none;'}"
         onclick="ShopVietViews.modal.open('${prod.id}')"
       >
@@ -1041,26 +1050,26 @@ window.ShopVietViews.home = (function () {
           ${renderThumbnail(prod)}
 
           <div class="mt-3.5 space-y-1.5">
-            <div class="flex items-center gap-1.5 text-xs text-[#6E6E73] dark:text-[#9CA3AF] truncate">
-              <span class="font-medium ${isFree ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#0071E3] dark:text-[#3B9EFF]'}">${isFree ? 'Miễn phí 0 Xu' : (prod.tag || prod.filterGroup || 'Sản phẩm số')}</span>
+            <div class="flex items-center gap-1.5 text-xs text-[#5F6368] dark:text-[#C4C7C5] truncate">
+              <span class="font-semibold ${isFree ? 'text-[#1E8E3E] dark:text-[#81C995]' : (prod.isCommunityListing ? 'text-[#E37400] dark:text-[#FDD663]' : 'text-[#1A73E8] dark:text-[#8AB4F8]')}">${isFree ? 'Miễn phí 0 Xu' : (prod.isCommunityListing ? ('Sàn Creator · ' + (prod.tag || 'Cộng đồng')) : (prod.tag || prod.filterGroup || 'Sản phẩm số'))}</span>
               <span aria-hidden="true">·</span>
               <span class="truncate">${metaSecondary}</span>
             </div>
 
-            <h3 class="line-clamp-2 text-[15px] font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] group-hover:text-[#0071E3] dark:group-hover:text-[#3B9EFF] transition-colors leading-snug font-display">
+            <h3 class="line-clamp-2 text-[15px] font-semibold text-[#202124] dark:text-[#E3E3E3] group-hover:text-[#1A73E8] dark:group-hover:text-[#8AB4F8] transition-colors leading-snug font-display">
               ${prod.name}
             </h3>
 
-            <p class="line-clamp-2 text-xs text-[#6E6E73] dark:text-[#9CA3AF] leading-relaxed">
+            <p class="line-clamp-2 text-xs text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">
               ${prod.desc || ''}
             </p>
           </div>
         </div>
 
-        <div class="mt-4 pt-3 border-t border-slate-900/10 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
+        <div class="mt-4 pt-3 border-t border-[#DADCE0] dark:border-[#3C4043] flex flex-wrap items-center justify-between gap-2">
           <div class="flex flex-col tabular-nums shrink-0">
-            <span class="text-base font-bold ${isFree ? 'text-emerald-600 dark:text-emerald-400' : 'text-[#1D1D1F] dark:text-[#F5F5F7]'} whitespace-nowrap">${formattedPrice}</span>
-            ${formattedOldPrice ? `<span class="text-[11px] text-[#6E6E73] dark:text-[#9CA3AF] line-through whitespace-nowrap">${formattedOldPrice}</span>` : ''}
+            <span class="text-base font-bold ${isFree ? 'text-[#1E8E3E] dark:text-[#81C995]' : 'text-[#202124] dark:text-[#E3E3E3]'} whitespace-nowrap">${formattedPrice}</span>
+            ${formattedOldPrice ? `<span class="text-[11px] text-[#5F6368] dark:text-[#9AA0A6] line-through whitespace-nowrap">${formattedOldPrice}</span>` : ''}
           </div>
 
           <div class="flex flex-wrap items-center justify-end gap-1.5 min-w-0">
@@ -1068,7 +1077,7 @@ window.ShopVietViews.home = (function () {
               <button
                 type="button"
                 onclick="event.stopPropagation(); if(window.ShopVietViews && window.ShopVietViews.modal && window.ShopVietViews.modal.openGameDemo) { window.ShopVietViews.modal.openGameDemo('${prod.demoUrl}', '${prod.id}'); } else { window.open('${prod.demoUrl}', '_blank'); }"
-                class="min-h-[38px] sm:min-h-[34px] px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                class="min-h-[38px] sm:min-h-[34px] px-3 py-2 sm:py-1.5 rounded-full text-xs font-medium text-[#202124] dark:text-[#E3E3E3] bg-[#F1F3F4] hover:bg-[#E8EAED] dark:bg-[#282A2C] dark:hover:bg-[#3C4043] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                 title="${prod.demoTitle || 'Xem bản demo trực tiếp'}"
               >Demo</button>
             ` : ''}
@@ -1079,18 +1088,18 @@ window.ShopVietViews.home = (function () {
                 data-combo-toggle="${prod.id}"
                 aria-pressed="${inCombo ? 'true' : 'false'}"
                 onclick="event.stopPropagation(); ShopVietViews.home.toggleComboItem('${prod.id}')"
-                class="min-h-[38px] sm:min-h-[34px] ${inCombo ? 'px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/12 dark:bg-[#3B9EFF]/18 border border-[#0071E3]/35' : 'px-2.5 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-[#1D1D1F] dark:text-[#F5F5F7] bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15'} transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                class="min-h-[38px] sm:min-h-[34px] ${inCombo ? 'px-3 py-2 sm:py-1.5 rounded-full text-xs font-semibold text-[#1967D2] dark:text-[#8AB4F8] bg-[#E8F0FE] dark:bg-[#8AB4F8]/18 border border-[#AECBFA] dark:border-[#8AB4F8]/45' : 'px-3 py-2 sm:py-1.5 rounded-full text-xs font-medium text-[#202124] dark:text-[#E3E3E3] bg-[#F1F3F4] hover:bg-[#E8EAED] dark:bg-[#282A2C] dark:hover:bg-[#3C4043]'} transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                 title="Thêm hoặc gỡ khỏi Combo giảm 20%-30%"
               >${inCombo ? 'Đã chọn' : '+ Combo'}</button>
             ` : ''}
 
             ${isOutOfStock ? `
-              <button disabled onclick="event.stopPropagation()" class="min-h-[38px] sm:min-h-[34px] px-3 py-2 sm:py-1.5 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 text-xs font-medium cursor-not-allowed whitespace-nowrap">Hết hàng</button>
+              <button disabled onclick="event.stopPropagation()" class="min-h-[38px] sm:min-h-[34px] px-3.5 py-2 sm:py-1.5 rounded-full bg-[#F1F3F4] dark:bg-[#282A2C] text-[#9AA0A6] text-xs font-medium cursor-not-allowed whitespace-nowrap">Hết hàng</button>
             ` : `
               <button
                 type="button"
                 onclick="event.stopPropagation(); ShopVietViews.home.handleBuyNowClick(event, '${prod.id}', this)"
-                class="min-h-[38px] sm:min-h-[34px] ${isFree ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xs' : 'lg-btn-primary'} px-3 py-2 sm:py-1.5 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                class="min-h-[38px] sm:min-h-[34px] ${isFree ? 'bg-[#1E8E3E] hover:bg-[#137333] text-white shadow-2xs' : 'lg-btn-primary'} px-3.5 py-2 sm:py-1.5 rounded-full text-xs font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer"
               >${isFree ? 'Tải Free' : (prod.demoUrl ? 'Mở khóa' : (prod.ctaText ? prod.ctaText.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]+/gu, '').replace(/\(\d+k\s*Xu\)/i, '').trim() : 'Mở khóa'))}</button>
             `}
           </div>
@@ -1167,62 +1176,96 @@ window.ShopVietViews.home = (function () {
       return `
         <div class="space-y-12 sm:space-y-16">
 
-          <!-- ==================== OPEN-DESIGN STUDIO WORKBENCH SPLIT HERO ==================== -->
+          <!-- ==================== GOOGLE ANTIGRAVITY STUDIO SPLIT HERO ==================== -->
           <section class="space-y-8 min-w-0">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch min-w-0">
 
-              <!-- Left Column (5 Cols): Unboxed Studio Stage Hero + Primary CTA + Hairline Metrics -->
-              <div class="lg:col-span-5 min-w-0 flex flex-col justify-between py-2 sm:py-4">
+              <!-- Left Column (5 Cols): Crisp Frosted Google Antigravity Hero + Primary CTA + Live Physics Controls -->
+              <div class="lg:col-span-5 min-w-0 ag-surface rounded-3xl p-6 sm:p-8 flex flex-col justify-between">
                 <div class="space-y-4">
-                  <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] tracking-wide">
-                    Open-Design Studio · Mã nguồn &amp; Prompt thực chiến
+                  <div class="flex items-center gap-2 text-xs font-semibold tracking-wide text-[#1967D2] dark:text-[#8AB4F8]">
+                    <span>Google Antigravity UI · Mã nguồn &amp; Prompt thực chiến</span>
                   </div>
 
                   <h1
                     id="heroTitleText"
                     data-static-i18n="true"
-                    class="font-display font-bold text-[#1D1D1F] dark:text-[#F5F5F7] leading-[1.1] tracking-tight"
-                    style="font-size: clamp(2.05rem, 3.3vw, 2.95rem); text-wrap: balance;"
+                    class="font-display font-bold text-[#202124] dark:text-[#E3E3E3] leading-[1.1] tracking-tight"
+                    style="font-size: clamp(2.05rem, 3.2vw, 2.85rem); text-wrap: balance;"
                   >
-                    Tải Mã Nguồn <span class="text-[#0071E3] dark:text-[#3B9EFF]">Studio 3D</span> &amp; Prompt Thực Chiến
+                    Tải Mã Nguồn <span class="text-[#1A73E8] dark:text-[#8AB4F8]">Studio 3D</span> &amp; Prompt Thực Chiến
                   </h1>
 
-                  <p id="heroDescText" class="text-sm sm:text-[15px] text-[#525866] dark:text-[#9CA3AF] leading-relaxed">
-                    Mở khóa trọn gói mã nguồn <strong>Metropolis 1998 (React + Three.js)</strong> hoặc bộ Landing 3D với giá <strong>15.000 Xu</strong>. Tải file <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]">.zip</code> về giải nén, chạy <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]">npm run dev</code> và tự do phát triển tiếp.
+                  <p id="heroDescText" class="text-sm sm:text-[15px] text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">
+                    Mở khóa trọn gói mã nguồn <strong>Metropolis 1998 (React + Three.js)</strong> hoặc bộ Landing 3D với giá <strong>15.000 Xu</strong>. Tải file <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-[#F1F3F4] dark:bg-[#282A2C] text-[#202124] dark:text-[#E3E3E3]">.zip</code> về giải nén, chạy <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-[#F1F3F4] dark:bg-[#282A2C] text-[#202124] dark:text-[#E3E3E3]">npm run dev</code> và tự do phát triển tiếp.
                   </p>
 
-                  <div class="pt-2 flex flex-wrap items-center gap-3">
+                  <div class="pt-2 flex flex-wrap items-center gap-2.5">
                     <button
                       type="button"
-                      onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')"
-                      class="lg-btn-primary px-5 py-3 rounded-xl text-sm font-semibold cursor-pointer whitespace-nowrap"
+                      onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.burst(); ShopVietViews.modal.open('source-metropolis-1998-city-builder')"
+                      class="lg-btn-primary px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer whitespace-nowrap"
                     >
-                      Mở khóa Metropolis 1998 · 15.000 Xu
+                      Mở khóa · 15.000 Xu
                     </button>
                     <a
                       href="/demo/metropolis-1998/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="px-4 py-3 rounded-xl text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] border border-slate-900/12 dark:border-white/15 bg-white dark:bg-[#111520] hover:bg-black/[0.03] dark:hover:bg-white/[0.05] transition-colors whitespace-nowrap"
+                      class="px-5 py-2.5 rounded-full text-sm font-semibold text-[#1967D2] dark:text-[#8AB4F8] bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 hover:bg-[#D2E3FC] dark:hover:bg-[#8AB4F8]/25 transition-colors whitespace-nowrap"
                     >
-                      Mở Studio Demo ↗
+                      Studio Demo ↗
                     </a>
                   </div>
                 </div>
 
-                <!-- 3 Clean Tabular Metrics -->
-                <div class="mt-8 pt-5 border-t border-slate-900/10 dark:border-white/10 grid grid-cols-3 gap-4 tabular-nums">
-                  <div>
-                    <div class="text-base sm:text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">18 Files</div>
-                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">React + Three.js</div>
+                <!-- 3 Clean Tabular Metrics + Interactive Antigravity Physics Toolbar -->
+                <div class="mt-7 space-y-5">
+                  <div class="pt-5 border-t border-[#DADCE0] dark:border-[#3C4043] grid grid-cols-3 gap-4 tabular-nums">
+                    <div>
+                      <div class="text-base sm:text-lg font-bold text-[#202124] dark:text-[#E3E3E3]">18 Files</div>
+                      <div class="text-xs text-[#5F6368] dark:text-[#C4C7C5]">React + Three.js</div>
+                    </div>
+                    <div>
+                      <div class="text-base sm:text-lg font-bold text-[#1A73E8] dark:text-[#8AB4F8]">15.000 Xu</div>
+                      <div class="text-xs text-[#5F6368] dark:text-[#C4C7C5]">Mở khóa trọn đời</div>
+                    </div>
+                    <div>
+                      <div class="text-base sm:text-lg font-bold text-[#1E8E3E] dark:text-[#81C995]">VietQR 5s</div>
+                      <div class="text-xs text-[#5F6368] dark:text-[#C4C7C5]">Giao file tự động</div>
+                    </div>
                   </div>
-                  <div>
-                    <div class="text-base sm:text-lg font-bold text-[#0071E3] dark:text-[#3B9EFF]">15.000 Xu</div>
-                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">Mở khóa trọn đời</div>
-                  </div>
-                  <div>
-                    <div class="text-base sm:text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">VietQR 5s</div>
-                    <div class="text-xs text-[#525866] dark:text-[#9CA3AF]">Giao file tự động</div>
+
+                  <!-- Antigravity Interactive Motion Switcher -->
+                  <div id="agControlBar" class="pt-4 border-t border-[#DADCE0] dark:border-[#3C4043] space-y-2">
+                    <div class="flex items-center justify-between gap-2 text-[11px] font-medium text-[#5F6368] dark:text-[#C4C7C5]">
+                      <span>Hiệu ứng Antigravity · Di chuột để đẩy các hình khối</span>
+                      <button
+                        type="button"
+                        id="agBurstBtn"
+                        onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.burst();"
+                        class="text-[#1A73E8] dark:text-[#8AB4F8] hover:underline font-semibold cursor-pointer whitespace-nowrap"
+                      >
+                        Phát xung lực
+                      </button>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-1.5" role="toolbar" aria-label="Điều khiển chuyển động Antigravity">
+                      <button type="button" data-ag-mode-btn="float" aria-pressed="true" onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.setMode('float')" class="ag-mode-btn is-ag-active">
+                        Bay nổi
+                      </button>
+                      <button type="button" data-ag-mode-btn="circle" aria-pressed="false" onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.setMode('circle')" class="ag-mode-btn">
+                        Vòng tròn
+                      </button>
+                      <button type="button" data-ag-mode-btn="triangle" aria-pressed="false" onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.setMode('triangle')" class="ag-mode-btn">
+                        Tam giác
+                      </button>
+                      <button type="button" data-ag-mode-btn="square" aria-pressed="false" onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.setMode('square')" class="ag-mode-btn">
+                        Hình vuông
+                      </button>
+                      <button type="button" id="agPauseToggleBtn" aria-pressed="false" onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.togglePause()" class="ag-mode-btn">
+                        Tạm dừng
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1233,72 +1276,105 @@ window.ShopVietViews.home = (function () {
               </div>
             </div>
 
-            <!-- 4-Column Hairline-Ruled Capability Strip (Hallmark Studio) -->
-            <div class="border-y border-slate-900/10 dark:border-white/10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-900/10 dark:divide-white/10">
+            <!-- 4-Column Google 4-Color Capability Strip -->
+            <div class="ag-surface rounded-2xl overflow-hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#DADCE0] dark:divide-[#3C4043]">
               <button
                 type="button"
                 onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();"
-                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-[#F8F9FA] dark:hover:bg-[#282A2C] transition-colors cursor-pointer"
               >
-                <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">01 · Ví Xu VietQR</div>
-                <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Nạp tự động 24/7</div>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">MBBank 0986019623 khớp lệnh chỉ trong vài giây.</p>
+                <div class="text-xs font-semibold text-[#1A73E8] dark:text-[#8AB4F8]">01 · Ví Xu VietQR</div>
+                <div class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3] mt-1">Nạp tự động 24/7</div>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] mt-1">MBBank 0986019623 khớp lệnh chỉ trong vài giây.</p>
               </button>
 
               <button
                 type="button"
                 onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')"
-                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-[#F8F9FA] dark:hover:bg-[#282A2C] transition-colors cursor-pointer"
               >
-                <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">02 · Mã nguồn sạch</div>
-                <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Tải .ZIP về tự code</div>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Cấu trúc Vite + TS chuẩn, giải nén chạy ngay.</p>
+                <div class="text-xs font-semibold text-[#D93025] dark:text-[#F28B82]">02 · Mã nguồn sạch</div>
+                <div class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3] mt-1">Tải .ZIP về tự code</div>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] mt-1">Cấu trúc Vite + TS chuẩn, giải nén chạy ngay.</p>
               </button>
 
               <button
                 type="button"
                 onclick="ShopVietViews.home.filterByTag('Mã nguồn')"
-                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-[#F8F9FA] dark:hover:bg-[#282A2C] transition-colors cursor-pointer"
               >
-                <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">03 · Giá minh bạch</div>
-                <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Chỉ từ 9k – 15k Xu</div>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Sở hữu vĩnh viễn trên tài khoản cá nhân.</p>
+                <div class="text-xs font-semibold text-[#E37400] dark:text-[#FDD663]">03 · Giá minh bạch</div>
+                <div class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3] mt-1">Chỉ từ 9k – 15k Xu</div>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] mt-1">Sở hữu vĩnh viễn trên tài khoản cá nhân.</p>
               </button>
 
               <button
                 type="button"
                 onclick="window.ShopVietState ? window.ShopVietState.navigate('dashboard', { tab: 'orders' }) : (window.location.hash = '#dashboard?tab=orders')"
-                class="text-left p-4 sm:p-5 hover:bg-black/[0.025] dark:hover:bg-white/[0.025] transition-colors cursor-pointer"
+                class="text-left p-4 sm:p-5 hover:bg-[#F8F9FA] dark:hover:bg-[#282A2C] transition-colors cursor-pointer"
               >
-                <div class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF]">04 · Đồng bộ Cloud</div>
-                <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1">Quản lý đơn hàng</div>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] mt-1">Tải lại mã nguồn &amp; hỗ trợ 1-1 qua Zalo.</p>
+                <div class="text-xs font-semibold text-[#1E8E3E] dark:text-[#81C995]">04 · Đồng bộ Cloud</div>
+                <div class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3] mt-1">Quản lý đơn hàng</div>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] mt-1">Tải lại mã nguồn &amp; hỗ trợ 1-1 qua Zalo.</p>
               </button>
+            </div>
+
+            <!-- Sàn Creator (80/20) & Cộng Tác Viên (25%) Marketplace Strip -->
+            <div id="creatorMarketplaceBanner" class="ag-surface rounded-2xl p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+              <div class="space-y-1.5 max-w-2xl">
+                <div class="text-xs font-semibold text-[#1A73E8] dark:text-[#8AB4F8] tracking-wide">
+                  Sàn Creator 80/20 &amp; Chương trình Cộng Tác Viên 25%
+                </div>
+                <h2 class="font-display font-bold text-lg sm:text-xl text-[#202124] dark:text-[#E3E3E3]">
+                  Đăng bán sản phẩm số của bạn hoặc chia sẻ link kiếm hoa hồng Xu rút về ngân hàng
+                </h2>
+                <p class="text-xs sm:text-sm text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">
+                  Tác giả nhận <strong>80%</strong> giá trị mỗi đơn bán ra (phí sàn 20%). Cộng tác viên giới thiệu nhận <strong>25%</strong> trên mọi đơn hàng qua link cá nhân, rút tiền trực tiếp từ <strong>20.000 Xu</strong>.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  id="homeSubmitListingBtn"
+                  onclick="if(window.ShopVietAntigravity) window.ShopVietAntigravity.burst(); if(window.ShopVietViews && window.ShopVietViews.modal) { window.ShopVietViews.modal.openSubmitListingModal(); }"
+                  class="lg-btn-primary px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold cursor-pointer whitespace-nowrap"
+                >
+                  Đăng bán sản phẩm · Nhận 80%
+                </button>
+                <button
+                  type="button"
+                  id="homeJoinCtvBtn"
+                  onclick="if(window.ShopVietState) { var u = window.ShopVietState.state && window.ShopVietState.state.user; if (u && u.isLoggedIn) { window.ShopVietState.navigate('dashboard', { tab: 'referral' }); } else { window.ShopVietState.showToast('Đăng nhập để lấy link CTV nhận 25% hoa hồng.', 'info'); window.ShopVietState.navigate('login'); } }"
+                  class="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-[#1967D2] dark:text-[#8AB4F8] bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 hover:bg-[#D2E3FC] dark:hover:bg-[#8AB4F8]/25 transition-colors cursor-pointer whitespace-nowrap"
+                >
+                  Làm CTV · Hưởng 25%
+                </button>
+              </div>
             </div>
           </section>
 
           <!-- ==================== UNIFIED CATALOG TOOLBAR & 3-COLUMN GRID ==================== -->
           <section id="productsSection" class="u292 space-y-6 pt-2 scroll-mt-24 min-w-0">
 
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-900/10 dark:border-white/10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-[#DADCE0] dark:border-[#3C4043]">
               <div>
-                <h2 id="u205FeaturedTitle" class="font-display font-bold text-2xl sm:text-3xl text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">
+                <h2 id="u205FeaturedTitle" class="font-display font-bold text-2xl sm:text-3xl text-[#202124] dark:text-[#E3E3E3] tracking-tight">
                   Kho Mã Nguồn &amp; Bộ Prompt
                 </h2>
-                <p class="text-xs sm:text-sm text-[#6E6E73] dark:text-[#9CA3AF] mt-1">
+                <p class="text-xs sm:text-sm text-[#5F6368] dark:text-[#C4C7C5] mt-1">
                   ${searchQuery
-                    ? `Đang lọc theo từ khóa "<strong class="text-[#1D1D1F] dark:text-white">${searchQuery}</strong>" · `
+                    ? `Đang lọc theo từ khóa "<strong class="text-[#202124] dark:text-white">${searchQuery}</strong>" · `
                     : 'Bản quyền sử dụng vĩnh viễn · '}
-                  <span class="tabular-nums font-semibold text-[#0071E3] dark:text-[#3B9EFF]">
+                  <span class="tabular-nums font-semibold text-[#1A73E8] dark:text-[#8AB4F8]">
                     <span id="u292CountVal">${matchingProducts.length}</span> sản phẩm sẵn có
                   </span>
                 </p>
               </div>
 
-              <!-- Search + Sort -->
+              <!-- Search + Sort (Google Search Bar Style) -->
               <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-                <form id="heroSearchForm" onsubmit="ShopVietViews.home.handleSearchSubmit(event)" class="flex items-center bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl p-1 flex-1 sm:flex-initial sm:min-w-[260px] min-w-0">
-                  <svg class="w-4 h-4 text-[#6E6E73] dark:text-[#9CA3AF] ml-2.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <form id="heroSearchForm" onsubmit="ShopVietViews.home.handleSearchSubmit(event)" class="flex items-center bg-white/95 dark:bg-[#1E1F20]/95 border border-[#DADCE0] dark:border-[#3C4043] focus-within:border-[#1A73E8] dark:focus-within:border-[#8AB4F8] shadow-2xs rounded-full p-1 flex-1 sm:flex-initial sm:min-w-[270px] min-w-0 transition-colors">
+                  <svg class="w-4 h-4 text-[#5F6368] dark:text-[#9AA0A6] ml-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
                   </svg>
                   <input
@@ -1306,21 +1382,21 @@ window.ShopVietViews.home = (function () {
                     type="text"
                     value="${searchQuery}"
                     placeholder="Tìm mã nguồn, prompt, 3D..."
-                    class="bg-transparent text-xs sm:text-sm text-[#1D1D1F] dark:text-[#F5F5F7] placeholder-[#6E6E73] dark:placeholder-[#9CA3AF] focus:outline-none px-2.5 py-1.5 flex-1 min-w-0"
+                    class="bg-transparent text-xs sm:text-sm text-[#202124] dark:text-[#E3E3E3] placeholder-[#5F6368] dark:placeholder-[#9AA0A6] focus:outline-none px-2.5 py-1.5 flex-1 min-w-0"
                   />
                   ${searchQuery ? `
-                    <button type="button" onclick="ShopVietViews.home.clearSearch()" class="p-1 text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-white cursor-pointer" title="Xóa tìm kiếm">
+                    <button type="button" onclick="ShopVietViews.home.clearSearch()" class="p-1 text-[#5F6368] hover:text-[#202124] dark:hover:text-white cursor-pointer" title="Xóa tìm kiếm">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                   ` : ''}
-                  <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#0071E3] hover:bg-[#0062C4] text-white text-xs font-semibold cursor-pointer whitespace-nowrap">Tìm</button>
+                  <button type="submit" class="px-4 py-1.5 rounded-full bg-[#1A73E8] hover:bg-[#1557B0] text-white text-xs font-semibold cursor-pointer whitespace-nowrap">Tìm</button>
                 </form>
 
                 <label for="productPriceSort" class="sr-only">Sắp xếp theo giá</label>
                 <select
                   id="productPriceSort"
                   onchange="ShopVietViews.home.setPriceSort(this.value)"
-                  class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl px-3 py-2 text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0071E3]"
+                  class="bg-white/95 dark:bg-[#1E1F20]/95 border border-[#DADCE0] dark:border-[#3C4043] shadow-2xs rounded-full px-4 py-2 text-xs font-semibold text-[#202124] dark:text-[#E3E3E3] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1A73E8]"
                 >
                   <option value="featured" ${currentPriceSort === 'featured' ? 'selected' : ''}>Sắp xếp: Nổi bật</option>
                   <option value="price-asc" ${currentPriceSort === 'price-asc' ? 'selected' : ''}>Giá: Thấp → Cao</option>
@@ -1329,8 +1405,8 @@ window.ShopVietViews.home = (function () {
               </div>
             </div>
 
-            <!-- Consolidated Single-Row Category Filter Toolbar -->
-            <div class="u292-fs flex items-center gap-1.5 overflow-x-auto pb-1" role="toolbar" aria-label="Bộ lọc danh mục sản phẩm">
+            <!-- Consolidated Single-Row Google Pill Category Filter Toolbar -->
+            <div class="u292-fs flex items-center gap-2 overflow-x-auto pb-1" role="toolbar" aria-label="Bộ lọc danh mục sản phẩm">
               ${filterTags.map(function (tag) {
                 var isSelected = tag === currentFilter;
                 return `
@@ -1347,27 +1423,27 @@ window.ShopVietViews.home = (function () {
             </div>
 
             <!-- Combo Calculator Strip (Preserved IDs) -->
-            <div id="dynamicComboBar" class="bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div id="dynamicComboBar" class="ag-surface rounded-2xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div>
-                <div class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Ưu đãi Combo nhiều gói · Giảm 20% – 30%</div>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] mt-0.5">Chọn từ 2 gói giảm 20%, từ 3 gói giảm 30% trên tổng hóa đơn Xu.</p>
+                <div class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3]">Ưu đãi Combo nhiều gói · Giảm 20% – 30%</div>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] mt-0.5">Chọn từ 2 gói giảm 20%, từ 3 gói giảm 30% trên tổng hóa đơn Xu.</p>
               </div>
               <div id="comboStatusPill" class="flex flex-wrap items-center gap-2">
-                <span class="text-xs text-[#6E6E73] dark:text-[#9CA3AF]">Chọn từ 2 gói trở lên để tự động tính ưu đãi combo</span>
+                <span class="text-xs text-[#5F6368] dark:text-[#C4C7C5]">Chọn từ 2 gói trở lên để tự động tính ưu đãi combo</span>
               </div>
             </div>
 
-            <!-- Uniform 3-Column Studio Hairline Product Grid -->
+            <!-- Uniform 3-Column Google Material 3 Product Grid -->
             <div id="productListGrid" class="u292-g grid ${gridColClasses} gap-6 transition-all duration-150">
               ${searchProducts.map(function (prod) {
                 var isMatch = isProductMatchingTag(prod, currentFilter);
                 return renderProductCard(prod, isMatch);
               }).join('')}
 
-              <div id="u292EmptyState" class="u292-empty col-span-full py-16 text-center space-y-3 bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10 shadow-2xs rounded-xl" style="${matchingProducts.length === 0 ? '' : 'display: none; opacity: 0;'}">
-                <h3 class="text-base font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Không tìm thấy sản phẩm phù hợp</h3>
-                <p class="text-xs text-[#6E6E73] dark:text-[#9CA3AF] max-w-sm mx-auto">Thử từ khóa khác hoặc chuyển bộ lọc về "Tất cả".</p>
-                <button type="button" onclick="ShopVietViews.home.clearSearch()" class="lg-btn-primary mt-2 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer">
+              <div id="u292EmptyState" class="u292-empty col-span-full py-16 text-center space-y-3 ag-surface rounded-2xl" style="${matchingProducts.length === 0 ? '' : 'display: none; opacity: 0;'}">
+                <h3 class="text-base font-semibold text-[#202124] dark:text-[#E3E3E3]">Không tìm thấy sản phẩm phù hợp</h3>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] max-w-sm mx-auto">Thử từ khóa khác hoặc chuyển bộ lọc về "Tất cả".</p>
+                <button type="button" onclick="ShopVietViews.home.clearSearch()" class="lg-btn-primary mt-2 px-5 py-2.5 rounded-full text-xs font-semibold cursor-pointer">
                   Xem toàn bộ kho hàng
                 </button>
               </div>
@@ -1376,32 +1452,32 @@ window.ShopVietViews.home = (function () {
           </section>
 
           <!-- ==================== 3-STEP LOCAL DELIVERY STRIP ==================== -->
-          <section class="border-t border-slate-900/10 dark:border-white/10 pt-8 sm:pt-10 space-y-6">
+          <section class="pt-6 sm:pt-8 space-y-5">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-3">
               <div>
-                <h2 class="font-display font-bold text-xl sm:text-2xl text-[#1D1D1F] dark:text-[#F5F5F7]">Quy trình nhận mã nguồn &amp; tự phát triển</h2>
-                <p class="text-xs sm:text-sm text-[#525866] dark:text-[#9CA3AF] mt-1">Từ lúc mở khóa đến khi chạy dự án trên máy cá nhân chỉ mất chưa đầy 2 phút.</p>
+                <h2 class="font-display font-bold text-xl sm:text-2xl text-[#202124] dark:text-[#E3E3E3]">Quy trình nhận mã nguồn &amp; tự phát triển</h2>
+                <p class="text-xs sm:text-sm text-[#5F6368] dark:text-[#C4C7C5] mt-1">Từ lúc mở khóa đến khi chạy dự án trên máy cá nhân chỉ mất chưa đầy 2 phút.</p>
               </div>
-              <button type="button" onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')" class="text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] hover:underline cursor-pointer whitespace-nowrap">
+              <button type="button" onclick="ShopVietViews.modal.open('source-metropolis-1998-city-builder')" class="text-xs font-semibold text-[#1A73E8] dark:text-[#8AB4F8] hover:underline cursor-pointer whitespace-nowrap">
                 Thử ngay với Metropolis 1998 →
               </button>
             </div>
 
-            <div class="border-y border-slate-900/10 dark:border-white/10 grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-900/10 dark:divide-white/10">
-              <div class="py-5 md:pr-6 space-y-1.5">
-                <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">01. Chọn gói phù hợp</div>
-                <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Xem thử Demo &amp; Source Tree</h3>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Kiểm tra trước cấu trúc thư mục, công nghệ sử dụng và bản demo thực tế ngay trên Studio Workbench.</p>
+            <div class="ag-surface rounded-2xl overflow-hidden grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#DADCE0] dark:divide-[#3C4043]">
+              <div class="p-5 sm:p-6 space-y-1.5">
+                <div class="text-xs font-mono font-semibold text-[#1A73E8] dark:text-[#8AB4F8]">01. Chọn gói phù hợp</div>
+                <h3 class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3]">Xem thử Demo &amp; Source Tree</h3>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">Kiểm tra trước cấu trúc thư mục, công nghệ sử dụng và bản demo thực tế ngay trên Studio Workbench.</p>
               </div>
-              <div class="py-5 md:px-6 space-y-1.5">
-                <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">02. Nạp Xu VietQR</div>
-                <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Mở khóa tự động bằng Ví Xu</h3>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Chuyển khoản VietQR MBBank 0986019623 theo nội dung cấp sẵn, hệ thống cộng Xu và mở khóa vĩnh viễn.</p>
+              <div class="p-5 sm:p-6 space-y-1.5">
+                <div class="text-xs font-mono font-semibold text-[#D93025] dark:text-[#F28B82]">02. Nạp Xu VietQR</div>
+                <h3 class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3]">Mở khóa tự động bằng Ví Xu</h3>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">Chuyển khoản VietQR MBBank 0986019623 theo nội dung cấp sẵn, hệ thống cộng Xu và mở khóa vĩnh viễn.</p>
               </div>
-              <div class="py-5 md:pl-6 space-y-1.5">
-                <div class="text-xs font-mono font-semibold text-[#0071E3] dark:text-[#3B9EFF]">03. Tải .ZIP &amp; Mở rộng</div>
-                <h3 class="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">Giải nén &amp; chạy local</h3>
-                <p class="text-xs text-[#525866] dark:text-[#9CA3AF] leading-relaxed">Tải file <code class="font-mono">.zip</code> về máy, chạy <code class="font-mono">npm install &amp;&amp; npm run dev</code> và tiếp tục tùy biến theo ý muốn.</p>
+              <div class="p-5 sm:p-6 space-y-1.5">
+                <div class="text-xs font-mono font-semibold text-[#1E8E3E] dark:text-[#81C995]">03. Tải .ZIP &amp; Mở rộng</div>
+                <h3 class="text-sm font-semibold text-[#202124] dark:text-[#E3E3E3]">Giải nén &amp; chạy local</h3>
+                <p class="text-xs text-[#5F6368] dark:text-[#C4C7C5] leading-relaxed">Tải file <code class="font-mono">.zip</code> về máy, chạy <code class="font-mono">npm install &amp;&amp; npm run dev</code> và tiếp tục tùy biến theo ý muốn.</p>
               </div>
             </div>
           </section>
@@ -1439,11 +1515,18 @@ window.ShopVietViews.home = (function () {
         const cPrice = Number(card.getAttribute('data-product-price') || 0);
         const cName = (card.getAttribute('data-product-name') || '').toLowerCase();
         const cId = (card.getAttribute('data-product-id') || '').toLowerCase();
+        const cCommunity = card.getAttribute('data-community-listing') === 'true';
         if (filterTag === 'Miễn phí 0 Xu') {
           return cPrice === 0 || cCat.toLowerCase().includes('miễn phí');
         }
         if (filterTag === 'Mã nguồn') {
           return cTag === 'Mã nguồn' || cCat === 'Mã nguồn' || cId.startsWith('source-') || cId === 'free-starter-opendesign-kit';
+        }
+        if (filterTag === 'Tool & n8n') {
+          return cTag === 'Tool & n8n' || cCat === 'Tool & n8n' || cCat.toLowerCase().includes('n8n') || cCat.toLowerCase().includes('automation') || cId.includes('n8n') || cId.includes('telegram-sepay');
+        }
+        if (filterTag === 'Sàn Creator') {
+          return cCommunity || cTag === 'Sàn Creator' || cCat === 'Sàn Creator';
         }
         if (cTag === filterTag || cCat === filterTag) return true;
         if (cCat && cCat.toLowerCase().includes(filterTag.toLowerCase())) return true;
@@ -1504,6 +1587,9 @@ window.ShopVietViews.home = (function () {
     afterRender: function () {
       this.initRealtimeListener();
       if (typeof this.initDeviceViewMode === 'function') this.initDeviceViewMode();
+      if (window.ShopVietAntigravity && typeof window.ShopVietAntigravity.syncControls === 'function') {
+        window.ShopVietAntigravity.syncControls();
+      }
       if (window._shopviet_pending_highlight) {
         window._shopviet_pending_highlight = false;
         this.highlightProductCards();
@@ -1517,6 +1603,9 @@ window.ShopVietViews.home = (function () {
         if (appMount) {
           const currentScrollY = window.scrollY;
           appMount.innerHTML = this.render();
+          if (window.ShopVietAntigravity && typeof window.ShopVietAntigravity.syncControls === 'function') {
+            window.ShopVietAntigravity.syncControls();
+          }
           window.scrollTo(0, currentScrollY);
         }
       } else if (window.ShopVietState && typeof window.ShopVietState.renderCurrentRoute === 'function') {
@@ -1556,9 +1645,9 @@ window.ShopVietViews.home = (function () {
 
     highlightProductCards: function () {
       const cards = document.querySelectorAll('[data-product-card="true"]');
-      cards.forEach(function (card) { card.classList.add('ring-2', 'ring-[#0071E3]/60'); });
+      cards.forEach(function (card) { card.classList.add('ring-2', 'ring-[#1A73E8]/60'); });
       setTimeout(function () {
-        cards.forEach(function (card) { card.classList.remove('ring-2', 'ring-[#0071E3]/60'); });
+        cards.forEach(function (card) { card.classList.remove('ring-2', 'ring-[#1A73E8]/60'); });
       }, 1400);
     },
 

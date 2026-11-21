@@ -325,6 +325,9 @@
     const schedules = (window.ShopVietState && window.ShopVietState.getSchedules) ? window.ShopVietState.getSchedules() : [];
     const topups = (window.ShopVietState && window.ShopVietState.getTopupRequests) ? window.ShopVietState.getTopupRequests() : [];
     const pendingTopupsCount = topups.filter(t => t.status === 'pending_approval').length;
+    const mpListings = (window.ShopVietState && window.ShopVietState.getMarketplaceListings) ? window.ShopVietState.getMarketplaceListings(true) : [];
+    const mpWithdrawals = (window.ShopVietState && window.ShopVietState.getWithdrawals) ? window.ShopVietState.getWithdrawals('all') : [];
+    const pendingMarketplaceTotal = mpListings.filter(l => l && l.status === 'pending').length + mpWithdrawals.filter(w => w && w.status === 'pending').length;
     const vietqr = getVietQRConfig();
     const curUser = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.user) || {};
     const adminDisplayName = curUser.name || (curUser.email === 'thaitraicau123@gmail.com' ? 'Bùi Thái (Admin)' : (curUser.email || 'Bùi Thái (Admin)'));
@@ -507,6 +510,22 @@
               <span>Hẹn lịch khách (Excel)</span>
               <span class="px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-[10px] text-emerald-700 dark:text-emerald-300 font-bold tabular-nums" id="adminScheduleTabBadge">${schedules.length}</span>
             </button>
+
+            <!-- Tab 6: Sàn Creator (80/20) & Rút Xu -->
+            <button
+              type="button"
+              onclick="window.ShopVietViews.admin.switchTab('marketplace')"
+              id="adminTabBtn-marketplace"
+              class="admin-nav-tab px-4 py-2.5 rounded-t-xl text-xs sm:text-sm font-bold flex items-center gap-2 border-b-2 transition-all cursor-pointer shrink-0 ${currentActiveTab === 'marketplace' ? 'border-[#0071E3] text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/5' : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'}"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l2-5h14l2 5" />
+                <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+                <path d="M9 21V13h6v8" />
+              </svg>
+              <span>Sàn Creator &amp; Rút Xu</span>
+              <span class="px-1.5 py-0.5 rounded-md tabular-nums ${pendingMarketplaceTotal > 0 ? 'bg-amber-500 text-white font-extrabold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold'} text-[10px]" id="adminMarketplaceTabBadge">${pendingMarketplaceTotal}</span>
+            </button>
           </div>
 
           <!-- ==================== BODY CONTENT THEO TAB ==================== -->
@@ -529,6 +548,8 @@
       return renderTabVouchers();
     } else if (tabName === 'schedules') {
       return renderTabSchedules();
+    } else if (tabName === 'marketplace') {
+      return renderTabMarketplace();
     } else if (tabName === 'realtime') {
       return renderTabRealtime();
     }
@@ -2031,6 +2052,211 @@
 
           </form>
 
+        </div>
+      </div>
+    `;
+  }
+
+  function escAdminHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // =========================================================================
+  // TAB 6: KIỂM DUYỆT SÀN CREATOR (80/20) & LỆNH RÚT XU NGÂN HÀNG
+  // =========================================================================
+  function renderTabMarketplace() {
+    const listings = (window.ShopVietState && window.ShopVietState.getMarketplaceListings)
+      ? window.ShopVietState.getMarketplaceListings(true).slice()
+      : [];
+    const withdrawals = (window.ShopVietState && window.ShopVietState.getWithdrawals)
+      ? window.ShopVietState.getWithdrawals('all').slice()
+      : [];
+
+    listings.sort((a, b) => ((a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1)));
+    withdrawals.sort((a, b) => ((a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1)));
+
+    const pendingListings = listings.filter(l => l && l.status === 'pending').length;
+    const approvedListings = listings.filter(l => l && l.status === 'approved').length;
+    const pendingWithdrawals = withdrawals.filter(w => w && w.status === 'pending').length;
+    const pendingWithdrawXu = withdrawals
+      .filter(w => w && w.status === 'pending')
+      .reduce((acc, w) => acc + (Number(w.amountXu) || 0), 0);
+
+    return `
+      <div class="space-y-6 animate-fade-in">
+        <!-- KPI Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 tabular-nums">
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs">
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Sản phẩm Creator chờ duyệt</div>
+            <div class="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">${pendingListings}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">${approvedListings} sản phẩm đang bán trên sàn</div>
+          </div>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs">
+            <div class="text-xs font-semibold text-slate-500 dark:text-slate-400">Lệnh rút Xu chờ chuyển khoản</div>
+            <div class="text-2xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] mt-1">${pendingWithdrawals}</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">Tổng giá trị: ${pendingWithdrawXu.toLocaleString('vi-VN')} Xu</div>
+          </div>
+          <div class="bg-white dark:bg-[#111520] p-4 rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-1.5">
+            <label for="adminModerationNoteInput" class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Ghi chú / Mã giao dịch CK (tùy chọn)</label>
+            <input
+              id="adminModerationNoteInput"
+              type="text"
+              placeholder="Ví dụ: FT26119... hoặc Lý do từ chối"
+              class="w-full px-3 py-2 rounded-xl border border-slate-900/15 dark:border-white/15 bg-slate-50 dark:bg-[#090B10] text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
+            />
+          </div>
+        </div>
+
+        <!-- Section 1: Duyệt Sản Phẩm Sàn Creator -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Danh sách sản phẩm Sàn Creator (80/20)</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Kiểm tra link bàn giao trước khi bấm duyệt để hiển thị công khai trên trang chủ.</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-slate-500 tabular-nums">${listings.length} mục</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-50 dark:bg-[#090B10] text-slate-500 dark:text-slate-400 font-bold uppercase border-b border-slate-900/10 dark:border-white/10">
+                <tr>
+                  <th scope="col" class="py-3 px-4">Sản phẩm &amp; Người bán</th>
+                  <th scope="col" class="py-3 px-4">Giá &amp; Chia sẻ</th>
+                  <th scope="col" class="py-3 px-4">Link bàn giao</th>
+                  <th scope="col" class="py-3 px-4">Trạng thái</th>
+                  <th scope="col" class="py-3 px-4 text-right">Kiểm duyệt</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-900/10 dark:divide-white/10 text-slate-700 dark:text-slate-300">
+                ${listings.length === 0 ? `
+                  <tr>
+                    <td colspan="5" class="py-8 text-center text-slate-400">Chưa có sản phẩm Creator nào được gửi lên sàn.</td>
+                  </tr>
+                ` : listings.map(item => {
+                  const st = item.status || 'pending';
+                  const price = Number(item.price || 0);
+                  const creatorShare = Math.round(price * 0.8);
+                  const deliveryHref = (item.deliveryLink && window.ShopVietMarketplace && window.ShopVietMarketplace.isSafeHttpUrl(item.deliveryLink, false))
+                    ? item.deliveryLink
+                    : '';
+                  const badge = st === 'approved'
+                    ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold">Đã duyệt</span>'
+                    : (st === 'rejected'
+                      ? '<span class="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold">Từ chối</span>'
+                      : '<span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">Chờ duyệt</span>');
+
+                  return `
+                    <tr>
+                      <td class="py-3 px-4 max-w-[260px]">
+                        <div class="font-bold text-slate-900 dark:text-white truncate">${escAdminHtml(item.name)}</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${escAdminHtml(item.sellerName || '')} (${escAdminHtml(item.sellerEmail || '')}) · ${escAdminHtml(item.tag || item.category || '')}</div>
+                      </td>
+                      <td class="py-3 px-4 tabular-nums whitespace-nowrap">
+                        <div class="font-bold text-slate-900 dark:text-white">${price.toLocaleString('vi-VN')} Xu</div>
+                        <div class="text-[11px] text-emerald-600 dark:text-emerald-400">Creator nhận ${creatorShare.toLocaleString('vi-VN')} Xu</div>
+                      </td>
+                      <td class="py-3 px-4 max-w-[200px] truncate">
+                        ${deliveryHref
+                          ? `<a href="${escAdminHtml(deliveryHref)}" target="_blank" rel="noopener noreferrer" class="font-mono text-[#0071E3] dark:text-[#3B9EFF] hover:underline">${escAdminHtml(deliveryHref)}</a>`
+                          : '<span class="text-rose-500 font-semibold">URL không hợp lệ</span>'}
+                      </td>
+                      <td class="py-3 px-4 whitespace-nowrap">${badge}</td>
+                      <td class="py-3 px-4 text-right whitespace-nowrap">
+                        ${st === 'pending' ? `
+                          <div class="inline-flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onclick="window.ShopVietViews.admin.approveMarketplaceListing('${escAdminHtml(item.id)}')"
+                              class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer"
+                            >Duyệt lên sàn</button>
+                            <button
+                              type="button"
+                              onclick="window.ShopVietViews.admin.rejectMarketplaceListing('${escAdminHtml(item.id)}')"
+                              class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 font-bold text-xs cursor-pointer"
+                            >Từ chối</button>
+                          </div>
+                        ` : `<span class="text-[11px] text-slate-400">${escAdminHtml(item.moderationNote || 'Đã xử lý')}</span>`}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 2: Duyệt Lệnh Rút Xu Ngân Hàng -->
+        <div class="bg-white dark:bg-[#111520] rounded-2xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-900/10 dark:border-white/10 flex items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Danh sách yêu cầu rút Xu về ngân hàng</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Chuyển khoản đúng số tiền VNĐ (1 Xu = 1đ) rồi bấm "Đã CK". Nếu từ chối, hệ thống tự động hoàn lại Xu vào ví.</p>
+            </div>
+            <span class="text-xs font-mono font-bold text-slate-500 tabular-nums">${withdrawals.length} lệnh</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-50 dark:bg-[#090B10] text-slate-500 dark:text-slate-400 font-bold uppercase border-b border-slate-900/10 dark:border-white/10">
+                <tr>
+                  <th scope="col" class="py-3 px-4">Mã &amp; Tài khoản</th>
+                  <th scope="col" class="py-3 px-4">Thông tin ngân hàng</th>
+                  <th scope="col" class="py-3 px-4">Số Xu rút</th>
+                  <th scope="col" class="py-3 px-4">Trạng thái</th>
+                  <th scope="col" class="py-3 px-4 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-900/10 dark:divide-white/10 text-slate-700 dark:text-slate-300">
+                ${withdrawals.length === 0 ? `
+                  <tr>
+                    <td colspan="5" class="py-8 text-center text-slate-400">Chưa có yêu cầu rút Xu nào.</td>
+                  </tr>
+                ` : withdrawals.map(wd => {
+                  const st = wd.status || 'pending';
+                  const badge = st === 'completed'
+                    ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold">Đã chuyển khoản</span>'
+                    : (st === 'rejected'
+                      ? '<span class="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold">Đã hủy · Hoàn Xu</span>'
+                      : '<span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">Chờ chuyển khoản</span>');
+
+                  return `
+                    <tr>
+                      <td class="py-3 px-4">
+                        <div class="font-mono font-bold text-slate-900 dark:text-white">${escAdminHtml(wd.id)}</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400">${escAdminHtml(wd.userEmail)}</div>
+                      </td>
+                      <td class="py-3 px-4">
+                        <div class="font-semibold text-slate-900 dark:text-white">${escAdminHtml(wd.bankName)} · <span class="font-mono">${escAdminHtml(wd.accountNumber)}</span></div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 uppercase">${escAdminHtml(wd.accountHolder)}</div>
+                      </td>
+                      <td class="py-3 px-4 font-bold tabular-nums text-[#0071E3] dark:text-[#3B9EFF]">${Number(wd.amountXu || 0).toLocaleString('vi-VN')} Xu</td>
+                      <td class="py-3 px-4 whitespace-nowrap">${badge}</td>
+                      <td class="py-3 px-4 text-right whitespace-nowrap">
+                        ${st === 'pending' ? `
+                          <div class="inline-flex items-center gap-1.5">
+                            <button
+                              type="button"
+                              onclick="window.ShopVietViews.admin.completeWithdrawalRequest('${escAdminHtml(wd.id)}')"
+                              class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs cursor-pointer"
+                            >Đã CK (Hoàn tất)</button>
+                            <button
+                              type="button"
+                              onclick="window.ShopVietViews.admin.rejectWithdrawalRequest('${escAdminHtml(wd.id)}')"
+                              class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60 font-bold text-xs cursor-pointer"
+                            >Từ chối &amp; Hoàn Xu</button>
+                          </div>
+                        ` : `<span class="text-[11px] text-slate-400">${escAdminHtml(wd.note || wd.moderationNote || 'Đã xử lý')}</span>`}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     `;
@@ -5197,6 +5423,73 @@
         if (btn) btn.disabled = false;
         if (text) text.textContent = 'XUẤT BẢN & ĐỒNG BỘ TOÀN CẦU TỨC THÌ';
         if (icon) icon.classList.remove('animate-spin');
+      }
+    },
+
+    approveMarketplaceListing: function (listingId) {
+      if (!window.ShopVietState || typeof window.ShopVietState.moderateCreatorListing !== 'function') return;
+      const noteInput = document.getElementById('adminModerationNoteInput');
+      const note = (noteInput && noteInput.value.trim()) ? noteInput.value.trim() : 'Đã duyệt lên Sàn Creator';
+      const res = window.ShopVietState.moderateCreatorListing(listingId, 'approve', note);
+      if (res && res.ok) {
+        notify('Đã duyệt sản phẩm lên Sàn Creator thành công!', 'success');
+        this.refreshMarketplaceTab();
+      } else {
+        notify('Không thể duyệt sản phẩm: ' + ((res && res.error) || 'Lỗi không xác định'), 'error');
+      }
+    },
+
+    rejectMarketplaceListing: function (listingId) {
+      if (!window.ShopVietState || typeof window.ShopVietState.moderateCreatorListing !== 'function') return;
+      const noteInput = document.getElementById('adminModerationNoteInput');
+      const note = (noteInput && noteInput.value.trim()) ? noteInput.value.trim() : 'Sản phẩm chưa đạt chuẩn kiểm duyệt Sàn Creator';
+      const res = window.ShopVietState.moderateCreatorListing(listingId, 'reject', note);
+      if (res && res.ok) {
+        notify('Đã từ chối sản phẩm Creator.', 'info');
+        this.refreshMarketplaceTab();
+      } else {
+        notify('Không thể từ chối sản phẩm: ' + ((res && res.error) || 'Lỗi không xác định'), 'error');
+      }
+    },
+
+    completeWithdrawalRequest: function (withdrawalId) {
+      if (!window.ShopVietState || typeof window.ShopVietState.moderateWithdrawal !== 'function') return;
+      const noteInput = document.getElementById('adminModerationNoteInput');
+      const note = (noteInput && noteInput.value.trim()) ? noteInput.value.trim() : 'Admin đã chuyển khoản thành công';
+      const res = window.ShopVietState.moderateWithdrawal(withdrawalId, 'complete', note);
+      if (res && res.ok) {
+        notify(`Đã xác nhận chuyển khoản lệnh rút #${withdrawalId}.`, 'success');
+        this.refreshMarketplaceTab();
+      } else {
+        notify('Không thể xử lý lệnh rút: ' + ((res && res.error) || 'Lỗi không xác định'), 'error');
+      }
+    },
+
+    rejectWithdrawalRequest: function (withdrawalId) {
+      if (!window.ShopVietState || typeof window.ShopVietState.moderateWithdrawal !== 'function') return;
+      const noteInput = document.getElementById('adminModerationNoteInput');
+      const note = (noteInput && noteInput.value.trim()) ? noteInput.value.trim() : 'Hoàn lại Xu về ví người dùng';
+      const res = window.ShopVietState.moderateWithdrawal(withdrawalId, 'reject', note);
+      if (res && res.ok) {
+        notify(`Đã từ chối lệnh #${withdrawalId} và hoàn ${Number(res.refundXu || 0).toLocaleString('vi-VN')} Xu về ví.`, 'info');
+        this.refreshMarketplaceTab();
+      } else {
+        notify('Không thể hoàn tác lệnh rút: ' + ((res && res.error) || 'Lỗi không xác định'), 'error');
+      }
+    },
+
+    refreshMarketplaceTab: function () {
+      const mpListings = (window.ShopVietState && window.ShopVietState.getMarketplaceListings) ? window.ShopVietState.getMarketplaceListings(true) : [];
+      const mpWithdrawals = (window.ShopVietState && window.ShopVietState.getWithdrawals) ? window.ShopVietState.getWithdrawals('all') : [];
+      const pendingTotal = mpListings.filter(l => l && l.status === 'pending').length + mpWithdrawals.filter(w => w && w.status === 'pending').length;
+      const badge = document.getElementById('adminMarketplaceTabBadge');
+      if (badge) {
+        badge.textContent = String(pendingTotal);
+        badge.className = `px-1.5 py-0.5 rounded-md tabular-nums ${pendingTotal > 0 ? 'bg-amber-500 text-white font-extrabold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-semibold'} text-[10px]`;
+      }
+      if (currentActiveTab === 'marketplace') {
+        const tabContent = document.getElementById('adminTabContent');
+        if (tabContent) tabContent.innerHTML = renderTabMarketplace();
       }
     },
 

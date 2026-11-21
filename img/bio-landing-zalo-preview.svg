@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+    <pattern id="grid3" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1E293B" stroke-width="0.7" stroke-opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg3)"/>
+  <rect width="800" height="450" fill="url(#grid3)"/>
+
+  <text x="52" y="64" fill="#3B9EFF" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">LANDING KIT v1.5 · 1-FILE HTML + TAILWIND</text>
+  <text x="52" y="106" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800">Landing Page &amp; Bio Chốt Đơn</text>
+  <text x="52" y="138" fill="#94A3B8" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="500">Bảng Giá 3 Gói · FAQ Thu Gọn · Form Đẩy Thẳng Về Zalo / SePay</text>
+
+  <!-- Browser Frame Preview -->
+  <rect x="52" y="168" width="696" height="236" rx="16" fill="#0B1120" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="52" y="168" width="696" height="36" rx="16" fill="#0F172A"/>
+  <circle cx="76" cy="186" r="5" fill="#EF4444" fill-opacity="0.75"/>
+  <circle cx="94" cy="186" r="5" fill="#F59E0B" fill-opacity="0.75"/>
+  <circle cx="112" cy="186" r="5" fill="#10B981" fill-opacity="0.75"/>
+  <rect x="136" y="177" width="320" height="18" rx="6" fill="#1E293B"/>
+  <text x="150" y="190" fill="#94A3B8" font-family="monospace" font-size="11">index.html · 0 build step · Vercel 30s</text>
+
+  <!-- 3 Pricing Tiers inside Preview -->
+  <rect x="76" y="224" width="202" height="156" rx="12" fill="#111827" stroke="#1E293B" stroke-width="1"/>
+  <text x="94" y="250" fill="#94A3B8" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">GÓI CƠ BẢN</text>
+  <text x="94" y="280" fill="#F8FAFC" font-family="monospace" font-size="20" font-weight="800">199.000đ</text>
+  <rect x="94" y="300" width="140" height="8" rx="4" fill="#334155"/>
+  <rect x="94" y="318" width="110" height="8" rx="4" fill="#334155"/>
+  <rect x="94" y="340" width="166" height="26" rx="7" fill="#1E293B"/>
+  <text x="177" y="357" text-anchor="middle" fill="#CBD5E1" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">Chốt đơn Zalo</text>
+
+  <rect x="299" y="218" width="202" height="164" rx="12" fill="#0F172A" stroke="#0071E3" stroke-width="2"/>
+  <rect x="317" y="232" width="104" height="20" rx="6" fill="#0071E3"/>
+  <text x="369" y="246" text-anchor="middle" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="700">PHỔ BIẾN NHẤT</text>
+  <text x="317" y="278" fill="#60A5FA" font-family="monospace" font-size="22" font-weight="800">499.000đ</text>
+  <rect x="317" y="298" width="150" height="8" rx="4" fill="#475569"/>
+  <rect x="317" y="316" width="128" height="8" rx="4" fill="#475569"/>
+  <rect x="317" y="340" width="166" height="28" rx="8" fill="#0071E3"/>
+  <text x="400" y="358" text-anchor="middle" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">Đặt ngay · VietQR</text>
+
+  <rect x="522" y="224" width="202" height="156" rx="12" fill="#111827" stroke="#1E293B" stroke-width="1"/>
+  <text x="540" y="250" fill="#94A3B8" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">TRỌN GÓI VIP</text>
+  <text x="540" y="280" fill="#F8FAFC" font-family="monospace" font-size="20" font-weight="800">999.000đ</text>
+  <rect x="540" y="300" width="140" height="8" rx="4" fill="#334155"/>
+  <rect x="540" y="318" width="110" height="8" rx="4" fill="#334155"/>
+  <rect x="540" y="340" width="166" height="26" rx="7" fill="#1E293B"/>
+  <text x="623" y="357" text-anchor="middle" fill="#CBD5E1" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700">Nhận 25.000 Xu</text>
+</svg>

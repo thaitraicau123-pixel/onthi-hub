@@ -22,6 +22,15 @@
   let orderSearchQuery = '';
   let selectedDepositAmount = 200000;
 
+  function escHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // Cấu hình ngân hàng MBBank chuẩn theo quy định hệ thống Bùi Thái
   const BANK_CONFIG = {
     bankName: 'MBBank (Ngân hàng TMCP Quân Đội)',
@@ -363,6 +372,29 @@
                   </span>
                 </button>
 
+                <button type="button" data-tab="seller" id="tabBtn-seller" class="dashboard-tab-btn w-full ${activeTab === 'seller' ? 'bg-blue-50/90 dark:bg-slate-800 text-[#0071E3] dark:text-[#3B9EFF] font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'} rounded-xl px-4 py-2.5 flex items-center justify-between transition-all text-left cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path d="M3 9l2-5h14l2 5" />
+                      <path d="M3 9v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9" />
+                      <path d="M9 21V13h6v8" />
+                    </svg>
+                    <span>Kênh Người Bán &amp; Rút Xu</span>
+                  </div>
+                </button>
+
+                <button type="button" data-tab="referral" id="tabBtn-referral" class="dashboard-tab-btn w-full ${activeTab === 'referral' ? 'bg-blue-50/90 dark:bg-slate-800 text-[#0071E3] dark:text-[#3B9EFF] font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'} rounded-xl px-4 py-2.5 flex items-center justify-between transition-all text-left cursor-pointer">
+                  <div class="flex items-center gap-3">
+                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span>Cộng Tác Viên (25%)</span>
+                  </div>
+                </button>
+
                 <button type="button" data-tab="security" id="tabBtn-security" class="dashboard-tab-btn w-full ${activeTab === 'security' ? 'bg-blue-50/90 dark:bg-slate-800 text-[#0071E3] dark:text-[#3B9EFF] font-bold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white'} rounded-xl px-4 py-2.5 flex items-center justify-between transition-all text-left cursor-pointer">
                   <div class="flex items-center gap-3">
                     <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -601,6 +633,8 @@
         case 'wallet':
         case 'orders':
           return this.renderOrdersTab(user, orders);
+        case 'seller':
+          return this.renderSellerTab(user);
         case 'referral':
           return this.renderReferralTab(user);
         case 'giftcards':
@@ -990,23 +1024,43 @@
     },
 
     // ==========================================
-    // TAB 4: GIỚI THIỆU BẠN BÈ (REFERRAL)
+    // TAB 4: CỘNG TÁC VIÊN 25% (REFERRAL)
     // ==========================================
     renderReferralTab: function (user) {
-      const emailPrefix = String((user && user.email) || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8);
-      const refCode = emailPrefix ? ('BT' + emailPrefix) : 'OPENDESIGN20';
+      const cleanEmail = String((user && user.email) || '').trim().toLowerCase();
+      const stats = (window.ShopVietState && typeof window.ShopVietState.getReferralStats === 'function')
+        ? window.ShopVietState.getReferralStats(cleanEmail)
+        : {
+            refCode: 'BT' + (cleanEmail.split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 8) || 'CREATOR'),
+            clicks: 0,
+            signups: 0,
+            orders: 0,
+            commissionXu: 0,
+            earnings: []
+          };
+      const refCode = stats.refCode || 'BTCREATOR';
       const siteOrigin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin : 'https://www.promptmmo.store';
       const referralLink = `${siteOrigin}/?ref=${encodeURIComponent(refCode)}`;
+      const ctvEarnings = Array.isArray(stats.earnings) ? stats.earnings : [];
 
       return `
-        <!-- Header Giới thiệu bạn bè -->
-        <div class="pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
-          <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Giới thiệu bạn bè
-          </h1>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-            Chia sẻ liên kết của bạn để cùng nhận voucher ưu đãi và hoa hồng vĩnh viễn trên mọi đơn hàng.
-          </p>
+        <!-- Header Cộng Tác Viên 25% -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              Cộng Tác Viên (25% Hoa Hồng)
+            </h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              Chia sẻ liên kết giới thiệu cá nhân để nhận ngay 25% giá trị Xu trên mọi đơn hàng thành công.
+            </p>
+          </div>
+          <button
+            type="button"
+            onclick="ShopVietViews.dashboard.switchTab('seller')"
+            class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition cursor-pointer shrink-0 self-start sm:self-auto"
+          >
+            Rút Xu về ngân hàng →
+          </button>
         </div>
 
         <!-- Khung link giới thiệu chuyên nghiệp -->
@@ -1016,12 +1070,13 @@
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
             </svg>
-            <span>Đường link giới thiệu độc quyền của bạn</span>
+            <span>Đường link Cộng Tác Viên độc quyền của bạn</span>
           </div>
 
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <div class="relative flex-1">
-              <input type="text" id="referralLinkInput" readonly value="${referralLink}" class="w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50/80 dark:bg-[#090B10] font-mono text-xs sm:text-sm text-slate-900 dark:text-white font-semibold select-all focus:outline-none">
+              <label for="referralLinkInput" class="sr-only">Đường link Cộng Tác Viên</label>
+              <input type="text" id="referralLinkInput" readonly value="${escHtml(referralLink)}" class="w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-slate-50/80 dark:bg-[#090B10] font-mono text-xs sm:text-sm text-slate-900 dark:text-white font-semibold select-all focus:outline-none">
             </div>
             <button type="button" id="copyReferralLinkBtn" class="bg-[#0071E3] hover:bg-[#0062C8] dark:bg-[#3B9EFF] dark:hover:bg-[#2B8EF0] text-white font-bold text-sm px-5 py-3 rounded-xl shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shrink-0">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -1033,57 +1088,302 @@
           </div>
 
           <p class="text-xs text-slate-500 dark:text-slate-400">
-            Mã giới thiệu của bạn: <strong class="font-mono text-[#0071E3] dark:text-[#3B9EFF] text-sm">${refCode}</strong> · Nhận thưởng ngay khi người được giới thiệu thanh toán đơn hàng đầu tiên.
+            Mã CTV của bạn: <strong class="font-mono text-[#0071E3] dark:text-[#3B9EFF] text-sm">${escHtml(refCode)}</strong> · Hệ thống tự động cộng 25% Xu vào Ví Xu của bạn ngay khi người được giới thiệu hoàn tất thanh toán (chặn tự giới thiệu).
           </p>
         </div>
 
-        <!-- 3 Thẻ Thống Kê Giới Thiệu -->
+        <!-- 3 Thẻ Thống Kê Giới Thiệu Thực Tế -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 tabular-nums">
-          
           <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
             <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Số lượt click</span>
-            <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">142</div>
-            <p class="text-xs text-slate-400 mt-1">Lượt truy cập qua link của bạn</p>
+            <div id="ctvStatClicks" class="text-3xl font-extrabold text-slate-900 dark:text-white mt-2">${Number(stats.clicks || 0).toLocaleString('vi-VN')}</div>
+            <p class="text-xs text-slate-400 mt-1">Lượt truy cập qua link CTV của bạn</p>
           </div>
 
           <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Bạn bè đã đăng ký</span>
-            <div class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">3</div>
-            <p class="text-xs text-slate-400 mt-1">Tài khoản đã tạo thành công</p>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Đăng ký / Đơn phát sinh</span>
+            <div id="ctvStatSignups" class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">${Number(stats.signups || 0).toLocaleString('vi-VN')} <span class="text-base font-bold text-slate-400">/ ${Number(stats.orders || 0).toLocaleString('vi-VN')} đơn</span></div>
+            <p class="text-xs text-slate-400 mt-1">Tài khoản đăng ký &amp; đơn hàng CTV</p>
           </div>
 
           <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
-            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Hoa hồng tích lũy</span>
-            <div class="text-3xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] mt-2">150.000đ</div>
-            <p class="text-xs text-slate-400 mt-1">Đã tích lũy vào tài khoản</p>
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Hoa hồng CTV đã nhận</span>
+            <div id="ctvStatCommission" class="text-3xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] mt-2">${Number(stats.commissionXu || 0).toLocaleString('vi-VN')} Xu</div>
+            <p class="text-xs text-slate-400 mt-1">Đã cộng thẳng vào Ví Xu khả dụng</p>
           </div>
-
         </div>
 
         <!-- Chính sách nhận thưởng 3 bước -->
         <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
           <h3 class="text-base font-bold text-slate-900 dark:text-white">
-            Quy trình nhận thưởng 3 bước đơn giản:
+            Quy trình kiếm 25% hoa hồng Cộng Tác Viên:
           </h3>
           
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed">
             <div class="p-4 rounded-xl bg-slate-50/80 dark:bg-[#090B10]/80 border border-slate-200/80 dark:border-slate-800/80 space-y-1.5">
               <div class="w-7 h-7 rounded-lg bg-[#0071E3] dark:bg-[#3B9EFF] text-white font-bold flex items-center justify-center text-sm tabular-nums">1</div>
-              <div class="font-bold text-slate-900 dark:text-white text-sm">Gửi liên kết mời</div>
-              <p class="text-slate-500 dark:text-slate-400">Gửi đường link cá nhân cho bạn bè qua Zalo, Messenger, Telegram hoặc Facebook.</p>
+              <div class="font-bold text-slate-900 dark:text-white text-sm">Gửi liên kết CTV</div>
+              <p class="text-slate-500 dark:text-slate-400">Chia sẻ link <code>/?ref=${escHtml(refCode)}</code> qua Facebook, TikTok, Zalo hoặc nhóm cộng đồng.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-slate-50/80 dark:bg-[#090B10]/80 border border-slate-200/80 dark:border-slate-800/80 space-y-1.5">
               <div class="w-7 h-7 rounded-lg bg-[#0071E3] dark:bg-[#3B9EFF] text-white font-bold flex items-center justify-center text-sm tabular-nums">2</div>
-              <div class="font-bold text-slate-900 dark:text-white text-sm">Bạn bè đăng ký</div>
-              <p class="text-slate-500 dark:text-slate-400">Bạn bè tạo tài khoản và nhận ngay gói quà chào mừng 100.000đ trên BuiThai AI Studio.</p>
+              <div class="font-bold text-slate-900 dark:text-white text-sm">Khách đăng ký &amp; mua hàng</div>
+              <p class="text-slate-500 dark:text-slate-400">Hệ thống tự động ghi nhận mã giới thiệu trên trình duyệt của khách trong suốt phiên mua sắm.</p>
             </div>
 
             <div class="p-4 rounded-xl bg-emerald-500/8 dark:bg-emerald-950/30 border border-emerald-500/20 space-y-1.5">
               <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold flex items-center justify-center text-sm tabular-nums">3</div>
-              <div class="font-bold text-emerald-800 dark:text-emerald-300 text-sm">Nhận ngay 50.000đ</div>
-              <p class="text-emerald-700 dark:text-emerald-300/90">Nhận ngay voucher 50.000đ khi bạn bè hoàn tất đơn hàng đầu tiên.</p>
+              <div class="font-bold text-emerald-800 dark:text-emerald-300 text-sm">Nhận ngay 25% giá trị đơn</div>
+              <p class="text-emerald-700 dark:text-emerald-300/90">Hoa hồng Xu cộng tức thì vào ví của bạn, rút tiền mặt về ngân hàng từ 20.000 Xu.</p>
             </div>
+          </div>
+        </div>
+
+        <!-- Lịch sử hoa hồng CTV -->
+        <div class="bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">Lịch sử hoa hồng CTV 25%</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-50/80 dark:bg-[#090B10]/70 font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200/80 dark:border-slate-800/80">
+                <tr>
+                  <th scope="col" class="py-3 px-4">Mã đơn</th>
+                  <th scope="col" class="py-3 px-4">Sản phẩm</th>
+                  <th scope="col" class="py-3 px-4">Hoa hồng nhận</th>
+                  <th scope="col" class="py-3 px-4">Thời gian</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800/70 text-slate-700 dark:text-slate-300">
+                ${ctvEarnings.length === 0 ? `
+                  <tr>
+                    <td colspan="4" class="py-8 text-center text-slate-400">Chưa có giao dịch hoa hồng CTV nào. Hãy chia sẻ link giới thiệu ở trên để bắt đầu kiếm Xu.</td>
+                  </tr>
+                ` : ctvEarnings.map(function (item) {
+                  return `
+                    <tr>
+                      <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">${escHtml(item.orderId || item.id)}</td>
+                      <td class="py-3 px-4">${escHtml(item.productName || 'Sản phẩm Studio')}</td>
+                      <td class="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">+${Number(item.amountXu || 0).toLocaleString('vi-VN')} Xu</td>
+                      <td class="py-3 px-4 text-slate-400 tabular-nums">${item.createdAt ? new Date(item.createdAt).toLocaleDateString('vi-VN') : ''}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    },
+
+    // ==========================================
+    // TAB 5: KÊNH NGƯỜI BÁN SÀN CREATOR (80/20) & RÚT XU
+    // ==========================================
+    renderSellerTab: function (user) {
+      const cleanEmail = String((user && user.email) || '').trim().toLowerCase();
+      const users = (window.ShopVietState && typeof window.ShopVietState.getUsersDB === 'function')
+        ? window.ShopVietState.getUsersDB()
+        : [];
+      const dbUser = users.find(function (u) { return u && u.email && u.email.trim().toLowerCase() === cleanEmail; });
+      const availableXu = dbUser ? Math.max(0, Number(dbUser.balance) || 0) : Math.max(0, Number((user && user.balance) || 0));
+
+      const allListings = (window.ShopVietState && typeof window.ShopVietState.getMarketplaceListings === 'function')
+        ? window.ShopVietState.getMarketplaceListings(true)
+        : [];
+      const myListings = allListings.filter(function (item) {
+        return item && item.sellerEmail && item.sellerEmail.trim().toLowerCase() === cleanEmail;
+      });
+      const approvedCount = myListings.filter(function (l) { return l.status === 'approved'; }).length;
+      const pendingCount = myListings.filter(function (l) { return l.status === 'pending'; }).length;
+
+      const myEarnings = (window.ShopVietState && typeof window.ShopVietState.getMarketplaceEarnings === 'function')
+        ? window.ShopVietState.getMarketplaceEarnings(cleanEmail)
+        : [];
+      const totalEarnedXu = myEarnings.reduce(function (sum, item) {
+        return sum + Math.max(0, Number(item && item.amountXu) || 0);
+      }, 0);
+
+      const myWithdrawals = (window.ShopVietState && typeof window.ShopVietState.getWithdrawals === 'function')
+        ? window.ShopVietState.getWithdrawals(cleanEmail)
+        : [];
+
+      const minWd = (window.ShopVietMarketplace && window.ShopVietMarketplace.MIN_WITHDRAWAL_XU) || 20000;
+
+      return `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+              Kênh Người Bán (80/20) &amp; Rút Xu
+            </h1>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              Đăng bán mã nguồn, workflow n8n, template hoặc prompt nhận 80% doanh thu. Rút tiền về ngân hàng từ ${minWd.toLocaleString('vi-VN')} Xu.
+            </p>
+          </div>
+          <button
+            type="button"
+            id="sellerNewListingBtn"
+            onclick="if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openSubmitListingModal()"
+            class="lg-btn-primary px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer shrink-0 self-start sm:self-auto"
+          >
+            + Đăng bán sản phẩm mới
+          </button>
+        </div>
+
+        <!-- 3 KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 tabular-nums">
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Số dư Ví Xu khả dụng</span>
+            <div id="sellerAvailableBalance" class="text-2xl sm:text-3xl font-extrabold text-[#0071E3] dark:text-[#3B9EFF] mt-2">${availableXu.toLocaleString('vi-VN')} Xu</div>
+            <p class="text-xs text-slate-400 mt-1">Có thể dùng mua hàng hoặc rút tiền mặt</p>
+          </div>
+
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Tổng thu nhập Creator &amp; CTV</span>
+            <div id="sellerTotalEarned" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-2">${totalEarnedXu.toLocaleString('vi-VN')} Xu</div>
+            <p class="text-xs text-slate-400 mt-1">80% doanh thu bán hàng + 25% CTV</p>
+          </div>
+
+          <div class="bg-white dark:bg-[#111520] rounded-xl p-5 border border-slate-900/10 dark:border-white/10 shadow-2xs">
+            <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Sản phẩm của bạn</span>
+            <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">${myListings.length}</div>
+            <p class="text-xs text-slate-400 mt-1">${approvedCount} đang bán · ${pendingCount} chờ duyệt</p>
+          </div>
+        </div>
+
+        <!-- Form Yêu Cầu Rút Xu Về Ngân Hàng -->
+        <div class="bg-white dark:bg-[#111520] rounded-xl p-6 border border-slate-900/10 dark:border-white/10 shadow-2xs space-y-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Gửi yêu cầu rút Xu về tài khoản ngân hàng</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tỷ giá 1 Xu = 1 VNĐ · Tối thiểu ${minWd.toLocaleString('vi-VN')} Xu/lần. Admin chuyển khoản 24/7 và hoàn lại 100% Xu nếu hủy lệnh.</p>
+          </div>
+
+          <div id="wdErrorAlert" role="alert" class="hidden p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-xs font-semibold text-rose-700 dark:text-rose-300"></div>
+
+          <form id="withdrawalRequestForm" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="wdBankName" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Ngân hàng nhận</label>
+              <select id="wdBankName" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-[#090B10] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]">
+                <option value="MBBank">MBBank (Quân Đội)</option>
+                <option value="Techcombank">Techcombank</option>
+                <option value="Vietcombank">Vietcombank</option>
+                <option value="BIDV">BIDV</option>
+                <option value="ACB">ACB</option>
+                <option value="VPBank">VPBank</option>
+                <option value="TPBank">TPBank</option>
+                <option value="MoMo">Ví MoMo</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="wdAmountXu" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Số Xu muốn rút (tối thiểu ${minWd.toLocaleString('vi-VN')})</label>
+              <input id="wdAmountXu" type="number" min="${minWd}" step="1000" required placeholder="${minWd}" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-[#090B10] text-sm font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3] tabular-nums" />
+            </div>
+
+            <div>
+              <label for="wdAccountNumber" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Số tài khoản / SĐT ví</label>
+              <input id="wdAccountNumber" type="text" required minlength="6" placeholder="Ví dụ: 0986019623" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-[#090B10] text-sm font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]" />
+            </div>
+
+            <div>
+              <label for="wdAccountHolder" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Tên chủ tài khoản (Không dấu)</label>
+              <input id="wdAccountHolder" type="text" required minlength="2" placeholder="Ví dụ: NGUYEN VAN A" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white dark:bg-[#090B10] text-sm uppercase text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#0071E3]" />
+            </div>
+
+            <div class="sm:col-span-2 flex items-center justify-between gap-3 pt-1">
+              <span class="text-xs text-slate-500 dark:text-slate-400">Xu sẽ được tạm giữ ngay khi gửi lệnh để đảm bảo đối soát chính xác.</span>
+              <button type="submit" id="wdSubmitBtn" class="lg-btn-primary px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold cursor-pointer shrink-0">
+                Gửi lệnh rút Xu
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bảng Sản phẩm đã đăng trên Sàn Creator -->
+        <div class="bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">Sản phẩm bạn đã gửi lên Sàn Creator (${myListings.length})</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-50/80 dark:bg-[#090B10]/70 font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200/80 dark:border-slate-800/80">
+                <tr>
+                  <th scope="col" class="py-3 px-4">Sản phẩm</th>
+                  <th scope="col" class="py-3 px-4">Danh mục</th>
+                  <th scope="col" class="py-3 px-4">Giá bán</th>
+                  <th scope="col" class="py-3 px-4">Trạng thái</th>
+                  <th scope="col" class="py-3 px-4">Ghi chú kiểm duyệt</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800/70 text-slate-700 dark:text-slate-300">
+                ${myListings.length === 0 ? `
+                  <tr>
+                    <td colspan="5" class="py-8 text-center text-slate-400">
+                      Bạn chưa đăng bán sản phẩm nào. Bấm "+ Đăng bán sản phẩm mới" để chia sẻ sản phẩm và nhận 80% doanh thu.
+                    </td>
+                  </tr>
+                ` : myListings.map(function (item) {
+                  const st = item.status || 'pending';
+                  const stBadge = st === 'approved'
+                    ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold">Đã duyệt · Đang bán</span>'
+                    : (st === 'rejected'
+                      ? '<span class="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold">Từ chối</span>'
+                      : '<span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">Chờ Admin duyệt</span>');
+                  return `
+                    <tr>
+                      <td class="py-3 px-4 font-semibold text-slate-900 dark:text-white">${escHtml(item.name)}</td>
+                      <td class="py-3 px-4">${escHtml(item.tag || item.category || 'Tool & n8n')}</td>
+                      <td class="py-3 px-4 font-bold tabular-nums">${Number(item.price || 0).toLocaleString('vi-VN')} Xu</td>
+                      <td class="py-3 px-4 whitespace-nowrap">${stBadge}</td>
+                      <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${escHtml(item.moderationNote || (st === 'pending' ? 'Đang chờ Admin kiểm tra link bàn giao' : '—'))}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng Lịch sử rút tiền -->
+        <div class="bg-white dark:bg-[#111520] rounded-xl border border-slate-900/10 dark:border-white/10 shadow-2xs overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200/80 dark:border-slate-800/80">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white">Lịch sử lệnh rút Xu (${myWithdrawals.length})</h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-50/80 dark:bg-[#090B10]/70 font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200/80 dark:border-slate-800/80">
+                <tr>
+                  <th scope="col" class="py-3 px-4">Mã lệnh</th>
+                  <th scope="col" class="py-3 px-4">Tài khoản nhận</th>
+                  <th scope="col" class="py-3 px-4">Số Xu rút</th>
+                  <th scope="col" class="py-3 px-4">Trạng thái</th>
+                  <th scope="col" class="py-3 px-4">Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200/60 dark:divide-slate-800/70 text-slate-700 dark:text-slate-300">
+                ${myWithdrawals.length === 0 ? `
+                  <tr>
+                    <td colspan="5" class="py-8 text-center text-slate-400">Chưa có lệnh rút tiền nào.</td>
+                  </tr>
+                ` : myWithdrawals.map(function (wd) {
+                  const st = wd.status || 'pending';
+                  const stBadge = st === 'completed'
+                    ? '<span class="px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold">Đã chuyển khoản</span>'
+                    : (st === 'rejected'
+                      ? '<span class="px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold">Từ chối · Đã hoàn Xu</span>'
+                      : '<span class="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold">Đang chờ xử lý</span>');
+                  return `
+                    <tr>
+                      <td class="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">${escHtml(wd.id)}</td>
+                      <td class="py-3 px-4">${escHtml(wd.bankName)} · <span class="font-mono">${escHtml(wd.accountNumber)}</span> (${escHtml(wd.accountHolder)})</td>
+                      <td class="py-3 px-4 font-bold tabular-nums text-[#0071E3] dark:text-[#3B9EFF]">${Number(wd.amountXu || 0).toLocaleString('vi-VN')} Xu</td>
+                      <td class="py-3 px-4 whitespace-nowrap">${stBadge}</td>
+                      <td class="py-3 px-4 text-slate-500 dark:text-slate-400">${escHtml(wd.note || wd.moderationNote || '—')}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
           </div>
         </div>
       `;
@@ -1343,6 +1643,8 @@
         this.bindOverviewEvents();
       } else if (tabKey === 'orders') {
         this.bindOrdersEvents(user, userOrders);
+      } else if (tabKey === 'seller') {
+        this.bindSellerEvents(user);
       } else if (tabKey === 'referral') {
         this.bindReferralEvents(user);
       } else if (tabKey === 'security') {
@@ -1415,17 +1717,71 @@
     },
 
     /**
-     * Sự kiện cho Tab 4: Giới thiệu bạn bè
+     * Sự kiện cho Tab 4: Cộng Tác Viên 25%
      */
     bindReferralEvents: function (user) {
       const copyBtn = document.getElementById('copyReferralLinkBtn');
       const linkInput = document.getElementById('referralLinkInput');
       if (copyBtn && linkInput) {
         copyBtn.addEventListener('click', () => {
-          navigator.clipboard.writeText(linkInput.value.trim());
-          window.ShopVietState.showToast('Đã sao chép link giới thiệu của bạn. Hãy gửi cho bạn bè để cùng nhận ưu đãi.', 'success');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(linkInput.value.trim()).catch(function () {});
+          }
+          window.ShopVietState.showToast('Đã sao chép link Cộng Tác Viên 25% của bạn.', 'success');
         });
       }
+    },
+
+    /**
+     * Sự kiện cho Tab 5: Kênh Người Bán & Rút Xu
+     */
+    bindSellerEvents: function (user) {
+      const form = document.getElementById('withdrawalRequestForm');
+      if (!form) return;
+      const self = this;
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const errEl = document.getElementById('wdErrorAlert');
+        if (errEl) {
+          errEl.classList.add('hidden');
+          errEl.textContent = '';
+        }
+
+        const bankName = (document.getElementById('wdBankName') || {}).value || '';
+        const amountXu = (document.getElementById('wdAmountXu') || {}).value || '';
+        const accountNumber = (document.getElementById('wdAccountNumber') || {}).value || '';
+        const accountHolder = (document.getElementById('wdAccountHolder') || {}).value || '';
+
+        if (!window.ShopVietState || typeof window.ShopVietState.requestWithdrawal !== 'function') {
+          if (errEl) {
+            errEl.textContent = 'Tính năng rút Xu chưa sẵn sàng.';
+            errEl.classList.remove('hidden');
+          }
+          return;
+        }
+
+        const res = window.ShopVietState.requestWithdrawal({
+          bankName: bankName,
+          amountXu: amountXu,
+          accountNumber: accountNumber,
+          accountHolder: accountHolder
+        });
+
+        if (!res || !res.valid) {
+          if (errEl) {
+            errEl.textContent = (res && Array.isArray(res.errors) && res.errors.length > 0)
+              ? res.errors.join(' • ')
+              : 'Yêu cầu rút Xu không hợp lệ.';
+            errEl.classList.remove('hidden');
+          }
+          return;
+        }
+
+        if (typeof window.ShopVietState.showToast === 'function') {
+          window.ShopVietState.showToast('Đã gửi lệnh rút Xu thành công! Admin sẽ đối soát và chuyển khoản sớm nhất.', 'success');
+        }
+        self.refreshActiveTab();
+      });
     },
 
     /**

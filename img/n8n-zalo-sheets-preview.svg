@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <pattern id="grid1" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1E293B" stroke-width="0.7" stroke-opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg1)"/>
+  <rect width="800" height="450" fill="url(#grid1)"/>
+
+  <!-- Header -->
+  <text x="52" y="64" fill="#3B9EFF" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">AUTOMATION N8N v2.0 · SHOPEE &amp; TIKTOK SHOP</text>
+  <text x="52" y="106" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800">n8n Auto Chốt Đơn → Zalo OA</text>
+  <text x="52" y="138" fill="#94A3B8" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="500">Webhook Đơn Hàng · Đối Soát Google Sheets · Báo Tin Khách Tự Động</text>
+
+  <!-- Node 1: Webhook -->
+  <rect x="52" y="182" width="196" height="148" rx="16" fill="#0B1120" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="68" y="198" width="62" height="22" rx="6" fill="#0071E3" fill-opacity="0.2" stroke="#0071E3" stroke-opacity="0.5"/>
+  <text x="99" y="213" text-anchor="middle" fill="#60A5FA" font-family="monospace" font-size="11" font-weight="700">TRIGGER</text>
+  <text x="68" y="250" fill="#F8FAFC" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="700">Order Webhook</text>
+  <text x="68" y="274" fill="#94A3B8" font-family="monospace" font-size="12">POST /shopee-order</text>
+  <text x="68" y="296" fill="#94A3B8" font-family="monospace" font-size="12">POST /tiktok-order</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 248 256 L 298 256" stroke="#3B9EFF" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <polygon points="296,250 306,256 296,262" fill="#3B9EFF"/>
+
+  <!-- Node 2: Google Sheets -->
+  <rect x="306" y="182" width="196" height="148" rx="16" fill="#0B1120" stroke="#10B981" stroke-opacity="0.45" stroke-width="1.5"/>
+  <rect x="322" y="198" width="66" height="22" rx="6" fill="#10B981" fill-opacity="0.18" stroke="#10B981" stroke-opacity="0.45"/>
+  <text x="355" y="213" text-anchor="middle" fill="#34D399" font-family="monospace" font-size="11" font-weight="700">SHEETS</text>
+  <text x="322" y="250" fill="#F8FAFC" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="700">Tính Lãi Ròng</text>
+  <text x="322" y="274" fill="#94A3B8" font-family="monospace" font-size="12">- Phí sàn &amp; Giá vốn</text>
+  <text x="322" y="296" fill="#34D399" font-family="monospace" font-size="12">✓ Append Row 24/7</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 502 256 L 552 256" stroke="#10B981" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <polygon points="550,250 560,256 550,262" fill="#10B981"/>
+
+  <!-- Node 3: Zalo OA / Telegram -->
+  <rect x="560" y="182" width="188" height="148" rx="16" fill="#0B1120" stroke="#3B9EFF" stroke-opacity="0.5" stroke-width="1.5"/>
+  <rect x="576" y="198" width="68" height="22" rx="6" fill="#3B9EFF" fill-opacity="0.18" stroke="#3B9EFF" stroke-opacity="0.45"/>
+  <text x="610" y="213" text-anchor="middle" fill="#60A5FA" font-family="monospace" font-size="11" font-weight="700">ZALO OA</text>
+  <text x="576" y="250" fill="#F8FAFC" font-family="Inter, system-ui, sans-serif" font-size="17" font-weight="700">Nhắn Khách 3s</text>
+  <text x="576" y="274" fill="#94A3B8" font-family="monospace" font-size="12">ZNS Xác nhận đơn</text>
+  <text x="576" y="296" fill="#60A5FA" font-family="monospace" font-size="12">+ Telegram Alert</text>
+
+  <!-- Bottom Meta Bar -->
+  <rect x="52" y="362" width="696" height="44" rx="10" fill="#0F172A" stroke="#1E293B" stroke-width="1"/>
+  <text x="72" y="389" fill="#E2E8F0" font-family="monospace" font-size="13" font-weight="600">workflow-n8n-chot-don.json  ·  Self-Host &amp; Cloud Ready  ·  0 Coding</text>
+  <text x="728" y="389" text-anchor="end" fill="#34D399" font-family="monospace" font-size="13" font-weight="700">29.000 Xu</text>
+</svg>

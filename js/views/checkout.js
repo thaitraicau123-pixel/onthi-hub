@@ -1402,9 +1402,11 @@
         // Gắn kho mã nguồn & file kỹ năng trực tiếp (Zero intermediate links)
         if (order.items && order.items.length > 0) {
           const firstPId = order.items[0].id || order.items[0].productId;
-          const matchedProd = (window.ShopVietData && typeof window.ShopVietData.getProductById === 'function')
-            ? window.ShopVietData.getProductById(firstPId)
-            : null;
+          const matchedProd = (window.ShopVietState && typeof window.ShopVietState.getProductById === 'function')
+            ? window.ShopVietState.getProductById(firstPId)
+            : ((window.ShopVietData && typeof window.ShopVietData.getProductById === 'function')
+              ? window.ShopVietData.getProductById(firstPId)
+              : null);
           if (matchedProd && matchedProd.unlockedPayload) {
             order.unlockedPayload = matchedProd.unlockedPayload;
           }
@@ -1429,6 +1431,11 @@
           if (typeof window.ShopVietState.save === 'function') {
             window.ShopVietState.save();
           }
+        }
+
+        // Chia doanh thu 80/20 Sàn Creator & Hoa hồng 25% CTV (Idempotent)
+        if (window.ShopVietState && typeof window.ShopVietState.processOrderDistribution === 'function') {
+          window.ShopVietState.processOrderDistribution(order);
         }
 
         // Đồng bộ đơn hàng lên Firebase Firestore Cloud

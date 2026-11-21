@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="800" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <pattern id="grid4" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1E293B" stroke-width="0.7" stroke-opacity="0.45"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="450" fill="url(#bg4)"/>
+  <rect width="800" height="450" fill="url(#grid4)"/>
+
+  <text x="52" y="64" fill="#34D399" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="1.8">BOT NODEJS v2.1 · TELEGRAM API + SEPAY WEBHOOK</text>
+  <text x="52" y="106" fill="#FFFFFF" font-family="Inter, system-ui, sans-serif" font-size="30" font-weight="800">Bot Telegram + SePay Giao Key</text>
+  <text x="52" y="138" fill="#94A3B8" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="500">Sinh VietQR Riêng · Đối Soát Tiền Vào · Tự Nhả Key Kho 24/7</text>
+
+  <!-- Left Telegram Chat Card -->
+  <rect x="52" y="176" width="330" height="224" rx="16" fill="#0B1120" stroke="#1E293B" stroke-width="1.5"/>
+  <rect x="68" y="192" width="120" height="24" rx="6" fill="#0071E3" fill-opacity="0.22"/>
+  <text x="128" y="208" text-anchor="middle" fill="#60A5FA" font-family="monospace" font-size="11" font-weight="700">TELEGRAM BOT</text>
+
+  <rect x="68" y="230" width="298" height="46" rx="10" fill="#111C33"/>
+  <text x="82" y="250" fill="#E2E8F0" font-family="monospace" font-size="12">/buy PRO-KEY-30D</text>
+  <text x="82" y="266" fill="#60A5FA" font-family="monospace" font-size="11">→ Tạo mã ORD9842 + ảnh VietQR</text>
+
+  <rect x="68" y="288" width="298" height="52" rx="10" fill="#0D2821" stroke="#10B981" stroke-opacity="0.45"/>
+  <text x="82" y="310" fill="#34D399" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700">✓ Đã nhận 35.000đ (ORD9842)</text>
+  <text x="82" y="328" fill="#A7F3D0" font-family="monospace" font-size="12">KEY: BT-9921-XKLA-7782</text>
+
+  <text x="68" y="380" fill="#94A3B8" font-family="monospace" font-size="12">Atomic Key Lock · Chống bán trùng key</text>
+
+  <!-- Right SePay Code Card -->
+  <rect x="412" y="176" width="336" height="224" rx="16" fill="#0B1120" stroke="#10B981" stroke-opacity="0.4" stroke-width="1.5"/>
+  <rect x="428" y="192" width="142" height="24" rx="6" fill="#10B981" fill-opacity="0.18"/>
+  <text x="499" y="208" text-anchor="middle" fill="#34D399" font-family="monospace" font-size="11" font-weight="700">POST /api/sepay</text>
+  <text x="428" y="246" fill="#94A3B8" font-family="monospace" font-size="12">verifyApikey(req.headers.authorization)</text>
+  <text x="428" y="272" fill="#60A5FA" font-family="monospace" font-size="12">const key = popAvailableKeyAtomic();</text>
+  <text x="428" y="298" fill="#34D399" font-family="monospace" font-size="12">await bot.sendMessage(chatId, key);</text>
+  <text x="428" y="324" fill="#FBBF24" font-family="monospace" font-size="12">await notifyAdminRevenue(order);</text>
+
+  <rect x="428" y="352" width="304" height="32" rx="8" fill="#0F172A" stroke="#1E293B"/>
+  <text x="442" y="372" fill="#E2E8F0" font-family="monospace" font-size="12">Node.js Express · Full Source</text>
+  <text x="718" y="372" text-anchor="end" fill="#34D399" font-family="monospace" font-size="12" font-weight="700">35.000 Xu</text>
+</svg>

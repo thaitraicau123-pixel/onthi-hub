@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 1. Nạp trạng thái từ LocalStorage & Khởi động Theme
   const state = window.ShopVietState.load();
+  if (typeof window.ShopVietState.captureReferralFromUrl === 'function') {
+    window.ShopVietState.captureReferralFromUrl();
+  }
 
   // 2. Lắng nghe các nút trên Header & Render trạng thái Auth Dynamic
   setupHeaderEvents();
@@ -73,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
  */
 function setActiveNav(activeId) {
   const navIds = ['navHome', 'navProducts', 'navBlog'];
-  const activeClasses = ['text-[#0071E3]', 'dark:text-[#3B9EFF]', 'border-b-2', 'border-[#0071E3]', 'dark:border-[#3B9EFF]', 'font-semibold'];
-  const inactiveClasses = ['text-slate-600', 'dark:text-slate-300', 'hover:text-slate-900', 'dark:hover:text-white', 'border-b-2', 'border-transparent'];
+  const activeClasses = ['text-[#1A73E8]', 'dark:text-[#8AB4F8]', 'border-b-2', 'border-[#1A73E8]', 'dark:border-[#8AB4F8]', 'font-semibold'];
+  const inactiveClasses = ['text-[#5F6368]', 'dark:text-[#C4C7C5]', 'hover:text-[#202124]', 'dark:hover:text-white', 'border-b-2', 'border-transparent'];
 
   navIds.forEach(function (id) {
     const btn = document.getElementById(id);
@@ -263,7 +266,7 @@ function setupHeaderEvents() {
       // 3. Fallback cho trình duyệt chưa có View Transitions: Overlay bung tròn clipPath
       const currentTheme = (window.ShopVietState && window.ShopVietState.state && window.ShopVietState.state.theme) || 'light';
       const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      const targetBgColor = targetTheme === 'dark' ? '#090B10' : '#F5F5F7';
+      const targetBgColor = targetTheme === 'dark' ? '#131314' : '#FFFFFF';
 
       const overlay = document.createElement('div');
       overlay.className = 'circular-theme-overlay';
@@ -557,16 +560,16 @@ function updateHeaderAuthUI() {
     // ==================== TRẠNG THÁI 1: KHÁCH VÃNG LAI (CHƯA ĐĂNG NHẬP) ====================
     container.innerHTML = `
       <div class="flex items-center gap-1 sm:gap-2">
-        <button type="button" onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();" class="px-2 py-2 sm:px-3 text-[11px] sm:text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/8 hover:bg-[#0071E3]/14 border border-[#0071E3]/25 rounded-lg transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap" title="Nạp Xu VietQR MBBank 0986019623">
+        <button type="button" onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();" class="px-2.5 py-2 sm:px-3.5 text-[11px] sm:text-xs font-semibold text-[#1967D2] dark:text-[#8AB4F8] bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 hover:bg-[#D2E3FC] dark:hover:bg-[#8AB4F8]/25 border border-[#D2E3FC] dark:border-[#8AB4F8]/30 rounded-full transition-colors cursor-pointer flex items-center gap-1 whitespace-nowrap" title="Nạp Xu VietQR MBBank 0986019623">
           <span>Nạp Xu</span>
         </button>
-        <button id="headerLoginBtn" type="button" aria-label="Đăng nhập tài khoản" class="px-2.5 py-2 sm:px-3.5 text-xs sm:text-sm font-semibold text-[#1D1D1F] hover:bg-slate-100 dark:text-[#F5F5F7] dark:hover:bg-white/10 rounded-lg border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap" title="Đăng nhập">
-          <svg class="w-4 h-4 shrink-0 text-[#525866] dark:text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
+        <button id="headerLoginBtn" type="button" aria-label="Đăng nhập tài khoản" class="px-3 py-2 sm:px-4 text-xs sm:text-sm font-semibold text-[#202124] hover:bg-[#F8F9FA] dark:text-[#E3E3E3] dark:hover:bg-white/10 rounded-full border border-[#DADCE0] dark:border-[#3C4043] bg-white dark:bg-[#1E1F20] transition-colors cursor-pointer select-none flex items-center gap-1.5 whitespace-nowrap" title="Đăng nhập">
+          <svg class="w-4 h-4 shrink-0 text-[#5F6368] dark:text-[#C4C7C5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
           </svg>
           <span class="hidden md:inline">Đăng nhập</span>
         </button>
-        <button id="headerRegisterBtn" type="button" aria-label="Đăng ký tài khoản" class="hidden sm:inline-flex lg-btn-primary rounded-lg px-2.5 py-2 sm:px-3.5 items-center gap-1.5 text-xs sm:text-sm font-semibold cursor-pointer select-none whitespace-nowrap" title="Đăng ký">
+        <button id="headerRegisterBtn" type="button" aria-label="Đăng ký tài khoản" class="hidden sm:inline-flex lg-btn-primary rounded-full px-3 py-2 sm:px-4 items-center gap-1.5 text-xs sm:text-sm font-semibold cursor-pointer select-none whitespace-nowrap" title="Đăng ký">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.75">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
@@ -601,24 +604,24 @@ function updateHeaderAuthUI() {
     container.innerHTML = `
       <div class="relative flex items-center gap-1.5 sm:gap-2 shrink-0">
         <!-- Số dư Ví Xu Cá Nhân & Nút Nạp Xu 1-Chạm -->
-        <div class="flex items-center gap-1 sm:gap-1.5 p-1 rounded-lg bg-[#0071E3]/8 text-[#0071E3] dark:text-[#60A5FA] border border-[#0071E3]/25 text-xs font-semibold font-mono shrink-0">
-          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1.5 px-1.5 sm:px-2 py-0.5 cursor-pointer hover:bg-[#0071E3]/15 rounded-md transition-colors select-none" title="Đồng bộ số dư mới nhất">
+        <div class="flex items-center gap-1 sm:gap-1.5 p-1 rounded-full bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 text-[#1967D2] dark:text-[#8AB4F8] border border-[#D2E3FC] dark:border-[#8AB4F8]/30 text-xs font-semibold font-mono shrink-0">
+          <div onclick="if(window.ShopVietState && typeof window.ShopVietState.syncTopupsFromCloud === 'function'){ window.ShopVietState.syncTopupsFromCloud(true); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="flex items-center gap-1.5 px-2 py-0.5 cursor-pointer hover:bg-[#1A73E8]/10 rounded-full transition-colors select-none" title="Đồng bộ số dư mới nhất">
             <span id="headerUserBalanceText" class="tabular-nums font-bold">${Number(user.balance || 0).toLocaleString('vi-VN')} Xu</span>
           </div>
-          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2 py-0.5 rounded-md bg-[#0071E3] hover:bg-[#0062C4] text-white text-[10px] font-bold uppercase transition-colors cursor-pointer shrink-0" title="Nạp thêm Xu VietQR">
+          <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal && typeof window.ShopVietViews.modal.openDepositModal === 'function'){ window.ShopVietViews.modal.openDepositModal(); } else { window.ShopVietState.navigate('dashboard', { tab: 'wallet' }); }" class="px-2.5 py-0.5 rounded-full bg-[#1A73E8] hover:bg-[#1765CC] text-white text-[10px] font-bold uppercase transition-colors cursor-pointer shrink-0" title="Nạp thêm Xu VietQR">
             + Nạp
           </button>
         </div>
 
         <!-- Nút User Profile Badge (Click mở Dropdown) -->
-        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-2.5 rounded-lg border border-slate-900/10 dark:border-white/10 bg-white dark:bg-[#111520] hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer group shrink-0">
-          <div class="w-7 h-7 rounded-md bg-[#0071E3] text-white font-bold text-xs flex items-center justify-center shrink-0">
+        <button id="headerUserMenuBtn" type="button" class="flex items-center gap-1.5 sm:gap-2 p-1 sm:pl-1.5 sm:pr-3 rounded-full border border-[#DADCE0] dark:border-[#3C4043] bg-white dark:bg-[#1E1F20] hover:bg-[#F8F9FA] dark:hover:bg-white/10 transition-colors cursor-pointer group shrink-0">
+          <div class="w-7 h-7 rounded-full bg-[#1A73E8] text-white font-bold text-xs flex items-center justify-center shrink-0">
             ${avatarChar}
           </div>
-          <span class="text-xs sm:text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] max-w-[80px] sm:max-w-[120px] truncate select-none hidden sm:inline">
+          <span class="text-xs sm:text-sm font-semibold text-[#202124] dark:text-[#E3E3E3] max-w-[80px] sm:max-w-[120px] truncate select-none hidden sm:inline">
             ${displayName}
           </span>
-          <svg id="userMenuChevron" class="w-3.5 h-3.5 text-[#525866] dark:text-[#9CA3AF] transition-transform duration-150 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+          <svg id="userMenuChevron" class="w-3.5 h-3.5 text-[#5F6368] dark:text-[#C4C7C5] transition-transform duration-150 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/>
           </svg>
         </button>
@@ -673,6 +676,24 @@ function updateHeaderAuthUI() {
                 <path d="M16 10a4 4 0 0 1-8 0"/>
               </svg>
               <span>Đơn hàng của tôi</span>
+            </button>
+
+            <button id="dropdownSellerBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+              <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <path d="M9 22V12h6v10"/>
+              </svg>
+              <span>Kênh Người Bán (80/20)</span>
+            </button>
+
+            <button id="dropdownReferralBtn" type="button" class="w-full px-4 py-2 text-left text-slate-700 dark:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/5 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
+              <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span>Cộng Tác Viên (25%)</span>
             </button>
 
             <button type="button" onclick="if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openPolicy('refund');" class="w-full px-4 py-2 text-left text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-2.5 transition-colors cursor-pointer font-medium">
@@ -739,6 +760,8 @@ function updateHeaderAuthUI() {
     const dashboardDropdownBtn = document.getElementById('dropdownDashboardBtn');
     const profileBtn = document.getElementById('dropdownProfileBtn');
     const ordersBtn = document.getElementById('dropdownOrdersBtn');
+    const sellerDropdownBtn = document.getElementById('dropdownSellerBtn');
+    const referralDropdownBtn = document.getElementById('dropdownReferralBtn');
     const adminBtn = document.getElementById('dropdownAdminBtn');
     const logoutBtn = document.getElementById('dropdownLogoutBtn');
 
@@ -760,6 +783,20 @@ function updateHeaderAuthUI() {
       ordersBtn.addEventListener('click', function () {
         if (userDropdown) userDropdown.classList.add('hidden');
         window.ShopVietState.navigate('dashboard', { tab: 'orders' });
+      });
+    }
+
+    if (sellerDropdownBtn) {
+      sellerDropdownBtn.addEventListener('click', function () {
+        if (userDropdown) userDropdown.classList.add('hidden');
+        window.ShopVietState.navigate('dashboard', { tab: 'seller' });
+      });
+    }
+
+    if (referralDropdownBtn) {
+      referralDropdownBtn.addEventListener('click', function () {
+        if (userDropdown) userDropdown.classList.add('hidden');
+        window.ShopVietState.navigate('dashboard', { tab: 'referral' });
       });
     }
 

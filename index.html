@@ -149,22 +149,32 @@
 
   <style>
     :root {
-      --bg-canvas: #F7F8FA;
+      --bg-canvas: #FFFFFF;
       --bg-surface: #FFFFFF;
-      --bg-subtle: #EFF1F5;
-      --border-hairline: rgba(15, 23, 42, 0.09);
-      --text-primary: #1D1D1F;
-      --text-secondary: #525866;
-      --accent: #0071E3;
+      --bg-subtle: #F1F3F4;
+      --border-hairline: #DADCE0;
+      --text-primary: #202124;
+      --text-secondary: #5F6368;
+      --accent: #1A73E8;
+      --accent-hover: #1557B0;
+      --accent-tint: #E8F0FE;
+      --accent-tint-text: #1967D2;
+      --google-blue: #4285F4;
+      --google-red: #EA4335;
+      --google-yellow: #FBBC05;
+      --google-green: #34A853;
     }
     .dark {
-      --bg-canvas: #090B10;
-      --bg-surface: #111520;
-      --bg-subtle: #171C28;
-      --border-hairline: rgba(255, 255, 255, 0.10);
-      --text-primary: #F5F5F7;
-      --text-secondary: #9CA3AF;
-      --accent: #3B9EFF;
+      --bg-canvas: #131314;
+      --bg-surface: #1E1F20;
+      --bg-subtle: #282A2C;
+      --border-hairline: #3C4043;
+      --text-primary: #E3E3E3;
+      --text-secondary: #C4C7C5;
+      --accent: #8AB4F8;
+      --accent-hover: #AECBFA;
+      --accent-tint: rgba(138, 180, 248, 0.16);
+      --accent-tint-text: #8AB4F8;
     }
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -174,7 +184,20 @@
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Studio & Open-Design Hairline Surfaces */
+    /* Google Antigravity Spectrum Razor Bar */
+    .google-spectrum-bar {
+      height: 3px;
+      width: 100%;
+      background: linear-gradient(
+        90deg,
+        #4285F4 0%, #4285F4 25%,
+        #EA4335 25%, #EA4335 50%,
+        #FBBC05 50%, #FBBC05 75%,
+        #34A853 75%, #34A853 100%
+      );
+    }
+
+    /* Google Material 3 & Antigravity Frosted Surfaces */
     .lg-canvas {
       background-color: var(--bg-canvas);
     }
@@ -182,34 +205,66 @@
       background-color: var(--bg-canvas);
     }
     .lg-glass {
-      background: #FFFFFF;
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border-hairline);
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
     }
     .dark .lg-glass {
-      background: #111520;
+      background: rgba(30, 31, 32, 0.90);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border-hairline);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
     .lg-glass-elevated {
-      background: #FFFFFF;
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      box-shadow: 0 10px 25px -10px rgba(15, 23, 42, 0.14);
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-hairline);
+      box-shadow: 0 4px 20px rgba(60, 64, 67, 0.14);
     }
     .dark .lg-glass-elevated {
-      background: #111520;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.65);
+      background: rgba(30, 31, 32, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-hairline);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65);
+    }
+    .ag-surface {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid #DADCE0;
+      box-shadow: 0 1px 2px rgba(60, 64, 67, 0.06);
+      transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), border-color 0.2s ease;
+    }
+    .dark .ag-surface {
+      background: rgba(30, 31, 32, 0.80);
+      border-color: #3C4043;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    }
+    .ag-card-lift:hover {
+      transform: translateY(-3px);
+      border-color: rgba(26, 115, 232, 0.45);
+      box-shadow: 0 2px 6px rgba(60, 64, 67, 0.08), 0 10px 24px -6px rgba(66, 133, 244, 0.16);
+    }
+    .dark .ag-card-lift:hover {
+      border-color: rgba(138, 180, 248, 0.45);
+      box-shadow: 0 10px 26px -8px rgba(0, 0, 0, 0.7);
     }
     .lg-btn-primary {
-      background-color: #0071E3;
+      background-color: #1A73E8;
       color: #FFFFFF;
-      border: 1px solid #0066CC;
-      box-shadow: 0 1px 2px rgba(0, 113, 227, 0.16);
-      transition: background-color 0.15s ease, transform 0.15s ease;
+      border: 1px solid #1A73E8;
+      box-shadow: 0 1px 2px rgba(26, 115, 232, 0.24);
+      transition: background-color 0.16s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.16s ease, transform 0.14s ease;
     }
     .lg-btn-primary:hover {
-      background-color: #0062C4;
+      background-color: #1557B0;
+      border-color: #1557B0;
+      box-shadow: 0 2px 8px rgba(26, 115, 232, 0.32);
     }
     .lg-btn-primary:active {
       transform: scale(0.98);
@@ -223,23 +278,88 @@
       border: 1px solid var(--border-hairline);
     }
 
+    /* Antigravity Hero Interactive Control Pills */
+    .ag-mode-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      min-height: 32px;
+      padding: 0.3rem 0.7rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+      cursor: pointer;
+      color: #5F6368;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid #DADCE0;
+      transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
+    }
+    .ag-mode-btn:hover {
+      background: #F1F3F4;
+      color: #202124;
+    }
+    .ag-mode-btn:active {
+      transform: scale(0.97);
+    }
+    .ag-mode-btn.is-ag-active,
+    .ag-mode-btn[aria-pressed="true"] {
+      background: #E8F0FE;
+      color: #1967D2;
+      border-color: #AECBFA;
+    }
+    .dark .ag-mode-btn {
+      color: #C4C7C5;
+      background: rgba(30, 31, 32, 0.92);
+      border-color: #3C4043;
+    }
+    .dark .ag-mode-btn:hover {
+      background: #282A2C;
+      color: #E3E3E3;
+    }
+    .dark .ag-mode-btn.is-ag-active,
+    .dark .ag-mode-btn[aria-pressed="true"] {
+      background: rgba(138, 180, 248, 0.18);
+      color: #8AB4F8;
+      border-color: rgba(138, 180, 248, 0.45);
+    }
+
+    /* Google Antigravity Checkmark & Pop-in Keyframes (from antigravity-pattern.html) */
+    @keyframes agPopIn {
+      0% { transform: scale(0.82); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes agDrawCheck {
+      from { stroke-dashoffset: 60; opacity: 0; }
+      to { stroke-dashoffset: 0; opacity: 1; }
+    }
+    .ag-pop-in {
+      animation: agPopIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+    .ag-draw-check {
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: agDrawCheck 0.55s ease-out 0.15s forwards;
+    }
+
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
       height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.04);
+      background: rgba(60, 64, 67, 0.04);
     }
     .dark ::-webkit-scrollbar-track {
-      background: rgba(9, 11, 16, 0.65);
+      background: rgba(19, 19, 20, 0.75);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(0, 113, 227, 0.28);
+      background: rgba(26, 115, 232, 0.28);
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(0, 113, 227, 0.55);
+      background: rgba(26, 115, 232, 0.55);
     }
 
     /* Hiệu ứng rung lắc khi báo lỗi nhập liệu sai tài khoản/mật khẩu */
@@ -683,15 +803,15 @@
       display: none;
     }
 
-    /* Filter Segmented Tab */
+    /* Filter Segmented Tab (Google Material 3 Pill Chip) */
     .u292-f {
       position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-height: 40px;
-      padding: 0.5rem 0.875rem;
-      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
       font-size: 0.75rem;
       font-weight: 600;
       line-height: 1rem;
@@ -700,40 +820,40 @@
       cursor: pointer;
       user-select: none;
       outline: none;
-      transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease;
-      border: 1px solid var(--border-hairline);
-      background-color: #FFFFFF;
-      color: #525866;
+      transition: background-color 0.16s ease, color 0.16s ease, border-color 0.16s ease, transform 0.14s ease;
+      border: 1px solid #DADCE0;
+      background-color: rgba(255, 255, 255, 0.92);
+      color: #5F6368;
     }
     .u292-f:hover {
-      background-color: #EFF1F5;
-      color: #1D1D1F;
+      background-color: #F1F3F4;
+      color: #202124;
     }
     .u292-f:active {
       transform: scale(0.98);
     }
     .dark .u292-f {
-      background-color: #111520;
-      color: #9CA3AF;
-      border-color: rgba(255, 255, 255, 0.10);
+      background-color: rgba(30, 31, 32, 0.92);
+      color: #C4C7C5;
+      border-color: #3C4043;
     }
     .dark .u292-f:hover {
-      background-color: #171C28;
-      color: #F5F5F7;
+      background-color: #282A2C;
+      color: #E3E3E3;
     }
 
-    /* Active State for .u292-f */
+    /* Active State for .u292-f (Google Blue Tonal) */
     .u292-f.is-active,
     .u292-f[aria-pressed="true"] {
-      background-color: #1D1D1F;
-      color: #FFFFFF;
-      border-color: #1D1D1F;
+      background-color: #E8F0FE;
+      color: #1967D2;
+      border-color: #AECBFA;
     }
     .dark .u292-f.is-active,
     .dark .u292-f[aria-pressed="true"] {
-      background-color: #0071E3;
-      color: #FFFFFF;
-      border-color: #0071E3;
+      background-color: rgba(138, 180, 248, 0.18);
+      color: #8AB4F8;
+      border-color: rgba(138, 180, 248, 0.45);
     }
 
     /* Counter Label (.u292-n) */
@@ -818,7 +938,10 @@
     }
   </style>
 </head>
-<body class="lg-canvas bg-[#F7F8FA] text-[#1D1D1F] dark:bg-[#090B10] dark:text-[#F5F5F7] min-h-screen flex flex-col transition-colors duration-200 antialiased selection:bg-[#0071E3] selection:text-white overflow-x-hidden">
+<body class="lg-canvas bg-[#FFFFFF] text-[#202124] dark:bg-[#131314] dark:text-[#E3E3E3] min-h-screen flex flex-col transition-colors duration-200 antialiased selection:bg-[#1A73E8] selection:text-white overflow-x-hidden relative">
+
+  <!-- ==================== GOOGLE ANTIGRAVITY GPU SPRITE CANVAS ==================== -->
+  <canvas id="antigravityCanvas" aria-hidden="true" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
   <style>
     /* ==================== [ELEMENT] CARD THAT EXPANDS INTO DETAIL (LUCIAN #328) ==================== */
@@ -986,27 +1109,33 @@
     }
   </style>
 
-  <!-- ==================== STUDIO HAIRLINE HEADER (3-ZONE CONTRACT) ==================== -->
-  <header class="sticky top-0 z-50 w-full bg-[#F7F8FA] dark:bg-[#090B10] border-b border-slate-900/10 dark:border-white/10 transition-colors duration-150">
+  <!-- ==================== GOOGLE ANTIGRAVITY HEADER (3-ZONE CONTRACT) ==================== -->
+  <header class="sticky top-0 z-50 w-full bg-white/88 dark:bg-[#131314]/88 backdrop-blur-md border-b border-[#DADCE0] dark:border-[#3C4043] transition-colors duration-150">
+    <div class="google-spectrum-bar" aria-hidden="true"></div>
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 lg:gap-8">
       
-      <!-- Zone 1: Single-line Brand Wordmark -->
+      <!-- Zone 1: Single-line Google-inspired Brand Wordmark -->
       <a href="#home" id="brandLogoLink" class="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none shrink-0 whitespace-nowrap" aria-label="Bùi Thái AI Studio">
-        <div class="w-8 h-8 rounded-lg bg-[#1D1D1F] dark:bg-white flex items-center justify-center text-white dark:text-[#090B10] shrink-0">
-          <span class="font-display font-bold text-xs tracking-tight">BT</span>
+        <div class="w-8 h-8 rounded-full bg-[#F8F9FA] dark:bg-[#1E1F20] border border-[#DADCE0] dark:border-[#3C4043] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="3.4" fill="#4285F4"/>
+            <rect x="13" y="4.8" width="6.2" height="6.2" rx="1.6" fill="#EA4335"/>
+            <polygon points="8,13 11.6,19.4 4.4,19.4" fill="#FBBC05"/>
+            <circle cx="16.2" cy="16.2" r="3.2" fill="#34A853"/>
+          </svg>
         </div>
-        <span class="text-sm sm:text-lg font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7] font-display whitespace-nowrap shrink-0">Bùi Thái <span class="text-[#0071E3] dark:text-[#3B9EFF]">AI</span></span>
+        <span class="text-sm sm:text-lg font-bold tracking-tight text-[#202124] dark:text-[#E3E3E3] font-display whitespace-nowrap shrink-0">Bùi Thái <span class="text-[#1A73E8] dark:text-[#8AB4F8]">AI</span></span>
       </a>
 
-      <!-- Zone 2: Clean Typographic Navigation Links (lg+ to keep 768px tablet header spacious) -->
+      <!-- Zone 2: Clean Typographic Navigation Links -->
       <nav id="floatingPillNav" class="hidden lg:flex items-center gap-7 my-auto shrink-0" aria-label="Điều hướng chính">
-        <button id="navHome" data-view="home" class="nav-btn py-1.5 text-sm font-semibold transition-colors duration-150 cursor-pointer text-[#0071E3] dark:text-[#3B9EFF] border-b-2 border-[#0071E3] dark:border-[#3B9EFF] whitespace-nowrap shrink-0">
+        <button id="navHome" data-view="home" class="nav-btn py-1.5 text-sm font-semibold transition-colors duration-150 cursor-pointer text-[#1A73E8] dark:text-[#8AB4F8] border-b-2 border-[#1A73E8] dark:border-[#8AB4F8] whitespace-nowrap shrink-0">
           <span class="u267-sw"><span>Trang chủ</span></span>
         </button>
-        <button id="navProducts" data-view="products" data-scroll="products" class="nav-btn py-1.5 text-sm font-medium transition-colors duration-150 cursor-pointer text-[#525866] dark:text-[#9CA3AF] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] border-b-2 border-transparent whitespace-nowrap shrink-0">
+        <button id="navProducts" data-view="products" data-scroll="products" class="nav-btn py-1.5 text-sm font-medium transition-colors duration-150 cursor-pointer text-[#5F6368] dark:text-[#C4C7C5] hover:text-[#202124] dark:hover:text-white border-b-2 border-transparent whitespace-nowrap shrink-0">
           <span class="u267-sw"><span>Sản phẩm</span></span>
         </button>
-        <button id="navBlog" data-view="blog" class="nav-btn py-1.5 text-sm font-medium transition-colors duration-150 cursor-pointer text-[#525866] dark:text-[#9CA3AF] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] border-b-2 border-transparent whitespace-nowrap shrink-0">
+        <button id="navBlog" data-view="blog" class="nav-btn py-1.5 text-sm font-medium transition-colors duration-150 cursor-pointer text-[#5F6368] dark:text-[#C4C7C5] hover:text-[#202124] dark:hover:text-white border-b-2 border-transparent whitespace-nowrap shrink-0">
           <span class="u267-sw"><span>Blog</span></span>
         </button>
       </nav>
@@ -1014,9 +1143,9 @@
       <!-- Zone 3: Compact Utility & Account Cluster -->
       <div class="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0">
         <!-- Utility Capsule + Lucian #027 Expanding Search -->
-        <div class="u027-capsule relative flex items-center gap-0.5 sm:gap-1 p-1 rounded-xl bg-white dark:bg-[#111520] border border-slate-900/10 dark:border-white/10" id="headerUtilityCapsule">
+        <div class="u027-capsule relative flex items-center gap-0.5 sm:gap-1 p-1 rounded-full bg-[#F8F9FA] dark:bg-[#1E1F20] border border-[#DADCE0] dark:border-[#3C4043]" id="headerUtilityCapsule">
           <div class="u027-field" id="u027Field" role="search" aria-label="Tìm kiếm sản phẩm">
-            <svg class="w-4 h-4 text-[#0071E3] dark:text-[#3B9EFF] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+            <svg class="w-4 h-4 text-[#1A73E8] dark:text-[#8AB4F8] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.3-4.3" />
             </svg>
@@ -1049,7 +1178,7 @@
             type="button"
             title="Tìm kiếm nhanh (Ctrl+K hoặc /)" 
             aria-label="Mở tìm kiếm nhanh"
-            class="p-1.5 sm:p-2 rounded-xl text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-black/5 dark:text-[#9CA3AF] dark:hover:text-[#F5F5F7] dark:hover:bg-white/10 transition-colors duration-200 cursor-pointer"
+            class="p-1.5 sm:p-2 rounded-full text-[#5F6368] hover:text-[#202124] hover:bg-black/5 dark:text-[#C4C7C5] dark:hover:text-[#E3E3E3] dark:hover:bg-white/10 transition-colors duration-200 cursor-pointer"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
               <circle cx="11" cy="11" r="8" />
@@ -1062,9 +1191,9 @@
             type="button" 
             onclick="window.ShopVietState && window.ShopVietState.forceHardResync ? window.ShopVietState.forceHardResync(true) : location.reload()" 
             title="Đồng bộ dữ liệu thời gian thực" 
-            class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
+            class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[#202124] dark:text-[#E3E3E3] hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 cursor-pointer group active:scale-95 shrink-0 whitespace-nowrap"
           >
-            <svg id="cloudSyncHeaderIcon" class="w-3.5 h-3.5 text-[#0071E3] dark:text-[#3B9EFF] group-hover:rotate-180 transition-transform duration-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg id="cloudSyncHeaderIcon" class="w-3.5 h-3.5 text-[#1A73E8] dark:text-[#8AB4F8] group-hover:rotate-180 transition-transform duration-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
               <polyline points="13 13 10 16 7 13"/>
               <line x1="10" y1="9" x2="10" y2="16"/>
@@ -1895,14 +2024,14 @@
           })();
         </script>
 
-        <!-- 2. Khối Tài Khoản & Action (Liquid Glass & Sapphire) -->
+        <!-- 2. Khối Tài Khoản & Action (Google Material 3 Pills) -->
         <div class="flex items-center gap-1 sm:gap-2">
           <div id="headerUserSection" class="relative">
             <div id="headerAuthContainer" class="flex items-center gap-1 sm:gap-2">
               <button 
                 type="button" 
                 onclick="if(window.openDepositModal) window.openDepositModal(); else if(window.ShopVietViews && window.ShopVietViews.modal) window.ShopVietViews.modal.openDepositModal();" 
-                class="inline-flex items-center gap-1 px-2 py-1.5 sm:px-3 sm:py-2 rounded-xl text-[11px] sm:text-xs font-semibold text-[#0071E3] dark:text-[#3B9EFF] bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 hover:bg-[#0071E3]/15 dark:hover:bg-[#3B9EFF]/25 transition cursor-pointer whitespace-nowrap shrink-0 select-none"
+                class="inline-flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-semibold text-[#1967D2] dark:text-[#8AB4F8] bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 hover:bg-[#D2E3FC] dark:hover:bg-[#8AB4F8]/25 border border-[#D2E3FC] dark:border-[#8AB4F8]/30 transition cursor-pointer whitespace-nowrap shrink-0 select-none"
                 title="Nạp Xu MBBank 0986019623"
               >
                 <span>Nạp Xu</span>
@@ -1912,10 +2041,10 @@
                 type="button" 
                 aria-label="Đăng ký tài khoản"
                 onclick="window.ShopVietState && window.ShopVietState.navigate ? window.ShopVietState.navigate('login', { mode: 'register' }) : location.hash='#login'"
-                class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-2 sm:px-3 rounded-lg text-xs sm:text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] lg-glass hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 select-none"
+                class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 sm:px-3.5 rounded-full text-xs sm:text-sm font-medium text-[#202124] dark:text-[#E3E3E3] bg-white dark:bg-[#1E1F20] border border-[#DADCE0] dark:border-[#3C4043] hover:bg-[#F8F9FA] dark:hover:bg-white/10 transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 select-none"
                 title="Tạo tài khoản mới"
               >
-                <svg class="w-4 h-4 text-[#6E6E73] dark:text-[#9CA3AF] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <svg class="w-4 h-4 text-[#5F6368] dark:text-[#C4C7C5] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 1 1-8 0 4 4 0 0 1 8 0ZM3 20a6 6 0 0 1 12 0v1H3v-1Z"/>
                 </svg>
                 <span class="u267-sw hidden md:inline"><span>Đăng ký</span></span>
@@ -1926,7 +2055,7 @@
                 type="button" 
                 aria-label="Đăng nhập tài khoản"
                 onclick="window.ShopVietState && window.ShopVietState.navigate ? window.ShopVietState.navigate('login') : location.hash='#login'"
-                class="lg-btn-primary rounded-lg px-2.5 py-2 sm:px-4 flex items-center gap-1.5 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 select-none"
+                class="lg-btn-primary rounded-full px-3 py-2 sm:px-4 flex items-center gap-1.5 text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0 select-none"
                 title="Đăng nhập tài khoản"
               >
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -1943,7 +2072,7 @@
   </header>
 
   <!-- ==================== MAIN SPA MOUNT AREA ==================== -->
-  <main id="appMount" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300">
+  <main id="appMount" class="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 transition-all duration-300">
     <!-- View content will be mounted here by ShopVietState.navigate() -->
   </main>
 
@@ -1980,17 +2109,23 @@
     </div>
   </div>
 
-  <!-- ==================== OBSIDIAN STUDIO FOOTER ==================== -->
-  <footer class="bg-[#090B10] text-slate-300 border-t border-white/10 transition-colors mt-auto">
+  <!-- ==================== GOOGLE ANTIGRAVITY STUDIO FOOTER ==================== -->
+  <footer class="relative z-10 bg-[#131314] text-[#C4C7C5] border-t border-[#3C4043] transition-colors mt-auto">
+    <div class="google-spectrum-bar opacity-85" aria-hidden="true"></div>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
         
         <div class="space-y-4">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-white text-[#090B10] flex items-center justify-center shrink-0">
-              <span class="font-display font-bold text-xs tracking-tight">BT</span>
+            <div class="w-8 h-8 rounded-full bg-[#1E1F20] border border-[#3C4043] flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="3.4" fill="#8AB4F8"/>
+                <rect x="13" y="4.8" width="6.2" height="6.2" rx="1.6" fill="#F28B82"/>
+                <polygon points="8,13 11.6,19.4 4.4,19.4" fill="#FDD663"/>
+                <circle cx="16.2" cy="16.2" r="3.2" fill="#81C995"/>
+              </svg>
             </div>
-            <span class="text-lg font-bold tracking-tight text-white font-display">Bùi Thái <span class="text-[#3B9EFF]">AI Studio</span></span>
+            <span class="text-lg font-bold tracking-tight text-[#E3E3E3] font-display">Bùi Thái <span class="text-[#8AB4F8]">AI Studio</span></span>
           </div>
           <p class="text-sm text-slate-400 leading-relaxed">
             Kho mã nguồn React / Three.js tự phát triển và tuyển tập Master Prompts thực chiến dành cho lập trình viên &amp; nhà sáng tạo. Nạp Xu VietQR MBBank 0986019623 tự động 24/7.
@@ -2095,24 +2230,24 @@
   </footer>
 
   <!-- ==================== COOKIE & PRIVACY CONSENT BANNER ==================== -->
-  <div id="cookieConsentBanner" class="hidden fixed bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-sm z-30 p-3 rounded-xl lg-glass-elevated transition-all duration-150 text-[#1D1D1F] dark:text-[#F5F5F7]">
+  <div id="cookieConsentBanner" class="hidden fixed bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:max-w-sm z-30 p-3.5 rounded-2xl lg-glass-elevated transition-all duration-150 text-[#202124] dark:text-[#E3E3E3]">
     <div class="flex items-start gap-2.5">
-      <div class="w-8 h-8 rounded-lg bg-[#0071E3]/10 dark:bg-[#3B9EFF]/15 text-[#0071E3] dark:text-[#3B9EFF] flex items-center justify-center shrink-0 mt-0.5">
+      <div class="w-8 h-8 rounded-full bg-[#E8F0FE] dark:bg-[#8AB4F8]/15 text-[#1A73E8] dark:text-[#8AB4F8] flex items-center justify-center shrink-0 mt-0.5">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       </div>
-      <div class="space-y-1 text-xs text-[#525866] dark:text-[#9CA3AF] min-w-0 flex-1">
-        <h4 class="font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] text-xs">Quyền Riêng Tư &amp; Cookie</h4>
+      <div class="space-y-1.5 text-xs text-[#5F6368] dark:text-[#C4C7C5] min-w-0 flex-1">
+        <h4 class="font-semibold text-[#202124] dark:text-[#E3E3E3] text-xs">Quyền Riêng Tư &amp; Cookie</h4>
         <p class="leading-snug text-[11px]">
           Cookie thiết yếu bảo vệ giao dịch Ví Xu theo <strong>Luật 91/2025/QH15</strong>.
         </p>
         <div class="pt-1 flex items-center gap-2">
-          <button type="button" id="btnAcceptCookieConsent" class="px-3 py-1.5 rounded-lg bg-[#0071E3] hover:bg-[#0062C4] text-white font-semibold text-[11px] transition cursor-pointer">
+          <button type="button" id="btnAcceptCookieConsent" class="px-3.5 py-1.5 rounded-full bg-[#1A73E8] hover:bg-[#1557B0] text-white font-semibold text-[11px] transition cursor-pointer">
             Chấp nhận
           </button>
-          <button type="button" id="btnDeclineCookieConsent" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-[#1D1D1F] dark:text-[#F5F5F7] font-medium text-[11px] transition cursor-pointer">
+          <button type="button" id="btnDeclineCookieConsent" class="px-3 py-1.5 rounded-full bg-[#F1F3F4] hover:bg-[#E8EAED] dark:bg-[#282A2C] dark:hover:bg-[#3C4043] text-[#202124] dark:text-[#E3E3E3] font-medium text-[11px] transition cursor-pointer">
             Chỉ thiết yếu
           </button>
-          <button type="button" onclick="ShopVietViews.modal.openPolicy('privacy')" class="underline text-[#525866] hover:text-[#1D1D1F] dark:hover:text-white text-[11px] ml-auto cursor-pointer">
+          <button type="button" onclick="ShopVietViews.modal.openPolicy('privacy')" class="underline text-[#5F6368] hover:text-[#202124] dark:hover:text-white text-[11px] ml-auto cursor-pointer">
             Chi tiết
           </button>
         </div>
@@ -2174,6 +2309,7 @@
 
   <script src="js/data.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/promo-engine.js?v=v2.0.0_opendesign_liquid_glass"></script>
+  <script src="js/marketplace.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/state.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/views/home.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/views/modal.js?v=v2.0.0_opendesign_liquid_glass"></script>
@@ -2182,6 +2318,7 @@
   <script src="js/views/dashboard.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/views/admin.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/views/blog.js?v=v2.0.0_opendesign_liquid_glass"></script>
+  <script src="js/antigravity.js?v=v2.0.0_opendesign_liquid_glass"></script>
   <script src="js/app.js?v=v2.0.0_opendesign_liquid_glass"></script>
 
   <!-- ==================== PWA SERVICE WORKER REGISTRATION ==================== -->
