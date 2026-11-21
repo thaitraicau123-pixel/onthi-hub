@@ -3299,7 +3299,7 @@ ${escapeHTML(item.template || item.prompt || "")}
                             <td class="py-2 px-3 text-emerald-600 dark:text-emerald-400 font-semibold">Tùy gói: KBH / BH 1 tuần / BH 1 tháng / BH 3 tháng</td>
                           </tr>
                           <tr>
-                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Gemini Pro + 5TB Drive — KBH (39k / 79k)</td>
+                            <td class="py-2 px-3 font-semibold text-slate-900 dark:text-white">Gemini Pro + 5TB Drive — KBH (69k / 99k)</td>
                             <td class="py-2 px-3">3 Tháng / 1 Năm</td>
                             <td class="py-2 px-3 text-amber-600 dark:text-amber-400 font-semibold">Gói KBH (Bao kích hoạt thành công lúc giao)</td>
                           </tr>

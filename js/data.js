@@ -403,11 +403,11 @@ window.ShopVietData = {
     "tag": "Tài Khoản & AI",
     "category": "AI & Cloud Storage",
     "filterGroup": "Web & UI Thượng Lưu",
-    "badge": "TIẾT KIỆM · 39K",
+    "badge": "TIẾT KIỆM · 69K",
     "badgeColor": "bg-[#0071E3] text-white",
-    "price": 39000,
+    "price": 69000,
     "oldPrice": 99000,
-    "discount": "-61%",
+    "discount": "-30%",
     "stock": 999,
     "duration": "3 Tháng",
     "warranty": "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
@@ -416,7 +416,7 @@ window.ShopVietData = {
     "image": "/img/gemini-pro-5tb-3m-kbh.svg",
     "imageUrl": "/img/gemini-pro-5tb-3m-kbh.svg",
     "iconType": "gemini",
-    "ctaText": "Mua Ngay (39k Xu)",
+    "ctaText": "Mua Ngay (69k Xu)",
     "desc": "GÓI TIẾT KIỆM [3 THÁNG] FULL QUYỀN LỢI GEMINI PRO + 5TB DRIVE – KBH: Sở hữu trọn vẹn Full quyền lợi Google Gemini Pro kết hợp dung lượng lưu trữ khổng lồ 5TB Google Drive trong thời hạn 3 Tháng. Mức giá siêu rẻ (gói KBH — không bảo hành, bao kích hoạt lên gói thành công lúc bàn giao). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận gói.",
     "tags": [
       "Gemini Pro",
@@ -449,7 +449,7 @@ window.ShopVietData = {
       },
       "after": {
         "title": "[3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
-        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 3 Tháng chỉ với 39k Xu.",
+        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 3 Tháng chỉ với 69k Xu.",
         "points": [
           "Thoải mái lưu trữ tài liệu, video, backup với 5TB Drive",
           "Trải nghiệm trọn bộ tính năng AI Gemini Pro mới nhất",
@@ -459,7 +459,7 @@ window.ShopVietData = {
     },
     "unlockedPayload": {
       "fileName": "Huong_Dan_service-gemini-pro-5tb-3m-kbh.md",
-      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **39.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (3 Tháng)**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
+      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [3 Tháng] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **69.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (3 Tháng)**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
       "cheatSheet": [
         {
           "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
@@ -496,11 +496,11 @@ window.ShopVietData = {
     "tag": "Tài Khoản & AI",
     "category": "AI & Cloud Storage",
     "filterGroup": "Web & UI Thượng Lưu",
-    "badge": "HOT · 1 NĂM · 79K",
+    "badge": "HOT · 1 NĂM · 99K",
     "badgeColor": "bg-blue-700 text-white",
-    "price": 79000,
+    "price": 99000,
     "oldPrice": 199000,
-    "discount": "-60%",
+    "discount": "-50%",
     "stock": 999,
     "duration": "1 Năm (12 Tháng)",
     "warranty": "Không bảo hành (KBH · Bao kích hoạt lúc giao)",
@@ -509,7 +509,7 @@ window.ShopVietData = {
     "image": "/img/gemini-pro-5tb-1y-kbh.svg",
     "imageUrl": "/img/gemini-pro-5tb-1y-kbh.svg",
     "iconType": "gemini",
-    "ctaText": "Mua Ngay (79k Xu)",
+    "ctaText": "Mua Ngay (99k Xu)",
     "desc": "GÓI TIẾT KIỆM [1 NĂM] FULL QUYỀN LỢI GEMINI PRO + 5TB DRIVE – KBH: Sở hữu trọn vẹn Full quyền lợi Google Gemini Pro kết hợp dung lượng lưu trữ khổng lồ 5TB Google Drive trong thời hạn 1 Năm (12 Tháng). Mức giá siêu rẻ (gói KBH — không bảo hành, bao kích hoạt lên gói thành công lúc bàn giao). Thanh toán bằng Ví Xu xong nhắn Zalo 0986.019.623 kèm Mã đơn để nhận gói.",
     "tags": [
       "Gemini Pro",
@@ -542,7 +542,7 @@ window.ShopVietData = {
       },
       "after": {
         "title": "[1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH",
-        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 1 Năm (12 Tháng) chỉ với 79k Xu.",
+        "summary": "Mở rộng ngay lên 5TB Drive + Full quyền lợi Gemini Pro suốt 1 Năm (12 Tháng) chỉ với 99k Xu.",
         "points": [
           "Thoải mái lưu trữ tài liệu, video, backup với 5TB Drive",
           "Trải nghiệm trọn bộ tính năng AI Gemini Pro mới nhất",
@@ -552,7 +552,7 @@ window.ShopVietData = {
     },
     "unlockedPayload": {
       "fileName": "Huong_Dan_service-gemini-pro-5tb-1y-kbh.md",
-      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **79.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (1 Năm (12 Tháng))**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
+      "masterPrompt": "# HƯỚNG DẪN NHẬN GÓI: [1 Năm] Full Quyền Lợi Gemini Pro + 5TB Drive – KBH\n*Bùi Thái AI Studio · Hotline/Zalo CSKH: 0986.019.623 (08:00 – 24:00)*\n\n---\n\n## BƯỚC 1: GỬI MÃ ĐƠN QUA ZALO\nSau khi thanh toán thành công **99.000 Xu**, bạn nhắn tin tới **Zalo Admin Bùi Thái: 0986.019.623** (https://zalo.me/0986019623):\n\n- **Mã đơn hàng**: (Xem mã `#DJ2026...` ở phần trên màn hình)\n- **Email nhận hàng**: (Điền Email của bạn)\n\n---\n\n## BƯỚC 2: NHẬN GÓI & KIỂM TRA QUYỀN LỢI\n1. Admin bàn giao / kích hoạt gói **Full Quyền Lợi Gemini Pro + 5TB Drive (1 Năm (12 Tháng))**.\n2. Kiểm tra dung lượng Drive hiển thị **5TB** và quyền lợi **Gemini Pro** hoạt động bình thường.\n\n---\n\n## BƯỚC 3: LƯU Ý CHẾ ĐỘ KBH (KHÔNG BẢO HÀNH)\n- Gói **KBH** có giá siêu rẻ nên **không áp dụng bảo hành 1 đổi 1** sau khi đã kích hoạt/bàn giao thành công.\n- Khuyến nghị không lưu trữ dữ liệu nhạy cảm duy nhất trên Drive dùng chung và chủ động backup file quan trọng.",
       "cheatSheet": [
         {
           "title": "1. Mẫu tin nhắn gửi Zalo 0986.019.623 để nhận gói ngay",
